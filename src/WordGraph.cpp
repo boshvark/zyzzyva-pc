@@ -58,6 +58,7 @@ WordGraph::addWord (const QString& w)
         if (!node) {
             node = new Node (c);
             (parentNode ? parentNode->child : top) = node;
+            ++numNodes;
         }
 
         // Nonempty node, so find the current letter in the chain
@@ -65,6 +66,7 @@ WordGraph::addWord (const QString& w)
             while (node->letter != c) {
                 if (!node->next) {
                     node->next = new Node (c);
+                    ++numNodes;
                 }
                 node = node->next;
             }
@@ -307,4 +309,21 @@ WordGraph::Node::~Node()
 {
     delete next;
     delete child;
+}
+
+//---------------------------------------------------------------------------
+// operator==
+//
+//! Compare two nodes to see if they are equivalent.  Two nodes are
+//! equivalent if their internal data are equal, and if their CHILD and
+//! NEXT pointers are exactly the same.
+//
+//! @param rhs the right-hand side of the comparison
+//! @return true if equivalent, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordGraph::Node::operator== (const Node& rhs)
+{
+    return ((letter == rhs.letter) && (eow == rhs.eow)
+            && (next == rhs.next) && (child == rhs.child));
 }

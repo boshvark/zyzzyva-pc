@@ -28,12 +28,14 @@ class WordGraph
     QStringList getAnagrams (const QString& input, bool subanagrams) const;
     void compress();
     void print() const;
+    int getNumNodes() { return numNodes; }
 
   private:
     class Node {
       public:
-        Node(char c = 0, bool e = false);
+        Node (char c = 0, bool e = false);
         ~Node();
+        bool operator== (const Node& rhs);
         char letter;
         bool eow;
         Node* next;
@@ -41,6 +43,7 @@ class WordGraph
     };
 
     Node* top;
+    int numNodes;
 };
 
 #endif // WORD_GRAPH_H
