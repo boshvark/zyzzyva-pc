@@ -1,9 +1,5 @@
 Stuff that would be nice:
 
-* Fix display of quiz questions when tile images are not present for some
-  reason.  Either when "Use Tile Theme" is unchecked, or when there is a
-  problem loading tile images.
-
 * Save size of Analyze dialog across sessions.  Also don't always make it
   fixed at the minimum size in both directions.  Maybe just horizontally.
 
