@@ -551,4 +551,10 @@ QuizForm::setTileTheme (const QString& theme)
         setNumCanvasTiles (minCanvasTiles);
     else
         setQuestionLabel (question);
+
+    // XXX: What an awful way to get the QuizForm to reflow after a canvas
+    // resize.  Surely there must be a better way?
+    QString text = questionStatusLabel->text();
+    questionStatusLabel->setText ("foo blah blah");
+    questionStatusLabel->setText (text);
 }
