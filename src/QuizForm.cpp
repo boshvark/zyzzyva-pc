@@ -58,7 +58,8 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
                     char* name, WFlags f)
     : QFrame (parent, name, f), quizEngine (qe), wordEngine (we),
     newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true)),
-    analyzeDialog (new AnalyzeQuizDialog (qe, this, "analyzeDialog", false))
+    analyzeDialog (new AnalyzeQuizDialog (qe, this, "analyzeDialog", false)),
+    numCanvasTiles (0), minCanvasTiles (7)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
                                              "mainHlay");
@@ -397,7 +398,27 @@ QuizForm::clearCanvas()
     for (cItem = canvasItems.begin(); cItem != canvasItems.end(); ++cItem)
         delete *cItem;
     canvasItems.clear();
+    setNumCanvasTiles (minCanvasTiles);
     questionCanvas->setAllChanged();
+}
+
+//---------------------------------------------------------------------------
+// setNumCanvasTiles
+//
+//! Resize the canvas to be able to display a certain number of tiles.
+//! @param num the number of tiles
+//---------------------------------------------------------------------------
+void
+QuizForm::setNumCanvasTiles (int num)
+{
+    if (num < minCanvasTiles)
+        num = minCanvasTiles;
+    if (num == numCanvasTiles)
+        return;
+    numCanvasTiles = num;
+    questionCanvas->resize ((2 * QUIZ_TILE_MARGIN) + (num * maxTileWidth) +
+                            ((num - 1) * QUIZ_TILE_SPACING),
+                            (2 * QUIZ_TILE_MARGIN) + maxTileHeight);
 }
 
 //---------------------------------------------------------------------------
@@ -435,12 +456,13 @@ QuizForm::setQuestionLabel (const QString& question)
     }
 
     else {
-        // XXX Get rid of these magic numbers!
+        setNumCanvasTiles (question.length());
+
         QMap<QString,QImage>::iterator image;
         int x = QUIZ_TILE_MARGIN +
-            ((9 - question.length()) * (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
+            ((numCanvasTiles - question.length()) * (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
 
-        for (int i = 0; (i < 9) && (i < question.length()); ++i) {
+        for (int i = 0; (i < numCanvasTiles) && (i < question.length()); ++i) {
             QString letter = question[i];
             if (letter == "?")
                 letter = "_";
@@ -534,7 +556,5 @@ QuizForm::setTileTheme (const QString& theme)
             maxTileHeight = image.height();
     }
 
-    questionCanvas->resize ((2 * QUIZ_TILE_MARGIN) + (9 * maxTileWidth) +
-                            (8 * QUIZ_TILE_SPACING),
-                            (2 * QUIZ_TILE_MARGIN) + maxTileHeight);
+    setNumCanvasTiles (minCanvasTiles);
 }

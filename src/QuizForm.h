@@ -63,6 +63,7 @@ class QuizForm : public QFrame
     void clearStats();
     void clearQuestionNum();
     void clearCanvas();
+    void setNumCanvasTiles (int num);
     void setQuestionNum (int num, int total);
     void setQuestionLabel (const QString& question);
     void setQuestionStatus (int correct, int total);
@@ -87,6 +88,7 @@ class QuizForm : public QFrame
 
     QMap<QString,QImage> tileImages;
     int maxTileWidth, maxTileHeight;
+    int numCanvasTiles, minCanvasTiles;
 
     NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;
