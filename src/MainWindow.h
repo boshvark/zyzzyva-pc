@@ -30,6 +30,9 @@ class MainWindow : public QMainWindow
     void import();
 
   private:
+    void setNumWords (int num);
+
+  private:
     WordEngine* engine;
     LookupForm* lookupForm;
     QLabel*     messageLabel;

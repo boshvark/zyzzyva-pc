@@ -57,8 +57,9 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     messageLabel = new QLabel (this, "messageLabel");
     statusBar()->addWidget (messageLabel, 2);
 
-    statusLabel = new QLabel ("0 words loaded", this, "statusLabel");
+    statusLabel = new QLabel (this, "statusLabel");
     statusBar()->addWidget (statusLabel, 1);
+    setNumWords (0);
 }
 
 //---------------------------------------------------------------------------
@@ -76,8 +77,22 @@ MainWindow::import()
     if (file.isNull()) return;
     int imported = engine->importFile (file);
 
+    setNumWords (imported);
     QMessageBox::information (this, IMPORT_COMPLETE_TITLE,
                               "Imported " + QString::number (imported)
                               + " words.",
                               QMessageBox::Ok);
+}
+
+//---------------------------------------------------------------------------
+// setNumWords
+//
+//! Update the label displaying the number of words loaded.
+//
+//! @param num the new number of words loaded
+//---------------------------------------------------------------------------
+void
+MainWindow::setNumWords (int num)
+{
+    statusLabel->setText (QString::number (num) + " words loaded");
 }
