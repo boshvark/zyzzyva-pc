@@ -30,6 +30,7 @@
 #include <qpushbutton.h>
 
 const QString DIALOG_CAPTION_PREFIX = "Define : ";
+const int     WORD_WRAP_LENGTH = 80;
 
 using namespace Defs;
 
@@ -54,7 +55,6 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
 
     QLabel* label = new QLabel (this, "label");
     Q_CHECK_PTR (label);
-    label->setText (word + " :\n" + engine->getDefinition (word));
     mainVlay->addWidget (label);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
@@ -71,6 +71,12 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
     buttonHlay->addWidget (closeButton);
 
     setCaption (DIALOG_CAPTION_PREFIX + word);
+
+    QString definition = engine->getDefinition (word);
+    if (definition.isEmpty())
+        definition = "(no definition)";
+
+    label->setText (word + " :\n" + wordWrap (definition, WORD_WRAP_LENGTH));
 }
 
 //---------------------------------------------------------------------------
@@ -80,4 +86,39 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
 //---------------------------------------------------------------------------
 DefinitionDialog::~DefinitionDialog()
 {
+}
+
+//---------------------------------------------------------------------------
+// wordWrap
+//
+//! Wrap a string so that no line is longer than a certain length.
+//
+//! @param str the string to wrap
+//! @param wrapLength the maximum length of a line
+//! @return the wrapped string
+//---------------------------------------------------------------------------
+QString
+DefinitionDialog::wordWrap (const QString& str, int wrapLength) const
+{
+    int strLen = str.length();
+    if (strLen <= wrapLength)
+        return str;
+
+    QChar c;
+    QString wrappedStr = str;
+    int lastSpace = 0;
+    int lastNewline = 0;
+    for (int i = 0; i < strLen; ++i) {
+        c = wrappedStr.at (i);
+        if (c == '\n')
+            lastNewline = i;
+        if (c.isSpace())
+            lastSpace = i;
+
+        if ((i - lastNewline) == wrapLength) {
+            wrappedStr[lastSpace] = '\n';
+            lastNewline = lastSpace;
+        }
+    }
+    return wrappedStr;
 }
