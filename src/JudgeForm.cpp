@@ -51,10 +51,8 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
 
     QHBoxLayout* resultHlay = new QHBoxLayout (SPACING, "resultHlay");
     mainVlay->addLayout (resultHlay);
-    resultHlay->addStretch (1);
     resultLabel = new QLabel (this, "resultLabel");
-    resultHlay->addWidget (resultLabel);
-    resultHlay->addStretch (1);
+    resultHlay->addWidget (resultLabel, 0, Qt::AlignHCenter);
 }
 
 //---------------------------------------------------------------------------
@@ -68,8 +66,8 @@ JudgeForm::lookupWord()
 {
     QString word = wordLine->text();
     if (word.isEmpty()) return;
-    resultLabel->setText (word + " : " +
-                          (engine->isAcceptable (word) ?
-                           QString ("Acceptable") :
-                           QString ("Unacceptable")));
+    QString statusStr = engine->isAcceptable (word) ?
+                        QString ("<font color=\"blue\">Acceptable</font>") :
+                        QString ("<font color=\"red\">Unacceptable</font>");
+    resultLabel->setText (word + " : " + statusStr);
 }
