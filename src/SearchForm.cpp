@@ -57,6 +57,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 
     specForm = new SearchSpecForm (this, "specForm");
     Q_CHECK_PTR (specForm);
+    connect (specForm, SIGNAL (returnPressed()), SLOT (search()));
     specVlay->addWidget (specForm);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");

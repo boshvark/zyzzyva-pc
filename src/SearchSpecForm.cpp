@@ -83,6 +83,7 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     patternLine = new QLineEdit (this, "patternLine");
     Q_CHECK_PTR (patternLine);
     patternLine->setValidator (patternValidator);
+    connect (patternLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
     matchHlay->addWidget (patternLine);
 
     QHBoxLayout* lengthHlay = new QHBoxLayout (SPACING, "lengthHlay");
@@ -121,6 +122,7 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     includeLine = new QLineEdit (this, "includeLine");
     Q_CHECK_PTR (includeLine);
     includeLine->setValidator (letterValidator);
+    connect (includeLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
     includeHlay->addWidget (includeLine);
 
     QHBoxLayout* excludeHlay = new QHBoxLayout (SPACING, "excludeHlay");
@@ -135,6 +137,7 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     excludeLine = new QLineEdit (this, "excludeLine");
     Q_CHECK_PTR (excludeLine);
     excludeLine->setValidator (letterValidator);
+    connect (excludeLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
     excludeHlay->addWidget (excludeLine);
 
     QHBoxLayout* consistHlay = new QHBoxLayout (SPACING, "consistHlay");
@@ -159,6 +162,7 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     consistLine = new QLineEdit (this, "consistLine");
     Q_CHECK_PTR (consistLine);
     consistLine->setValidator (letterValidator);
+    connect (consistLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
     consistHlay->addWidget (consistLine);
 
     reset();

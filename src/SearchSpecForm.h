@@ -50,6 +50,9 @@ class SearchSpecForm : public QFrame
     int getMinLength() const { return minLengthSbox->value(); }
     int getMaxLength() const { return maxLengthSbox->value(); }
 
+  signals:
+    void returnPressed();
+
   private:
     QComboBox* matchCbox;
     QLineEdit* patternLine;
