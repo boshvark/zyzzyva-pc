@@ -27,8 +27,14 @@ class QuizForm : public QFrame
               WFlags f = 0);
 
   private:
+    void setCorrect (int correct, int total);
+
+  private:
     WordEngine*   engine;
     QLabel*       quizLabel;
+    QLineEdit*    inputLine;
+    QListBox*     answerList;
+    QLabel*       correctLabel;
 };
 
 #endif // QUIZ_FORM_H
