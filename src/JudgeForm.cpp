@@ -13,7 +13,10 @@
 #include "JudgeForm.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
+#include "Defs.h"
 #include <qlayout.h>
+
+using namespace Defs;
 
 //---------------------------------------------------------------------------
 // JudgeForm
@@ -28,10 +31,11 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
                         WFlags f)
     : QFrame (parent, name, f), engine (e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, 0, 0, "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
+                                             "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
-    QHBoxLayout* lookupHlay = new QHBoxLayout (0, "lookupHlay");
+    QHBoxLayout* lookupHlay = new QHBoxLayout (SPACING, "lookupHlay");
     Q_CHECK_PTR (lookupHlay);
     mainVlay->addLayout (lookupHlay);
 
@@ -45,7 +49,7 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
     connect (wordLine, SIGNAL (returnPressed()), SLOT (lookupWord()));
     lookupHlay->addWidget (wordLine);
 
-    QHBoxLayout* resultHlay = new QHBoxLayout (0, "resultHlay");
+    QHBoxLayout* resultHlay = new QHBoxLayout (SPACING, "resultHlay");
     mainVlay->addLayout (resultHlay);
     resultHlay->addStretch (1);
     resultLabel = new QLabel (this, "resultLabel");

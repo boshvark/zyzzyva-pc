@@ -13,9 +13,12 @@
 #include "SearchForm.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
+#include "Defs.h"
 #include <qapplication.h>
 #include <qbuttongroup.h>
 #include <qlayout.h>
+
+using namespace Defs;
 
 //---------------------------------------------------------------------------
 // SearchForm
@@ -30,10 +33,11 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
                         WFlags f)
     : QFrame (parent, name, f), engine (e)
 {
-    QHBoxLayout* mainHlay = new QHBoxLayout (this, 0, 0, "mainHlay");
+    QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
+                                             "mainHlay");
     Q_CHECK_PTR (mainHlay);
 
-    QVBoxLayout* optionVlay = new QVBoxLayout (0, "optionVlay");
+    QVBoxLayout* optionVlay = new QVBoxLayout (SPACING, "optionVlay");
     Q_CHECK_PTR (optionVlay);
     mainHlay->addLayout (optionVlay);
 
@@ -56,7 +60,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 
     optionVlay->addStretch (1);
 
-    QVBoxLayout* searchVlay = new QVBoxLayout (0, "searchVlay");
+    QVBoxLayout* searchVlay = new QVBoxLayout (SPACING, "searchVlay");
     Q_CHECK_PTR (searchVlay);
     mainHlay->addLayout (searchVlay);
 
