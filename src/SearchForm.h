@@ -25,6 +25,7 @@
 #ifndef SEARCH_FORM_H
 #define SEARCH_FORM_H
 
+#include <qcheckbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlistbox.h>
@@ -49,6 +50,7 @@ class SearchForm : public QFrame
   private:
     WordEngine*     engine;
     SearchSpecForm* specForm;
+    QCheckBox*      lowerCaseCbox;
     QListBox*       resultList;
     QLabel*         resultLabel;
     QPushButton*    resetButton;
