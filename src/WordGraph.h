@@ -43,7 +43,7 @@ class WordGraph
     int getNumNodes() { return numNodes; }
 
   private:
-    bool matchesSpec (const QString& word, const SearchSpec& spec) const;
+    bool matchesSpec (QString word, const SearchSpec& spec) const;
 
   private:
     class Node {

@@ -228,7 +228,7 @@ WordGraph::search (const SearchSpec& spec) const
                         ((unmatched.length() == 1) ||
                         ((unmatched.length() == 2) &&
                          (QChar (unmatched.at (1)) == "*"))) &&
-                        matchesSpec (word, spec))
+                        matchesSpec (word.upper(), spec))
                         wordSet.insert (word);
                 }
 
@@ -261,7 +261,7 @@ WordGraph::search (const SearchSpec& spec) const
                         if (node->eow &&
                             ((spec.type == Subanagram) ||
                               unmatched.isEmpty()) &&
-                            matchesSpec (word, spec))
+                            matchesSpec (word.upper(), spec))
                             wordList << word;
                     }
                 }
@@ -356,7 +356,7 @@ WordGraph::print() const
 //! course of finding the word to be checked.
 //---------------------------------------------------------------------------
 bool
-WordGraph::matchesSpec (const QString& word, const SearchSpec& spec) const
+WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
 {
     // Check Min Length
     if (int (word.length()) < spec.minLength)
