@@ -86,9 +86,7 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 
     QPopupMenu* helpPopup = new QPopupMenu (this);
     Q_CHECK_PTR (helpPopup);
-    int helpItem = helpPopup->insertItem ("&Help", this, SLOT (displayHelp()));
-    if (!helpDialog->isValid())
-        helpPopup->setItemEnabled (helpItem, false);
+    helpPopup->insertItem ("&Help", this, SLOT (displayHelp()));
     helpPopup->insertItem ("&About", this, SLOT (displayAbout()));
     menuBar()->insertItem ("&Help", helpPopup);
 

@@ -1,0 +1,11 @@
+<assistantconfig version="3.3.3">
+  <profile>
+    <property name="name">Zyzzyva</property>
+    <property name="title">Zyzzyva</property>
+    <property name="startpage">./index.html</property>
+    <property name="aboutmenutext">About Zyzzyva</property>
+    <property name="abouturl">./about.html</property>
+  </profile>
+  <DCF ref="./index.html" title="Zyzzyva">
+  </DCF>
+</assistantconfig>

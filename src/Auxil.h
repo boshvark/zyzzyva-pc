@@ -1,9 +1,9 @@
 //---------------------------------------------------------------------------
-// Defs.h
+// Auxil.h
 //
-// Definitions.
+// Auxiliary functions.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,17 +22,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef DEFS_H
-#define DEFS_H
+#ifndef AUXIL_H
+#define AUXIL_H
 
 #include <qstring.h>
 
-namespace Defs {
-    const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
-
-    const int MAX_WORD_LEN = 15;
-    const int SPACING = 4;
-    const int MARGIN = 4;
+namespace Auxil {
+    QString getAboutString();
+    QString getHelpDir();
 }
 
-#endif // DEFS_H
+#endif // AUXIL_H

@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "AboutDialog.h"
+#include "Auxil.h"
 #include "Defs.h"
 #include <qlabel.h>
 #include <qlayout.h>
@@ -59,7 +60,7 @@ AboutDialog::AboutDialog (QWidget* parent, const char* name, bool modal,
     label->setMargin (2);
     label->setAlignment (QLabel::WordBreak | QLabel::AlignCenter);
     label->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
-    label->setText (ABOUT_STRING); 
+    label->setText (Auxil::getAboutString()); 
     mainVlay->addWidget (label);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
