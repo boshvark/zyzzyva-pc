@@ -12,6 +12,7 @@
     <section ref="preferences.html" title="Preferences">
       <keyword ref="preferences.html#auto-import">auto import</keyword>
       <section ref="preferences.html#auto-import" title="Auto Import" />
+      <section ref="preferences.html#tile-theme" title="Tile Theme" />
       <section ref="preferences.html#font" title="Font Settings" />
       <section ref="preferences.html#miscellaneous" title="Miscellaneous">
         <section ref="preferences.html#sort-by-length"
