@@ -79,7 +79,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
 
     QString definition = engine->getDefinition (word);
     if (definition.isEmpty())
-        definition = "(no definition)";
+        definition = EMPTY_DEFINITION;
 
     label->setText (wordWrap (definition, WORD_WRAP_LENGTH));
 }

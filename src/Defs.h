@@ -29,6 +29,7 @@
 
 namespace Defs {
     const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
+    const QString EMPTY_DEFINITION = "(no definition)";
 
     const int MAX_WORD_LEN = 15;
     const int SPACING = 4;
