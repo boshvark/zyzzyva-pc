@@ -67,7 +67,8 @@ WordGraph::addWord (const QString& w)
     Node* node = top;
     Node* parentNode = 0;
     QChar c;
-    for (int i = 0; i < w.length(); ++i) {
+    int wordLength = w.length();
+    for (int i = 0; i < wordLength; ++i) {
         c = w.at (i);
 
         // Empty node, so create a new node and link from its parent
@@ -111,7 +112,8 @@ WordGraph::containsWord (const QString& w) const
     Node* node = top;
     bool eow = false;
     QChar c;
-    for (int i = 0; i < w.length(); ++i) {
+    int wordLength = w.length();
+    for (int i = 0; i < wordLength; ++i) {
         if (!node)
             return false;
 
@@ -164,7 +166,6 @@ WordGraph::search (const SearchSpec& spec) const
 
         Node* node = top;
         QChar c;
-        int i = 0;
         int pIndex = 0;
         while (node) {
             QString origWord = word;

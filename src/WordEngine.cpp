@@ -134,7 +134,7 @@ WordEngine::alphagram (const QString& word) const
 
     char chars[MAX_WORD_LEN + 1];
     int wordLength = word.length();
-    for (int i = 0; (i < word.length()) && (i < MAX_WORD_LEN); ++i) {
+    for (int i = 0; (i < wordLength) && (i < MAX_WORD_LEN); ++i) {
         qchars.push_back (word.at (i));
     }
 

@@ -175,7 +175,7 @@ QuizEngine::getMissed() const
 bool
 QuizEngine::onLastQuestion() const
 {
-    return (questionIndex == quizQuestions.size() - 1);
+    return (questionIndex == int(quizQuestions.size() - 1));
 }
 
 //---------------------------------------------------------------------------
