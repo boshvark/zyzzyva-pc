@@ -143,6 +143,7 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     nextQuestionButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (nextQuestionButton, SIGNAL (clicked()),
              SLOT (nextQuestionClicked()));
+    nextQuestionButton->setEnabled (false);
     buttonHlay->addWidget (nextQuestionButton);
 
     checkResponseButton = new QPushButton ("&Check", this,
@@ -151,6 +152,7 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     checkResponseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (checkResponseButton, SIGNAL (clicked()),
              SLOT (checkResponseClicked()));
+    checkResponseButton->setEnabled (false);
     buttonHlay->addWidget (checkResponseButton);
 }
 
