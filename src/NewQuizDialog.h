@@ -15,6 +15,7 @@
 
 #include <qdialog.h>
 #include <qradiobutton.h>
+#include "MatchType.h"
 
 class NewQuizDialog : public QDialog
 {
@@ -24,6 +25,10 @@ class NewQuizDialog : public QDialog
                    bool modal = false, WFlags f = 0);
 
     ~NewQuizDialog() { }
+
+    MatchType getQuizType();
+    bool      getQuizAlphagrams();
+    QString   getQuizString();
 
   private:
     QRadioButton* patternButton;

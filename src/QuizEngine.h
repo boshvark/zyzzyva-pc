@@ -18,6 +18,7 @@
 #include <qstringlist.h>
 #include <qvaluevector.h>
 #include <set>
+#include "MatchType.h"
 
 class WordEngine;
 
@@ -30,17 +31,11 @@ class QuizEngine
         Duplicate
     };
 
-    enum QuizType {
-        Pattern,
-        Anagram,
-        Subanagram
-    };
-
   public:
     QuizEngine (WordEngine* e) : wordEngine (e) { }
     ~QuizEngine() { }
 
-    void newQuiz (const QString& input, QuizType type, bool alphagrams);
+    void newQuiz (const QString& input, MatchType type, bool alphagrams);
     bool nextQuestion();
 
     ResponseStatus respond (const QString& response);
@@ -64,7 +59,7 @@ class QuizEngine
 
     QStringList       quizQuestions;
     int               questionIndex;
-    QuizType          quizType;
+    MatchType         quizType;
 };
 
 #endif // QUIZ_ENGINE_H

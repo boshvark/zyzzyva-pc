@@ -22,7 +22,7 @@
 //! @param input the group of symbols forming the basis of the quiz
 //---------------------------------------------------------------------------
 void
-QuizEngine::newQuiz (const QString& input, QuizType type, bool alphagrams)
+QuizEngine::newQuiz (const QString& input, MatchType type, bool alphagrams)
 {
     quizQuestions.clear();
 

@@ -158,7 +158,7 @@ QuizForm::newQuizClicked()
     if (code != QDialog::Accepted)
         return;
 
-    engine->newQuiz ("???", QuizEngine::Pattern, false);
+    engine->newQuiz ("???", Pattern, false);
     updateForm (false);
 }
 
