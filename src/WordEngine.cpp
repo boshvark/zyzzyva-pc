@@ -64,8 +64,11 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
         line = line.simplifyWhiteSpace();
         QString word = line.section (' ', 0, 0);
         graph.addWord (word);
-        if (loadDefinitions)
-            definitions.insert (std::make_pair (word, line.section (' ', 1)));
+        if (loadDefinitions) {
+            QString definition = line.section (' ', 1);
+            if (!definition.isEmpty())
+                definitions.insert (std::make_pair (word, definition));
+        }
         ++imported;
     }
 
