@@ -128,12 +128,12 @@ QuizForm::responseEntered()
 
     if (status == QuizEngine::Correct) {
         responseList->insertItem (response);
-        statusStr = "Correct";
+        statusStr = "<font color=\"blue\">Correct</font>";
     }
     else if (status == QuizEngine::Incorrect)
-        statusStr = "Incorrect";
+        statusStr = "<font color=\"red\">Incorrect</font>";
     else if (status == QuizEngine::Duplicate)
-        statusStr = "Duplicate";
+        statusStr = "<font color=\"purple\">Duplicate</font>";
     inputLine->clear();
 
     // Update the stats if the stats are already shown
