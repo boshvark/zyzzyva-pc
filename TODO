@@ -7,6 +7,9 @@ Stuff that would be nice:
   reason.  Either when "Use Tile Theme" is unchecked, or when there is a
   problem loading tile images.
 
+* Save size of Analyze dialog across sessions.  Also don't always make it
+  fixed at the minimum size in both directions.  Maybe just horizontally.
+
 * Allow Show Definition by right clicking on lists in the Analyze dialog.
 
 * Allow Show Hooks function by right clicking on any list.
