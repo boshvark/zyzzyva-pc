@@ -21,6 +21,9 @@
 //---------------------------------------------------------------------------
 
 #include "HelpDialog.h"
+#include "Defs.h"
+#include <qfile.h>
+#include <qstringlist.h>
 
 //---------------------------------------------------------------------------
 // HelpDialog
@@ -34,4 +37,33 @@
 HelpDialog::HelpDialog (const QString& path, QObject* parent, const char* name)
     : QAssistantClient (path, parent, name)
 {
+    QString adpFilename = "docs/help/zyzzyva.dcf";
+    QFile adpFile (adpFilename);
+    if (!adpFile.open (IO_WriteOnly))
+        qFatal ("Unable to open " + adpFilename);
+
+    QString aboutFilename = "docs/help/about.html";
+    QFile aboutFile (aboutFilename);
+    if (!aboutFile.open (IO_WriteOnly))
+        qFatal ("Unable to open " + aboutFilename);
+    QTextStream aboutOut (&aboutFile);
+    aboutOut << Defs::ABOUT_STRING;
+
+    QTextStream adpOut (&adpFile);
+    adpOut << "<assistantconfig version=\"" << QT_VERSION_STR << "\">\n"
+           << "  <profile>\n"
+           << "    <property name=\"name\">Zyzzyva</property>\n"
+           << "    <property name=\"title\">Zyzzyva</property>\n"
+           //<< "    <property name=\"applicationicon\">logo.png</property>\n"
+           << "    <property name=\"startpage\">./index.html</property>\n"
+           << "    <property name=\"aboutmenutext\">About Zyzzyva</property>\n"
+           << "    <property name=\"abouturl\">./about.html</property>\n"
+           << "  </profile>\n"
+           << "  <DCF ref=\"./index.html\" title=\"Zyzzyva\">\n"
+           << "  </DCF>\n"
+           << "</assistantconfig>\n";
+
+    QStringList args;
+    args << "-profile" << adpFilename;
+    setArguments (args);
 }

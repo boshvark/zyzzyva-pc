@@ -59,14 +59,7 @@ AboutDialog::AboutDialog (QWidget* parent, const char* name, bool modal,
     label->setMargin (2);
     label->setAlignment (QLabel::WordBreak | QLabel::AlignCenter);
     label->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
-    label->setText ("<font size=\"+2\"><b>Zyzzyva</b></font><br>\n"
-                    "Version " VERSION "<br><br>\n\n"
-                    "A program for studying words and anagramming. <br><br>\n"
-                    "\n"
-                    "Copyright &copy; 2004, 2005 Michael W Thelen.<br>\n"
-                    "All rights reserved.<br><br>\n"
-                    "\n"
-                    "Home Page: <url http://zyzzyva.net/>http://zyzzyva.net/</url>");
+    label->setText (ABOUT_STRING); 
     mainVlay->addWidget (label);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");

@@ -33,6 +33,16 @@ namespace Defs {
     const int MAX_WORD_LEN = 15;
     const int SPACING = 4;
     const int MARGIN = 4;
+
+    const QString ABOUT_STRING =
+        "<font size=\"+2\"><b>Zyzzyva</b></font><br>\n"
+        "Version " VERSION "<br><br>\n\n"
+        "A program for studying words and anagramming. <br><br>\n"
+        "\n"
+        "Copyright &copy; 2004, 2005 Michael W Thelen.<br>\n"
+        "All rights reserved.<br><br>\n"
+        "\n"
+        "Home Page: <url http://zyzzyva.net/>http://zyzzyva.net/</url>\n";
 }
 
 #endif // DEFS_H
