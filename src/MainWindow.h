@@ -32,10 +32,11 @@ class MainWindow : public QMainWindow
     ~MainWindow();
 
   public slots:
-    void import();
+    void importInteractive();
     void editSettings();
 
   private:
+    int  import (const QString& file);
     void setNumWords (int num);
     void readSettings();
     void writeSettings();

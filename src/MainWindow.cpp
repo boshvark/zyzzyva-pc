@@ -52,7 +52,8 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 {
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
-    filePopup->insertItem ("&Import...", this, SLOT (import()), CTRL+Key_I);
+    filePopup->insertItem ("&Import...", this, SLOT (importInteractive()),
+                           CTRL+Key_I);
     filePopup->insertSeparator();
     filePopup->insertItem ("&Quit", qApp, SLOT (quit()));
     menuBar()->insertItem ("&File", filePopup);
@@ -84,6 +85,10 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     setNumWords (0);
 
     readSettings();
+
+    QString importFile = settingsDialog->getAutoImportFile();
+    if (!importFile.isEmpty())
+        import (importFile);
 }
 
 //---------------------------------------------------------------------------
@@ -97,23 +102,19 @@ MainWindow::~MainWindow()
 }
 
 //---------------------------------------------------------------------------
-// import
+// importInteractive
 //
 //! Allow the user to import a word list from a file.
 //---------------------------------------------------------------------------
 void
-MainWindow::import()
+MainWindow::importInteractive()
 {
     QString file = QFileDialog::getOpenFileName (QDir::current().path(),
                                                  "All Files (*.*)", this,
                                                  "fileDialog",
                                                  IMPORT_CHOOSER_TITLE);
     if (file.isNull()) return;
-    QApplication::setOverrideCursor (Qt::waitCursor);
-    int imported = engine->importFile (file);
-    QApplication::restoreOverrideCursor();
-
-    setNumWords (imported);
+    int imported = import (file);
     QMessageBox::information (this, IMPORT_COMPLETE_TITLE,
                               "Imported " + QString::number (imported)
                               + " words.",
@@ -188,4 +189,21 @@ MainWindow::writeSettings()
     settings.endGroup();
     settingsDialog->writeSettings (settings);
     settings.endGroup();
+}
+
+//---------------------------------------------------------------------------
+// import
+//
+//! Import words from a file.
+//
+//! @return the number of imported words
+//---------------------------------------------------------------------------
+int
+MainWindow::import (const QString& file)
+{
+    QApplication::setOverrideCursor (Qt::waitCursor);
+    int imported = engine->importFile (file);
+    QApplication::restoreOverrideCursor();
+    setNumWords (imported);
+    return imported;
 }
