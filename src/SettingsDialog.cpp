@@ -131,8 +131,8 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
                                              "miscVlay");
     Q_CHECK_PTR (miscVlay);
 
-    lengthSortCbox = new QCheckBox ("Sort word lists by length", miscWidget,
-                                    "lengthSortCbox");
+    lengthSortCbox = new QCheckBox ("Sort word lists by word length",
+                                    miscWidget, "lengthSortCbox");
     Q_CHECK_PTR (lengthSortCbox);
     miscVlay->addWidget (lengthSortCbox);
 
