@@ -142,11 +142,12 @@ JudgeForm::lookupWord (bool showDefinition)
 {
     QString word = wordLine->text();
     if (word.isEmpty()) return;
-    QString resultStr = engine->isAcceptable (word) ?
+    bool acceptable = engine->isAcceptable (word);
+    QString resultStr = acceptable ?
                         QString ("<font color=\"blue\">Acceptable</font>") :
                         QString ("<font color=\"red\">Unacceptable</font>");
 
-    if (showDefinition) {
+    if (acceptable && showDefinition) {
         QString definition = engine->getDefinition (word);
         if (definition.isEmpty())
             definition = EMPTY_DEFINITION;
