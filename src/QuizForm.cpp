@@ -133,7 +133,9 @@ QuizForm::responseEntered()
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
-        new QListViewItem (responseList, response);
+        QListViewItem* item = new QListViewItem (responseList, response);
+        responseList->setSelected (item, true);
+        responseList->ensureItemVisible (item);
         statusStr = "<font color=\"blue\">Correct</font>";
     }
     else if (status == QuizEngine::Incorrect)
