@@ -26,6 +26,7 @@
 #define QUIZ_FORM_H
 
 #include <qcanvas.h>
+#include <qimage.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlistview.h>
@@ -33,6 +34,7 @@
 #include <qpoint.h>
 #include <qpushbutton.h>
 #include <qstring.h>
+#include <qvaluelist.h>
 
 class AnalyzeQuizDialog;
 class ImageItem;
@@ -84,7 +86,8 @@ class QuizForm : public QFrame
     QPushButton*  checkResponseButton;
     QPushButton*  analyzeButton;
 
-    QMap<QString,ImageItem*> tilesMap;
+    QMap<QString,QImage> tilesMap;
+    QValueList<ImageItem*> imageItems;
 
     NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;

@@ -36,7 +36,6 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include <qcolor.h>
-#include <qimage.h>
 #include <qlayout.h>
 #include <qhgroupbox.h>
 #include <qheader.h>
@@ -415,24 +414,27 @@ QuizForm::setQuestionNum (int num, int total)
 void
 QuizForm::setQuestionLabel (const QString& question)
 {
-    QMap<QString,ImageItem*>::iterator it;
-    for (it = tilesMap.begin(); it != tilesMap.end(); ++it)
-        (*it)->hide();
+    QValueList<ImageItem*>::iterator iItem;
+    for (iItem = imageItems.begin(); iItem != imageItems.end(); ++iItem)
+        delete *iItem;
+    imageItems.clear();
 
-    //questionCanvas
     // XXX Get rid of these magic numbers!
+    QMap<QString,QImage>::iterator image;
     int x = 20;
     for (int i = 0; (i < 8) && (i < question.length()); ++i) {
         QString letter = question[i];
         if (letter == "?")
             letter = "_";
-        it = tilesMap.find (letter);
-        if (it == tilesMap.end())
+        image = tilesMap.find (letter);
+        if (image == tilesMap.end())
             qDebug ("Did not find letter '" + letter + "' in tiles map!");
         else {
-            (*it)->move (x, 10);
-            (*it)->setZ (0);
-            (*it)->show();
+            ImageItem* item = new ImageItem (*image, questionCanvas);
+            imageItems.push_back (item);
+            item->move (x, 10);
+            item->setZ (0);
+            item->show();
         }
         x += 60;
     }
@@ -479,9 +481,6 @@ QuizForm::displayDefinition (const QString& word)
 void
 QuizForm::clearTileTheme()
 {
-    QMap<QString,ImageItem*>::iterator it;
-    for (it = tilesMap.begin(); it != tilesMap.end(); ++it)
-        delete *it;
     tilesMap.clear();
 }
 
@@ -506,8 +505,7 @@ QuizForm::setTileTheme (const QString& theme)
 
     QStringList::iterator it;
     for (it = tilesList.begin(); it != tilesList.end(); ++it) {
-        QImage qimage (tilesDir + "/" + theme + "/" + *it + ".png");
-        ImageItem* image = new ImageItem (qimage, questionCanvas);
+        QImage image (tilesDir + "/" + theme + "/" + *it + ".png");
         tilesMap.insert (*it, image);
     }
 }
