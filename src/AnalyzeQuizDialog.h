@@ -29,6 +29,7 @@
 #include <qlabel.h>
 #include <qlistview.h>
 #include <qpushbutton.h>
+#include "MatchType.h"
 
 class QuizEngine;
 
@@ -42,7 +43,7 @@ class AnalyzeQuizDialog : public QDialog
     ~AnalyzeQuizDialog() { }
 
   public slots:
-    void reset();
+    void newQuiz (const QString& question, MatchType type);
     void updateStats();
     void addMissed (const QString& word);
     void addIncorrect (const QString& word);
@@ -56,10 +57,11 @@ class AnalyzeQuizDialog : public QDialog
 
   private:
     QuizEngine*   quizEngine;
-    QListView*    missedList;
-    QListView*    incorrectList;
+    QLabel*       questionLabel;
     QLabel*       recallLabel;
     QLabel*       precisionLabel;
+    QListView*    missedList;
+    QListView*    incorrectList;
     QPushButton*  closeButton;
 };
 

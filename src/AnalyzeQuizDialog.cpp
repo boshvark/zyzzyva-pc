@@ -48,6 +48,10 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* e, QWidget* parent,
                                              "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
+    questionLabel = new QLabel (this, "questionLabel");
+    Q_CHECK_PTR (questionLabel);
+    mainVlay->addWidget (questionLabel);
+
     QHBoxLayout* statsHlay = new QHBoxLayout (SPACING, "statsHlay");
     Q_CHECK_PTR (statsHlay);
     mainVlay->addLayout (statsHlay);
@@ -102,13 +106,22 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* e, QWidget* parent,
 }
 
 //---------------------------------------------------------------------------
-// reset
+// newQuiz
 //
-//! Clear the Missed and Incorrect lists, and update the stats.
+//! Reset the dialog with a new quiz.
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::reset()
+AnalyzeQuizDialog::newQuiz (const QString& question, MatchType type)
 {
+    QString qstr;
+    if (type == Pattern)
+        qstr = "Pattern";
+    else if (type == Anagram)
+        qstr = "Anagram";
+    else if (type == Subanagram)
+        qstr = "Subanagram";
+    qstr += " : " + question;
+    questionLabel->setText (qstr);
     clearMissed();
     clearIncorrect();
     updateStats();

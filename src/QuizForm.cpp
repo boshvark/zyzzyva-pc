@@ -203,7 +203,7 @@ QuizForm::newQuizClicked()
     bool random = newQuizDialog->getQuizRandomOrder();
     engine->newQuiz (input, type, alphagrams, random);
     updateForm (false);
-    analyzeDialog->reset();
+    analyzeDialog->newQuiz (input, type);
 }
 
 //---------------------------------------------------------------------------
