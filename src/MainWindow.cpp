@@ -11,7 +11,7 @@
 //---------------------------------------------------------------------------
 
 #include "MainWindow.h"
-#include "LookupForm.h"
+#include "JudgeForm.h"
 #include "WordEngine.h"
 #include <qapplication.h>
 #include <qdir.h>
@@ -48,9 +48,9 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (tabStack);
     setCentralWidget (tabStack);
 
-    lookupForm = new LookupForm (engine, tabStack, "lookupForm");
-    Q_CHECK_PTR (lookupForm);
-    tabStack->addTab (lookupForm, JUDGE_TAB_TITLE);
+    judgeForm = new JudgeForm (engine, tabStack, "judgeForm");
+    Q_CHECK_PTR (judgeForm);
+    tabStack->addTab (judgeForm, JUDGE_TAB_TITLE);
 
     messageLabel = new QLabel (this, "messageLabel");
     Q_CHECK_PTR (messageLabel);

@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// LookupForm.cpp
+// JudgeForm.cpp
 //
 // A form for looking up words.
 //
@@ -10,14 +10,14 @@
 //
 //---------------------------------------------------------------------------
 
-#include "LookupForm.h"
+#include "JudgeForm.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
 #include <qlabel.h>
 #include <qlayout.h>
 
 //---------------------------------------------------------------------------
-// LookupForm
+// JudgeForm
 //
 //! Constructor.
 //
@@ -25,7 +25,7 @@
 //! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-LookupForm::LookupForm (WordEngine* e, QWidget* parent, const char* name,
+JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
                         WFlags f)
     : QFrame (parent, name, f), engine (e)
 {
@@ -61,7 +61,7 @@ LookupForm::LookupForm (WordEngine* e, QWidget* parent, const char* name,
 //! edit area.
 //---------------------------------------------------------------------------
 void
-LookupForm::lookupWord()
+JudgeForm::lookupWord()
 {
     QString word = wordLine->text();
     if (word.isEmpty()) return;
