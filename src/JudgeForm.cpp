@@ -13,7 +13,6 @@
 #include "JudgeForm.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
-#include <qlabel.h>
 #include <qlayout.h>
 
 //---------------------------------------------------------------------------
