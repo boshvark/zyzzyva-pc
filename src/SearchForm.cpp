@@ -43,18 +43,22 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     wordLine = new QLineEdit (this, "wordLine");
     Q_CHECK_PTR (wordLine);
     WordValidator* validator = new WordValidator (wordLine);
+    Q_CHECK_PTR (validator);
     validator->setOptions (WordValidator::AllowQuestionMarks);
     wordLine->setValidator (validator);
     connect (wordLine, SIGNAL (returnPressed()), SLOT (search()));
     lineHlay->addWidget (wordLine);
 
     QGridLayout* resultGlay = new QGridLayout (1, 2);
+    Q_CHECK_PTR (resultGlay);
     mainVlay->addLayout (resultGlay);
 
     QLabel* resultLabel = new QLabel ("Results : ", this, "resultLabel");
+    Q_CHECK_PTR (resultLabel);
     resultGlay->addWidget (resultLabel, 0, 0, Qt::AlignTop);
 
     resultList = new QListBox (this, "resultList");
+    Q_CHECK_PTR (resultList);
     resultGlay->addWidget (resultList, 0, 1);
 }
 
