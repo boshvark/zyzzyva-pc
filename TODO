@@ -1,5 +1,13 @@
 Stuff that would be nice:
 
+* Allow the use of tile images instead of plain text when taking a quiz.
+
+* Allow the user to adjust the font size.
+
+* Allow Show Definition by right clicking on lists in the Analyze dialog.
+
+* Allow Show Hooks function by right clicking on any list.
+
 * Configure docs/help/zyzzyva.dcf at compile time with the correct
   QtAssistantClient version.
 
@@ -32,3 +40,5 @@ Stuff that would be nice:
 * Allow unloading of a word list.
 
 * Allow export of search results.
+
+* Allow export of lists from the Analyze dialog.
