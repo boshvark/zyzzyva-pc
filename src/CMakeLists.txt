@@ -7,8 +7,8 @@ IF (NOT QT_FOUND)
 ENDIF (NOT QT_FOUND)
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR})
 
-SET (SRCS main.cpp StudyWindow.cpp DAWG.cpp)
-SET (MOCS StudyWindow.h)
+SET (SRCS main.cpp MainWindow.cpp DAWG.cpp)
+SET (MOCS MainWindow.h)
 QT_WRAP_CPP(wordstudy SRCS MOCS)
 
 ADD_EXECUTABLE (wordstudy SRCS)

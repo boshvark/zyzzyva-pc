@@ -1,20 +1,25 @@
-#include "StudyWindow.h"
+#include "MainWindow.h"
 #include "DAWG.h"
 #include <qapplication.h>
+#include <qfile.h>
 
 int main (int argc, char** argv)
 {
     DAWG graph;
 
-    graph.addWord ("a");
-    graph.addWord ("foobar");
-    graph.addWord ("food");
-    graph.addWord ("foods");
-    graph.addWord ("cat");
-    graph.addWord ("folly");
-    graph.addWord ("codename");
-    graph.addWord ("fool");
-    graph.addWord ("foody");
+    QFile file ("/home/mthelen/scrabble/svn/ospd3/all-words.txt");
+    if (!file.open (IO_ReadOnly))
+        qFatal ("Can't open file!");
+
+    int i = 0;
+    QString word;
+    while (file.readLine (word, 20) > 0) {
+        word = word.stripWhiteSpace();
+        graph.addWord (word);
+        ++i;
+        if ((i % 1000) == 0)
+            qDebug ("Added " + QString::number (i) + " words to the graph.");
+    }
 
     graph.print();
 

@@ -1,4 +1,16 @@
-#include "StudyWindow.h"
+//---------------------------------------------------------------------------
+// MainWindow.cpp
+//
+// The main window for the word study application.
+//
+// Copyright 2004 Michael W Thelen.  Permission to copy, use, modify, sell and
+// distribute this software is granted provided this copyright notice appears in
+// all copies. This software is provided "as is" without express or implied
+// warranty, and with no claim as to its suitability for any purpose.
+//
+//---------------------------------------------------------------------------
+
+#include "MainWindow.h"
 #include <qdir.h>
 #include <qfiledialog.h>
 #include <qframe.h>
@@ -10,7 +22,7 @@ const QString RECALL_LIST_MODE = "Recall List";
 const QString CHOOSE_BUTTON_TEXT = "Choose...";
 const QString CHOOSER_TITLE = "Choose a Word List";
 
-StudyWindow::StudyWindow (QWidget* parent, const char* name, WFlags f)
+MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     : QMainWindow (parent, name, f)
 {
     QFrame* frame = new QFrame (this);
@@ -45,7 +57,7 @@ StudyWindow::StudyWindow (QWidget* parent, const char* name, WFlags f)
 }
 
 void
-StudyWindow::Open()
+MainWindow::open()
 {
     QString file = QFileDialog::getOpenFileName (QDir::current().path(),
                                                  "All Files (*.*)", this,
