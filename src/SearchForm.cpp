@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "SearchForm.h"
+#include "DefinitionDialog.h"
 #include "SearchSpecForm.h"
 #include "WordEngine.h"
 #include "WordPopupMenu.h"
@@ -166,6 +167,12 @@ SearchForm::resultMenuRequested (QListViewItem* item, const QPoint& point,
     int choice = menu->exec(point);
     delete menu;
 
-    //if (choice == WordPopupMenu::ShowDefinition)
-    //    qDebug ("Show Definition");
+    if (choice == WordPopupMenu::ShowDefinition) {
+        qDebug ("Show Definition");
+        DefinitionDialog* dialog = new DefinitionDialog (engine, item->text
+                                                         (0), this, "dialog",
+                                                         true);
+        dialog->exec();
+        delete dialog;
+    }
 }
