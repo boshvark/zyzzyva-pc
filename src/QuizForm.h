@@ -34,10 +34,8 @@
 #include <qpoint.h>
 #include <qpushbutton.h>
 #include <qstring.h>
-#include <qvaluelist.h>
 
 class AnalyzeQuizDialog;
-class ImageItem;
 class NewQuizDialog;
 class QuizEngine;
 class WordEngine;
@@ -64,6 +62,7 @@ class QuizForm : public QFrame
     void updateStats();
     void clearStats();
     void clearQuestionNum();
+    void clearCanvas();
     void setQuestionNum (int num, int total);
     void setQuestionLabel (const QString& question);
     void setQuestionStatus (int correct, int total);
@@ -86,8 +85,7 @@ class QuizForm : public QFrame
     QPushButton*  checkResponseButton;
     QPushButton*  analyzeButton;
 
-    QMap<QString,QImage> tilesMap;
-    QValueList<ImageItem*> imageItems;
+    QMap<QString,QImage> tileImages;
 
     NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;

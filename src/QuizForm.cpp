@@ -390,6 +390,22 @@ QuizForm::clearQuestionNum()
 }
 
 //---------------------------------------------------------------------------
+// clearCanvas
+//
+//! Clear the question canvas and delete all its canvas items.
+//---------------------------------------------------------------------------
+void
+QuizForm::clearCanvas()
+{
+    QCanvasItemList canvasItems = questionCanvas->allItems();
+    QCanvasItemList::iterator cItem;
+    for (cItem = canvasItems.begin(); cItem != canvasItems.end(); ++cItem)
+        delete *cItem;
+    canvasItems.clear();
+    questionCanvas->setAllChanged();
+}
+
+//---------------------------------------------------------------------------
 // setQuestionNum
 //
 //! Set the current question number and the total number of questions.
@@ -414,31 +430,36 @@ QuizForm::setQuestionNum (int num, int total)
 void
 QuizForm::setQuestionLabel (const QString& question)
 {
-    QValueList<ImageItem*>::iterator iItem;
-    for (iItem = imageItems.begin(); iItem != imageItems.end(); ++iItem)
-        delete *iItem;
-    imageItems.clear();
+    clearCanvas();
 
-    // XXX Get rid of these magic numbers!
-    QMap<QString,QImage>::iterator image;
-    int x = 20;
-    for (int i = 0; (i < 8) && (i < question.length()); ++i) {
-        QString letter = question[i];
-        if (letter == "?")
-            letter = "_";
-        image = tilesMap.find (letter);
-        if (image == tilesMap.end())
-            qDebug ("Did not find letter '" + letter + "' in tiles map!");
-        else {
-            ImageItem* item = new ImageItem (*image, questionCanvas);
-            imageItems.push_back (item);
-            item->move (x, 10);
-            item->setZ (0);
-            item->show();
-        }
-        x += 60;
+    // Question is not an alphagram
+    if (question.contains (" ")) {
+        QCanvasText* text = new QCanvasText (question, questionCanvas);
+        text->move (10, 10);
+        text->show();
     }
-    questionCanvas->setAllChanged();
+
+    else {
+        // XXX Get rid of these magic numbers!
+        QMap<QString,QImage>::iterator image;
+        int x = 20;
+        for (int i = 0; (i < 8) && (i < question.length()); ++i) {
+            QString letter = question[i];
+            if (letter == "?")
+                letter = "_";
+            image = tileImages.find (letter);
+            if (image == tileImages.end())
+                qDebug ("Did not find letter '" + letter + "' in tiles map!");
+            else {
+                ImageItem* item = new ImageItem (*image, questionCanvas);
+                item->move (x, 10);
+                item->setZ (0);
+                item->show();
+            }
+            x += 60;
+        }
+    }
+
     questionCanvas->update();
 }
 
@@ -481,7 +502,7 @@ QuizForm::displayDefinition (const QString& word)
 void
 QuizForm::clearTileTheme()
 {
-    tilesMap.clear();
+    tileImages.clear();
 }
 
 //---------------------------------------------------------------------------
@@ -506,6 +527,6 @@ QuizForm::setTileTheme (const QString& theme)
     QStringList::iterator it;
     for (it = tilesList.begin(); it != tilesList.end(); ++it) {
         QImage image (tilesDir + "/" + theme + "/" + *it + ".png");
-        tilesMap.insert (*it, image);
+        tileImages.insert (*it, image);
     }
 }
