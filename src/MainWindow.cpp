@@ -31,6 +31,7 @@
 #include "SearchForm.h"
 #include "SettingsDialog.h"
 #include "WordEngine.h"
+#include "Auxil.h"
 #include "Defs.h"
 #include <qapplication.h>
 #include <qdir.h>
@@ -190,7 +191,7 @@ MainWindow::displayAbout()
 void
 MainWindow::displayHelp()
 {
-    helpDialog->showPage("docs/help/index.html");
+    helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
 }
 
 //---------------------------------------------------------------------------
