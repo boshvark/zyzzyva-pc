@@ -200,6 +200,9 @@ DAWG::getAnagrams (const QString& input, bool subanagrams) const
 //            + unmatched + "|");
 
         int index = unmatched.find (c);
+        if (index < 0)
+            index = unmatched.find ("?");
+
         if (index >= 0) {
 //            qDebug ("Letter |" + QString (c) + "| found at index "
 //                + QString::number (index) + " in unmatched string |"
