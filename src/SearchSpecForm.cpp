@@ -100,6 +100,8 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (minLengthSbox);
     minLengthSbox->setMinValue (1);
     minLengthSbox->setMaxValue (MAX_WORD_LEN);
+    connect (minLengthSbox, SIGNAL (valueChanged (int)),
+             SLOT (minLengthChanged (int)));
     lengthHlay->addWidget (minLengthSbox);
 
     QLabel* maxLabel = new QLabel ("Max Length:", this, "maxLabel");
@@ -110,6 +112,8 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (maxLengthSbox);
     maxLengthSbox->setMinValue (1);
     maxLengthSbox->setMaxValue (MAX_WORD_LEN);
+    connect (maxLengthSbox, SIGNAL (valueChanged (int)),
+             SLOT (maxLengthChanged (int)));
     lengthHlay->addWidget (maxLengthSbox);
 
     QHBoxLayout* includeHlay = new QHBoxLayout (SPACING, "includeHlay");
@@ -227,4 +231,36 @@ SearchSpecForm::getMatchType() const
     else if (type == SUBANAGRAM_COMBO)
         return Subanagram;
     return UnknownMatchType;
+}
+
+//---------------------------------------------------------------------------
+// minLengthChanged
+//
+//! Called when the min length value is changed.  Ensure that the max length
+//! value is at least as large as the min length value.
+//---------------------------------------------------------------------------
+void
+SearchSpecForm::minLengthChanged (int value)
+{
+    if (maxLengthSbox->value() < value) {
+        maxLengthSbox->blockSignals (true);
+        maxLengthSbox->setValue (value);
+        maxLengthSbox->blockSignals (false);
+    }
+}
+
+//---------------------------------------------------------------------------
+// maxLengthChanged
+//
+//! Called when the max length value is changed.  Ensure that the min length
+//! value is at least as small as the max length value.
+//---------------------------------------------------------------------------
+void
+SearchSpecForm::maxLengthChanged (int value)
+{
+    if (minLengthSbox->value() > value) {
+        minLengthSbox->blockSignals (true);
+        minLengthSbox->setValue (value);
+        minLengthSbox->blockSignals (false);
+    }
 }

@@ -54,6 +54,10 @@ class SearchSpecForm : public QFrame
     void returnPressed();
     void patternChanged (const QString&);
 
+  public slots:
+    void minLengthChanged (int);
+    void maxLengthChanged (int);
+
   private:
     QComboBox* matchCbox;
     QLineEdit* patternLine;
