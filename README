@@ -2,8 +2,21 @@ Zyzzyva is free software, released under the GNU General Public License.
 Please see COPYING and LICENSE for details.
 
 To build Zyzzyva, you will need the Qt library, available from
-http://www.trolltech.com/products/qt/index.html.  After Qt is installed,
-simply run "make" in the top directory of the Zyzzyva distribution.
+http://www.trolltech.com/products/qt/index.html.  You will also the CMake
+Makefile generator, available from http://cmake.org/HTML/Download.html.
+
+After Qt and CMake are installed, the following steps should be sufficient to
+build on Linux or other Unix platforms:
+
+    mkdir build
+    cd build
+    cmake ..
+    make
+
+On Windows, the steps may be a little more complicated, including passing the
+-G option to cmake (e.g. -G"Borland Makefiles"), and/or running CMakeSetup.exe
+to help cmake find the Qt library.  See the CMake documentation for more
+details: http://cmake.org/HTML/RunningCMake.html.
 
 The Zyzzyva home page is http://zyzzyva.net/, and the latest version can
 always be found there.  Please email Michael W Thelen <mike@pietdepsi.com>
