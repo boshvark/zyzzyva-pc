@@ -57,7 +57,7 @@ class MainWindow : public QMainWindow
   private:
     int  import (const QString& file);
     void setNumWords (int num);
-    void readSettings();
+    void readSettings (bool useGeometry);
     void writeSettings();
 
   private:

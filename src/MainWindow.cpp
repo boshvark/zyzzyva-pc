@@ -122,7 +122,7 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     statusBar()->addWidget (statusLabel, 1);
     setNumWords (0);
 
-    readSettings();
+    readSettings (true);
 
     QString importFile = settingsDialog->getAutoImportFile();
     if (!importFile.isEmpty())
@@ -176,7 +176,7 @@ MainWindow::editSettings()
     else
         settingsDialog->readSettings (settings);
     settings.endGroup();
-    readSettings();
+    readSettings (false);
 }
 
 //---------------------------------------------------------------------------
@@ -220,18 +220,20 @@ MainWindow::setNumWords (int num)
 //! Read application settings.
 //---------------------------------------------------------------------------
 void
-MainWindow::readSettings()
+MainWindow::readSettings (bool useGeometry)
 {
     settings.beginGroup (SETTINGS_MAIN);
-    settings.beginGroup (SETTINGS_GEOMETRY);
-    int x = settings.readNumEntry (SETTINGS_GEOMETRY_X, 50);
-    int y = settings.readNumEntry (SETTINGS_GEOMETRY_Y, 50);
-    int w = settings.readNumEntry (SETTINGS_GEOMETRY_WIDTH, 640);
-    int h = settings.readNumEntry (SETTINGS_GEOMETRY_HEIGHT, 480);
-    settings.endGroup();
+    if (useGeometry) {
+        settings.beginGroup (SETTINGS_GEOMETRY);
+        int x = settings.readNumEntry (SETTINGS_GEOMETRY_X, 50);
+        int y = settings.readNumEntry (SETTINGS_GEOMETRY_Y, 50);
+        int w = settings.readNumEntry (SETTINGS_GEOMETRY_WIDTH, 640);
+        int h = settings.readNumEntry (SETTINGS_GEOMETRY_HEIGHT, 480);
+        settings.endGroup();
+        setGeometry (x, y, w, h);
+    }
     settingsDialog->readSettings (settings);
     settings.endGroup();
-    setGeometry (x, y, w, h);
     QFont font;
     QString fontStr = settingsDialog->getFont();
     if (font.fromString (fontStr))
