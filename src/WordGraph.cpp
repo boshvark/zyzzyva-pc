@@ -27,6 +27,7 @@
 #include <qregexp.h>
 #include <iostream>
 #include <stack>
+#include <set>
 
 using namespace std;
 using namespace Defs;
@@ -139,17 +140,20 @@ WordGraph::containsWord (const QString& w) const
 QStringList
 WordGraph::getWordsMatchingPattern (const QString& p) const
 {
-    QStringList list;
+    QStringList wordList;
+
+    // Must use set to eliminate duplicates since patterns with wildcards may
+    // match the same word in more than one way
+    set<QString> wordSet;
 
     if (p.isEmpty() || !top)
-        return list;
+        return wordList;
 
     QString pattern = p;
     pattern.replace (QRegExp ("\\*+"), "*");
 
     stack< pair<Node*, pair<int,QString> > > nodeStack;
     int pLen = pattern.length();
-    //char word[MAX_WORD_LEN + 1];
     QString word;
 
     Node* node = top;
@@ -159,6 +163,10 @@ WordGraph::getWordsMatchingPattern (const QString& p) const
     while (node) {
         QString origWord = word;
         c = pattern.at (pIndex);
+
+        // Allow wildcard to match empty string
+        if (c == "*")
+            nodeStack.push (make_pair (node, make_pair (pIndex + 1, word)));
 
         // Traverse next nodes, looking for matches
         while (node) {
@@ -182,8 +190,12 @@ WordGraph::getWordsMatchingPattern (const QString& p) const
                                            make_pair (pIndex + 1, word)));
             }
 
-            if (match && node->eow && (pIndex == pLen - 1))
-                list << word;
+            // If end of word and end of pattern, put the word in the list
+            if (match && node->eow &&
+                ((pIndex == pLen - 1) ||
+                ((pIndex == pLen - 2) &&
+                 (QChar (pattern.at (pIndex + 1)) == "*"))))
+                wordSet.insert (word);
 
             node = node->next;
         }
@@ -197,7 +209,11 @@ WordGraph::getWordsMatchingPattern (const QString& p) const
         }
     }
 
-    return list;
+    // Build word list from word set
+    set<QString>::iterator it;
+    for (it = wordSet.begin(); it != wordSet.end(); ++it)
+        wordList << *it;
+    return wordList;
 }
 
 //---------------------------------------------------------------------------
