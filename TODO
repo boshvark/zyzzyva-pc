@@ -1,5 +1,8 @@
 Stuff that would be nice:
 
+* Allow timers for quiz questions.  Allow different types of timers: total
+  time per question; total time per correct answer; time per answer.
+
 * Save size of Analyze dialog across sessions.  Also don't always make it
   fixed at the minimum size in both directions.  Maybe just horizontally.
 
