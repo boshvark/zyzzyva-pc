@@ -26,6 +26,7 @@ class WordEngine
     int importFile (const QString& filename);
     bool isAcceptable (const QString& word) const;
     QStringList matchPattern (const QString& input) const;
+    QStringList matchAnagram (const QString& input) const;
 
   private:
     DAWG graph;

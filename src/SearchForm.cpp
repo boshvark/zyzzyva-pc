@@ -107,6 +107,10 @@ SearchForm::search()
         resultList->clear();
         resultList->insertStringList (engine->matchPattern (word));
     }
+    else if (anagramButton->isChecked()) {
+        resultList->clear();
+        resultList->insertStringList (engine->matchAnagram (word));
+    }
     else {
         QMessageBox::information(this, "Search Type Not Implemented",
                                  "The selected search type is not yet "

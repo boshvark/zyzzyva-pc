@@ -25,6 +25,7 @@ class DAWG
     void addWord (const QString& w);
     bool containsWord (const QString& w) const;
     QStringList getWordsMatchingPattern (const QString& pattern) const;
+    QStringList getAnagrams (const QString& input, bool subanagrams) const;
     void compress();
     void print() const;
 

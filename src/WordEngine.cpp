@@ -68,3 +68,17 @@ WordEngine::matchPattern (const QString& input) const
 {
     return graph.getWordsMatchingPattern (input);
 }
+
+//---------------------------------------------------------------------------
+// matchAnagram
+//
+//! Find all acceptable anagrams of a string of letters.
+//
+//! @param input the letters to match
+//! @return a list of acceptable words
+//---------------------------------------------------------------------------
+QStringList
+WordEngine::matchAnagram (const QString& input) const
+{
+    return graph.getAnagrams (input, false);
+}

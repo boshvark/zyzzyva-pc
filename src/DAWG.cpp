@@ -147,7 +147,6 @@ DAWG::getWordsMatchingPattern (const QString& pattern) const
                 node = node->next;
         }
 
-
         if (node) {
             word[i] = node->letter;
             ++i;
@@ -162,16 +161,74 @@ DAWG::getWordsMatchingPattern (const QString& pattern) const
                 node = node->child;
         }
 
-        if (!node || (i == len)) {
-            if (!nodeStack.size())
-                break;
+        if ((!node || (i == len)) && nodeStack.size()) {
             node = nodeStack.top().first;
             i = nodeStack.top().second;
             nodeStack.pop();
         }
+    }
 
+    return list;
+}
 
+//---------------------------------------------------------------------------
+// getAnagrams
+//
+//! Find all anagrams in an input string.
+//
+//! @param input the letters to match
+//! @param subanagrams whether to match subanagrams (not using all letters)
+//! @return a list of acceptable anagrams
+//---------------------------------------------------------------------------
+QStringList
+DAWG::getAnagrams (const QString& input, bool subanagrams) const
+{
+    QStringList list;
 
+    stack< pair<Node*, pair<int,QString> > > nodeStack;
+    int len = input.length();
+    char word[len + 1];
+    QString unmatched = input;
+
+    Node* node = top;
+    QChar c;
+    int i = 0;
+
+    while (node) {
+        c = node->letter;
+//        qDebug ("Looking at node |" + QString (c) + "|, unmatched |"
+//            + unmatched + "|");
+
+        int index = unmatched.find (c);
+        if (index >= 0) {
+//            qDebug ("Letter |" + QString (c) + "| found at index "
+//                + QString::number (index) + " in unmatched string |"
+//                + unmatched + "|");
+            if (node->next)
+                nodeStack.push (make_pair (node->next,
+                                           make_pair (i, unmatched)));
+            word[i] = c;
+            ++i;
+            unmatched.replace (index, 1, "");
+
+            if (unmatched.isEmpty() && node->eow) {
+                word[i] = 0;
+                list << QString (word);
+                node = 0;
+            }
+            else {
+                node = node->child;
+            }
+        }
+        else
+            node = node->next;
+
+        if (!node && nodeStack.size()) {
+            node = nodeStack.top().first;
+            i = nodeStack.top().second.first;
+            unmatched = nodeStack.top().second.second;
+            nodeStack.pop();
+        }
     }
 
     return list;
