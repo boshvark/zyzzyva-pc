@@ -25,6 +25,8 @@
 #ifndef DEFS_H
 #define DEFS_H
 
+#include <qstring.h>
+
 namespace Defs {
     const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
 
