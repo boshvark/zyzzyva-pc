@@ -31,7 +31,7 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
-    filePopup->insertItem ("&Open...", this, SLOT (Open()), CTRL+Key_O);
+    filePopup->insertItem ("&Open...", this, SLOT (open()), CTRL+Key_O);
     menuBar()->insertItem ("&File", filePopup);
 
     QVBoxLayout* mainVlay = new QVBoxLayout (frame, 0, 0, "mainVlay");
