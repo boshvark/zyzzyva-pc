@@ -1,5 +1,4 @@
 PROJECT (ZYZZYVA)
-SET (VERSION 0.3.0)
 SET (EXECUTABLE_OUTPUT_PATH ${ZYZZYVA_SOURCE_DIR})
 
 # Find Qt and add its include directories
@@ -51,6 +50,10 @@ SET (MOCS
     src/WordValidator.h
     src/ZListView.h
     )
+
+# Get Zyzzyva version from VERSION
+FILE (READ ${ZYZZYVA_SOURCE_DIR}/VERSION ZYZZYVA_VERSION)
+STRING (REGEX REPLACE "\n.*" "" ZYZZYVA_VERSION ${ZYZZYVA_VERSION})
 
 # Put version number in about.html
 CONFIGURE_FILE (${ZYZZYVA_SOURCE_DIR}/docs/help/about.html.in
