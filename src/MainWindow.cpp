@@ -40,8 +40,8 @@
 #include <qmessagebox.h>
 #include <qstatusbar.h>
 
-const QString IMPORT_FAILURE_TITLE = "Import Failed";
-const QString IMPORT_COMPLETE_TITLE = "Import Complete";
+const QString IMPORT_FAILURE_TITLE = "Load Failed";
+const QString IMPORT_COMPLETE_TITLE = "Load Complete";
 const QString JUDGE_TAB_TITLE = "Judge";
 const QString QUIZ_TAB_TITLE = "Quiz";
 const QString SEARCH_TAB_TITLE = "Search";
@@ -73,8 +73,8 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 {
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
-    filePopup->insertItem ("&Import...", this, SLOT (importInteractive()),
-                           CTRL+Key_I);
+    filePopup->insertItem ("&Open...", this, SLOT (importInteractive()),
+                           CTRL+Key_O);
     filePopup->insertSeparator();
     filePopup->insertItem ("&Quit", qApp, SLOT (quit()));
     menuBar()->insertItem ("&File", filePopup);
@@ -148,7 +148,7 @@ MainWindow::importInteractive()
     int imported = import (file);
     if (imported < 0) return;
     QMessageBox::information (this, IMPORT_COMPLETE_TITLE,
-                              "Imported " + QString::number (imported)
+                              "Loaded " + QString::number (imported)
                               + " words.",
                               QMessageBox::Ok);
 }
