@@ -92,7 +92,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     resultList->setShowSortIndicator (true);
     connect (resultList, SIGNAL (contextMenuRequested (QListViewItem*, const
                                                        QPoint&, int)),
-             SLOT (resultMenuRequested (QListViewItem*, const QPoint&, int)));
+             SLOT (menuRequested (QListViewItem*, const QPoint&, int)));
     specVlay->addWidget (resultList);
     updateResultTotal (0);
 }
@@ -150,15 +150,14 @@ SearchForm::updateResultTotal (int num)
 }
 
 //---------------------------------------------------------------------------
-// resultMenuRequested
+// menuRequested
 //
 //! Called when a right-click menu is requested.
 //! @param item the selected listview item
 //! @param point the point at which the menu was requested
 //---------------------------------------------------------------------------
 void
-SearchForm::resultMenuRequested (QListViewItem* item, const QPoint& point,
-                                 int)
+SearchForm::menuRequested (QListViewItem* item, const QPoint& point, int)
 {
     if (!item)
         return;
