@@ -13,11 +13,22 @@
       <keyword ref="preferences.html#auto-import">auto import</keyword>
       <section ref="preferences.html#auto-import" title="Auto Import" />
     </section>
-    <section ref="judge.html" title="Judging Words">
+    <section ref="judge.html" title="Judging and Defining Words">
       <keyword ref="judge.html">judge</keyword>
     </section>
     <section ref="search.html" title="Searching for Words">
       <keyword ref="search.html">search</keyword>
+      <section ref="search.html#match-types" title="Match Types">
+        <section ref="search.html#pattern-match" title="Pattern Match" />
+        <section ref="search.html#anagram-match" title="Anagram Match" />
+        <section ref="search.html#subanagram-match" title="Subanagram Match" />
+      </section>
+      <section ref="search.html#min-max-length"
+               title="Minimum and Maximum Length" />
+      <section ref="search.html#include-exclude-letters"
+               title="Including and Excluding Letters" />
+      <section ref="search.html#consist-letters" title="Letter Frequency" />
+      <section ref="search.html#other-options" title="Other Options" />
     </section>
     <section ref="quiz.html" title="Quizzes">
       <keyword ref="quiz.html">quiz</keyword>

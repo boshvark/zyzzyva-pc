@@ -6,7 +6,139 @@
 <body>
   <h1>Searching for Words</h1>
 
-  <p>Here is a page about searching for words.</p>
+  <p>The Search tab can be used to find all acceptable words that match
+  certain criteria.  The criteria are specified in the top part of the Search
+  tab, and the resulting list of words is displayed in the bottom area.  Click
+  the <i>Search</i> button to perform a search, and click the <i>Reset</i>
+  button to reset the values in the search specification area.</p>
+
+  <a name="match-types">
+  <h2>Match Types</h2>
+
+  <p>The main search criterion is a pattern of letters to be matched.  This is
+  specified in the <i>Match</i> section.  A match can be specified as
+  <i>Pattern</i>, <i>Anagram</i>, or <i>Subanagram</i>.</p>
+
+  <a name="pattern-match">
+  <h3>Pattern Match</h3>
+
+  <p>The <i>Pattern</i> match type means that the search pattern must be
+  matched exactly, in the same order the letters are specified.  Special
+  wildcard characters can be used to match any letters: the <tt>?</tt>
+  character means "match any single letter" and the <tt>*</tt> character means
+  "match any number of letters".  The <tt>*</tt> character also matches
+  nothingness.  Multiple wildcard characters can be used in a single pattern.
+  Here are some examples of <i>Pattern</i> matches:</p>
+
+  <table width="100%">
+  <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
+  <tr><td><tt>ATE</tt></td><td><tt>ATE</tt></td></tr>
+  <tr><td><tt>AT?</tt></td><td><tt>ATE, ATT</tt></td></tr>
+  <tr><td><tt>AT??</tt></td><td><tt>ATAP, ATES, ATMA, ATOM,
+  ATOP</tt></td></tr>
+  <tr><td><tt>T?P</tt></td><td><tt>TAP, TIP, TOP, TUP</tt></td></tr>
+  <tr><td><tt>TO*P</tt></td><td><tt>TOP, TOECAP, TOSSUP, TOUCHUP, TOYSHOP,
+  TOWNSHIP</tt></td></tr>
+  <tr><td><tt>*WM</tt></td><td><tt>CWM, SHAWM</tt></td></tr>
+  <tr><td><tt>?W*M?S</tt></td><td><tt>SWAMIS, SWAMPS, TWASOMES, TWOSOMES,
+  TWELVEMOS</tt></td></tr>
+  </table>
+
+  <a name="anagram-match">
+  <h3>Anagram Match</h3>
+
+  <p>The <i>Anagram</i> match type means that the letters in the search
+  pattern can be matched in any order.  All the letters must be matched
+  exactly the number of times they appear in the match pattern.  The same
+  special wildcard characters can be used as described in the <a
+  href="#pattern-match">Pattern Match</a> section.  Here are some examples of
+  <i>Anagram</i> matches:</p>
+
+  <table width="100%">
+  <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
+  <tr><td><tt>ATE</tt></td><td><tt>ATE, EAT, ETA, TAE, TEA</tt></td></tr>
+  <tr><td><tt>AENORST</tt></td><td><tt>ATONERS, SENATOR, TREASON</tt></td></tr>
+  <tr><td><tt>ETX?</tt></td><td><tt>EXIT, NEXT, SEXT, TEXT, VEXT</tt></td></tr>
+  <tr><td><tt>PI??Z</tt></td><td><tt>PIZZA, PRIZE, SPITZ, UNZIP, ZIPPY</tt></td></tr>
+  <tr><td><tt>*JBX</tt></td><td><tt>JAMBEAUX</tt></td></tr>
+  </table>
+
+  <p>Note that with an <i>Anagram</i> match, using more than one <tt>*</tt>
+  character has the same effect as using just one.</p>
+
+  <a name="subanagram-match">
+  <h3>Subanagram Match</h3>
+
+  <p>The <i>Subanagram</i> match type means that the letters in the search
+  pattern can be matched in any order, and not all letters must be used in
+  each matching word.  The same special wildcard characters can be used as
+  described in the <a href="#pattern-match">Pattern Match</a> section.  Here
+  are some examples of <i>Subanagram</i> matches:</p>
+
+  <table width="100%">
+  <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
+  <tr><td><tt>ATE</tt></td><td><tt>AE, AT, ET, TA, ATE, EAT, ETA, TAE, TEA</tt></td></tr>
+  <tr><td><tt>LX?</tt></td><td><tt>AL, AX, EL, EX, LA, LI, LO, OX, XI, XU, LAX, LEX, LOX, LUX</tt></td></tr>
+  </table>
+
+  <p>Note that with an <i>Subanagram</i> match, using a <tt>*</tt>
+  character will cause the pattern to match every acceptable word.</p>
+
+  <a name="min-max-length">
+  <h2>Minimum and Maximum Length</h2>
+
+  <p>A minimum and maximum length can be specified for the results of a
+  search.  To change these values, adjust the numbers in the <i>Min Length</i>
+  and <i>Max Length</i> boxes.  For example, if the minimum length is 4 and
+  the maximum length is 6, then the search will only return results that are
+  between four and six letters long.  The minimum length cannot be greater
+  than the maximum length.</p>
+
+  <a name="include-exclude-letters">
+  <h2>Including and Excluding Letters</h2>
+
+  <p>The input box labeled <i>Include Letters</i> specifies letters that must
+  be included in each word in the search results.  This is most useful if you
+  want to specify a <i>Pattern</i> match with wildcard characters, and want
+  the wildcards to match certain letters in an unspecified order.</p>
+
+  <p>For example, to find all 7- and 8-letter words beginning with
+  <tt>OVER</tt> and containing the letters <tt>A</tt>, <tt>L</tt>, and
+  <tt>T</tt> in any order, do the following.  Specify a <i>Pattern</i> match
+  of <tt>OVER*</tt> with minimum length 7, maximum length 8, and <i>Include
+  Letters</i> <tt>ALT</tt>.  This search will find the words
+  <tt>OVERLATE</tt>, <tt>OVERSALT</tt>, and <tt>OVERTALK</tt>.</p>
+
+  <p>If a letter appears more than once in the <i>Include Letters</i> box, the
+  letter must appear at least that many times in each word in the search
+  results.</p>
+
+  <p>The input box labeled <i>Exclude Letters</i> specifies letters that must
+  not be included in the search results.  This is most useful for generating
+  special word lists, such as the list of words containing the letter Q but
+  not the letter U.  To find such words, specify a <i>Pattern</i> match of
+  <tt>*</tt> with <i>Include Letters</i> <tt>Q</tt> and <i>Exclude Letters</i>
+  <tt>U</tt>.  This search will find the 21 words containing Q but not U.</p>
+
+  <a name="consist-letters">
+  <h2>Letter Frequency</h2>
+
+  <p>The area labeled <i>Consist of</i> specifies letters that must occur with
+  a certain minimum frequency.  This is useful for generating special word
+  lists, such as the list of words containing at least 70% vowels.  To find
+  such words, set the value in the percentage box to <tt>70</tt>, and put
+  <tt>AEIOU</tt> in the input box.</p>
+
+  <a name="other-options">
+  <h2>Other Options</h2>
+
+  <p>If the <i>Use lower-case letters for wildcard matches</i> checkbox is
+  activated, any letters matched by a wildcard character will appear in lower
+  case in the search results.  For example, with this checkbox activated, an
+  <i>Anagram</i> search of <tt>EXT?</tt> will result in <tt>EXiT</tt>,
+  <tt>nEXT</tt>, <tt>sEXT</tt>, <tt>TEXt</tt>, <tt>vEXT</tt> rather than
+  <tt>EXIT</tt>, <tt>NEXT</tt>, <tt>SEXT</tt>, <tt>TEXT</tt>,
+  <tt>VEXT</tt>.</p>
 
   <p>Copyright &copy; 2005 Michael W Thelen.</p>
 </body>
