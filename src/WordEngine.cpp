@@ -11,7 +11,13 @@
 //---------------------------------------------------------------------------
 
 #include "WordEngine.h"
+#include "Defs.h"
 #include <qfile.h>
+#include <qvaluevector.h>
+#include <set>
+
+using namespace Defs;
+using std::set;
 
 const int READLINE_BYTES = 64;
 
@@ -99,4 +105,63 @@ QStringList
 WordEngine::matchSubanagram (const QString& input) const
 {
     return graph.getAnagrams (input, true);
+}
+
+//---------------------------------------------------------------------------
+// alphagrams
+//
+//! Transform a list of strings into a list of alphagrams of those strings.
+//! The created list may be shorter than the original list.
+//
+//! @param list the list of strings
+//! @return a list of alphagrams
+//---------------------------------------------------------------------------
+QStringList
+WordEngine::alphagrams (const QStringList& list) const
+{
+    QStringList alphagrams;
+    QStringList::const_iterator it;
+
+    // Insert into a set first, to remove duplicates
+    set<QString> seen;
+    for (it = list.begin(); it != list.end(); ++it) {
+        seen.insert (alphagram (*it));
+    }
+
+    set<QString>::iterator sit;
+    for (sit = seen.begin(); sit != seen.end(); ++sit) {
+        alphagrams << *sit;
+    }
+    return alphagrams;
+}
+
+//---------------------------------------------------------------------------
+// alphagram
+//
+//! Transform a string into its alphagram.
+//
+//! @param list the list of strings
+//! @return a list of alphagrams
+//---------------------------------------------------------------------------
+QString
+WordEngine::alphagram (const QString& word) const
+{
+    QValueVector<QChar> qchars;
+
+    char chars[MAX_WORD_LEN + 1];
+    int wordLength = word.length();
+    for (int i = 0; (i < word.length()) && (i < MAX_WORD_LEN); ++i) {
+        qchars.push_back (word.at (i));
+    }
+
+    qHeapSort (qchars);
+
+    int i = 0;
+    QValueVector<QChar>::iterator it;
+    for (it = qchars.begin(); it != qchars.end(); ++it, ++i) {
+        chars[i] = *it;
+    }
+    chars[i] = 0;
+
+    return QString (chars);
 }

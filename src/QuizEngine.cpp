@@ -24,8 +24,8 @@
 void
 QuizEngine::newQuiz ()
 {
-    quizQuestions.clear();
-    quizQuestions << "OPST" << "ABY" << "AAH";
+    quizQuestions = wordEngine->alphagrams (wordEngine->matchPattern ("???"));
+
     questionIndex = 0;
     prepareQuestion();
 }

@@ -28,6 +28,8 @@ class WordEngine
     QStringList matchPattern (const QString& input) const;
     QStringList matchAnagram (const QString& input) const;
     QStringList matchSubanagram (const QString& input) const;
+    QStringList alphagrams (const QStringList& list) const;
+    QString alphagram (const QString& word) const;
 
   private:
     WordGraph graph;
