@@ -17,13 +17,13 @@
 #include <qlineedit.h>
 #include <qlistbox.h>
 
-class WordEngine;
+class QuizEngine;
 
 class QuizForm : public QFrame
 {
   Q_OBJECT
   public:
-    QuizForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
+    QuizForm (QuizEngine* e, QWidget* parent = 0, const char* name = 0,
               WFlags f = 0);
 
   public slots:
@@ -33,7 +33,7 @@ class QuizForm : public QFrame
     void setCorrect (int correct, int total);
 
   private:
-    WordEngine*   engine;
+    QuizEngine*   engine;
     QLabel*       quizLabel;
     QLineEdit*    inputLine;
     QListBox*     answerList;

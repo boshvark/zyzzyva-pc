@@ -11,7 +11,7 @@
 //---------------------------------------------------------------------------
 
 #include "QuizForm.h"
-#include "WordEngine.h"
+#include "QuizEngine.h"
 #include "WordValidator.h"
 #include "Defs.h"
 #include <qlayout.h>
@@ -24,12 +24,12 @@ using namespace Defs;
 //
 //! Constructor.
 //
-//! @param e the word engine
+//! @param e the quiz engine
 //! @param parent the parent widget
 //! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-QuizForm::QuizForm (WordEngine* e, QWidget* parent, const char* name,
+QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
                     WFlags f)
     : QFrame (parent, name, f), engine (e)
 {

@@ -12,6 +12,7 @@
 
 #include "MainWindow.h"
 #include "JudgeForm.h"
+#include "QuizEngine.h"
 #include "QuizForm.h"
 #include "SearchForm.h"
 #include "SettingsDialog.h"
@@ -50,7 +51,8 @@ using namespace Defs;
 //! @param f widget flags
 //---------------------------------------------------------------------------
 MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
-    : QMainWindow (parent, name, f), engine (new WordEngine()),
+    : QMainWindow (parent, name, f), wordEngine (new WordEngine()),
+      quizEngine (new QuizEngine (wordEngine)),
       settingsDialog (new SettingsDialog (this, "settingsDialog", true))
 {
     QPopupMenu* filePopup = new QPopupMenu (this);
@@ -70,15 +72,15 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (tabStack);
     setCentralWidget (tabStack);
 
-    quizForm = new QuizForm (engine, tabStack, "quizForm");
+    quizForm = new QuizForm (quizEngine, tabStack, "quizForm");
     Q_CHECK_PTR (quizForm);
     tabStack->addTab (quizForm, QUIZ_TAB_TITLE);
 
-    searchForm = new SearchForm (engine, tabStack, "searchForm");
+    searchForm = new SearchForm (wordEngine, tabStack, "searchForm");
     Q_CHECK_PTR (searchForm);
     tabStack->addTab (searchForm, SEARCH_TAB_TITLE);
 
-    judgeForm = new JudgeForm (engine, tabStack, "judgeForm");
+    judgeForm = new JudgeForm (wordEngine, tabStack, "judgeForm");
     Q_CHECK_PTR (judgeForm);
     tabStack->addTab (judgeForm, JUDGE_TAB_TITLE);
 
@@ -211,7 +213,7 @@ MainWindow::import (const QString& file)
 {
     QString err;
     QApplication::setOverrideCursor (Qt::waitCursor);
-    int imported = engine->importFile (file, &err);
+    int imported = wordEngine->importFile (file, &err);
     QApplication::restoreOverrideCursor();
 
     if (imported < 0)

@@ -19,6 +19,7 @@
 #include <qtabwidget.h>
 
 class JudgeForm;
+class QuizEngine;
 class QuizForm;
 class SearchForm;
 class WordEngine;
@@ -43,7 +44,8 @@ class MainWindow : public QMainWindow
     void writeSettings();
 
   private:
-    WordEngine* engine;
+    WordEngine* wordEngine;
+    QuizEngine* quizEngine;
     QTabWidget* tabStack;
     JudgeForm*  judgeForm;
     QuizForm*   quizForm;
