@@ -89,6 +89,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
 
+    resize (minimumSizeHint());
     setCaption (DIALOG_CAPTION);
 }
 

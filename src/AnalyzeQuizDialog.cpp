@@ -102,6 +102,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* e, QWidget* parent,
     connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (closeButton);
 
+    resize (minimumSizeHint());
     setCaption (DIALOG_CAPTION);
     updateStats();
 }
