@@ -1,6 +1,11 @@
 Stuff that would be nice:
 
-* Allow the use of tile images instead of plain text when taking a quiz.
+* Fix canvas resizing, repainting when a new tile theme is chosen in the
+  middle of a quiz.  Everything is fine after the Check button is clicked.
+
+* Fix display of quiz questions when tile images are not present for some
+  reason.  Either when "Use Tile Theme" is unchecked, or when there is a
+  problem loading tile images.
 
 * Allow Show Definition by right clicking on lists in the Analyze dialog.
 
