@@ -60,11 +60,11 @@ WordEngine::isAcceptable (const QString& word) const
 //
 //! Find all acceptable words matching a pattern.
 //
-//! @param pattern the pattern to match
+//! @param input the pattern to match
 //! @return a list of acceptable words
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::matchPattern (const QString& pattern) const
+WordEngine::matchPattern (const QString& input) const
 {
-    return graph.getWordsMatchingPattern (pattern);
+    return graph.getWordsMatchingPattern (input);
 }
