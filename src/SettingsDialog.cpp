@@ -14,6 +14,7 @@
 #include "Defs.h"
 #include <qcheckbox.h>
 #include <qfiledialog.h>
+#include <qlabel.h>
 #include <qlayout.h>
 #include <qvgroupbox.h>
 
@@ -49,18 +50,15 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     QVBoxLayout* autoImportVlay = new QVBoxLayout (autoImportWidget, MARGIN,
                                                    SPACING, "autoImportVlay");
 
-    autoImportCbox = new QCheckBox ("Automatically import a file on startup",
-                                    autoImportWidget, "autoImportCbox");
+    autoImportCbox = new QCheckBox ("Automatically import a word list "
+                                    "on startup", autoImportWidget,
+                                    "autoImportCbox");
     connect (autoImportCbox, SIGNAL (toggled (bool)),
              SLOT (autoImportCboxToggled (bool)));
     autoImportVlay->addWidget (autoImportCbox);
 
     QHBoxLayout* autoImportHlay = new QHBoxLayout (SPACING, "autoImportHlay");
     autoImportVlay->addLayout (autoImportHlay);
-
-    autoImportLabel = new QLabel ("File:", autoImportWidget,
-                                  "autoImportLabel");
-    autoImportHlay->addWidget (autoImportLabel);
 
     autoImportLine = new QLineEdit (autoImportWidget, "autoImportFile");
     autoImportHlay->addWidget (autoImportLine);
@@ -133,6 +131,22 @@ SettingsDialog::writeSettings (QSettings& settings)
     settings.writeEntry (SETTINGS_IMPORT_FILE, autoImportLine->text());
 }
 
+
+//---------------------------------------------------------------------------
+// getAutoImportFile
+//
+//! Return the file to be imported on startup, if auto-importing is
+//! enabled.
+//
+//! @return the auto-import filename
+//---------------------------------------------------------------------------
+QString
+SettingsDialog::getAutoImportFile() const
+{
+    return (autoImportCbox->isChecked() ? autoImportLine->text()
+            : QString::null);
+}
+
 //---------------------------------------------------------------------------
 // browseButtonClicked
 //
@@ -162,7 +176,6 @@ SettingsDialog::browseButtonClicked()
 void
 SettingsDialog::autoImportCboxToggled (bool on)
 {
-    autoImportLabel->setEnabled (on);
     autoImportLine->setEnabled (on);
     browseButton->setEnabled (on);
 }

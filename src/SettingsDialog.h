@@ -15,7 +15,6 @@
 
 #include <qcheckbox.h>
 #include <qdialog.h>
-#include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qsettings.h>
@@ -30,6 +29,7 @@ class SettingsDialog : public QDialog
 
     void readSettings (const QSettings& settings);
     void writeSettings (QSettings& settings);
+    QString getAutoImportFile() const;
 
   public slots:
     void browseButtonClicked();
@@ -37,7 +37,6 @@ class SettingsDialog : public QDialog
 
   private:
     QCheckBox*   autoImportCbox;
-    QLabel*      autoImportLabel;
     QLineEdit*   autoImportLine;
     QPushButton* browseButton;
 };
