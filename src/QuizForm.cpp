@@ -50,10 +50,6 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (quizGbox);
     mainVlay->addWidget (quizGbox);
 
-    questionNumLabel = new QLabel (this, "questionNumLabel");
-    Q_CHECK_PTR (questionNumLabel);
-    mainVlay->addWidget (questionNumLabel);
-
     QHBoxLayout* quizBoxHlay = new QHBoxLayout (quizGbox, MARGIN, SPACING,
                                                 "quizBoxHlay");
     Q_CHECK_PTR (quizBoxHlay);
@@ -70,18 +66,20 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     responseList->header()->hide();
     mainVlay->addWidget (responseList);
 
+    // Question status
+    QHBoxLayout* qStatusHlay = new QHBoxLayout (SPACING, "questionStatusHlay");
+    Q_CHECK_PTR (qStatusHlay);
+    mainVlay->addLayout (qStatusHlay);
+
+    questionNumLabel = new QLabel (this, "questionNumLabel");
+    Q_CHECK_PTR (questionNumLabel);
+    qStatusHlay->addWidget (questionNumLabel);
+
     responseStatusLabel = new QLabel (this, "responseStatusLabel");
     Q_CHECK_PTR (responseStatusLabel);
-    mainVlay->addWidget (responseStatusLabel);
+    qStatusHlay->addWidget (responseStatusLabel);
 
-    inputLine = new QLineEdit (this, "inputLine");
-    Q_CHECK_PTR (inputLine);
-    WordValidator* validator = new WordValidator (inputLine);
-    Q_CHECK_PTR (validator);
-    inputLine->setValidator (validator);
-    connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
-    mainVlay->addWidget (inputLine);
-
+    // Stats
     QHBoxLayout* statsHlay = new QHBoxLayout (SPACING, "statsHlay");
     Q_CHECK_PTR (statsHlay);
     mainVlay->addLayout (statsHlay);
@@ -106,6 +104,16 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (totalPrecisionLabel);
     totalStatsHlay->addWidget (totalPrecisionLabel);
 
+    // Input line
+    inputLine = new QLineEdit (this, "inputLine");
+    Q_CHECK_PTR (inputLine);
+    WordValidator* validator = new WordValidator (inputLine);
+    Q_CHECK_PTR (validator);
+    inputLine->setValidator (validator);
+    connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
+    mainVlay->addWidget (inputLine);
+
+    // Buttons
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
