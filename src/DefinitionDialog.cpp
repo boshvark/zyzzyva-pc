@@ -28,6 +28,7 @@
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
+#include <qvgroupbox.h>
 
 const QString DIALOG_CAPTION_PREFIX = "Define : ";
 const int     WORD_WRAP_LENGTH = 80;
@@ -53,9 +54,13 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
                                              "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
-    QLabel* label = new QLabel (this, "label");
+    QVGroupBox* groupBox = new QVGroupBox (this, "autoImportGbox");
+    Q_CHECK_PTR (groupBox);
+    groupBox->setTitle (word);
+    mainVlay->addWidget (groupBox);
+
+    QLabel* label = new QLabel (groupBox, "label");
     Q_CHECK_PTR (label);
-    mainVlay->addWidget (label);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
@@ -76,7 +81,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
     if (definition.isEmpty())
         definition = "(no definition)";
 
-    label->setText (word + " :\n" + wordWrap (definition, WORD_WRAP_LENGTH));
+    label->setText (wordWrap (definition, WORD_WRAP_LENGTH));
 }
 
 //---------------------------------------------------------------------------
