@@ -1,0 +1,96 @@
+AA	rough, cindery lava
+AB	abdominal muscle {OSPD3}
+AD	advertisement
+AE	one
+AG	pert. to agriculture
+AH	intj. expressing understanding
+AI	three-toed sloth
+AL	East Indian tree
+AM	[be-conj] (to exist)
+AN	indefinite article
+AR	letter 'r'
+AS	to the same degree
+AT	in the location of
+AW	intj. expressing disbelief
+AX	to cut with an ax
+AY	aye
+BA	eternal soul in Egyptian mythology
+BE	to exist
+BI	bisexual
+BO	pal
+BY	side issue
+DE	of, from
+DO	to execute/first tone of musical scale
+ED	education {OSPD3}
+EF	letter 'f'
+EH	intj. used to indicate lack of understanding
+EL	letter 'l'
+EM	printer's measurement
+EN	printer's measurement
+ER	intj. expressing hesitation
+ES	letter 's'
+ET	[eat-conj] (to consume)
+EX	letter 'x'
+FA	fourth tone of diatonic musical scale
+GO	to leave
+HA	sound expressing triumph
+HE	male person
+HI	intj. used as a greeting
+HM	intj. expressing thought (hmm)
+HO	intj. used to attract attention to something
+ID	part of psyche related to instinctual impulses
+IF	possible condition
+IN	influence
+IS	[be-conj] (to exist)
+IT	person playing tag/indefinite pronoun
+JO	sweetheart
+KA	Egyptian spiritual self
+LA	sixth tone of diatonic musical scale
+LI	Chinese unit of distance
+LO	intj. used to attract attention
+MA	mother
+ME	pronoun referring to myself
+MI	third tone of diatonic musical scale
+MM	intj. expressing satisfaction
+MO	moment
+MU	Greek letter
+MY	possessive prounoun
+NA	no
+NE	born with the name of (nee)
+NO	negative reply
+NU	Greek letter
+OD	hypothetical force of natural power
+OE	Faroean wind
+OF	coming from
+OH	to exclaim "oh"
+OM	mantra used in meditation
+ON	side of wicket where cricket batsman stands
+OP	style of abstract art
+OR	heraldic color gold
+OS	orifice/bone/ridge of sand (esker)
+OW	intj. expressing sudden pain
+OX	hoofed mammal/clumsy person
+OY	intj. expressing dismay
+PA	father
+PE	Hebrew letter
+PI	Greek letter/to jumble
+RE	second tone of diatonic musical scale
+SH	intj. used to urge silence (shh)
+SI	seventh tone of diatonic musical scale (ti)
+SO	fifth tone of diatonic musical scale
+TA	thanks
+TI	seventh tone of diatonic musical scale
+TO	toward
+UH	intj. expressing hesitation
+UM	intj. expressing hesitation
+UN	one
+UP	to raise
+US	objective pronoun for "we"
+UT	musical tone in French solmization system
+WE	plural pronoun
+WO	woe
+XI	Greek letter
+XU	Vietnamese monetary unit
+YA	you
+YE	you
+YO	intj. used to call attention {OSPD3}
