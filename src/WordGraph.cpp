@@ -144,37 +144,35 @@ WordGraph::getWordsMatchingPattern (const QString& p) const
     if (p.isEmpty() || !top)
         return list;
 
-    // Searches are simpler with no wildcard, so note whether one appears
-    bool hasWildcard = p.contains ('*');
-
     QString pattern = p;
     pattern.replace (QRegExp ("\\*+"), "*");
 
-    stack< pair<Node*, pair<int,int> > > nodeStack;
+    stack< pair<Node*, pair<int,QString> > > nodeStack;
     int pLen = pattern.length();
-    char word[MAX_WORD_LEN + 1];
+    //char word[MAX_WORD_LEN + 1];
+    QString word;
 
     Node* node = top;
     QChar c;
     int i = 0;
     int pIndex = 0;
-    int wIndex = 0;
     while (node) {
         c = pattern.at (pIndex);
 
         if (c == "?") {
             if (node->next)
                 nodeStack.push (make_pair (node->next,
-                                           make_pair (pIndex, wIndex)));
+                                           make_pair (pIndex, word)));
         }
 
         else if (c == "*") {
             if (node->next)
                 nodeStack.push (make_pair (node->next,
-                                           make_pair (pIndex, wIndex)));
+                                           make_pair (pIndex, word)));
             if (node->child)
                 nodeStack.push (make_pair (node->child,
-                                           make_pair (pIndex, wIndex + 1)));
+                                           make_pair (pIndex,
+                                                      word + node->letter)));
         }
 
         else {
@@ -183,13 +181,11 @@ WordGraph::getWordsMatchingPattern (const QString& p) const
         }
 
         if (node) {
-            word[wIndex] = node->letter;
+            word += node->letter;
             ++pIndex;
-            ++wIndex;
 
             if ((pIndex == pLen) && (node->eow)) {
-                word[wIndex] = 0;
-                list << QString (word);
+                list << word;
             }
 
             else if (pIndex < pLen)
@@ -199,7 +195,7 @@ WordGraph::getWordsMatchingPattern (const QString& p) const
         if ((!node || (pIndex == pLen)) && nodeStack.size()) {
             node = nodeStack.top().first;
             pIndex = nodeStack.top().second.first;
-            wIndex = nodeStack.top().second.second;
+            word = nodeStack.top().second.second;
             nodeStack.pop();
         }
     }
