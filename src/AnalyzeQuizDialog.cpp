@@ -97,10 +97,11 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 
     buttonHlay->addStretch (1);
 
-    closeButton = new QPushButton ("Close", this, "closeButton");
+    closeButton = new QPushButton ("&Close", this, "closeButton");
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    closeButton->setDefault (true);
+    closeButton->setAutoDefault (false);
+    closeButton->setFocus();
     connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (closeButton);
 
