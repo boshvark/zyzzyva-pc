@@ -55,31 +55,39 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
                                              "mainVlay");
+    Q_CHECK_PTR (mainVlay);
 
     QVGroupBox* autoImportGbox = new QVGroupBox (this, "autoImportGbox");
+    Q_CHECK_PTR (autoImportGbox);
     autoImportGbox->setTitle ("Auto Import");
     mainVlay->addWidget (autoImportGbox);
 
     QWidget* autoImportWidget = new QWidget (autoImportGbox,
                                              "autoImportWidget");
+    Q_CHECK_PTR (autoImportWidget);
     QVBoxLayout* autoImportVlay = new QVBoxLayout (autoImportWidget, MARGIN,
                                                    SPACING, "autoImportVlay");
+    Q_CHECK_PTR (autoImportVlay);
 
     autoImportCbox = new QCheckBox ("Automatically import a word list "
                                     "on startup", autoImportWidget,
                                     "autoImportCbox");
+    Q_CHECK_PTR (autoImportCbox);
     connect (autoImportCbox, SIGNAL (toggled (bool)),
              SLOT (autoImportCboxToggled (bool)));
     autoImportVlay->addWidget (autoImportCbox);
 
     QHBoxLayout* autoImportHlay = new QHBoxLayout (SPACING, "autoImportHlay");
+    Q_CHECK_PTR (autoImportHlay);
     autoImportVlay->addLayout (autoImportHlay);
 
     autoImportLine = new QLineEdit (autoImportWidget, "autoImportFile");
+    Q_CHECK_PTR (autoImportLine);
     autoImportHlay->addWidget (autoImportLine);
 
     browseButton = new QPushButton ("Browse...", autoImportWidget,
                                     "browseButton");
+    Q_CHECK_PTR (browseButton);
     connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
     autoImportHlay->addWidget (browseButton);
 
@@ -106,11 +114,13 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     mainVlay->addStretch (1);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
     buttonHlay->addStretch (1);
 
     QPushButton* okButton = new QPushButton ("OK", this, "okButton");
+    Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
@@ -118,6 +128,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
 
     QPushButton* cancelButton = new QPushButton ("Cancel", this,
                                                  "cancelButton");
+    Q_CHECK_PTR (cancelButton);
     cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
