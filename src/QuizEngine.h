@@ -36,6 +36,7 @@ class QuizEngine
     void newQuiz (const QString& question);
 
     ResponseStatus respond (const QString& response);
+    const QString& getQuestion() const { return question; }
     int total() const { return correctResponses.size(); }
     int correct() const { return correctUserResponses.size(); }
     int incorrect() const { return incorrectUserResponses.size(); }

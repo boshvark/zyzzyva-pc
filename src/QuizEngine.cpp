@@ -44,8 +44,9 @@ QuizEngine::respond (const QString& response)
         return Incorrect;
     }
 
-    if (correctUserResponses.find (response) != correctUserResponses.end())
+    if (correctUserResponses.find (response) != correctUserResponses.end()) {
         return Duplicate;
+    }
 
     correctUserResponses.insert (response);
     return Correct;

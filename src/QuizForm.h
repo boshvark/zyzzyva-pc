@@ -30,14 +30,16 @@ class QuizForm : public QFrame
     void responseEntered();
 
   private:
-    void setCorrect (int correct, int total);
+    void setRecall (int correct, int total);
+    void setPrecision (int correct, int total);
 
   private:
     QuizEngine*   engine;
     QLabel*       quizLabel;
     QLineEdit*    inputLine;
     QListBox*     answerList;
-    QLabel*       correctLabel;
+    QLabel*       recallLabel;
+    QLabel*       precisionLabel;
 };
 
 #endif // QUIZ_FORM_H

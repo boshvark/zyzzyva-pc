@@ -62,10 +62,16 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
     mainVlay->addWidget (inputLine);
 
-    correctLabel = new QLabel (this, "correctLabel");
-    Q_CHECK_PTR (correctLabel);
-    mainVlay->addWidget (correctLabel);
-    setCorrect (0, 0);
+    recallLabel = new QLabel (this, "recallLabel");
+    Q_CHECK_PTR (recallLabel);
+    mainVlay->addWidget (recallLabel);
+
+    precisionLabel = new QLabel (this, "precisionLabel");
+    Q_CHECK_PTR (precisionLabel);
+    mainVlay->addWidget (precisionLabel);
+
+    setRecall (0, 0);
+    setPrecision (0, 0);
 
     answerList = new QListBox (this, "answerList");
     Q_CHECK_PTR (answerList);
@@ -84,21 +90,44 @@ QuizForm::responseEntered()
     if (response.isEmpty())
         return;
 
+    engine->respond (response);
+
+    int correct = engine->correct();
+    setRecall (correct, engine->total());
+    setPrecision (correct, correct + engine->incorrect());
+
     answerList->insertItem (response);
     inputLine->clear();
 }
 
 //---------------------------------------------------------------------------
-// setCorrect
+// setRecall
 //
-//! Set the number of correct and total responses.
+//! Set the recall numbers (correct user responses divided by total correct
+//! responses).
 //
 //! @param correct the number of correct responses
 //! @param total the total number of correct answers
 //---------------------------------------------------------------------------
 void
-QuizForm::setCorrect (int correct, int total)
+QuizForm::setRecall (int correct, int total)
 {
-    correctLabel->setText ("Correct responses: " + QString::number (correct)
+    recallLabel->setText ("Recall: " + QString::number (correct)
                            + " / " + QString::number (total));
+}
+
+//---------------------------------------------------------------------------
+// setPrecision
+//
+//! Set the precision numbers (correct user responses divided by total user
+//! responses).
+//
+//! @param correct the number of correct responses
+//! @param total the total number of user responses
+//---------------------------------------------------------------------------
+void
+QuizForm::setPrecision (int correct, int total)
+{
+    precisionLabel->setText ("Precision: " + QString::number (correct)
+                             + " / " + QString::number (total));
 }
