@@ -51,6 +51,7 @@ class MainWindow : public QMainWindow
     void importInteractive();
     void editSettings();
     void displayAbout();
+    void displayHelp();
 
   private:
     int  import (const QString& file);

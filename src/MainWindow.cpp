@@ -24,6 +24,7 @@
 
 #include "MainWindow.h"
 #include "AboutDialog.h"
+#include "HelpDialog.h"
 #include "JudgeForm.h"
 #include "QuizEngine.h"
 #include "QuizForm.h"
@@ -67,7 +68,8 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     : QMainWindow (parent, name, f), wordEngine (new WordEngine()),
       quizEngine (new QuizEngine (wordEngine)),
       settingsDialog (new SettingsDialog (this, "settingsDialog", true)),
-      aboutDialog (new AboutDialog (this, "aboutDialog", true))
+      aboutDialog (new AboutDialog (this, "aboutDialog", true)),
+      helpDialog (new HelpDialog (QString::null, this, "helpDialog"))
 {
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
@@ -84,6 +86,7 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 
     QPopupMenu* helpPopup = new QPopupMenu (this);
     Q_CHECK_PTR (helpPopup);
+    helpPopup->insertItem ("&Help", this, SLOT (displayHelp()));
     helpPopup->insertItem ("&About", this, SLOT (displayAbout()));
     menuBar()->insertItem ("&Help", helpPopup);
 
@@ -177,6 +180,17 @@ void
 MainWindow::displayAbout()
 {
     aboutDialog->exec();
+}
+
+//---------------------------------------------------------------------------
+// displayHelp
+//
+//! Display a Help screen.
+//---------------------------------------------------------------------------
+void
+MainWindow::displayHelp()
+{
+    helpDialog->showPage("docs/help/index.html");
 }
 
 //---------------------------------------------------------------------------
