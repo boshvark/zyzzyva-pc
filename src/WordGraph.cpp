@@ -157,32 +157,55 @@ WordGraph::getWordsMatchingPattern (const QString& p) const
         }
 
         else if (c == "*") {
-            if (pIndex < pLen - 1)
-                nodeStack.push (make_pair (node,
-                                           make_pair (pIndex + 1, wIndex)));
-            if (node->next)
+            //if (pIndex < pLen - 1) {
+            //    nodeStack.push (make_pair (node,
+            //                               make_pair (pIndex + 1, wIndex)));
+            //    qDebug ("Pushing: %x (%c), %d, %d", node, node->letter,
+            //            pIndex + 1, wIndex);
+            //}
+            if (node->next) {
                 nodeStack.push (make_pair (node->next,
                                            make_pair (pIndex, wIndex)));
+                //qDebug ("Pushing: %x (%c), %d, %d", node->next,
+                //        node->next->letter, pIndex, wIndex);
+            }
+            if (node->child) {
+                nodeStack.push (make_pair (node->child,
+                                           make_pair (pIndex, wIndex + 1)));
+                //qDebug ("Pushing: %x (%c), %d, %d", node->child,
+                //        node->child->letter, pIndex, wIndex + 1);
+            }
         }
 
         else {
-            while (node && node->letter != c)
+            while (node && node->letter != c) {
+                //qDebug ("No match (%c), traversing next...", node->letter);
                 node = node->next;
+            }
+            //if (!node)
+                //qDebug ("Next was NULL, no match found.");
         }
 
         if (node) {
-            word[pIndex] = node->letter;
+            //qDebug ("Current node: %x (%c), %d, %d", node, node->letter,
+            //        pIndex, wIndex);
+            word[wIndex] = node->letter;
+            //if (c != "*")
             ++pIndex;
             ++wIndex;
 
-            if (pIndex == pLen) {
-                if (node->eow) {
-                    word[pLen] = 0;
-                    list << QString (word);
-                }
+            if ((pIndex == pLen) && (node->eow)) {
+                word[wIndex] = 0;
+                list << QString (word);
+                //qDebug ("pIndex: " + QString::number (pIndex));
+                //qDebug ("wIndex: " + QString::number (wIndex));
+                //qDebug ("Adding: " + QString (word));
             }
-            else
+
+            else if (pIndex < pLen) {
+                //qDebug ("Traversing to child...");
                 node = node->child;
+            }
         }
 
         if ((!node || (pIndex == pLen)) && nodeStack.size()) {
@@ -190,6 +213,7 @@ WordGraph::getWordsMatchingPattern (const QString& p) const
             pIndex = nodeStack.top().second.first;
             wIndex = nodeStack.top().second.second;
             nodeStack.pop();
+            //qDebug ("Popping: %x (%c), %d, %d", node, node->letter, pIndex, wIndex);
         }
     }
 
