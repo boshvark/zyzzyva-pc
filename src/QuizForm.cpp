@@ -55,13 +55,9 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     quizBoxHlay->addWidget (quizLabel);
     quizBoxHlay->addStretch (1);
 
-    inputLine = new QLineEdit (this, "inputLine");
-    Q_CHECK_PTR (inputLine);
-    WordValidator* validator = new WordValidator (inputLine);
-    Q_CHECK_PTR (validator);
-    inputLine->setValidator (validator);
-    connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
-    mainVlay->addWidget (inputLine);
+    responseList = new QListBox (this, "responseList");
+    Q_CHECK_PTR (responseList);
+    mainVlay->addWidget (responseList);
 
     recallLabel = new QLabel (this, "recallLabel");
     Q_CHECK_PTR (recallLabel);
@@ -71,9 +67,13 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (precisionLabel);
     mainVlay->addWidget (precisionLabel);
 
-    responseList = new QListBox (this, "responseList");
-    Q_CHECK_PTR (responseList);
-    mainVlay->addWidget (responseList);
+    inputLine = new QLineEdit (this, "inputLine");
+    Q_CHECK_PTR (inputLine);
+    WordValidator* validator = new WordValidator (inputLine);
+    Q_CHECK_PTR (validator);
+    inputLine->setValidator (validator);
+    connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
+    mainVlay->addWidget (inputLine);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
