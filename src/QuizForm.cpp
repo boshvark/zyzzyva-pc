@@ -17,6 +17,7 @@
 #include "Defs.h"
 #include <qlayout.h>
 #include <qgroupbox.h>
+#include <qheader.h>
 #include <qmessagebox.h>
 
 using namespace Defs;
@@ -57,8 +58,11 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     quizBoxHlay->addWidget (questionLabel);
     quizBoxHlay->addStretch (1);
 
-    responseList = new QListBox (this, "responseList");
+    responseList = new QListView (this, "responseList");
     Q_CHECK_PTR (responseList);
+    responseList->setResizeMode (QListView::LastColumn);
+    responseList->addColumn ("Responses");
+    responseList->header()->hide();
     mainVlay->addWidget (responseList);
 
     QHBoxLayout* statsHlay = new QHBoxLayout (SPACING, "statsHlay");
@@ -129,7 +133,7 @@ QuizForm::responseEntered()
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
-        responseList->insertItem (response);
+        new QListViewItem (responseList, response);
         statusStr = "<font color=\"blue\">Correct</font>";
     }
     else if (status == QuizEngine::Incorrect)

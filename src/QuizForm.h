@@ -15,7 +15,7 @@
 
 #include <qlabel.h>
 #include <qlineedit.h>
-#include <qlistbox.h>
+#include <qlistview.h>
 #include <qpushbutton.h>
 
 class NewQuizDialog;
@@ -45,7 +45,7 @@ class QuizForm : public QFrame
     QuizEngine*   engine;
     QLabel*       questionLabel;
     QLineEdit*    inputLine;
-    QListBox*     responseList;
+    QListView*    responseList;
     QLabel*       recallLabel;
     QLabel*       precisionLabel;
     QLabel*       responseStatusLabel;
