@@ -45,6 +45,9 @@ DAWG::~DAWG()
 void
 DAWG::addWord (const string& w)
 {
+    if (!w.size())
+        return;
+
     Node* node = top;
     Node* parentNode = 0;
 
