@@ -4,6 +4,7 @@ LANGUAGE = C++
 CONFIG += qt warn_on release
 
 HEADERS += \
+    src/AboutDialog.h \
     src/AnalyzeQuizDialog.h \
     src/JudgeForm.h \
     src/MainWindow.h \
@@ -20,6 +21,7 @@ HEADERS += \
     src/ZListViewItem.h
 
 SOURCES += \
+    src/AboutDialog.cpp \
     src/AnalyzeQuizDialog.cpp \
     src/JudgeForm.cpp \
     src/main.cpp \

@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "MainWindow.h"
+#include "AboutDialog.h"
 #include "JudgeForm.h"
 #include "QuizEngine.h"
 #include "QuizForm.h"
@@ -65,7 +66,8 @@ using namespace Defs;
 MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     : QMainWindow (parent, name, f), wordEngine (new WordEngine()),
       quizEngine (new QuizEngine (wordEngine)),
-      settingsDialog (new SettingsDialog (this, "settingsDialog", true))
+      settingsDialog (new SettingsDialog (this, "settingsDialog", true)),
+      aboutDialog (new AboutDialog (this, "aboutDialog", true))
 {
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
@@ -79,6 +81,11 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (editPopup);
     editPopup->insertItem ("&Preferences", this, SLOT (editSettings()));
     menuBar()->insertItem ("&Edit", editPopup);
+
+    QPopupMenu* helpPopup = new QPopupMenu (this);
+    Q_CHECK_PTR (helpPopup);
+    helpPopup->insertItem ("&About", this, SLOT (displayAbout()));
+    menuBar()->insertItem ("&Help", helpPopup);
 
     tabStack = new QTabWidget (this, "tabStack");
     Q_CHECK_PTR (tabStack);
@@ -159,6 +166,17 @@ MainWindow::editSettings()
     else
         settingsDialog->readSettings (settings);
     settings.endGroup();
+}
+
+//---------------------------------------------------------------------------
+// displayAbout
+//
+//! Display an About screen.
+//---------------------------------------------------------------------------
+void
+MainWindow::displayAbout()
+{
+    aboutDialog->exec();
 }
 
 //---------------------------------------------------------------------------

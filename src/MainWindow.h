@@ -30,6 +30,7 @@
 #include <qsettings.h>
 #include <qtabwidget.h>
 
+class AboutDialog;
 class JudgeForm;
 class QuizEngine;
 class QuizForm;
@@ -48,6 +49,7 @@ class MainWindow : public QMainWindow
   public slots:
     void importInteractive();
     void editSettings();
+    void displayAbout();
 
   private:
     int  import (const QString& file);
@@ -67,6 +69,7 @@ class MainWindow : public QMainWindow
 
     QSettings       settings;
     SettingsDialog* settingsDialog;
+    AboutDialog*    aboutDialog;
 };
 
 #endif // MAIN_WINDOW_H
