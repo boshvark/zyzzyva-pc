@@ -25,6 +25,7 @@ using namespace Defs;
 //
 //! Constructor.
 //
+//! @e the word engine
 //! @param parent the parent widget
 //! @param name the name of this widget
 //! @param f widget flags
