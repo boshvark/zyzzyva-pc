@@ -70,13 +70,13 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (tabStack);
     setCentralWidget (tabStack);
 
-    searchForm = new SearchForm (engine, tabStack, "searchForm");
-    Q_CHECK_PTR (searchForm);
-    tabStack->addTab (searchForm, SEARCH_TAB_TITLE);
-
     quizForm = new QuizForm (engine, tabStack, "quizForm");
     Q_CHECK_PTR (quizForm);
     tabStack->addTab (quizForm, QUIZ_TAB_TITLE);
+
+    searchForm = new SearchForm (engine, tabStack, "searchForm");
+    Q_CHECK_PTR (searchForm);
+    tabStack->addTab (searchForm, SEARCH_TAB_TITLE);
 
     judgeForm = new JudgeForm (engine, tabStack, "judgeForm");
     Q_CHECK_PTR (judgeForm);
