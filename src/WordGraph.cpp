@@ -158,25 +158,23 @@ WordGraph::search (const SearchSpec& spec) const
 
     // Pattern match is specified
     if (spec.type == Pattern) {
-
         if (unmatched.isEmpty())
             unmatched = "*";
         else
             unmatched.replace (QRegExp ("\\*+"), "*");
 
-        int pLen = unmatched.length();
-
-        int pIndex = 0;
         while (node) {
 
             // Stop if word is at max length
             if (int (word.length()) < spec.maxLength) {
                 QString origWord = word;
-                c = unmatched.at (pIndex);
+                QString origUnmatched = unmatched;
+                c = unmatched.at (0);
 
                 // Allow wildcard to match empty string
                 if (c == "*")
-                    states.push (TraversalState (node, pIndex + 1, word));
+                    states.push (TraversalState (node, word, unmatched.right (
+                                unmatched.length() - 1)));
 
                 // Traverse next nodes, looking for matches
                 for (; node; node = node->next) {
@@ -185,6 +183,7 @@ WordGraph::search (const SearchSpec& spec) const
 
                     bool match = false;
                     word = origWord;
+                    unmatched = origUnmatched;
 
                     // A node matches wildcard characters or its own letter
                     if ((c == "*") || (c == "?") || (c == node->letter)) {
@@ -196,19 +195,20 @@ WordGraph::search (const SearchSpec& spec) const
                     // traversed later
                     if (match && node->child) {
                         if (c == "*")
-                            states.push (TraversalState (node->child, pIndex,
-                                                         word));
+                            states.push (TraversalState (node->child, word,
+                                                         unmatched));
 
-                        states.push (TraversalState (node->child, pIndex + 1,
-                                                     word));
+                        states.push (TraversalState (node->child, word,
+                                                     unmatched.right (
+                                                     unmatched.length() - 1)));
                     }
 
                     // If end of word and end of pattern, put the word in the list
                     if (match && node->eow &&
                         (int (word.length()) >= spec.minLength) &&
-                        ((pIndex == pLen - 1) ||
-                        ((pIndex == pLen - 2) &&
-                         (QChar (unmatched.at (pIndex + 1)) == "*"))))
+                        ((unmatched.length() == 1) ||
+                        ((unmatched.length() == 2) &&
+                         (QChar (unmatched.at (1)) == "*"))))
                         wordSet.insert (word);
                 }
             }
@@ -217,7 +217,7 @@ WordGraph::search (const SearchSpec& spec) const
             if (states.size()) {
                 TraversalState state = states.top();
                 node = state.node;
-                pIndex = state.patternIndex;
+                unmatched = state.unmatched;
                 word = state.word;
                 states.pop();
             }
