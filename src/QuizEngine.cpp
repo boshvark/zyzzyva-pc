@@ -41,8 +41,11 @@ QuizEngine::newQuiz (const QString& input, MatchType type, bool alphagrams,
     if (alphagrams) {
         switch (type) {
             case Pattern:
-            //quizQuestions = wordEngine->matchPattern (input);
-            qWarning ("Pattern not yet implemented using alphagrams!");
+            quizQuestions = wordEngine->matchPattern (input);
+            // If using Pattern match with alphagram, change quiz type
+            // to Anagram.  The pattern is used to select the list of
+            // alphagrams, then anagrams are used as quiz answers.
+            quizType = Anagram;
             break;
 
             case Anagram:
