@@ -283,7 +283,7 @@ QuizForm::returnPressed (QListViewItem* item)
 {
     if (!item)
         return;
-    displayDefinition (item->text (0));
+    displayDefinition (item->text (0).upper());
 }
 
 //---------------------------------------------------------------------------
@@ -304,7 +304,7 @@ QuizForm::menuRequested (QListViewItem* item, const QPoint& point, int)
     delete menu;
 
     if (choice == WordPopupMenu::ShowDefinition)
-        displayDefinition (item->text (0));
+        displayDefinition (item->text (0).upper());
 }
 
 //---------------------------------------------------------------------------
