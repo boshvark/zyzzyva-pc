@@ -26,6 +26,7 @@ WordValidator::validate (QString& input, int& pos) const
 {
     input = input.upper();
     replaceRegExp(QRegExp("[^A-Z]+"), "", input, pos);
+    return Acceptable;
 }
 
 //-----------------------------------------------------------------------------
