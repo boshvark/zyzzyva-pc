@@ -95,10 +95,10 @@ class QuizForm : public QFrame
     QMap<QString,QImage> tileImages;
     int maxTileWidth, maxTileHeight;
     int numCanvasTiles, minCanvasTiles, minCanvasWidth;
-    bool useTimer, timerPaused;
-    int timerDuration, timerRemaining;
-    QuizTimerType timerType;
+    bool useTimer;
     int timerId;
+    int timerDuration, timerRemaining, timerPaused;
+    QuizTimerType timerType;
 
     NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;

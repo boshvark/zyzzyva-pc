@@ -59,7 +59,7 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     analyzeDialog (new AnalyzeQuizDialog (qe, we, this, "analyzeDialog",
                                           false)),
     numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300),
-    timerPaused (false), timerId (0)
+    timerId (0), timerPaused (0)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
                                              "mainHlay");
@@ -257,7 +257,7 @@ void
 QuizForm::pauseTimer()
 {
     if (timerId)
-        timerPaused = true;
+        ++timerPaused;
 }
 
 //---------------------------------------------------------------------------
@@ -269,7 +269,7 @@ void
 QuizForm::unpauseTimer()
 {
     if (timerId)
-        timerPaused = false;
+        --timerPaused;
 }
 
 //---------------------------------------------------------------------------
