@@ -41,6 +41,9 @@
 
 using namespace Defs;
 
+const QString PAUSE_BUTTON = "&Pause";
+const QString UNPAUSE_BUTTON = "Un&pause";
+
 //---------------------------------------------------------------------------
 // QuizForm
 //
@@ -166,6 +169,13 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     checkResponseButton->setEnabled (false);
     buttonHlay->addWidget (checkResponseButton);
 
+    pauseButton = new QPushButton (PAUSE_BUTTON, this, "pauseButton");
+    Q_CHECK_PTR (pauseButton);
+    pauseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (pauseButton, SIGNAL (clicked()), SLOT (pauseClicked()));
+    pauseButton->setEnabled (false);
+    buttonHlay->addWidget (pauseButton);
+
     analyzeButton = new QPushButton ("&Analyze...", this, "analyzeButton");
     Q_CHECK_PTR (analyzeButton);
     analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -235,11 +245,14 @@ QuizForm::newQuizClicked()
     // Kill quiz timer, if running
     if (timerId)
         killTimer (timerId);
+    while (timerPaused)
+        unpauseTimer();
 
     SearchSpec spec = newQuizDialog->getSearchSpec();
     bool alphagrams = newQuizDialog->getQuizAlphagrams();
     bool random = newQuizDialog->getQuizRandomOrder();
     useTimer = newQuizDialog->getTimerEnabled();
+    pauseButton->setEnabled (useTimer);
     timerDuration = newQuizDialog->getTimerDuration();
     timerType = newQuizDialog->getTimerType();
     quizEngine->newQuiz (spec, alphagrams, random);
@@ -256,8 +269,10 @@ QuizForm::newQuizClicked()
 void
 QuizForm::pauseTimer()
 {
-    if (timerId)
-        ++timerPaused;
+    if (!timerId)
+        return;
+    ++timerPaused;
+    pauseButton->setText (UNPAUSE_BUTTON);
 }
 
 //---------------------------------------------------------------------------
@@ -268,8 +283,11 @@ QuizForm::pauseTimer()
 void
 QuizForm::unpauseTimer()
 {
-    if (timerId)
-        --timerPaused;
+    if (!timerId)
+        return;
+    --timerPaused;
+    if (timerPaused == 0)
+        pauseButton->setText (PAUSE_BUTTON);
 }
 
 //---------------------------------------------------------------------------
@@ -319,6 +337,23 @@ QuizForm::checkResponseClicked()
 }
 
 //---------------------------------------------------------------------------
+// pauseClicked
+//
+//! Called when the Pause button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::pauseClicked()
+{
+    if (!timerId)
+        return;
+
+    if (pauseButton->text() == PAUSE_BUTTON)
+        pauseTimer();
+    else if (pauseButton->text() == UNPAUSE_BUTTON)
+        unpauseTimer();
+}
+
+//---------------------------------------------------------------------------
 // analyzeClicked
 //
 //! Called when the Analyze button is clicked.
@@ -351,8 +386,11 @@ QuizForm::startQuestion()
         timerRemaining = timerDuration;
         setTimerDisplay (timerDuration);
         timerId = startTimer (1000);
-        unpauseTimer();
+        while (timerPaused)
+            unpauseTimer();
     }
+    else
+        clearTimerDisplay();
 }
 
 //---------------------------------------------------------------------------

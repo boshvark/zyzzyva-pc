@@ -53,6 +53,7 @@ class QuizForm : public QFrame
     void newQuizClicked();
     void nextQuestionClicked();
     void checkResponseClicked();
+    void pauseClicked();
     void analyzeClicked();
     void setTileTheme (const QString& theme);
 
@@ -90,6 +91,7 @@ class QuizForm : public QFrame
     QLabel*       questionStatusLabel;
     QPushButton*  nextQuestionButton;
     QPushButton*  checkResponseButton;
+    QPushButton*  pauseButton;
     QPushButton*  analyzeButton;
 
     QMap<QString,QImage> tileImages;
