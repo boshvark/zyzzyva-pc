@@ -32,21 +32,19 @@ SOURCES += \
     src/WordValidator.cpp \
     src/ZListViewItem.cpp
 
-#RC_FILE = src/zyzzyva.rc
 unix {
-    MAKEFILE = zyzzyva.mak
     VERSTR=$$system(cat VERSION)
-
-    UI_DIR = .ui
-    MOC_DIR = .moc
-    OBJECTS_DIR = .obj
-    DEFINES+= VERSION=\"$$VERSTR\"
+    UI_DIR = .build/ui
+    MOC_DIR = .build/moc
+    OBJECTS_DIR = .build/obj
 }
 
 win32 {
     VERSTR=$$system(type VERSION)
-
-    UI_DIR      = tmp\src
-    MOC_DIR     = tmp\moc
-    DEFINES+= VERSION=\"$$VERSTR\"
+    UI_DIR      = build/ui
+    MOC_DIR     = build/moc
+    OBJECTS_DIR = build/obj
 }
+
+MAKEFILE = zyzzyva.mak
+DEFINES += VERSION=\"$$VERSTR\"

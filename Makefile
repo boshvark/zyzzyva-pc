@@ -1,7 +1,6 @@
 Z_MAKEFILE = zyzzyva.mak
 
 all: zyzzyva
-	@echo "** done **"
 
 zyzzyva:
 	qmake zyzzyva.pro
