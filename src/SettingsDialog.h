@@ -13,8 +13,11 @@
 #ifndef SETTINGS_DIALOG_H
 #define SETTINGS_DIALOG_H
 
+#include <qcheckbox.h>
 #include <qdialog.h>
+#include <qlabel.h>
 #include <qlineedit.h>
+#include <qpushbutton.h>
 #include <qsettings.h>
 
 class SettingsDialog : public QDialog
@@ -30,9 +33,13 @@ class SettingsDialog : public QDialog
 
   public slots:
     void browseButtonClicked();
+    void autoImportCboxToggled (bool on);
 
   private:
-    QLineEdit* autoImportLine;
+    QCheckBox*   autoImportCbox;
+    QLabel*      autoImportLabel;
+    QLineEdit*   autoImportLine;
+    QPushButton* browseButton;
 };
 
 #endif // SETTINGS_DIALOG_H
