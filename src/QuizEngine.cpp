@@ -19,12 +19,38 @@
 //
 //! Begin a new quiz.
 //
-//! @param question the quiz question
+//! @param input the group of symbols forming the basis of the quiz
 //---------------------------------------------------------------------------
 void
-QuizEngine::newQuiz ()
+QuizEngine::newQuiz (const QString& input, QuizType type, bool alphagrams)
 {
-    quizQuestions = wordEngine->alphagrams (wordEngine->matchPattern ("???"));
+    quizQuestions.clear();
+
+    quizType = type;
+
+    if (alphagrams) {
+        switch (type) {
+            case Pattern:
+            //quizQuestions = wordEngine->matchPattern (input);
+            qWarning ("Pattern not yet implemented using alphagrams!");
+            break;
+
+            case Anagram:
+            quizQuestions = wordEngine->matchAnagram (input);
+            break;
+
+            case Subanagram:
+            quizQuestions = wordEngine->matchSubanagram (input);
+            break;
+
+            default: break;
+        }
+
+        quizQuestions = wordEngine->alphagrams (quizQuestions);
+    }
+
+    else
+        quizQuestions << input;
 
     questionIndex = 0;
     prepareQuestion();
@@ -121,7 +147,24 @@ QuizEngine::prepareQuestion()
 {
     clearQuestion();
     QString question = getQuestion();
-    QStringList answers = wordEngine->matchAnagram (question);
+
+    QStringList answers;
+    switch (quizType) {
+        case Pattern:
+        answers = wordEngine->matchPattern (question);
+        break;
+
+        case Anagram:
+        answers = wordEngine->matchAnagram (question);
+        break;
+
+        case Subanagram:
+        answers = wordEngine->matchSubanagram (question);
+        break;
+
+        default: break;
+    }
+
     QStringList::iterator it;
     for (it = answers.begin(); it != answers.end(); ++it) {
         correctResponses.insert (*it);

@@ -152,7 +152,11 @@ QuizForm::responseEntered()
 void
 QuizForm::newQuizClicked()
 {
-    engine->newQuiz();
+    //int code = newQuizDialog->exec();
+    //if (code != QDialog::Accepted)
+    //    return;
+
+    engine->newQuiz ("???", QuizEngine::Pattern, false);
     updateForm (false);
 }
 
@@ -199,7 +203,8 @@ QuizForm::updateForm (bool showStats)
     questionLabel->setText (engine->getQuestion());
     responseList->clear();
     responseStatusLabel->setText ("");
-    nextQuestionButton->setEnabled (!engine->onLastQuestion());
+    nextQuestionButton->setEnabled ((engine->numQuestions() > 0) &&
+                                    !engine->onLastQuestion());
 }
 
 //---------------------------------------------------------------------------

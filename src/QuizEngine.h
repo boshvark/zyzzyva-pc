@@ -30,11 +30,17 @@ class QuizEngine
         Duplicate
     };
 
+    enum QuizType {
+        Pattern,
+        Anagram,
+        Subanagram
+    };
+
   public:
     QuizEngine (WordEngine* e) : wordEngine (e) { }
     ~QuizEngine() { }
 
-    void newQuiz();
+    void newQuiz (const QString& input, QuizType type, bool alphagrams);
     bool nextQuestion();
 
     ResponseStatus respond (const QString& response);
@@ -42,6 +48,7 @@ class QuizEngine
     int total() const { return correctResponses.size(); }
     int correct() const { return correctUserResponses.size(); }
     int incorrect() const { return incorrectUserResponses.size(); }
+    int numQuestions() const { return quizQuestions.size(); }
 
     bool onLastQuestion() const;
 
@@ -57,6 +64,7 @@ class QuizEngine
 
     QStringList       quizQuestions;
     int               questionIndex;
+    QuizType          quizType;
 };
 
 #endif // QUIZ_ENGINE_H
