@@ -5,7 +5,7 @@ Z_MAKEFILE = zyzzyva.mak
 all: zyzzyva
 
 zyzzyva:
-	qmake MAKEFILE=$(Z_MAKEFILE) zyzzyva.pro
+	qmake zyzzyva.pro
 	$(MAKE) -f $(Z_MAKEFILE)
 
 clean:
