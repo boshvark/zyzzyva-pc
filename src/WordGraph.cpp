@@ -168,43 +168,51 @@ WordGraph::search (const SearchSpec& spec) const
         QChar c;
         int pIndex = 0;
         while (node) {
-            QString origWord = word;
-            c = pattern.at (pIndex);
 
-            // Allow wildcard to match empty string
-            if (c == "*")
-                nodeStack.push (make_pair (node, make_pair (pIndex + 1, word)));
+            // Stop if word is at max length
+            if (int (word.length()) < spec.maxLength) {
+                QString origWord = word;
+                c = pattern.at (pIndex);
 
-            // Traverse next nodes, looking for matches
-            while (node) {
-                bool match = false;
-                word = origWord;
+                // Allow wildcard to match empty string
+                if (c == "*")
+                    nodeStack.push (make_pair (node, make_pair (pIndex + 1,
+                                                                word)));
 
-                // A node matches wildcard characters or its own letter
-                if ((c == "*") || (c == "?") || (c == node->letter)) {
-                    word += node->letter;
-                    match = true;
-                }
+                // Traverse next nodes, looking for matches
+                while (node) {
+                    bool match = false;
+                    word = origWord;
 
-                // If this node matches, push its child on the stack to be
-                // traversed later
-                if (match && node->child) {
-                    if (c == "*")
+                    // A node matches wildcard characters or its own letter
+                    if ((c == "*") || (c == "?") || (c == node->letter)) {
+                        word += node->letter;
+                        match = true;
+                    }
+
+                    // If this node matches, push its child on the stack to be
+                    // traversed later
+                    if (match && node->child) {
+                        if (c == "*")
+                            nodeStack.push (make_pair (node->child,
+                                                       make_pair (pIndex,
+                                                                  word)));
+
                         nodeStack.push (make_pair (node->child,
-                                                   make_pair (pIndex, word)));
+                                                   make_pair (pIndex + 1,
+                                                              word)));
+                    }
 
-                    nodeStack.push (make_pair (node->child,
-                                               make_pair (pIndex + 1, word)));
+                    // If end of word and end of pattern, put the word in the list
+                    if (match && node->eow &&
+                        (int (word.length()) >= spec.minLength) &&
+                        ((pIndex == pLen - 1) ||
+                        ((pIndex == pLen - 2) &&
+                         (QChar (pattern.at (pIndex + 1)) == "*"))))
+                        wordSet.insert (word);
+
+                    node = node->next;
                 }
-
-                // If end of word and end of pattern, put the word in the list
-                if (match && node->eow &&
-                    ((pIndex == pLen - 1) ||
-                    ((pIndex == pLen - 2) &&
-                     (QChar (pattern.at (pIndex + 1)) == "*"))))
-                    wordSet.insert (word);
-
-                node = node->next;
             }
 
             // Done traversing next nodes, pop a child off the stack
@@ -225,12 +233,12 @@ WordGraph::search (const SearchSpec& spec) const
     else if ((spec.type == Anagram) || (spec.type == Subanagram)) {
         bool subanagrams = (spec.type == Subanagram);
 
-        stack< pair<Node*, pair<int,QString> > > nodeStack;
-        char word[MAX_WORD_LEN + 1];
+        stack< pair<Node*, pair<QString,QString> > > nodeStack;
         QString unmatched = spec.pattern;
-        bool wildcard = false;
+        QString word;
 
         // Note if any wildcard chars are present, then get rid of them
+        bool wildcard = false;
         if (unmatched.contains ('*')) {
             wildcard = true;
             unmatched = unmatched.replace ('*', "");
@@ -238,37 +246,44 @@ WordGraph::search (const SearchSpec& spec) const
 
         Node* node = top;
         QChar c;
-        int i = 0;
 
         while (node) {
-            c = node->letter;
 
-            int index = unmatched.find (c);
-            if (index < 0)
-                index = unmatched.find ("?");
+            // Stop if word is at max length
+            if (int (word.length()) < spec.maxLength) {
+                QString origWord = word;
+                QString origUnmatched = unmatched;
 
-            if ((index >= 0) || wildcard) {
-                if (node->next)
-                    nodeStack.push (make_pair (node->next,
-                                               make_pair (i, unmatched)));
-                word[i] = c;
-                ++i;
-                if (index >= 0)
-                    unmatched.replace (index, 1, "");
+                while (node) {
+                    c = node->letter;
+                    unmatched = origUnmatched;
+                    int index = unmatched.find (c);
+                    if (index < 0)
+                        index = unmatched.find ("?");
 
-                if (node->eow && (subanagrams || unmatched.isEmpty())) {
-                    word[i] = 0;
-                    wordList << QString (word);
+                    if ((index >= 0) || wildcard) {
+                        word = origWord + c;
+                        if (index >= 0)
+                            unmatched.replace (index, 1, "");
+
+                        if (node->child && (wildcard || !unmatched.isEmpty()))
+                            nodeStack.push (make_pair (node->child,
+                                                       make_pair (word,
+                                                                  unmatched)));
+
+                        if (node->eow &&
+                            (subanagrams || unmatched.isEmpty()) &&
+                            (int (word.length()) >= spec.minLength))
+                            wordList << word;
+                    }
+
+                    node = node->next;
                 }
-
-                node = (unmatched.isEmpty() && !wildcard) ? 0 : node->child;
             }
-            else
-                node = node->next;
 
-            if (!node && nodeStack.size()) {
+            if (nodeStack.size()) {
                 node = nodeStack.top().first;
-                i = nodeStack.top().second.first;
+                word = nodeStack.top().second.first;
                 unmatched = nodeStack.top().second.second;
                 nodeStack.pop();
             }
