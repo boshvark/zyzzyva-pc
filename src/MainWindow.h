@@ -31,6 +31,7 @@
 #include <qtabwidget.h>
 
 class AboutDialog;
+class DefineForm;
 class HelpDialog;
 class JudgeForm;
 class QuizEngine;
@@ -63,6 +64,7 @@ class MainWindow : public QMainWindow
     WordEngine* wordEngine;
     QuizEngine* quizEngine;
     QTabWidget* tabStack;
+    DefineForm* defineForm;
     JudgeForm*  judgeForm;
     QuizForm*   quizForm;
     SearchForm* searchForm;

@@ -13,6 +13,7 @@ SET (SRCS
     src/AboutDialog.cpp
     src/AnalyzeQuizDialog.cpp
     src/Auxil.cpp
+    src/DefineForm.cpp
     src/DefinitionDialog.cpp
     src/HelpDialog.cpp
     src/JudgeForm.cpp
@@ -37,6 +38,7 @@ SET (SRCS
 SET (MOCS
     src/AboutDialog.h
     src/AnalyzeQuizDialog.h
+    src/DefineForm.h
     src/DefinitionDialog.h
     src/HelpDialog.h
     src/JudgeForm.h

@@ -24,6 +24,7 @@
 
 #include "MainWindow.h"
 #include "AboutDialog.h"
+#include "DefineForm.h"
 #include "HelpDialog.h"
 #include "JudgeForm.h"
 #include "QuizEngine.h"
@@ -43,6 +44,7 @@
 
 const QString IMPORT_FAILURE_TITLE = "Load Failed";
 const QString IMPORT_COMPLETE_TITLE = "Load Complete";
+const QString DEFINE_TAB_TITLE = "Define";
 const QString JUDGE_TAB_TITLE = "Judge";
 const QString QUIZ_TAB_TITLE = "Quiz";
 const QString SEARCH_TAB_TITLE = "Search";
@@ -102,6 +104,10 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     searchForm = new SearchForm (wordEngine, tabStack, "searchForm");
     Q_CHECK_PTR (searchForm);
     tabStack->addTab (searchForm, SEARCH_TAB_TITLE);
+
+    defineForm = new DefineForm (wordEngine, tabStack, "defineForm");
+    Q_CHECK_PTR (defineForm);
+    tabStack->addTab (defineForm, DEFINE_TAB_TITLE);
 
     judgeForm = new JudgeForm (wordEngine, tabStack, "judgeForm");
     Q_CHECK_PTR (judgeForm);

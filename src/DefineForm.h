@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// JudgeForm.h
+// DefineForm.h
 //
-// A form for looking up words.
+// A form for looking up and displaying word definitions.
 //
 // Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef JUDGE_FORM_H
-#define JUDGE_FORM_H
+#ifndef DEFINE_FORM_H
+#define DEFINE_FORM_H
 
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -32,23 +32,23 @@
 
 class WordEngine;
 
-class JudgeForm : public QFrame
+class DefineForm : public QFrame
 {
   Q_OBJECT
   public:
-    JudgeForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-               WFlags f = 0);
+    DefineForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
+                WFlags f = 0);
 
   public slots:
     void wordChanged (const QString& word);
-    void judgeWord();
+    void defineWord();
 
   private:
     WordEngine*  engine;
     QLineEdit*   wordLine;
-    QPushButton* judgeButton;
+    QPushButton* defineButton;
     QVGroupBox*  resultBox;
     QLabel*      resultLabel;
 };
 
-#endif // JUDGE_FORM_H
+#endif // DEFINE_FORM_H
