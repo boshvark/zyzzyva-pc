@@ -318,6 +318,7 @@ QuizForm::checkResponseClicked()
 {
     killActiveTimer();
     updateStats();
+    inputLine->setText ("");
     inputLine->setEnabled (false);
     checkResponseButton->setEnabled (false);
     analyzeDialog->updateStats();
