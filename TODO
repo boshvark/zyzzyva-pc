@@ -1,0 +1,23 @@
+Stuff that would be nice:
+
+* Allow lists to be sorted alphabetically or by word length.
+
+* Allow definitions of words both through a Define function and through
+  right-clicking.
+
+* Allow the user to edit word definitions from within Zyzzyva.
+
+* Allow a quiz like "Find the shortest word containing these letters".
+  Kind of like the License Plate game.
+
+* Allow quizzes based on the disjunction of multiple searches.  For example,
+  allow a quiz based on the top X bingo stems (TISANE?, SATIRE?, RETAIN?,
+  etc).
+
+* Allow quizzes to end after X questions rather than running through all
+  possible questions.
+
+* Keep permanent track of high scores on quizzes, words that need to be
+  studied, invalid words that need to be forgotten.
+
+* Allow taking back of accidental typos while taking a quiz.
