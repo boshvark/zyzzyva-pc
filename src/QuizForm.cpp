@@ -14,6 +14,7 @@
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
 #include "WordValidator.h"
+#include "ZListViewItem.h"
 #include "Defs.h"
 #include <qlayout.h>
 #include <qgroupbox.h>
@@ -133,9 +134,10 @@ QuizForm::responseEntered()
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
-        QListViewItem* item = new QListViewItem (responseList, response);
+        ZListViewItem* item = new ZListViewItem (responseList, response);
         responseList->setSelected (item, true);
         responseList->ensureItemVisible (item);
+        item->setTextColor (Qt::blue);
         statusStr = "<font color=\"blue\">Correct</font>";
     }
     else if (status == QuizEngine::Incorrect)
@@ -201,7 +203,8 @@ QuizForm::checkResponseClicked()
     QStringList unanswered = engine->getMissed();
     QStringList::iterator it;
     for (it = unanswered.begin(); it != unanswered.end(); ++it) {
-        new QListViewItem (responseList, *it);
+        ZListViewItem* item = new ZListViewItem (responseList, *it);
+        item->setTextColor (Qt::magenta);
     }
 }
 
