@@ -140,174 +140,141 @@ WordGraph::containsWord (const QString& w) const
 QStringList
 WordGraph::search (const SearchSpec& spec) const
 {
-    switch (spec.type) {
-        case Pattern:
-        return getWordsMatchingPattern (spec.pattern);
-
-        case Anagram:
-        return getAnagrams (spec.pattern, false);
-
-        case Subanagram:
-        return getAnagrams (spec.pattern, true);
-
-        default: {
-            QStringList wordList;
-            return wordList;
-            }
-    }
-}
-
-//---------------------------------------------------------------------------
-// getWordsMatchingPattern
-//
-//! Find all acceptable words matching a pattern.
-//
-//! @param pattern the pattern to match
-//! @return a list of acceptable words
-//---------------------------------------------------------------------------
-QStringList
-WordGraph::getWordsMatchingPattern (const QString& p) const
-{
     QStringList wordList;
 
-    // Must use set to eliminate duplicates since patterns with wildcards may
-    // match the same word in more than one way
-    set<QString> wordSet;
+    // Pattern match is specified
+    if (spec.type == Pattern) {
 
-    if (p.isEmpty() || !top)
-        return wordList;
+        // Must use set to eliminate duplicates since patterns with wildcards
+        // may match the same word in more than one way
+        set<QString> wordSet;
 
-    QString pattern = p;
-    pattern.replace (QRegExp ("\\*+"), "*");
+        if (!top)
+            return wordList;
 
-    stack< pair<Node*, pair<int,QString> > > nodeStack;
-    int pLen = pattern.length();
-    QString word;
-
-    Node* node = top;
-    QChar c;
-    int i = 0;
-    int pIndex = 0;
-    while (node) {
-        QString origWord = word;
-        c = pattern.at (pIndex);
-
-        // Allow wildcard to match empty string
-        if (c == "*")
-            nodeStack.push (make_pair (node, make_pair (pIndex + 1, word)));
-
-        // Traverse next nodes, looking for matches
-        while (node) {
-            bool match = false;
-            word = origWord;
-
-            // A node matches wildcard characters or its own letter
-            if ((c == "*") || (c == "?") || (c == node->letter)) {
-                word += node->letter;
-                match = true;
-            }
-
-            // If this node matches, push its child on the stack to be
-            // traversed later
-            if (match && node->child) {
-                if (c == "*")
-                    nodeStack.push (make_pair (node->child,
-                                               make_pair (pIndex, word)));
-
-                nodeStack.push (make_pair (node->child,
-                                           make_pair (pIndex + 1, word)));
-            }
-
-            // If end of word and end of pattern, put the word in the list
-            if (match && node->eow &&
-                ((pIndex == pLen - 1) ||
-                ((pIndex == pLen - 2) &&
-                 (QChar (pattern.at (pIndex + 1)) == "*"))))
-                wordSet.insert (word);
-
-            node = node->next;
-        }
-
-        // Done traversing next nodes, pop a child off the stack
-        if (nodeStack.size()) {
-            node = nodeStack.top().first;
-            pIndex = nodeStack.top().second.first;
-            word = nodeStack.top().second.second;
-            nodeStack.pop();
-        }
-    }
-
-    // Build word list from word set
-    set<QString>::iterator it;
-    for (it = wordSet.begin(); it != wordSet.end(); ++it)
-        wordList << *it;
-    return wordList;
-}
-
-//---------------------------------------------------------------------------
-// getAnagrams
-//
-//! Find all anagrams in an input string.
-//
-//! @param input the letters to match
-//! @param subanagrams whether to match subanagrams (not using all letters)
-//! @return a list of acceptable anagrams
-//---------------------------------------------------------------------------
-QStringList
-WordGraph::getAnagrams (const QString& input, bool subanagrams) const
-{
-    QStringList list;
-
-    stack< pair<Node*, pair<int,QString> > > nodeStack;
-    char word[MAX_WORD_LEN + 1];
-    QString unmatched = input;
-    bool wildcard = false;
-
-    // Note if any wildcard chars are present, then get rid of them
-    if (unmatched.contains ('*')) {
-        wildcard = true;
-        unmatched = unmatched.replace ('*', "");
-    }
-
-    Node* node = top;
-    QChar c;
-    int i = 0;
-
-    while (node) {
-        c = node->letter;
-
-        int index = unmatched.find (c);
-        if (index < 0)
-            index = unmatched.find ("?");
-
-        if ((index >= 0) || wildcard) {
-            if (node->next)
-                nodeStack.push (make_pair (node->next,
-                                           make_pair (i, unmatched)));
-            word[i] = c;
-            ++i;
-            if (index >= 0)
-                unmatched.replace (index, 1, "");
-
-            if (node->eow && (subanagrams || unmatched.isEmpty())) {
-                word[i] = 0;
-                list << QString (word);
-            }
-
-            node = (unmatched.isEmpty() && !wildcard) ? 0 : node->child;
-        }
+        QString pattern = spec.pattern;
+        if (pattern.isEmpty())
+            pattern = "*";
         else
-            node = node->next;
+            pattern.replace (QRegExp ("\\*+"), "*");
 
-        if (!node && nodeStack.size()) {
-            node = nodeStack.top().first;
-            i = nodeStack.top().second.first;
-            unmatched = nodeStack.top().second.second;
-            nodeStack.pop();
+        stack< pair<Node*, pair<int,QString> > > nodeStack;
+        int pLen = pattern.length();
+        QString word;
+
+        Node* node = top;
+        QChar c;
+        int i = 0;
+        int pIndex = 0;
+        while (node) {
+            QString origWord = word;
+            c = pattern.at (pIndex);
+
+            // Allow wildcard to match empty string
+            if (c == "*")
+                nodeStack.push (make_pair (node, make_pair (pIndex + 1, word)));
+
+            // Traverse next nodes, looking for matches
+            while (node) {
+                bool match = false;
+                word = origWord;
+
+                // A node matches wildcard characters or its own letter
+                if ((c == "*") || (c == "?") || (c == node->letter)) {
+                    word += node->letter;
+                    match = true;
+                }
+
+                // If this node matches, push its child on the stack to be
+                // traversed later
+                if (match && node->child) {
+                    if (c == "*")
+                        nodeStack.push (make_pair (node->child,
+                                                   make_pair (pIndex, word)));
+
+                    nodeStack.push (make_pair (node->child,
+                                               make_pair (pIndex + 1, word)));
+                }
+
+                // If end of word and end of pattern, put the word in the list
+                if (match && node->eow &&
+                    ((pIndex == pLen - 1) ||
+                    ((pIndex == pLen - 2) &&
+                     (QChar (pattern.at (pIndex + 1)) == "*"))))
+                    wordSet.insert (word);
+
+                node = node->next;
+            }
+
+            // Done traversing next nodes, pop a child off the stack
+            if (nodeStack.size()) {
+                node = nodeStack.top().first;
+                pIndex = nodeStack.top().second.first;
+                word = nodeStack.top().second.second;
+                nodeStack.pop();
+            }
+        }
+
+        // Build word list from word set
+        set<QString>::iterator it;
+        for (it = wordSet.begin(); it != wordSet.end(); ++it)
+            wordList << *it;
+    }
+
+    else if ((spec.type == Anagram) || (spec.type == Subanagram)) {
+        bool subanagrams = (spec.type == Subanagram);
+
+        stack< pair<Node*, pair<int,QString> > > nodeStack;
+        char word[MAX_WORD_LEN + 1];
+        QString unmatched = spec.pattern;
+        bool wildcard = false;
+
+        // Note if any wildcard chars are present, then get rid of them
+        if (unmatched.contains ('*')) {
+            wildcard = true;
+            unmatched = unmatched.replace ('*', "");
+        }
+
+        Node* node = top;
+        QChar c;
+        int i = 0;
+
+        while (node) {
+            c = node->letter;
+
+            int index = unmatched.find (c);
+            if (index < 0)
+                index = unmatched.find ("?");
+
+            if ((index >= 0) || wildcard) {
+                if (node->next)
+                    nodeStack.push (make_pair (node->next,
+                                               make_pair (i, unmatched)));
+                word[i] = c;
+                ++i;
+                if (index >= 0)
+                    unmatched.replace (index, 1, "");
+
+                if (node->eow && (subanagrams || unmatched.isEmpty())) {
+                    word[i] = 0;
+                    wordList << QString (word);
+                }
+
+                node = (unmatched.isEmpty() && !wildcard) ? 0 : node->child;
+            }
+            else
+                node = node->next;
+
+            if (!node && nodeStack.size()) {
+                node = nodeStack.top().first;
+                i = nodeStack.top().second.first;
+                unmatched = nodeStack.top().second.second;
+                nodeStack.pop();
+            }
         }
     }
 
-    return list;
+    return wordList;
 }
 
 //---------------------------------------------------------------------------
