@@ -9,6 +9,9 @@ Stuff that would be nice:
 
 * Allow the user to edit word definitions from within Zyzzyva.
 
+* Allow search results to use lower-case letters for letters matched by a
+  blank or wildcard.
+
 * Allow a quiz like "Find the shortest word containing these letters".
   Kind of like the License Plate game.
 
