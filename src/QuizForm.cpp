@@ -34,7 +34,7 @@
 #include "ZListViewItem.h"
 #include "Defs.h"
 #include <qlayout.h>
-#include <qgroupbox.h>
+#include <qhgroupbox.h>
 #include <qheader.h>
 #include <qmessagebox.h>
 
@@ -69,15 +69,22 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     Q_CHECK_PTR (questionNumLabel);
     mainVlay->addWidget (questionNumLabel);
 
-    QGroupBox* quizGbox = new QGroupBox (this, "quizGbox");
+    QHGroupBox* quizGbox = new QHGroupBox (this, "quizGbox");
     Q_CHECK_PTR (quizGbox);
     mainVlay->addWidget (quizGbox);
 
-    QHBoxLayout* quizBoxHlay = new QHBoxLayout (quizGbox, MARGIN, SPACING,
-                                                "quizBoxHlay");
+    questionStack = new QWidgetStack (quizGbox, "questionStack");
+    Q_CHECK_PTR (questionStack);
+
+    questionWidget = new QWidget (questionStack, "questionWidget");
+    Q_CHECK_PTR (questionWidget);
+    questionStack->addWidget (questionWidget);
+
+    QHBoxLayout* quizBoxHlay = new QHBoxLayout (questionWidget, MARGIN,
+                                                SPACING, "quizBoxHlay");
     Q_CHECK_PTR (quizBoxHlay);
     quizBoxHlay->addStretch (1);
-    questionLabel = new QLabel (quizGbox, "label");
+    questionLabel = new QLabel (questionWidget, "label");
     Q_CHECK_PTR (questionLabel);
     quizBoxHlay->addWidget (questionLabel);
     quizBoxHlay->addStretch (1);
