@@ -68,6 +68,10 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (tabStack);
     setCentralWidget (tabStack);
 
+    searchForm = new SearchForm (engine, tabStack, "searchForm");
+    Q_CHECK_PTR (searchForm);
+    tabStack->addTab (searchForm, SEARCH_TAB_TITLE);
+
     judgeForm = new JudgeForm (engine, tabStack, "judgeForm");
     Q_CHECK_PTR (judgeForm);
     tabStack->addTab (judgeForm, JUDGE_TAB_TITLE);
@@ -75,10 +79,6 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     messageLabel = new QLabel (this, "messageLabel");
     Q_CHECK_PTR (messageLabel);
     statusBar()->addWidget (messageLabel, 2);
-
-    searchForm = new SearchForm (engine, tabStack, "searchForm");
-    Q_CHECK_PTR (searchForm);
-    tabStack->addTab (searchForm, SEARCH_TAB_TITLE);
 
     statusLabel = new QLabel (this, "statusLabel");
     Q_CHECK_PTR (statusLabel);
