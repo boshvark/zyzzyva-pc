@@ -71,6 +71,10 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (precisionLabel);
     statsHlay->addWidget (precisionLabel);
 
+    responseStatusLabel = new QLabel (this, "responseStatusLabel");
+    Q_CHECK_PTR (responseStatusLabel);
+    mainVlay->addWidget (responseStatusLabel);
+
     inputLine = new QLineEdit (this, "inputLine");
     Q_CHECK_PTR (inputLine);
     WordValidator* validator = new WordValidator (inputLine);
@@ -120,15 +124,24 @@ QuizForm::responseEntered()
         return;
 
     QuizEngine::ResponseStatus status = engine->respond (response);
+    QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
         responseList->insertItem (response);
-        inputLine->clear();
+        statusStr = "Correct";
     }
+    else if (status == QuizEngine::Incorrect)
+        statusStr = "Incorrect";
+    else if (status == QuizEngine::Duplicate)
+        statusStr = "Duplicate";
+    inputLine->clear();
 
     // Update the stats if the stats are already shown
     if (!recallLabel->text().isEmpty())
         updateStats();
+
+    // Update the response status label
+    responseStatusLabel->setText(response + " : " + statusStr);
 }
 
 //---------------------------------------------------------------------------
@@ -185,6 +198,7 @@ QuizForm::updateForm (bool showStats)
         clearStats();
     questionLabel->setText (engine->getQuestion());
     responseList->clear();
+    responseStatusLabel->setText ("");
     nextQuestionButton->setEnabled (!engine->onLastQuestion());
 }
 

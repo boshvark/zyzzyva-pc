@@ -47,6 +47,7 @@ class QuizForm : public QFrame
     QListBox*     responseList;
     QLabel*       recallLabel;
     QLabel*       precisionLabel;
+    QLabel*       responseStatusLabel;
     QPushButton*  nextQuestionButton;
 };
 
