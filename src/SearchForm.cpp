@@ -16,6 +16,7 @@
 #include <qbuttongroup.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qmessagebox.h>
 
 //---------------------------------------------------------------------------
 // SearchForm
@@ -99,11 +100,19 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 void
 SearchForm::search()
 {
-    resultList->clear();
-
     QString word = wordLine->text();
     if (word.isEmpty()) return;
 
-    resultList->insertStringList (engine->matchPattern (word));
+    if (patternButton->isChecked()) {
+        resultList->clear();
+        resultList->insertStringList (engine->matchPattern (word));
+    }
+    else {
+        QMessageBox::information(this, "Search Type Not Implemented",
+                                 "The selected search type is not yet "
+                                 "implemented.", QMessageBox::Ok);
+        return;
+    }
+
     resultList->sort();
 }
