@@ -74,6 +74,7 @@ class QuizForm : public QFrame
     QuizEngine*   quizEngine;
     WordEngine*   wordEngine;
     QLabel*       questionNumLabel;
+    QLabel*       timerLabel;
     QWidget*      questionWidget;
     QCanvasView*  questionCanvasView;
     QCanvas*      questionCanvas;

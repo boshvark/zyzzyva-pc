@@ -68,9 +68,19 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     Q_CHECK_PTR (mainVlay);
     mainHlay->addLayout (mainVlay);
 
+    QHBoxLayout* topHlay = new QHBoxLayout (SPACING, "topHlay");
+    Q_CHECK_PTR (topHlay);
+    mainVlay->addLayout (topHlay);
+
     questionNumLabel = new QLabel (this, "questionNumLabel");
     Q_CHECK_PTR (questionNumLabel);
-    mainVlay->addWidget (questionNumLabel);
+    topHlay->addWidget (questionNumLabel);
+
+    topHlay->addStretch (1);
+
+    timerLabel = new QLabel (this, "timerLabel");
+    Q_CHECK_PTR (timerLabel);
+    topHlay->addWidget (timerLabel);
 
     QHBoxLayout* quizBoxHlay = new QHBoxLayout (SPACING, "quizBoxHlay");
     Q_CHECK_PTR (quizBoxHlay);
