@@ -94,7 +94,7 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (tabStack);
     setCentralWidget (tabStack);
 
-    quizForm = new QuizForm (quizEngine, tabStack, "quizForm");
+    quizForm = new QuizForm (quizEngine, wordEngine, tabStack, "quizForm");
     Q_CHECK_PTR (quizForm);
     tabStack->addTab (quizForm, QUIZ_TAB_TITLE);
 

@@ -28,19 +28,21 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlistview.h>
+#include <qpoint.h>
 #include <qpushbutton.h>
 
 class AnalyzeQuizDialog;
 class NewQuizDialog;
 class QuizEngine;
+class WordEngine;
 class ZListView;
 
 class QuizForm : public QFrame
 {
   Q_OBJECT
   public:
-    QuizForm (QuizEngine* e, QWidget* parent = 0, const char* name = 0,
-              WFlags f = 0);
+    QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent = 0, const char*
+              name = 0, WFlags f = 0);
 
   public slots:
     void responseEntered();
@@ -48,6 +50,7 @@ class QuizForm : public QFrame
     void nextQuestionClicked();
     void checkResponseClicked();
     void analyzeClicked();
+    void menuRequested (QListViewItem* item, const QPoint&, int);
 
   private:
     void updateForm (bool showStats);
@@ -58,7 +61,8 @@ class QuizForm : public QFrame
     void setQuestionStatus (int correct, int total);
 
   private:
-    QuizEngine*   engine;
+    QuizEngine*   quizEngine;
+    WordEngine*   wordEngine;
     QLabel*       questionNumLabel;
     QLabel*       questionLabel;
     QLineEdit*    inputLine;

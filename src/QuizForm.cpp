@@ -24,8 +24,11 @@
 
 #include "QuizForm.h"
 #include "AnalyzeQuizDialog.h"
+#include "DefinitionDialog.h"
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
+#include "WordEngine.h"
+#include "WordPopupMenu.h"
 #include "WordValidator.h"
 #include "ZListView.h"
 #include "ZListViewItem.h"
@@ -42,16 +45,17 @@ using namespace Defs;
 //
 //! Constructor.
 //
-//! @param e the quiz engine
+//! @param qe the quiz engine
+//! @param we the word engine
 //! @param parent the parent widget
 //! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
-                    WFlags f)
-    : QFrame (parent, name, f), engine (e),
+QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
+                    char* name, WFlags f)
+    : QFrame (parent, name, f), quizEngine (qe), wordEngine (we),
     newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true)),
-    analyzeDialog (new AnalyzeQuizDialog (e, this, "analyzeDialog", false))
+    analyzeDialog (new AnalyzeQuizDialog (qe, this, "analyzeDialog", false))
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
                                              "mainHlay");
@@ -83,6 +87,9 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     responseList->setResizeMode (QListView::LastColumn);
     responseList->addColumn ("Responses");
     responseList->header()->hide();
+    connect (responseList, SIGNAL (contextMenuRequested (QListViewItem*, const
+                                                         QPoint&, int)),
+             SLOT (menuRequested (QListViewItem*, const QPoint&, int)));
     mainVlay->addWidget (responseList);
 
     // Question status
@@ -158,7 +165,7 @@ QuizForm::responseEntered()
         return;
     }
 
-    QuizEngine::ResponseStatus status = engine->respond (response);
+    QuizEngine::ResponseStatus status = quizEngine->respond (response);
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
@@ -202,7 +209,7 @@ QuizForm::newQuizClicked()
     SearchSpec spec = newQuizDialog->getSearchSpec();
     bool alphagrams = newQuizDialog->getQuizAlphagrams();
     bool random = newQuizDialog->getQuizRandomOrder();
-    engine->newQuiz (spec, alphagrams, random);
+    quizEngine->newQuiz (spec, alphagrams, random);
     updateForm (false);
     analyzeDialog->newQuiz (spec);
 }
@@ -215,7 +222,7 @@ QuizForm::newQuizClicked()
 void
 QuizForm::nextQuestionClicked()
 {
-    if (!engine->nextQuestion())
+    if (!quizEngine->nextQuestion())
         QMessageBox::warning (this, "Error getting next question",
                               "Error getting next question.");
 
@@ -236,7 +243,7 @@ QuizForm::checkResponseClicked()
     checkResponseButton->setEnabled (false);
     analyzeDialog->updateStats();
 
-    QStringList unanswered = engine->getMissed();
+    QStringList unanswered = quizEngine->getMissed();
     QStringList::iterator it;
     for (it = unanswered.begin(); it != unanswered.end(); ++it) {
         ZListViewItem* item = new ZListViewItem (responseList, *it);
@@ -262,6 +269,32 @@ QuizForm::analyzeClicked()
 }
 
 //---------------------------------------------------------------------------
+// menuRequested
+//
+//! Called when a right-click menu is requested.
+//! @param item the selected listview item
+//! @param point the point at which the menu was requested
+//---------------------------------------------------------------------------
+void
+QuizForm::menuRequested (QListViewItem* item, const QPoint& point, int)
+{
+    if (!item)
+        return;
+
+    WordPopupMenu* menu = new WordPopupMenu (this, "menu");
+    int choice = menu->exec (point);
+    delete menu;
+
+    if (choice == WordPopupMenu::ShowDefinition) {
+        DefinitionDialog* dialog = new DefinitionDialog (wordEngine,
+                                                         item->text (0), this,
+                                                         "dialog", true);
+        dialog->exec();
+        delete dialog;
+    }
+}
+
+//---------------------------------------------------------------------------
 // updateStats
 //
 //! Update the form, including setting the question label, clearing the
@@ -275,13 +308,14 @@ QuizForm::updateForm (bool showStats)
         updateStats();
     else
         clearStats();
-    setQuestionNum (engine->getQuestionIndex() + 1, engine->numQuestions());
-    questionLabel->setText (engine->getQuestion());
+    setQuestionNum (quizEngine->getQuestionIndex() + 1,
+                    quizEngine->numQuestions());
+    questionLabel->setText (quizEngine->getQuestion());
     responseList->clear();
     responseStatusLabel->setText ("");
     inputLine->setEnabled (true);
-    nextQuestionButton->setEnabled ((engine->numQuestions() > 0) &&
-                                    !engine->onLastQuestion());
+    nextQuestionButton->setEnabled ((quizEngine->numQuestions() > 0) &&
+                                    !quizEngine->onLastQuestion());
     checkResponseButton->setEnabled (true);
 
     inputLine->setFocus();
@@ -295,8 +329,8 @@ QuizForm::updateForm (bool showStats)
 void
 QuizForm::updateStats()
 {
-    setQuestionStatus (engine->getQuestionCorrect(),
-                       engine->getQuestionTotal());
+    setQuestionStatus (quizEngine->getQuestionCorrect(),
+                       quizEngine->getQuestionTotal());
 }
 
 //---------------------------------------------------------------------------
