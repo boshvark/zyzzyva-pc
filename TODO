@@ -16,6 +16,11 @@ Stuff that would be nice:
   allow a quiz based on the top X bingo stems (TISANE?, SATIRE?, RETAIN?,
   etc).
 
+* Allow quizzes based on a random rack of letters, drawn as if out of a real
+  bag of Scrabble tiles.
+
+* Allow quiz questions whose correct answer is "no words at all".
+
 * Allow quizzes to end after X questions rather than running through all
   possible questions.
 
