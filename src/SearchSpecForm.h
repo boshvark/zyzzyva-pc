@@ -52,6 +52,7 @@ class SearchSpecForm : public QFrame
 
   signals:
     void returnPressed();
+    void patternChanged (const QString&);
 
   private:
     QComboBox* matchCbox;

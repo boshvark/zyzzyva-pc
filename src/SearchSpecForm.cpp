@@ -84,6 +84,8 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (patternLine);
     patternLine->setValidator (patternValidator);
     connect (patternLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
+    connect (patternLine, SIGNAL (textChanged (const QString&)),
+             SIGNAL (patternChanged (const QString&)));
     matchHlay->addWidget (patternLine);
 
     QHBoxLayout* lengthHlay = new QHBoxLayout (SPACING, "lengthHlay");

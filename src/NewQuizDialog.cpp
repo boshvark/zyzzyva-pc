@@ -21,7 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "NewQuizDialog.h"
-#include "WordValidator.h"
+#include "SearchSpecForm.h"
 #include "Defs.h"
 
 #include <qbuttongroup.h>
@@ -49,57 +49,23 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
                                              "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout (SPACING, "mainHlay");
-    Q_CHECK_PTR (mainHlay);
-    mainVlay->addLayout (mainHlay);
-
-    QVBoxLayout* optionVlay = new QVBoxLayout (SPACING, "optionVlay");
-    Q_CHECK_PTR (optionVlay);
-    mainHlay->addLayout (optionVlay);
-
-    QButtonGroup* optionGroup = new QButtonGroup (3, QButtonGroup::Vertical,
-                                                  "Quiz Type", this);
-    Q_CHECK_PTR (optionGroup);
-    optionGroup->setExclusive (true);
-    optionVlay->addWidget (optionGroup);
-
-    patternButton = new QRadioButton ("Pattern", optionGroup,
-                                      "patternButton");
-    Q_CHECK_PTR (patternButton);
-    patternButton->setChecked (true);
-    anagramButton = new QRadioButton ("Anagram", optionGroup,
-                                      "anagramButton");
-    Q_CHECK_PTR (anagramButton);
-    subanagramButton = new QRadioButton ("Subanagram", optionGroup,
-                                         "subanagramButton");
-    Q_CHECK_PTR (subanagramButton);
-
-    QVBoxLayout* inputVlay = new QVBoxLayout (SPACING, "inputVlay");
-    Q_CHECK_PTR (inputVlay);
-    mainHlay->addLayout (inputVlay);
+    specForm = new SearchSpecForm (this, "specForm");
+    Q_CHECK_PTR (specForm);
+    connect (specForm, SIGNAL (patternChanged (const QString&)),
+             SLOT (inputChanged (const QString&)));
+    mainVlay->addWidget (specForm);
 
     alphagramCbox = new QCheckBox ("Use alphagrams as questions", this,
                                    "alphagramCbox");
     Q_CHECK_PTR (alphagramCbox);
     connect (alphagramCbox, SIGNAL (toggled (bool)),
              SLOT (alphagramsToggled (bool)));
-    inputVlay->addWidget (alphagramCbox);
+    mainVlay->addWidget (alphagramCbox);
 
     randomCbox = new QCheckBox ("Randomize order", this, "randomCbox");
     Q_CHECK_PTR (randomCbox);
     randomCbox->setEnabled (false);
-    inputVlay->addWidget (randomCbox);
-
-    inputLine = new QLineEdit (this, "inputLine");
-    Q_CHECK_PTR (inputLine);
-    connect (inputLine, SIGNAL (textChanged (const QString&)),
-             SLOT (inputChanged (const QString&)));
-    inputVlay->addWidget (inputLine);
-
-    WordValidator* validator = new WordValidator (inputLine);
-    Q_CHECK_PTR (validator);
-    validator->setOptions (WordValidator::AllowQuestionMarks);
-    inputLine->setValidator (validator);
+    mainVlay->addWidget (randomCbox);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
@@ -135,13 +101,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
 MatchType
 NewQuizDialog::getQuizType() const
 {
-    if (patternButton->isChecked())
-        return Pattern;
-    else if (anagramButton->isChecked())
-        return Anagram;
-    else if (subanagramButton->isChecked())
-        return Subanagram;
-    return UnknownMatchType;
+    return specForm->getMatchType();
 }
 
 //---------------------------------------------------------------------------
@@ -181,7 +141,7 @@ NewQuizDialog::getQuizRandomOrder() const
 QString
 NewQuizDialog::getQuizString() const
 {
-    return inputLine->text();
+    return specForm->getPattern();
 }
 
 //---------------------------------------------------------------------------

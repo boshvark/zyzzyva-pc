@@ -32,6 +32,8 @@
 #include <qradiobutton.h>
 #include "MatchType.h"
 
+class SearchSpecForm;
+
 class NewQuizDialog : public QDialog
 {
   Q_OBJECT
@@ -51,13 +53,10 @@ class NewQuizDialog : public QDialog
     void inputChanged (const QString& text);
 
   private:
-    QRadioButton* patternButton;
-    QRadioButton* anagramButton;
-    QRadioButton* subanagramButton;
-    QCheckBox*    alphagramCbox;
-    QCheckBox*    randomCbox;
-    QLineEdit*    inputLine;
-    QPushButton*  okButton;
+    SearchSpecForm* specForm;
+    QCheckBox*      alphagramCbox;
+    QCheckBox*      randomCbox;
+    QPushButton*    okButton;
 };
 
 #endif // NEW_QUIZ_DIALOG_H
