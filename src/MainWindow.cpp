@@ -12,6 +12,7 @@
 
 #include "MainWindow.h"
 #include "WordEngine.h"
+#include <qapplication.h>
 #include <qdir.h>
 #include <qfiledialog.h>
 #include <qframe.h>
@@ -20,6 +21,7 @@
 #include <qmessagebox.h>
 
 const QString ANAGRAM_MODE = "Anagram";
+const QString ADJUDICATE_MODE = "Adjudicate";
 const QString RECALL_LIST_MODE = "Recall List";
 const QString CHOOSE_BUTTON_TEXT = "Choose...";
 const QString CHOOSER_TITLE = "Choose a Word List";
@@ -36,6 +38,8 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
     filePopup->insertItem ("&Import...", this, SLOT (import()), CTRL+Key_I);
+    filePopup->insertSeparator();
+    filePopup->insertItem ("&Quit", qApp, SLOT (quit()));
     menuBar()->insertItem ("&File", filePopup);
 
     QVBoxLayout* mainVlay = new QVBoxLayout (frame, 0, 0, "mainVlay");
