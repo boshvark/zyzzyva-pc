@@ -9,8 +9,6 @@ Stuff that would be nice:
 * Configure docs/help/zyzzyva.dcf at compile time with the correct
   QtAssistantClient version.
 
-* Allow lists to be sorted alphabetically or by word length.
-
 * Allow the user to edit word definitions from within Zyzzyva.
 
 * Allow a quiz like "Find the shortest word containing these letters".
