@@ -154,6 +154,7 @@ WordGraph::search (const SearchSpec& spec) const
     QChar c;
 
     QString unmatched = spec.pattern;
+    QString include = spec.includeLetters;
     bool wildcard = false;
     Node* node = top;
 
@@ -181,6 +182,7 @@ WordGraph::search (const SearchSpec& spec) const
         if (int (word.length()) < spec.maxLength) {
             QString origWord = word;
             QString origUnmatched = unmatched;
+            QString origInclude = include;
 
             // Get the next character in the Pattern match.  Allow a wildcard
             // to match the empty string.
@@ -198,6 +200,15 @@ WordGraph::search (const SearchSpec& spec) const
 
                 unmatched = origUnmatched;
                 word = origWord;
+                include = origInclude;
+
+                // Check to see if the current letter is required to be
+                // included.  If so, take it off the include list.
+                if (!include.isEmpty()) {
+                    int index = include.find (node->letter);
+                    if (index >= 0)
+                        include.replace (index, 1, "");
+                }
 
                 // Special processing for Pattern match
                 if (spec.type == Pattern) {
@@ -213,16 +224,17 @@ WordGraph::search (const SearchSpec& spec) const
                     if (node->child) {
                         if (c == "*")
                             states.push (TraversalState (node->child, word,
-                                                         unmatched));
+                                                         unmatched, include));
 
                         states.push (TraversalState (node->child, word,
                                                      unmatched.right (
-                                                     unmatched.length() - 1)));
+                                                     unmatched.length() - 1),
+                                                     include));
                     }
 
                     // If end of word and end of pattern, put the word in the
                     // list
-                    if (node->eow &&
+                    if (node->eow && include.isEmpty() &&
                         (int (word.length()) >= spec.minLength) &&
                         ((unmatched.length() == 1) ||
                         ((unmatched.length() == 2) &&
@@ -249,9 +261,9 @@ WordGraph::search (const SearchSpec& spec) const
 
                         if (node->child && (wildcard || !unmatched.isEmpty()))
                             states.push (TraversalState (node->child, word,
-                                                         unmatched));
+                                                         unmatched, include));
 
-                        if (node->eow &&
+                        if (node->eow && include.isEmpty() &&
                             ((spec.type == Subanagram) ||
                               unmatched.isEmpty()) &&
                             (int (word.length()) >= spec.minLength))
@@ -267,6 +279,7 @@ WordGraph::search (const SearchSpec& spec) const
             node = state.node;
             unmatched = state.unmatched;
             word = state.word;
+            include = state.include;
             states.pop();
         }
     }
