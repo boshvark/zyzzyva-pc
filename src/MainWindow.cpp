@@ -23,6 +23,7 @@
 
 const QString CHOOSER_TITLE = "Choose a Word List";
 const QString IMPORT_COMPLETE_TITLE = "Import Complete";
+const QString JUDGE_TAB_TITLE = "Judge";
 
 //---------------------------------------------------------------------------
 // MainWindow
@@ -49,7 +50,7 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 
     lookupForm = new LookupForm (engine, tabStack, "lookupForm");
     Q_CHECK_PTR (lookupForm);
-    tabStack->addTab (lookupForm, "Look Up");
+    tabStack->addTab (lookupForm, JUDGE_TAB_TITLE);
 
     messageLabel = new QLabel (this, "messageLabel");
     Q_CHECK_PTR (messageLabel);

@@ -36,7 +36,7 @@ LookupForm::LookupForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (lookupHlay);
     mainVlay->addLayout (lookupHlay);
 
-    QLabel* label = new QLabel ("Look Up : ", this, "label");
+    QLabel* label = new QLabel ("Word : ", this, "label");
     Q_CHECK_PTR (label);
     lookupHlay->addWidget (label);
 
