@@ -6,7 +6,100 @@
 <body>
   <h1>Quizzes</h1>
 
-  <p>Here is a page about quizzes.</p>
+  <p>The Quiz tab can be used to create quizzes to increase your word
+  knowledge and anagramming skills.</p>
+
+  <a name="create-quiz">
+  <h2>Creating a Quiz</h2>
+
+  <p>To create a new quiz, click the <i>New Quiz</i> button.  The quiz
+  creation window includes a search definition area that is exactly the same
+  as the one on the Search tab.  Please see <a href="search.html">Searching
+  for Words</a> for more details about creating a search.</p>
+
+  <p>The specified search will select a list of words to be used in quiz
+  questions.  Once the list of words is determined, there are two ways they
+  might be presented as quiz questions.  The first option is for the quiz to
+  have just one question, requiring the full list of words as an answer.  This
+  option is useful when trying to recall a specific list of words from memory,
+  such as the 972 three-letter words.</p>
+
+  <p>The second option is for each unique combination of letters to be used as
+  quiz questions, with each question requiring anagrams as an answer.  Each
+  unique combination of letters will be presented with the letters in
+  alphabetical order (as an "alphagram").  This option is specified by
+  activating the <i>Use individual alphagrams as questions</i> checkbox.  If
+  the <i>Randomize order</i> checkbox is also activated, the quiz questions
+  will be presented in random order.</p>
+
+  <p>The alphagram option is most useful for improving one's anagramming
+  skills, since each question will be a jumble of letters to be unscrambled.
+  For example, with an <i>Anagram</i> search of <tt>SATIRE?</tt> and the
+  alphagram option checked, the quiz questions will consist of
+  <tt>AAEIRST</tt>, <tt>ABEIRST</tt>, <tt>ACEIRST</tt>, etc.  With the
+  randomize option checked, the questions will appear in random order.</p>
+
+  <p>When the quiz has been specified, click the <i>OK</i> button in the quiz
+  creation window to begin taking the quiz.</p>
+
+  <a name="take-quiz">
+  <h2>Taking a Quiz</h2>
+
+  <p>Each quiz question requires a list of words as an answer.  If the quiz
+  question is an alphagram, the correct answer to the question will be the
+  list of words containing all the letters in the alphagram.  If the quiz
+  question is a search specification, the correct answer will be the list of
+  words matching the specification.</p>
+
+  <p>Enter each word by typing the word in the input box near the bottom of
+  the Quiz tab and pressing Enter.  If the word is a valid response, it will
+  appear above the input box with the word "Correct", and it will also be
+  added to the response list.  If the word is not a valid response, it will
+  appear above the input box with the word "Incorrect".</p>
+
+  <p>Once all the response words have been entered, click the <i>Check</i>
+  button or press Enter in the empty input box.  This will submit the current
+  word list as the final response to the quiz question.  If any valid
+  responses were missed, they will appear in the word list in a magenta
+  color.  The number of correct words entered and the total number of valid
+  responses will also be displayed above the input box.  For example, if the
+  quiz question is <tt>ACEIRST</tt> and the valid responses <tt>RACIEST</tt>
+  and <tt>STEARIC</tt> were entered, then the forgotten word <tt>CRISTAE</tt>
+  will appear in the response list, and the message "Correct: 2 of 3" will
+  appear above the input box.</p>
+
+  <p>After clicking the <i>Check</i> button and reviewing the judgment of your
+  response, click the <i>Next</i> button to continue to the next quiz
+  question.</p>
+
+  <a name="analyze-quiz">
+  <h2>Analyzing Your Quiz Performance</h2>
+
+  <p>At any time while taking a quiz or after a quiz is completed, you can
+  analyze your performance by clicking the <i>Analyze</i> button.  A quiz
+  analysis window will appear.  At the top of the window is a summary of the
+  current quiz, along with some statistics about your performance so far.</p>
+
+  <p>Performance statistics are presented as Recall and Precision.  Recall
+  represents the number of correct response words that were actually given as
+  responses.  For example, if there were a total of 60 valid response words
+  throughout the course of a quiz, and you correctly identified 45 of them,
+  your Recall performance is 45/60, or 75%.  Precision represents the number
+  of response words you provided that were actually correct.  For example, if
+  you provided 50 responses and 45 of them were correct, your Precision
+  performance is 45/50, or 90%.  The numerator of both Recall and Precision
+  will always be the same, since in both cases it represents the number of
+  correct responses you have given over the course of the quiz.</p>
+
+  <p>The quiz analysis window also provides a list of Missed words and a list
+  of Incorrect words.  The Missed list contains the valid response words that
+  were not provided by the quiz participant.  This list generally consists of
+  words you may need to study a bit more.  The Incorrect list contains the
+  incorrect responses provided by the quiz participant.  This list generally
+  consists of invalid words you should try to forget.</p>
+
+  <p>When you are done analyzing your quiz performance, click the <i>Close</i>
+  button to close the quiz analysis window.</p>
 
   <p>Copyright &copy; 2005 Michael W Thelen.</p>
 </body>
