@@ -39,7 +39,11 @@ class JudgeForm : public QFrame
                WFlags f = 0);
 
   public slots:
-    void lookupWord();
+    void judgeWord();
+    void defineWord();
+
+  private:
+    void lookupWord (bool showDefinition);
 
   private:
     WordEngine* engine;
