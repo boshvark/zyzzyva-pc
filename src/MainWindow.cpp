@@ -31,8 +31,8 @@ const QString IMPORT_COMPLETE_TITLE = "Import Complete";
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @name the name of this widget
-//! @f widget flags
+//! @param name the name of this widget
+//! @param f widget flags
 //---------------------------------------------------------------------------
 MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     : QMainWindow (parent, name, f), engine (new WordEngine())
