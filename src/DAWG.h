@@ -10,7 +10,29 @@
 //
 //---------------------------------------------------------------------------
 
+#include <string>
+
 class DAWG
 {
+  public:
+    DAWG();
+    ~DAWG();
 
+    void addWord (const std::string& w);
+    bool containsWord (const std::string& w) const;
+
+    void print() const;
+
+  private:
+    class Node {
+      public:
+        Node(char c = 0, bool e = false);
+        ~Node();
+        char letter;
+        bool eow;
+        Node* next;
+        Node* child;
+    };
+
+    Node* top;
 };
