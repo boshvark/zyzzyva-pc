@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "QuizForm.h"
+#include "AnalyzeQuizDialog.h"
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
 #include "WordValidator.h"
@@ -48,7 +49,8 @@ using namespace Defs;
 QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
                     WFlags f)
     : QFrame (parent, name, f), engine (e),
-    newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true))
+    newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true)),
+    analyzeDialog (new AnalyzeQuizDialog (e, this, "analyzeDialog", false))
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
                                              "mainHlay");
@@ -57,6 +59,10 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     QVBoxLayout* mainVlay = new QVBoxLayout (SPACING, "mainVlay");
     Q_CHECK_PTR (mainVlay);
     mainHlay->addLayout (mainVlay);
+
+    questionNumLabel = new QLabel (this, "questionNumLabel");
+    Q_CHECK_PTR (questionNumLabel);
+    mainVlay->addWidget (questionNumLabel);
 
     QGroupBox* quizGbox = new QGroupBox (this, "quizGbox");
     Q_CHECK_PTR (quizGbox);
@@ -79,42 +85,17 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     mainVlay->addWidget (responseList);
 
     // Question status
-    QHBoxLayout* qStatusHlay = new QHBoxLayout (SPACING, "questionStatusHlay");
-    Q_CHECK_PTR (qStatusHlay);
-    mainVlay->addLayout (qStatusHlay);
-
-    questionNumLabel = new QLabel (this, "questionNumLabel");
-    Q_CHECK_PTR (questionNumLabel);
-    qStatusHlay->addWidget (questionNumLabel);
+    QHBoxLayout* statusHlay = new QHBoxLayout (SPACING, "questionStatusHlay");
+    Q_CHECK_PTR (statusHlay);
+    mainVlay->addLayout (statusHlay);
 
     responseStatusLabel = new QLabel (this, "responseStatusLabel");
     Q_CHECK_PTR (responseStatusLabel);
-    qStatusHlay->addWidget (responseStatusLabel);
+    statusHlay->addWidget (responseStatusLabel);
 
-    // Stats
-    QHBoxLayout* statsHlay = new QHBoxLayout (SPACING, "statsHlay");
-    Q_CHECK_PTR (statsHlay);
-    mainVlay->addLayout (statsHlay);
-
-    recallLabel = new QLabel (this, "recallLabel");
-    Q_CHECK_PTR (recallLabel);
-    statsHlay->addWidget (recallLabel);
-
-    precisionLabel = new QLabel (this, "precisionLabel");
-    Q_CHECK_PTR (precisionLabel);
-    statsHlay->addWidget (precisionLabel);
-
-    QHBoxLayout* totalStatsHlay = new QHBoxLayout (SPACING, "totalStatsHlay");
-    Q_CHECK_PTR (totalStatsHlay);
-    mainVlay->addLayout (totalStatsHlay);
-
-    totalRecallLabel = new QLabel (this, "totalRecallLabel");
-    Q_CHECK_PTR (totalRecallLabel);
-    totalStatsHlay->addWidget (totalRecallLabel);
-
-    totalPrecisionLabel = new QLabel (this, "totalPrecisionLabel");
-    Q_CHECK_PTR (totalPrecisionLabel);
-    totalStatsHlay->addWidget (totalPrecisionLabel);
+    questionStatusLabel = new QLabel (this, "questionStatusLabel");
+    Q_CHECK_PTR (questionStatusLabel);
+    statusHlay->addWidget (questionStatusLabel);
 
     // Input line
     inputLine = new QLineEdit (this, "inputLine");
@@ -154,6 +135,13 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
              SLOT (checkResponseClicked()));
     checkResponseButton->setEnabled (false);
     buttonHlay->addWidget (checkResponseButton);
+
+    QPushButton* analyzeButton = new QPushButton ("&Analyze...", this,
+                                                  "analyzeButton");
+    Q_CHECK_PTR (analyzeButton);
+    analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));
+    buttonHlay->addWidget (analyzeButton);
 }
 
 //---------------------------------------------------------------------------
@@ -177,15 +165,20 @@ QuizForm::responseEntered()
         responseList->ensureItemVisible (item);
         item->setTextColor (Qt::blue);
         statusStr = "<font color=\"blue\">Correct</font>";
+        analyzeDialog->updateStats();
     }
-    else if (status == QuizEngine::Incorrect)
+    else if (status == QuizEngine::Incorrect) {
         statusStr = "<font color=\"red\">Incorrect</font>";
-    else if (status == QuizEngine::Duplicate)
+        analyzeDialog->addIncorrect (response);
+        analyzeDialog->updateStats();
+    }
+    else if (status == QuizEngine::Duplicate) {
         statusStr = "<font color=\"purple\">Duplicate</font>";
+    }
     inputLine->clear();
 
     // Update the stats if the stats are already shown
-    if (!recallLabel->text().isEmpty())
+    if (!questionStatusLabel->text().isEmpty())
         updateStats();
 
     // Update the response status label
@@ -210,6 +203,7 @@ QuizForm::newQuizClicked()
     bool random = newQuizDialog->getQuizRandomOrder();
     engine->newQuiz (input, type, alphagrams, random);
     updateForm (false);
+    analyzeDialog->reset();
 }
 
 //---------------------------------------------------------------------------
@@ -225,6 +219,7 @@ QuizForm::nextQuestionClicked()
                               "Error getting next question.");
 
     updateForm (false);
+    analyzeDialog->updateStats();
 }
 
 //---------------------------------------------------------------------------
@@ -238,13 +233,26 @@ QuizForm::checkResponseClicked()
     updateStats();
     inputLine->setEnabled (false);
     checkResponseButton->setEnabled (false);
+    analyzeDialog->updateStats();
 
     QStringList unanswered = engine->getMissed();
     QStringList::iterator it;
     for (it = unanswered.begin(); it != unanswered.end(); ++it) {
         ZListViewItem* item = new ZListViewItem (responseList, *it);
         item->setTextColor (Qt::magenta);
+        analyzeDialog->addMissed (*it);
     }
+}
+
+//---------------------------------------------------------------------------
+// analyzeClicked
+//
+//! Called when the Analyze button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::analyzeClicked()
+{
+    analyzeDialog->show();
 }
 
 //---------------------------------------------------------------------------
@@ -281,12 +289,8 @@ QuizForm::updateForm (bool showStats)
 void
 QuizForm::updateStats()
 {
-    int correct = engine->getQuestionCorrect();
-    setRecall (correct, engine->getQuestionTotal());
-    setPrecision (correct, correct + engine->getQuestionIncorrect());
-    int quizCorrect = engine->getQuizCorrect();
-    setTotalRecall (quizCorrect, engine->getQuizTotal());
-    setTotalPrecision (quizCorrect, quizCorrect + engine->getQuizIncorrect());
+    setQuestionStatus (engine->getQuestionCorrect(),
+                       engine->getQuestionTotal());
 }
 
 //---------------------------------------------------------------------------
@@ -297,10 +301,7 @@ QuizForm::updateStats()
 void
 QuizForm::clearStats()
 {
-    recallLabel->setText ("");
-    precisionLabel->setText ("");
-    totalRecallLabel->setText ("");
-    totalPrecisionLabel->setText ("");
+    questionStatusLabel->setText ("");
 }
 
 //---------------------------------------------------------------------------
@@ -330,79 +331,16 @@ QuizForm::setQuestionNum (int num, int total)
 }
 
 //---------------------------------------------------------------------------
-// setTotalRecall
+// setQuestionStatus
 //
-//! Set the quiz recall numbers (correct user responses divided by total
-//! correct responses).
-//
-//! @param correct the number of correct responses
-//! @param total the total number of correct answers
-//---------------------------------------------------------------------------
-void
-QuizForm::setTotalRecall (int correct, int total)
-{
-    totalRecallLabel->setText ("Total Recall: " +
-                               percentString (correct, total));
-}
-
-//---------------------------------------------------------------------------
-// setTotalPrecision
-//
-//! Set the quiz precision numbers (correct user responses divided by total
-//! user responses).
-//
-//! @param correct the number of correct responses
-//! @param total the total number of user responses
-//---------------------------------------------------------------------------
-void
-QuizForm::setTotalPrecision (int correct, int total)
-{
-    totalPrecisionLabel->setText ("Total Precision: "
-                                  + percentString (correct, total));
-}
-
-//---------------------------------------------------------------------------
-// setRecall
-//
-//! Set the recall numbers (correct user responses divided by total correct
-//! responses).
+//! Set the status of the question after the user clicks the Check button.
 //
 //! @param correct the number of correct responses
 //! @param total the total number of correct answers
 //---------------------------------------------------------------------------
 void
-QuizForm::setRecall (int correct, int total)
+QuizForm::setQuestionStatus (int correct, int total)
 {
-    recallLabel->setText ("Recall: " + percentString (correct, total));
-}
-
-//---------------------------------------------------------------------------
-// setPrecision
-//
-//! Set the precision numbers (correct user responses divided by total user
-//! responses).
-//
-//! @param correct the number of correct responses
-//! @param total the total number of user responses
-//---------------------------------------------------------------------------
-void
-QuizForm::setPrecision (int correct, int total)
-{
-    precisionLabel->setText ("Precision: " + percentString (correct, total));
-}
-
-//---------------------------------------------------------------------------
-// percentString
-//
-//! Create a string to represent a percentage to be displayed.
-//
-//! @param numerator the numerator
-//! @param denominator the denominator
-//---------------------------------------------------------------------------
-QString
-QuizForm::percentString (int numerator, int denominator) const
-{
-    double pct = denominator ? (numerator * 100.0) / denominator : 0;
-    return QString::number (numerator) + " / " + QString::number (denominator)
-        + " (" + QString::number (pct, 'f', 1) + "%)";
+    questionStatusLabel->setText ("Correct: " + QString::number (correct)
+                          + " of " + QString::number (total));
 }

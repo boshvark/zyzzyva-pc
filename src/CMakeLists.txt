@@ -9,9 +9,11 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR})
 
 SET (SRCS main.cpp MainWindow.cpp JudgeForm.cpp QuizForm.cpp
      SearchForm.cpp WordValidator.cpp WordEngine.cpp QuizEngine.cpp
-     NewQuizDialog.cpp WordGraph.cpp SettingsDialog.cpp ZListViewItem.cpp)
+     NewQuizDialog.cpp AnalyzeQuizDialog.cpp WordGraph.cpp
+     SettingsDialog.cpp ZListViewItem.cpp)
 SET (MOCS MainWindow.h JudgeForm.h QuizForm.h SearchForm.h
-     WordValidator.h NewQuizDialog.h SettingsDialog.h)
+     WordValidator.h NewQuizDialog.h AnalyzeQuizDialog.h
+     SettingsDialog.h)
 QT_WRAP_CPP(zyzzyva SRCS MOCS)
 
 ADD_EXECUTABLE (zyzzyva SRCS)

@@ -30,6 +30,7 @@
 #include <qlistview.h>
 #include <qpushbutton.h>
 
+class AnalyzeQuizDialog;
 class NewQuizDialog;
 class QuizEngine;
 
@@ -45,6 +46,7 @@ class QuizForm : public QFrame
     void newQuizClicked();
     void nextQuestionClicked();
     void checkResponseClicked();
+    void analyzeClicked();
 
   private:
     void updateForm (bool showStats);
@@ -52,11 +54,7 @@ class QuizForm : public QFrame
     void clearStats();
     void clearQuestionNum();
     void setQuestionNum (int num, int total);
-    void setRecall (int correct, int total);
-    void setPrecision (int correct, int total);
-    void setTotalRecall (int correct, int total);
-    void setTotalPrecision (int correct, int total);
-    QString percentString (int numerator, int denominator) const;
+    void setQuestionStatus (int correct, int total);
 
   private:
     QuizEngine*   engine;
@@ -64,15 +62,13 @@ class QuizForm : public QFrame
     QLabel*       questionLabel;
     QLineEdit*    inputLine;
     QListView*    responseList;
-    QLabel*       recallLabel;
-    QLabel*       precisionLabel;
-    QLabel*       totalRecallLabel;
-    QLabel*       totalPrecisionLabel;
     QLabel*       responseStatusLabel;
+    QLabel*       questionStatusLabel;
     QPushButton*  nextQuestionButton;
     QPushButton*  checkResponseButton;
 
     NewQuizDialog* newQuizDialog;
+    AnalyzeQuizDialog* analyzeDialog;
 };
 
 #endif // QUIZ_FORM_H
