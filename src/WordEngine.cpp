@@ -54,9 +54,10 @@ WordEngine::importFile (const QString& filename, QString* errString)
     }
 
     int imported = 0;
-    QString word;
-    while (file.readLine (word, READLINE_BYTES) > 0) {
-        graph.addWord (word.stripWhiteSpace());
+    QString word, line;
+    while (file.readLine (line, READLINE_BYTES) > 0) {
+        line = line.simplifyWhiteSpace();
+        graph.addWord (line.section (' ', 0, 0));
         ++imported;
     }
 
