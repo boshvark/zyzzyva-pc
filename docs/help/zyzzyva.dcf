@@ -12,6 +12,7 @@
     <section ref="preferences.html" title="Preferences">
       <keyword ref="preferences.html#auto-import">auto import</keyword>
       <section ref="preferences.html#auto-import" title="Auto Import" />
+      <section ref="preferences.html#font" title="Font Settings" />
     </section>
     <section ref="judge.html" title="Judging Words">
       <keyword ref="judge.html">judge</keyword>
