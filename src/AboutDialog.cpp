@@ -63,7 +63,7 @@ AboutDialog::AboutDialog (QWidget* parent, const char* name, bool modal,
                     "Version " VERSION "<br><br>\n\n"
                     "A program for studying words and anagramming. <br><br>\n"
                     "\n"
-                    "Copyright 2004, 2005 Michael W Thelen.<br>\n"
+                    "Copyright &copy; 2004, 2005 Michael W Thelen.<br>\n"
                     "All rights reserved.<br><br>\n"
                     "\n"
                     "Home Page: <url http://zyzzyva.net/>http://zyzzyva.net/</url>");
