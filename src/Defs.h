@@ -14,6 +14,8 @@
 #define DEFS_H
 
 namespace Defs {
+    const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
+
     const int MAX_WORD_LEN = 15;
     const int SPACING = 4;
     const int MARGIN = 4;

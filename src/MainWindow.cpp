@@ -15,6 +15,7 @@
 #include "SearchForm.h"
 #include "SettingsDialog.h"
 #include "WordEngine.h"
+#include "Defs.h"
 #include <qapplication.h>
 #include <qdir.h>
 #include <qfiledialog.h>
@@ -23,7 +24,6 @@
 #include <qmessagebox.h>
 #include <qstatusbar.h>
 
-const QString CHOOSER_TITLE = "Choose a Word List";
 const QString IMPORT_COMPLETE_TITLE = "Import Complete";
 const QString JUDGE_TAB_TITLE = "Judge";
 const QString SEARCH_TAB_TITLE = "Search";
@@ -34,6 +34,8 @@ const QString SETTINGS_GEOMETRY_X = "/x";
 const QString SETTINGS_GEOMETRY_Y = "/y";
 const QString SETTINGS_GEOMETRY_WIDTH = "/width";
 const QString SETTINGS_GEOMETRY_HEIGHT = "/height";
+
+using namespace Defs;
 
 //---------------------------------------------------------------------------
 // MainWindow
@@ -105,7 +107,7 @@ MainWindow::import()
     QString file = QFileDialog::getOpenFileName (QDir::current().path(),
                                                  "All Files (*.*)", this,
                                                  "fileDialog",
-                                                 CHOOSER_TITLE);
+                                                 IMPORT_CHOOSER_TITLE);
     if (file.isNull()) return;
     QApplication::setOverrideCursor (Qt::waitCursor);
     int imported = engine->importFile (file);

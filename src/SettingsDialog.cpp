@@ -13,6 +13,7 @@
 #include "SettingsDialog.h"
 #include "Defs.h"
 #include <qcheckbox.h>
+#include <qfiledialog.h>
 #include <qlayout.h>
 #include <qvgroupbox.h>
 
@@ -57,7 +58,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     QHBoxLayout* autoImportHlay = new QHBoxLayout (SPACING, "autoImportHlay");
     autoImportVlay->addLayout (autoImportHlay);
 
-    autoImportLabel = new QLabel ("Import on Startup:", autoImportWidget,
+    autoImportLabel = new QLabel ("File:", autoImportWidget,
                                   "autoImportLabel");
     autoImportHlay->addWidget (autoImportLabel);
 
@@ -89,7 +90,6 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     buttonHlay->addWidget (cancelButton);
 
     setCaption (DIALOG_CAPTION);
-    setGeometry (0, 0, 320, 240);
 }
 
 //---------------------------------------------------------------------------
@@ -143,7 +143,12 @@ SettingsDialog::writeSettings (QSettings& settings)
 void
 SettingsDialog::browseButtonClicked()
 {
-    qDebug ("Browse button clicked");
+    QString file = QFileDialog::getOpenFileName (QDir::current().path(),
+                                                 "All Files (*.*)", this,
+                                                 "fileDialog",
+                                                 IMPORT_CHOOSER_TITLE);
+    if (!file.isNull())
+        autoImportLine->setText (file);
 }
 
 //---------------------------------------------------------------------------
