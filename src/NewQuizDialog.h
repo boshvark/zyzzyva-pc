@@ -13,7 +13,9 @@
 #ifndef NEW_QUIZ_DIALOG_H
 #define NEW_QUIZ_DIALOG_H
 
+#include <qcheckbox.h>
 #include <qdialog.h>
+#include <qlineedit.h>
 #include <qradiobutton.h>
 #include "MatchType.h"
 
@@ -34,6 +36,8 @@ class NewQuizDialog : public QDialog
     QRadioButton* patternButton;
     QRadioButton* anagramButton;
     QRadioButton* subanagramButton;
+    QCheckBox*    alphagramCbox;
+    QLineEdit*    inputLine;
 };
 
 #endif // NEW_QUIZ_DIALOG_H

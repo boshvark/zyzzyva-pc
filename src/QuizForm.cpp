@@ -158,7 +158,10 @@ QuizForm::newQuizClicked()
     if (code != QDialog::Accepted)
         return;
 
-    engine->newQuiz ("???", Pattern, false);
+    QString input = newQuizDialog->getQuizString();
+    MatchType type = newQuizDialog->getQuizType();
+    bool alphagrams = newQuizDialog->getQuizAlphagrams();
+    engine->newQuiz (input, type, alphagrams);
     updateForm (false);
 }
 

@@ -11,6 +11,7 @@
 //---------------------------------------------------------------------------
 
 #include "NewQuizDialog.h"
+#include "WordValidator.h"
 #include "Defs.h"
 
 #include <qbuttongroup.h>
@@ -39,11 +40,19 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
                                              "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
+    QHBoxLayout* mainHlay = new QHBoxLayout (SPACING, "mainHlay");
+    Q_CHECK_PTR (mainHlay);
+    mainVlay->addLayout (mainHlay);
+
+    QVBoxLayout* optionVlay = new QVBoxLayout (SPACING, "optionVlay");
+    Q_CHECK_PTR (optionVlay);
+    mainHlay->addLayout (optionVlay);
+
     QButtonGroup* optionGroup = new QButtonGroup (3, QButtonGroup::Vertical,
                                                   "Quiz Type", this);
     Q_CHECK_PTR (optionGroup);
     optionGroup->setExclusive (true);
-    mainVlay->addWidget (optionGroup);
+    optionVlay->addWidget (optionGroup);
 
     patternButton = new QRadioButton ("Pattern", optionGroup,
                                       "patternButton");
@@ -55,6 +64,24 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
     subanagramButton = new QRadioButton ("Subanagram", optionGroup,
                                          "subanagramButton");
     Q_CHECK_PTR (subanagramButton);
+
+    QVBoxLayout* inputVlay = new QVBoxLayout (SPACING, "inputVlay");
+    Q_CHECK_PTR (inputVlay);
+    mainHlay->addLayout (inputVlay);
+
+    alphagramCbox = new QCheckBox ("Use alphagrams as questions", this,
+                                   "alphagramCbox");
+    Q_CHECK_PTR (alphagramCbox);
+    inputVlay->addWidget (alphagramCbox);
+
+    inputLine = new QLineEdit (this, "inputLine");
+    Q_CHECK_PTR (inputLine);
+    inputVlay->addWidget (inputLine);
+
+    WordValidator* validator = new WordValidator (inputLine);
+    Q_CHECK_PTR (validator);
+    validator->setOptions (WordValidator::AllowQuestionMarks);
+    inputLine->setValidator (validator);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
@@ -77,4 +104,49 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
     buttonHlay->addWidget (cancelButton);
 
     setCaption (DIALOG_CAPTION);
+}
+
+//---------------------------------------------------------------------------
+// getQuizType
+//
+//! Get the quiz type.
+//
+//! @return the quiz type
+//---------------------------------------------------------------------------
+MatchType
+NewQuizDialog::getQuizType()
+{
+    if (patternButton->isChecked())
+        return Pattern;
+    else if (anagramButton->isChecked())
+        return Anagram;
+    else if (subanagramButton->isChecked())
+        return Subanagram;
+}
+
+//---------------------------------------------------------------------------
+// getQuizAlphagrams
+//
+//! Get whether the quiz should use alphagrams of the individual words as
+//! quiz questions.
+//
+//! @return true if alphagrams should be used, false otherwise
+//---------------------------------------------------------------------------
+bool
+NewQuizDialog::getQuizAlphagrams()
+{
+    return alphagramCbox->isChecked();
+}
+
+//---------------------------------------------------------------------------
+// getQuizString
+//
+//! Get the quiz string (pattern, letters, etc).
+//
+//! @return the quiz string
+//---------------------------------------------------------------------------
+QString
+NewQuizDialog::getQuizString()
+{
+    return inputLine->text();
 }
