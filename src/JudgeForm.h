@@ -27,6 +27,7 @@
 
 #include <qlabel.h>
 #include <qlineedit.h>
+#include <qvgroupbox.h>
 
 class WordEngine;
 
@@ -43,6 +44,7 @@ class JudgeForm : public QFrame
   private:
     WordEngine* engine;
     QLineEdit*  wordLine;
+    QVGroupBox* resultBox;
     QLabel*     resultLabel;
 };
 

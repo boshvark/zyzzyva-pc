@@ -62,3 +62,38 @@ Auxil::getHelpDir()
 {
     return qApp->applicationDirPath() + "/docs/help";
 }
+
+//---------------------------------------------------------------------------
+// wordWrap
+//
+//! Wrap a string so that no line is longer than a certain length.
+//
+//! @param str the string to wrap
+//! @param wrapLength the maximum length of a line
+//! @return the wrapped string
+//---------------------------------------------------------------------------
+QString
+Auxil::wordWrap (const QString& str, int wrapLength)
+{
+    int strLen = str.length();
+    if (strLen <= wrapLength)
+        return str;
+
+    QChar c;
+    QString wrappedStr = str;
+    int lastSpace = 0;
+    int lastNewline = 0;
+    for (int i = 0; i < strLen; ++i) {
+        c = wrappedStr.at (i);
+        if (c == '\n')
+            lastNewline = i;
+        if (c.isSpace())
+            lastSpace = i;
+
+        if ((i - lastNewline) == wrapLength) {
+            wrappedStr[lastSpace] = '\n';
+            lastNewline = lastSpace;
+        }
+    }
+    return wrappedStr;
+}

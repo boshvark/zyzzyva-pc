@@ -24,6 +24,7 @@
 
 #include "DefinitionDialog.h"
 #include "WordEngine.h"
+#include "Auxil.h"
 #include "Defs.h"
 #include <qlabel.h>
 #include <qlayout.h>
@@ -31,7 +32,6 @@
 #include <qvgroupbox.h>
 
 const QString DIALOG_CAPTION_PREFIX = "Define : ";
-const int     WORD_WRAP_LENGTH = 80;
 
 using namespace Defs;
 
@@ -81,7 +81,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
     if (definition.isEmpty())
         definition = EMPTY_DEFINITION;
 
-    label->setText (wordWrap (definition, WORD_WRAP_LENGTH));
+    label->setText (Auxil::wordWrap (definition, DEFINITION_WRAP_LENGTH));
 }
 
 //---------------------------------------------------------------------------
@@ -91,39 +91,4 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
 //---------------------------------------------------------------------------
 DefinitionDialog::~DefinitionDialog()
 {
-}
-
-//---------------------------------------------------------------------------
-// wordWrap
-//
-//! Wrap a string so that no line is longer than a certain length.
-//
-//! @param str the string to wrap
-//! @param wrapLength the maximum length of a line
-//! @return the wrapped string
-//---------------------------------------------------------------------------
-QString
-DefinitionDialog::wordWrap (const QString& str, int wrapLength) const
-{
-    int strLen = str.length();
-    if (strLen <= wrapLength)
-        return str;
-
-    QChar c;
-    QString wrappedStr = str;
-    int lastSpace = 0;
-    int lastNewline = 0;
-    for (int i = 0; i < strLen; ++i) {
-        c = wrappedStr.at (i);
-        if (c == '\n')
-            lastNewline = i;
-        if (c.isSpace())
-            lastSpace = i;
-
-        if ((i - lastNewline) == wrapLength) {
-            wrappedStr[lastSpace] = '\n';
-            lastNewline = lastSpace;
-        }
-    }
-    return wrappedStr;
 }

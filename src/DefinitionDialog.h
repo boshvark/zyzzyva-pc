@@ -39,9 +39,6 @@ class DefinitionDialog : public QDialog
     ~DefinitionDialog();
 
   private:
-    QString wordWrap (const QString& str, int wrapLength) const;
-
-  private:
     WordEngine* engine;
 };
 

@@ -30,6 +30,7 @@
 namespace Auxil {
     QString getAboutString();
     QString getHelpDir();
+    QString wordWrap (const QString& str, int wrapLength);
 }
 
 #endif // AUXIL_H

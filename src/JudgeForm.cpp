@@ -23,6 +23,7 @@
 #include "JudgeForm.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
+#include "Auxil.h"
 #include "Defs.h"
 #include <qlayout.h>
 
@@ -61,8 +62,15 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
 
     QHBoxLayout* resultHlay = new QHBoxLayout (SPACING, "resultHlay");
     mainVlay->addLayout (resultHlay);
-    resultLabel = new QLabel (this, "resultLabel");
-    resultHlay->addWidget (resultLabel, 0, Qt::AlignHCenter);
+
+    resultBox = new QVGroupBox (this, "resultBox");
+    Q_CHECK_PTR (resultBox);
+    resultHlay->addWidget (resultBox);
+
+    resultLabel = new QLabel (resultBox, "resultLabel");
+    Q_CHECK_PTR (resultLabel);
+
+    resultBox->hide();
 }
 
 //---------------------------------------------------------------------------
@@ -76,8 +84,17 @@ JudgeForm::lookupWord()
 {
     QString word = wordLine->text();
     if (word.isEmpty()) return;
-    QString statusStr = engine->isAcceptable (word) ?
+    QString resultStr = engine->isAcceptable (word) ?
                         QString ("<font color=\"blue\">Acceptable</font>") :
                         QString ("<font color=\"red\">Unacceptable</font>");
-    resultLabel->setText (word + " : " + statusStr);
+    //resultLabel->setText (resultStr);
+
+    QString definition = engine->getDefinition (word);
+    if (definition.isEmpty())
+        definition = EMPTY_DEFINITION;
+
+    resultStr += "<br>" + Auxil::wordWrap (definition, DEFINITION_WRAP_LENGTH);
+    resultLabel->setText (resultStr);
+    resultBox->setTitle (word);
+    resultBox->show();
 }
