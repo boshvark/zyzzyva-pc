@@ -53,11 +53,9 @@ DAWG::addWord (const string& w)
 
     string::const_iterator c;
     for (c = w.begin(); c != w.end(); ++c) {
-        //cerr << "Char: |" << *c << "|" << endl;
 
         // Empty node, so create a new node and link from its parent
         if (!node) {
-            //cerr << "Adding child node |" << *c << "|" << endl;
             node = new Node (*c);
             (parentNode ? parentNode->child : top) = node;
         }
@@ -65,13 +63,9 @@ DAWG::addWord (const string& w)
         // Nonempty node, so find the current letter in the chain
         else {
             while (node->letter != *c) {
-                if (node->next)
-                    node = node->next;
-                else {
-                    //cerr << "Adding next node |" << *c << "|" << endl;
+                if (!node->next)
                     node->next = new Node (*c);
-                    node = node->next;
-                }
+                node = node->next;
             }
         }
 
