@@ -1,15 +1,9 @@
 Stuff that would be nice:
 
-* Add some online Help.
-
-* Configure docs/help/about.html and docs/help/zyzzyva.dcf at compile time
-  with the correct Zyzzyva version and QtAssistantClient version,
-  respectively.
+* Configure docs/help/zyzzyva.dcf at compile time with the correct
+  QtAssistantClient version.
 
 * Allow lists to be sorted alphabetically or by word length.
-
-* Allow definitions of words both through a Define function and through
-  right-clicking.
 
 * Allow the user to edit word definitions from within Zyzzyva.
 
