@@ -13,8 +13,11 @@
       <keyword ref="preferences.html#auto-import">auto import</keyword>
       <section ref="preferences.html#auto-import" title="Auto Import" />
     </section>
-    <section ref="judge.html" title="Judging and Defining Words">
+    <section ref="judge.html" title="Judging Words">
       <keyword ref="judge.html">judge</keyword>
+    </section>
+    <section ref="define.html" title="Defining Words">
+      <keyword ref="define.html">define</keyword>
     </section>
     <section ref="search.html" title="Searching for Words">
       <keyword ref="search.html">search</keyword>
