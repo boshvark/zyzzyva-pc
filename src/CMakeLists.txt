@@ -1,4 +1,4 @@
-PROJECT (WORDSTUDY)
+PROJECT (ZYZZYVA)
 
 # Find Qt and add its include directories
 FIND_PACKAGE (Qt)
@@ -10,7 +10,7 @@ INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR})
 SET (SRCS main.cpp MainWindow.cpp JudgeForm.cpp SearchForm.cpp
      WordValidator.cpp WordEngine.cpp WordGraph.cpp)
 SET (MOCS MainWindow.h JudgeForm.h SearchForm.h WordValidator.h)
-QT_WRAP_CPP(wordstudy SRCS MOCS)
+QT_WRAP_CPP(zyzzyva SRCS MOCS)
 
-ADD_EXECUTABLE (wordstudy SRCS)
-TARGET_LINK_LIBRARIES (wordstudy ${QT_QT_LIBRARY})
+ADD_EXECUTABLE (zyzzyva SRCS)
+TARGET_LINK_LIBRARIES (zyzzyva ${QT_QT_LIBRARY})
