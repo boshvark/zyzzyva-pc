@@ -127,6 +127,7 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     WordValidator* validator = new WordValidator (inputLine);
     Q_CHECK_PTR (validator);
     inputLine->setValidator (validator);
+    inputLine->setEnabled (false);
     connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
     mainVlay->addWidget (inputLine);
 
