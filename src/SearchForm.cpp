@@ -46,12 +46,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     connect (wordLine, SIGNAL (returnPressed()), SLOT (search()));
     lineHlay->addWidget (wordLine);
 
-//    QHBoxLayout* resultHlay = new QHBoxLayout (0, "resultHlay");
-//    mainVlay->addLayout (resultHlay);
-//    resultHlay->addStretch (1);
-
     QGridLayout* resultGlay = new QGridLayout (1, 2);
-//    resultHlay->addLayout (resultGlay);
     mainVlay->addLayout (resultGlay);
 
     QLabel* resultLabel = new QLabel ("Results : ", this, "resultLabel");
@@ -59,8 +54,6 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 
     resultList = new QListBox (this, "resultList");
     resultGlay->addWidget (resultList, 0, 1);
-
-//    resultHlay->addStretch (1);
 }
 
 //---------------------------------------------------------------------------
