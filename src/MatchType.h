@@ -26,6 +26,7 @@
 #define MATCH_TYPE_H
 
 enum MatchType {
+    UnknownMatchType = 0,
     Pattern,
     Anagram,
     Subanagram

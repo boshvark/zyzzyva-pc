@@ -11,6 +11,7 @@ HEADERS += \
     src/QuizEngine.h \
     src/QuizForm.h \
     src/SearchForm.h \
+    src/SearchSpecForm.h \
     src/SettingsDialog.h \
     src/WordEngine.h \
     src/WordGraph.h \
@@ -26,6 +27,7 @@ SOURCES += \
     src/QuizEngine.cpp \
     src/QuizForm.cpp \
     src/SearchForm.cpp \
+    src/SearchSpecForm.cpp \
     src/SettingsDialog.cpp \
     src/WordEngine.cpp \
     src/WordGraph.cpp \

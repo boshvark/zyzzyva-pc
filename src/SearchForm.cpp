@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "SearchForm.h"
+#include "SearchSpecForm.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
 #include "Defs.h"
@@ -50,55 +51,38 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
                                              "mainHlay");
     Q_CHECK_PTR (mainHlay);
 
-    QVBoxLayout* optionVlay = new QVBoxLayout (SPACING, "optionVlay");
-    Q_CHECK_PTR (optionVlay);
-    mainHlay->addLayout (optionVlay);
+    QVBoxLayout* specVlay = new QVBoxLayout (SPACING, "specVlay");
+    Q_CHECK_PTR (specVlay);
+    mainHlay->addLayout (specVlay);
 
-    QButtonGroup* optionGroup = new QButtonGroup (3, QButtonGroup::Vertical,
-                                                  "Search Type", this);
-    Q_CHECK_PTR (optionGroup);
-    optionGroup->setExclusive (true);
-    optionVlay->addWidget (optionGroup);
+    specForm = new SearchSpecForm (this, "specForm");
+    Q_CHECK_PTR (specForm);
+    specVlay->addWidget (specForm);
 
-    patternButton = new QRadioButton ("Pattern", optionGroup,
-                                      "patternButton");
-    Q_CHECK_PTR (patternButton);
-    patternButton->setChecked (true);
-    anagramButton = new QRadioButton ("Anagram", optionGroup,
-                                      "anagramButton");
-    Q_CHECK_PTR (anagramButton);
-    subanagramButton = new QRadioButton ("Subanagram", optionGroup,
-                                         "subanagramButton");
-    Q_CHECK_PTR (subanagramButton);
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    Q_CHECK_PTR (buttonHlay);
+    specVlay->addLayout (buttonHlay);
 
-    optionVlay->addStretch (1);
+    resetButton = new QPushButton ("&Reset", this, "resetButton");
+    Q_CHECK_PTR (resetButton);
+    resetButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (resetButton, SIGNAL (clicked()), SLOT (resetSpec()));
+    buttonHlay->addWidget (resetButton);
 
-    QVBoxLayout* searchVlay = new QVBoxLayout (SPACING, "searchVlay");
-    Q_CHECK_PTR (searchVlay);
-    mainHlay->addLayout (searchVlay);
-
-    QLabel* label = new QLabel ("Input", this, "label");
-    Q_CHECK_PTR (label);
-    searchVlay->addWidget (label);
-
-    wordLine = new QLineEdit (this, "wordLine");
-    Q_CHECK_PTR (wordLine);
-    WordValidator* validator = new WordValidator (wordLine);
-    Q_CHECK_PTR (validator);
-    validator->setOptions (WordValidator::AllowQuestionMarks |
-                           WordValidator::AllowAsterisks);
-    wordLine->setValidator (validator);
-    connect (wordLine, SIGNAL (returnPressed()), SLOT (search()));
-    searchVlay->addWidget (wordLine);
+    searchButton = new QPushButton ("&Search", this, "searchButton");
+    Q_CHECK_PTR (searchButton);
+    searchButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (searchButton, SIGNAL (clicked()), SLOT (search()));
+    buttonHlay->addWidget (searchButton);
 
     resultLabel = new QLabel (this, "resultLabel");
     Q_CHECK_PTR (resultLabel);
-    searchVlay->addWidget (resultLabel);
+    specVlay->addWidget (resultLabel);
     updateResultLabel (0);
 
     resultList = new QListBox (this, "resultList");
     Q_CHECK_PTR (resultList);
-    searchVlay->addWidget (resultList);
+    specVlay->addWidget (resultList);
 }
 
 //---------------------------------------------------------------------------
@@ -110,26 +94,27 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 void
 SearchForm::search()
 {
-    QString word = wordLine->text();
-    if (word.isEmpty()) return;
+    QString pattern = specForm->getPattern();
+    if (pattern.isEmpty()) return;
 
     QApplication::setOverrideCursor (Qt::waitCursor);
     resultList->clear();
-
-    SearchSpec spec;
-    spec.pattern = word;
-    if (patternButton->isChecked())
-        spec.type = Pattern;
-    else if (anagramButton->isChecked())
-        spec.type = Anagram;
-    else if (subanagramButton->isChecked())
-        spec.type = Subanagram;
-
-    resultList->insertStringList (engine->search (spec));
-
+    resultList->insertStringList (engine->search (specForm->getSearchSpec()));
     resultList->sort();
     updateResultLabel (resultList->count());
     QApplication::restoreOverrideCursor();
+}
+
+//---------------------------------------------------------------------------
+// search
+//
+//! Search for the word or pattern in the edit area, and display the results
+//! in the list box.
+//---------------------------------------------------------------------------
+void
+SearchForm::resetSpec()
+{
+    specForm->reset();
 }
 
 //---------------------------------------------------------------------------

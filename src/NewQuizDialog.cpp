@@ -141,6 +141,7 @@ NewQuizDialog::getQuizType() const
         return Anagram;
     else if (subanagramButton->isChecked())
         return Subanagram;
+    return UnknownMatchType;
 }
 
 //---------------------------------------------------------------------------

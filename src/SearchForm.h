@@ -28,8 +28,10 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlistbox.h>
+#include <qpushbutton.h>
 #include <qradiobutton.h>
 
+class SearchSpecForm;
 class WordEngine;
 
 class SearchForm : public QFrame
@@ -41,16 +43,16 @@ class SearchForm : public QFrame
 
   public slots:
     void search();
+    void resetSpec();
     void updateResultLabel (int num);
 
   private:
-    WordEngine*   engine;
-    QRadioButton* patternButton;
-    QRadioButton* anagramButton;
-    QRadioButton* subanagramButton;
-    QLineEdit*    wordLine;
-    QListBox*     resultList;
-    QLabel*       resultLabel;
+    WordEngine*     engine;
+    SearchSpecForm* specForm;
+    QListBox*       resultList;
+    QLabel*         resultLabel;
+    QPushButton*    resetButton;
+    QPushButton*    searchButton;
 };
 
 #endif // SEARCH_FORM_H

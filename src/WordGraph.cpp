@@ -149,6 +149,11 @@ WordGraph::search (const SearchSpec& spec) const
 
         case Subanagram:
         return getAnagrams (spec.pattern, true);
+
+        default: {
+            QStringList wordList;
+            return wordList;
+            }
     }
 }
 
