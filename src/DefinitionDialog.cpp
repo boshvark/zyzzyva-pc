@@ -54,7 +54,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
                                              "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
-    QVGroupBox* groupBox = new QVGroupBox (this, "autoImportGbox");
+    QVGroupBox* groupBox = new QVGroupBox (this, "groupBox");
     Q_CHECK_PTR (groupBox);
     groupBox->setTitle (word);
     mainVlay->addWidget (groupBox);
