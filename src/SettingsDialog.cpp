@@ -18,8 +18,8 @@
 #include <qlayout.h>
 #include <qvgroupbox.h>
 
-const QString SETTINGS_IMPORT = "/import";
-const QString SETTINGS_IMPORT_FILE = "/importfile";
+const QString SETTINGS_IMPORT = "/autoimport";
+const QString SETTINGS_IMPORT_FILE = "/autoimport_file";
 const QString DIALOG_CAPTION = "Preferences";
 
 using namespace Defs;
