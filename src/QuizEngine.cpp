@@ -31,7 +31,6 @@ QuizEngine::newQuiz (const QString& question)
     QStringList answers = wordEngine->matchAnagram (question);
     QStringList::iterator it;
     for (it = answers.begin(); it != answers.end(); ++it) {
-        qDebug ("Correct response: " + *it);
         correctResponses.insert (*it);
     }
 }
