@@ -46,8 +46,12 @@ LookupForm::LookupForm (WordEngine* e, QWidget* parent, const char* name,
     connect (wordLine, SIGNAL (returnPressed()), SLOT (lookupWord()));
     lookupHlay->addWidget (wordLine);
 
+    QHBoxLayout* resultHlay = new QHBoxLayout (0, "resultHlay");
+    mainVlay->addLayout (resultHlay);
+    resultHlay->addStretch (1);
     resultLabel = new QLabel (this, "resultLabel");
-    mainVlay->addWidget (resultLabel);
+    resultHlay->addWidget (resultLabel);
+    resultHlay->addStretch (1);
 }
 
 //---------------------------------------------------------------------------
@@ -61,6 +65,8 @@ LookupForm::lookupWord()
 {
     QString word = wordLine->text();
     if (word.isEmpty()) return;
-    resultLabel->setText (engine->isAcceptable (word) ?
-                          QString ("Acceptable") : QString ("Unacceptable"));
+    resultLabel->setText (word + " : " +
+                          (engine->isAcceptable (word) ?
+                           QString ("Acceptable") :
+                           QString ("Unacceptable")));
 }
