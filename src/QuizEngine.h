@@ -41,10 +41,14 @@ class QuizEngine
     ResponseStatus respond (const QString& response);
     QString getQuestion() const;
     QStringList getMissed() const;
-    int total() const { return correctResponses.size(); }
-    int correct() const { return correctUserResponses.size(); }
-    int incorrect() const { return incorrectUserResponses.size(); }
+    int getQuestionIndex() const { return questionIndex; }
     int numQuestions() const { return quizQuestions.size(); }
+    int getQuestionTotal() const { return correctResponses.size(); }
+    int getQuestionCorrect() const { return correctUserResponses.size(); }
+    int getQuestionIncorrect() const { return incorrectUserResponses.size(); }
+    int getQuizTotal() const { return quizTotal; }
+    int getQuizCorrect() const { return quizCorrect; }
+    int getQuizIncorrect() const { return quizIncorrect; }
 
     bool onLastQuestion() const;
 
@@ -57,6 +61,10 @@ class QuizEngine
     std::set<QString> correctResponses;
     std::set<QString> correctUserResponses;
     QStringList       incorrectUserResponses;
+
+    int quizTotal;
+    int quizCorrect;
+    int quizIncorrect;
 
     QStringList       quizQuestions;
     int               questionIndex;

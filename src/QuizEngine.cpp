@@ -53,6 +53,9 @@ QuizEngine::newQuiz (const QString& input, MatchType type, bool alphagrams)
         quizQuestions << input;
 
     questionIndex = 0;
+    quizTotal = 0;
+    quizCorrect = 0;
+    quizIncorrect = 0;
     prepareQuestion();
 }
 
@@ -86,14 +89,15 @@ QuizEngine::respond (const QString& response)
 {
     if (correctResponses.find (response) == correctResponses.end()) {
         incorrectUserResponses << response;
+        ++quizIncorrect;
         return Incorrect;
     }
 
-    if (correctUserResponses.find (response) != correctUserResponses.end()) {
+    if (correctUserResponses.find (response) != correctUserResponses.end())
         return Duplicate;
-    }
 
     correctUserResponses.insert (response);
+    ++quizCorrect;
     return Correct;
 }
 
@@ -188,4 +192,5 @@ QuizEngine::prepareQuestion()
     for (it = answers.begin(); it != answers.end(); ++it) {
         correctResponses.insert (*it);
     }
+    quizTotal += correctResponses.size();
 }

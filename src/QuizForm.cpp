@@ -66,6 +66,18 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     responseList->header()->hide();
     mainVlay->addWidget (responseList);
 
+    responseStatusLabel = new QLabel (this, "responseStatusLabel");
+    Q_CHECK_PTR (responseStatusLabel);
+    mainVlay->addWidget (responseStatusLabel);
+
+    inputLine = new QLineEdit (this, "inputLine");
+    Q_CHECK_PTR (inputLine);
+    WordValidator* validator = new WordValidator (inputLine);
+    Q_CHECK_PTR (validator);
+    inputLine->setValidator (validator);
+    connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
+    mainVlay->addWidget (inputLine);
+
     QHBoxLayout* statsHlay = new QHBoxLayout (SPACING, "statsHlay");
     Q_CHECK_PTR (statsHlay);
     mainVlay->addLayout (statsHlay);
@@ -78,17 +90,17 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (precisionLabel);
     statsHlay->addWidget (precisionLabel);
 
-    responseStatusLabel = new QLabel (this, "responseStatusLabel");
-    Q_CHECK_PTR (responseStatusLabel);
-    mainVlay->addWidget (responseStatusLabel);
+    QHBoxLayout* totalStatsHlay = new QHBoxLayout (SPACING, "totalStatsHlay");
+    Q_CHECK_PTR (totalStatsHlay);
+    mainVlay->addLayout (totalStatsHlay);
 
-    inputLine = new QLineEdit (this, "inputLine");
-    Q_CHECK_PTR (inputLine);
-    WordValidator* validator = new WordValidator (inputLine);
-    Q_CHECK_PTR (validator);
-    inputLine->setValidator (validator);
-    connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
-    mainVlay->addWidget (inputLine);
+    totalRecallLabel = new QLabel (this, "totalRecallLabel");
+    Q_CHECK_PTR (totalRecallLabel);
+    totalStatsHlay->addWidget (totalRecallLabel);
+
+    totalPrecisionLabel = new QLabel (this, "totalPrecisionLabel");
+    Q_CHECK_PTR (totalPrecisionLabel);
+    totalStatsHlay->addWidget (totalPrecisionLabel);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
@@ -241,9 +253,12 @@ QuizForm::updateForm (bool showStats)
 void
 QuizForm::updateStats()
 {
-    int correct = engine->correct();
-    setRecall (correct, engine->total());
-    setPrecision (correct, correct + engine->incorrect());
+    int correct = engine->getQuestionCorrect();
+    setRecall (correct, engine->getQuestionTotal());
+    setPrecision (correct, correct + engine->getQuestionIncorrect());
+    int quizCorrect = engine->getQuizCorrect();
+    setTotalRecall (quizCorrect, engine->getQuizTotal());
+    setTotalPrecision (quizCorrect, quizCorrect + engine->getQuizIncorrect());
 }
 
 //---------------------------------------------------------------------------
@@ -256,6 +271,47 @@ QuizForm::clearStats()
 {
     recallLabel->setText ("");
     precisionLabel->setText ("");
+}
+
+//---------------------------------------------------------------------------
+// setTotalRecall
+//
+//! Set the quiz recall numbers (correct user responses divided by total
+//! correct responses).
+//
+//! @param correct the number of correct responses
+//! @param total the total number of correct answers
+//---------------------------------------------------------------------------
+void
+QuizForm::setTotalRecall (int correct, int total)
+{
+    totalRecallLabel->setText ("Total Recall: " + QString::number (correct)
+                               + " / " + QString::number (total)
+                               + " ("
+                               + QString::number(((correct * 100.0)/ total),
+                                                   'f', 1)
+                               + "%)");
+}
+
+//---------------------------------------------------------------------------
+// setTotalPrecision
+//
+//! Set the quiz precision numbers (correct user responses divided by total
+//! user responses).
+//
+//! @param correct the number of correct responses
+//! @param total the total number of user responses
+//---------------------------------------------------------------------------
+void
+QuizForm::setTotalPrecision (int correct, int total)
+{
+    totalPrecisionLabel->setText ("Total Precision: "
+                                  + QString::number (correct)
+                                  + " / " + QString::number (total)
+                                  + " ("
+                                  + QString::number(((correct * 100.0)/ total),
+                                                      'f', 1)
+                                  + "%)");
 }
 
 //---------------------------------------------------------------------------

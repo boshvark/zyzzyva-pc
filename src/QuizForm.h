@@ -40,6 +40,8 @@ class QuizForm : public QFrame
     void clearStats();
     void setRecall (int correct, int total);
     void setPrecision (int correct, int total);
+    void setTotalRecall (int correct, int total);
+    void setTotalPrecision (int correct, int total);
 
   private:
     QuizEngine*   engine;
@@ -48,6 +50,8 @@ class QuizForm : public QFrame
     QListView*    responseList;
     QLabel*       recallLabel;
     QLabel*       precisionLabel;
+    QLabel*       totalRecallLabel;
+    QLabel*       totalPrecisionLabel;
     QLabel*       responseStatusLabel;
     QPushButton*  nextQuestionButton;
     QPushButton*  checkResponseButton;
