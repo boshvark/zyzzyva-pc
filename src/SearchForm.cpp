@@ -13,10 +13,10 @@
 #include "SearchForm.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
+#include <qapplication.h>
 #include <qbuttongroup.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qmessagebox.h>
 
 //---------------------------------------------------------------------------
 // SearchForm
@@ -103,24 +103,16 @@ SearchForm::search()
     QString word = wordLine->text();
     if (word.isEmpty()) return;
 
-    if (patternButton->isChecked()) {
-        resultList->clear();
+    QApplication::setOverrideCursor (Qt::waitCursor);
+    resultList->clear();
+
+    if (patternButton->isChecked())
         resultList->insertStringList (engine->matchPattern (word));
-    }
-    else if (anagramButton->isChecked()) {
-        resultList->clear();
+    else if (anagramButton->isChecked())
         resultList->insertStringList (engine->matchAnagram (word));
-    }
-    else if (subanagramButton->isChecked()) {
-        resultList->clear();
+    else if (subanagramButton->isChecked())
         resultList->insertStringList (engine->matchSubanagram (word));
-    }
-    else {
-        QMessageBox::information(this, "Search Type Not Implemented",
-                                 "The selected search type is not yet "
-                                 "implemented.", QMessageBox::Ok);
-        return;
-    }
 
     resultList->sort();
+    QApplication::restoreOverrideCursor();
 }
