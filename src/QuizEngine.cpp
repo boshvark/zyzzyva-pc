@@ -95,8 +95,7 @@ QuizEngine::getQuestion() const
 bool
 QuizEngine::onLastQuestion() const
 {
-    return ((questionIndex > 0)
-        && (questionIndex == quizQuestions.size() - 1));
+    return (questionIndex == quizQuestions.size() - 1);
 }
 
 //---------------------------------------------------------------------------
