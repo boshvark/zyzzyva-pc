@@ -62,6 +62,8 @@ class QuizForm : public QFrame
     void clearQuestionNum();
     void clearTimerDisplay();
     void startQuestion();
+    void pauseTimer();
+    void unpauseTimer();
     void clearCanvas();
     void minimizeCanvas();
     void setNumCanvasTiles (int num);
@@ -93,7 +95,7 @@ class QuizForm : public QFrame
     QMap<QString,QImage> tileImages;
     int maxTileWidth, maxTileHeight;
     int numCanvasTiles, minCanvasTiles, minCanvasWidth;
-    bool useTimer;
+    bool useTimer, timerPaused;
     int timerDuration, timerRemaining;
     QuizTimerType timerType;
     int timerId;

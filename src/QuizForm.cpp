@@ -58,7 +58,8 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true)),
     analyzeDialog (new AnalyzeQuizDialog (qe, we, this, "analyzeDialog",
                                           false)),
-    numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300), timerId (0)
+    numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300),
+    timerPaused (false), timerId (0)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
                                              "mainHlay");
@@ -224,9 +225,16 @@ QuizForm::responseEntered()
 void
 QuizForm::newQuizClicked()
 {
+    pauseTimer();
     int code = newQuizDialog->exec();
-    if (code != QDialog::Accepted)
+    if (code != QDialog::Accepted) {
+        unpauseTimer();
         return;
+    }
+
+    // Kill quiz timer, if running
+    if (timerId)
+        killTimer (timerId);
 
     SearchSpec spec = newQuizDialog->getSearchSpec();
     bool alphagrams = newQuizDialog->getQuizAlphagrams();
@@ -237,6 +245,31 @@ QuizForm::newQuizClicked()
     quizEngine->newQuiz (spec, alphagrams, random);
     startQuestion();
     analyzeDialog->newQuiz (spec);
+}
+
+//---------------------------------------------------------------------------
+// pauseTimer
+//
+//! Pause the timer.  In reality the timer keeps going, but it appears paused
+//! because it has no effect while .
+//---------------------------------------------------------------------------
+void
+QuizForm::pauseTimer()
+{
+    if (timerId)
+        timerPaused = true;
+}
+
+//---------------------------------------------------------------------------
+// unpauseTimer
+//
+//! Unpauses the timer.
+//---------------------------------------------------------------------------
+void
+QuizForm::unpauseTimer()
+{
+    if (timerId)
+        timerPaused = false;
 }
 
 //---------------------------------------------------------------------------
@@ -318,6 +351,7 @@ QuizForm::startQuestion()
         timerRemaining = timerDuration;
         setTimerDisplay (timerDuration);
         timerId = startTimer (1000);
+        unpauseTimer();
     }
 }
 
@@ -600,14 +634,14 @@ QuizForm::reflowLayout()
 // timerEvent
 //
 //! Reimplementation of QObject::timerEvent.  Called when a timer event
-//! occurs.
+//! occurs.  Decrements the time remaining, unless the timer is paused.
 //
 //! \param event the timer event
 //---------------------------------------------------------------------------
 void
 QuizForm::timerEvent (QTimerEvent* event)
 {
-    if (event->timerId() != timerId)
+    if ((event->timerId() != timerId) || timerPaused)
         return;
 
     --timerRemaining;
