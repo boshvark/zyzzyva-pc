@@ -36,7 +36,7 @@ class MainWindow : public QMainWindow
   private:
     void setNumWords (int num);
     void readSettings();
-    void writeSettings();
+    void writeSettings() const;
 
   private:
     WordEngine* engine;

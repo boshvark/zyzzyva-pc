@@ -149,7 +149,7 @@ MainWindow::readSettings()
 //! Write application settings.
 //---------------------------------------------------------------------------
 void
-MainWindow::writeSettings()
+MainWindow::writeSettings() const
 {
     settings.beginGroup (SETTINGS_MAIN);
     settings.beginGroup (SETTINGS_GEOMETRY);
