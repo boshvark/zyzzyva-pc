@@ -31,10 +31,12 @@ class QuizForm : public QFrame
     void responseEntered();
     void newQuizClicked();
     void nextQuestionClicked();
+    void checkResponseClicked();
 
   private:
-    void updateForm();
+    void updateForm (bool showStats);
     void updateStats();
+    void clearStats();
     void setRecall (int correct, int total);
     void setPrecision (int correct, int total);
 

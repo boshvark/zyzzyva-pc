@@ -86,7 +86,7 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
     buttonHlay->addWidget (newQuizButton);
 
-    nextQuestionButton = new QPushButton ("&Next Question", this,
+    nextQuestionButton = new QPushButton ("&Next", this,
                                           "nextQuestionButton");
     Q_CHECK_PTR (nextQuestionButton);
     nextQuestionButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -94,7 +94,13 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
              SLOT (nextQuestionClicked()));
     buttonHlay->addWidget (nextQuestionButton);
 
-    updateStats();
+    QPushButton* checkResponseButton = new QPushButton ("&Check", this,
+                                                        "checkResponseButton");
+    Q_CHECK_PTR (checkResponseButton);
+    checkResponseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (checkResponseButton, SIGNAL (clicked()),
+             SLOT (checkResponseClicked()));
+    buttonHlay->addWidget (checkResponseButton);
 }
 
 //---------------------------------------------------------------------------
@@ -116,7 +122,9 @@ QuizForm::responseEntered()
         inputLine->clear();
     }
 
-    updateStats();
+    // Update the stats if the stats are already shown
+    if (!recallLabel->text().isEmpty())
+        updateStats();
 }
 
 //---------------------------------------------------------------------------
@@ -128,7 +136,7 @@ void
 QuizForm::newQuizClicked()
 {
     engine->newQuiz();
-    updateForm();
+    updateForm (false);
 }
 
 //---------------------------------------------------------------------------
@@ -143,7 +151,18 @@ QuizForm::nextQuestionClicked()
         QMessageBox::warning (this, "Error getting next question",
                               "Error getting next question.");
 
-    updateForm();
+    updateForm (false);
+}
+
+//---------------------------------------------------------------------------
+// checkResponseClicked
+//
+//! Called when the Check Responses button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::checkResponseClicked()
+{
+    updateStats();
 }
 
 //---------------------------------------------------------------------------
@@ -154,9 +173,12 @@ QuizForm::nextQuestionClicked()
 //! appropriate.
 //---------------------------------------------------------------------------
 void
-QuizForm::updateForm()
+QuizForm::updateForm (bool showStats)
 {
-    updateStats();
+    if (showStats)
+        updateStats();
+    else
+        clearStats();
     questionLabel->setText (engine->getQuestion());
     responseList->clear();
     nextQuestionButton->setEnabled (!engine->onLastQuestion());
@@ -173,6 +195,18 @@ QuizForm::updateStats()
     int correct = engine->correct();
     setRecall (correct, engine->total());
     setPrecision (correct, correct + engine->incorrect());
+}
+
+//---------------------------------------------------------------------------
+// clearStats
+//
+//! Clear the recall and precision statistics.
+//---------------------------------------------------------------------------
+void
+QuizForm::clearStats()
+{
+    recallLabel->setText ("");
+    precisionLabel->setText ("");
 }
 
 //---------------------------------------------------------------------------
