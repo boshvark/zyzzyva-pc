@@ -36,7 +36,7 @@ class WordEngine
     WordEngine() { }
     ~WordEngine() { }
 
-    int importFile (const QString& filename, bool loadDefinitions = false,
+    int importFile (const QString& filename, bool loadDefinitions = true,
                     QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;
