@@ -15,6 +15,7 @@
 
 #include <qlineedit.h>
 #include <qlistbox.h>
+#include <qradiobutton.h>
 
 class WordEngine;
 
@@ -29,9 +30,12 @@ class SearchForm : public QFrame
     void search();
 
   private:
-    WordEngine* engine;
-    QLineEdit*  wordLine;
-    QListBox*   resultList;
+    WordEngine*   engine;
+    QRadioButton* patternButton;
+    QRadioButton* anagramButton;
+    QRadioButton* subanagramButton;
+    QLineEdit*    wordLine;
+    QListBox*     resultList;
 };
 
 #endif // SEARCH_FORM_H

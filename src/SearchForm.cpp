@@ -13,6 +13,7 @@
 #include "SearchForm.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
+#include <qbuttongroup.h>
 #include <qlabel.h>
 #include <qlayout.h>
 
@@ -29,12 +30,39 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
                         WFlags f)
     : QFrame (parent, name, f), engine (e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, 0, 0, "mainVlay");
-    Q_CHECK_PTR (mainVlay);
+    QHBoxLayout* mainHlay = new QHBoxLayout (this, 0, 0, "mainHlay");
+    Q_CHECK_PTR (mainHlay);
+
+    QVBoxLayout* optionVlay = new QVBoxLayout (0, "optionVlay");
+    Q_CHECK_PTR (optionVlay);
+    mainHlay->addLayout (optionVlay);
+
+    QButtonGroup* optionGroup = new QButtonGroup (3, QButtonGroup::Vertical,
+                                                  "Search Type", this);
+    Q_CHECK_PTR (optionGroup);
+    optionGroup->setExclusive (true);
+    optionVlay->addWidget (optionGroup);
+
+    patternButton = new QRadioButton ("Pattern", optionGroup,
+                                      "patternButton");
+    Q_CHECK_PTR (patternButton);
+    patternButton->setChecked (true);
+    anagramButton = new QRadioButton ("Anagram", optionGroup,
+                                      "anagramButton");
+    Q_CHECK_PTR (anagramButton);
+    subanagramButton = new QRadioButton ("Build", optionGroup,
+                                         "subanagramButton");
+    Q_CHECK_PTR (subanagramButton);
+
+    optionVlay->addStretch (1);
+
+    QVBoxLayout* searchVlay = new QVBoxLayout (0, "searchVlay");
+    Q_CHECK_PTR (searchVlay);
+    mainHlay->addLayout (searchVlay);
 
     QHBoxLayout* lineHlay = new QHBoxLayout (0, "lineHlay");
     Q_CHECK_PTR (lineHlay);
-    mainVlay->addLayout (lineHlay);
+    searchVlay->addLayout (lineHlay);
 
     QLabel* label = new QLabel ("Word : ", this, "label");
     Q_CHECK_PTR (label);
@@ -51,7 +79,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 
     QGridLayout* resultGlay = new QGridLayout (1, 2);
     Q_CHECK_PTR (resultGlay);
-    mainVlay->addLayout (resultGlay);
+    searchVlay->addLayout (resultGlay);
 
     QLabel* resultLabel = new QLabel ("Results : ", this, "resultLabel");
     Q_CHECK_PTR (resultLabel);
