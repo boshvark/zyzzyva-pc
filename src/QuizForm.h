@@ -60,6 +60,7 @@ class QuizForm : public QFrame
     void updateStats();
     void clearStats();
     void clearQuestionNum();
+    void clearTimerDisplay();
     void startQuestion();
     void clearCanvas();
     void minimizeCanvas();
@@ -67,8 +68,11 @@ class QuizForm : public QFrame
     void setQuestionNum (int num, int total);
     void setQuestionLabel (const QString& question);
     void setQuestionStatus (int correct, int total);
+    void setTimerDisplay (int seconds);
     void clearTileTheme();
     void reflowLayout();
+
+    void timerEvent (QTimerEvent* event);
 
   private:
     QuizEngine*   quizEngine;
@@ -90,7 +94,7 @@ class QuizForm : public QFrame
     int maxTileWidth, maxTileHeight;
     int numCanvasTiles, minCanvasTiles, minCanvasWidth;
     bool useTimer;
-    int timerDuration;
+    int timerDuration, timerRemaining;
     QuizTimerType timerType;
 
     NewQuizDialog* newQuizDialog;

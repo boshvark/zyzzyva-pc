@@ -312,6 +312,11 @@ QuizForm::startQuestion()
     checkResponseButton->setEnabled (true);
     nextQuestionButton->setEnabled (false);
     inputLine->setFocus();
+    if (useTimer) {
+        timerRemaining = timerDuration;
+        setTimerDisplay (timerDuration);
+        startTimer (1000);
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -346,6 +351,17 @@ void
 QuizForm::clearQuestionNum()
 {
     questionNumLabel->setText ("");
+}
+
+//---------------------------------------------------------------------------
+// clearTimerDisplay
+//
+//! Clear the timer label.
+//---------------------------------------------------------------------------
+void
+QuizForm::clearTimerDisplay()
+{
+    timerLabel->setText ("");
 }
 
 //---------------------------------------------------------------------------
@@ -482,6 +498,19 @@ QuizForm::setQuestionStatus (int correct, int total)
 }
 
 //---------------------------------------------------------------------------
+// setTimerDisplay
+//
+//! Display a number of seconds in the timer label.
+//
+//! \param seconds the number of seconds to display
+//---------------------------------------------------------------------------
+void
+QuizForm::setTimerDisplay (int seconds)
+{
+    timerLabel->setText (QString::number (seconds));
+}
+
+//---------------------------------------------------------------------------
 // clearTileTheme
 //
 //! Clear the current tile theme definition.
@@ -548,4 +577,23 @@ QuizForm::reflowLayout()
     questionStatusLabel->setText (text);
     questionCanvas->setAllChanged();
     questionCanvas->update();
+}
+
+//---------------------------------------------------------------------------
+// timerEvent
+//
+//! Reimplementation of QObject::timerEvent.  Called when a timer event
+//! occurs.
+//
+//! \param event the timer event
+//---------------------------------------------------------------------------
+void
+QuizForm::timerEvent (QTimerEvent* event)
+{
+    --timerRemaining;
+    setTimerDisplay (timerRemaining);
+    if (timerRemaining == 0) {
+        killTimer (event->timerId());
+        checkResponseClicked();
+    }
 }
