@@ -1,9 +1,11 @@
 Z_MAKEFILE = zyzzyva.mak
 
+.PHONY : zyzzyva
+
 all: zyzzyva
 
 zyzzyva:
-	qmake zyzzyva.pro
+	qmake MAKEFILE=$(Z_MAKEFILE) zyzzyva.pro
 	$(MAKE) -f $(Z_MAKEFILE)
 
 clean:

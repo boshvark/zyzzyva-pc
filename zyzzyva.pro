@@ -46,5 +46,4 @@ win32 {
     OBJECTS_DIR = build/obj
 }
 
-MAKEFILE = zyzzyva.mak
 DEFINES += VERSION=\"$$VERSTR\"
