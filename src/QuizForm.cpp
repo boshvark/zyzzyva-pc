@@ -252,19 +252,10 @@ QuizForm::newQuizClicked()
         return;
     }
 
-    // Kill quiz timer, if running
-    while (timerPaused)
-        unpauseTimer();
-    if (timerId) {
-        killTimer (timerId);
-        timerId = 0;
-    }
-
     SearchSpec spec = newQuizDialog->getSearchSpec();
     bool alphagrams = newQuizDialog->getQuizAlphagrams();
     bool random = newQuizDialog->getQuizRandomOrder();
     useTimer = newQuizDialog->getTimerEnabled();
-    pauseButton->setEnabled (useTimer);
     timerDuration = newQuizDialog->getTimerDuration();
     timerType = newQuizDialog->getTimerType();
     quizEngine->newQuiz (spec, alphagrams, random);
@@ -325,8 +316,7 @@ QuizForm::nextQuestionClicked()
 void
 QuizForm::checkResponseClicked()
 {
-    if (timerId)
-        killTimer (timerId);
+    killActiveTimer();
     updateStats();
     inputLine->setEnabled (false);
     checkResponseButton->setEnabled (false);
@@ -408,13 +398,29 @@ QuizForm::startQuestion()
 void
 QuizForm::startNewTimer()
 {
-    if (timerId)
-        killTimer (timerId);
+    killActiveTimer();
     timerRemaining = timerDuration;
     setTimerDisplay (timerDuration);
     timerId = startTimer (1000);
+    pauseButton->setEnabled (true);
+}
+
+//---------------------------------------------------------------------------
+// killActiveTimer
+//
+//! Kill the active timer, and update the form appropriately.
+//---------------------------------------------------------------------------
+void
+QuizForm::killActiveTimer()
+{
+    if (!timerId)
+        return;
+
     while (timerPaused)
         unpauseTimer();
+    killTimer (timerId);
+    timerId = 0;
+    pauseButton->setEnabled (false);
 }
 
 //---------------------------------------------------------------------------
@@ -708,9 +714,6 @@ QuizForm::timerEvent (QTimerEvent* event)
 
     --timerRemaining;
     setTimerDisplay (timerRemaining);
-    if (timerRemaining == 0) {
-        killTimer (timerId);
-        timerId = 0;
+    if (timerRemaining == 0)
         checkResponseClicked();
-    }
 }
