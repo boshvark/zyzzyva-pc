@@ -51,18 +51,10 @@ SET (MOCS
     src/ZListView.h
     )
 
-# Get program version from VERSION file
-IF (UNIX)
-    EXEC_PROGRAM (cat ARGS ${ZYZZYVA_SOURCE_DIR}/VERSION OUTPUT_VARIABLE VERSION)
-ELSE (UNIX)
-IF (WIN32)
-    EXEC_PROGRAM (type ARGS ${ZYZZYVA_SOURCE_DIR}/VERSION OUTPUT_VARIABLE VERSION)
-ENDIF (WIN32)
-ENDIF (UNIX)
-
-ADD_DEFINITIONS (-DVERSION=\\"${VERSION}\\")
+# Put version number in about.html
+CONFIGURE_FILE (${ZYZZYVA_SOURCE_DIR}/docs/help/about.html.in
+                ${ZYZZYVA_SOURCE_DIR}/docs/help/about.html)
 
 QT_WRAP_CPP(zyzzyva SRCS MOCS)
-
 ADD_EXECUTABLE (zyzzyva SRCS)
 TARGET_LINK_LIBRARIES (zyzzyva ${QT_QT_LIBRARY} qassistantclient)

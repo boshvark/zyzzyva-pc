@@ -47,7 +47,6 @@ Auxil::getAboutString()
         return aboutString;
 
     aboutString.append (aboutFile.readAll());
-    aboutString.replace ("<!-- Version -->", QString("Version ") + VERSION);
     return aboutString;
 }
 
