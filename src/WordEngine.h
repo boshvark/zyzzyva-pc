@@ -20,8 +20,8 @@
 class WordEngine
 {
   public:
-    WordEngine() { };
-    ~WordEngine() { };
+    WordEngine() { }
+    ~WordEngine() { }
 
     int importFile (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
