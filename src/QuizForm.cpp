@@ -59,7 +59,7 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     : QFrame (parent, name, f), quizEngine (qe), wordEngine (we),
     newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true)),
     analyzeDialog (new AnalyzeQuizDialog (qe, this, "analyzeDialog", false)),
-    numCanvasTiles (0), minCanvasTiles (7)
+    numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
                                              "mainHlay");
@@ -389,7 +389,24 @@ QuizForm::clearCanvas()
     for (cItem = canvasItems.begin(); cItem != canvasItems.end(); ++cItem)
         delete *cItem;
     canvasItems.clear();
-    setNumCanvasTiles (minCanvasTiles);
+    minimizeCanvas();
+}
+
+//---------------------------------------------------------------------------
+// minimizeCanvas
+//
+//! Resize the canvas to its minimum size given the current tile theme.
+//---------------------------------------------------------------------------
+void
+QuizForm::minimizeCanvas()
+{
+    if (tileImages.empty())
+        questionCanvas->resize (minCanvasWidth, (2 * QUIZ_TILE_MARGIN) +
+                                maxTileHeight);
+    else
+        setNumCanvasTiles (minCanvasTiles);
+    questionCanvas->setAllChanged();
+    reflowLayout();
 }
 
 //---------------------------------------------------------------------------
@@ -408,7 +425,6 @@ QuizForm::setNumCanvasTiles (int num)
                 ((num - 1) * QUIZ_TILE_SPACING);
     int height = (2 * QUIZ_TILE_MARGIN) + maxTileHeight;
     questionCanvas->resize (width, height);
-    questionCanvas->setAllChanged();
 }
 
 //---------------------------------------------------------------------------
@@ -438,11 +454,18 @@ QuizForm::setQuestionLabel (const QString& question)
 {
     clearCanvas();
 
-    // Question is not an alphagram
-    if (question.contains (" ")) {
+    // Question is not an alphagram, or there are no tile images
+    if (question.contains (" ") || tileImages.empty()) {
         QCanvasText* text = new QCanvasText (question, questionCanvas);
-        text->move (10, 10);
+        QRect rect = text->boundingRect();
+        int width = (2 * QUIZ_TILE_MARGIN) + rect.width();
+        if (width < minCanvasWidth)
+            width = minCanvasWidth;
+        questionCanvas->resize (width, (2 * QUIZ_TILE_MARGIN) +
+                                rect.height());
+        text->move ((width - rect.width()) / 2, QUIZ_TILE_MARGIN);
         text->show();
+        questionCanvas->setAllChanged();
     }
 
     else {
@@ -469,7 +492,7 @@ QuizForm::setQuestionLabel (const QString& question)
         }
     }
 
-    questionCanvas->update();
+    reflowLayout();
 }
 
 //---------------------------------------------------------------------------
@@ -528,33 +551,45 @@ void
 QuizForm::setTileTheme (const QString& theme)
 {
     clearTileTheme();
-    QString tilesDir = Auxil::getTilesDir();
+    if (!theme.isEmpty()) {
+        QString tilesDir = Auxil::getTilesDir();
 
-    QStringList tilesList;
-    for (char c = 'A'; c <= 'Z'; ++c)
-        tilesList << QString (QChar (c));
-    tilesList << "_";
+        QStringList tilesList;
+        for (char c = 'A'; c <= 'Z'; ++c)
+            tilesList << QString (QChar (c));
+        tilesList << "_";
 
-    QStringList::iterator it;
-    for (it = tilesList.begin(); it != tilesList.end(); ++it) {
-        QImage image (tilesDir + "/" + theme + "/" + *it + ".png");
-        tileImages.insert (*it, image);
+        QStringList::iterator it;
+        for (it = tilesList.begin(); it != tilesList.end(); ++it) {
+            QImage image (tilesDir + "/" + theme + "/" + *it + ".png");
+            tileImages.insert (*it, image);
 
-        if (image.width() > maxTileWidth)
-            maxTileWidth = image.width();
-        if (image.height() > maxTileHeight)
-            maxTileHeight = image.height();
+            if (image.width() > maxTileWidth)
+                maxTileWidth = image.width();
+            if (image.height() > maxTileHeight)
+                maxTileHeight = image.height();
+        }
     }
 
     QString question = quizEngine->getQuestion();
     if (question.isEmpty())
-        setNumCanvasTiles (minCanvasTiles);
+        minimizeCanvas();
     else
         setQuestionLabel (question);
+}
 
-    // XXX: What an awful way to get the QuizForm to reflow after a canvas
-    // resize.  Surely there must be a better way?
+//---------------------------------------------------------------------------
+// reflowLayout
+//
+//! Force the quiz form layout to be reflowed.  Generally called after
+//! resizing the canvas.  XXX: This whole method is a big kludge.  There must
+//! be a better way to do this.
+//---------------------------------------------------------------------------
+void
+QuizForm::reflowLayout()
+{
     QString text = questionStatusLabel->text();
     questionStatusLabel->setText ("foo blah blah");
     questionStatusLabel->setText (text);
+    questionCanvas->update();
 }

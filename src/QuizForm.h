@@ -64,12 +64,14 @@ class QuizForm : public QFrame
     void clearQuestionNum();
     void startQuestion();
     void clearCanvas();
+    void minimizeCanvas();
     void setNumCanvasTiles (int num);
     void setQuestionNum (int num, int total);
     void setQuestionLabel (const QString& question);
     void setQuestionStatus (int correct, int total);
     void displayDefinition (const QString& word);
     void clearTileTheme();
+    void reflowLayout();
 
   private:
     QuizEngine*   quizEngine;
@@ -88,7 +90,7 @@ class QuizForm : public QFrame
 
     QMap<QString,QImage> tileImages;
     int maxTileWidth, maxTileHeight;
-    int numCanvasTiles, minCanvasTiles;
+    int numCanvasTiles, minCanvasTiles, minCanvasWidth;
 
     NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;
