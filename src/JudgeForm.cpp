@@ -26,7 +26,6 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include <qlayout.h>
-#include <qpushbutton.h>
 
 using namespace Defs;
 
@@ -58,6 +57,8 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
     wordLine = new QLineEdit (this, "wordLine");
     Q_CHECK_PTR (wordLine);
     wordLine->setValidator (new WordValidator (wordLine));
+    connect (wordLine, SIGNAL (textChanged (const QString&)),
+             SLOT (wordChanged (const QString&)));
     connect (wordLine, SIGNAL (returnPressed()), SLOT (defineWord()));
     lookupHlay->addWidget (wordLine);
 
@@ -65,14 +66,13 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    QPushButton* judgeButton = new QPushButton ("&Judge", this, "judgeButton");
+    judgeButton = new QPushButton ("&Judge", this, "judgeButton");
     Q_CHECK_PTR (judgeButton);
     judgeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (judgeButton, SIGNAL (clicked()), SLOT (judgeWord()));
     buttonHlay->addWidget (judgeButton);
 
-    QPushButton* defineButton = new QPushButton ("&Define", this,
-                                                 "defineButton");
+    defineButton = new QPushButton ("&Define", this, "defineButton");
     Q_CHECK_PTR (defineButton);
     defineButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (defineButton, SIGNAL (clicked()), SLOT (defineWord()));
@@ -89,7 +89,22 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
     resultLabel = new QLabel (resultBox, "resultLabel");
     Q_CHECK_PTR (resultLabel);
 
+    judgeButton->setEnabled (false);
+    defineButton->setEnabled (false);
     resultBox->hide();
+}
+
+//---------------------------------------------------------------------------
+// wordChanged
+//
+//! Called when the contents of the input line change.  Enables or disables
+//! the buttons appropriately.
+//---------------------------------------------------------------------------
+void
+JudgeForm::wordChanged (const QString& word)
+{
+    judgeButton->setEnabled (!word.isEmpty());
+    defineButton->setEnabled (!word.isEmpty());
 }
 
 //---------------------------------------------------------------------------

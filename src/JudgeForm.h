@@ -27,6 +27,7 @@
 
 #include <qlabel.h>
 #include <qlineedit.h>
+#include <qpushbutton.h>
 #include <qvgroupbox.h>
 
 class WordEngine;
@@ -39,6 +40,7 @@ class JudgeForm : public QFrame
                WFlags f = 0);
 
   public slots:
+    void wordChanged (const QString& word);
     void judgeWord();
     void defineWord();
 
@@ -46,10 +48,12 @@ class JudgeForm : public QFrame
     void lookupWord (bool showDefinition);
 
   private:
-    WordEngine* engine;
-    QLineEdit*  wordLine;
-    QVGroupBox* resultBox;
-    QLabel*     resultLabel;
+    WordEngine*  engine;
+    QLineEdit*   wordLine;
+    QPushButton* judgeButton;
+    QPushButton* defineButton;
+    QVGroupBox*  resultBox;
+    QLabel*      resultLabel;
 };
 
 #endif // JUDGE_FORM_H
