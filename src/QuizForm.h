@@ -18,6 +18,7 @@
 #include <qlistbox.h>
 #include <qpushbutton.h>
 
+class NewQuizDialog;
 class QuizEngine;
 
 class QuizForm : public QFrame
@@ -50,7 +51,7 @@ class QuizForm : public QFrame
     QLabel*       responseStatusLabel;
     QPushButton*  nextQuestionButton;
 
-//    NewQuizDialog* newQuizDialog;
+    NewQuizDialog* newQuizDialog;
 };
 
 #endif // QUIZ_FORM_H

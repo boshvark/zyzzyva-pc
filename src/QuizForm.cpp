@@ -11,6 +11,7 @@
 //---------------------------------------------------------------------------
 
 #include "QuizForm.h"
+#include "NewQuizDialog.h"
 #include "QuizEngine.h"
 #include "WordValidator.h"
 #include "Defs.h"
@@ -32,7 +33,8 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
                     WFlags f)
-    : QFrame (parent, name, f), engine (e)
+    : QFrame (parent, name, f), engine (e),
+    newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true))
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
                                              "mainHlay");
@@ -87,7 +89,7 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    QPushButton* newQuizButton = new QPushButton ("New &Quiz", this,
+    QPushButton* newQuizButton = new QPushButton ("New &Quiz...", this,
                                                   "newQuizButton");
     Q_CHECK_PTR (newQuizButton);
     newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -152,9 +154,9 @@ QuizForm::responseEntered()
 void
 QuizForm::newQuizClicked()
 {
-    //int code = newQuizDialog->exec();
-    //if (code != QDialog::Accepted)
-    //    return;
+    int code = newQuizDialog->exec();
+    if (code != QDialog::Accepted)
+        return;
 
     engine->newQuiz ("???", QuizEngine::Pattern, false);
     updateForm (false);
