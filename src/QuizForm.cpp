@@ -271,6 +271,8 @@ QuizForm::clearStats()
 {
     recallLabel->setText ("");
     precisionLabel->setText ("");
+    totalRecallLabel->setText ("");
+    totalPrecisionLabel->setText ("");
 }
 
 //---------------------------------------------------------------------------
