@@ -221,6 +221,9 @@ QuizForm::newQuizClicked()
     SearchSpec spec = newQuizDialog->getSearchSpec();
     bool alphagrams = newQuizDialog->getQuizAlphagrams();
     bool random = newQuizDialog->getQuizRandomOrder();
+    useTimer = newQuizDialog->getTimerEnabled();
+    timerDuration = newQuizDialog->getTimerDuration();
+    timerType = newQuizDialog->getTimerType();
     quizEngine->newQuiz (spec, alphagrams, random);
     startQuestion();
     analyzeDialog->newQuiz (spec);

@@ -34,9 +34,9 @@
 #include <qpoint.h>
 #include <qpushbutton.h>
 #include <qstring.h>
+#include "NewQuizDialog.h"
 
 class AnalyzeQuizDialog;
-class NewQuizDialog;
 class QuizEngine;
 class WordEngine;
 class WordListView;
@@ -88,6 +88,9 @@ class QuizForm : public QFrame
     QMap<QString,QImage> tileImages;
     int maxTileWidth, maxTileHeight;
     int numCanvasTiles, minCanvasTiles, minCanvasWidth;
+    bool useTimer;
+    int timerDuration;
+    QuizTimerType timerType;
 
     NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;

@@ -26,11 +26,19 @@
 #define NEW_QUIZ_DIALOG_H
 
 #include <qcheckbox.h>
+#include <qcombobox.h>
 #include <qdialog.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qradiobutton.h>
+#include <qspinbox.h>
 #include "MatchType.h"
+
+enum QuizTimerType {
+    NoTimer,
+    PerQuestion,
+    PerResponse,
+};
 
 class SearchSpec;
 class SearchSpecForm;
@@ -45,18 +53,26 @@ class NewQuizDialog : public QDialog
     ~NewQuizDialog() { }
 
     SearchSpec getSearchSpec() const;
-    bool       getQuizAlphagrams() const;
-    bool       getQuizRandomOrder() const;
+    bool getQuizAlphagrams() const;
+    bool getQuizRandomOrder() const;
+    bool getTimerEnabled() const;
+    int  getTimerDuration() const;
+    QuizTimerType getTimerType() const;
 
   public slots:
     void alphagramsToggled (bool on);
     void inputChanged (const QString& text);
+    void timerToggled (bool on);
 
   private:
     SearchSpecForm* specForm;
     QCheckBox*      alphagramCbox;
     QCheckBox*      randomCbox;
     QPushButton*    okButton;
+    QWidget*        timerWidget;
+    QCheckBox*      timerCbox;
+    QSpinBox*       timerSbox;
+    QComboBox*      timerCombo;
 };
 
 #endif // NEW_QUIZ_DIALOG_H
