@@ -77,4 +77,5 @@ SearchForm::search()
     if (word.isEmpty()) return;
 
     resultList->insertStringList (engine->matchPattern (word));
+    resultList->sort();
 }
