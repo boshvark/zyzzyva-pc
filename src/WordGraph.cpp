@@ -130,6 +130,29 @@ WordGraph::containsWord (const QString& w) const
 }
 
 //---------------------------------------------------------------------------
+// search
+//
+//! Search for acceptable words matching a search specification.
+//
+//! @param spec the search specification
+//! @return a list of acceptable words
+//---------------------------------------------------------------------------
+QStringList
+WordGraph::search (const SearchSpec& spec) const
+{
+    switch (spec.type) {
+        case Pattern:
+        return getWordsMatchingPattern (spec.pattern);
+
+        case Anagram:
+        return getAnagrams (spec.pattern, false);
+
+        case Subanagram:
+        return getAnagrams (spec.pattern, true);
+    }
+}
+
+//---------------------------------------------------------------------------
 // getWordsMatchingPattern
 //
 //! Find all acceptable words matching a pattern.

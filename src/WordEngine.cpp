@@ -78,45 +78,17 @@ WordEngine::isAcceptable (const QString& word) const
 }
 
 //---------------------------------------------------------------------------
-// matchPattern
+// search
 //
-//! Find all acceptable words matching a pattern.
+//! Search for acceptable words matching a search specification.
 //
-//! @param input the pattern to match
+//! @param spec the search specification
 //! @return a list of acceptable words
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::matchPattern (const QString& input) const
+WordEngine::search (const SearchSpec& spec) const
 {
-    return graph.getWordsMatchingPattern (input);
-}
-
-//---------------------------------------------------------------------------
-// matchAnagram
-//
-//! Find all acceptable anagrams of a string of letters.
-//
-//! @param input the letters to match
-//! @return a list of acceptable words
-//---------------------------------------------------------------------------
-QStringList
-WordEngine::matchAnagram (const QString& input) const
-{
-    return graph.getAnagrams (input, false);
-}
-
-//---------------------------------------------------------------------------
-// matchSubanagram
-//
-//! Find all acceptable anagrams and subanagrams of a string of letters.
-//
-//! @param input the letters to match
-//! @return a list of acceptable words
-//---------------------------------------------------------------------------
-QStringList
-WordEngine::matchSubanagram (const QString& input) const
-{
-    return graph.getAnagrams (input, true);
+    return graph.search (spec);
 }
 
 //---------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// WordGraph.h
+// SearchSpec.h
 //
-// A Directed Acyclic Word Graph class.
+// A class to represent a word search specification.
 //
 // Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,42 +22,27 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_GRAPH_H
-#define WORD_GRAPH_H
+#ifndef SEARCH_SPEC_H
+#define SEARCH_SPEC_H
 
-#include "SearchSpec.h"
-#include <qstring.h>
-#include <qstringlist.h>
+#include "MatchType.h"
+#include "Defs.h"
 
-class WordGraph
+class SearchSpec
 {
   public:
-    WordGraph();
-    ~WordGraph();
+    SearchSpec() : type (Pattern), consistPercent (0), minLength (0),
+                   maxLength (Defs::MAX_WORD_LEN) { }
+    ~SearchSpec() { }
 
-    void addWord (const QString& w);
-    bool containsWord (const QString& w) const;
-    QStringList search (const SearchSpec& spec) const;
-    QStringList getWordsMatchingPattern (const QString& pattern) const;
-    QStringList getAnagrams (const QString& input, bool subanagrams) const;
-    void compress();
-    void print() const;
-    int getNumNodes() { return numNodes; }
-
-  private:
-    class Node {
-      public:
-        Node (char c = 0, bool e = false);
-        ~Node();
-        bool operator== (const Node& rhs);
-        char letter;
-        bool eow;
-        Node* next;
-        Node* child;
-    };
-
-    Node* top;
-    int numNodes;
+    QString pattern;
+    MatchType type;
+    QString matchLetters;
+    QString excludeLetters;
+    int consistPercent;
+    QString consistLetters;
+    int minLength;
+    int maxLength;
 };
 
-#endif // WORD_GRAPH_H
+#endif // SEARCH_SPEC_H

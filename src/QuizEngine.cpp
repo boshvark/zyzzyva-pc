@@ -51,21 +51,10 @@ QuizEngine::newQuiz (const QString& input, MatchType type, bool alphagrams,
     quizType = type;
 
     if (alphagrams) {
-        switch (type) {
-            case Pattern:
-            quizQuestions = wordEngine->matchPattern (input);
-            break;
-
-            case Anagram:
-            quizQuestions = wordEngine->matchAnagram (input);
-            break;
-
-            case Subanagram:
-            quizQuestions = wordEngine->matchSubanagram (input);
-            break;
-
-            default: break;
-        }
+        SearchSpec spec;
+        spec.pattern = input;
+        spec.type = type;
+        quizQuestions = wordEngine->search (spec);
 
         // When using alphagrams, always change quiz type to Anagram.  The
         // pattern is used to select the list of alphagrams, then anagrams are
@@ -214,21 +203,10 @@ QuizEngine::prepareQuestion()
     QString question = getQuestion();
 
     QStringList answers;
-    switch (quizType) {
-        case Pattern:
-        answers = wordEngine->matchPattern (question);
-        break;
-
-        case Anagram:
-        answers = wordEngine->matchAnagram (question);
-        break;
-
-        case Subanagram:
-        answers = wordEngine->matchSubanagram (question);
-        break;
-
-        default: break;
-    }
+    SearchSpec spec;
+    spec.pattern = question;
+    spec.type = quizType;
+    answers = wordEngine->search (spec);
 
     QStringList::iterator it;
     for (it = answers.begin(); it != answers.end(); ++it) {

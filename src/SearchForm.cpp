@@ -116,12 +116,16 @@ SearchForm::search()
     QApplication::setOverrideCursor (Qt::waitCursor);
     resultList->clear();
 
+    SearchSpec spec;
+    spec.pattern = word;
     if (patternButton->isChecked())
-        resultList->insertStringList (engine->matchPattern (word));
+        spec.type = Pattern;
     else if (anagramButton->isChecked())
-        resultList->insertStringList (engine->matchAnagram (word));
+        spec.type = Anagram;
     else if (subanagramButton->isChecked())
-        resultList->insertStringList (engine->matchSubanagram (word));
+        spec.type = Subanagram;
+
+    resultList->insertStringList (engine->search (spec));
 
     resultList->sort();
     updateResultLabel (resultList->count());
