@@ -75,7 +75,9 @@ MainWindow::import()
                                                  "fileDialog",
                                                  CHOOSER_TITLE);
     if (file.isNull()) return;
+    QApplication::setOverrideCursor (Qt::waitCursor);
     int imported = engine->importFile (file);
+    QApplication::restoreOverrideCursor();
 
     setNumWords (imported);
     QMessageBox::information (this, IMPORT_COMPLETE_TITLE,
