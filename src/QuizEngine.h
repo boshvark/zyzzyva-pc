@@ -34,7 +34,7 @@ class QuizEngine
     QuizEngine (WordEngine* e) : wordEngine (e) { }
     ~QuizEngine() { }
 
-    void newQuiz ();
+    void newQuiz();
     bool nextQuestion();
 
     ResponseStatus respond (const QString& response);
