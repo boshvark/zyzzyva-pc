@@ -112,6 +112,25 @@ QuizEngine::getQuestion() const
 }
 
 //---------------------------------------------------------------------------
+// getMissed
+//
+//! Get a list of correct responses that have not been answered yet.
+//
+//! @return the unanswered responses
+//---------------------------------------------------------------------------
+QStringList
+QuizEngine::getMissed() const
+{
+    QStringList responses;
+    std::set<QString>::iterator it;
+    for (it = correctResponses.begin(); it != correctResponses.end(); ++it)
+        if (correctUserResponses.find (*it) == correctUserResponses.end())
+            responses << *it;
+
+    return responses;
+}
+
+//---------------------------------------------------------------------------
 // onLastQuestion
 //
 //! Determine whether the current quiz is on the last question.

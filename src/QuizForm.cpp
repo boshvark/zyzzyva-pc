@@ -108,8 +108,8 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
              SLOT (nextQuestionClicked()));
     buttonHlay->addWidget (nextQuestionButton);
 
-    QPushButton* checkResponseButton = new QPushButton ("&Check", this,
-                                                        "checkResponseButton");
+    checkResponseButton = new QPushButton ("&Check", this,
+                                           "checkResponseButton");
     Q_CHECK_PTR (checkResponseButton);
     checkResponseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (checkResponseButton, SIGNAL (clicked()),
@@ -195,6 +195,14 @@ void
 QuizForm::checkResponseClicked()
 {
     updateStats();
+    inputLine->setEnabled (false);
+    checkResponseButton->setEnabled (false);
+
+    QStringList unanswered = engine->getMissed();
+    QStringList::iterator it;
+    for (it = unanswered.begin(); it != unanswered.end(); ++it) {
+        new QListViewItem (responseList, *it);
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -214,8 +222,12 @@ QuizForm::updateForm (bool showStats)
     questionLabel->setText (engine->getQuestion());
     responseList->clear();
     responseStatusLabel->setText ("");
+    inputLine->setEnabled (true);
     nextQuestionButton->setEnabled ((engine->numQuestions() > 0) &&
                                     !engine->onLastQuestion());
+    checkResponseButton->setEnabled (true);
+
+    inputLine->setFocus();
 }
 
 //---------------------------------------------------------------------------

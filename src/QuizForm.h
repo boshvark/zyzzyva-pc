@@ -50,6 +50,7 @@ class QuizForm : public QFrame
     QLabel*       precisionLabel;
     QLabel*       responseStatusLabel;
     QPushButton*  nextQuestionButton;
+    QPushButton*  checkResponseButton;
 
     NewQuizDialog* newQuizDialog;
 };

@@ -40,6 +40,7 @@ class QuizEngine
 
     ResponseStatus respond (const QString& response);
     QString getQuestion() const;
+    QStringList getMissed() const;
     int total() const { return correctResponses.size(); }
     int correct() const { return correctUserResponses.size(); }
     int incorrect() const { return incorrectUserResponses.size(); }
