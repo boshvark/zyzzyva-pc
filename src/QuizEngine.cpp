@@ -22,17 +22,29 @@
 //! @param question the quiz question
 //---------------------------------------------------------------------------
 void
-QuizEngine::newQuiz (const QString& question)
+QuizEngine::newQuiz ()
 {
-    correctResponses.clear();
-    correctUserResponses.clear();
-    incorrectUserResponses.clear();
+    quizQuestions.clear();
+    quizQuestions << "OPST" << "ABY" << "AAH";
+    questionIndex = 0;
+    prepareQuestion();
+}
 
-    QStringList answers = wordEngine->matchAnagram (question);
-    QStringList::iterator it;
-    for (it = answers.begin(); it != answers.end(); ++it) {
-        correctResponses.insert (*it);
-    }
+//---------------------------------------------------------------------------
+// nextQuestion
+//
+//! Go to the next question in the quiz.
+//
+//! @return true if there are more questions, false if there are no more
+//---------------------------------------------------------------------------
+bool
+QuizEngine::nextQuestion()
+{
+    if (onLastQuestion())
+        return false;
+
+    ++questionIndex;
+    prepareQuestion();
 }
 
 //---------------------------------------------------------------------------
@@ -57,4 +69,62 @@ QuizEngine::respond (const QString& response)
 
     correctUserResponses.insert (response);
     return Correct;
+}
+
+//---------------------------------------------------------------------------
+// getQuestion
+//
+//! Get the question string for the current question.
+//
+//! @return the current question string
+//---------------------------------------------------------------------------
+QString
+QuizEngine::getQuestion() const
+{
+    QStringList::const_iterator it = quizQuestions.at (questionIndex);
+    return it == quizQuestions.end() ? QString::null : *it;
+}
+
+//---------------------------------------------------------------------------
+// onLastQuestion
+//
+//! Determine whether the current quiz is on the last question.
+//
+//! @return true if on the last question, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizEngine::onLastQuestion() const
+{
+    return ((questionIndex > 0)
+        && (questionIndex == quizQuestions.size() - 1));
+}
+
+//---------------------------------------------------------------------------
+// clearQuestion
+//
+//! Clear all answers and user responses.
+//---------------------------------------------------------------------------
+void
+QuizEngine::clearQuestion()
+{
+    correctResponses.clear();
+    correctUserResponses.clear();
+    incorrectUserResponses.clear();
+}
+
+//---------------------------------------------------------------------------
+// prepareQuestion
+//
+//! Get the answers to the current question.
+//---------------------------------------------------------------------------
+void
+QuizEngine::prepareQuestion()
+{
+    clearQuestion();
+    QString question = getQuestion();
+    QStringList answers = wordEngine->matchAnagram (question);
+    QStringList::iterator it;
+    for (it = answers.begin(); it != answers.end(); ++it) {
+        correctResponses.insert (*it);
+    }
 }

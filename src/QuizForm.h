@@ -16,6 +16,7 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlistbox.h>
+#include <qpushbutton.h>
 
 class QuizEngine;
 
@@ -29,19 +30,22 @@ class QuizForm : public QFrame
   public slots:
     void responseEntered();
     void newQuizClicked();
+    void nextQuestionClicked();
 
   private:
+    void updateForm();
     void updateStats();
     void setRecall (int correct, int total);
     void setPrecision (int correct, int total);
 
   private:
     QuizEngine*   engine;
-    QLabel*       quizLabel;
+    QLabel*       questionLabel;
     QLineEdit*    inputLine;
     QListBox*     responseList;
     QLabel*       recallLabel;
     QLabel*       precisionLabel;
+    QPushButton*  nextQuestionButton;
 };
 
 #endif // QUIZ_FORM_H

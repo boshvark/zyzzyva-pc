@@ -16,7 +16,7 @@
 #include "Defs.h"
 #include <qlayout.h>
 #include <qgroupbox.h>
-#include <qpushbutton.h>
+#include <qmessagebox.h>
 
 using namespace Defs;
 
@@ -50,9 +50,9 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
                                                 "quizBoxHlay");
     Q_CHECK_PTR (quizBoxHlay);
     quizBoxHlay->addStretch (1);
-    quizLabel = new QLabel ("OPST", quizGbox, "label");
-    Q_CHECK_PTR (quizLabel);
-    quizBoxHlay->addWidget (quizLabel);
+    questionLabel = new QLabel (quizGbox, "label");
+    Q_CHECK_PTR (questionLabel);
+    quizBoxHlay->addWidget (questionLabel);
     quizBoxHlay->addStretch (1);
 
     responseList = new QListBox (this, "responseList");
@@ -79,12 +79,20 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    QPushButton* newQuizButton = new QPushButton ("&New Quiz", this,
+    QPushButton* newQuizButton = new QPushButton ("New &Quiz", this,
                                                   "newQuizButton");
     Q_CHECK_PTR (newQuizButton);
     newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
     buttonHlay->addWidget (newQuizButton);
+
+    nextQuestionButton = new QPushButton ("&Next Question", this,
+                                          "nextQuestionButton");
+    Q_CHECK_PTR (nextQuestionButton);
+    nextQuestionButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (nextQuestionButton, SIGNAL (clicked()),
+             SLOT (nextQuestionClicked()));
+    buttonHlay->addWidget (nextQuestionButton);
 
     updateStats();
 }
@@ -119,9 +127,39 @@ QuizForm::responseEntered()
 void
 QuizForm::newQuizClicked()
 {
-    engine->newQuiz ("OPST");
+    engine->newQuiz();
+    updateForm();
+}
+
+//---------------------------------------------------------------------------
+// nextQuestionClicked
+//
+//! Called when the New Question button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::nextQuestionClicked()
+{
+    if (!engine->nextQuestion())
+        QMessageBox::warning (this, "Error getting next question",
+                              "Error getting next question.");
+
+    updateForm();
+}
+
+//---------------------------------------------------------------------------
+// updateStats
+//
+//! Update the form, including setting the question label, clearing the
+//! response list, and enabling and disabling form elements as
+//! appropriate.
+//---------------------------------------------------------------------------
+void
+QuizForm::updateForm()
+{
     updateStats();
+    questionLabel->setText (engine->getQuestion());
     responseList->clear();
+    nextQuestionButton->setEnabled (!engine->onLastQuestion());
 }
 
 //---------------------------------------------------------------------------

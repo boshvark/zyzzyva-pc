@@ -16,6 +16,7 @@
 
 #include <qstring.h>
 #include <qstringlist.h>
+#include <qvaluevector.h>
 #include <set>
 
 class WordEngine;
@@ -33,20 +34,29 @@ class QuizEngine
     QuizEngine (WordEngine* e) : wordEngine (e) { }
     ~QuizEngine() { }
 
-    void newQuiz (const QString& question);
+    void newQuiz ();
+    bool nextQuestion();
 
     ResponseStatus respond (const QString& response);
-    const QString& getQuestion() const { return question; }
+    QString getQuestion() const;
     int total() const { return correctResponses.size(); }
     int correct() const { return correctUserResponses.size(); }
     int incorrect() const { return incorrectUserResponses.size(); }
 
+    bool onLastQuestion() const;
+
+  private:
+    void clearQuestion();
+    void prepareQuestion();
+
   private:
     WordEngine*       wordEngine;
-    QString           question;
     std::set<QString> correctResponses;
     std::set<QString> correctUserResponses;
     QStringList       incorrectUserResponses;
+
+    QStringList       quizQuestions;
+    int               questionIndex;
 };
 
 #endif // QUIZ_ENGINE_H
