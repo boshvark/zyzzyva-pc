@@ -13,7 +13,7 @@
 #ifndef WORD_ENGINE_H
 #define WORD_ENGINE_H
 
-#include "DAWG.h"
+#include "WordGraph.h"
 #include <qstring.h>
 #include <qstringlist.h>
 
@@ -30,7 +30,7 @@ class WordEngine
     QStringList matchSubanagram (const QString& input) const;
 
   private:
-    DAWG graph;
+    WordGraph graph;
 };
 
 #endif // WORD_ENGINE_H

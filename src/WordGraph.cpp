@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// DAWG.cpp
+// WordGraph.cpp
 //
 // A Directed Acyclic Word Graph class.
 //
@@ -10,28 +10,28 @@
 //
 //---------------------------------------------------------------------------
 
-#include "DAWG.h"
+#include "WordGraph.h"
 #include <iostream>
 #include <stack>
 
 using namespace std;
 
 //---------------------------------------------------------------------------
-// DAWG
+// WordGraph
 //
 //! Constructor.
 //---------------------------------------------------------------------------
-DAWG::DAWG()
+WordGraph::WordGraph()
     : top (0)
 {
 }
 
 //---------------------------------------------------------------------------
-// ~DAWG
+// ~WordGraph
 //
 //! Destructor.
 //---------------------------------------------------------------------------
-DAWG::~DAWG()
+WordGraph::~WordGraph()
 {
 }
 
@@ -43,7 +43,7 @@ DAWG::~DAWG()
 //! @param w the word to add
 //---------------------------------------------------------------------------
 void
-DAWG::addWord (const QString& w)
+WordGraph::addWord (const QString& w)
 {
     if (w.isEmpty())
         return;
@@ -85,7 +85,7 @@ DAWG::addWord (const QString& w)
 //! @param w the word to search for
 //---------------------------------------------------------------------------
 bool
-DAWG::containsWord (const QString& w) const
+WordGraph::containsWord (const QString& w) const
 {
     if (w.isEmpty() || !top)
         return false;
@@ -120,7 +120,7 @@ DAWG::containsWord (const QString& w) const
 //! @return a list of acceptable words
 //---------------------------------------------------------------------------
 QStringList
-DAWG::getWordsMatchingPattern (const QString& pattern) const
+WordGraph::getWordsMatchingPattern (const QString& pattern) const
 {
     QStringList list;
 
@@ -181,7 +181,7 @@ DAWG::getWordsMatchingPattern (const QString& pattern) const
 //! @return a list of acceptable anagrams
 //---------------------------------------------------------------------------
 QStringList
-DAWG::getAnagrams (const QString& input, bool subanagrams) const
+WordGraph::getAnagrams (const QString& input, bool subanagrams) const
 {
     QStringList list;
 
@@ -236,7 +236,7 @@ DAWG::getAnagrams (const QString& input, bool subanagrams) const
 //! Compress the graph by eliminating duplication of common suffixes.
 //---------------------------------------------------------------------------
 void
-DAWG::compress()
+WordGraph::compress()
 {
 }
 
@@ -246,7 +246,7 @@ DAWG::compress()
 //! Print a rudimentary ASCII representation of the graph.
 //---------------------------------------------------------------------------
 void
-DAWG::print() const
+WordGraph::print() const
 {
     if (!top) {
         cout << "(empty)" << endl;
@@ -293,7 +293,7 @@ DAWG::print() const
 //
 //! Constructor.
 //---------------------------------------------------------------------------
-DAWG::Node::Node(char c, bool e)
+WordGraph::Node::Node(char c, bool e)
     : letter (c), eow (e), next (0), child (0)
 {
 }
@@ -303,7 +303,7 @@ DAWG::Node::Node(char c, bool e)
 //
 //! Destructor.  Destroy this node along with its next and child nodes.
 //---------------------------------------------------------------------------
-DAWG::Node::~Node()
+WordGraph::Node::~Node()
 {
     delete next;
     delete child;

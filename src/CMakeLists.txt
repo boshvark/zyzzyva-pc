@@ -8,7 +8,7 @@ ENDIF (NOT QT_FOUND)
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR})
 
 SET (SRCS main.cpp MainWindow.cpp JudgeForm.cpp SearchForm.cpp
-     WordValidator.cpp WordEngine.cpp DAWG.cpp)
+     WordValidator.cpp WordEngine.cpp WordGraph.cpp)
 SET (MOCS MainWindow.h JudgeForm.h SearchForm.h WordValidator.h)
 QT_WRAP_CPP(wordstudy SRCS MOCS)
 

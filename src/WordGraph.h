@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// DAWG.h
+// WordGraph.h
 //
 // A Directed Acyclic Word Graph class.
 //
@@ -10,17 +10,17 @@
 //
 //---------------------------------------------------------------------------
 
-#ifndef DAWG_H
-#define DAWG_H
+#ifndef WORD_GRAPH_H
+#define WORD_GRAPH_H
 
 #include <qstring.h>
 #include <qstringlist.h>
 
-class DAWG
+class WordGraph
 {
   public:
-    DAWG();
-    ~DAWG();
+    WordGraph();
+    ~WordGraph();
 
     void addWord (const QString& w);
     bool containsWord (const QString& w) const;
@@ -43,4 +43,4 @@ class DAWG
     Node* top;
 };
 
-#endif // DAWG_H
+#endif // WORD_GRAPH_H
