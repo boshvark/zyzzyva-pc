@@ -226,7 +226,10 @@ void
 QuizForm::setRecall (int correct, int total)
 {
     recallLabel->setText ("Recall: " + QString::number (correct)
-                           + " / " + QString::number (total));
+                           + " / " + QString::number (total)
+                           + " (" + QString::number(((correct * 100.0)/ total),
+                                                    'f', 1)
+                           + "%)");
 }
 
 //---------------------------------------------------------------------------
@@ -242,5 +245,9 @@ void
 QuizForm::setPrecision (int correct, int total)
 {
     precisionLabel->setText ("Precision: " + QString::number (correct)
-                             + " / " + QString::number (total));
+                             + " / " + QString::number (total)
+                             + " ("
+                             + QString::number(((correct * 100.0)/ total),
+                                                 'f', 1)
+                             + "%)");
 }
