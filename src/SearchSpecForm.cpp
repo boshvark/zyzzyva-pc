@@ -178,7 +178,6 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
 void
 SearchSpecForm::reset()
 {
-    matchCbox->setCurrentText (PATTERN_COMBO);
     patternLine->setText ("");
     includeLine->setText ("");
     excludeLine->setText ("");
