@@ -7,11 +7,11 @@ IF (NOT QT_FOUND)
 ENDIF (NOT QT_FOUND)
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR})
 
-SET (SRCS main.cpp MainWindow.cpp JudgeForm.cpp SearchForm.cpp
-     WordValidator.cpp WordEngine.cpp WordGraph.cpp
+SET (SRCS main.cpp MainWindow.cpp JudgeForm.cpp QuizForm.cpp
+     SearchForm.cpp WordValidator.cpp WordEngine.cpp WordGraph.cpp
      SettingsDialog.cpp)
-SET (MOCS MainWindow.h JudgeForm.h SearchForm.h WordValidator.h
-     SettingsDialog.h)
+SET (MOCS MainWindow.h JudgeForm.h QuizForm.h SearchForm.h
+     WordValidator.h SettingsDialog.h)
 QT_WRAP_CPP(zyzzyva SRCS MOCS)
 
 ADD_EXECUTABLE (zyzzyva SRCS)

@@ -12,6 +12,7 @@
 
 #include "MainWindow.h"
 #include "JudgeForm.h"
+#include "QuizForm.h"
 #include "SearchForm.h"
 #include "SettingsDialog.h"
 #include "WordEngine.h"
@@ -27,6 +28,7 @@
 const QString IMPORT_FAILURE_TITLE = "Import Failed";
 const QString IMPORT_COMPLETE_TITLE = "Import Complete";
 const QString JUDGE_TAB_TITLE = "Judge";
+const QString QUIZ_TAB_TITLE = "Quiz";
 const QString SEARCH_TAB_TITLE = "Search";
 
 const QString SETTINGS_MAIN = "/Zyzzyva";
@@ -71,6 +73,10 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     searchForm = new SearchForm (engine, tabStack, "searchForm");
     Q_CHECK_PTR (searchForm);
     tabStack->addTab (searchForm, SEARCH_TAB_TITLE);
+
+    quizForm = new QuizForm (engine, tabStack, "quizForm");
+    Q_CHECK_PTR (quizForm);
+    tabStack->addTab (quizForm, QUIZ_TAB_TITLE);
 
     judgeForm = new JudgeForm (engine, tabStack, "judgeForm");
     Q_CHECK_PTR (judgeForm);

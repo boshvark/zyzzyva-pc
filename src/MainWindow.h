@@ -19,6 +19,7 @@
 #include <qtabwidget.h>
 
 class JudgeForm;
+class QuizForm;
 class SearchForm;
 class WordEngine;
 class SettingsDialog;
@@ -45,6 +46,7 @@ class MainWindow : public QMainWindow
     WordEngine* engine;
     QTabWidget* tabStack;
     JudgeForm*  judgeForm;
+    QuizForm*   quizForm;
     SearchForm* searchForm;
     QLabel*     messageLabel;
     QLabel*     statusLabel;
