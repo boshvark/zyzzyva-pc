@@ -13,7 +13,7 @@
 #ifndef DAWG_H
 #define DAWG_H
 
-#include <string>
+#include <qstring.h>
 
 class DAWG
 {
@@ -21,8 +21,8 @@ class DAWG
     DAWG();
     ~DAWG();
 
-    void addWord (const std::string& w);
-    bool containsWord (const std::string& w) const;
+    void addWord (const QString& w);
+    bool containsWord (const QString& w) const;
 
     void print() const;
 

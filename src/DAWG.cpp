@@ -43,28 +43,28 @@ DAWG::~DAWG()
 //! @param w the word to add
 //---------------------------------------------------------------------------
 void
-DAWG::addWord (const string& w)
+DAWG::addWord (const QString& w)
 {
-    if (!w.size())
+    if (w.isEmpty())
         return;
 
     Node* node = top;
     Node* parentNode = 0;
-
-    string::const_iterator c;
-    for (c = w.begin(); c != w.end(); ++c) {
+    QChar c;
+    for (int i = 0; i < w.length(); ++i) {
+        c = w.at (i);
 
         // Empty node, so create a new node and link from its parent
         if (!node) {
-            node = new Node (*c);
+            node = new Node (c);
             (parentNode ? parentNode->child : top) = node;
         }
 
         // Nonempty node, so find the current letter in the chain
         else {
-            while (node->letter != *c) {
+            while (node->letter != c) {
                 if (!node->next)
-                    node->next = new Node (*c);
+                    node->next = new Node (c);
                 node = node->next;
             }
         }
@@ -84,20 +84,20 @@ DAWG::addWord (const string& w)
 //! @param w the word to search for
 //---------------------------------------------------------------------------
 bool
-DAWG::containsWord (const string& w) const
+DAWG::containsWord (const QString& w) const
 {
-    if (!w.size() || !top)
+    if (w.isEmpty() || !top)
         return false;
 
     Node* node = top;
     bool eow = false;
-
-    string::const_iterator c;
-    for (c = w.begin(); c != w.end(); ++c) {
+    QChar c;
+    for (int i = 0; i < w.length(); ++i) {
         if (!node)
             return false;
 
-        while (node->letter != *c) {
+        c = w.at (i);
+        while (node->letter != c) {
             if (!node->next)
                 return false;
             node = node->next;
