@@ -47,6 +47,19 @@ ZListViewItem::setTextColor (const QColor& color)
 }
 
 //---------------------------------------------------------------------------
+//  setFont
+//
+//! Set the font of the listview item.
+//
+//! @param color the text color
+//---------------------------------------------------------------------------
+void
+ZListViewItem::setFont (const QFont& f)
+{
+    font = f;
+}
+
+//---------------------------------------------------------------------------
 //  width
 //
 //! Get the width of the listview item.  Overrides QListViewItem::width.

@@ -176,6 +176,7 @@ MainWindow::editSettings()
     else
         settingsDialog->readSettings (settings);
     settings.endGroup();
+    readSettings();
 }
 
 //---------------------------------------------------------------------------
@@ -231,6 +232,12 @@ MainWindow::readSettings()
     settingsDialog->readSettings (settings);
     settings.endGroup();
     setGeometry (x, y, w, h);
+    QFont font;
+    QString fontStr = settingsDialog->getFont();
+    if (font.fromString (fontStr))
+        qApp->setFont (font, true);
+    else
+        qWarning ("Cannot set font: " + fontStr);
 }
 
 //---------------------------------------------------------------------------

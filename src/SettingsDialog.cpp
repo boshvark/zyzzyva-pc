@@ -26,12 +26,15 @@
 #include "Defs.h"
 #include <qcheckbox.h>
 #include <qfiledialog.h>
+#include <qfont.h>
+#include <qfontdialog.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #include <qvgroupbox.h>
 
 const QString SETTINGS_IMPORT = "/autoimport";
 const QString SETTINGS_IMPORT_FILE = "/autoimport_file";
+const QString SETTINGS_FONT = "/font";
 const QString DIALOG_CAPTION = "Preferences";
 
 using namespace Defs;
@@ -79,6 +82,26 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
                                     "browseButton");
     connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
     autoImportHlay->addWidget (browseButton);
+
+    QHBoxLayout* fontHlay = new QHBoxLayout (SPACING, "fontHlay");
+    Q_CHECK_PTR (fontHlay);
+    mainVlay->addLayout (fontHlay);
+
+    QLabel* fontLabel = new QLabel ("Font:", this, "fontLabel");
+    Q_CHECK_PTR (fontLabel);
+    fontHlay->addWidget (fontLabel);
+
+    fontLine = new QLineEdit (this, "fontLine");
+    Q_CHECK_PTR (fontLine);
+    fontLine->setReadOnly (true);
+    fontLine->setText (this->font().toString());
+    fontHlay->addWidget (fontLine);
+
+    chooseFontButton = new QPushButton ("Choose...", this, "chooseFontButton");
+    Q_CHECK_PTR (chooseFontButton);
+    connect (chooseFontButton, SIGNAL (clicked()),
+             SLOT (chooseFontButtonClicked()));
+    fontHlay->addWidget (chooseFontButton);
 
     mainVlay->addStretch (1);
 
@@ -129,6 +152,10 @@ SettingsDialog::readSettings (const QSettings& settings)
                                                  QString::null, &ok);
     if (ok)
         autoImportLine->setText (autoImportFile);
+
+    QString fontStr = settings.readEntry (SETTINGS_FONT, QString::null, &ok);
+    if (ok)
+        fontLine->setText (fontStr);
 }
 
 //---------------------------------------------------------------------------
@@ -141,8 +168,8 @@ SettingsDialog::writeSettings (QSettings& settings)
 {
     settings.writeEntry (SETTINGS_IMPORT, autoImportCbox->isChecked());
     settings.writeEntry (SETTINGS_IMPORT_FILE, autoImportLine->text());
+    settings.writeEntry (SETTINGS_FONT, fontLine->text());
 }
-
 
 //---------------------------------------------------------------------------
 // getAutoImportFile
@@ -157,6 +184,19 @@ SettingsDialog::getAutoImportFile() const
 {
     return (autoImportCbox->isChecked() ? autoImportLine->text()
             : QString::null);
+}
+
+//---------------------------------------------------------------------------
+// getAutoImportFile
+//
+//! Return the font setting.
+//
+//! @return the name of the preferred font
+//---------------------------------------------------------------------------
+QString
+SettingsDialog::getFont() const
+{
+    return fontLine->text();
 }
 
 //---------------------------------------------------------------------------
@@ -190,4 +230,19 @@ SettingsDialog::autoImportCboxToggled (bool on)
 {
     autoImportLine->setEnabled (on);
     browseButton->setEnabled (on);
+}
+
+//---------------------------------------------------------------------------
+// chooseFontButtonClicked
+//
+//! Slot called when the Choose Font button is clicked.  Create a font chooser
+//! dialog and place the name of the chosen font in the font line edit.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::chooseFontButtonClicked()
+{
+    bool ok = false;
+    QFont font = QFontDialog::getFont (&ok, this->font(), this);
+    if (ok)
+        fontLine->setText (font.toString());
 }

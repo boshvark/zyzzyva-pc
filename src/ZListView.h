@@ -33,6 +33,8 @@ class ZListView : public QListView
   public:
     ZListView (QWidget* parent = 0, const char* name = 0, WFlags f = 0);
     ~ZListView();
+
+    virtual void setFont (const QFont& font);
 };
 
 #endif // ZLISTVIEW_H

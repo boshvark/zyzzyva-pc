@@ -42,15 +42,19 @@ class SettingsDialog : public QDialog
     void readSettings (const QSettings& settings);
     void writeSettings (QSettings& settings);
     QString getAutoImportFile() const;
+    QString getFont() const;
 
   public slots:
     void browseButtonClicked();
     void autoImportCboxToggled (bool on);
+    void chooseFontButtonClicked();
 
   private:
     QCheckBox*   autoImportCbox;
     QLineEdit*   autoImportLine;
     QPushButton* browseButton;
+    QLineEdit*   fontLine;
+    QPushButton* chooseFontButton;
 };
 
 #endif // SETTINGS_DIALOG_H

@@ -78,6 +78,7 @@ class ZListViewItem : public QListViewItem
     ~ZListViewItem() { }
 
     void setTextColor (const QColor& color);
+    void setFont (const QFont& font);
 
     int width (const QFontMetrics& fm, const QListView* lview, int c) const;
     void paintCell (QPainter* p, const QColorGroup& cg, int column, int width,

@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "ZListView.h"
+#include "ZListViewItem.h"
 
 //---------------------------------------------------------------------------
 // ZListView
@@ -45,4 +46,18 @@ ZListView::ZListView (QWidget* parent, const char* name, WFlags f)
 //---------------------------------------------------------------------------
 ZListView::~ZListView()
 {
+}
+
+//---------------------------------------------------------------------------
+// setFont
+//
+//! Set the font of the listview and all listview items.
+//---------------------------------------------------------------------------
+void
+ZListView::setFont (const QFont& font)
+{
+    QListView::setFont (font);
+    ZListViewItem* item = static_cast<ZListViewItem*> (firstChild());
+    for (; item; item = static_cast<ZListViewItem*> (item->nextSibling()))
+        item->setFont (font);
 }
