@@ -105,18 +105,8 @@ SearchForm::search()
 
     QApplication::setOverrideCursor (Qt::waitCursor);
     resultList->clear();
-    QStringList wordList = engine->search (specForm->getSearchSpec());
-
-    // Convert to all-caps if a wildcard is in the pattern and the "Use
-    // lower-case letters" checkbox is not checked
-    if (!lowerCaseCbox->isChecked() && pattern.contains (QRegExp ("[\\*\\?]")))
-    {
-        QStringList::iterator it;
-        for (it = wordList.begin(); it != wordList.end(); ++it)
-            *it = (*it).upper();
-    }
-
-    resultList->insertStringList (wordList);
+    resultList->insertStringList (engine->search (specForm->getSearchSpec(),
+                                                  !lowerCaseCbox->isChecked()));
     resultList->sort();
     updateResultLabel (resultList->count());
     QApplication::restoreOverrideCursor();

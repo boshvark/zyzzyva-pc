@@ -56,7 +56,7 @@ QuizEngine::newQuiz (const SearchSpec& spec, bool alphagrams, bool randomOrder)
     // is used to select the list of alphagrams, then anagrams are used as
     // quiz answers.
     if (alphagrams) {
-        quizQuestions = wordEngine->search (spec);
+        quizQuestions = wordEngine->search (spec, true);
         quizQuestions = wordEngine->alphagrams (quizQuestions);
 
         // Do a random shuffle
@@ -203,12 +203,12 @@ QuizEngine::prepareQuestion()
     QStringList answers;
 
     if (singleSpecQuestion)
-        answers = wordEngine->search (searchSpec);
+        answers = wordEngine->search (searchSpec, true);
     else {
         SearchSpec spec;
         spec.pattern = question;
         spec.type = Anagram;
-        answers = wordEngine->search (spec);
+        answers = wordEngine->search (spec, true);
     }
 
     QStringList::iterator it;

@@ -37,7 +37,7 @@ class WordEngine
 
     int importFile (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
-    QStringList search (const SearchSpec& spec) const;
+    QStringList search (const SearchSpec& spec, bool allCaps) const;
     QStringList alphagrams (const QStringList& list) const;
     QString alphagram (const QString& word) const;
 

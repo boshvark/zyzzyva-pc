@@ -25,13 +25,14 @@
 #include "WordEngine.h"
 #include "Defs.h"
 #include <qfile.h>
+#include <qregexp.h>
 #include <qvaluevector.h>
 #include <set>
 
 using namespace Defs;
 using std::set;
 
-const int READLINE_BYTES = 64;
+const int MAX_INPUT_LINE_LEN = 640;
 
 //---------------------------------------------------------------------------
 // importFile
@@ -55,7 +56,7 @@ WordEngine::importFile (const QString& filename, QString* errString)
 
     int imported = 0;
     QString word, line;
-    while (file.readLine (line, READLINE_BYTES) > 0) {
+    while (file.readLine (line, MAX_INPUT_LINE_LEN) > 0) {
         line = line.simplifyWhiteSpace();
         graph.addWord (line.section (' ', 0, 0));
         ++imported;
@@ -84,12 +85,22 @@ WordEngine::isAcceptable (const QString& word) const
 //! Search for acceptable words matching a search specification.
 //
 //! @param spec the search specification
+//! @param allCaps whether to ensure the words in the list are all caps
 //! @return a list of acceptable words
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::search (const SearchSpec& spec) const
+WordEngine::search (const SearchSpec& spec, bool allCaps) const
 {
-    return graph.search (spec);
+    // Allow a smart compiler to optimize by returing directly from
+    // WordGraph::search unless we need to manipulate the return list
+    if (!allCaps || !spec.pattern.contains (QRegExp ("[\\*\\?]")))
+        return graph.search (spec);
+
+    QStringList wordList = graph.search (spec);
+    QStringList::iterator it;
+    for (it = wordList.begin(); it != wordList.end(); ++it)
+        *it = (*it).upper();
+    return wordList;
 }
 
 //---------------------------------------------------------------------------
