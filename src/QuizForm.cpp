@@ -59,13 +59,17 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (responseList);
     mainVlay->addWidget (responseList);
 
+    QHBoxLayout* statsHlay = new QHBoxLayout (SPACING, "statsHlay");
+    Q_CHECK_PTR (statsHlay);
+    mainVlay->addLayout (statsHlay);
+
     recallLabel = new QLabel (this, "recallLabel");
     Q_CHECK_PTR (recallLabel);
-    mainVlay->addWidget (recallLabel);
+    statsHlay->addWidget (recallLabel);
 
     precisionLabel = new QLabel (this, "precisionLabel");
     Q_CHECK_PTR (precisionLabel);
-    mainVlay->addWidget (precisionLabel);
+    statsHlay->addWidget (precisionLabel);
 
     inputLine = new QLineEdit (this, "inputLine");
     Q_CHECK_PTR (inputLine);
