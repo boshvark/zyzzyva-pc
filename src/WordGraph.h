@@ -51,7 +51,7 @@ class WordGraph
         Node (char c = 0, bool e = false);
         ~Node();
         bool operator== (const Node& rhs);
-        char letter;
+        QChar letter;
         bool eow;
         Node* next;
         Node* child;

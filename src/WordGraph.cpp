@@ -203,8 +203,10 @@ WordGraph::search (const SearchSpec& spec) const
                 if (spec.type == Pattern) {
 
                     // A node matches wildcard characters or its own letter
-                    if ((c == "*") || (c == "?") || (c == node->letter))
+                    if (c == node->letter)
                         word += node->letter;
+                    else if ((c == "*") || (c == "?"))
+                        word += node->letter.lower();
                     else
                         continue;
 
@@ -236,14 +238,19 @@ WordGraph::search (const SearchSpec& spec) const
                     // Try to match the current letter against the pattern.
                     // If the letter doesn't match exactly, match a ? char.
                     int index = unmatched.find (node->letter);
-                    if (index < 0)
+                    bool wildcardMatch = false;
+                    if (index < 0) {
                         index = unmatched.find ("?");
+                        wildcardMatch = true;
+                    }
                     bool match = (index >= 0);
 
                     // If this letter matched or a wildcard was specified,
                     // keep traversing after possibly adding the current word.
                     if (match || wildcard) {
-                        word += node->letter;
+                        word += (match && !wildcardMatch) ? node->letter
+                            : node->letter.lower();
+
                         if (match)
                             unmatched.replace (index, 1, "");
 
