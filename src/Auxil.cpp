@@ -60,7 +60,7 @@ Auxil::getAboutString()
 QString
 Auxil::getHelpDir()
 {
-    return qApp->applicationDirPath() + "/docs/help";
+    return qApp->applicationDirPath() + "/data/help";
 }
 
 //---------------------------------------------------------------------------

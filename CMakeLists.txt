@@ -58,8 +58,8 @@ FILE (READ ${ZYZZYVA_SOURCE_DIR}/VERSION ZYZZYVA_VERSION)
 STRING (REGEX REPLACE "\n.*" "" ZYZZYVA_VERSION ${ZYZZYVA_VERSION})
 
 # Put version number in about.html
-CONFIGURE_FILE (${ZYZZYVA_SOURCE_DIR}/docs/help/about.html.in
-                ${ZYZZYVA_SOURCE_DIR}/docs/help/about.html)
+CONFIGURE_FILE (${ZYZZYVA_SOURCE_DIR}/data/help/about.html.in
+                ${ZYZZYVA_SOURCE_DIR}/data/help/about.html)
 
 QT_WRAP_CPP(zyzzyva SRCS MOCS)
 ADD_EXECUTABLE (zyzzyva WIN32 SRCS)
