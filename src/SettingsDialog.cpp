@@ -239,14 +239,14 @@ SettingsDialog::getFont() const
 }
 
 //---------------------------------------------------------------------------
-// getLengthSort
+// getSortByLength
 //
 //! Return the "sort by length" setting.
 //
 //! @return true if "sort by length" is preferred, false otherwise
 //---------------------------------------------------------------------------
 bool
-SettingsDialog::getLengthSort() const
+SettingsDialog::getSortByLength() const
 {
     return lengthSortCbox->isChecked();
 }

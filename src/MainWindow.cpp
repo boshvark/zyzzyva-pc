@@ -32,6 +32,7 @@
 #include "SearchForm.h"
 #include "SettingsDialog.h"
 #include "WordEngine.h"
+#include "ZListViewItem.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <qapplication.h>
@@ -240,6 +241,8 @@ MainWindow::readSettings (bool useGeometry)
         qApp->setFont (font, true);
     else
         qWarning ("Cannot set font: " + fontStr);
+
+    ZListViewItem::setSortByLength (settingsDialog->getSortByLength());
 }
 
 //---------------------------------------------------------------------------

@@ -43,7 +43,7 @@ class SettingsDialog : public QDialog
     void writeSettings (QSettings& settings);
     QString getAutoImportFile() const;
     QString getFont() const;
-    bool getLengthSort() const;
+    bool getSortByLength() const;
 
   public slots:
     void browseButtonClicked();

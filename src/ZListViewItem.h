@@ -77,6 +77,8 @@ class ZListViewItem : public QListViewItem
 
     ~ZListViewItem() { }
 
+    static void setSortByLength (bool b) { sortByLength = b; }
+    static bool getSortByLength() { return sortByLength; }
     void setTextColor (const QColor& color);
     void setFont (const QFont& font);
 
@@ -84,10 +86,12 @@ class ZListViewItem : public QListViewItem
     void paintCell (QPainter* p, const QColorGroup& cg, int column, int width,
                     int align);
     void paintFocus (QPainter* p, const QColorGroup& cg, const QRect& r);
+    virtual int compare (QListViewItem* i, int col, bool ascending) const;
 
   private:
     void init();
     const QColorGroup& getColorGroup();
+    static bool sortByLength;
 
   private:
     QFont font;

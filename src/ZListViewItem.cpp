@@ -24,6 +24,8 @@
 
 #include "ZListViewItem.h"
 
+bool ZListViewItem::sortByLength = false;
+
 //---------------------------------------------------------------------------
 //  setTextColor
 //
@@ -128,4 +130,34 @@ ZListViewItem::getColorGroup()
         return palette.active();
     else
         return palette.inactive();
+}
+
+//---------------------------------------------------------------------------
+//  compare
+//
+//! Reimplementation of virtual method QListViewItem::compare.  Compare this
+//! listview item to item I using the column COL in ASCENDING order.
+//
+//! @param i the listview item to compare with
+//! @param col the column index to compare
+//! @param ascending the order in which to compare (ignored)
+//! @return < 0 if this item is less than I, 0 if they are equal, and > 0 if
+//! this item is > I.
+//---------------------------------------------------------------------------
+int
+ZListViewItem::compare (QListViewItem* i, int col, bool ascending) const
+{
+    if (col != 0)
+        return 0;
+    if (!sortByLength)
+        return QListViewItem::compare (i, col, ascending);
+
+    QString mkey = key (col, ascending);
+    QString ikey = i->key (col, ascending);
+    if (mkey.length() < ikey.length())
+        return -1;
+    else if (mkey.length() > ikey.length())
+        return 1;
+    else
+        return mkey.compare (ikey);
 }
