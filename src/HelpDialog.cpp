@@ -35,17 +35,21 @@
 //! @param f widget flags
 //---------------------------------------------------------------------------
 HelpDialog::HelpDialog (const QString& path, QObject* parent, const char* name)
-    : QAssistantClient (path, parent, name)
+    : QAssistantClient (path, parent, name), valid (false)
 {
     QString adpFilename = "docs/help/zyzzyva.dcf";
     QFile adpFile (adpFilename);
-    if (!adpFile.open (IO_WriteOnly))
-        qFatal ("Unable to open " + adpFilename);
+    if (!adpFile.open (IO_WriteOnly)) {
+        qWarning ("Unable to open " + adpFilename);
+        return;
+    }
 
     QString aboutFilename = "docs/help/about.html";
     QFile aboutFile (aboutFilename);
-    if (!aboutFile.open (IO_WriteOnly))
-        qFatal ("Unable to open " + aboutFilename);
+    if (!aboutFile.open (IO_WriteOnly)) {
+        qWarning ("Unable to open " + aboutFilename);
+        return;
+    }
     QTextStream aboutOut (&aboutFile);
     aboutOut << Defs::ABOUT_STRING;
 
@@ -66,4 +70,5 @@ HelpDialog::HelpDialog (const QString& path, QObject* parent, const char* name)
     QStringList args;
     args << "-profile" << adpFilename;
     setArguments (args);
+    valid = true;
 }

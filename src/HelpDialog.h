@@ -32,6 +32,10 @@ class HelpDialog : public QAssistantClient
   Q_OBJECT
   public:
     HelpDialog (const QString& path, QObject* parent = 0, const char* name = 0);
+    bool isValid() const { return valid; }
+
+  private:
+    bool valid;
 };
 
 #endif // HELP_DIALOG_H
