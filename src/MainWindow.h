@@ -13,6 +13,7 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
+#include <qlabel.h>
 #include <qmainwindow.h>
 
 class LookupForm;
@@ -31,6 +32,8 @@ class MainWindow : public QMainWindow
   private:
     WordEngine* engine;
     LookupForm* lookupForm;
+    QLabel*     messageLabel;
+    QLabel*     statusLabel;
 };
 
 #endif // MAIN_WINDOW_H

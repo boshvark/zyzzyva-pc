@@ -20,6 +20,7 @@
 #include <qlayout.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
+#include <qstatusbar.h>
 
 const QString CHOOSER_TITLE = "Choose a Word List";
 const QString IMPORT_COMPLETE_TITLE = "Import Complete";
@@ -52,6 +53,12 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 
     lookupForm = new LookupForm (frame, "lookupForm");
     mainVlay->addWidget (lookupForm);
+
+    messageLabel = new QLabel ("Messages go here", this, "messageLabel");
+    statusBar()->addWidget (messageLabel, 2);
+
+    statusLabel = new QLabel ("0 words loaded", this, "statusLabel");
+    statusBar()->addWidget (statusLabel, 1);
 }
 
 //---------------------------------------------------------------------------
