@@ -269,6 +269,7 @@ WordGraph::search (const SearchSpec& spec) const
         }
 
         // Done traversing next nodes, pop a child off the stack
+        node = 0;
         if (states.size()) {
             TraversalState state = states.top();
             node = state.node;
