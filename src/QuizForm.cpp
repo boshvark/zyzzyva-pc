@@ -231,6 +231,10 @@ QuizForm::responseEntered()
 
     // Update the response status label
     responseStatusLabel->setText(response + " : " + statusStr);
+
+    // Restart the timer, if the timer runs per response
+    if (timerId && (timerType == PerResponse))
+        startNewTimer();
 }
 
 //---------------------------------------------------------------------------
@@ -249,10 +253,12 @@ QuizForm::newQuizClicked()
     }
 
     // Kill quiz timer, if running
-    if (timerId)
-        killTimer (timerId);
     while (timerPaused)
         unpauseTimer();
+    if (timerId) {
+        killTimer (timerId);
+        timerId = 0;
+    }
 
     SearchSpec spec = newQuizDialog->getSearchSpec();
     bool alphagrams = newQuizDialog->getQuizAlphagrams();
@@ -388,15 +394,27 @@ QuizForm::startQuestion()
     checkResponseButton->setEnabled (true);
     nextQuestionButton->setEnabled (false);
     inputLine->setFocus();
-    if (useTimer) {
-        timerRemaining = timerDuration;
-        setTimerDisplay (timerDuration);
-        timerId = startTimer (1000);
-        while (timerPaused)
-            unpauseTimer();
-    }
+    if (useTimer)
+        startNewTimer();
     else
         clearTimerDisplay();
+}
+
+//---------------------------------------------------------------------------
+// startNewTimer
+//
+//! Start a new timer, and update the form appropriately.
+//---------------------------------------------------------------------------
+void
+QuizForm::startNewTimer()
+{
+    if (timerId)
+        killTimer (timerId);
+    timerRemaining = timerDuration;
+    setTimerDisplay (timerDuration);
+    timerId = startTimer (1000);
+    while (timerPaused)
+        unpauseTimer();
 }
 
 //---------------------------------------------------------------------------

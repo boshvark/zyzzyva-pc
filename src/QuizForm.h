@@ -63,6 +63,7 @@ class QuizForm : public QFrame
     void clearQuestionNum();
     void clearTimerDisplay();
     void startQuestion();
+    void startNewTimer();
     void pauseTimer();
     void unpauseTimer();
     void clearCanvas();
