@@ -49,13 +49,16 @@ QuizForm::QuizForm (WordEngine* e, QWidget* parent, const char* name,
                                                 "quizBoxHlay");
     Q_CHECK_PTR (quizBoxHlay);
     quizBoxHlay->addStretch (1);
-    quizLabel = new QLabel ("Hello, world!", quizGbox, "label");
+    quizLabel = new QLabel ("OPST", quizGbox, "label");
     Q_CHECK_PTR (quizLabel);
     quizBoxHlay->addWidget (quizLabel);
     quizBoxHlay->addStretch (1);
 
     inputLine = new QLineEdit (this, "inputLine");
     Q_CHECK_PTR (inputLine);
+    WordValidator* validator = new WordValidator (inputLine);
+    Q_CHECK_PTR (validator);
+    inputLine->setValidator (validator);
     connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
     mainVlay->addWidget (inputLine);
 
