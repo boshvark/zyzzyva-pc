@@ -23,19 +23,23 @@
 //---------------------------------------------------------------------------
 
 #include "SettingsDialog.h"
+#include "Auxil.h"
 #include "Defs.h"
 #include <qcheckbox.h>
 #include <qfiledialog.h>
 #include <qfont.h>
 #include <qfontdialog.h>
-#include <qlabel.h>
 #include <qlayout.h>
+#include <qregexp.h>
 #include <qvgroupbox.h>
 
 const QString SETTINGS_IMPORT = "/autoimport";
 const QString SETTINGS_IMPORT_FILE = "/autoimport_file";
 const QString SETTINGS_FONT = "/font";
 const QString SETTINGS_SORT_BY_LENGTH = "/wordlist_sort_by_length";
+const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
+const QString SETTINGS_TILE_THEME = "/tile_theme";
+const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DIALOG_CAPTION = "Preferences";
 
 using namespace Defs;
@@ -91,6 +95,37 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     Q_CHECK_PTR (browseButton);
     connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
     autoImportHlay->addWidget (browseButton);
+
+    QVGroupBox* themeGbox = new QVGroupBox (this, "themeGbox");
+    Q_CHECK_PTR (themeGbox);
+    themeGbox->setTitle ("Tile Theme");
+    mainVlay->addWidget (themeGbox);
+
+    QWidget* themeWidget = new QWidget (themeGbox, "themeWidget");
+    Q_CHECK_PTR (themeWidget);
+    QVBoxLayout* themeVlay = new QVBoxLayout (themeWidget, MARGIN, SPACING,
+                                              "themeVlay");
+    Q_CHECK_PTR (themeVlay);
+
+    themeCbox = new QCheckBox ("Use tile images in Quiz mode", themeWidget,
+                               "themeCbox");
+    Q_CHECK_PTR (themeCbox);
+    connect (themeCbox, SIGNAL (toggled (bool)),
+             SLOT (themeCboxToggled (bool)));
+    themeVlay->addWidget (themeCbox);
+
+    QHBoxLayout* themeHlay = new QHBoxLayout (SPACING, "themeHlay");
+    Q_CHECK_PTR (themeHlay);
+    themeVlay->addLayout (themeHlay);
+
+    themeLabel = new QLabel ("Theme:", themeWidget, "themeLabel");
+    Q_CHECK_PTR (themeLabel);
+    themeLabel->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    themeHlay->addWidget (themeLabel);
+
+    themeCombo = new QComboBox (themeWidget, "themeCombo");
+    Q_CHECK_PTR (themeCombo);
+    themeHlay->addWidget (themeCombo);
 
     QVGroupBox* fontGbox = new QVGroupBox (this, "fontGbox");
     Q_CHECK_PTR (fontGbox);
@@ -157,6 +192,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     buttonHlay->addWidget (cancelButton);
 
     setCaption (DIALOG_CAPTION);
+    fillThemeCombo();
 }
 
 //---------------------------------------------------------------------------
@@ -187,6 +223,26 @@ SettingsDialog::readSettings (const QSettings& settings)
     if (ok)
         autoImportLine->setText (autoImportFile);
 
+    fillThemeCombo();
+    bool useTileTheme = settings.readBoolEntry (SETTINGS_USE_TILE_THEME,
+                                                true);
+    themeCbox->setChecked (useTileTheme);
+    if (themeCbox->isEnabled()) {
+        QString tileTheme = settings.readEntry (SETTINGS_TILE_THEME,
+                                                DEFAULT_TILE_THEME, &ok);
+        QString themeStr;
+        for (int i = 0; i < themeCombo->count(); ++i) {
+            themeStr = themeCombo->text (i);
+            if (themeStr == tileTheme) {
+                themeCombo->setCurrentItem (i);
+                break;
+            }
+            else if (themeStr == DEFAULT_TILE_THEME)
+                themeCombo->setCurrentItem (i);
+        }
+        themeCboxToggled (useTileTheme);
+    }
+
     QString fontStr = settings.readEntry (SETTINGS_FONT, QString::null, &ok);
     if (ok)
         fontLine->setText (fontStr);
@@ -205,6 +261,8 @@ SettingsDialog::writeSettings (QSettings& settings)
 {
     settings.writeEntry (SETTINGS_IMPORT, autoImportCbox->isChecked());
     settings.writeEntry (SETTINGS_IMPORT_FILE, autoImportLine->text());
+    settings.writeEntry (SETTINGS_USE_TILE_THEME, themeCbox->isChecked());
+    settings.writeEntry (SETTINGS_TILE_THEME, themeCombo->currentText());
     settings.writeEntry (SETTINGS_FONT, fontLine->text());
     settings.writeEntry (SETTINGS_SORT_BY_LENGTH,
                          lengthSortCbox->isChecked());
@@ -236,6 +294,20 @@ QString
 SettingsDialog::getFont() const
 {
     return fontLine->text();
+}
+
+//---------------------------------------------------------------------------
+// getTileTheme
+//
+//! Return the tile theme setting.
+//
+//! @return the name of the tile theme
+//---------------------------------------------------------------------------
+QString
+SettingsDialog::getTileTheme() const
+{
+    return ((themeCbox->isEnabled() && themeCbox->isChecked()) ?
+            themeCombo->currentText() : QString::null);
 }
 
 //---------------------------------------------------------------------------
@@ -285,6 +357,21 @@ SettingsDialog::autoImportCboxToggled (bool on)
 }
 
 //---------------------------------------------------------------------------
+// themeCboxToggled
+//
+//! Slot called when the Tile Theme check box is toggled.  Enable or disable
+//! the tile theme selection area.
+//
+//! @param on true if the check box is on, false if it is off
+//---------------------------------------------------------------------------
+void
+SettingsDialog::themeCboxToggled (bool on)
+{
+    themeLabel->setEnabled (on);
+    themeCombo->setEnabled (on);
+}
+
+//---------------------------------------------------------------------------
 // chooseFontButtonClicked
 //
 //! Slot called when the Choose Font button is clicked.  Create a font chooser
@@ -297,4 +384,29 @@ SettingsDialog::chooseFontButtonClicked()
     QFont font = QFontDialog::getFont (&ok, this->font(), this);
     if (ok)
         fontLine->setText (font.toString());
+}
+
+//---------------------------------------------------------------------------
+// fillThemeCombo
+//
+//! Fill the Tile Theme combo box with the list of available tile themes.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::fillThemeCombo()
+{
+    themeCombo->clear();
+
+    QDir themeDir (Auxil::getTilesDir());
+    QStringList themes = themeDir.entryList (QDir::Dirs, QDir::Name).grep
+        (QRegExp ("^[^\\.]"));
+
+    bool enableThemes = (themes.count() > 0);
+    themeCbox->setEnabled (enableThemes);
+    if (enableThemes) {
+        themeCombo->insertStringList (themes);
+    }
+    else {
+        themeLabel->setEnabled (false);
+        themeCombo->setEnabled (false);
+    }
 }

@@ -56,12 +56,13 @@ class QuizForm : public QFrame
     void analyzeClicked();
     void returnPressed (QListViewItem* item);
     void menuRequested (QListViewItem* item, const QPoint&, int);
+    void setTileTheme (const QString& theme);
 
   private:
-    void updateForm (bool showStats);
     void updateStats();
     void clearStats();
     void clearQuestionNum();
+    void startQuestion();
     void clearCanvas();
     void setNumCanvasTiles (int num);
     void setQuestionNum (int num, int total);
@@ -69,7 +70,6 @@ class QuizForm : public QFrame
     void setQuestionStatus (int correct, int total);
     void displayDefinition (const QString& word);
     void clearTileTheme();
-    void setTileTheme (const QString& theme);
 
   private:
     QuizEngine*   quizEngine;

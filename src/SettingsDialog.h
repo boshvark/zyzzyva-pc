@@ -26,7 +26,9 @@
 #define SETTINGS_DIALOG_H
 
 #include <qcheckbox.h>
+#include <qcombobox.h>
 #include <qdialog.h>
+#include <qlabel.h>
 #include <qlineedit.h>
 #include <qpushbutton.h>
 #include <qsettings.h>
@@ -43,17 +45,25 @@ class SettingsDialog : public QDialog
     void writeSettings (QSettings& settings);
     QString getAutoImportFile() const;
     QString getFont() const;
+    QString getTileTheme() const;
     bool getSortByLength() const;
 
   public slots:
     void browseButtonClicked();
     void autoImportCboxToggled (bool on);
+    void themeCboxToggled (bool on);
     void chooseFontButtonClicked();
+
+  private:
+    void fillThemeCombo();
 
   private:
     QCheckBox*   autoImportCbox;
     QLineEdit*   autoImportLine;
     QPushButton* browseButton;
+    QCheckBox*   themeCbox;
+    QLabel*      themeLabel;
+    QComboBox*   themeCombo;
     QLineEdit*   fontLine;
     QPushButton* chooseFontButton;
     QCheckBox*   lengthSortCbox;

@@ -92,7 +92,6 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     questionCanvasView->setResizePolicy (QScrollView::AutoOneFit);
     questionCanvasView->setSizePolicy (QSizePolicy::Fixed,
                                        QSizePolicy::Fixed);
-    //questionCanvasView->setLineWidth (0);
     quizBoxHlay->addWidget (questionCanvasView);
 
     quizBoxHlay->addStretch (1);
@@ -166,8 +165,6 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));
     buttonHlay->addWidget (analyzeButton);
-
-    setTileTheme ("tan-with-border");
 }
 
 //---------------------------------------------------------------------------
@@ -229,7 +226,7 @@ QuizForm::newQuizClicked()
     bool alphagrams = newQuizDialog->getQuizAlphagrams();
     bool random = newQuizDialog->getQuizRandomOrder();
     quizEngine->newQuiz (spec, alphagrams, random);
-    updateForm (false);
+    startQuestion();
     analyzeDialog->newQuiz (spec);
 }
 
@@ -244,8 +241,7 @@ QuizForm::nextQuestionClicked()
     if (!quizEngine->nextQuestion())
         QMessageBox::warning (this, "Error getting next question",
                               "Error getting next question.");
-
-    updateForm (false);
+    startQuestion();
     analyzeDialog->updateStats();
 }
 
@@ -270,8 +266,10 @@ QuizForm::checkResponseClicked()
         analyzeDialog->addMissed (*it);
     }
 
-    if (nextQuestionButton->isEnabled())
+    if ((quizEngine->numQuestions() > 0) && !quizEngine->onLastQuestion()) {
+        nextQuestionButton->setEnabled (true);
         nextQuestionButton->setFocus();
+    }
     else
         analyzeButton->setFocus();
 }
@@ -325,29 +323,22 @@ QuizForm::menuRequested (QListViewItem* item, const QPoint& point, int)
 }
 
 //---------------------------------------------------------------------------
-// updateStats
+// startQuestion
 //
-//! Update the form, including setting the question label, clearing the
-//! response list, and enabling and disabling form elements as
-//! appropriate.
+//! Update the form when starting a question.
 //---------------------------------------------------------------------------
 void
-QuizForm::updateForm (bool showStats)
+QuizForm::startQuestion()
 {
-    if (showStats)
-        updateStats();
-    else
-        clearStats();
+    clearStats();
     setQuestionNum (quizEngine->getQuestionIndex() + 1,
                     quizEngine->numQuestions());
     setQuestionLabel (quizEngine->getQuestion());
     responseList->clear();
     responseStatusLabel->setText ("");
     inputLine->setEnabled (true);
-    nextQuestionButton->setEnabled ((quizEngine->numQuestions() > 0) &&
-                                    !quizEngine->onLastQuestion());
     checkResponseButton->setEnabled (true);
-
+    nextQuestionButton->setEnabled (false);
     inputLine->setFocus();
 }
 
@@ -399,7 +390,6 @@ QuizForm::clearCanvas()
         delete *cItem;
     canvasItems.clear();
     setNumCanvasTiles (minCanvasTiles);
-    questionCanvas->setAllChanged();
 }
 
 //---------------------------------------------------------------------------
@@ -413,12 +403,12 @@ QuizForm::setNumCanvasTiles (int num)
 {
     if (num < minCanvasTiles)
         num = minCanvasTiles;
-    if (num == numCanvasTiles)
-        return;
     numCanvasTiles = num;
-    questionCanvas->resize ((2 * QUIZ_TILE_MARGIN) + (num * maxTileWidth) +
-                            ((num - 1) * QUIZ_TILE_SPACING),
-                            (2 * QUIZ_TILE_MARGIN) + maxTileHeight);
+    int width = (2 * QUIZ_TILE_MARGIN) + (num * maxTileWidth) +
+                ((num - 1) * QUIZ_TILE_SPACING);
+    int height = (2 * QUIZ_TILE_MARGIN) + maxTileHeight;
+    questionCanvas->resize (width, height);
+    questionCanvas->setAllChanged();
 }
 
 //---------------------------------------------------------------------------
@@ -556,5 +546,9 @@ QuizForm::setTileTheme (const QString& theme)
             maxTileHeight = image.height();
     }
 
-    setNumCanvasTiles (minCanvasTiles);
+    QString question = quizEngine->getQuestion();
+    if (question.isEmpty())
+        setNumCanvasTiles (minCanvasTiles);
+    else
+        setQuestionLabel (question);
 }

@@ -242,6 +242,7 @@ MainWindow::readSettings (bool useGeometry)
     else
         qWarning ("Cannot set font: " + fontStr);
 
+    quizForm->setTileTheme (settingsDialog->getTileTheme());
     ZListViewItem::setSortByLength (settingsDialog->getSortByLength());
 }
 
