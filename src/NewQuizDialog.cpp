@@ -72,7 +72,14 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
     alphagramCbox = new QCheckBox ("Use alphagrams as questions", this,
                                    "alphagramCbox");
     Q_CHECK_PTR (alphagramCbox);
+    connect (alphagramCbox, SIGNAL (toggled (bool)),
+             SLOT (alphagramsToggled (bool)));
     inputVlay->addWidget (alphagramCbox);
+
+    randomCbox = new QCheckBox ("Randomize order", this, "randomCbox");
+    Q_CHECK_PTR (randomCbox);
+    randomCbox->setEnabled (false);
+    inputVlay->addWidget (randomCbox);
 
     inputLine = new QLineEdit (this, "inputLine");
     Q_CHECK_PTR (inputLine);
@@ -114,7 +121,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
 //! @return the quiz type
 //---------------------------------------------------------------------------
 MatchType
-NewQuizDialog::getQuizType()
+NewQuizDialog::getQuizType() const
 {
     if (patternButton->isChecked())
         return Pattern;
@@ -133,9 +140,22 @@ NewQuizDialog::getQuizType()
 //! @return true if alphagrams should be used, false otherwise
 //---------------------------------------------------------------------------
 bool
-NewQuizDialog::getQuizAlphagrams()
+NewQuizDialog::getQuizAlphagrams() const
 {
     return alphagramCbox->isChecked();
+}
+
+//---------------------------------------------------------------------------
+// getQuizRandomOrder
+//
+//! Get whether the quiz should present questions in random order.
+//
+//! @return true if random order, false otherwise
+//---------------------------------------------------------------------------
+bool
+NewQuizDialog::getQuizRandomOrder() const
+{
+    return randomCbox->isChecked();
 }
 
 //---------------------------------------------------------------------------
@@ -146,7 +166,23 @@ NewQuizDialog::getQuizAlphagrams()
 //! @return the quiz string
 //---------------------------------------------------------------------------
 QString
-NewQuizDialog::getQuizString()
+NewQuizDialog::getQuizString() const
 {
     return inputLine->text();
+}
+
+//---------------------------------------------------------------------------
+// alphagramsToggled
+//
+//! Called when the Alphagrams checkbox is toggled.  Disable the Random
+//! checkbox unless the Alphagrams checkbox is checked.
+//
+//! @param on whether the checkbox is checked
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::alphagramsToggled (bool on)
+{
+    randomCbox->setEnabled (on);
+    if (!on)
+        randomCbox->setChecked (false);
 }

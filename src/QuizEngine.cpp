@@ -13,6 +13,15 @@
 
 #include "QuizEngine.h"
 #include "WordEngine.h"
+#include <cstdlib>
+#include <ctime>
+
+QuizEngine::QuizEngine (WordEngine* e)
+    : wordEngine (e)
+{
+    std::time_t now = std::time (0);
+    std::srand (now);
+}
 
 //---------------------------------------------------------------------------
 // newQuiz
@@ -22,7 +31,8 @@
 //! @param input the group of symbols forming the basis of the quiz
 //---------------------------------------------------------------------------
 void
-QuizEngine::newQuiz (const QString& input, MatchType type, bool alphagrams)
+QuizEngine::newQuiz (const QString& input, MatchType type, bool alphagrams,
+                     bool randomOrder)
 {
     quizQuestions.clear();
 
@@ -51,6 +61,20 @@ QuizEngine::newQuiz (const QString& input, MatchType type, bool alphagrams)
 
     else
         quizQuestions << input;
+
+    // Do a random shuffle
+    if (randomOrder) {
+        QString tmp;
+        int num = quizQuestions.size();
+        for (int i = 0; i < num ; ++i) {
+            int rnum = std::rand() % num;
+            if (rnum == i)
+                continue;
+            tmp = quizQuestions[rnum];
+            quizQuestions[rnum] = quizQuestions[i];
+            quizQuestions[i] = tmp;
+        }
+    }
 
     questionIndex = 0;
     quizTotal = 0;

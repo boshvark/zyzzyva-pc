@@ -28,15 +28,20 @@ class NewQuizDialog : public QDialog
 
     ~NewQuizDialog() { }
 
-    MatchType getQuizType();
-    bool      getQuizAlphagrams();
-    QString   getQuizString();
+    MatchType getQuizType() const;
+    bool      getQuizAlphagrams() const;
+    bool      getQuizRandomOrder() const;
+    QString   getQuizString() const;
+
+  public slots:
+    void alphagramsToggled (bool on);
 
   private:
     QRadioButton* patternButton;
     QRadioButton* anagramButton;
     QRadioButton* subanagramButton;
     QCheckBox*    alphagramCbox;
+    QCheckBox*    randomCbox;
     QLineEdit*    inputLine;
 };
 

@@ -32,10 +32,11 @@ class QuizEngine
     };
 
   public:
-    QuizEngine (WordEngine* e) : wordEngine (e) { }
+    QuizEngine (WordEngine* e);
     ~QuizEngine() { }
 
-    void newQuiz (const QString& input, MatchType type, bool alphagrams);
+    void newQuiz (const QString& input, MatchType type, bool alphagrams,
+                  bool randomOrder);
     bool nextQuestion();
 
     ResponseStatus respond (const QString& response);

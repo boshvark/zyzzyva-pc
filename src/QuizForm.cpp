@@ -181,7 +181,8 @@ QuizForm::newQuizClicked()
     QString input = newQuizDialog->getQuizString();
     MatchType type = newQuizDialog->getQuizType();
     bool alphagrams = newQuizDialog->getQuizAlphagrams();
-    engine->newQuiz (input, type, alphagrams);
+    bool random = newQuizDialog->getQuizRandomOrder();
+    engine->newQuiz (input, type, alphagrams, random);
     updateForm (false);
 }
 
