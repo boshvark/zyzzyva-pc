@@ -76,6 +76,5 @@ SearchForm::search()
     QString word = wordLine->text();
     if (word.isEmpty()) return;
 
-    if (engine->isAcceptable (word))
-        resultList->insertItem (word);
+    resultList->insertStringList (engine->matchPattern (word));
 }

@@ -54,3 +54,17 @@ WordEngine::isAcceptable (const QString& word) const
 {
     return graph.containsWord (word);
 }
+
+//---------------------------------------------------------------------------
+// matchPattern
+//
+//! Find all acceptable words matching a pattern.
+//
+//! @param pattern the pattern to match
+//! @return a list of acceptable words
+//---------------------------------------------------------------------------
+QStringList
+WordEngine::matchPattern (const QString& pattern) const
+{
+    return graph.getWordsMatchingPattern (pattern);
+}

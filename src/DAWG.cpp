@@ -111,6 +111,28 @@ DAWG::containsWord (const QString& w) const
 }
 
 //---------------------------------------------------------------------------
+// getWordsMatchingPattern
+//
+//! Find all acceptable words matching a pattern.
+//
+//! @param pattern the pattern to match
+//! @return a list of acceptable words
+//---------------------------------------------------------------------------
+QStringList
+DAWG::getWordsMatchingPattern (const QString& pattern) const
+{
+    QStringList list;
+
+//    QChar c;
+//    for (int i = 0; i < pattern.length(); ++i) {
+//        c = pattern.at (i);
+//    }
+
+    list << "A" << "B" << "C" << "D" << "E" << "F" << "G";
+    return list;
+}
+
+//---------------------------------------------------------------------------
 // compress
 //
 //! Compress the graph by eliminating duplication of common suffixes.

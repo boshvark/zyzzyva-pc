@@ -14,6 +14,7 @@
 #define DAWG_H
 
 #include <qstring.h>
+#include <qstringlist.h>
 
 class DAWG
 {
@@ -23,6 +24,7 @@ class DAWG
 
     void addWord (const QString& w);
     bool containsWord (const QString& w) const;
+    QStringList getWordsMatchingPattern (const QString& pattern) const;
     void compress();
     void print() const;
 

@@ -15,6 +15,7 @@
 
 #include "DAWG.h"
 #include <qstring.h>
+#include <qstringlist.h>
 
 class WordEngine
 {
@@ -24,6 +25,7 @@ class WordEngine
 
     int importFile (const QString& filename);
     bool isAcceptable (const QString& word) const;
+    QStringList matchPattern (const QString& pattern) const;
 
   private:
     DAWG graph;
