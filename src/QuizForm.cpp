@@ -56,6 +56,7 @@ QuizForm::QuizForm (WordEngine* e, QWidget* parent, const char* name,
 
     inputLine = new QLineEdit (this, "inputLine");
     Q_CHECK_PTR (inputLine);
+    connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
     mainVlay->addWidget (inputLine);
 
     correctLabel = new QLabel (this, "correctLabel");
@@ -66,8 +67,22 @@ QuizForm::QuizForm (WordEngine* e, QWidget* parent, const char* name,
     answerList = new QListBox (this, "answerList");
     Q_CHECK_PTR (answerList);
     mainVlay->addWidget (answerList);
+}
 
-    mainVlay->addStretch (1);
+//---------------------------------------------------------------------------
+// responseEntered
+//
+//! Called when a response is entered into the input line.
+//---------------------------------------------------------------------------
+void
+QuizForm::responseEntered()
+{
+    QString response = inputLine->text();
+    if (response.isEmpty())
+        return;
+
+    answerList->insertItem (response);
+    inputLine->clear();
 }
 
 //---------------------------------------------------------------------------
