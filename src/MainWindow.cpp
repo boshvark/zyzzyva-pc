@@ -54,7 +54,7 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     lookupForm = new LookupForm (frame, "lookupForm");
     mainVlay->addWidget (lookupForm);
 
-    messageLabel = new QLabel ("Messages go here", this, "messageLabel");
+    messageLabel = new QLabel (this, "messageLabel");
     statusBar()->addWidget (messageLabel, 2);
 
     statusLabel = new QLabel ("0 words loaded", this, "statusLabel");
