@@ -15,6 +15,7 @@
 
 #include <qlabel.h>
 #include <qmainwindow.h>
+#include <qsettings.h>
 #include <qtabwidget.h>
 
 class JudgeForm;
@@ -27,12 +28,15 @@ class MainWindow : public QMainWindow
   public:
     MainWindow (QWidget* parent = 0, const char* name = 0,
                 WFlags f = WType_TopLevel);
+    ~MainWindow();
 
   public slots:
     void import();
 
   private:
     void setNumWords (int num);
+    void readSettings();
+    void writeSettings();
 
   private:
     WordEngine* engine;
@@ -41,6 +45,7 @@ class MainWindow : public QMainWindow
     SearchForm* searchForm;
     QLabel*     messageLabel;
     QLabel*     statusLabel;
+    QSettings   settings;
 };
 
 #endif // MAIN_WINDOW_H

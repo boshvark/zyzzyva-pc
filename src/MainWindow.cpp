@@ -27,6 +27,13 @@ const QString IMPORT_COMPLETE_TITLE = "Import Complete";
 const QString JUDGE_TAB_TITLE = "Judge";
 const QString SEARCH_TAB_TITLE = "Search";
 
+const QString SETTINGS_MAIN = "/Zyzzyva";
+const QString SETTINGS_GEOMETRY = "/geometry";
+const QString SETTINGS_GEOMETRY_X = "/x";
+const QString SETTINGS_GEOMETRY_Y = "/y";
+const QString SETTINGS_GEOMETRY_WIDTH = "/width";
+const QString SETTINGS_GEOMETRY_HEIGHT = "/height";
+
 //---------------------------------------------------------------------------
 // MainWindow
 //
@@ -66,6 +73,18 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (statusLabel);
     statusBar()->addWidget (statusLabel, 1);
     setNumWords (0);
+
+    readSettings();
+}
+
+//---------------------------------------------------------------------------
+// ~MainWindow
+//
+//! Destructor.  Save application settings.
+//---------------------------------------------------------------------------
+MainWindow::~MainWindow()
+{
+    writeSettings();
 }
 
 //---------------------------------------------------------------------------
@@ -103,4 +122,41 @@ void
 MainWindow::setNumWords (int num)
 {
     statusLabel->setText (QString::number (num) + " words loaded");
+}
+
+//---------------------------------------------------------------------------
+// readSettings
+//
+//! Read application settings.
+//---------------------------------------------------------------------------
+void
+MainWindow::readSettings()
+{
+    settings.beginGroup (SETTINGS_MAIN);
+    settings.beginGroup (SETTINGS_GEOMETRY);
+    int x = settings.readNumEntry (SETTINGS_GEOMETRY_X, 50);
+    int y = settings.readNumEntry (SETTINGS_GEOMETRY_Y, 50);
+    int w = settings.readNumEntry (SETTINGS_GEOMETRY_WIDTH, 640);
+    int h = settings.readNumEntry (SETTINGS_GEOMETRY_HEIGHT, 480);
+    settings.endGroup();
+    settings.endGroup();
+    setGeometry (x, y, w, h);
+}
+
+//---------------------------------------------------------------------------
+// writeSettings
+//
+//! Write application settings.
+//---------------------------------------------------------------------------
+void
+MainWindow::writeSettings()
+{
+    settings.beginGroup (SETTINGS_MAIN);
+    settings.beginGroup (SETTINGS_GEOMETRY);
+    settings.writeEntry (SETTINGS_GEOMETRY_X, x());
+    settings.writeEntry (SETTINGS_GEOMETRY_Y, y());
+    settings.writeEntry (SETTINGS_GEOMETRY_WIDTH, width());
+    settings.writeEntry (SETTINGS_GEOMETRY_HEIGHT, height());
+    settings.endGroup();
+    settings.endGroup();
 }
