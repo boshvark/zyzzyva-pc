@@ -25,13 +25,17 @@
 #ifndef QUIZ_FORM_H
 #define QUIZ_FORM_H
 
+#include <qcanvas.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlistview.h>
+#include <qmap.h>
 #include <qpoint.h>
 #include <qpushbutton.h>
+#include <qstring.h>
 
 class AnalyzeQuizDialog;
+class ImageItem;
 class NewQuizDialog;
 class QuizEngine;
 class WordEngine;
@@ -59,14 +63,19 @@ class QuizForm : public QFrame
     void clearStats();
     void clearQuestionNum();
     void setQuestionNum (int num, int total);
+    void setQuestionLabel (const QString& question);
     void setQuestionStatus (int correct, int total);
     void displayDefinition (const QString& word);
+    void clearTileTheme();
+    void setTileTheme (const QString& theme);
 
   private:
     QuizEngine*   quizEngine;
     WordEngine*   wordEngine;
     QLabel*       questionNumLabel;
-    QLabel*       questionLabel;
+    QWidget*      questionWidget;
+    QCanvasView*  questionCanvasView;
+    QCanvas*      questionCanvas;
     QLineEdit*    inputLine;
     ZListView*    responseList;
     QLabel*       responseStatusLabel;
@@ -74,6 +83,8 @@ class QuizForm : public QFrame
     QPushButton*  nextQuestionButton;
     QPushButton*  checkResponseButton;
     QPushButton*  analyzeButton;
+
+    QMap<QString,ImageItem*> tilesMap;
 
     NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;

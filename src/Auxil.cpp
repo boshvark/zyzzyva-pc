@@ -64,6 +64,20 @@ Auxil::getHelpDir()
 }
 
 //---------------------------------------------------------------------------
+// getTilesDir
+//
+//! Return the top-level directory containing subdirectories with tiles
+//! images.
+//
+//! @return the directory name
+//---------------------------------------------------------------------------
+QString
+Auxil::getTilesDir()
+{
+    return qApp->applicationDirPath() + "/data/tiles";
+}
+
+//---------------------------------------------------------------------------
 // wordWrap
 //
 //! Wrap a string so that no line is longer than a certain length.

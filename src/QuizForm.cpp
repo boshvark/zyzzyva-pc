@@ -25,6 +25,7 @@
 #include "QuizForm.h"
 #include "AnalyzeQuizDialog.h"
 #include "DefinitionDialog.h"
+#include "ImageItem.h"
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
 #include "WordEngine.h"
@@ -32,7 +33,10 @@
 #include "WordValidator.h"
 #include "ZListView.h"
 #include "ZListViewItem.h"
+#include "Auxil.h"
 #include "Defs.h"
+#include <qcolor.h>
+#include <qimage.h>
 #include <qlayout.h>
 #include <qhgroupbox.h>
 #include <qheader.h>
@@ -69,24 +73,33 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     Q_CHECK_PTR (questionNumLabel);
     mainVlay->addWidget (questionNumLabel);
 
-    QHGroupBox* quizGbox = new QHGroupBox (this, "quizGbox");
-    Q_CHECK_PTR (quizGbox);
-    mainVlay->addWidget (quizGbox);
-
-    questionStack = new QWidgetStack (quizGbox, "questionStack");
-    Q_CHECK_PTR (questionStack);
-
-    questionWidget = new QWidget (questionStack, "questionWidget");
-    Q_CHECK_PTR (questionWidget);
-    questionStack->addWidget (questionWidget);
-
-    QHBoxLayout* quizBoxHlay = new QHBoxLayout (questionWidget, MARGIN,
-                                                SPACING, "quizBoxHlay");
+    QHBoxLayout* quizBoxHlay = new QHBoxLayout (SPACING, "quizBoxHlay");
     Q_CHECK_PTR (quizBoxHlay);
+    mainVlay->addLayout (quizBoxHlay);
+
     quizBoxHlay->addStretch (1);
-    questionLabel = new QLabel (questionWidget, "label");
-    Q_CHECK_PTR (questionLabel);
-    quizBoxHlay->addWidget (questionLabel);
+
+    // Canvas for tile images - set default background color
+    questionCanvas = new QCanvas (this, "questionCanvas");
+    Q_CHECK_PTR (questionCanvas);
+    // XXX Remove these magic numbers
+    questionCanvas->resize (515, 75);
+    questionCanvas->setBackgroundColor (QColor (192, 192, 192));
+
+    questionCanvasView = new QCanvasView (questionCanvas, this,
+                                          "questionCanvasView");
+    Q_CHECK_PTR (questionCanvasView);
+    questionCanvasView->setVScrollBarMode (QScrollView::AlwaysOff);
+    questionCanvasView->setHScrollBarMode (QScrollView::AlwaysOff);
+    questionCanvasView->resize (questionCanvas->size());
+    questionCanvasView->setMinimumSize (questionCanvas->width() - 1,
+                                        questionCanvas->height() - 1);
+    questionCanvasView->setResizePolicy (QScrollView::AutoOneFit);
+    questionCanvasView->setSizePolicy (QSizePolicy::Fixed,
+                                       QSizePolicy::Fixed);
+    //questionCanvasView->setLineWidth (0);
+    quizBoxHlay->addWidget (questionCanvasView);
+
     quizBoxHlay->addStretch (1);
 
     responseList = new ZListView (this, "responseList");
@@ -158,6 +171,8 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));
     buttonHlay->addWidget (analyzeButton);
+
+    setTileTheme ("tan-with-border");
 }
 
 //---------------------------------------------------------------------------
@@ -330,7 +345,7 @@ QuizForm::updateForm (bool showStats)
         clearStats();
     setQuestionNum (quizEngine->getQuestionIndex() + 1,
                     quizEngine->numQuestions());
-    questionLabel->setText (quizEngine->getQuestion());
+    setQuestionLabel (quizEngine->getQuestion());
     responseList->clear();
     responseStatusLabel->setText ("");
     inputLine->setEnabled (true);
@@ -391,6 +406,41 @@ QuizForm::setQuestionNum (int num, int total)
 }
 
 //---------------------------------------------------------------------------
+// setQuestionLabel
+//
+//! Display the current question in the question label area.
+//
+//! @param question the question
+//---------------------------------------------------------------------------
+void
+QuizForm::setQuestionLabel (const QString& question)
+{
+    QMap<QString,ImageItem*>::iterator it;
+    for (it = tilesMap.begin(); it != tilesMap.end(); ++it)
+        (*it)->hide();
+
+    //questionCanvas
+    // XXX Get rid of these magic numbers!
+    int x = 20;
+    for (int i = 0; (i < 8) && (i < question.length()); ++i) {
+        QString letter = question[i];
+        if (letter == "?")
+            letter = "_";
+        it = tilesMap.find (letter);
+        if (it == tilesMap.end())
+            qDebug ("Did not find letter '" + letter + "' in tiles map!");
+        else {
+            (*it)->move (x, 10);
+            (*it)->setZ (0);
+            (*it)->show();
+        }
+        x += 60;
+    }
+    questionCanvas->setAllChanged();
+    questionCanvas->update();
+}
+
+//---------------------------------------------------------------------------
 // setQuestionStatus
 //
 //! Set the status of the question after the user clicks the Check button.
@@ -419,4 +469,45 @@ QuizForm::displayDefinition (const QString& word)
                                                      "dialog", true);
     dialog->exec();
     delete dialog;
+}
+
+//---------------------------------------------------------------------------
+// clearTileTheme
+//
+//! Clear the current tile theme definition.
+//---------------------------------------------------------------------------
+void
+QuizForm::clearTileTheme()
+{
+    QMap<QString,ImageItem*>::iterator it;
+    for (it = tilesMap.begin(); it != tilesMap.end(); ++it)
+        delete *it;
+    tilesMap.clear();
+}
+
+//---------------------------------------------------------------------------
+// setTileTheme
+//
+//! Load tile images according to a theme definition.  Find the tile images in
+//! a data subdirectory named after the theme.
+//
+//! @param theme the name of the theme
+//---------------------------------------------------------------------------
+void
+QuizForm::setTileTheme (const QString& theme)
+{
+    clearTileTheme();
+    QString tilesDir = Auxil::getTilesDir();
+
+    QStringList tilesList;
+    for (char c = 'A'; c <= 'Z'; ++c)
+        tilesList << QString (QChar (c));
+    tilesList << "_";
+
+    QStringList::iterator it;
+    for (it = tilesList.begin(); it != tilesList.end(); ++it) {
+        QImage qimage (tilesDir + "/" + theme + "/" + *it + ".png");
+        ImageItem* image = new ImageItem (qimage, questionCanvas);
+        tilesMap.insert (*it, image);
+    }
 }

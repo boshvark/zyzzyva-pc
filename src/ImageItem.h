@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// Auxil.h
+// ImageItem.h
 //
-// Auxiliary functions.
+// A class to hold an image and display it on a canvas.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,16 +22,22 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef AUXIL_H
-#define AUXIL_H
+#ifndef IMAGE_ITEM_H
+#define IMAGE_ITEM_H
 
-#include <qstring.h>
+#include <qcanvas.h>
+#include <qpainter.h>
 
-namespace Auxil {
-    QString getAboutString();
-    QString getHelpDir();
-    QString getTilesDir();
-    QString wordWrap (const QString& str, int wrapLength);
-}
+class ImageItem : public QCanvasRectangle
+{
+    public:
+    ImageItem (const QImage& image, QCanvas* canvas);
+    ImageItem (const QPixmap& p, QCanvas* canvas);
 
-#endif // AUXIL_H
+    virtual void drawShape (QPainter& p);
+
+    private:
+    QPixmap pixmap;
+};
+
+#endif // IMAGE_ITEM_H
