@@ -11,27 +11,31 @@
 //---------------------------------------------------------------------------
 
 #include "MainWindow.h"
+#include "WordEngine.h"
 #include <qdir.h>
 #include <qfiledialog.h>
 #include <qframe.h>
 #include <qlayout.h>
 #include <qmenubar.h>
+#include <qmessagebox.h>
 
 const QString ANAGRAM_MODE = "Anagram";
 const QString RECALL_LIST_MODE = "Recall List";
 const QString CHOOSE_BUTTON_TEXT = "Choose...";
 const QString CHOOSER_TITLE = "Choose a Word List";
+const QString IMPORT_COMPLETE_TITLE = "Import Complete";
 
 MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
-    : QMainWindow (parent, name, f)
+    : QMainWindow (parent, name, f), engine (new WordEngine())
 {
+
     QFrame* frame = new QFrame (this);
     setCentralWidget (frame);
 
 
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
-    filePopup->insertItem ("&Open...", this, SLOT (open()), CTRL+Key_O);
+    filePopup->insertItem ("&Import...", this, SLOT (import()), CTRL+Key_I);
     menuBar()->insertItem ("&File", filePopup);
 
     QVBoxLayout* mainVlay = new QVBoxLayout (frame, 0, 0, "mainVlay");
@@ -57,12 +61,17 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 }
 
 void
-MainWindow::open()
+MainWindow::import()
 {
     QString file = QFileDialog::getOpenFileName (QDir::current().path(),
                                                  "All Files (*.*)", this,
                                                  "fileDialog",
                                                  CHOOSER_TITLE);
     if (file.isNull()) return;
-    qDebug (file);
+    int imported = engine->importFile (file);
+
+    QMessageBox::information (this, IMPORT_COMPLETE_TITLE,
+                              "Imported " + QString::number (imported)
+                              + " words.",
+                              QMessageBox::Ok);
 }

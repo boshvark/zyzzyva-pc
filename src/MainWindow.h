@@ -17,6 +17,8 @@
 #include <qlabel.h>
 #include <qmainwindow.h>
 
+class WordEngine;
+
 class MainWindow : public QMainWindow
 {
   Q_OBJECT
@@ -25,11 +27,12 @@ class MainWindow : public QMainWindow
                 WFlags f = WType_TopLevel);
 
   public slots:
-    void open();
+    void import();
 
   private:
-    QComboBox* modeCombo;
-    QLabel*    label;
+    WordEngine* engine;
+    QComboBox*  modeCombo;
+    QLabel*     label;
 };
 
 #endif // MAIN_WINDOW_H
