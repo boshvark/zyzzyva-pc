@@ -168,7 +168,6 @@ SearchForm::resultMenuRequested (QListViewItem* item, const QPoint& point,
     delete menu;
 
     if (choice == WordPopupMenu::ShowDefinition) {
-        qDebug ("Show Definition");
         DefinitionDialog* dialog = new DefinitionDialog (engine, item->text
                                                          (0), this, "dialog",
                                                          true);
