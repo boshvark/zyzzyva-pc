@@ -54,8 +54,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
 
     QLabel* label = new QLabel (this, "label");
     Q_CHECK_PTR (label);
-    label->setText (word + "\n" + "Definition goes here.");
-                          //engine->getDefinition(word));
+    label->setText (word + " :\n" + engine->getDefinition (word));
     mainVlay->addWidget (label);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");

@@ -42,6 +42,7 @@ class WordEngine
     QStringList search (const SearchSpec& spec, bool allCaps) const;
     QStringList alphagrams (const QStringList& list) const;
     QString alphagram (const QString& word) const;
+    QString getDefinition (const QString& word) const;
 
   private:
     WordGraph graph;

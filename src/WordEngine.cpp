@@ -31,6 +31,7 @@
 
 using namespace Defs;
 using std::set;
+using std::map;
 
 const int MAX_INPUT_LINE_LEN = 640;
 
@@ -166,4 +167,20 @@ WordEngine::alphagram (const QString& word) const
     chars[i] = 0;
 
     return QString (chars);
+}
+
+
+//---------------------------------------------------------------------------
+// getDefinition
+//
+//! Return the definition associated with a word.
+//
+//! @param word the word whose definition to look up
+//! @return the definition, or QString::null if no definition
+//---------------------------------------------------------------------------
+QString
+WordEngine::getDefinition (const QString& word) const
+{
+    map<QString,QString>::const_iterator it = definitions.find (word);
+    return ((it == definitions.end()) ? QString::null : it->second);
 }
