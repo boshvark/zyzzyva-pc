@@ -11,10 +11,16 @@
 //---------------------------------------------------------------------------
 
 #include "SettingsDialog.h"
+#include "Defs.h"
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qpushbutton.h>
+#include <qvgroupbox.h>
 
 const QString SETTINGS_IMPORT_FILE = "/import";
+const QString DIALOG_CAPTION = "Preferences";
+
+using namespace Defs;
 
 //---------------------------------------------------------------------------
 // SettingsDialog
@@ -30,12 +36,58 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
                                 bool modal, WFlags f)
     : QDialog (parent, name, modal, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, 0, 0, "mainVlay");
-    QLabel* label = new QLabel ("Hello world!", this, "label");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
+                                             "mainVlay");
+    QLabel* label = new QLabel ("Preferences", this, "label");
     mainVlay->addWidget (label);
 
-    autoImportLine = new QLineEdit (this, "autoImportFile");
-    mainVlay->addWidget (autoImportLine);
+    QVGroupBox* autoImportGbox = new QVGroupBox (this, "autoImportGbox");
+    autoImportGbox->setTitle ("Auto Import");
+    mainVlay->addWidget (autoImportGbox);
+
+    QWidget* autoImportWidget = new QWidget (autoImportGbox,
+                                             "autoImportWidget");
+    QVBoxLayout* autoImportVlay = new QVBoxLayout (autoImportWidget, MARGIN,
+                                                   SPACING, "autoImportVlay");
+
+    QHBoxLayout* autoImportHlay = new QHBoxLayout (SPACING, "autoImportHlay");
+    autoImportVlay->addLayout (autoImportHlay);
+
+    QLabel* autoImportLabel = new QLabel ("Import on Startup:",
+                                          autoImportWidget,
+                                          "autoImportLabel");
+    autoImportHlay->addWidget (autoImportLabel);
+
+    autoImportLine = new QLineEdit (autoImportWidget, "autoImportFile");
+    autoImportHlay->addWidget (autoImportLine);
+
+    QPushButton* browseButton = new QPushButton ("Browse...",
+                                                 autoImportWidget,
+                                                 "browseButton");
+    connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
+    autoImportHlay->addWidget (browseButton);
+
+    mainVlay->addStretch (1);
+
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    mainVlay->addLayout (buttonHlay);
+
+    buttonHlay->addStretch (1);
+
+    QPushButton* okButton = new QPushButton ("OK", this, "okButton");
+    okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    okButton->setDefault (true);
+    connect (okButton, SIGNAL (clicked()), SLOT (accept()));
+    buttonHlay->addWidget (okButton);
+
+    QPushButton* cancelButton = new QPushButton ("Cancel", this,
+                                                 "cancelButton");
+    cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
+    buttonHlay->addWidget (cancelButton);
+
+    setCaption (DIALOG_CAPTION);
+    setGeometry (0, 0, 320, 240);
 }
 
 //---------------------------------------------------------------------------
@@ -44,16 +96,6 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
 //! Destructor.  Save application settings.
 //---------------------------------------------------------------------------
 SettingsDialog::~SettingsDialog()
-{
-}
-
-//---------------------------------------------------------------------------
-// refresh
-//
-//! Refresh the interface state relative to the current settings.
-//---------------------------------------------------------------------------
-void
-SettingsDialog::refresh()
 {
 }
 
@@ -83,4 +125,9 @@ SettingsDialog::writeSettings (QSettings& settings)
     QString autoImportFile = autoImportLine->text();
     if (!autoImportFile.isEmpty())
         settings.writeEntry (SETTINGS_IMPORT_FILE, autoImportFile);
+}
+
+void
+SettingsDialog::browseButtonClicked()
+{
 }

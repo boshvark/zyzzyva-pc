@@ -25,9 +25,11 @@ class SettingsDialog : public QDialog
                     bool modal = false, WFlags f = WType_TopLevel);
     ~SettingsDialog();
 
-    void refresh();
     void readSettings (const QSettings& settings);
     void writeSettings (QSettings& settings);
+
+  public slots:
+    void browseButtonClicked();
 
   private:
     QLineEdit* autoImportLine;

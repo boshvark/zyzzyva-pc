@@ -121,19 +121,19 @@ MainWindow::import()
 //---------------------------------------------------------------------------
 // editSettings
 //
-//! Allow the user to edit application settings.
+//! Allow the user to edit application settings.  If the user makes changes
+//! and accepts the dialog, write the settings.  If the user rejects the
+//! dialog, restore the settings after the dialog is closed.
 //---------------------------------------------------------------------------
 void
 MainWindow::editSettings()
 {
-//    settings.beginGroup (SETTINGS_MAIN);
-//    if (settingsDialog->exec() == QDialog::Accepted)
-//        settingsDialog->writeSettings (settings);
-//    settings.endGroup();
-
-    settingsDialog->exec();
-
-    settingsDialog->refresh();
+    settings.beginGroup (SETTINGS_MAIN);
+    if (settingsDialog->exec() == QDialog::Accepted)
+        settingsDialog->writeSettings (settings);
+    else
+        settingsDialog->readSettings (settings);
+    settings.endGroup();
 }
 
 //---------------------------------------------------------------------------
