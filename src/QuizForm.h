@@ -33,6 +33,7 @@
 class AnalyzeQuizDialog;
 class NewQuizDialog;
 class QuizEngine;
+class ZListView;
 
 class QuizForm : public QFrame
 {
@@ -61,7 +62,7 @@ class QuizForm : public QFrame
     QLabel*       questionNumLabel;
     QLabel*       questionLabel;
     QLineEdit*    inputLine;
-    QListView*    responseList;
+    ZListView*    responseList;
     QLabel*       responseStatusLabel;
     QLabel*       questionStatusLabel;
     QPushButton*  nextQuestionButton;

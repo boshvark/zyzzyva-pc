@@ -27,6 +27,7 @@
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
 #include "WordValidator.h"
+#include "ZListView.h"
 #include "ZListViewItem.h"
 #include "Defs.h"
 #include <qlayout.h>
@@ -77,7 +78,7 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     quizBoxHlay->addWidget (questionLabel);
     quizBoxHlay->addStretch (1);
 
-    responseList = new QListView (this, "responseList");
+    responseList = new ZListView (this, "responseList");
     Q_CHECK_PTR (responseList);
     responseList->setResizeMode (QListView::LastColumn);
     responseList->addColumn ("Responses");

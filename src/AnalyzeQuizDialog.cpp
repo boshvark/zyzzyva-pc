@@ -23,6 +23,7 @@
 #include "AnalyzeQuizDialog.h"
 #include "Defs.h"
 #include "QuizEngine.h"
+#include "ZListView.h"
 #include "ZListViewItem.h"
 #include <qlayout.h>
 
@@ -72,7 +73,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* e, QWidget* parent,
     Q_CHECK_PTR (missedVlay);
     mainHlay->addLayout (missedVlay);
 
-    missedList = new QListView (this, "missedList");
+    missedList = new ZListView (this, "missedList");
     Q_CHECK_PTR (missedList);
     missedList->setResizeMode (QListView::LastColumn);
     missedList->addColumn ("Missed");
@@ -82,7 +83,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* e, QWidget* parent,
     Q_CHECK_PTR (incorrectVlay);
     mainHlay->addLayout (incorrectVlay);
 
-    incorrectList = new QListView (this, "incorrectList");
+    incorrectList = new ZListView (this, "incorrectList");
     Q_CHECK_PTR (incorrectList);
     incorrectList->setResizeMode (QListView::LastColumn);
     incorrectList->addColumn ("Incorrect");

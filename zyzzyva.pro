@@ -19,6 +19,7 @@ HEADERS += \
     src/WordEngine.h \
     src/WordGraph.h \
     src/WordValidator.h \
+    src/ZListView.h \
     src/ZListViewItem.h
 
 SOURCES += \
@@ -38,6 +39,7 @@ SOURCES += \
     src/WordEngine.cpp \
     src/WordGraph.cpp \
     src/WordValidator.cpp \
+    src/ZListView.cpp \
     src/ZListViewItem.cpp
 
 unix {
