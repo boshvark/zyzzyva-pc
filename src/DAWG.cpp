@@ -86,7 +86,28 @@ DAWG::addWord (const string& w)
 bool
 DAWG::containsWord (const string& w) const
 {
-    return true;
+    if (!w.size() || !top)
+        return false;
+
+    Node* node = top;
+    bool eow = false;
+
+    string::const_iterator c;
+    for (c = w.begin(); c != w.end(); ++c) {
+        if (!node)
+            return false;
+
+        while (node->letter != *c) {
+            if (!node->next)
+                return false;
+            node = node->next;
+        }
+
+        eow = node->eow;
+        node = node->child;
+    }
+
+    return eow;
 }
 
 //---------------------------------------------------------------------------
