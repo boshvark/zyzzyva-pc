@@ -23,7 +23,7 @@ class DAWG
 
     void addWord (const QString& w);
     bool containsWord (const QString& w) const;
-
+    void compress();
     void print() const;
 
   private:

@@ -111,6 +111,16 @@ DAWG::containsWord (const QString& w) const
 }
 
 //---------------------------------------------------------------------------
+// compress
+//
+//! Compress the graph by eliminating duplication of common suffixes.
+//---------------------------------------------------------------------------
+void
+DAWG::compress()
+{
+}
+
+//---------------------------------------------------------------------------
 // print
 //
 //! Print a rudimentary ASCII representation of the graph.
