@@ -58,7 +58,7 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true)),
     analyzeDialog (new AnalyzeQuizDialog (qe, we, this, "analyzeDialog",
                                           false)),
-    numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300)
+    numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300), timerId (0)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
                                              "mainHlay");
@@ -262,6 +262,8 @@ QuizForm::nextQuestionClicked()
 void
 QuizForm::checkResponseClicked()
 {
+    if (timerId)
+        killTimer (timerId);
     updateStats();
     inputLine->setEnabled (false);
     checkResponseButton->setEnabled (false);
@@ -315,7 +317,7 @@ QuizForm::startQuestion()
     if (useTimer) {
         timerRemaining = timerDuration;
         setTimerDisplay (timerDuration);
-        startTimer (1000);
+        timerId = startTimer (1000);
     }
 }
 
@@ -590,10 +592,14 @@ QuizForm::reflowLayout()
 void
 QuizForm::timerEvent (QTimerEvent* event)
 {
+    if (event->timerId() != timerId)
+        return;
+
     --timerRemaining;
     setTimerDisplay (timerRemaining);
     if (timerRemaining == 0) {
-        killTimer (event->timerId());
+        killTimer (timerId);
+        timerId = 0;
         checkResponseClicked();
     }
 }

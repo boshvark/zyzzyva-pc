@@ -96,6 +96,7 @@ class QuizForm : public QFrame
     bool useTimer;
     int timerDuration, timerRemaining;
     QuizTimerType timerType;
+    int timerId;
 
     NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;
