@@ -26,14 +26,12 @@
 #define SEARCH_FORM_H
 
 #include <qcheckbox.h>
-#include <qlabel.h>
-#include <qlineedit.h>
-#include <qlistbox.h>
+#include <qframe.h>
 #include <qpushbutton.h>
-#include <qradiobutton.h>
 
 class SearchSpecForm;
 class WordEngine;
+class ZListView;
 
 class SearchForm : public QFrame
 {
@@ -45,14 +43,13 @@ class SearchForm : public QFrame
   public slots:
     void search();
     void resetSpec();
-    void updateResultLabel (int num);
+    void updateResultTotal (int num);
 
   private:
     WordEngine*     engine;
     SearchSpecForm* specForm;
     QCheckBox*      lowerCaseCbox;
-    QListBox*       resultList;
-    QLabel*         resultLabel;
+    ZListView*      resultList;
     QPushButton*    resetButton;
     QPushButton*    searchButton;
 };

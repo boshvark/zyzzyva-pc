@@ -26,6 +26,8 @@
 #include "SearchSpecForm.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
+#include "ZListView.h"
+#include "ZListViewItem.h"
 #include "Defs.h"
 #include <qapplication.h>
 #include <qbuttongroup.h>
@@ -81,14 +83,12 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     connect (searchButton, SIGNAL (clicked()), SLOT (search()));
     buttonHlay->addWidget (searchButton);
 
-    resultLabel = new QLabel (this, "resultLabel");
-    Q_CHECK_PTR (resultLabel);
-    specVlay->addWidget (resultLabel);
-    updateResultLabel (0);
-
-    resultList = new QListBox (this, "resultList");
+    resultList = new ZListView (this, "resultList");
     Q_CHECK_PTR (resultList);
+    resultList->setResizeMode (QListView::LastColumn);
+    resultList->addColumn ("Search Results");
     specVlay->addWidget (resultList);
+    updateResultTotal (0);
 }
 
 //---------------------------------------------------------------------------
@@ -105,10 +105,15 @@ SearchForm::search()
 
     QApplication::setOverrideCursor (Qt::waitCursor);
     resultList->clear();
-    resultList->insertStringList (engine->search (specForm->getSearchSpec(),
-                                                  !lowerCaseCbox->isChecked()));
+    QStringList wordList = engine->search (specForm->getSearchSpec(),
+                                           !lowerCaseCbox->isChecked());
+    int numWords = 0;
+    QStringList::iterator it;
+    for (it = wordList.begin(); it != wordList.end(); ++it, ++numWords)
+        new ZListViewItem (resultList, *it);
+
     resultList->sort();
-    updateResultLabel (resultList->count());
+    updateResultTotal (numWords);
     QApplication::restoreOverrideCursor();
 }
 
@@ -125,15 +130,15 @@ SearchForm::resetSpec()
 }
 
 //---------------------------------------------------------------------------
-// updateResultLabel
+// updateResultTotal
 //
 //! Display the number of words currently in the search results.
 //! @param num the number of words
 //---------------------------------------------------------------------------
 void
-SearchForm::updateResultLabel (int num)
+SearchForm::updateResultTotal (int num)
 {
     QString text = "Search Results : " + QString::number (num) + " word";
     if (num != 1) text += "s";
-    resultLabel->setText (text);
+    resultList->setColumnText (0, QIconSet(), text);
 }
