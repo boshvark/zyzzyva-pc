@@ -73,7 +73,8 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (wordLine);
     WordValidator* validator = new WordValidator (wordLine);
     Q_CHECK_PTR (validator);
-    validator->setOptions (WordValidator::AllowQuestionMarks);
+    validator->setOptions (WordValidator::AllowQuestionMarks |
+                           WordValidator::AllowAsterisks);
     wordLine->setValidator (validator);
     connect (wordLine, SIGNAL (returnPressed()), SLOT (search()));
     searchVlay->addWidget (wordLine);

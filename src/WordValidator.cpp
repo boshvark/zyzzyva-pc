@@ -28,6 +28,8 @@ WordValidator::validate (QString& input, int& pos) const
     QString re = "[^A-Z";
     if (options & AllowQuestionMarks)
         re += "?";
+    if (options & AllowAsterisks)
+        re += "*";
     re += "]+";
     replaceRegExp(QRegExp(re), "", input, pos);
     return Acceptable;

@@ -30,7 +30,8 @@ class WordValidator : public QValidator
 
     enum Options {
         None = 0,
-        AllowQuestionMarks = 1
+        AllowQuestionMarks = 1,
+        AllowAsterisks = 2
     };
 
   private:
