@@ -113,6 +113,7 @@ QuizEngine::nextQuestion()
 
     ++questionIndex;
     prepareQuestion();
+    return true;
 }
 
 //---------------------------------------------------------------------------
@@ -165,10 +166,12 @@ QStringList
 QuizEngine::getMissed() const
 {
     QStringList responses;
-    std::set<QString>::iterator it;
-    for (it = correctResponses.begin(); it != correctResponses.end(); ++it)
-        if (correctUserResponses.find (*it) == correctUserResponses.end())
+    std::set<QString>::const_iterator it, uit;
+    for (it = correctResponses.begin(); it != correctResponses.end(); ++it) {
+        uit = correctUserResponses.find (*it);
+        if (uit == correctUserResponses.end())
             responses << *it;
+    }
 
     return responses;
 }
