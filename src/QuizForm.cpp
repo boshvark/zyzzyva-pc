@@ -100,8 +100,6 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     responseList->setResizeMode (QListView::LastColumn);
     responseList->addColumn ("Responses");
     responseList->header()->hide();
-    connect (responseList, SIGNAL (returnPressed (QListViewItem*)),
-             SLOT (returnPressed (QListViewItem*)));
     mainVlay->addWidget (responseList);
 
     // Question status
