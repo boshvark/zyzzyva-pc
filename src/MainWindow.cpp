@@ -13,6 +13,7 @@
 #include "MainWindow.h"
 #include "JudgeForm.h"
 #include "SearchForm.h"
+#include "SettingsDialog.h"
 #include "WordEngine.h"
 #include <qapplication.h>
 #include <qdir.h>
@@ -44,7 +45,8 @@ const QString SETTINGS_GEOMETRY_HEIGHT = "/height";
 //! @param f widget flags
 //---------------------------------------------------------------------------
 MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
-    : QMainWindow (parent, name, f), engine (new WordEngine())
+    : QMainWindow (parent, name, f), engine (new WordEngine()),
+      settingsDialog (new SettingsDialog (this, "settingsDialog", true))
 {
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
@@ -52,6 +54,11 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     filePopup->insertSeparator();
     filePopup->insertItem ("&Quit", qApp, SLOT (quit()));
     menuBar()->insertItem ("&File", filePopup);
+
+    QPopupMenu* editPopup = new QPopupMenu (this);
+    Q_CHECK_PTR (editPopup);
+    editPopup->insertItem ("&Preferences", this, SLOT (editSettings()));
+    menuBar()->insertItem ("&Edit", editPopup);
 
     tabStack = new QTabWidget (this, "tabStack");
     Q_CHECK_PTR (tabStack);
@@ -112,6 +119,24 @@ MainWindow::import()
 }
 
 //---------------------------------------------------------------------------
+// editSettings
+//
+//! Allow the user to edit application settings.
+//---------------------------------------------------------------------------
+void
+MainWindow::editSettings()
+{
+//    settings.beginGroup (SETTINGS_MAIN);
+//    if (settingsDialog->exec() == QDialog::Accepted)
+//        settingsDialog->writeSettings (settings);
+//    settings.endGroup();
+
+    settingsDialog->exec();
+
+    settingsDialog->refresh();
+}
+
+//---------------------------------------------------------------------------
 // setNumWords
 //
 //! Update the label displaying the number of words loaded.
@@ -139,6 +164,7 @@ MainWindow::readSettings()
     int w = settings.readNumEntry (SETTINGS_GEOMETRY_WIDTH, 640);
     int h = settings.readNumEntry (SETTINGS_GEOMETRY_HEIGHT, 480);
     settings.endGroup();
+    settingsDialog->readSettings (settings);
     settings.endGroup();
     setGeometry (x, y, w, h);
 }
@@ -158,5 +184,6 @@ MainWindow::writeSettings()
     settings.writeEntry (SETTINGS_GEOMETRY_WIDTH, width());
     settings.writeEntry (SETTINGS_GEOMETRY_HEIGHT, height());
     settings.endGroup();
+    settingsDialog->writeSettings (settings);
     settings.endGroup();
 }

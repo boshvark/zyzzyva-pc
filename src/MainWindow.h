@@ -21,6 +21,7 @@
 class JudgeForm;
 class SearchForm;
 class WordEngine;
+class SettingsDialog;
 
 class MainWindow : public QMainWindow
 {
@@ -32,6 +33,7 @@ class MainWindow : public QMainWindow
 
   public slots:
     void import();
+    void editSettings();
 
   private:
     void setNumWords (int num);
@@ -45,7 +47,9 @@ class MainWindow : public QMainWindow
     SearchForm* searchForm;
     QLabel*     messageLabel;
     QLabel*     statusLabel;
-    QSettings   settings;
+
+    QSettings       settings;
+    SettingsDialog* settingsDialog;
 };
 
 #endif // MAIN_WINDOW_H

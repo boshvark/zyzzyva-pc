@@ -14,6 +14,7 @@
 #define SETTINGS_DIALOG_H
 
 #include <qdialog.h>
+#include <qlineedit.h>
 #include <qsettings.h>
 
 class SettingsDialog : public QDialog
@@ -24,8 +25,12 @@ class SettingsDialog : public QDialog
                     bool modal = false, WFlags f = WType_TopLevel);
     ~SettingsDialog();
 
+    void refresh();
     void readSettings (const QSettings& settings);
-    void writeSettings (const QSettings& settings);
+    void writeSettings (QSettings& settings);
+
+  private:
+    QLineEdit* autoImportLine;
 };
 
 #endif // SETTINGS_DIALOG_H

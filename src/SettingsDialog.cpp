@@ -14,6 +14,8 @@
 #include <qlabel.h>
 #include <qlayout.h>
 
+const QString SETTINGS_IMPORT_FILE = "/import";
+
 //---------------------------------------------------------------------------
 // SettingsDialog
 //
@@ -31,6 +33,9 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     QVBoxLayout* mainVlay = new QVBoxLayout (this, 0, 0, "mainVlay");
     QLabel* label = new QLabel ("Hello world!", this, "label");
     mainVlay->addWidget (label);
+
+    autoImportLine = new QLineEdit (this, "autoImportFile");
+    mainVlay->addWidget (autoImportLine);
 }
 
 //---------------------------------------------------------------------------
@@ -43,6 +48,16 @@ SettingsDialog::~SettingsDialog()
 }
 
 //---------------------------------------------------------------------------
+// refresh
+//
+//! Refresh the interface state relative to the current settings.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::refresh()
+{
+}
+
+//---------------------------------------------------------------------------
 // readSettings
 //
 //! Read settings.
@@ -50,6 +65,11 @@ SettingsDialog::~SettingsDialog()
 void
 SettingsDialog::readSettings (const QSettings& settings)
 {
+    bool ok = false;
+    QString autoImportFile = settings.readEntry (SETTINGS_IMPORT_FILE,
+                                                 QString::null, &ok);
+    if (ok)
+        autoImportLine->setText (autoImportFile);
 }
 
 //---------------------------------------------------------------------------
@@ -58,6 +78,9 @@ SettingsDialog::readSettings (const QSettings& settings)
 //! Write settings.
 //---------------------------------------------------------------------------
 void
-SettingsDialog::writeSettings (const QSettings& settings)
+SettingsDialog::writeSettings (QSettings& settings)
 {
+    QString autoImportFile = autoImportLine->text();
+    if (!autoImportFile.isEmpty())
+        settings.writeEntry (SETTINGS_IMPORT_FILE, autoImportFile);
 }
