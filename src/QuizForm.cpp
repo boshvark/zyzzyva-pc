@@ -50,6 +50,10 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (quizGbox);
     mainVlay->addWidget (quizGbox);
 
+    questionNumLabel = new QLabel (this, "questionNumLabel");
+    Q_CHECK_PTR (questionNumLabel);
+    mainVlay->addWidget (questionNumLabel);
+
     QHBoxLayout* quizBoxHlay = new QHBoxLayout (quizGbox, MARGIN, SPACING,
                                                 "quizBoxHlay");
     Q_CHECK_PTR (quizBoxHlay);
@@ -235,6 +239,7 @@ QuizForm::updateForm (bool showStats)
         updateStats();
     else
         clearStats();
+    setQuestionNum (engine->getQuestionIndex() + 1, engine->numQuestions());
     questionLabel->setText (engine->getQuestion());
     responseList->clear();
     responseStatusLabel->setText ("");
@@ -274,6 +279,32 @@ QuizForm::clearStats()
     precisionLabel->setText ("");
     totalRecallLabel->setText ("");
     totalPrecisionLabel->setText ("");
+}
+
+//---------------------------------------------------------------------------
+// clearQuestionNum
+//
+//! Clear the question number label.
+//---------------------------------------------------------------------------
+void
+QuizForm::clearQuestionNum()
+{
+    questionNumLabel->setText ("");
+}
+
+//---------------------------------------------------------------------------
+// setQuestionNum
+//
+//! Set the current question number and the total number of questions.
+//
+//! @param num the current question number
+//! @param total the total number of questions
+//---------------------------------------------------------------------------
+void
+QuizForm::setQuestionNum (int num, int total)
+{
+    questionNumLabel->setText ("Question " + QString::number (num)
+                               + " of " + QString::number (total));
 }
 
 //---------------------------------------------------------------------------

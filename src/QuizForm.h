@@ -38,6 +38,8 @@ class QuizForm : public QFrame
     void updateForm (bool showStats);
     void updateStats();
     void clearStats();
+    void clearQuestionNum();
+    void setQuestionNum (int num, int total);
     void setRecall (int correct, int total);
     void setPrecision (int correct, int total);
     void setTotalRecall (int correct, int total);
@@ -45,6 +47,7 @@ class QuizForm : public QFrame
 
   private:
     QuizEngine*   engine;
+    QLabel*       questionNumLabel;
     QLabel*       questionLabel;
     QLineEdit*    inputLine;
     QListView*    responseList;
