@@ -509,7 +509,22 @@ QuizForm::setQuestionStatus (int correct, int total)
 void
 QuizForm::setTimerDisplay (int seconds)
 {
-    timerLabel->setText (QString::number (seconds));
+    int hours = 0;
+    int minutes = 0;
+    if (seconds >= 3600) {
+        hours = seconds / 3600;
+        seconds %= 3600;
+    }
+    if (seconds >= 60) {
+        minutes = seconds / 60;
+        seconds %= 60;
+    }
+    QString text;
+    if (hours > 0)
+        text.sprintf ("%d:%02d:%02d", hours, minutes, seconds);
+    else
+        text.sprintf ("%02d:%02d", minutes, seconds);
+    timerLabel->setText (text);
 }
 
 //---------------------------------------------------------------------------
