@@ -10,8 +10,8 @@
 //
 //---------------------------------------------------------------------------
 
-#ifndef LOOKUP_FORM_H
-#define LOOKUP_FORM_H
+#ifndef JUDGE_FORM_H
+#define JUDGE_FORM_H
 
 #include <qlabel.h>
 #include <qlineedit.h>
@@ -34,4 +34,4 @@ class JudgeForm : public QFrame
     QLabel*     resultLabel;
 };
 
-#endif // LOOKUP_FORM_H
+#endif // JUDGE_FORM_H
