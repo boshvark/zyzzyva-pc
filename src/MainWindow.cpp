@@ -27,13 +27,21 @@ const QString CHOOSE_BUTTON_TEXT = "Choose...";
 const QString CHOOSER_TITLE = "Choose a Word List";
 const QString IMPORT_COMPLETE_TITLE = "Import Complete";
 
+//---------------------------------------------------------------------------
+// MainWindow
+//
+//! Constructor.
+//
+//! @param parent the parent widget
+//! @name the name of this widget
+//! @f widget flags
+//---------------------------------------------------------------------------
 MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     : QMainWindow (parent, name, f), engine (new WordEngine())
 {
 
     QFrame* frame = new QFrame (this);
     setCentralWidget (frame);
-
 
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
@@ -64,6 +72,11 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     fileHlay->addWidget (fileLabel);
 }
 
+//---------------------------------------------------------------------------
+// import
+//
+//! Allow the user to import a word list from a file.
+//---------------------------------------------------------------------------
 void
 MainWindow::import()
 {
