@@ -91,21 +91,26 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
     autoImportHlay->addWidget (browseButton);
 
-    QHBoxLayout* fontHlay = new QHBoxLayout (SPACING, "fontHlay");
+    QVGroupBox* fontGbox = new QVGroupBox (this, "fontGbox");
+    Q_CHECK_PTR (fontGbox);
+    fontGbox->setTitle ("Font");
+    mainVlay->addWidget (fontGbox);
+
+    QWidget* fontWidget = new QWidget (fontGbox, "fontWidget");
+    Q_CHECK_PTR (fontWidget);
+
+    QHBoxLayout* fontHlay = new QHBoxLayout (fontWidget, MARGIN, SPACING,
+                                             "fontHlay");
     Q_CHECK_PTR (fontHlay);
-    mainVlay->addLayout (fontHlay);
 
-    QLabel* fontLabel = new QLabel ("Font:", this, "fontLabel");
-    Q_CHECK_PTR (fontLabel);
-    fontHlay->addWidget (fontLabel);
-
-    fontLine = new QLineEdit (this, "fontLine");
+    fontLine = new QLineEdit (fontWidget, "fontLine");
     Q_CHECK_PTR (fontLine);
     fontLine->setReadOnly (true);
     fontLine->setText (this->font().toString());
     fontHlay->addWidget (fontLine);
 
-    chooseFontButton = new QPushButton ("Choose...", this, "chooseFontButton");
+    chooseFontButton = new QPushButton ("Choose...", fontWidget,
+                                        "chooseFontButton");
     Q_CHECK_PTR (chooseFontButton);
     connect (chooseFontButton, SIGNAL (clicked()),
              SLOT (chooseFontButtonClicked()));
