@@ -50,6 +50,7 @@ class QuizForm : public QFrame
     void nextQuestionClicked();
     void checkResponseClicked();
     void analyzeClicked();
+    void returnPressed (QListViewItem* item);
     void menuRequested (QListViewItem* item, const QPoint&, int);
 
   private:
@@ -59,6 +60,7 @@ class QuizForm : public QFrame
     void clearQuestionNum();
     void setQuestionNum (int num, int total);
     void setQuestionStatus (int correct, int total);
+    void displayDefinition (const QString& word);
 
   private:
     QuizEngine*   quizEngine;

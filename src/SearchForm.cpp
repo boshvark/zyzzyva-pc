@@ -93,6 +93,8 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     connect (resultList, SIGNAL (contextMenuRequested (QListViewItem*, const
                                                        QPoint&, int)),
              SLOT (menuRequested (QListViewItem*, const QPoint&, int)));
+    connect (resultList, SIGNAL (returnPressed (QListViewItem*)),
+             SLOT (returnPressed (QListViewItem*)));
     specVlay->addWidget (resultList);
     updateResultTotal (0);
 }
@@ -150,6 +152,22 @@ SearchForm::updateResultTotal (int num)
 }
 
 //---------------------------------------------------------------------------
+// returnPressed
+//
+//! Called when return is pressed on an item in the response list.  Displays
+//! the selected word's definition.
+//
+//! @param item the selected listview item
+//---------------------------------------------------------------------------
+void
+SearchForm::returnPressed (QListViewItem* item)
+{
+    if (!item)
+        return;
+    displayDefinition (item->text (0));
+}
+
+//---------------------------------------------------------------------------
 // menuRequested
 //
 //! Called when a right-click menu is requested.
@@ -166,11 +184,22 @@ SearchForm::menuRequested (QListViewItem* item, const QPoint& point, int)
     int choice = menu->exec(point);
     delete menu;
 
-    if (choice == WordPopupMenu::ShowDefinition) {
-        DefinitionDialog* dialog = new DefinitionDialog (engine, item->text
-                                                         (0), this, "dialog",
-                                                         true);
-        dialog->exec();
-        delete dialog;
-    }
+    if (choice == WordPopupMenu::ShowDefinition)
+        displayDefinition (item->text (0));
+}
+
+//---------------------------------------------------------------------------
+// displayDefinition
+//
+//! Displays the definition of a word.
+//
+//! @param word the word whose definition to display
+//---------------------------------------------------------------------------
+void
+SearchForm::displayDefinition (const QString& word)
+{
+    DefinitionDialog* dialog = new DefinitionDialog (engine, word, this,
+                                                     "dialog", true);
+    dialog->exec();
+    delete dialog;
 }

@@ -90,6 +90,8 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     connect (responseList, SIGNAL (contextMenuRequested (QListViewItem*, const
                                                          QPoint&, int)),
              SLOT (menuRequested (QListViewItem*, const QPoint&, int)));
+    connect (responseList, SIGNAL (returnPressed (QListViewItem*)),
+             SLOT (returnPressed (QListViewItem*)));
     mainVlay->addWidget (responseList);
 
     // Question status
@@ -269,6 +271,22 @@ QuizForm::analyzeClicked()
 }
 
 //---------------------------------------------------------------------------
+// returnPressed
+//
+//! Called when return is pressed on an item in the response list.  Displays
+//! the selected word's definition.
+//
+//! @param item the selected listview item
+//---------------------------------------------------------------------------
+void
+QuizForm::returnPressed (QListViewItem* item)
+{
+    if (!item)
+        return;
+    displayDefinition (item->text (0));
+}
+
+//---------------------------------------------------------------------------
 // menuRequested
 //
 //! Called when a right-click menu is requested.
@@ -285,13 +303,8 @@ QuizForm::menuRequested (QListViewItem* item, const QPoint& point, int)
     int choice = menu->exec (point);
     delete menu;
 
-    if (choice == WordPopupMenu::ShowDefinition) {
-        DefinitionDialog* dialog = new DefinitionDialog (wordEngine,
-                                                         item->text (0), this,
-                                                         "dialog", true);
-        dialog->exec();
-        delete dialog;
-    }
+    if (choice == WordPopupMenu::ShowDefinition)
+        displayDefinition (item->text (0));
 }
 
 //---------------------------------------------------------------------------
@@ -383,4 +396,20 @@ QuizForm::setQuestionStatus (int correct, int total)
 {
     questionStatusLabel->setText ("Correct: " + QString::number (correct)
                           + " of " + QString::number (total));
+}
+
+//---------------------------------------------------------------------------
+// displayDefinition
+//
+//! Displays the definition of a word.
+//
+//! @param word the word whose definition to display
+//---------------------------------------------------------------------------
+void
+QuizForm::displayDefinition (const QString& word)
+{
+    DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
+                                                     "dialog", true);
+    dialog->exec();
+    delete dialog;
 }
