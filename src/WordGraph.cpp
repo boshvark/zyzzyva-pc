@@ -157,42 +157,39 @@ WordGraph::getWordsMatchingPattern (const QString& p) const
     int i = 0;
     int pIndex = 0;
     while (node) {
+        QString origWord = word;
         c = pattern.at (pIndex);
 
-        if (c == "?") {
-            if (node->next)
-                nodeStack.push (make_pair (node->next,
-                                           make_pair (pIndex, word)));
-        }
+        // Traverse next nodes, looking for matches
+        while (node) {
+            bool match = false;
+            word = origWord;
 
-        else if (c == "*") {
-            if (node->next)
-                nodeStack.push (make_pair (node->next,
-                                           make_pair (pIndex, word)));
-            if (node->child)
-                nodeStack.push (make_pair (node->child,
-                                           make_pair (pIndex,
-                                                      word + node->letter)));
-        }
-
-        else {
-            while (node && node->letter != c)
-                node = node->next;
-        }
-
-        if (node) {
-            word += node->letter;
-            ++pIndex;
-
-            if ((pIndex == pLen) && (node->eow)) {
-                list << word;
+            // A node matches wildcard characters or its own letter
+            if ((c == "*") || (c == "?") || (c == node->letter)) {
+                word += node->letter;
+                match = true;
             }
 
-            else if (pIndex < pLen)
-                node = node->child;
+            // If this node matches, push its child on the stack to be
+            // traversed later
+            if (match && node->child) {
+                if (c == "*")
+                    nodeStack.push (make_pair (node->child,
+                                               make_pair (pIndex, word)));
+
+                nodeStack.push (make_pair (node->child,
+                                           make_pair (pIndex + 1, word)));
+            }
+
+            if (match && node->eow && (pIndex == pLen - 1))
+                list << word;
+
+            node = node->next;
         }
 
-        if ((!node || (pIndex == pLen)) && nodeStack.size()) {
+        // Done traversing next nodes, pop a child off the stack
+        if (nodeStack.size()) {
             node = nodeStack.top().first;
             pIndex = nodeStack.top().second.first;
             word = nodeStack.top().second.second;
