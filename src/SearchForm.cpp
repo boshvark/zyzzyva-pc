@@ -87,6 +87,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (resultList);
     resultList->setResizeMode (QListView::LastColumn);
     resultList->addColumn ("Search Results");
+    resultList->setShowSortIndicator (true);
     specVlay->addWidget (resultList);
     updateResultTotal (0);
 }
