@@ -37,7 +37,7 @@ class SearchSpec
 
     QString pattern;
     MatchType type;
-    QString matchLetters;
+    QString includeLetters;
     QString excludeLetters;
     int consistPercent;
     QString consistLetters;
