@@ -16,7 +16,6 @@
 
 #include <qbuttongroup.h>
 #include <qlayout.h>
-#include <qpushbutton.h>
 
 const QString DIALOG_CAPTION = "New Quiz";
 
@@ -83,6 +82,8 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
 
     inputLine = new QLineEdit (this, "inputLine");
     Q_CHECK_PTR (inputLine);
+    connect (inputLine, SIGNAL (textChanged (const QString&)),
+             SLOT (inputChanged (const QString&)));
     inputVlay->addWidget (inputLine);
 
     WordValidator* validator = new WordValidator (inputLine);
@@ -96,10 +97,11 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
 
     buttonHlay->addStretch (1);
 
-    QPushButton* okButton = new QPushButton ("OK", this, "okButton");
+    okButton = new QPushButton ("OK", this, "okButton");
     Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
+    okButton->setEnabled (false);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (okButton);
 
@@ -185,4 +187,17 @@ NewQuizDialog::alphagramsToggled (bool on)
     randomCbox->setEnabled (on);
     if (!on)
         randomCbox->setChecked (false);
+}
+
+//---------------------------------------------------------------------------
+// inputChanged
+//
+//! Called when the text in the input line changes.
+//
+//! @param text the new text
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::inputChanged (const QString& text)
+{
+    okButton->setEnabled (!text.isEmpty());
 }

@@ -16,6 +16,7 @@
 #include <qcheckbox.h>
 #include <qdialog.h>
 #include <qlineedit.h>
+#include <qpushbutton.h>
 #include <qradiobutton.h>
 #include "MatchType.h"
 
@@ -35,6 +36,7 @@ class NewQuizDialog : public QDialog
 
   public slots:
     void alphagramsToggled (bool on);
+    void inputChanged (const QString& text);
 
   private:
     QRadioButton* patternButton;
@@ -43,6 +45,7 @@ class NewQuizDialog : public QDialog
     QCheckBox*    alphagramCbox;
     QCheckBox*    randomCbox;
     QLineEdit*    inputLine;
+    QPushButton*  okButton;
 };
 
 #endif // NEW_QUIZ_DIALOG_H
