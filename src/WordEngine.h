@@ -23,6 +23,7 @@ class WordEngine
     ~WordEngine() { };
 
     int importFile (const QString& filename);
+    bool isAcceptable (const QString& word) const;
 
   private:
     DAWG graph;

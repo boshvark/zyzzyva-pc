@@ -40,3 +40,17 @@ WordEngine::importFile (const QString& filename)
 
     return imported;
 }
+
+//---------------------------------------------------------------------------
+// isAcceptable
+//
+//! Determine whether a word is acceptable.
+//
+//! @param word the word to look up
+//! @return true if acceptable, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::isAcceptable (const QString& word) const
+{
+    return graph.containsWord (word);
+}
