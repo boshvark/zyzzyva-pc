@@ -7,9 +7,9 @@ IF (NOT QT_FOUND)
 ENDIF (NOT QT_FOUND)
 INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR})
 
-SET (SRCS main.cpp MainWindow.cpp JudgeForm.cpp WordValidator.cpp
-          WordEngine.cpp DAWG.cpp)
-SET (MOCS MainWindow.h JudgeForm.h WordValidator.h)
+SET (SRCS main.cpp MainWindow.cpp JudgeForm.cpp SearchForm.cpp
+     WordValidator.cpp WordEngine.cpp DAWG.cpp)
+SET (MOCS MainWindow.h JudgeForm.h SearchForm.h WordValidator.h)
 QT_WRAP_CPP(wordstudy SRCS MOCS)
 
 ADD_EXECUTABLE (wordstudy SRCS)

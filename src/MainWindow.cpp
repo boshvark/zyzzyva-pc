@@ -12,6 +12,7 @@
 
 #include "MainWindow.h"
 #include "JudgeForm.h"
+#include "SearchForm.h"
 #include "WordEngine.h"
 #include <qapplication.h>
 #include <qdir.h>
@@ -24,6 +25,7 @@
 const QString CHOOSER_TITLE = "Choose a Word List";
 const QString IMPORT_COMPLETE_TITLE = "Import Complete";
 const QString JUDGE_TAB_TITLE = "Judge";
+const QString SEARCH_TAB_TITLE = "Search";
 
 //---------------------------------------------------------------------------
 // MainWindow
@@ -55,6 +57,10 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     messageLabel = new QLabel (this, "messageLabel");
     Q_CHECK_PTR (messageLabel);
     statusBar()->addWidget (messageLabel, 2);
+
+    searchForm = new SearchForm (engine, tabStack, "searchForm");
+    Q_CHECK_PTR (searchForm);
+    tabStack->addTab (searchForm, SEARCH_TAB_TITLE);
 
     statusLabel = new QLabel (this, "statusLabel");
     Q_CHECK_PTR (statusLabel);
