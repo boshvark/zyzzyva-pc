@@ -1,0 +1,10 @@
+Zyzzyva is free software, released under the GNU General Public License.
+Please see COPYING and LICENSE for details.
+
+To build Zyzzyva, you will need the Qt library, available from
+http://www.trolltech.com/products/qt/index.html.  After Qt is installed,
+simply run "make" in the top directory of the Zyzzyva distribution.
+
+The Zyzzyva home page is http://zyzzyva.net/, and the latest version can
+always be found there.  Please email Michael W Thelen <mike@pietdepsi.com>
+with questions, comments, patches, or large cash donations.  Happy hacking!
