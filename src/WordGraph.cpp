@@ -154,7 +154,6 @@ WordGraph::search (const SearchSpec& spec) const
     QChar c;
 
     QString unmatched = spec.pattern;
-    QString include = spec.includeLetters;
     bool wildcard = false;
     Node* node = top;
 
@@ -182,7 +181,6 @@ WordGraph::search (const SearchSpec& spec) const
         if (int (word.length()) < spec.maxLength) {
             QString origWord = word;
             QString origUnmatched = unmatched;
-            QString origInclude = include;
 
             // Get the next character in the Pattern match.  Allow a wildcard
             // to match the empty string.
@@ -200,15 +198,6 @@ WordGraph::search (const SearchSpec& spec) const
 
                 unmatched = origUnmatched;
                 word = origWord;
-                include = origInclude;
-
-                // Check to see if the current letter is required to be
-                // included.  If so, take it off the include list.
-                if (!include.isEmpty()) {
-                    int index = include.find (node->letter);
-                    if (index >= 0)
-                        include.replace (index, 1, "");
-                }
 
                 // Special processing for Pattern match
                 if (spec.type == Pattern) {
@@ -224,21 +213,20 @@ WordGraph::search (const SearchSpec& spec) const
                     if (node->child) {
                         if (c == "*")
                             states.push (TraversalState (node->child, word,
-                                                         unmatched, include));
+                                                         unmatched));
 
                         states.push (TraversalState (node->child, word,
                                                      unmatched.right (
-                                                     unmatched.length() - 1),
-                                                     include));
+                                                     unmatched.length() - 1)));
                     }
 
                     // If end of word and end of pattern, put the word in the
                     // list
-                    if (node->eow && include.isEmpty() &&
-                        (int (word.length()) >= spec.minLength) &&
+                    if (node->eow &&
                         ((unmatched.length() == 1) ||
                         ((unmatched.length() == 2) &&
-                         (QChar (unmatched.at (1)) == "*"))))
+                         (QChar (unmatched.at (1)) == "*"))) &&
+                        matchesSpec (word, spec))
                         wordSet.insert (word);
                 }
 
@@ -261,12 +249,12 @@ WordGraph::search (const SearchSpec& spec) const
 
                         if (node->child && (wildcard || !unmatched.isEmpty()))
                             states.push (TraversalState (node->child, word,
-                                                         unmatched, include));
+                                                         unmatched));
 
-                        if (node->eow && include.isEmpty() &&
+                        if (node->eow &&
                             ((spec.type == Subanagram) ||
                               unmatched.isEmpty()) &&
-                            (int (word.length()) >= spec.minLength))
+                            matchesSpec (word, spec))
                             wordList << word;
                     }
                 }
@@ -279,7 +267,6 @@ WordGraph::search (const SearchSpec& spec) const
             node = state.node;
             unmatched = state.unmatched;
             word = state.word;
-            include = state.include;
             states.pop();
         }
     }
@@ -350,6 +337,46 @@ WordGraph::print() const
 
     }
 
+}
+
+//---------------------------------------------------------------------------
+// matchesSpec
+//
+//! Determine whether a word matches a search specification.  Only the
+//! following attributes are checked: Include Letters, Consist Letters/Pct,
+//! Min Length.  All other attributes are assumed to have been checked in the
+//! course of finding the word to be checked.
+//---------------------------------------------------------------------------
+bool
+WordGraph::matchesSpec (const QString& word, const SearchSpec& spec) const
+{
+    // Check Min Length
+    if (int (word.length()) < spec.minLength)
+        return false;
+
+    // Check Include Letters
+    QString tmpWord = word;
+    int includeLen = spec.includeLetters.length();
+    for (int i = 0; i < includeLen; ++i) {
+        int index = tmpWord.find (spec.includeLetters.at (i));
+        if (index < 0)
+            return false;
+        tmpWord.replace (index, 1, "");
+    }
+
+    // Check Consist Letters and Consist Percent
+    if (spec.consistPercent > 0) {
+        int wordLen = word.length();
+        int consist = 0;
+        for (int i = 0; i < wordLen; ++i) {
+            if (spec.consistLetters.contains (word.at (i)))
+                ++consist;
+        }
+        if (((consist * 100) / wordLen) < spec.consistPercent)
+            return false;
+    }
+
+    return true;
 }
 
 //---------------------------------------------------------------------------

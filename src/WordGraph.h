@@ -43,6 +43,9 @@ class WordGraph
     int getNumNodes() { return numNodes; }
 
   private:
+    bool matchesSpec (const QString& word, const SearchSpec& spec) const;
+
+  private:
     class Node {
       public:
         Node (char c = 0, bool e = false);
@@ -56,15 +59,11 @@ class WordGraph
 
     class TraversalState {
       public:
-        TraversalState (Node* n, const QString& w,
-                        const QString& u = QString::null,
-                        const QString& i = QString::null)
-            : node (n), word (w), unmatched (u), include (i)
-            { }
+        TraversalState (Node* n, const QString& w, const QString& u)
+            : node (n), word (w), unmatched (u) { }
         Node* node;
         QString word;
         QString unmatched;
-        QString include;
     };
 
     Node* top;
