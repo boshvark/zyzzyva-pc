@@ -153,8 +153,10 @@ void
 QuizForm::responseEntered()
 {
     QString response = inputLine->text();
-    if (response.isEmpty())
+    if (response.isEmpty() && checkResponseButton->isEnabled()) {
+        checkResponseClicked();
         return;
+    }
 
     QuizEngine::ResponseStatus status = engine->respond (response);
     QString statusStr = "";
@@ -241,6 +243,8 @@ QuizForm::checkResponseClicked()
         item->setTextColor (Qt::magenta);
         analyzeDialog->addMissed (*it);
     }
+
+    nextQuestionButton->setFocus();
 }
 
 //---------------------------------------------------------------------------
