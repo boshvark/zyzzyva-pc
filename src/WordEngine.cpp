@@ -25,11 +25,15 @@ const int READLINE_BYTES = 64;
 //! @return the number of words imported
 //---------------------------------------------------------------------------
 int
-WordEngine::importFile (const QString& filename)
+WordEngine::importFile (const QString& filename, QString* errString)
 {
     QFile file (filename);
-    if (!file.open (IO_ReadOnly))
-        qWarning ("Can't open file '" + filename + "': " + file.errorString());
+    if (!file.open (IO_ReadOnly)) {
+        if (errString)
+            *errString = "Can't open file '" + filename + "': "
+            + file.errorString();
+        return -1;
+    }
 
     int imported = 0;
     QString word;

@@ -24,6 +24,7 @@
 #include <qmessagebox.h>
 #include <qstatusbar.h>
 
+const QString IMPORT_FAILURE_TITLE = "Import Failed";
 const QString IMPORT_COMPLETE_TITLE = "Import Complete";
 const QString JUDGE_TAB_TITLE = "Judge";
 const QString SEARCH_TAB_TITLE = "Search";
@@ -115,6 +116,7 @@ MainWindow::importInteractive()
                                                  IMPORT_CHOOSER_TITLE);
     if (file.isNull()) return;
     int imported = import (file);
+    if (imported < 0) return;
     QMessageBox::information (this, IMPORT_COMPLETE_TITLE,
                               "Imported " + QString::number (imported)
                               + " words.",
@@ -201,9 +203,14 @@ MainWindow::writeSettings()
 int
 MainWindow::import (const QString& file)
 {
+    QString err;
     QApplication::setOverrideCursor (Qt::waitCursor);
-    int imported = engine->importFile (file);
+    int imported = engine->importFile (file, &err);
     QApplication::restoreOverrideCursor();
-    setNumWords (imported);
+
+    if (imported < 0)
+        QMessageBox::warning (this, IMPORT_FAILURE_TITLE, err);
+    else
+        setNumWords (imported);
     return imported;
 }

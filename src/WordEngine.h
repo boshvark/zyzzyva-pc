@@ -23,7 +23,7 @@ class WordEngine
     WordEngine() { };
     ~WordEngine() { };
 
-    int importFile (const QString& filename);
+    int importFile (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList matchPattern (const QString& input) const;
     QStringList matchAnagram (const QString& input) const;
