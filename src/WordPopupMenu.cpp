@@ -1,9 +1,9 @@
 //---------------------------------------------------------------------------
-// SearchForm.h
+// WordPopupMenu.cpp
 //
-// A form for searching for words, patterns, anagrams, etc.
+// A popup menu to be executed when the user right-clicks on a word list.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,39 +22,27 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef SEARCH_FORM_H
-#define SEARCH_FORM_H
+#include "WordPopupMenu.h"
 
-#include <qcheckbox.h>
-#include <qframe.h>
-#include <qpoint.h>
-#include <qpushbutton.h>
-
-class QListViewItem;
-class SearchSpecForm;
-class WordEngine;
-class ZListView;
-
-class SearchForm : public QFrame
+//---------------------------------------------------------------------------
+// WordPopupMenu
+//
+//! Constructor.
+//
+//! @param parent the parent widget
+//! @param name the name of this widget
+//---------------------------------------------------------------------------
+WordPopupMenu::WordPopupMenu (QWidget* parent, const char* name)
+    : QPopupMenu (parent, name)
 {
-  Q_OBJECT
-  public:
-    SearchForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-                WFlags f = 0);
+    insertItem ("Show Definition", ShowDefinition);
+}
 
-  public slots:
-    void search();
-    void resetSpec();
-    void updateResultTotal (int num);
-    void resultMenuRequested (QListViewItem* item, const QPoint&, int);
-
-  private:
-    WordEngine*     engine;
-    SearchSpecForm* specForm;
-    QCheckBox*      lowerCaseCbox;
-    ZListView*      resultList;
-    QPushButton*    resetButton;
-    QPushButton*    searchButton;
-};
-
-#endif // SEARCH_FORM_H
+//---------------------------------------------------------------------------
+// ~WordPopupMenu
+//
+//! Destructor.
+//---------------------------------------------------------------------------
+WordPopupMenu::~WordPopupMenu()
+{
+}

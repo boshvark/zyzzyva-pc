@@ -25,6 +25,7 @@
 #include "SearchForm.h"
 #include "SearchSpecForm.h"
 #include "WordEngine.h"
+#include "WordPopupMenu.h"
 #include "WordValidator.h"
 #include "ZListView.h"
 #include "ZListViewItem.h"
@@ -88,6 +89,9 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     resultList->setResizeMode (QListView::LastColumn);
     resultList->addColumn ("Search Results");
     resultList->setShowSortIndicator (true);
+    connect (resultList, SIGNAL (contextMenuRequested (QListViewItem*, const
+                                                       QPoint&, int)),
+             SLOT (resultMenuRequested (QListViewItem*, const QPoint&, int)));
     specVlay->addWidget (resultList);
     updateResultTotal (0);
 }
@@ -142,4 +146,26 @@ SearchForm::updateResultTotal (int num)
     QString text = "Search Results : " + QString::number (num) + " word";
     if (num != 1) text += "s";
     resultList->setColumnText (0, QIconSet(), text);
+}
+
+//---------------------------------------------------------------------------
+// resultMenuRequested
+//
+//! Called when a right-click menu is requested.
+//! @param item the selected listview item
+//! @param point the point at which the menu was requested
+//---------------------------------------------------------------------------
+void
+SearchForm::resultMenuRequested (QListViewItem* item, const QPoint& point,
+                                 int)
+{
+    if (!item)
+        return;
+
+    WordPopupMenu* menu = new WordPopupMenu (this, "menu");
+    int choice = menu->exec(point);
+    delete menu;
+
+    //if (choice == WordPopupMenu::ShowDefinition)
+    //    qDebug ("Show Definition");
 }

@@ -18,6 +18,7 @@ HEADERS += \
     src/SettingsDialog.h \
     src/WordEngine.h \
     src/WordGraph.h \
+    src/WordPopupMenu.h \
     src/WordValidator.h \
     src/ZListView.h \
     src/ZListViewItem.h
@@ -38,6 +39,7 @@ SOURCES += \
     src/SettingsDialog.cpp \
     src/WordEngine.cpp \
     src/WordGraph.cpp \
+    src/WordPopupMenu.cpp \
     src/WordValidator.cpp \
     src/ZListView.cpp \
     src/ZListViewItem.cpp
