@@ -15,7 +15,7 @@
 #include "WordValidator.h"
 #include "Defs.h"
 #include <qlayout.h>
-#include <qlabel.h>
+#include <qgroupbox.h>
 
 using namespace Defs;
 
@@ -37,10 +37,19 @@ QuizForm::QuizForm (WordEngine* e, QWidget* parent, const char* name,
                                              "mainHlay");
     Q_CHECK_PTR (mainHlay);
 
-    QVBoxLayout* optionVlay = new QVBoxLayout (SPACING, "optionVlay");
-    Q_CHECK_PTR (optionVlay);
-    mainHlay->addLayout (optionVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout (SPACING, "mainVlay");
+    Q_CHECK_PTR (mainVlay);
+    mainHlay->addLayout (mainVlay);
 
-    QLabel* label = new QLabel ("Hello, world!", this, "label");
-    optionVlay->addWidget (label);
+    QGroupBox* quizGbox = new QGroupBox (this, "quizGbox");
+    mainVlay->addWidget (quizGbox);
+
+    QHBoxLayout* quizBoxHlay = new QHBoxLayout (quizGbox, MARGIN, SPACING,
+                                                "quizBoxHlay");
+    quizBoxHlay->addStretch (1);
+    quizLabel = new QLabel ("Hello, world!", quizGbox, "label");
+    quizBoxHlay->addWidget (quizLabel);
+    quizBoxHlay->addStretch (1);
+
+    mainVlay->addStretch (1);
 }

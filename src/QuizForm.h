@@ -16,7 +16,6 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qlistbox.h>
-#include <qradiobutton.h>
 
 class WordEngine;
 
@@ -29,6 +28,7 @@ class QuizForm : public QFrame
 
   private:
     WordEngine*   engine;
+    QLabel*       quizLabel;
 };
 
 #endif // QUIZ_FORM_H
