@@ -43,6 +43,7 @@ class SettingsDialog : public QDialog
     void writeSettings (QSettings& settings);
     QString getAutoImportFile() const;
     QString getFont() const;
+    bool getLengthSort() const;
 
   public slots:
     void browseButtonClicked();
@@ -55,6 +56,7 @@ class SettingsDialog : public QDialog
     QPushButton* browseButton;
     QLineEdit*   fontLine;
     QPushButton* chooseFontButton;
+    QCheckBox*   lengthSortCbox;
 };
 
 #endif // SETTINGS_DIALOG_H

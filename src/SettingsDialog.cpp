@@ -35,6 +35,7 @@
 const QString SETTINGS_IMPORT = "/autoimport";
 const QString SETTINGS_IMPORT_FILE = "/autoimport_file";
 const QString SETTINGS_FONT = "/font";
+const QString SETTINGS_SORT_BY_LENGTH = "/wordlist_sort_by_length";
 const QString DIALOG_CAPTION = "Preferences";
 
 using namespace Defs;
@@ -118,6 +119,23 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
 
     mainVlay->addStretch (1);
 
+    QVGroupBox* miscGbox = new QVGroupBox (this, "miscGbox");
+    Q_CHECK_PTR (miscGbox);
+    miscGbox->setTitle ("Miscellaneous");
+    mainVlay->addWidget (miscGbox);
+
+    QWidget* miscWidget = new QWidget (miscGbox, "miscWidget");
+    Q_CHECK_PTR (miscWidget);
+
+    QVBoxLayout* miscVlay = new QVBoxLayout (miscWidget, MARGIN, SPACING,
+                                             "miscVlay");
+    Q_CHECK_PTR (miscVlay);
+
+    lengthSortCbox = new QCheckBox ("Sort word lists by length", miscWidget,
+                                    "lengthSortCbox");
+    Q_CHECK_PTR (lengthSortCbox);
+    miscVlay->addWidget (lengthSortCbox);
+
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
@@ -172,6 +190,9 @@ SettingsDialog::readSettings (const QSettings& settings)
     QString fontStr = settings.readEntry (SETTINGS_FONT, QString::null, &ok);
     if (ok)
         fontLine->setText (fontStr);
+
+    bool lengthSort = settings.readBoolEntry (SETTINGS_SORT_BY_LENGTH, false);
+    lengthSortCbox->setChecked (lengthSort);
 }
 
 //---------------------------------------------------------------------------
@@ -185,6 +206,8 @@ SettingsDialog::writeSettings (QSettings& settings)
     settings.writeEntry (SETTINGS_IMPORT, autoImportCbox->isChecked());
     settings.writeEntry (SETTINGS_IMPORT_FILE, autoImportLine->text());
     settings.writeEntry (SETTINGS_FONT, fontLine->text());
+    settings.writeEntry (SETTINGS_SORT_BY_LENGTH,
+                         lengthSortCbox->isChecked());
 }
 
 //---------------------------------------------------------------------------
@@ -203,7 +226,7 @@ SettingsDialog::getAutoImportFile() const
 }
 
 //---------------------------------------------------------------------------
-// getAutoImportFile
+// getFont
 //
 //! Return the font setting.
 //
@@ -213,6 +236,19 @@ QString
 SettingsDialog::getFont() const
 {
     return fontLine->text();
+}
+
+//---------------------------------------------------------------------------
+// getLengthSort
+//
+//! Return the "sort by length" setting.
+//
+//! @return true if "sort by length" is preferred, false otherwise
+//---------------------------------------------------------------------------
+bool
+SettingsDialog::getLengthSort() const
+{
+    return lengthSortCbox->isChecked();
 }
 
 //---------------------------------------------------------------------------
