@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// MainWindow.h
+// LookupForm.h
 //
-// The main window for the word study application.
+// A form for looking up words.
 //
 // Copyright 2004 Michael W Thelen.  Permission to copy, use, modify, sell and
 // distribute this software is granted provided this copyright notice appears in
@@ -10,29 +10,20 @@
 //
 //---------------------------------------------------------------------------
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef LOOKUP_FORM_H
+#define LOOKUP_FORM_H
 
-#include <qcombobox.h>
-#include <qlabel.h>
-#include <qmainwindow.h>
+#include <qlineedit.h>
 
-class LookupForm;
-class WordEngine;
-
-class MainWindow : public QMainWindow
+class LookupForm : public QFrame
 {
   Q_OBJECT
   public:
-    MainWindow (QWidget* parent = 0, const char* name = 0,
-                WFlags f = WType_TopLevel);
-
-  public slots:
-    void import();
+    LookupForm (QWidget* parent = 0, const char* name = 0,
+                WFlags f = 0);
 
   private:
-    WordEngine* engine;
-    LookupForm* lookupForm;
+    QLineEdit* wordLine;
 };
 
-#endif // MAIN_WINDOW_H
+#endif // LOOKUP_FORM_H

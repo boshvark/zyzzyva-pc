@@ -11,6 +11,7 @@
 //---------------------------------------------------------------------------
 
 #include "MainWindow.h"
+#include "LookupForm.h"
 #include "WordEngine.h"
 #include <qapplication.h>
 #include <qdir.h>
@@ -52,24 +53,27 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 
     QVBoxLayout* mainVlay = new QVBoxLayout (frame, 0, 0, "mainVlay");
     Q_CHECK_PTR (mainVlay);
-    QHBoxLayout* modeHlay = new QHBoxLayout (0, "mainHlay");
-    Q_CHECK_PTR (modeHlay);
-    mainVlay->addLayout (modeHlay);
-    QLabel* modeLabel = new QLabel ("Mode:", frame, "modeLabel");
-    Q_CHECK_PTR (modeLabel);
-    modeHlay->addWidget (modeLabel);
-    modeCombo = new QComboBox (frame, "modeCombo");
-    Q_CHECK_PTR (modeCombo);
-    modeCombo->insertItem (ANAGRAM_MODE);
-    modeCombo->insertItem (RECALL_LIST_MODE);
-    modeHlay->addWidget (modeCombo);
+//    QHBoxLayout* modeHlay = new QHBoxLayout (0, "mainHlay");
+//    Q_CHECK_PTR (modeHlay);
+//    mainVlay->addLayout (modeHlay);
+//    QLabel* modeLabel = new QLabel ("Mode:", frame, "modeLabel");
+//    Q_CHECK_PTR (modeLabel);
+//    modeHlay->addWidget (modeLabel);
+//    modeCombo = new QComboBox (frame, "modeCombo");
+//    Q_CHECK_PTR (modeCombo);
+//    modeCombo->insertItem (ANAGRAM_MODE);
+//    modeCombo->insertItem (RECALL_LIST_MODE);
+//    modeHlay->addWidget (modeCombo);
 
-    QHBoxLayout* fileHlay = new QHBoxLayout (0, "fileHlay");
-    Q_CHECK_PTR (fileHlay);
-    mainVlay->addLayout (fileHlay);
-    QLabel* fileLabel = new QLabel ("Word List:", frame, "fileLabel");
-    Q_CHECK_PTR (fileLabel);
-    fileHlay->addWidget (fileLabel);
+//    QHBoxLayout* fileHlay = new QHBoxLayout (0, "fileHlay");
+//    Q_CHECK_PTR (fileHlay);
+//    mainVlay->addLayout (fileHlay);
+//    QLabel* fileLabel = new QLabel ("Word List:", frame, "fileLabel");
+//    Q_CHECK_PTR (fileLabel);
+//    fileHlay->addWidget (fileLabel);
+
+    lookupForm = new LookupForm (frame, "lookupForm");
+    mainVlay->addWidget (lookupForm);
 }
 
 //---------------------------------------------------------------------------
