@@ -64,7 +64,7 @@ QuizEngine::newQuiz (const SearchSpec& spec, bool alphagrams, bool randomOrder)
             QString tmp;
             int num = quizQuestions.size();
             for (int i = 0; i < num ; ++i) {
-                int rnum = std::rand() % num;
+                int rnum = i + (std::rand() % (num - i));
                 if (rnum == i)
                     continue;
                 tmp = quizQuestions[rnum];
