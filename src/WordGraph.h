@@ -54,6 +54,20 @@ class WordGraph
         Node* child;
     };
 
+    class TraversalState {
+      public:
+        TraversalState (Node* n, int x, const QString& w,
+                        const QString& u = QString::null,
+                        const QString& i = QString::null)
+            : node (n), patternIndex (x), word (w), unmatched (u), include (i)
+            { }
+        Node* node;
+        int patternIndex;
+        QString word;
+        QString unmatched;
+        QString include;
+    };
+
     Node* top;
     int numNodes;
 };
