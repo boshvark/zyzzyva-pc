@@ -180,7 +180,10 @@ WordGraph::search (const SearchSpec& spec) const
                                                                 word)));
 
                 // Traverse next nodes, looking for matches
-                while (node) {
+                for (; node; node = node->next) {
+                    if (spec.excludeLetters.contains (node->letter))
+                        continue;
+
                     bool match = false;
                     word = origWord;
 
@@ -210,8 +213,6 @@ WordGraph::search (const SearchSpec& spec) const
                         ((pIndex == pLen - 2) &&
                          (QChar (pattern.at (pIndex + 1)) == "*"))))
                         wordSet.insert (word);
-
-                    node = node->next;
                 }
             }
 
@@ -254,8 +255,12 @@ WordGraph::search (const SearchSpec& spec) const
                 QString origWord = word;
                 QString origUnmatched = unmatched;
 
-                while (node) {
+                for (; node; node = node->next) {
                     c = node->letter;
+
+                    if (spec.excludeLetters.contains (c))
+                        continue;
+
                     unmatched = origUnmatched;
                     int index = unmatched.find (c);
                     if (index < 0)
@@ -276,8 +281,6 @@ WordGraph::search (const SearchSpec& spec) const
                             (int (word.length()) >= spec.minLength))
                             wordList << word;
                     }
-
-                    node = node->next;
                 }
             }
 
