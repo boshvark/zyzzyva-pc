@@ -44,6 +44,7 @@ class QuizForm : public QFrame
     void setPrecision (int correct, int total);
     void setTotalRecall (int correct, int total);
     void setTotalPrecision (int correct, int total);
+    QString percentString (int numerator, int denominator) const;
 
   private:
     QuizEngine*   engine;

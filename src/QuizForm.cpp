@@ -327,11 +327,8 @@ QuizForm::setQuestionNum (int num, int total)
 void
 QuizForm::setTotalRecall (int correct, int total)
 {
-    double pct = total ? (correct * 100.0) / total : 0;
-    totalRecallLabel->setText ("Total Recall: " + QString::number (correct)
-                               + " / " + QString::number (total)
-                               + " (" + QString::number (pct, 'f', 1)
-                               + "%)");
+    totalRecallLabel->setText ("Total Recall: " +
+                               percentString (correct, total));
 }
 
 //---------------------------------------------------------------------------
@@ -346,12 +343,8 @@ QuizForm::setTotalRecall (int correct, int total)
 void
 QuizForm::setTotalPrecision (int correct, int total)
 {
-    double pct = total ? (correct * 100.0) / total : 0;
     totalPrecisionLabel->setText ("Total Precision: "
-                                  + QString::number (correct)
-                                  + " / " + QString::number (total)
-                                  + " (" + QString::number (pct, 'f', 1)
-                                  + "%)");
+                                  + percentString (correct, total));
 }
 
 //---------------------------------------------------------------------------
@@ -366,11 +359,7 @@ QuizForm::setTotalPrecision (int correct, int total)
 void
 QuizForm::setRecall (int correct, int total)
 {
-    double pct = total ? (correct * 100.0) / total : 0;
-    recallLabel->setText ("Recall: " + QString::number (correct)
-                           + " / " + QString::number (total)
-                           + " (" + QString::number (pct, 'f', 1)
-                           + "%)");
+    recallLabel->setText ("Recall: " + percentString (correct, total));
 }
 
 //---------------------------------------------------------------------------
@@ -385,9 +374,21 @@ QuizForm::setRecall (int correct, int total)
 void
 QuizForm::setPrecision (int correct, int total)
 {
-    double pct = total ? (correct * 100.0) / total : 0;
-    precisionLabel->setText ("Precision: " + QString::number (correct)
-                             + " / " + QString::number (total)
-                             + " (" + QString::number (pct, 'f', 1)
-                             + "%)");
+    precisionLabel->setText ("Precision: " + percentString (correct, total));
+}
+
+//---------------------------------------------------------------------------
+// percentString
+//
+//! Create a string to represent a percentage to be displayed.
+//
+//! @param numerator the numerator
+//! @param denominator the denominator
+//---------------------------------------------------------------------------
+QString
+QuizForm::percentString (int numerator, int denominator) const
+{
+    double pct = denominator ? (numerator * 100.0) / denominator : 0;
+    return QString::number (numerator) + " / " + QString::number (denominator)
+        + " (" + QString::number (pct, 'f', 1) + "%)";
 }
