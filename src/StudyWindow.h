@@ -13,7 +13,7 @@ class StudyWindow : public QMainWindow
                  WFlags f = WType_TopLevel);
 
   public slots:
-    void FileButtonClicked();
+    void Open();
 
   private:
     QComboBox* modeCombo;
