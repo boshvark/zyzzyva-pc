@@ -31,6 +31,7 @@
 #include <qtabwidget.h>
 
 class AboutDialog;
+class HelpDialog;
 class JudgeForm;
 class QuizEngine;
 class QuizForm;
@@ -70,6 +71,7 @@ class MainWindow : public QMainWindow
     QSettings       settings;
     SettingsDialog* settingsDialog;
     AboutDialog*    aboutDialog;
+    HelpDialog*     helpDialog;
 };
 
 #endif // MAIN_WINDOW_H

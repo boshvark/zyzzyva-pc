@@ -6,7 +6,7 @@ CONFIG += qt warn_on release
 HEADERS += \
     src/AboutDialog.h \
     src/AnalyzeQuizDialog.h \
-    src/HelpForm.h \
+    src/HelpDialog.h \
     src/JudgeForm.h \
     src/MainWindow.h \
     src/NewQuizDialog.h \
@@ -24,7 +24,7 @@ HEADERS += \
 SOURCES += \
     src/AboutDialog.cpp \
     src/AnalyzeQuizDialog.cpp \
-    src/HelpForm.cpp \
+    src/HelpDialog.cpp \
     src/JudgeForm.cpp \
     src/main.cpp \
     src/MainWindow.cpp \

@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// HelpForm.cpp
+// HelpDialog.cpp
 //
-// A help browser form.
+// A help browser dialog.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -20,10 +20,10 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include "HelpForm.h"
+#include "HelpDialog.h"
 
 //---------------------------------------------------------------------------
-// HelpForm
+// HelpDialog
 //
 //! Constructor.
 //
@@ -31,7 +31,7 @@
 //! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-HelpForm::HelpForm (const QString& path, QObject* parent, const char* name)
+HelpDialog::HelpDialog (const QString& path, QObject* parent, const char* name)
     : QAssistantClient (path, parent, name)
 {
 }

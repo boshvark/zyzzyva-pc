@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// HelpForm.h
+// HelpDialog.h
 //
-// A help browser form.
+// A help browser dialog.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,16 +22,16 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef HELP_FORM_H
-#define HELP_FORM_H
+#ifndef HELP_DIALOG_H
+#define HELP_DIALOG_H
 
 #include <qassistantclient.h>
 
-class HelpForm : public QAssistantClient
+class HelpDialog : public QAssistantClient
 {
   Q_OBJECT
   public:
-    HelpForm (const QString& path, QObject* parent = 0, const char* name = 0);
+    HelpDialog (const QString& path, QObject* parent = 0, const char* name = 0);
 };
 
-#endif // HELP_FORM_H
+#endif // HELP_DIALOG_H
