@@ -128,7 +128,6 @@ QuizForm::responseEntered()
 
     if (status == QuizEngine::Correct) {
         responseList->insertItem (response);
-        responseList->ensureCurrentVisible();
         statusStr = "<font color=\"blue\">Correct</font>";
     }
     else if (status == QuizEngine::Incorrect)
