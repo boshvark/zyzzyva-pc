@@ -10,6 +10,9 @@
 //
 //---------------------------------------------------------------------------
 
+#ifndef DAWG_H
+#define DAWG_H
+
 #include <string>
 
 class DAWG
@@ -36,3 +39,5 @@ class DAWG
 
     Node* top;
 };
+
+#endif // DAWG_H
