@@ -29,8 +29,8 @@
 #include "QuizEngine.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
-#include "ZListView.h"
-#include "ZListViewItem.h"
+#include "WordListView.h"
+#include "WordListViewItem.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <qcolor.h>
@@ -95,7 +95,7 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
 
     quizBoxHlay->addStretch (1);
 
-    responseList = new ZListView (wordEngine, this, "responseList");
+    responseList = new WordListView (wordEngine, this, "responseList");
     Q_CHECK_PTR (responseList);
     responseList->setResizeMode (QListView::LastColumn);
     responseList->addColumn ("Responses");
@@ -182,7 +182,8 @@ QuizForm::responseEntered()
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
-        ZListViewItem* item = new ZListViewItem (responseList, response);
+        WordListViewItem* item = new WordListViewItem (responseList,
+                                                       response);
         responseList->setSelected (item, true);
         responseList->ensureItemVisible (item);
         item->setTextColor (Qt::blue);
@@ -258,7 +259,7 @@ QuizForm::checkResponseClicked()
     QStringList unanswered = quizEngine->getMissed();
     QStringList::iterator it;
     for (it = unanswered.begin(); it != unanswered.end(); ++it) {
-        ZListViewItem* item = new ZListViewItem (responseList, *it);
+        WordListViewItem* item = new WordListViewItem (responseList, *it);
         item->setTextColor (Qt::magenta);
         analyzeDialog->addMissed (*it);
     }

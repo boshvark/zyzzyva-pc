@@ -34,7 +34,7 @@
 class QuizEngine;
 class SearchSpec;
 class WordEngine;
-class ZListView;
+class WordListView;
 
 class AnalyzeQuizDialog : public QDialog
 {
@@ -64,8 +64,8 @@ class AnalyzeQuizDialog : public QDialog
     QLabel*       questionLabel;
     QLabel*       recallLabel;
     QLabel*       precisionLabel;
-    ZListView*    missedList;
-    ZListView*    incorrectList;
+    WordListView* missedList;
+    WordListView* incorrectList;
     QPushButton*  closeButton;
 };
 

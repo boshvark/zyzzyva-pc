@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// ZListViewItem.h
+// WordListViewItem.h
 //
 // A listview item with special capabilities.
 //
@@ -22,60 +22,72 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZLISTVIEWITEM_H
-#define ZLISTVIEWITEM_H
+#ifndef WORD_LIST_VIEW_ITEM_H
+#define WORD_LIST_VIEW_ITEM_H
 
 #include <qlistview.h>
 #include <qpainter.h>
 
-class ZListViewItem : public QListViewItem
+class WordListViewItem : public QListViewItem
 {
   public:
-    ZListViewItem (QListView* parent)
+    WordListViewItem (QListView* parent)
         : QListViewItem (parent) { init(); }
 
-    ZListViewItem (QListViewItem* parent)
+    WordListViewItem (QListViewItem* parent)
         : QListViewItem (parent) { init(); }
 
-    ZListViewItem (QListView* parent, ZListViewItem* after)
+    WordListViewItem (QListView* parent, WordListViewItem* after)
         : QListViewItem (parent, after) { init(); }
 
-    ZListViewItem (QListViewItem* parent, ZListViewItem* after)
+    WordListViewItem (QListViewItem* parent, WordListViewItem* after)
         : QListViewItem (parent, after) { init(); }
 
-    ZListViewItem (QListView* parent, QString label1,
-                   QString label2=QString::null, QString label3=QString::null,
-                   QString label4=QString::null, QString label5=QString::null,
-                   QString label6=QString::null, QString label7=QString::null,
-                   QString label8=QString::null)
+    WordListViewItem (QListView* parent, QString label1,
+                      QString label2 = QString::null,
+                      QString label3 = QString::null,
+                      QString label4 = QString::null,
+                      QString label5 = QString::null,
+                      QString label6 = QString::null,
+                      QString label7 = QString::null,
+                      QString label8 = QString::null)
         : QListViewItem (parent, label1, label2, label3, label4, label5,
                          label6, label7, label8) { init(); }
 
-    ZListViewItem (QListViewItem* parent, QString label1,
-                   QString label2=QString::null, QString label3=QString::null,
-                   QString label4=QString::null, QString label5=QString::null,
-                   QString label6=QString::null, QString label7=QString::null,
-                   QString label8=QString::null)
+    WordListViewItem (QListViewItem* parent, QString label1,
+                      QString label2 = QString::null,
+                      QString label3 = QString::null,
+                      QString label4 = QString::null,
+                      QString label5 = QString::null,
+                      QString label6 = QString::null,
+                      QString label7 = QString::null,
+                      QString label8 = QString::null)
         : QListViewItem (parent, label1, label2, label3, label4, label5,
                          label6, label7, label8) { init(); }
 
-    ZListViewItem (QListView* parent, ZListViewItem* after,
-                   QString label1, QString label2=QString::null,
-                   QString label3=QString::null, QString label4=QString::null,
-                   QString label5=QString::null, QString label6=QString::null,
-                   QString label7=QString::null, QString label8=QString::null)
+    WordListViewItem (QListView* parent, WordListViewItem* after,
+                      QString label1, QString label2 = QString::null,
+                      QString label3 = QString::null,
+                      QString label4 = QString::null,
+                      QString label5 = QString::null,
+                      QString label6 = QString::null,
+                      QString label7 = QString::null,
+                      QString label8 = QString::null)
         : QListViewItem (parent, after, label1, label2, label3, label4, label5,
                          label6, label7, label8) { init(); }
 
-    ZListViewItem (QListViewItem* parent, ZListViewItem* after,
-                   QString label1, QString label2 = QString::null,
-                   QString label3=QString::null, QString label4=QString::null,
-                   QString label5=QString::null, QString label6=QString::null,
-                   QString label7=QString::null, QString label8=QString::null)
+    WordListViewItem (QListViewItem* parent, WordListViewItem* after,
+                      QString label1, QString label2 = QString::null,
+                      QString label3 = QString::null,
+                      QString label4 = QString::null,
+                      QString label5 = QString::null,
+                      QString label6 = QString::null,
+                      QString label7 = QString::null,
+                      QString label8 = QString::null)
         : QListViewItem (parent, after, label1, label2, label3, label4, label5,
                          label6, label7, label8) { init(); }
 
-    ~ZListViewItem() { }
+    ~WordListViewItem() { }
 
     static void setSortByLength (bool b) { sortByLength = b; }
     static bool getSortByLength() { return sortByLength; }
@@ -98,5 +110,5 @@ class ZListViewItem : public QListViewItem
     QPalette palette;
 };
 
-#endif // ZLISTVIEWITEM_H
+#endif // WORD_LIST_VIEW_ITEM_H
 

@@ -26,8 +26,8 @@
 #include "SearchSpecForm.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
-#include "ZListView.h"
-#include "ZListViewItem.h"
+#include "WordListView.h"
+#include "WordListViewItem.h"
 #include "Defs.h"
 #include <qapplication.h>
 #include <qbuttongroup.h>
@@ -83,7 +83,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     connect (searchButton, SIGNAL (clicked()), SLOT (search()));
     buttonHlay->addWidget (searchButton);
 
-    resultList = new ZListView (engine, this, "resultList");
+    resultList = new WordListView (engine, this, "resultList");
     Q_CHECK_PTR (resultList);
     resultList->setResizeMode (QListView::LastColumn);
     resultList->addColumn ("Search Results");
@@ -111,7 +111,7 @@ SearchForm::search()
     int numWords = 0;
     QStringList::iterator it;
     for (it = wordList.begin(); it != wordList.end(); ++it, ++numWords)
-        new ZListViewItem (resultList, *it);
+        new WordListViewItem (resultList, *it);
 
     resultList->sort();
     updateResultTotal (numWords);

@@ -29,10 +29,10 @@ SET (SRCS
     src/SettingsDialog.cpp
     src/WordEngine.cpp
     src/WordGraph.cpp
+    src/WordListView.cpp
+    src/WordListViewItem.cpp
     src/WordPopupMenu.cpp
     src/WordValidator.cpp
-    src/ZListView.cpp
-    src/ZListViewItem.cpp
     )
 
 # Header files that must be run through moc
@@ -49,9 +49,9 @@ SET (MOCS
     src/SearchForm.h
     src/SearchSpecForm.h
     src/SettingsDialog.h
+    src/WordListView.h
     src/WordPopupMenu.h
     src/WordValidator.h
-    src/ZListView.h
     )
 
 # Get Zyzzyva version from VERSION

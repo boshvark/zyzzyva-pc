@@ -32,7 +32,7 @@
 #include "SearchForm.h"
 #include "SettingsDialog.h"
 #include "WordEngine.h"
-#include "ZListViewItem.h"
+#include "WordListViewItem.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <qapplication.h>
@@ -243,7 +243,7 @@ MainWindow::readSettings (bool useGeometry)
         qWarning ("Cannot set font: " + fontStr);
 
     quizForm->setTileTheme (settingsDialog->getTileTheme());
-    ZListViewItem::setSortByLength (settingsDialog->getSortByLength());
+    WordListViewItem::setSortByLength (settingsDialog->getSortByLength());
 }
 
 //---------------------------------------------------------------------------

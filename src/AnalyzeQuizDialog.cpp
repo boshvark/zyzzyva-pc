@@ -24,8 +24,8 @@
 #include "Defs.h"
 #include "QuizEngine.h"
 #include "WordEngine.h"
-#include "ZListView.h"
-#include "ZListViewItem.h"
+#include "WordListView.h"
+#include "WordListViewItem.h"
 #include <qlayout.h>
 
 const QString DIALOG_CAPTION = "Analyze Quiz";
@@ -75,7 +75,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR (missedVlay);
     mainHlay->addLayout (missedVlay);
 
-    missedList = new ZListView (wordEngine, this, "missedList");
+    missedList = new WordListView (wordEngine, this, "missedList");
     Q_CHECK_PTR (missedList);
     missedList->setResizeMode (QListView::LastColumn);
     missedList->addColumn ("Missed");
@@ -85,7 +85,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR (incorrectVlay);
     mainHlay->addLayout (incorrectVlay);
 
-    incorrectList = new ZListView (wordEngine, this, "incorrectList");
+    incorrectList = new WordListView (wordEngine, this, "incorrectList");
     Q_CHECK_PTR (incorrectList);
     incorrectList->setResizeMode (QListView::LastColumn);
     incorrectList->addColumn ("Incorrect");
@@ -146,7 +146,7 @@ AnalyzeQuizDialog::updateStats()
 void
 AnalyzeQuizDialog::addMissed (const QString& word)
 {
-    ZListViewItem* item = new ZListViewItem (missedList, word);
+    WordListViewItem* item = new WordListViewItem (missedList, word);
     item->setTextColor (Qt::magenta);
 }
 
@@ -160,7 +160,7 @@ AnalyzeQuizDialog::addMissed (const QString& word)
 void
 AnalyzeQuizDialog::addIncorrect (const QString& word)
 {
-    ZListViewItem* item = new ZListViewItem (incorrectList, word);
+    WordListViewItem* item = new WordListViewItem (incorrectList, word);
     item->setTextColor (Qt::red);
 }
 

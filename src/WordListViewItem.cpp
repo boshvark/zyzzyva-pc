@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// ZListViewItem.cpp
+// WordListViewItem.cpp
 //
 // A listview item with special capabilities.
 //
@@ -22,9 +22,9 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include "ZListViewItem.h"
+#include "WordListViewItem.h"
 
-bool ZListViewItem::sortByLength = false;
+bool WordListViewItem::sortByLength = false;
 
 //---------------------------------------------------------------------------
 //  setTextColor
@@ -34,7 +34,7 @@ bool ZListViewItem::sortByLength = false;
 //! @param color the text color
 //---------------------------------------------------------------------------
 void
-ZListViewItem::setTextColor (const QColor& color)
+WordListViewItem::setTextColor (const QColor& color)
 {
     QColorGroup active = palette.active();
     QColorGroup inactive = palette.inactive();
@@ -56,7 +56,7 @@ ZListViewItem::setTextColor (const QColor& color)
 //! @param color the text color
 //---------------------------------------------------------------------------
 void
-ZListViewItem::setFont (const QFont& f)
+WordListViewItem::setFont (const QFont& f)
 {
     font = f;
 }
@@ -68,7 +68,7 @@ ZListViewItem::setFont (const QFont& f)
 //! See the Qt documentation for details of this method.
 //---------------------------------------------------------------------------
 int
-ZListViewItem::width (const QFontMetrics&, const QListView* lview, int c) const
+WordListViewItem::width (const QFontMetrics&, const QListView* lview, int c) const
 {
     QFontMetrics metrics (font);
     return QListViewItem::width (metrics, lview, c);
@@ -82,7 +82,7 @@ ZListViewItem::width (const QFontMetrics&, const QListView* lview, int c) const
 //! method.
 //---------------------------------------------------------------------------
 void
-ZListViewItem::paintCell (QPainter* p, const QColorGroup&, int column,
+WordListViewItem::paintCell (QPainter* p, const QColorGroup&, int column,
                           int width, int align)
 {
     p->setFont (font);
@@ -96,7 +96,7 @@ ZListViewItem::paintCell (QPainter* p, const QColorGroup&, int column,
 //! See the Qt documentation for details of this method.
 //---------------------------------------------------------------------------
 void
-ZListViewItem::paintFocus (QPainter* p, const QColorGroup&, const QRect& r)
+WordListViewItem::paintFocus (QPainter* p, const QColorGroup&, const QRect& r)
 {
     p->setFont (font);
     QListViewItem::paintFocus (p, getColorGroup(), r);
@@ -108,7 +108,7 @@ ZListViewItem::paintFocus (QPainter* p, const QColorGroup&, const QRect& r)
 //! Initialize the listview item.  Called from all constructors.
 //---------------------------------------------------------------------------
 void
-ZListViewItem::init()
+WordListViewItem::init()
 {
     QListView* lview = listView();
     font = lview->font();
@@ -121,7 +121,7 @@ ZListViewItem::init()
 //! Get the current color group to be used in painting the listview item.
 //---------------------------------------------------------------------------
 const QColorGroup&
-ZListViewItem::getColorGroup()
+WordListViewItem::getColorGroup()
 {
     QListView* lview = listView();
     if (!lview->isEnabled())
@@ -145,7 +145,7 @@ ZListViewItem::getColorGroup()
 //! this item is > I.
 //---------------------------------------------------------------------------
 int
-ZListViewItem::compare (QListViewItem* i, int col, bool ascending) const
+WordListViewItem::compare (QListViewItem* i, int col, bool ascending) const
 {
     if (col != 0)
         return 0;

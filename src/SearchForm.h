@@ -33,7 +33,7 @@
 class QListViewItem;
 class SearchSpecForm;
 class WordEngine;
-class ZListView;
+class WordListView;
 
 class SearchForm : public QFrame
 {
@@ -51,7 +51,7 @@ class SearchForm : public QFrame
     WordEngine*     engine;
     SearchSpecForm* specForm;
     QCheckBox*      lowerCaseCbox;
-    ZListView*      resultList;
+    WordListView*   resultList;
     QPushButton*    resetButton;
     QPushButton*    searchButton;
 };

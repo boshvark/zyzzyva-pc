@@ -39,7 +39,7 @@ class AnalyzeQuizDialog;
 class NewQuizDialog;
 class QuizEngine;
 class WordEngine;
-class ZListView;
+class WordListView;
 
 class QuizForm : public QFrame
 {
@@ -78,7 +78,7 @@ class QuizForm : public QFrame
     QCanvasView*  questionCanvasView;
     QCanvas*      questionCanvas;
     QLineEdit*    inputLine;
-    ZListView*    responseList;
+    WordListView* responseList;
     QLabel*       responseStatusLabel;
     QLabel*       questionStatusLabel;
     QPushButton*  nextQuestionButton;

@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// ZListView.h
+// WordListView.h
 //
 // A customized list view.
 //
@@ -22,20 +22,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZLISTVIEW_H
-#define ZLISTVIEW_H
+#ifndef WORD_LIST_VIEW_H
+#define WORD_LIST_VIEW_H
 
 #include <qlistview.h>
 
 class WordEngine;
 
-class ZListView : public QListView
+class WordListView : public QListView
 {
   Q_OBJECT
   public:
-    ZListView (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-               WFlags f = 0);
-    ~ZListView();
+    WordListView (WordEngine* e, QWidget* parent = 0, const char* name = 0,
+                  WFlags f = 0);
+    ~WordListView();
 
     virtual void setFont (const QFont& font);
 
@@ -48,5 +48,5 @@ class ZListView : public QListView
     WordEngine* wordEngine;
 };
 
-#endif // ZLISTVIEW_H
+#endif // WORD_LIST_VIEW_H
 

@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// ZListView.cpp
+// WordListView.cpp
 //
 // A customized list view.
 //
@@ -22,14 +22,14 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include "ZListView.h"
-#include "ZListViewItem.h"
+#include "WordListView.h"
+#include "WordListViewItem.h"
 #include "DefinitionDialog.h"
 #include "WordEngine.h"
 #include "WordPopupMenu.h"
 
 //---------------------------------------------------------------------------
-// ZListView
+// WordListView
 //
 //! Constructor.
 //
@@ -37,7 +37,7 @@
 //! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-ZListView::ZListView (WordEngine* e, QWidget* parent, const char* name, WFlags
+WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WFlags
                       f)
     : QListView (parent, name, f), wordEngine (e)
 {
@@ -56,11 +56,11 @@ ZListView::ZListView (WordEngine* e, QWidget* parent, const char* name, WFlags
 }
 
 //---------------------------------------------------------------------------
-// ~ZListView
+// ~WordListView
 //
 //! Destructor.
 //---------------------------------------------------------------------------
-ZListView::~ZListView()
+WordListView::~WordListView()
 {
 }
 
@@ -70,11 +70,11 @@ ZListView::~ZListView()
 //! Set the font of the listview and all listview items.
 //---------------------------------------------------------------------------
 void
-ZListView::setFont (const QFont& font)
+WordListView::setFont (const QFont& font)
 {
     QListView::setFont (font);
-    ZListViewItem* item = static_cast<ZListViewItem*> (firstChild());
-    for (; item; item = static_cast<ZListViewItem*> (item->nextSibling()))
+    WordListViewItem* item = static_cast<WordListViewItem*> (firstChild());
+    for (; item; item = static_cast<WordListViewItem*> (item->nextSibling()))
         item->setFont (font);
 }
 
@@ -87,7 +87,7 @@ ZListView::setFont (const QFont& font)
 //! @param item the selected listview item
 //---------------------------------------------------------------------------
 void
-ZListView::doReturnPressed (QListViewItem* item)
+WordListView::doReturnPressed (QListViewItem* item)
 {
     if (!item)
         return;
@@ -103,7 +103,7 @@ ZListView::doReturnPressed (QListViewItem* item)
 //! @param point the point at which the menu was requested
 //---------------------------------------------------------------------------
 void
-ZListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
+WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
 {
     if (!item)
         return;
@@ -124,7 +124,7 @@ ZListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
 //! @param word the word whose definition to display
 //---------------------------------------------------------------------------
 void
-ZListView::displayDefinition (const QString& word)
+WordListView::displayDefinition (const QString& word)
 {
     if (!wordEngine)
         return;
