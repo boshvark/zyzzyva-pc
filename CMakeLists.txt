@@ -42,7 +42,6 @@ SET (MOCS
     src/DefineForm.h
     src/DefinitionDialog.h
     src/HelpDialog.h
-    src/ImageItem.h
     src/JudgeForm.h
     src/MainWindow.h
     src/NewQuizDialog.h
