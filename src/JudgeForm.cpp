@@ -46,25 +46,21 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
                                              "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
-    QHBoxLayout* lookupHlay = new QHBoxLayout (SPACING, "lookupHlay");
-    Q_CHECK_PTR (lookupHlay);
-    mainVlay->addLayout (lookupHlay);
-
-    QLabel* label = new QLabel ("Word : ", this, "label");
-    Q_CHECK_PTR (label);
-    lookupHlay->addWidget (label);
-
-    wordLine = new QLineEdit (this, "wordLine");
-    Q_CHECK_PTR (wordLine);
-    wordLine->setValidator (new WordValidator (wordLine));
-    connect (wordLine, SIGNAL (textChanged (const QString&)),
-             SLOT (wordChanged (const QString&)));
-    connect (wordLine, SIGNAL (returnPressed()), SLOT (judgeWord()));
-    lookupHlay->addWidget (wordLine);
+    wordArea = new QTextEdit (this, "wordArea");
+    Q_CHECK_PTR (wordArea);
+    wordArea->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Fixed);
+    connect (wordArea, SIGNAL (textChanged()), SLOT (textChanged()));
+    mainVlay->addWidget (wordArea);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
+
+    clearButton = new QPushButton ("&Clear", this, "clearButton");
+    Q_CHECK_PTR (clearButton);
+    clearButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (clearButton, SIGNAL (clicked()), SLOT (clear()));
+    buttonHlay->addWidget (clearButton);
 
     judgeButton = new QPushButton ("&Judge", this, "judgeButton");
     Q_CHECK_PTR (judgeButton);
@@ -84,19 +80,43 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (resultLabel);
 
     judgeButton->setEnabled (false);
+    clearButton->setEnabled (false);
     resultBox->hide();
 }
 
 //---------------------------------------------------------------------------
-// wordChanged
+// textChanged
 //
-//! Called when the contents of the input line change.  Enables or disables
-//! the buttons appropriately.
+//! Called when the contents of the input area change.  Changes the input area
+//! contents to upper case, and enables or disables the buttons appropriately.
 //---------------------------------------------------------------------------
 void
-JudgeForm::wordChanged (const QString& word)
+JudgeForm::textChanged()
 {
-    judgeButton->setEnabled (!word.isEmpty());
+    int para, index;
+    wordArea->getCursorPosition (&para, &index);
+    QString text = wordArea->text();
+    wordArea->blockSignals (true);
+    wordArea->setText (text.upper());
+    wordArea->setCursorPosition (para, index);
+    wordArea->blockSignals (false);
+    bool empty = text.stripWhiteSpace().isEmpty();
+    judgeButton->setEnabled (!empty);
+    clearButton->setEnabled (!empty || resultBox->isShown());
+}
+
+//---------------------------------------------------------------------------
+// clear
+//
+//! Clear the input area and the result area.
+//---------------------------------------------------------------------------
+void
+JudgeForm::clear()
+{
+    wordArea->clear();
+    resultBox->hide();
+    judgeButton->setEnabled (false);
+    clearButton->setEnabled (false);
 }
 
 //---------------------------------------------------------------------------
@@ -108,14 +128,26 @@ JudgeForm::wordChanged (const QString& word)
 void
 JudgeForm::judgeWord()
 {
-    QString word = wordLine->text();
-    if (word.isEmpty()) return;
-    bool acceptable = engine->isAcceptable (word);
-    QString resultStr = acceptable ?
-                        QString ("<font color=\"blue\">Acceptable</font>") :
-                        QString ("<font color=\"red\">Unacceptable</font>");
+    bool acceptable = true;
+
+    QString text = wordArea->text().simplifyWhiteSpace();
+    QStringList words = QStringList::split (QChar(' '), text);
+    QStringList::iterator it;
+    QString wordStr;
+    for (it = words.begin(); it != words.end(); ++it) {
+        if (acceptable && !engine->isAcceptable (*it))
+            acceptable = false;
+        if (!wordStr.isEmpty())
+            wordStr += ", ";
+        wordStr += *it;
+    }
+
+    QString resultStr = (acceptable
+                 ? QString ("<font color=\"blue\">Acceptable</font>")
+                 : QString ("<font color=\"red\">Unacceptable</font>"))
+        + "<br>" + wordStr;
 
     resultLabel->setText (resultStr);
-    resultBox->setTitle (word);
+    resultBox->setTitle ("The play is");
     resultBox->show();
 }

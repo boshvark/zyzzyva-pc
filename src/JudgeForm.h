@@ -26,7 +26,7 @@
 #define JUDGE_FORM_H
 
 #include <qlabel.h>
-#include <qlineedit.h>
+#include <qtextedit.h>
 #include <qpushbutton.h>
 #include <qvgroupbox.h>
 
@@ -40,12 +40,14 @@ class JudgeForm : public QFrame
                WFlags f = 0);
 
   public slots:
-    void wordChanged (const QString& word);
+    void textChanged();
+    void clear();
     void judgeWord();
 
   private:
     WordEngine*  engine;
-    QLineEdit*   wordLine;
+    QTextEdit*   wordArea;
+    QPushButton* clearButton;
     QPushButton* judgeButton;
     QVGroupBox*  resultBox;
     QLabel*      resultLabel;
