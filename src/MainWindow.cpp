@@ -277,7 +277,7 @@ MainWindow::import (const QString& file)
 {
     QString err;
     QApplication::setOverrideCursor (Qt::waitCursor);
-    int imported = wordEngine->importFile (file, &err);
+    int imported = wordEngine->importFile (file, true, &err);
     QApplication::restoreOverrideCursor();
 
     if (imported < 0)
