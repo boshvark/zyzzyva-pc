@@ -9,6 +9,9 @@
   <DCF ref="index.html" title="Zyzzyva">
     <section ref="load.html" title="Loading a Word List">
     </section>
+    <section ref="preferences.html" title="Preferences">
+      <section ref="preferences.html#auto-import" title="Auto Import" />
+    </section>
     <section ref="judge.html" title="Judging Words">
     </section>
   </DCF>
