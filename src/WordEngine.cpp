@@ -41,10 +41,13 @@ const int MAX_INPUT_LINE_LEN = 640;
 //! containing one word per line.
 //
 //! @param filename the name of the file to import
+//! @param loadDefinitions whether to load word definitions
+//! @param errString returns the error string in case of error
 //! @return the number of words imported
 //---------------------------------------------------------------------------
 int
-WordEngine::importFile (const QString& filename, QString* errString)
+WordEngine::importFile (const QString& filename, bool loadDefinitions,
+                        QString* errString)
 {
     QFile file (filename);
     if (!file.open (IO_ReadOnly)) {
@@ -58,7 +61,10 @@ WordEngine::importFile (const QString& filename, QString* errString)
     QString word, line;
     while (file.readLine (line, MAX_INPUT_LINE_LEN) > 0) {
         line = line.simplifyWhiteSpace();
-        graph.addWord (line.section (' ', 0, 0));
+        QString word = line.section (' ', 0, 0);
+        graph.addWord (word);
+        if (loadDefinitions)
+            definitions.insert (std::make_pair (word, line.section (' ', 1)));
         ++imported;
     }
 

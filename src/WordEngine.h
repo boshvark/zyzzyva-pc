@@ -28,6 +28,7 @@
 #include "WordGraph.h"
 #include <qstring.h>
 #include <qstringlist.h>
+#include <map>
 
 class WordEngine
 {
@@ -35,7 +36,8 @@ class WordEngine
     WordEngine() { }
     ~WordEngine() { }
 
-    int importFile (const QString& filename, QString* errString = 0);
+    int importFile (const QString& filename, bool loadDefinitions = false,
+                    QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;
     QStringList alphagrams (const QStringList& list) const;
@@ -43,6 +45,7 @@ class WordEngine
 
   private:
     WordGraph graph;
+    std::map<QString,QString> definitions;
 };
 
 #endif // WORD_ENGINE_H
