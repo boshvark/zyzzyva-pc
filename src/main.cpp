@@ -14,6 +14,7 @@ int main (int argc, char** argv)
     graph.addWord ("folly");
     graph.addWord ("codename");
     graph.addWord ("fool");
+    graph.addWord ("foody");
 
     graph.print();
 

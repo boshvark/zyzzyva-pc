@@ -33,9 +33,11 @@ DAWG::addWord (const string& w)
 
     string::const_iterator c;
     for (c = w.begin(); c != w.end(); ++c) {
+        //cerr << "Char: |" << *c << "|" << endl;
 
         // Empty node, so create a new node and link from its parent
         if (!node) {
+            //cerr << "Adding child node |" << *c << "|" << endl;
             node = new Node (*c);
             (parentNode ? parentNode->child : top) = node;
         }
@@ -46,6 +48,7 @@ DAWG::addWord (const string& w)
                 if (node->next)
                     node = node->next;
                 else {
+                    //cerr << "Adding next node |" << *c << "|" << endl;
                     node->next = new Node (*c);
                     node = node->next;
                 }
@@ -87,13 +90,13 @@ DAWG::print() const
 
         if (!node->child) {
             cout << endl;
-            do {
+            while (!node->next) {
                 if (!nodeStack.size())
                     break;
                 node = nodeStack.top().first;
                 depth = nodeStack.top().second;
                 nodeStack.pop();
-            } while (!node->next);
+            }
             node = node->next;
             for (int i = 0; i < depth; ++i)
                 cout << "  ";
