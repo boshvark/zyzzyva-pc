@@ -1,4 +1,5 @@
 PROJECT (ZYZZYVA)
+SET (VERSION 0.3.0)
 SET (EXECUTABLE_OUTPUT_PATH ${ZYZZYVA_SOURCE_DIR})
 
 # Find Qt and add its include directories
