@@ -34,6 +34,8 @@ namespace Defs {
     const int MAX_WORD_LEN = 15;
     const int SPACING = 4;
     const int MARGIN = 4;
+    const int QUIZ_TILE_SPACING = 5;
+    const int QUIZ_TILE_MARGIN = 10;
 }
 
 #endif // DEFS_H

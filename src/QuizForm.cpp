@@ -81,8 +81,6 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     // Canvas for tile images - set default background color
     questionCanvas = new QCanvas (this, "questionCanvas");
     Q_CHECK_PTR (questionCanvas);
-    // XXX Remove these magic numbers
-    questionCanvas->resize (515, 75);
     questionCanvas->setBackgroundColor (QColor (192, 192, 192));
 
     questionCanvasView = new QCanvasView (questionCanvas, this,
@@ -90,9 +88,6 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     Q_CHECK_PTR (questionCanvasView);
     questionCanvasView->setVScrollBarMode (QScrollView::AlwaysOff);
     questionCanvasView->setHScrollBarMode (QScrollView::AlwaysOff);
-    questionCanvasView->resize (questionCanvas->size());
-    questionCanvasView->setMinimumSize (questionCanvas->width() - 1,
-                                        questionCanvas->height() - 1);
     questionCanvasView->setResizePolicy (QScrollView::AutoOneFit);
     questionCanvasView->setSizePolicy (QSizePolicy::Fixed,
                                        QSizePolicy::Fixed);
@@ -442,8 +437,10 @@ QuizForm::setQuestionLabel (const QString& question)
     else {
         // XXX Get rid of these magic numbers!
         QMap<QString,QImage>::iterator image;
-        int x = 20;
-        for (int i = 0; (i < 8) && (i < question.length()); ++i) {
+        int x = QUIZ_TILE_MARGIN +
+            ((9 - question.length()) * (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
+
+        for (int i = 0; (i < 9) && (i < question.length()); ++i) {
             QString letter = question[i];
             if (letter == "?")
                 letter = "_";
@@ -452,11 +449,11 @@ QuizForm::setQuestionLabel (const QString& question)
                 qDebug ("Did not find letter '" + letter + "' in tiles map!");
             else {
                 ImageItem* item = new ImageItem (*image, questionCanvas);
-                item->move (x, 10);
+                item->move (x, QUIZ_TILE_MARGIN);
                 item->setZ (0);
                 item->show();
             }
-            x += 60;
+            x += maxTileWidth + QUIZ_TILE_SPACING;
         }
     }
 
@@ -503,6 +500,8 @@ void
 QuizForm::clearTileTheme()
 {
     tileImages.clear();
+    maxTileWidth = 25;
+    maxTileHeight = 25;
 }
 
 //---------------------------------------------------------------------------
@@ -528,5 +527,14 @@ QuizForm::setTileTheme (const QString& theme)
     for (it = tilesList.begin(); it != tilesList.end(); ++it) {
         QImage image (tilesDir + "/" + theme + "/" + *it + ".png");
         tileImages.insert (*it, image);
+
+        if (image.width() > maxTileWidth)
+            maxTileWidth = image.width();
+        if (image.height() > maxTileHeight)
+            maxTileHeight = image.height();
     }
+
+    questionCanvas->resize ((2 * QUIZ_TILE_MARGIN) + (9 * maxTileWidth) +
+                            (8 * QUIZ_TILE_SPACING),
+                            (2 * QUIZ_TILE_MARGIN) + maxTileHeight);
 }

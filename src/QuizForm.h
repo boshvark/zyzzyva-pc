@@ -86,6 +86,7 @@ class QuizForm : public QFrame
     QPushButton*  analyzeButton;
 
     QMap<QString,QImage> tileImages;
+    int maxTileWidth, maxTileHeight;
 
     NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;
