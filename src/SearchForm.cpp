@@ -15,7 +15,6 @@
 #include "WordValidator.h"
 #include <qapplication.h>
 #include <qbuttongroup.h>
-#include <qlabel.h>
 #include <qlayout.h>
 
 //---------------------------------------------------------------------------
@@ -61,13 +60,9 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (searchVlay);
     mainHlay->addLayout (searchVlay);
 
-    QHBoxLayout* lineHlay = new QHBoxLayout (0, "lineHlay");
-    Q_CHECK_PTR (lineHlay);
-    searchVlay->addLayout (lineHlay);
-
-    QLabel* label = new QLabel ("Word : ", this, "label");
+    QLabel* label = new QLabel ("Input", this, "label");
     Q_CHECK_PTR (label);
-    lineHlay->addWidget (label);
+    searchVlay->addWidget (label);
 
     wordLine = new QLineEdit (this, "wordLine");
     Q_CHECK_PTR (wordLine);
@@ -76,19 +71,16 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     validator->setOptions (WordValidator::AllowQuestionMarks);
     wordLine->setValidator (validator);
     connect (wordLine, SIGNAL (returnPressed()), SLOT (search()));
-    lineHlay->addWidget (wordLine);
+    searchVlay->addWidget (wordLine);
 
-    QGridLayout* resultGlay = new QGridLayout (1, 2);
-    Q_CHECK_PTR (resultGlay);
-    searchVlay->addLayout (resultGlay);
-
-    QLabel* resultLabel = new QLabel ("Results : ", this, "resultLabel");
+    resultLabel = new QLabel (this, "resultLabel");
     Q_CHECK_PTR (resultLabel);
-    resultGlay->addWidget (resultLabel, 0, 0, Qt::AlignTop);
+    searchVlay->addWidget (resultLabel);
+    updateResultLabel (0);
 
     resultList = new QListBox (this, "resultList");
     Q_CHECK_PTR (resultList);
-    resultGlay->addWidget (resultList, 0, 1);
+    searchVlay->addWidget (resultList);
 }
 
 //---------------------------------------------------------------------------
@@ -114,5 +106,20 @@ SearchForm::search()
         resultList->insertStringList (engine->matchSubanagram (word));
 
     resultList->sort();
+    updateResultLabel (resultList->count());
     QApplication::restoreOverrideCursor();
+}
+
+//---------------------------------------------------------------------------
+// updateResultLabel
+//
+//! Display the number of words currently in the search results.
+//! @param num the number of words
+//---------------------------------------------------------------------------
+void
+SearchForm::updateResultLabel (int num)
+{
+    QString text = "Search Results : " + QString::number (num) + " word";
+    if (num != 1) text += "s";
+    resultLabel->setText (text);
 }

@@ -13,6 +13,7 @@
 #ifndef SEARCH_FORM_H
 #define SEARCH_FORM_H
 
+#include <qlabel.h>
 #include <qlineedit.h>
 #include <qlistbox.h>
 #include <qradiobutton.h>
@@ -28,6 +29,7 @@ class SearchForm : public QFrame
 
   public slots:
     void search();
+    void updateResultLabel (int num);
 
   private:
     WordEngine*   engine;
@@ -36,6 +38,7 @@ class SearchForm : public QFrame
     QRadioButton* subanagramButton;
     QLineEdit*    wordLine;
     QListBox*     resultList;
+    QLabel*       resultLabel;
 };
 
 #endif // SEARCH_FORM_H
