@@ -63,8 +63,9 @@ DAWG::addWord (const QString& w)
         // Nonempty node, so find the current letter in the chain
         else {
             while (node->letter != c) {
-                if (!node->next)
+                if (!node->next) {
                     node->next = new Node (c);
+                }
                 node = node->next;
             }
         }
@@ -123,12 +124,56 @@ DAWG::getWordsMatchingPattern (const QString& pattern) const
 {
     QStringList list;
 
-//    QChar c;
-//    for (int i = 0; i < pattern.length(); ++i) {
-//        c = pattern.at (i);
-//    }
+    if (pattern.isEmpty() || !top)
+        return list;
 
-    list << "A" << "B" << "C" << "D" << "E" << "F" << "G";
+    stack< pair<Node*,int> > nodeStack;
+    int len = pattern.length();
+    char word[len + 1];
+
+    Node* node = top;
+    QChar c;
+    int i = 0;
+    while (node) {
+        c = pattern.at (i);
+
+        if (c == "?") {
+            if (node->next)
+                nodeStack.push (make_pair (node->next, i));
+        }
+
+        else {
+            while (node && node->letter != c)
+                node = node->next;
+        }
+
+
+        if (node) {
+            word[i] = node->letter;
+            ++i;
+
+            if (i == len) {
+                if (node->eow) {
+                    word[len] = 0;
+                    list << QString (word);
+                }
+            }
+            else
+                node = node->child;
+        }
+
+        if (!node || (i == len)) {
+            if (!nodeStack.size())
+                break;
+            node = nodeStack.top().first;
+            i = nodeStack.top().second;
+            nodeStack.pop();
+        }
+
+
+
+    }
+
     return list;
 }
 
