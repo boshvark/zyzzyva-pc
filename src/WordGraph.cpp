@@ -11,10 +11,12 @@
 //---------------------------------------------------------------------------
 
 #include "WordGraph.h"
+#include "Defs.h"
 #include <iostream>
 #include <stack>
 
 using namespace std;
+using namespace Defs;
 
 //---------------------------------------------------------------------------
 // WordGraph
@@ -131,7 +133,7 @@ WordGraph::getWordsMatchingPattern (const QString& pattern) const
 
     stack< pair<Node*,int> > nodeStack;
     int len = pattern.length();
-    char word[len + 1];
+    char word[MAX_WORD_LEN + 1];
 
     Node* node = top;
     QChar c;
@@ -189,7 +191,7 @@ WordGraph::getAnagrams (const QString& input, bool subanagrams) const
 
     stack< pair<Node*, pair<int,QString> > > nodeStack;
     int len = input.length();
-    char word[len + 1];
+    char word[MAX_WORD_LEN + 1];
     QString unmatched = input;
 
     Node* node = top;

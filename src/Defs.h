@@ -14,6 +14,7 @@
 #define DEFS_H
 
 namespace Defs {
+    const int MAX_WORD_LEN = 15;
     const int SPACING = 4;
     const int MARGIN = 4;
 }
