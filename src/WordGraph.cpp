@@ -259,9 +259,15 @@ WordGraph::getAnagrams (const QString& input, bool subanagrams) const
     QStringList list;
 
     stack< pair<Node*, pair<int,QString> > > nodeStack;
-    int len = input.length();
     char word[MAX_WORD_LEN + 1];
     QString unmatched = input;
+    bool wildcard = false;
+
+    // Note if any wildcard chars are present, then get rid of them
+    if (unmatched.contains ('*')) {
+        wildcard = true;
+        unmatched = unmatched.replace ('*', "");
+    }
 
     Node* node = top;
     QChar c;
@@ -274,20 +280,21 @@ WordGraph::getAnagrams (const QString& input, bool subanagrams) const
         if (index < 0)
             index = unmatched.find ("?");
 
-        if (index >= 0) {
+        if ((index >= 0) || wildcard) {
             if (node->next)
                 nodeStack.push (make_pair (node->next,
                                            make_pair (i, unmatched)));
             word[i] = c;
             ++i;
-            unmatched.replace (index, 1, "");
+            if (index >= 0)
+                unmatched.replace (index, 1, "");
 
             if (node->eow && (subanagrams || unmatched.isEmpty())) {
                 word[i] = 0;
                 list << QString (word);
             }
 
-            node = unmatched.isEmpty() ? 0 : node->child;
+            node = (unmatched.isEmpty() && !wildcard) ? 0 : node->child;
         }
         else
             node = node->next;
