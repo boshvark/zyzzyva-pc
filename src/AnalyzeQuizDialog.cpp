@@ -111,17 +111,9 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* e, QWidget* parent,
 //! Reset the dialog with a new quiz.
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::newQuiz (const QString& question, MatchType type)
+AnalyzeQuizDialog::newQuiz (const SearchSpec& spec)
 {
-    QString qstr;
-    if (type == Pattern)
-        qstr = "Pattern";
-    else if (type == Anagram)
-        qstr = "Anagram";
-    else if (type == Subanagram)
-        qstr = "Subanagram";
-    qstr += " : " + question;
-    questionLabel->setText (qstr);
+    questionLabel->setText (spec.asString());
     clearMissed();
     clearIncorrect();
     updateStats();

@@ -21,6 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "NewQuizDialog.h"
+#include "SearchSpec.h"
 #include "SearchSpecForm.h"
 #include "Defs.h"
 
@@ -55,8 +56,8 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
              SLOT (inputChanged (const QString&)));
     mainVlay->addWidget (specForm);
 
-    alphagramCbox = new QCheckBox ("Use alphagrams as questions", this,
-                                   "alphagramCbox");
+    alphagramCbox = new QCheckBox ("Use individual alphagrams as questions",
+                                   this, "alphagramCbox");
     Q_CHECK_PTR (alphagramCbox);
     connect (alphagramCbox, SIGNAL (toggled (bool)),
              SLOT (alphagramsToggled (bool)));
@@ -92,16 +93,16 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
 }
 
 //---------------------------------------------------------------------------
-// getQuizType
+// getSearchSpec
 //
-//! Get the quiz type.
+//! Get a SearchSpec corresponding to the state of the SearchSpecForm.
 //
-//! @return the quiz type
+//! @return the SearchSpec
 //---------------------------------------------------------------------------
-MatchType
-NewQuizDialog::getQuizType() const
+SearchSpec
+NewQuizDialog::getSearchSpec() const
 {
-    return specForm->getMatchType();
+    return specForm->getSearchSpec();
 }
 
 //---------------------------------------------------------------------------
@@ -129,19 +130,6 @@ bool
 NewQuizDialog::getQuizRandomOrder() const
 {
     return randomCbox->isChecked();
-}
-
-//---------------------------------------------------------------------------
-// getQuizString
-//
-//! Get the quiz string (pattern, letters, etc).
-//
-//! @return the quiz string
-//---------------------------------------------------------------------------
-QString
-NewQuizDialog::getQuizString() const
-{
-    return specForm->getPattern();
 }
 
 //---------------------------------------------------------------------------

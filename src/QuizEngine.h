@@ -31,6 +31,7 @@
 #include <qvaluevector.h>
 #include <set>
 #include "MatchType.h"
+#include "SearchSpec.h"
 
 class WordEngine;
 
@@ -47,8 +48,7 @@ class QuizEngine
     QuizEngine (WordEngine* e);
     ~QuizEngine() { }
 
-    void newQuiz (const QString& input, MatchType type, bool alphagrams,
-                  bool randomOrder);
+    void newQuiz (const SearchSpec& spec, bool alphagrams, bool randomOrder);
     bool nextQuestion();
 
     ResponseStatus respond (const QString& response);
@@ -79,9 +79,10 @@ class QuizEngine
     int quizCorrect;
     int quizIncorrect;
 
-    QStringList       quizQuestions;
-    int               questionIndex;
-    MatchType         quizType;
+    bool        singleSpecQuestion;
+    SearchSpec  searchSpec;
+    QStringList quizQuestions;
+    int         questionIndex;
 };
 
 #endif // QUIZ_ENGINE_H

@@ -35,6 +35,8 @@ class SearchSpec
                    maxLength (Defs::MAX_WORD_LEN) { }
     ~SearchSpec() { }
 
+    QString asString() const;
+
     QString pattern;
     MatchType type;
     QString includeLetters;

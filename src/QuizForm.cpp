@@ -197,13 +197,12 @@ QuizForm::newQuizClicked()
     if (code != QDialog::Accepted)
         return;
 
-    QString input = newQuizDialog->getQuizString();
-    MatchType type = newQuizDialog->getQuizType();
+    SearchSpec spec = newQuizDialog->getSearchSpec();
     bool alphagrams = newQuizDialog->getQuizAlphagrams();
     bool random = newQuizDialog->getQuizRandomOrder();
-    engine->newQuiz (input, type, alphagrams, random);
+    engine->newQuiz (spec, alphagrams, random);
     updateForm (false);
-    analyzeDialog->newQuiz (input, type);
+    analyzeDialog->newQuiz (spec);
 }
 
 //---------------------------------------------------------------------------

@@ -43,41 +43,39 @@ QuizEngine::QuizEngine (WordEngine* e)
 //! @param input the group of symbols forming the basis of the quiz
 //---------------------------------------------------------------------------
 void
-QuizEngine::newQuiz (const QString& input, MatchType type, bool alphagrams,
-                     bool randomOrder)
+QuizEngine::newQuiz (const SearchSpec& spec, bool alphagrams, bool randomOrder)
 {
+    searchSpec = spec;
     quizQuestions.clear();
 
-    quizType = type;
+    // If alphagrams is not specified, then the quiz will be a single question
+    // requiring the entire search results of the search spec as an answer.
+    singleSpecQuestion = !alphagrams;
 
+    // When using alphagrams, always change quiz type to Anagram.  The pattern
+    // is used to select the list of alphagrams, then anagrams are used as
+    // quiz answers.
     if (alphagrams) {
-        SearchSpec spec;
-        spec.pattern = input;
-        spec.type = type;
         quizQuestions = wordEngine->search (spec);
-
-        // When using alphagrams, always change quiz type to Anagram.  The
-        // pattern is used to select the list of alphagrams, then anagrams are
-        // used as quiz answers.
-        quizType = Anagram;
         quizQuestions = wordEngine->alphagrams (quizQuestions);
+
+        // Do a random shuffle
+        if (randomOrder) {
+            QString tmp;
+            int num = quizQuestions.size();
+            for (int i = 0; i < num ; ++i) {
+                int rnum = std::rand() % num;
+                if (rnum == i)
+                    continue;
+                tmp = quizQuestions[rnum];
+                quizQuestions[rnum] = quizQuestions[i];
+                quizQuestions[i] = tmp;
+            }
+        }
     }
 
-    else
-        quizQuestions << input;
-
-    // Do a random shuffle
-    if (randomOrder) {
-        QString tmp;
-        int num = quizQuestions.size();
-        for (int i = 0; i < num ; ++i) {
-            int rnum = std::rand() % num;
-            if (rnum == i)
-                continue;
-            tmp = quizQuestions[rnum];
-            quizQuestions[rnum] = quizQuestions[i];
-            quizQuestions[i] = tmp;
-        }
+    else {
+        quizQuestions << spec.asString();
     }
 
     questionIndex = 0;
@@ -203,10 +201,15 @@ QuizEngine::prepareQuestion()
     QString question = getQuestion();
 
     QStringList answers;
-    SearchSpec spec;
-    spec.pattern = question;
-    spec.type = quizType;
-    answers = wordEngine->search (spec);
+
+    if (singleSpecQuestion)
+        answers = wordEngine->search (searchSpec);
+    else {
+        SearchSpec spec;
+        spec.pattern = question;
+        spec.type = Anagram;
+        answers = wordEngine->search (spec);
+    }
 
     QStringList::iterator it;
     for (it = answers.begin(); it != answers.end(); ++it) {

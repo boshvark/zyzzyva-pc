@@ -32,6 +32,7 @@
 #include "MatchType.h"
 
 class QuizEngine;
+class SearchSpec;
 
 class AnalyzeQuizDialog : public QDialog
 {
@@ -43,7 +44,7 @@ class AnalyzeQuizDialog : public QDialog
     ~AnalyzeQuizDialog() { }
 
   public slots:
-    void newQuiz (const QString& question, MatchType type);
+    void newQuiz (const SearchSpec& spec);
     void updateStats();
     void addMissed (const QString& word);
     void addIncorrect (const QString& word);

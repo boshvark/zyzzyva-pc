@@ -32,6 +32,7 @@
 #include <qradiobutton.h>
 #include "MatchType.h"
 
+class SearchSpec;
 class SearchSpecForm;
 
 class NewQuizDialog : public QDialog
@@ -43,10 +44,9 @@ class NewQuizDialog : public QDialog
 
     ~NewQuizDialog() { }
 
-    MatchType getQuizType() const;
-    bool      getQuizAlphagrams() const;
-    bool      getQuizRandomOrder() const;
-    QString   getQuizString() const;
+    SearchSpec getSearchSpec() const;
+    bool       getQuizAlphagrams() const;
+    bool       getQuizRandomOrder() const;
 
   public slots:
     void alphagramsToggled (bool on);
