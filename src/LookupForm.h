@@ -13,6 +13,7 @@
 #ifndef LOOKUP_FORM_H
 #define LOOKUP_FORM_H
 
+#include <qlabel.h>
 #include <qlineedit.h>
 
 class LookupForm : public QFrame
@@ -24,6 +25,7 @@ class LookupForm : public QFrame
 
   private:
     QLineEdit* wordLine;
+    QLabel*    resultLabel;
 };
 
 #endif // LOOKUP_FORM_H

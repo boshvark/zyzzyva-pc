@@ -11,6 +11,7 @@
 //---------------------------------------------------------------------------
 
 #include "LookupForm.h"
+#include "WordValidator.h"
 #include <qlabel.h>
 #include <qlayout.h>
 
@@ -30,5 +31,9 @@ LookupForm::LookupForm (QWidget* parent, const char* name, WFlags f)
 
     wordLine = new QLineEdit (this, "wordLine");
     Q_CHECK_PTR (wordLine);
+    wordLine->setValidator (new WordValidator (wordLine));
     lookupHlay->addWidget (wordLine);
+
+    resultLabel = new QLabel (this, "resultLabel");
+    mainVlay->addWidget (resultLabel);
 }
