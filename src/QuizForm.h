@@ -28,8 +28,10 @@ class QuizForm : public QFrame
 
   public slots:
     void responseEntered();
+    void newQuizClicked();
 
   private:
+    void updateStats();
     void setRecall (int correct, int total);
     void setPrecision (int correct, int total);
 
@@ -37,7 +39,7 @@ class QuizForm : public QFrame
     QuizEngine*   engine;
     QLabel*       quizLabel;
     QLineEdit*    inputLine;
-    QListBox*     answerList;
+    QListBox*     responseList;
     QLabel*       recallLabel;
     QLabel*       precisionLabel;
 };

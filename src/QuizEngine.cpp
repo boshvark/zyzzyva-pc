@@ -12,6 +12,7 @@
 //---------------------------------------------------------------------------
 
 #include "QuizEngine.h"
+#include "WordEngine.h"
 
 //---------------------------------------------------------------------------
 // newQuiz
@@ -26,6 +27,13 @@ QuizEngine::newQuiz (const QString& question)
     correctResponses.clear();
     correctUserResponses.clear();
     incorrectUserResponses.clear();
+
+    QStringList answers = wordEngine->matchAnagram (question);
+    QStringList::iterator it;
+    for (it = answers.begin(); it != answers.end(); ++it) {
+        qDebug ("Correct response: " + *it);
+        correctResponses.insert (*it);
+    }
 }
 
 //---------------------------------------------------------------------------

@@ -16,6 +16,7 @@
 #include "Defs.h"
 #include <qlayout.h>
 #include <qgroupbox.h>
+#include <qpushbutton.h>
 
 using namespace Defs;
 
@@ -70,12 +71,22 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (precisionLabel);
     mainVlay->addWidget (precisionLabel);
 
-    setRecall (0, 0);
-    setPrecision (0, 0);
+    responseList = new QListBox (this, "responseList");
+    Q_CHECK_PTR (responseList);
+    mainVlay->addWidget (responseList);
 
-    answerList = new QListBox (this, "answerList");
-    Q_CHECK_PTR (answerList);
-    mainVlay->addWidget (answerList);
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    Q_CHECK_PTR (buttonHlay);
+    mainVlay->addLayout (buttonHlay);
+
+    QPushButton* newQuizButton = new QPushButton ("&New Quiz", this,
+                                                  "newQuizButton");
+    Q_CHECK_PTR (newQuizButton);
+    newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
+    buttonHlay->addWidget (newQuizButton);
+
+    updateStats();
 }
 
 //---------------------------------------------------------------------------
@@ -90,14 +101,40 @@ QuizForm::responseEntered()
     if (response.isEmpty())
         return;
 
-    engine->respond (response);
+    QuizEngine::ResponseStatus status = engine->respond (response);
 
+    if (status == QuizEngine::Correct) {
+        responseList->insertItem (response);
+        inputLine->clear();
+    }
+
+    updateStats();
+}
+
+//---------------------------------------------------------------------------
+// newQuizClicked
+//
+//! Called when the New Quiz button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::newQuizClicked()
+{
+    engine->newQuiz ("OPST");
+    updateStats();
+    responseList->clear();
+}
+
+//---------------------------------------------------------------------------
+// updateStats
+//
+//! Update the recall and precision statistics.
+//---------------------------------------------------------------------------
+void
+QuizForm::updateStats()
+{
     int correct = engine->correct();
     setRecall (correct, engine->total());
     setPrecision (correct, correct + engine->incorrect());
-
-    answerList->insertItem (response);
-    inputLine->clear();
 }
 
 //---------------------------------------------------------------------------
