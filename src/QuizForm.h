@@ -54,8 +54,6 @@ class QuizForm : public QFrame
     void nextQuestionClicked();
     void checkResponseClicked();
     void analyzeClicked();
-    void returnPressed (QListViewItem* item);
-    void menuRequested (QListViewItem* item, const QPoint&, int);
     void setTileTheme (const QString& theme);
 
   private:
@@ -69,7 +67,6 @@ class QuizForm : public QFrame
     void setQuestionNum (int num, int total);
     void setQuestionLabel (const QString& question);
     void setQuestionStatus (int correct, int total);
-    void displayDefinition (const QString& word);
     void clearTileTheme();
     void reflowLayout();
 

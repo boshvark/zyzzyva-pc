@@ -46,11 +46,6 @@ class SearchForm : public QFrame
     void search();
     void resetSpec();
     void updateResultTotal (int num);
-    void returnPressed (QListViewItem* item);
-    void menuRequested (QListViewItem* item, const QPoint&, int);
-
-  private:
-    void displayDefinition (const QString& word);
 
   private:
     WordEngine*     engine;

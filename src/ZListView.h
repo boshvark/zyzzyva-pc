@@ -27,14 +27,25 @@
 
 #include <qlistview.h>
 
+class WordEngine;
+
 class ZListView : public QListView
 {
   Q_OBJECT
   public:
-    ZListView (QWidget* parent = 0, const char* name = 0, WFlags f = 0);
+    ZListView (WordEngine* e, QWidget* parent = 0, const char* name = 0,
+               WFlags f = 0);
     ~ZListView();
 
     virtual void setFont (const QFont& font);
+
+  public slots:
+    void doReturnPressed (QListViewItem* item);
+    void doPopupMenu (QListViewItem* item, const QPoint& point, int);
+    void displayDefinition (const QString& word);
+
+  private:
+    WordEngine* wordEngine;
 };
 
 #endif // ZLISTVIEW_H

@@ -23,6 +23,7 @@
 #include "AnalyzeQuizDialog.h"
 #include "Defs.h"
 #include "QuizEngine.h"
+#include "WordEngine.h"
 #include "ZListView.h"
 #include "ZListViewItem.h"
 #include <qlayout.h>
@@ -41,9 +42,10 @@ using namespace Defs;
 //! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
-AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* e, QWidget* parent,
-                                      const char* name, bool modal, WFlags f)
-    : QDialog (parent, name, modal, f), quizEngine (e)
+AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
+                                      parent, const char* name, bool modal,
+                                      WFlags f)
+    : QDialog (parent, name, modal, f), quizEngine (qe), wordEngine (we)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
                                              "mainVlay");
@@ -73,7 +75,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* e, QWidget* parent,
     Q_CHECK_PTR (missedVlay);
     mainHlay->addLayout (missedVlay);
 
-    missedList = new ZListView (this, "missedList");
+    missedList = new ZListView (wordEngine, this, "missedList");
     Q_CHECK_PTR (missedList);
     missedList->setResizeMode (QListView::LastColumn);
     missedList->addColumn ("Missed");
@@ -83,7 +85,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* e, QWidget* parent,
     Q_CHECK_PTR (incorrectVlay);
     mainHlay->addLayout (incorrectVlay);
 
-    incorrectList = new ZListView (this, "incorrectList");
+    incorrectList = new ZListView (wordEngine, this, "incorrectList");
     Q_CHECK_PTR (incorrectList);
     incorrectList->setResizeMode (QListView::LastColumn);
     incorrectList->addColumn ("Incorrect");

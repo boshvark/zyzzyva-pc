@@ -33,13 +33,14 @@
 
 class QuizEngine;
 class SearchSpec;
+class WordEngine;
 class ZListView;
 
 class AnalyzeQuizDialog : public QDialog
 {
   Q_OBJECT
   public:
-    AnalyzeQuizDialog (QuizEngine* e, QWidget* parent = 0,
+    AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget* parent = 0,
                        const char* name = 0, bool modal = false, WFlags f = 0);
 
     ~AnalyzeQuizDialog() { }
@@ -59,6 +60,7 @@ class AnalyzeQuizDialog : public QDialog
 
   private:
     QuizEngine*   quizEngine;
+    WordEngine*   wordEngine;
     QLabel*       questionLabel;
     QLabel*       recallLabel;
     QLabel*       precisionLabel;

@@ -24,6 +24,9 @@
 
 #include "ZListView.h"
 #include "ZListViewItem.h"
+#include "DefinitionDialog.h"
+#include "WordEngine.h"
+#include "WordPopupMenu.h"
 
 //---------------------------------------------------------------------------
 // ZListView
@@ -34,9 +37,22 @@
 //! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-ZListView::ZListView (QWidget* parent, const char* name, WFlags f)
-    : QListView (parent, name, f)
+ZListView::ZListView (WordEngine* e, QWidget* parent, const char* name, WFlags
+                      f)
+    : QListView (parent, name, f), wordEngine (e)
 {
+    // Only connect certain slots of word engine is non-null
+    if (wordEngine) {
+        // XXX: This signal should be connected regardless... only certain
+        // popup menu items should be available in the absence of a word
+        // engine.
+        connect (this, SIGNAL (contextMenuRequested (QListViewItem*, const
+                                                     QPoint&, int)),
+                 SLOT (doPopupMenu (QListViewItem*, const QPoint&, int)));
+
+        connect (this, SIGNAL (returnPressed (QListViewItem*)),
+                 SLOT (doReturnPressed (QListViewItem*)));
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -60,4 +76,61 @@ ZListView::setFont (const QFont& font)
     ZListViewItem* item = static_cast<ZListViewItem*> (firstChild());
     for (; item; item = static_cast<ZListViewItem*> (item->nextSibling()))
         item->setFont (font);
+}
+
+//---------------------------------------------------------------------------
+// doReturnPressed
+//
+//! Called when return is pressed on an item in the response list.  Displays
+//! the selected word's definition.
+//
+//! @param item the selected listview item
+//---------------------------------------------------------------------------
+void
+ZListView::doReturnPressed (QListViewItem* item)
+{
+    if (!item)
+        return;
+    displayDefinition (item->text (0).upper());
+}
+
+//---------------------------------------------------------------------------
+// doPopupMenu
+//
+//! Called when a right-click menu is requested.  Creates a popup menu and
+//! allows the user to choose an action for the selected item.
+//! @param item the selected listview item
+//! @param point the point at which the menu was requested
+//---------------------------------------------------------------------------
+void
+ZListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
+{
+    if (!item)
+        return;
+
+    WordPopupMenu* menu = new WordPopupMenu (this, "menu");
+    int choice = menu->exec (point);
+    delete menu;
+
+    if (choice == WordPopupMenu::ShowDefinition)
+        displayDefinition (item->text (0).upper());
+}
+
+//---------------------------------------------------------------------------
+// displayDefinition
+//
+//! Displays the definition of a word.
+//
+//! @param word the word whose definition to display
+//---------------------------------------------------------------------------
+void
+ZListView::displayDefinition (const QString& word)
+{
+    if (!wordEngine)
+        return;
+
+    DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
+                                                     "dialog", true);
+    dialog->exec();
+    delete dialog;
 }

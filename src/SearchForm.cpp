@@ -23,10 +23,8 @@
 //---------------------------------------------------------------------------
 
 #include "SearchForm.h"
-#include "DefinitionDialog.h"
 #include "SearchSpecForm.h"
 #include "WordEngine.h"
-#include "WordPopupMenu.h"
 #include "WordValidator.h"
 #include "ZListView.h"
 #include "ZListViewItem.h"
@@ -85,16 +83,11 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     connect (searchButton, SIGNAL (clicked()), SLOT (search()));
     buttonHlay->addWidget (searchButton);
 
-    resultList = new ZListView (this, "resultList");
+    resultList = new ZListView (engine, this, "resultList");
     Q_CHECK_PTR (resultList);
     resultList->setResizeMode (QListView::LastColumn);
     resultList->addColumn ("Search Results");
     resultList->setShowSortIndicator (true);
-    connect (resultList, SIGNAL (contextMenuRequested (QListViewItem*, const
-                                                       QPoint&, int)),
-             SLOT (menuRequested (QListViewItem*, const QPoint&, int)));
-    connect (resultList, SIGNAL (returnPressed (QListViewItem*)),
-             SLOT (returnPressed (QListViewItem*)));
     specVlay->addWidget (resultList);
     updateResultTotal (0);
 }
@@ -149,57 +142,4 @@ SearchForm::updateResultTotal (int num)
     QString text = "Search Results : " + QString::number (num) + " word";
     if (num != 1) text += "s";
     resultList->setColumnText (0, QIconSet(), text);
-}
-
-//---------------------------------------------------------------------------
-// returnPressed
-//
-//! Called when return is pressed on an item in the response list.  Displays
-//! the selected word's definition.
-//
-//! @param item the selected listview item
-//---------------------------------------------------------------------------
-void
-SearchForm::returnPressed (QListViewItem* item)
-{
-    if (!item)
-        return;
-    displayDefinition (item->text (0).upper());
-}
-
-//---------------------------------------------------------------------------
-// menuRequested
-//
-//! Called when a right-click menu is requested.
-//! @param item the selected listview item
-//! @param point the point at which the menu was requested
-//---------------------------------------------------------------------------
-void
-SearchForm::menuRequested (QListViewItem* item, const QPoint& point, int)
-{
-    if (!item)
-        return;
-
-    WordPopupMenu* menu = new WordPopupMenu (this, "menu");
-    int choice = menu->exec(point);
-    delete menu;
-
-    if (choice == WordPopupMenu::ShowDefinition)
-        displayDefinition (item->text (0).upper());
-}
-
-//---------------------------------------------------------------------------
-// displayDefinition
-//
-//! Displays the definition of a word.
-//
-//! @param word the word whose definition to display
-//---------------------------------------------------------------------------
-void
-SearchForm::displayDefinition (const QString& word)
-{
-    DefinitionDialog* dialog = new DefinitionDialog (engine, word, this,
-                                                     "dialog", true);
-    dialog->exec();
-    delete dialog;
 }

@@ -24,12 +24,10 @@
 
 #include "QuizForm.h"
 #include "AnalyzeQuizDialog.h"
-#include "DefinitionDialog.h"
 #include "ImageItem.h"
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
 #include "WordEngine.h"
-#include "WordPopupMenu.h"
 #include "WordValidator.h"
 #include "ZListView.h"
 #include "ZListViewItem.h"
@@ -58,7 +56,8 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
                     char* name, WFlags f)
     : QFrame (parent, name, f), quizEngine (qe), wordEngine (we),
     newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true)),
-    analyzeDialog (new AnalyzeQuizDialog (qe, this, "analyzeDialog", false)),
+    analyzeDialog (new AnalyzeQuizDialog (qe, we, this, "analyzeDialog",
+                                          false)),
     numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
@@ -96,14 +95,11 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
 
     quizBoxHlay->addStretch (1);
 
-    responseList = new ZListView (this, "responseList");
+    responseList = new ZListView (wordEngine, this, "responseList");
     Q_CHECK_PTR (responseList);
     responseList->setResizeMode (QListView::LastColumn);
     responseList->addColumn ("Responses");
     responseList->header()->hide();
-    connect (responseList, SIGNAL (contextMenuRequested (QListViewItem*, const
-                                                         QPoint&, int)),
-             SLOT (menuRequested (QListViewItem*, const QPoint&, int)));
     connect (responseList, SIGNAL (returnPressed (QListViewItem*)),
              SLOT (returnPressed (QListViewItem*)));
     mainVlay->addWidget (responseList);
@@ -284,43 +280,6 @@ void
 QuizForm::analyzeClicked()
 {
     analyzeDialog->show();
-}
-
-//---------------------------------------------------------------------------
-// returnPressed
-//
-//! Called when return is pressed on an item in the response list.  Displays
-//! the selected word's definition.
-//
-//! @param item the selected listview item
-//---------------------------------------------------------------------------
-void
-QuizForm::returnPressed (QListViewItem* item)
-{
-    if (!item)
-        return;
-    displayDefinition (item->text (0).upper());
-}
-
-//---------------------------------------------------------------------------
-// menuRequested
-//
-//! Called when a right-click menu is requested.
-//! @param item the selected listview item
-//! @param point the point at which the menu was requested
-//---------------------------------------------------------------------------
-void
-QuizForm::menuRequested (QListViewItem* item, const QPoint& point, int)
-{
-    if (!item)
-        return;
-
-    WordPopupMenu* menu = new WordPopupMenu (this, "menu");
-    int choice = menu->exec (point);
-    delete menu;
-
-    if (choice == WordPopupMenu::ShowDefinition)
-        displayDefinition (item->text (0).upper());
 }
 
 //---------------------------------------------------------------------------
@@ -508,22 +467,6 @@ QuizForm::setQuestionStatus (int correct, int total)
 {
     questionStatusLabel->setText ("Correct: " + QString::number (correct)
                           + " of " + QString::number (total));
-}
-
-//---------------------------------------------------------------------------
-// displayDefinition
-//
-//! Displays the definition of a word.
-//
-//! @param word the word whose definition to display
-//---------------------------------------------------------------------------
-void
-QuizForm::displayDefinition (const QString& word)
-{
-    DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
-                                                     "dialog", true);
-    dialog->exec();
-    delete dialog;
 }
 
 //---------------------------------------------------------------------------
