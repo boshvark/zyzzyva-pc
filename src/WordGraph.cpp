@@ -146,54 +146,71 @@ WordGraph::search (const SearchSpec& spec) const
     if (!top)
         return wordList;
 
-    stack <TraversalState> states;
-    QString word;
-    QChar c;
-    Node* node = top;
-
     // Use set to eliminate duplicates since patterns with wildcards may match
     // the same word in more than one way
     set <QString> wordSet;
-    QString unmatched = spec.pattern;
+    stack <TraversalState> states;
+    QString word;
+    QChar c;
 
-    // Pattern match is specified
+    QString unmatched = spec.pattern;
+    bool wildcard = false;
+    Node* node = top;
+
+    // If Pattern match is unspecified, change it to a single wildcard
+    // character.  Also, remove any redundant wildcards.
     if (spec.type == Pattern) {
         if (unmatched.isEmpty())
             unmatched = "*";
         else
             unmatched.replace (QRegExp ("\\*+"), "*");
+    }
 
-        while (node) {
+    // If Anagram or Subanagram match contains a wildcard, note it and remove
+    // the wildcard character from the match pattern.
+    else if ((spec.type == Anagram) || (spec.type == Subanagram)) {
+        wildcard = unmatched.contains ('*');
+        if (wildcard)
+            unmatched = unmatched.replace ('*', "");
+    }
 
-            // Stop if word is at max length
-            if (int (word.length()) < spec.maxLength) {
-                QString origWord = word;
-                QString origUnmatched = unmatched;
+    // Traverse the tree looking for matches
+    while (node) {
+
+        // Stop if word is at max length
+        if (int (word.length()) < spec.maxLength) {
+            QString origWord = word;
+            QString origUnmatched = unmatched;
+
+            // Get the next character in the Pattern match.  Allow a wildcard
+            // to match the empty string.
+            if (spec.type == Pattern) {
                 c = unmatched.at (0);
-
-                // Allow wildcard to match empty string
                 if (c == "*")
                     states.push (TraversalState (node, word, unmatched.right (
                                 unmatched.length() - 1)));
+            }
 
-                // Traverse next nodes, looking for matches
-                for (; node; node = node->next) {
-                    if (spec.excludeLetters.contains (node->letter))
-                        continue;
+            // Traverse next nodes, looking for matches
+            for (; node; node = node->next) {
+                if (spec.excludeLetters.contains (node->letter))
+                    continue;
 
-                    bool match = false;
-                    word = origWord;
-                    unmatched = origUnmatched;
+                unmatched = origUnmatched;
+                word = origWord;
+
+                // Special processing for Pattern match
+                if (spec.type == Pattern) {
 
                     // A node matches wildcard characters or its own letter
-                    if ((c == "*") || (c == "?") || (c == node->letter)) {
+                    if ((c == "*") || (c == "?") || (c == node->letter))
                         word += node->letter;
-                        match = true;
-                    }
+                    else
+                        continue;
 
                     // If this node matches, push its child on the stack to be
                     // traversed later
-                    if (match && node->child) {
+                    if (node->child) {
                         if (c == "*")
                             states.push (TraversalState (node->child, word,
                                                          unmatched));
@@ -203,83 +220,62 @@ WordGraph::search (const SearchSpec& spec) const
                                                      unmatched.length() - 1)));
                     }
 
-                    // If end of word and end of pattern, put the word in the list
-                    if (match && node->eow &&
+                    // If end of word and end of pattern, put the word in the
+                    // list
+                    if (node->eow &&
                         (int (word.length()) >= spec.minLength) &&
                         ((unmatched.length() == 1) ||
                         ((unmatched.length() == 2) &&
                          (QChar (unmatched.at (1)) == "*"))))
                         wordSet.insert (word);
                 }
-            }
 
-            // Done traversing next nodes, pop a child off the stack
-            if (states.size()) {
-                TraversalState state = states.top();
-                node = state.node;
-                unmatched = state.unmatched;
-                word = state.word;
-                states.pop();
-            }
-        }
+                // Special processing for Anagram or Subanagram match
+                else if ((spec.type == Anagram) || (spec.type == Subanagram)) {
 
-        // Build word list from word set
-        set<QString>::iterator it;
-        for (it = wordSet.begin(); it != wordSet.end(); ++it)
-            wordList << *it;
-    }
-
-    else if ((spec.type == Anagram) || (spec.type == Subanagram)) {
-        // Note if any wildcard chars are present, then get rid of them
-        bool wildcard = false;
-        if (unmatched.contains ('*')) {
-            wildcard = true;
-            unmatched = unmatched.replace ('*', "");
-        }
-
-        while (node) {
-
-            // Stop if word is at max length
-            if (int (word.length()) < spec.maxLength) {
-                QString origWord = word;
-                QString origUnmatched = unmatched;
-
-                for (; node; node = node->next) {
-                    c = node->letter;
-
-                    if (spec.excludeLetters.contains (c))
-                        continue;
-
-                    unmatched = origUnmatched;
-                    int index = unmatched.find (c);
+                    // Try to match the current letter against the pattern.
+                    // If the letter doesn't match exactly, match a ? char.
+                    int index = unmatched.find (node->letter);
                     if (index < 0)
                         index = unmatched.find ("?");
+                    bool match = (index >= 0);
 
-                    if ((index >= 0) || wildcard) {
-                        word = origWord + c;
-                        if (index >= 0)
+                    // If this letter matched or a wildcard was specified,
+                    // keep traversing after possibly adding the current word.
+                    if (match || wildcard) {
+                        word += node->letter;
+                        if (match)
                             unmatched.replace (index, 1, "");
 
                         if (node->child && (wildcard || !unmatched.isEmpty()))
-                            states.push (TraversalState (node->child, 0, word,
+                            states.push (TraversalState (node->child, word,
                                                          unmatched));
 
                         if (node->eow &&
-                            ((spec.type == Subanagram) || unmatched.isEmpty()) &&
+                            ((spec.type == Subanagram) ||
+                              unmatched.isEmpty()) &&
                             (int (word.length()) >= spec.minLength))
                             wordList << word;
                     }
                 }
             }
-
-            if (states.size()) {
-                TraversalState state = states.top();
-                node = state.node;
-                word = state.word;
-                unmatched = state.unmatched;
-                states.pop();
-            }
         }
+
+        // Done traversing next nodes, pop a child off the stack
+        if (states.size()) {
+            TraversalState state = states.top();
+            node = state.node;
+            unmatched = state.unmatched;
+            word = state.word;
+            states.pop();
+        }
+    }
+
+    // Build word list from word set for Pattern match
+    if (spec.type == Pattern) {
+        set<QString>::iterator it;
+        for (it = wordSet.begin(); it != wordSet.end(); ++it)
+            wordList << *it;
     }
 
     return wordList;
