@@ -406,7 +406,6 @@ QuizForm::minimizeCanvas()
                                 maxTileHeight);
     else
         setNumCanvasTiles (minCanvasTiles);
-    questionCanvas->setAllChanged();
     reflowLayout();
 }
 
@@ -592,5 +591,6 @@ QuizForm::reflowLayout()
     QString text = questionStatusLabel->text();
     questionStatusLabel->setText ("foo blah blah");
     questionStatusLabel->setText (text);
+    questionCanvas->setAllChanged();
     questionCanvas->update();
 }
