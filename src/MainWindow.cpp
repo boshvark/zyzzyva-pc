@@ -51,7 +51,7 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     QVBoxLayout* mainVlay = new QVBoxLayout (frame, 0, 0, "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
-    lookupForm = new LookupForm (frame, "lookupForm");
+    lookupForm = new LookupForm (engine, frame, "lookupForm");
     mainVlay->addWidget (lookupForm);
 
     messageLabel = new QLabel (this, "messageLabel");

@@ -16,16 +16,22 @@
 #include <qlabel.h>
 #include <qlineedit.h>
 
+class WordEngine;
+
 class LookupForm : public QFrame
 {
   Q_OBJECT
   public:
-    LookupForm (QWidget* parent = 0, const char* name = 0,
+    LookupForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
                 WFlags f = 0);
 
+  public slots:
+    void lookupWord();
+
   private:
-    QLineEdit* wordLine;
-    QLabel*    resultLabel;
+    WordEngine* engine;
+    QLineEdit*  wordLine;
+    QLabel*     resultLabel;
 };
 
 #endif // LOOKUP_FORM_H
