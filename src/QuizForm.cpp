@@ -136,8 +136,7 @@ QuizForm::QuizForm (QuizEngine* e, QWidget* parent, const char* name,
     checkResponseButton->setEnabled (false);
     buttonHlay->addWidget (checkResponseButton);
 
-    QPushButton* analyzeButton = new QPushButton ("&Analyze...", this,
-                                                  "analyzeButton");
+    analyzeButton = new QPushButton ("&Analyze...", this, "analyzeButton");
     Q_CHECK_PTR (analyzeButton);
     analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));
@@ -244,7 +243,10 @@ QuizForm::checkResponseClicked()
         analyzeDialog->addMissed (*it);
     }
 
-    nextQuestionButton->setFocus();
+    if (nextQuestionButton->isEnabled())
+        nextQuestionButton->setFocus();
+    else
+        analyzeButton->setFocus();
 }
 
 //---------------------------------------------------------------------------

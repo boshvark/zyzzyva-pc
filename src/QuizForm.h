@@ -66,6 +66,7 @@ class QuizForm : public QFrame
     QLabel*       questionStatusLabel;
     QPushButton*  nextQuestionButton;
     QPushButton*  checkResponseButton;
+    QPushButton*  analyzeButton;
 
     NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;
