@@ -16,7 +16,6 @@
 #include <qapplication.h>
 #include <qdir.h>
 #include <qfiledialog.h>
-#include <qframe.h>
 #include <qlayout.h>
 #include <qmenubar.h>
 #include <qmessagebox.h>
@@ -37,10 +36,6 @@ const QString IMPORT_COMPLETE_TITLE = "Import Complete";
 MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     : QMainWindow (parent, name, f), engine (new WordEngine())
 {
-
-    QFrame* frame = new QFrame (this);
-    setCentralWidget (frame);
-
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
     filePopup->insertItem ("&Import...", this, SLOT (import()), CTRL+Key_I);
@@ -48,16 +43,20 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     filePopup->insertItem ("&Quit", qApp, SLOT (quit()));
     menuBar()->insertItem ("&File", filePopup);
 
-    QVBoxLayout* mainVlay = new QVBoxLayout (frame, 0, 0, "mainVlay");
-    Q_CHECK_PTR (mainVlay);
+    tabStack = new QTabWidget (this, "tabStack");
+    Q_CHECK_PTR (tabStack);
+    setCentralWidget (tabStack);
 
-    lookupForm = new LookupForm (engine, frame, "lookupForm");
-    mainVlay->addWidget (lookupForm);
+    lookupForm = new LookupForm (engine, tabStack, "lookupForm");
+    Q_CHECK_PTR (lookupForm);
+    tabStack->addTab (lookupForm, "Look Up");
 
     messageLabel = new QLabel (this, "messageLabel");
+    Q_CHECK_PTR (messageLabel);
     statusBar()->addWidget (messageLabel, 2);
 
     statusLabel = new QLabel (this, "statusLabel");
+    Q_CHECK_PTR (statusLabel);
     statusBar()->addWidget (statusLabel, 1);
     setNumWords (0);
 }

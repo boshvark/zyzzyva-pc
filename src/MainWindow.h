@@ -15,6 +15,7 @@
 
 #include <qlabel.h>
 #include <qmainwindow.h>
+#include <qtabwidget.h>
 
 class LookupForm;
 class WordEngine;
@@ -34,6 +35,7 @@ class MainWindow : public QMainWindow
 
   private:
     WordEngine* engine;
+    QTabWidget* tabStack;
     LookupForm* lookupForm;
     QLabel*     messageLabel;
     QLabel*     statusLabel;
