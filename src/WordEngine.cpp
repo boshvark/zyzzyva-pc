@@ -82,3 +82,17 @@ WordEngine::matchAnagram (const QString& input) const
 {
     return graph.getAnagrams (input, false);
 }
+
+//---------------------------------------------------------------------------
+// matchSubanagram
+//
+//! Find all acceptable anagrams and subanagrams of a string of letters.
+//
+//! @param input the letters to match
+//! @return a list of acceptable words
+//---------------------------------------------------------------------------
+QStringList
+WordEngine::matchSubanagram (const QString& input) const
+{
+    return graph.getAnagrams (input, true);
+}

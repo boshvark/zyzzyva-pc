@@ -209,14 +209,12 @@ DAWG::getAnagrams (const QString& input, bool subanagrams) const
             ++i;
             unmatched.replace (index, 1, "");
 
-            if (unmatched.isEmpty() && node->eow) {
+            if (node->eow && (subanagrams || unmatched.isEmpty())) {
                 word[i] = 0;
                 list << QString (word);
-                node = 0;
             }
-            else {
-                node = node->child;
-            }
+
+            node = unmatched.isEmpty() ? 0 : node->child;
         }
         else
             node = node->next;

@@ -27,6 +27,7 @@ class WordEngine
     bool isAcceptable (const QString& word) const;
     QStringList matchPattern (const QString& input) const;
     QStringList matchAnagram (const QString& input) const;
+    QStringList matchSubanagram (const QString& input) const;
 
   private:
     DAWG graph;

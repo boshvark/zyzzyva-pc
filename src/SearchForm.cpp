@@ -51,7 +51,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     anagramButton = new QRadioButton ("Anagram", optionGroup,
                                       "anagramButton");
     Q_CHECK_PTR (anagramButton);
-    subanagramButton = new QRadioButton ("Build", optionGroup,
+    subanagramButton = new QRadioButton ("Subanagram", optionGroup,
                                          "subanagramButton");
     Q_CHECK_PTR (subanagramButton);
 
@@ -110,6 +110,10 @@ SearchForm::search()
     else if (anagramButton->isChecked()) {
         resultList->clear();
         resultList->insertStringList (engine->matchAnagram (word));
+    }
+    else if (subanagramButton->isChecked()) {
+        resultList->clear();
+        resultList->insertStringList (engine->matchSubanagram (word));
     }
     else {
         QMessageBox::information(this, "Search Type Not Implemented",
