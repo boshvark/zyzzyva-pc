@@ -21,13 +21,23 @@ class WordValidator : public QValidator
   Q_OBJECT
   public:
     WordValidator (QObject* parent = 0, const char* name = 0)
-      : QValidator (parent, name) { }
+      : QValidator (parent, name), options (None) { }
 
     QValidator::State validate (QString& input, int& pos) const;
+
+    int  getOptions() const { return options; }
+    void setOptions (int o) { options = o; }
+
+    enum Options {
+        None = 0,
+        AllowQuestionMarks = 1
+    };
 
   private:
     void replaceRegExp (const QRegExp& re, const QString& str,
                         QString& input, int& pos) const;
+
+    int options;
 };
 
 #endif // WORD_VALIDATOR_H
