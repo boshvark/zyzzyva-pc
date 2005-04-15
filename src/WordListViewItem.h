@@ -98,6 +98,7 @@ class WordListViewItem : public QListViewItem
     void paintCell (QPainter* p, const QColorGroup& cg, int column, int width,
                     int align);
     void paintFocus (QPainter* p, const QColorGroup& cg, const QRect& r);
+    virtual QString key (int column, bool ascending) const;
     virtual int compare (QListViewItem* i, int col, bool ascending) const;
 
   private:

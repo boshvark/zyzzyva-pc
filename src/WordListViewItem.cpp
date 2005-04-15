@@ -133,6 +133,22 @@ WordListViewItem::getColorGroup()
 }
 
 //---------------------------------------------------------------------------
+//  key
+//
+//! Reimplementation of virtual method QListViewItem::key.  Return a key that
+//! can be used for sorting this listview item by a particular column.
+//
+//! @param column the column index to be compared
+//! @param ascending the order in which to compare (ignored)
+//! @return a string by which this item can be compared
+//---------------------------------------------------------------------------
+QString
+WordListViewItem::key (int column, bool) const
+{
+    return ((column == 0) ? text (column).upper() : QString::null);
+}
+
+//---------------------------------------------------------------------------
 //  compare
 //
 //! Reimplementation of virtual method QListViewItem::compare.  Compare this
