@@ -27,6 +27,13 @@
 
 using namespace Defs;
 
+//---------------------------------------------------------------------------
+//  asString
+//
+//! Return a string representing the search spec.
+//
+//! @return the string representation
+//---------------------------------------------------------------------------
 QString
 SearchSpec::asString() const
 {
