@@ -335,11 +335,36 @@ SettingsDialog::readSettings (const QSettings& settings)
         themeCboxToggled (useTileTheme);
     }
 
+    // Main font
     QString fontStr = settings.readEntry (SETTINGS_FONT_MAIN, QString::null,
                                           &ok);
     if (ok) {
         fontMainLine->setText (fontStr);
         fontMainLine->home (false);
+    }
+
+    // Word list font
+    fontStr = settings.readEntry (SETTINGS_FONT_WORD_LISTS, QString::null,
+                                  &ok);
+    if (ok) {
+        fontWordListLine->setText (fontStr);
+        fontWordListLine->home (false);
+    }
+
+    // Quiz label font
+    fontStr = settings.readEntry (SETTINGS_FONT_QUIZ_LABEL, QString::null,
+                                  &ok);
+    if (ok) {
+        fontQuizLabelLine->setText (fontStr);
+        fontQuizLabelLine->home (false);
+    }
+
+    // Definition font
+    fontStr = settings.readEntry (SETTINGS_FONT_DEFINITIONS, QString::null,
+                                  &ok);
+    if (ok) {
+        fontDefinitionLine->setText (fontStr);
+        fontDefinitionLine->home (false);
     }
 
     bool lengthSort = settings.readBoolEntry (SETTINGS_SORT_BY_LENGTH, false);
@@ -359,6 +384,10 @@ SettingsDialog::writeSettings (QSettings& settings)
     settings.writeEntry (SETTINGS_USE_TILE_THEME, themeCbox->isChecked());
     settings.writeEntry (SETTINGS_TILE_THEME, themeCombo->currentText());
     settings.writeEntry (SETTINGS_FONT_MAIN, fontMainLine->text());
+    settings.writeEntry (SETTINGS_FONT_WORD_LISTS, fontWordListLine->text());
+    settings.writeEntry (SETTINGS_FONT_QUIZ_LABEL, fontQuizLabelLine->text());
+    settings.writeEntry (SETTINGS_FONT_DEFINITIONS,
+                         fontDefinitionLine->text());
     settings.writeEntry (SETTINGS_SORT_BY_LENGTH,
                          lengthSortCbox->isChecked());
 }
