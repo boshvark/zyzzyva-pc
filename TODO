@@ -1,16 +1,7 @@
 Stuff that would be nice:
 
-* Bug fix: When displaying wildcard letters in lower-case, continue sorting as
-  if all the letters were upper case.  Otherwise, words beginning with lower
-  case letters may be sorted out of order.
-
-* Allow timers for quiz questions.  Allow different types of timers: total
-  time per question; total time per correct answer; time per answer.
-
 * Save size of Analyze dialog across sessions.  Also don't always make it
   fixed at the minimum size in both directions.  Maybe just horizontally.
-
-* Allow Show Hooks function by right clicking on any list.
 
 * Configure docs/help/zyzzyva.dcf at compile time with the correct
   QtAssistantClient version.
