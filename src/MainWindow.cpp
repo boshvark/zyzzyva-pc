@@ -254,7 +254,8 @@ MainWindow::readSettings (bool useGeometry)
     // Quiz label font
     fontStr = settingsDialog->getWordListFont();
     if (font.fromString (fontStr))
-        qApp->setFont (font, true, "QCanvas");
+        // FIXME: How to get QCanvasText items to update their font?
+        qApp->setFont (font, true, "QCanvasText");
     else
         qWarning ("Cannot set font: " + fontStr);
 
