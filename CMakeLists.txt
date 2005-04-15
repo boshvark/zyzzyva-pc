@@ -42,6 +42,7 @@ SET (MOCS
     src/AnalyzeQuizDialog.h
     src/DefineForm.h
     src/DefinitionDialog.h
+    src/DefinitionLabel.h
     src/HelpDialog.h
     src/HookDialog.h
     src/JudgeForm.h

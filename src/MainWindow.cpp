@@ -251,6 +251,20 @@ MainWindow::readSettings (bool useGeometry)
     else
         qWarning ("Cannot set font: " + fontStr);
 
+    // Quiz label font
+    fontStr = settingsDialog->getWordListFont();
+    if (font.fromString (fontStr))
+        qApp->setFont (font, true, "QCanvas");
+    else
+        qWarning ("Cannot set font: " + fontStr);
+
+    // Definition font
+    fontStr = settingsDialog->getDefinitionFont();
+    if (font.fromString (fontStr))
+        qApp->setFont (font, true, "DefinitionLabel");
+    else
+        qWarning ("Cannot set font: " + fontStr);
+
     quizForm->setTileTheme (settingsDialog->getTileTheme());
     WordListViewItem::setSortByLength (settingsDialog->getSortByLength());
 }

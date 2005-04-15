@@ -25,11 +25,11 @@
 #ifndef JUDGE_FORM_H
 #define JUDGE_FORM_H
 
-#include <qlabel.h>
 #include <qtextedit.h>
 #include <qpushbutton.h>
 #include <qvgroupbox.h>
 
+class DefinitionLabel;
 class WordEngine;
 
 class JudgeForm : public QFrame
@@ -50,7 +50,7 @@ class JudgeForm : public QFrame
     QPushButton* clearButton;
     QPushButton* judgeButton;
     QVGroupBox*  resultBox;
-    QLabel*      resultLabel;
+    DefinitionLabel* resultLabel;
 };
 
 #endif // JUDGE_FORM_H

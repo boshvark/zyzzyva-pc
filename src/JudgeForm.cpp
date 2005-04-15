@@ -21,6 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "JudgeForm.h"
+#include "DefinitionLabel.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
 #include "Auxil.h"
@@ -76,7 +77,7 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (resultBox);
     resultHlay->addWidget (resultBox);
 
-    resultLabel = new QLabel (resultBox, "resultLabel");
+    resultLabel = new DefinitionLabel (resultBox, "resultLabel");
     Q_CHECK_PTR (resultLabel);
 
     judgeButton->setEnabled (false);

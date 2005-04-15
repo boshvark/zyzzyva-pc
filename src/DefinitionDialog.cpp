@@ -24,9 +24,9 @@
 
 #include "DefinitionDialog.h"
 #include "WordEngine.h"
+#include "DefinitionLabel.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qlabel.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qvgroupbox.h>
@@ -59,7 +59,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
     groupBox->setTitle (word);
     mainVlay->addWidget (groupBox);
 
-    QLabel* label = new QLabel (groupBox, "label");
+    DefinitionLabel* label = new DefinitionLabel (groupBox, "label");
     Q_CHECK_PTR (label);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");

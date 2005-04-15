@@ -1,7 +1,9 @@
 //---------------------------------------------------------------------------
-// DefineForm.h
+// DefinitionLabel.h
 //
-// A form for looking up and displaying word definitions.
+// A class derived from QLabel, used to display word definitions.  This class
+// currently does nothing special.  It only exists so objects of this class
+// can be distinguished from other QLabel objects when applying font settings.
 //
 // Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,33 +24,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef DEFINE_FORM_H
-#define DEFINE_FORM_H
+#ifndef DEFINITION_LABEL_H
+#define DEFINITION_LABEL_H
 
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qvgroupbox.h>
+#include <qlabel.h>
 
-class DefinitionLabel;
-class WordEngine;
-
-class DefineForm : public QFrame
+class DefinitionLabel : public QLabel
 {
-  Q_OBJECT
-  public:
-    DefineForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-                WFlags f = 0);
+    Q_OBJECT
+    public:
+    DefinitionLabel (QWidget* parent, const char* name = 0, WFlags f = 0)
+        : QLabel (parent, name, f) { }
+    DefinitionLabel (const QString& text, QWidget* parent, const char* name =
+                     0, WFlags f = 0)
+        : QLabel (text, parent, name, f) { }
+    DefinitionLabel (QWidget* buddy, const QString& text, QWidget* parent,
+                     const char* name = 0, WFlags f = 0)
+        : QLabel (buddy, text, parent, name, f) { }
 
-  public slots:
-    void wordChanged (const QString& word);
-    void defineWord();
-
-  private:
-    WordEngine*  engine;
-    QLineEdit*   wordLine;
-    QPushButton* defineButton;
-    QVGroupBox*  resultBox;
-    DefinitionLabel* resultLabel;
+    virtual ~DefinitionLabel() { }
 };
 
-#endif // DEFINE_FORM_H
+#endif // DEFINITION_LABEL_H
