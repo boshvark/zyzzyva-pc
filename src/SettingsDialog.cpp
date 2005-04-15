@@ -31,16 +31,25 @@
 #include <qfontdialog.h>
 #include <qlayout.h>
 #include <qregexp.h>
+#include <qsignalmapper.h>
 #include <qvgroupbox.h>
 
 const QString SETTINGS_IMPORT = "/autoimport";
 const QString SETTINGS_IMPORT_FILE = "/autoimport_file";
-const QString SETTINGS_FONT = "/font";
+const QString SETTINGS_FONT_MAIN = "/font";
+const QString SETTINGS_FONT_WORD_LISTS = "/font_word_lists";
+const QString SETTINGS_FONT_QUIZ_LABEL = "/font_quiz_label";
+const QString SETTINGS_FONT_DEFINITIONS = "/font_definitions";
 const QString SETTINGS_SORT_BY_LENGTH = "/wordlist_sort_by_length";
 const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
 const QString SETTINGS_TILE_THEME = "/tile_theme";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DIALOG_CAPTION = "Preferences";
+
+const int FONT_MAIN_BUTTON = 1;
+const int FONT_WORD_LISTS_BUTTON = 2;
+const int FONT_QUIZ_LABEL_BUTTON = 3;
+const int FONT_DEFINITIONS_BUTTON = 4;
 
 using namespace Defs;
 
@@ -127,6 +136,12 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     Q_CHECK_PTR (themeCombo);
     themeHlay->addWidget (themeCombo);
 
+    // Signal mapper for the Choose Font buttons
+    QSignalMapper* signalMapper = new QSignalMapper (this, "signalMapper");
+    Q_CHECK_PTR (signalMapper);
+    connect (signalMapper, SIGNAL (mapped (int)),
+             SLOT (chooseFontButtonClicked (int)));
+
     QVGroupBox* fontGbox = new QVGroupBox (this, "fontGbox");
     Q_CHECK_PTR (fontGbox);
     fontGbox->setTitle ("Font");
@@ -135,22 +150,99 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     QWidget* fontWidget = new QWidget (fontGbox, "fontWidget");
     Q_CHECK_PTR (fontWidget);
 
-    QHBoxLayout* fontHlay = new QHBoxLayout (fontWidget, MARGIN, SPACING,
-                                             "fontHlay");
-    Q_CHECK_PTR (fontHlay);
+    QGridLayout* fontGlay = new QGridLayout (fontWidget, 4, 3, MARGIN,
+                                             SPACING, "fontGlay");
+    Q_CHECK_PTR (fontGlay);
 
-    fontLine = new QLineEdit (fontWidget, "fontLine");
-    Q_CHECK_PTR (fontLine);
-    fontLine->setReadOnly (true);
-    fontLine->setText (this->font().toString());
-    fontHlay->addWidget (fontLine);
+    // Main font
+    int row = 0;
+    QLabel* fontMainLabel = new QLabel ("Main:", fontWidget, "fontMainLabel");
+    Q_CHECK_PTR (fontMainLabel);
+    fontGlay->addWidget (fontMainLabel, row, 0, Qt::AlignLeft);
 
-    chooseFontButton = new QPushButton ("Choose...", fontWidget,
-                                        "chooseFontButton");
-    Q_CHECK_PTR (chooseFontButton);
-    connect (chooseFontButton, SIGNAL (clicked()),
-             SLOT (chooseFontButtonClicked()));
-    fontHlay->addWidget (chooseFontButton);
+    fontMainLine = new QLineEdit (fontWidget, "fontMainLine");
+    Q_CHECK_PTR (fontMainLine);
+    fontMainLine->setReadOnly (true);
+    fontMainLine->setText (this->font().toString());
+    fontMainLine->home (false);
+    fontGlay->addWidget (fontMainLine, row, 1);
+
+    QPushButton* chooseFontMainButton =
+        new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    Q_CHECK_PTR (chooseFontMainButton);
+    connect (chooseFontMainButton, SIGNAL (clicked()), signalMapper,
+             SLOT (map()));
+    signalMapper->setMapping (chooseFontMainButton, FONT_MAIN_BUTTON);
+    fontGlay->addWidget (chooseFontMainButton, row, 2);
+
+    // Word list font
+    ++row;
+    QLabel* fontWordListLabel = new QLabel ("Word Lists:", fontWidget,
+                                            "fontWordListLabel");
+    Q_CHECK_PTR (fontWordListLabel);
+    fontGlay->addWidget (fontWordListLabel, row, 0, Qt::AlignLeft);
+
+    fontWordListLine = new QLineEdit (fontWidget, "fontWordListLine");
+    Q_CHECK_PTR (fontWordListLine);
+    fontWordListLine->setReadOnly (true);
+    fontWordListLine->setText (this->font().toString());
+    fontWordListLine->home (false);
+    fontGlay->addWidget (fontWordListLine, row, 1);
+
+    QPushButton* chooseFontWordListButton =
+        new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    Q_CHECK_PTR (chooseFontWordListButton);
+    connect (chooseFontWordListButton, SIGNAL (clicked()), signalMapper,
+             SLOT (map()));
+    signalMapper->setMapping (chooseFontWordListButton,
+                              FONT_WORD_LISTS_BUTTON);
+    fontGlay->addWidget (chooseFontWordListButton, row, 2);
+
+    // Quiz label font
+    ++row;
+    QLabel* fontQuizLabelLabel = new QLabel ("Quizzes:", fontWidget,
+                                             "fontQuizLabelLabel");
+    Q_CHECK_PTR (fontQuizLabelLabel);
+    fontGlay->addWidget (fontQuizLabelLabel, row, 0, Qt::AlignLeft);
+
+    fontQuizLabelLine = new QLineEdit (fontWidget, "fontQuizLabelLine");
+    Q_CHECK_PTR (fontQuizLabelLine);
+    fontQuizLabelLine->setReadOnly (true);
+    fontQuizLabelLine->setText (this->font().toString());
+    fontQuizLabelLine->home (false);
+    fontGlay->addWidget (fontQuizLabelLine, row, 1);
+
+    QPushButton* chooseFontQuizLabelButton =
+        new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    Q_CHECK_PTR (chooseFontQuizLabelButton);
+    connect (chooseFontQuizLabelButton, SIGNAL (clicked()), signalMapper,
+             SLOT (map()));
+    signalMapper->setMapping (chooseFontQuizLabelButton,
+                              FONT_QUIZ_LABEL_BUTTON);
+    fontGlay->addWidget (chooseFontQuizLabelButton, row, 2);
+
+    // Definition font
+    ++row;
+    QLabel* fontDefinitionLabel = new QLabel ("Definitions:", fontWidget,
+                                              "fontDefinitionLabel");
+    Q_CHECK_PTR (fontDefinitionLabel);
+    fontGlay->addWidget (fontDefinitionLabel, row, 0, Qt::AlignLeft);
+
+    fontDefinitionLine = new QLineEdit (fontWidget, "fontDefinitionLine");
+    Q_CHECK_PTR (fontDefinitionLine);
+    fontDefinitionLine->setReadOnly (true);
+    fontDefinitionLine->setText (this->font().toString());
+    fontDefinitionLine->home (false);
+    fontGlay->addWidget (fontDefinitionLine, row, 1);
+
+    QPushButton* chooseFontDefinitionButton =
+        new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    Q_CHECK_PTR (chooseFontDefinitionButton);
+    connect (chooseFontDefinitionButton, SIGNAL (clicked()), signalMapper,
+             SLOT (map()));
+    signalMapper->setMapping (chooseFontDefinitionButton,
+                              FONT_DEFINITIONS_BUTTON);
+    fontGlay->addWidget (chooseFontDefinitionButton, row, 2);
 
     mainVlay->addStretch (1);
 
@@ -243,9 +335,12 @@ SettingsDialog::readSettings (const QSettings& settings)
         themeCboxToggled (useTileTheme);
     }
 
-    QString fontStr = settings.readEntry (SETTINGS_FONT, QString::null, &ok);
-    if (ok)
-        fontLine->setText (fontStr);
+    QString fontStr = settings.readEntry (SETTINGS_FONT_MAIN, QString::null,
+                                          &ok);
+    if (ok) {
+        fontMainLine->setText (fontStr);
+        fontMainLine->home (false);
+    }
 
     bool lengthSort = settings.readBoolEntry (SETTINGS_SORT_BY_LENGTH, false);
     lengthSortCbox->setChecked (lengthSort);
@@ -263,7 +358,7 @@ SettingsDialog::writeSettings (QSettings& settings)
     settings.writeEntry (SETTINGS_IMPORT_FILE, autoImportLine->text());
     settings.writeEntry (SETTINGS_USE_TILE_THEME, themeCbox->isChecked());
     settings.writeEntry (SETTINGS_TILE_THEME, themeCombo->currentText());
-    settings.writeEntry (SETTINGS_FONT, fontLine->text());
+    settings.writeEntry (SETTINGS_FONT_MAIN, fontMainLine->text());
     settings.writeEntry (SETTINGS_SORT_BY_LENGTH,
                          lengthSortCbox->isChecked());
 }
@@ -293,7 +388,7 @@ SettingsDialog::getAutoImportFile() const
 QString
 SettingsDialog::getFont() const
 {
-    return fontLine->text();
+    return fontMainLine->text();
 }
 
 //---------------------------------------------------------------------------
@@ -374,16 +469,33 @@ SettingsDialog::themeCboxToggled (bool on)
 //---------------------------------------------------------------------------
 //  chooseFontButtonClicked
 //
-//! Slot called when the Choose Font button is clicked.  Create a font chooser
-//! dialog and place the name of the chosen font in the font line edit.
+//! Slot called when a Choose Font button is clicked.  Create a font chooser
+//! dialog and place the name of the chosen font in the corresponding font
+//! line edit.
+//
+//! @param button the identifier of the button that was clicked
 //---------------------------------------------------------------------------
 void
-SettingsDialog::chooseFontButtonClicked()
+SettingsDialog::chooseFontButtonClicked (int button)
 {
     bool ok = false;
-    QFont font = QFontDialog::getFont (&ok, this->font(), this);
-    if (ok)
-        fontLine->setText (font.toString());
+
+    QLineEdit* lineEdit = 0;
+    switch (button) {
+        case FONT_MAIN_BUTTON:        lineEdit = fontMainLine; break;
+        case FONT_WORD_LISTS_BUTTON:  lineEdit = fontWordListLine; break;
+        case FONT_QUIZ_LABEL_BUTTON:  lineEdit = fontQuizLabelLine; break;
+        case FONT_DEFINITIONS_BUTTON: lineEdit = fontDefinitionLine; break;
+        default: return;
+    }
+
+    QFont currentFont = this->font();
+    currentFont.fromString (lineEdit->text());
+    QFont newFont = QFontDialog::getFont (&ok, currentFont, this);
+    if (ok) {
+        lineEdit->setText (newFont.toString());
+        lineEdit->home (false);
+    }
 }
 
 //---------------------------------------------------------------------------

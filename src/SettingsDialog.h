@@ -52,7 +52,7 @@ class SettingsDialog : public QDialog
     void browseButtonClicked();
     void autoImportCboxToggled (bool on);
     void themeCboxToggled (bool on);
-    void chooseFontButtonClicked();
+    void chooseFontButtonClicked (int button);
 
   private:
     void fillThemeCombo();
@@ -64,8 +64,10 @@ class SettingsDialog : public QDialog
     QCheckBox*   themeCbox;
     QLabel*      themeLabel;
     QComboBox*   themeCombo;
-    QLineEdit*   fontLine;
-    QPushButton* chooseFontButton;
+    QLineEdit*   fontMainLine;
+    QLineEdit*   fontWordListLine;
+    QLineEdit*   fontQuizLabelLine;
+    QLineEdit*   fontDefinitionLine;
     QCheckBox*   lengthSortCbox;
 };
 
