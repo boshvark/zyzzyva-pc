@@ -25,6 +25,7 @@
 #include "WordListView.h"
 #include "WordListViewItem.h"
 #include "DefinitionDialog.h"
+#include "HookDialog.h"
 #include "WordEngine.h"
 #include "WordPopupMenu.h"
 
@@ -112,8 +113,15 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
     int choice = menu->exec (point);
     delete menu;
 
-    if (choice == WordPopupMenu::ShowDefinition)
+    switch (choice) {
+        case WordPopupMenu::ShowDefinition:
         displayDefinition (item->text (0).upper());
+        break;
+
+        case WordPopupMenu::ShowHooks:
+        displayHooks (item->text (0).upper());
+        break;
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -131,6 +139,25 @@ WordListView::displayDefinition (const QString& word)
 
     DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
                                                      "dialog", true);
+    dialog->exec();
+    delete dialog;
+}
+
+//---------------------------------------------------------------------------
+// displayHooks
+//
+//! Displays the hooks of a word.
+//
+//! @param word the word whose definition to display
+//---------------------------------------------------------------------------
+void
+WordListView::displayHooks (const QString& word)
+{
+    if (!wordEngine)
+        return;
+
+    HookDialog* dialog = new HookDialog (wordEngine, word, this, "dialog",
+                                         true);
     dialog->exec();
     delete dialog;
 }

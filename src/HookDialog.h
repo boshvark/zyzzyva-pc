@@ -1,9 +1,9 @@
 //---------------------------------------------------------------------------
-// WordPopupMenu.cpp
+// HookDialog.h
 //
-// A popup menu to be executed when the user right-clicks on a word list.
+// A dialog for displaying the front and back hooks of a word.
 //
-// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,28 +22,34 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include "WordPopupMenu.h"
+#ifndef HOOK_DIALOG_H
+#define HOOK_DIALOG_H
 
-//---------------------------------------------------------------------------
-// WordPopupMenu
-//
-//! Constructor.
-//
-//! @param parent the parent widget
-//! @param name the name of this widget
-//---------------------------------------------------------------------------
-WordPopupMenu::WordPopupMenu (QWidget* parent, const char* name)
-    : QPopupMenu (parent, name)
-{
-    insertItem ("Show Definition", ShowDefinition);
-    insertItem ("Show Hooks", ShowHooks);
-}
+#include <qdialog.h>
+#include <qlabel.h>
+#include <qpushbutton.h>
 
-//---------------------------------------------------------------------------
-// ~WordPopupMenu
-//
-//! Destructor.
-//---------------------------------------------------------------------------
-WordPopupMenu::~WordPopupMenu()
+class WordEngine;
+class WordListView;
+
+class HookDialog : public QDialog
 {
-}
+  Q_OBJECT
+  public:
+    HookDialog (WordEngine* we, const QString& word, QWidget* parent = 0,
+                const char* name = 0, bool modal = false, WFlags f = 0);
+    ~HookDialog();
+
+  private:
+    void setWord (const QString& word);
+
+  private:
+    WordEngine*   wordEngine;
+    QLabel*       wordLabel;
+    WordListView* frontList;
+    WordListView* backList;
+    QPushButton*  closeButton;
+};
+
+#endif // HOOK_DIALOG_H
+

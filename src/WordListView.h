@@ -43,6 +43,7 @@ class WordListView : public QListView
     void doReturnPressed (QListViewItem* item);
     void doPopupMenu (QListViewItem* item, const QPoint& point, int);
     void displayDefinition (const QString& word);
+    void displayHooks (const QString& word);
 
   private:
     WordEngine* wordEngine;

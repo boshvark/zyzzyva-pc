@@ -36,7 +36,8 @@ class WordPopupMenu : public QPopupMenu
 
   public:
     enum {
-        ShowDefinition
+        ShowDefinition,
+        ShowHooks
     };
 };
 

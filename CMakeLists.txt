@@ -16,6 +16,7 @@ SET (SRCS
     src/DefineForm.cpp
     src/DefinitionDialog.cpp
     src/HelpDialog.cpp
+    src/HookDialog.cpp
     src/ImageItem.cpp
     src/JudgeForm.cpp
     src/main.cpp
@@ -42,6 +43,7 @@ SET (MOCS
     src/DefineForm.h
     src/DefinitionDialog.h
     src/HelpDialog.h
+    src/HookDialog.h
     src/JudgeForm.h
     src/MainWindow.h
     src/NewQuizDialog.h
