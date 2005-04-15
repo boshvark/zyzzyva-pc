@@ -3,6 +3,11 @@ Stuff that would be nice:
 * Bug fix: Figure out how to change the font in the quiz canvas based on the
   user's font settings.  And then do it!
 
+* Create new DefinitionGroupBox class and change its font along with the
+  DefinitionLabel preferences.
+
+* New font preference: Input areas.
+
 * Save size of Analyze dialog across sessions.  Also don't always make it
   fixed at the minimum size in both directions.  Maybe just horizontally.
 
