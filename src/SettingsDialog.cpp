@@ -408,16 +408,55 @@ SettingsDialog::getAutoImportFile() const
 }
 
 //---------------------------------------------------------------------------
-//  getFont
+//  getMainFont
 //
-//! Return the font setting.
+//! Return the main font setting.
 //
 //! @return the name of the preferred font
 //---------------------------------------------------------------------------
 QString
-SettingsDialog::getFont() const
+SettingsDialog::getMainFont() const
 {
     return fontMainLine->text();
+}
+
+//---------------------------------------------------------------------------
+//  getWordListFont
+//
+//! Return the word list font setting.
+//
+//! @return the name of the preferred font
+//---------------------------------------------------------------------------
+QString
+SettingsDialog::getWordListFont() const
+{
+    return fontWordListLine->text();
+}
+
+//---------------------------------------------------------------------------
+//  getQuizLabelFont
+//
+//! Return the quiz label font setting.
+//
+//! @return the name of the preferred font
+//---------------------------------------------------------------------------
+QString
+SettingsDialog::getQuizLabelFont() const
+{
+    return fontQuizLabelLine->text();
+}
+
+//---------------------------------------------------------------------------
+//  getDefinitionFont
+//
+//! Return the definition font setting.
+//
+//! @return the name of the preferred font
+//---------------------------------------------------------------------------
+QString
+SettingsDialog::getDefinitionFont() const
+{
+    return fontDefinitionLine->text();
 }
 
 //---------------------------------------------------------------------------

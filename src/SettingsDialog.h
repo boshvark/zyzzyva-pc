@@ -44,7 +44,10 @@ class SettingsDialog : public QDialog
     void readSettings (const QSettings& settings);
     void writeSettings (QSettings& settings);
     QString getAutoImportFile() const;
-    QString getFont() const;
+    QString getMainFont() const;
+    QString getWordListFont() const;
+    QString getQuizLabelFont() const;
+    QString getDefinitionFont() const;
     QString getTileTheme() const;
     bool getSortByLength() const;
 

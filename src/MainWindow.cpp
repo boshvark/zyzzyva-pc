@@ -235,10 +235,19 @@ MainWindow::readSettings (bool useGeometry)
     }
     settingsDialog->readSettings (settings);
     settings.endGroup();
+
+    // Main font
     QFont font;
-    QString fontStr = settingsDialog->getFont();
+    QString fontStr = settingsDialog->getMainFont();
     if (font.fromString (fontStr))
         qApp->setFont (font, true);
+    else
+        qWarning ("Cannot set font: " + fontStr);
+
+    // Word list font
+    fontStr = settingsDialog->getWordListFont();
+    if (font.fromString (fontStr))
+        qApp->setFont (font, true, "WordListView");
     else
         qWarning ("Cannot set font: " + fontStr);
 
