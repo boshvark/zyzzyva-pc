@@ -24,6 +24,7 @@
 
 #include "QuizForm.h"
 #include "AnalyzeQuizDialog.h"
+#include "DefinitionLabel.h"
 #include "ImageItem.h"
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
@@ -124,11 +125,11 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     Q_CHECK_PTR (statusHlay);
     mainVlay->addLayout (statusHlay);
 
-    responseStatusLabel = new QLabel (this, "responseStatusLabel");
+    responseStatusLabel = new DefinitionLabel (this, "responseStatusLabel");
     Q_CHECK_PTR (responseStatusLabel);
     statusHlay->addWidget (responseStatusLabel);
 
-    questionStatusLabel = new QLabel (this, "questionStatusLabel");
+    questionStatusLabel = new DefinitionLabel (this, "questionStatusLabel");
     Q_CHECK_PTR (questionStatusLabel);
     statusHlay->addWidget (questionStatusLabel);
 
@@ -233,7 +234,7 @@ QuizForm::responseEntered()
         updateStats();
 
     // Update the response status label
-    responseStatusLabel->setText(response + " : " + statusStr);
+    responseStatusLabel->setText (response + " : " + statusStr);
 
     // Restart the timer, if the timer runs per response
     if (timerId && (timerType == PerResponse))

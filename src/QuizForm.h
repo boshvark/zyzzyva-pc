@@ -37,6 +37,7 @@
 #include "NewQuizDialog.h"
 
 class AnalyzeQuizDialog;
+class DefinitionLabel;
 class QuizEngine;
 class WordEngine;
 class WordListView;
@@ -89,8 +90,8 @@ class QuizForm : public QFrame
     QCanvas*      questionCanvas;
     QLineEdit*    inputLine;
     WordListView* responseList;
-    QLabel*       responseStatusLabel;
-    QLabel*       questionStatusLabel;
+    DefinitionLabel* responseStatusLabel;
+    DefinitionLabel* questionStatusLabel;
     QPushButton*  nextQuestionButton;
     QPushButton*  checkResponseButton;
     QPushButton*  pauseButton;
