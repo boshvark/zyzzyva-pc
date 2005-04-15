@@ -30,7 +30,7 @@
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// JudgeForm
+//  JudgeForm
 //
 //! Constructor.
 //
@@ -85,7 +85,7 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
 }
 
 //---------------------------------------------------------------------------
-// textChanged
+//  textChanged
 //
 //! Called when the contents of the input area change.  Changes the input area
 //! contents to upper case, and enables or disables the buttons appropriately.
@@ -106,7 +106,7 @@ JudgeForm::textChanged()
 }
 
 //---------------------------------------------------------------------------
-// clear
+//  clear
 //
 //! Clear the input area and the result area.
 //---------------------------------------------------------------------------
@@ -120,7 +120,7 @@ JudgeForm::clear()
 }
 
 //---------------------------------------------------------------------------
-// judgeWord
+//  judgeWord
 //
 //! Look up and display the acceptability of the word currently in the word
 //! edit area.

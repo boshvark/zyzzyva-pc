@@ -25,7 +25,7 @@
 #include "ImageItem.h"
 
 //---------------------------------------------------------------------------
-// ImageItem
+//  ImageItem
 //
 //! Constructor.  Converts a QImage to a QPixmap and stores it.
 //
@@ -39,7 +39,7 @@ ImageItem::ImageItem (const QImage& image, QCanvas* canvas)
 }
 
 //---------------------------------------------------------------------------
-// ImageItem
+//  ImageItem
 //
 //! Constructor.  Takes a QPixmap and stores it.
 //
@@ -52,7 +52,7 @@ ImageItem::ImageItem (const QPixmap& p, QCanvas* canvas)
 }
 
 //---------------------------------------------------------------------------
-// drawShape
+//  drawShape
 //
 //! Implementation of virtual QCanvasRectangle method.  Draws the pixmap via a
 //! painter object.

@@ -33,7 +33,7 @@ using namespace std;
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// WordGraph
+//  WordGraph
 //
 //! Constructor.
 //---------------------------------------------------------------------------
@@ -43,7 +43,7 @@ WordGraph::WordGraph()
 }
 
 //---------------------------------------------------------------------------
-// ~WordGraph
+//  ~WordGraph
 //
 //! Destructor.
 //---------------------------------------------------------------------------
@@ -52,7 +52,7 @@ WordGraph::~WordGraph()
 }
 
 //---------------------------------------------------------------------------
-// addWord
+//  addWord
 //
 //! Add a word to the graph.
 //
@@ -97,7 +97,7 @@ WordGraph::addWord (const QString& w)
 }
 
 //---------------------------------------------------------------------------
-// containsWord
+//  containsWord
 //
 //! Determine whether the graph contains a word.
 //
@@ -132,7 +132,7 @@ WordGraph::containsWord (const QString& w) const
 }
 
 //---------------------------------------------------------------------------
-// search
+//  search
 //
 //! Search for acceptable words matching a search specification.
 //
@@ -290,7 +290,7 @@ WordGraph::search (const SearchSpec& spec) const
 }
 
 //---------------------------------------------------------------------------
-// compress
+//  compress
 //
 //! Compress the graph by eliminating duplication of common suffixes.
 //---------------------------------------------------------------------------
@@ -300,7 +300,7 @@ WordGraph::compress()
 }
 
 //---------------------------------------------------------------------------
-// print
+//  print
 //
 //! Print a rudimentary ASCII representation of the graph.
 //---------------------------------------------------------------------------
@@ -348,7 +348,7 @@ WordGraph::print() const
 }
 
 //---------------------------------------------------------------------------
-// matchesSpec
+//  matchesSpec
 //
 //! Determine whether a word matches a search specification.  Only the
 //! following attributes are checked: Include Letters, Consist Letters/Pct,
@@ -388,7 +388,7 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
 }
 
 //---------------------------------------------------------------------------
-// Node
+//  Node
 //
 //! Constructor.
 //---------------------------------------------------------------------------
@@ -398,7 +398,7 @@ WordGraph::Node::Node(char c, bool e)
 }
 
 //---------------------------------------------------------------------------
-// ~Node
+//  ~Node
 //
 //! Destructor.  Destroy this node along with its next and child nodes.
 //---------------------------------------------------------------------------
@@ -409,7 +409,7 @@ WordGraph::Node::~Node()
 }
 
 //---------------------------------------------------------------------------
-// operator==
+//  operator==
 //
 //! Compare two nodes to see if they are equivalent.  Two nodes are
 //! equivalent if their internal data are equal, and if their CHILD and

@@ -60,7 +60,7 @@ const QString SETTINGS_GEOMETRY_HEIGHT = "/height";
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// MainWindow
+//  MainWindow
 //
 //! Constructor.
 //
@@ -131,7 +131,7 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 }
 
 //---------------------------------------------------------------------------
-// ~MainWindow
+//  ~MainWindow
 //
 //! Destructor.  Save application settings.
 //---------------------------------------------------------------------------
@@ -141,7 +141,7 @@ MainWindow::~MainWindow()
 }
 
 //---------------------------------------------------------------------------
-// importInteractive
+//  importInteractive
 //
 //! Allow the user to import a word list from a file.
 //---------------------------------------------------------------------------
@@ -162,7 +162,7 @@ MainWindow::importInteractive()
 }
 
 //---------------------------------------------------------------------------
-// editSettings
+//  editSettings
 //
 //! Allow the user to edit application settings.  If the user makes changes
 //! and accepts the dialog, write the settings.  If the user rejects the
@@ -181,7 +181,7 @@ MainWindow::editSettings()
 }
 
 //---------------------------------------------------------------------------
-// displayAbout
+//  displayAbout
 //
 //! Display an About screen.
 //---------------------------------------------------------------------------
@@ -192,7 +192,7 @@ MainWindow::displayAbout()
 }
 
 //---------------------------------------------------------------------------
-// displayHelp
+//  displayHelp
 //
 //! Display a Help screen.
 //---------------------------------------------------------------------------
@@ -203,7 +203,7 @@ MainWindow::displayHelp()
 }
 
 //---------------------------------------------------------------------------
-// setNumWords
+//  setNumWords
 //
 //! Update the label displaying the number of words loaded.
 //
@@ -216,7 +216,7 @@ MainWindow::setNumWords (int num)
 }
 
 //---------------------------------------------------------------------------
-// readSettings
+//  readSettings
 //
 //! Read application settings.
 //---------------------------------------------------------------------------
@@ -247,7 +247,7 @@ MainWindow::readSettings (bool useGeometry)
 }
 
 //---------------------------------------------------------------------------
-// writeSettings
+//  writeSettings
 //
 //! Write application settings.
 //---------------------------------------------------------------------------
@@ -266,7 +266,7 @@ MainWindow::writeSettings()
 }
 
 //---------------------------------------------------------------------------
-// import
+//  import
 //
 //! Import words from a file.
 //

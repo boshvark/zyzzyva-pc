@@ -45,7 +45,7 @@ const QString DIALOG_CAPTION = "Preferences";
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// SettingsDialog
+//  SettingsDialog
 //
 //! Constructor.
 //
@@ -196,7 +196,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
 }
 
 //---------------------------------------------------------------------------
-// ~SettingsDialog
+//  ~SettingsDialog
 //
 //! Destructor.  Save application settings.
 //---------------------------------------------------------------------------
@@ -205,7 +205,7 @@ SettingsDialog::~SettingsDialog()
 }
 
 //---------------------------------------------------------------------------
-// readSettings
+//  readSettings
 //
 //! Read settings.
 //---------------------------------------------------------------------------
@@ -252,7 +252,7 @@ SettingsDialog::readSettings (const QSettings& settings)
 }
 
 //---------------------------------------------------------------------------
-// writeSettings
+//  writeSettings
 //
 //! Write settings.
 //---------------------------------------------------------------------------
@@ -269,7 +269,7 @@ SettingsDialog::writeSettings (QSettings& settings)
 }
 
 //---------------------------------------------------------------------------
-// getAutoImportFile
+//  getAutoImportFile
 //
 //! Return the file to be imported on startup, if auto-importing is
 //! enabled.
@@ -284,7 +284,7 @@ SettingsDialog::getAutoImportFile() const
 }
 
 //---------------------------------------------------------------------------
-// getFont
+//  getFont
 //
 //! Return the font setting.
 //
@@ -297,7 +297,7 @@ SettingsDialog::getFont() const
 }
 
 //---------------------------------------------------------------------------
-// getTileTheme
+//  getTileTheme
 //
 //! Return the tile theme setting.
 //
@@ -311,7 +311,7 @@ SettingsDialog::getTileTheme() const
 }
 
 //---------------------------------------------------------------------------
-// getSortByLength
+//  getSortByLength
 //
 //! Return the "sort by length" setting.
 //
@@ -324,7 +324,7 @@ SettingsDialog::getSortByLength() const
 }
 
 //---------------------------------------------------------------------------
-// browseButtonClicked
+//  browseButtonClicked
 //
 //! Slot called when the Browse button is clicked.  Create a file chooser
 //! dialog and place the name of the chosen file in the auto-import line
@@ -342,7 +342,7 @@ SettingsDialog::browseButtonClicked()
 }
 
 //---------------------------------------------------------------------------
-// autoImportCboxToggled
+//  autoImportCboxToggled
 //
 //! Slot called when the Auto Import check box is toggled.  Enable or
 //! disable the auto-import file edit area.
@@ -357,7 +357,7 @@ SettingsDialog::autoImportCboxToggled (bool on)
 }
 
 //---------------------------------------------------------------------------
-// themeCboxToggled
+//  themeCboxToggled
 //
 //! Slot called when the Tile Theme check box is toggled.  Enable or disable
 //! the tile theme selection area.
@@ -372,7 +372,7 @@ SettingsDialog::themeCboxToggled (bool on)
 }
 
 //---------------------------------------------------------------------------
-// chooseFontButtonClicked
+//  chooseFontButtonClicked
 //
 //! Slot called when the Choose Font button is clicked.  Create a font chooser
 //! dialog and place the name of the chosen font in the font line edit.
@@ -387,7 +387,7 @@ SettingsDialog::chooseFontButtonClicked()
 }
 
 //---------------------------------------------------------------------------
-// fillThemeCombo
+//  fillThemeCombo
 //
 //! Fill the Tile Theme combo box with the list of available tile themes.
 //---------------------------------------------------------------------------

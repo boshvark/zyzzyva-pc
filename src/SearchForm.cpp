@@ -36,7 +36,7 @@
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// SearchForm
+//  SearchForm
 //
 //! Constructor.
 //
@@ -93,7 +93,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 }
 
 //---------------------------------------------------------------------------
-// search
+//  search
 //
 //! Search for the word or pattern in the edit area, and display the results
 //! in the list box.
@@ -119,7 +119,7 @@ SearchForm::search()
 }
 
 //---------------------------------------------------------------------------
-// search
+//  search
 //
 //! Search for the word or pattern in the edit area, and display the results
 //! in the list box.
@@ -131,7 +131,7 @@ SearchForm::resetSpec()
 }
 
 //---------------------------------------------------------------------------
-// updateResultTotal
+//  updateResultTotal
 //
 //! Display the number of words currently in the search results.
 //! @param num the number of words

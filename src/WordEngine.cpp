@@ -36,7 +36,7 @@ using std::map;
 const int MAX_INPUT_LINE_LEN = 640;
 
 //---------------------------------------------------------------------------
-// importFile
+//  importFile
 //
 //! Import words from a file.  The file is assumed to be in plain text format,
 //! containing one word per line.
@@ -76,7 +76,7 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
 }
 
 //---------------------------------------------------------------------------
-// isAcceptable
+//  isAcceptable
 //
 //! Determine whether a word is acceptable.
 //
@@ -90,7 +90,7 @@ WordEngine::isAcceptable (const QString& word) const
 }
 
 //---------------------------------------------------------------------------
-// search
+//  search
 //
 //! Search for acceptable words matching a search specification.
 //
@@ -114,7 +114,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
 }
 
 //---------------------------------------------------------------------------
-// alphagrams
+//  alphagrams
 //
 //! Transform a list of strings into a list of alphagrams of those strings.
 //! The created list may be shorter than the original list.
@@ -142,7 +142,7 @@ WordEngine::alphagrams (const QStringList& list) const
 }
 
 //---------------------------------------------------------------------------
-// alphagram
+//  alphagram
 //
 //! Transform a string into its alphagram.
 //
@@ -172,9 +172,8 @@ WordEngine::alphagram (const QString& word) const
     return QString (chars);
 }
 
-
 //---------------------------------------------------------------------------
-// getDefinition
+//  getDefinition
 //
 //! Return the definition associated with a word.
 //

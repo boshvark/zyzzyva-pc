@@ -36,7 +36,7 @@ const QString TIMER_PER_RESPONSE = "per response";
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// NewQuizDialog
+//  NewQuizDialog
 //
 //! Constructor.
 //
@@ -131,7 +131,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
 }
 
 //---------------------------------------------------------------------------
-// getSearchSpec
+//  getSearchSpec
 //
 //! Get a SearchSpec corresponding to the state of the SearchSpecForm.
 //
@@ -144,7 +144,7 @@ NewQuizDialog::getSearchSpec() const
 }
 
 //---------------------------------------------------------------------------
-// getQuizAlphagrams
+//  getQuizAlphagrams
 //
 //! Get whether the quiz should use alphagrams of the individual words as
 //! quiz questions.
@@ -158,7 +158,7 @@ NewQuizDialog::getQuizAlphagrams() const
 }
 
 //---------------------------------------------------------------------------
-// getQuizRandomOrder
+//  getQuizRandomOrder
 //
 //! Get whether the quiz should present questions in random order.
 //
@@ -171,7 +171,7 @@ NewQuizDialog::getQuizRandomOrder() const
 }
 
 //---------------------------------------------------------------------------
-// getTimerEnabled
+//  getTimerEnabled
 //
 //! Get whether the timer should be enabled.
 //
@@ -184,7 +184,7 @@ NewQuizDialog::getTimerEnabled() const
 }
 
 //---------------------------------------------------------------------------
-// getTimerDuration
+//  getTimerDuration
 //
 //! Get the timer duration selected, if the timer is enabled.
 //
@@ -197,7 +197,7 @@ NewQuizDialog::getTimerDuration() const
 }
 
 //---------------------------------------------------------------------------
-// getTimerType
+//  getTimerType
 //
 //! Get the timer type, if the timer is enabled.
 //
@@ -217,7 +217,7 @@ NewQuizDialog::getTimerType() const
 }
 
 //---------------------------------------------------------------------------
-// alphagramsToggled
+//  alphagramsToggled
 //
 //! Called when the Alphagrams checkbox is toggled.  Disable the Random
 //! checkbox unless the Alphagrams checkbox is checked.
@@ -233,7 +233,7 @@ NewQuizDialog::alphagramsToggled (bool on)
 }
 
 //---------------------------------------------------------------------------
-// inputChanged
+//  inputChanged
 //
 //! Called when the text in the input line changes.
 //
@@ -246,7 +246,7 @@ NewQuizDialog::inputChanged (const QString& text)
 }
 
 //---------------------------------------------------------------------------
-// timerToggled
+//  timerToggled
 //
 //! Called when the Timer checkbox is toggled.  Disable the timer
 //! configuration unless the Alphagrams checkbox is checked.

@@ -34,7 +34,7 @@ const QString DIALOG_CAPTION = "About Zyzzyva";
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// AboutDialog
+//  AboutDialog
 //
 //! Constructor.
 //
@@ -80,7 +80,7 @@ AboutDialog::AboutDialog (QWidget* parent, const char* name, bool modal,
 }
 
 //---------------------------------------------------------------------------
-// ~AboutDialog
+//  ~AboutDialog
 //
 //! Destructor.
 //---------------------------------------------------------------------------

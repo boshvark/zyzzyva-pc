@@ -27,7 +27,7 @@
 #include <qfile.h>
 
 //---------------------------------------------------------------------------
-// getAboutString
+//  getAboutString
 //
 //! Return the About string for the application.  Read it from a file
 //! initially, and store the read value in a static variable.
@@ -51,7 +51,7 @@ Auxil::getAboutString()
 }
 
 //---------------------------------------------------------------------------
-// getHelpDir
+//  getHelpDir
 //
 //! Return the top-level directory containing the help documentation.
 //
@@ -64,7 +64,7 @@ Auxil::getHelpDir()
 }
 
 //---------------------------------------------------------------------------
-// getTilesDir
+//  getTilesDir
 //
 //! Return the top-level directory containing subdirectories with tiles
 //! images.
@@ -78,7 +78,7 @@ Auxil::getTilesDir()
 }
 
 //---------------------------------------------------------------------------
-// wordWrap
+//  wordWrap
 //
 //! Wrap a string so that no line is longer than a certain length.
 //

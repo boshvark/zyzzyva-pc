@@ -32,7 +32,7 @@ const QString DIALOG_CAPTION = "Hook Words for: ";
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// HookDialog
+//  HookDialog
 //
 //! Constructor.
 //
@@ -96,7 +96,7 @@ HookDialog::HookDialog (WordEngine* we, const QString& word, QWidget* parent,
 }
 
 //---------------------------------------------------------------------------
-// ~HookDialog
+//  ~HookDialog
 //
 //! Destructor.
 //---------------------------------------------------------------------------
@@ -105,7 +105,7 @@ HookDialog::~HookDialog()
 }
 
 //---------------------------------------------------------------------------
-// setWord
+//  setWord
 //
 //! Display the front and back hooks of a word.
 //

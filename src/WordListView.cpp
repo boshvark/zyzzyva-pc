@@ -30,7 +30,7 @@
 #include "WordPopupMenu.h"
 
 //---------------------------------------------------------------------------
-// WordListView
+//  WordListView
 //
 //! Constructor.
 //
@@ -57,7 +57,7 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WF
 }
 
 //---------------------------------------------------------------------------
-// ~WordListView
+//  ~WordListView
 //
 //! Destructor.
 //---------------------------------------------------------------------------
@@ -66,7 +66,7 @@ WordListView::~WordListView()
 }
 
 //---------------------------------------------------------------------------
-// setFont
+//  setFont
 //
 //! Set the font of the listview and all listview items.
 //---------------------------------------------------------------------------
@@ -80,7 +80,7 @@ WordListView::setFont (const QFont& font)
 }
 
 //---------------------------------------------------------------------------
-// doReturnPressed
+//  doReturnPressed
 //
 //! Called when return is pressed on an item in the response list.  Displays
 //! the selected word's definition.
@@ -96,7 +96,7 @@ WordListView::doReturnPressed (QListViewItem* item)
 }
 
 //---------------------------------------------------------------------------
-// doPopupMenu
+//  doPopupMenu
 //
 //! Called when a right-click menu is requested.  Creates a popup menu and
 //! allows the user to choose an action for the selected item.
@@ -125,7 +125,7 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
 }
 
 //---------------------------------------------------------------------------
-// displayDefinition
+//  displayDefinition
 //
 //! Displays the definition of a word.
 //
@@ -144,7 +144,7 @@ WordListView::displayDefinition (const QString& word)
 }
 
 //---------------------------------------------------------------------------
-// displayHooks
+//  displayHooks
 //
 //! Displays the hooks of a word.
 //

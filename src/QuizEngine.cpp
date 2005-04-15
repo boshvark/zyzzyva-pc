@@ -36,7 +36,7 @@ QuizEngine::QuizEngine (WordEngine* e)
 }
 
 //---------------------------------------------------------------------------
-// newQuiz
+//  newQuiz
 //
 //! Begin a new quiz.
 //
@@ -86,7 +86,7 @@ QuizEngine::newQuiz (const SearchSpec& spec, bool alphagrams, bool randomOrder)
 }
 
 //---------------------------------------------------------------------------
-// nextQuestion
+//  nextQuestion
 //
 //! Go to the next question in the quiz.
 //
@@ -104,7 +104,7 @@ QuizEngine::nextQuestion()
 }
 
 //---------------------------------------------------------------------------
-// respond
+//  respond
 //
 //! Enter a user response to the current quiz.
 //
@@ -129,7 +129,7 @@ QuizEngine::respond (const QString& response)
 }
 
 //---------------------------------------------------------------------------
-// getQuestion
+//  getQuestion
 //
 //! Get the question string for the current question.
 //
@@ -143,7 +143,7 @@ QuizEngine::getQuestion() const
 }
 
 //---------------------------------------------------------------------------
-// getMissed
+//  getMissed
 //
 //! Get a list of correct responses that have not been answered yet.
 //
@@ -164,7 +164,7 @@ QuizEngine::getMissed() const
 }
 
 //---------------------------------------------------------------------------
-// onLastQuestion
+//  onLastQuestion
 //
 //! Determine whether the current quiz is on the last question.
 //
@@ -177,7 +177,7 @@ QuizEngine::onLastQuestion() const
 }
 
 //---------------------------------------------------------------------------
-// clearQuestion
+//  clearQuestion
 //
 //! Clear all answers and user responses.
 //---------------------------------------------------------------------------
@@ -190,7 +190,7 @@ QuizEngine::clearQuestion()
 }
 
 //---------------------------------------------------------------------------
-// prepareQuestion
+//  prepareQuestion
 //
 //! Get the answers to the current question.
 //---------------------------------------------------------------------------

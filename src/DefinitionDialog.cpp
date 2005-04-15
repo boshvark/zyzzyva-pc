@@ -36,7 +36,7 @@ const QString DIALOG_CAPTION_PREFIX = "Define : ";
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// DefinitionDialog
+//  DefinitionDialog
 //
 //! Constructor.
 //
@@ -85,7 +85,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
 }
 
 //---------------------------------------------------------------------------
-// ~DefinitionDialog
+//  ~DefinitionDialog
 //
 //! Destructor.
 //---------------------------------------------------------------------------

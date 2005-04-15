@@ -25,7 +25,7 @@
 #include "WordPopupMenu.h"
 
 //---------------------------------------------------------------------------
-// WordPopupMenu
+//  WordPopupMenu
 //
 //! Constructor.
 //
@@ -40,7 +40,7 @@ WordPopupMenu::WordPopupMenu (QWidget* parent, const char* name)
 }
 
 //---------------------------------------------------------------------------
-// ~WordPopupMenu
+//  ~WordPopupMenu
 //
 //! Destructor.
 //---------------------------------------------------------------------------

@@ -30,7 +30,7 @@
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// DefineForm
+//  DefineForm
 //
 //! Constructor.
 //
@@ -88,7 +88,7 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, const char* name,
 }
 
 //---------------------------------------------------------------------------
-// wordChanged
+//  wordChanged
 //
 //! Called when the contents of the input line change.  Enables or disables
 //! the buttons appropriately.
@@ -100,7 +100,7 @@ DefineForm::wordChanged (const QString& word)
 }
 
 //---------------------------------------------------------------------------
-// defineWord
+//  defineWord
 //
 //! Look up and display the acceptability and definition of the word currently
 //! in the word edit area.

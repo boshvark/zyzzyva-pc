@@ -45,7 +45,7 @@ const QString PAUSE_BUTTON = "&Pause";
 const QString UNPAUSE_BUTTON = "Un&pause";
 
 //---------------------------------------------------------------------------
-// QuizForm
+//  QuizForm
 //
 //! Constructor.
 //
@@ -190,7 +190,7 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
 }
 
 //---------------------------------------------------------------------------
-// responseEntered
+//  responseEntered
 //
 //! Called when a response is entered into the input line.
 //---------------------------------------------------------------------------
@@ -238,7 +238,7 @@ QuizForm::responseEntered()
 }
 
 //---------------------------------------------------------------------------
-// newQuizClicked
+//  newQuizClicked
 //
 //! Called when the New Quiz button is clicked.
 //---------------------------------------------------------------------------
@@ -264,7 +264,7 @@ QuizForm::newQuizClicked()
 }
 
 //---------------------------------------------------------------------------
-// pauseTimer
+//  pauseTimer
 //
 //! Pause the timer.  In reality the timer keeps going, but it appears paused
 //! because it has no effect while .
@@ -279,7 +279,7 @@ QuizForm::pauseTimer()
 }
 
 //---------------------------------------------------------------------------
-// unpauseTimer
+//  unpauseTimer
 //
 //! Unpauses the timer.
 //---------------------------------------------------------------------------
@@ -294,7 +294,7 @@ QuizForm::unpauseTimer()
 }
 
 //---------------------------------------------------------------------------
-// nextQuestionClicked
+//  nextQuestionClicked
 //
 //! Called when the New Question button is clicked.
 //---------------------------------------------------------------------------
@@ -309,7 +309,7 @@ QuizForm::nextQuestionClicked()
 }
 
 //---------------------------------------------------------------------------
-// checkResponseClicked
+//  checkResponseClicked
 //
 //! Called when the Check Responses button is clicked.
 //---------------------------------------------------------------------------
@@ -340,7 +340,7 @@ QuizForm::checkResponseClicked()
 }
 
 //---------------------------------------------------------------------------
-// pauseClicked
+//  pauseClicked
 //
 //! Called when the Pause button is clicked.
 //---------------------------------------------------------------------------
@@ -357,7 +357,7 @@ QuizForm::pauseClicked()
 }
 
 //---------------------------------------------------------------------------
-// analyzeClicked
+//  analyzeClicked
 //
 //! Called when the Analyze button is clicked.
 //---------------------------------------------------------------------------
@@ -368,7 +368,7 @@ QuizForm::analyzeClicked()
 }
 
 //---------------------------------------------------------------------------
-// startQuestion
+//  startQuestion
 //
 //! Update the form when starting a question.
 //---------------------------------------------------------------------------
@@ -392,7 +392,7 @@ QuizForm::startQuestion()
 }
 
 //---------------------------------------------------------------------------
-// startNewTimer
+//  startNewTimer
 //
 //! Start a new timer, and update the form appropriately.
 //---------------------------------------------------------------------------
@@ -407,7 +407,7 @@ QuizForm::startNewTimer()
 }
 
 //---------------------------------------------------------------------------
-// killActiveTimer
+//  killActiveTimer
 //
 //! Kill the active timer, and update the form appropriately.
 //---------------------------------------------------------------------------
@@ -425,7 +425,7 @@ QuizForm::killActiveTimer()
 }
 
 //---------------------------------------------------------------------------
-// updateStats
+//  updateStats
 //
 //! Update the recall and precision statistics.
 //---------------------------------------------------------------------------
@@ -437,7 +437,7 @@ QuizForm::updateStats()
 }
 
 //---------------------------------------------------------------------------
-// clearStats
+//  clearStats
 //
 //! Clear the recall and precision statistics.
 //---------------------------------------------------------------------------
@@ -448,7 +448,7 @@ QuizForm::clearStats()
 }
 
 //---------------------------------------------------------------------------
-// clearQuestionNum
+//  clearQuestionNum
 //
 //! Clear the question number label.
 //---------------------------------------------------------------------------
@@ -459,7 +459,7 @@ QuizForm::clearQuestionNum()
 }
 
 //---------------------------------------------------------------------------
-// clearTimerDisplay
+//  clearTimerDisplay
 //
 //! Clear the timer label.
 //---------------------------------------------------------------------------
@@ -470,7 +470,7 @@ QuizForm::clearTimerDisplay()
 }
 
 //---------------------------------------------------------------------------
-// clearCanvas
+//  clearCanvas
 //
 //! Clear the question canvas and delete all its canvas items.
 //---------------------------------------------------------------------------
@@ -486,7 +486,7 @@ QuizForm::clearCanvas()
 }
 
 //---------------------------------------------------------------------------
-// minimizeCanvas
+//  minimizeCanvas
 //
 //! Resize the canvas to its minimum size given the current tile theme.
 //---------------------------------------------------------------------------
@@ -502,7 +502,7 @@ QuizForm::minimizeCanvas()
 }
 
 //---------------------------------------------------------------------------
-// setNumCanvasTiles
+//  setNumCanvasTiles
 //
 //! Resize the canvas to be able to display a certain number of tiles.
 //! @param num the number of tiles
@@ -520,7 +520,7 @@ QuizForm::setNumCanvasTiles (int num)
 }
 
 //---------------------------------------------------------------------------
-// setQuestionNum
+//  setQuestionNum
 //
 //! Set the current question number and the total number of questions.
 //
@@ -535,7 +535,7 @@ QuizForm::setQuestionNum (int num, int total)
 }
 
 //---------------------------------------------------------------------------
-// setQuestionLabel
+//  setQuestionLabel
 //
 //! Display the current question in the question label area.
 //
@@ -588,7 +588,7 @@ QuizForm::setQuestionLabel (const QString& question)
 }
 
 //---------------------------------------------------------------------------
-// setQuestionStatus
+//  setQuestionStatus
 //
 //! Set the status of the question after the user clicks the Check button.
 //
@@ -603,7 +603,7 @@ QuizForm::setQuestionStatus (int correct, int total)
 }
 
 //---------------------------------------------------------------------------
-// setTimerDisplay
+//  setTimerDisplay
 //
 //! Display a number of seconds in the timer label.
 //
@@ -631,7 +631,7 @@ QuizForm::setTimerDisplay (int seconds)
 }
 
 //---------------------------------------------------------------------------
-// clearTileTheme
+//  clearTileTheme
 //
 //! Clear the current tile theme definition.
 //---------------------------------------------------------------------------
@@ -644,7 +644,7 @@ QuizForm::clearTileTheme()
 }
 
 //---------------------------------------------------------------------------
-// setTileTheme
+//  setTileTheme
 //
 //! Load tile images according to a theme definition.  Find the tile images in
 //! a data subdirectory named after the theme.
@@ -683,7 +683,7 @@ QuizForm::setTileTheme (const QString& theme)
 }
 
 //---------------------------------------------------------------------------
-// reflowLayout
+//  reflowLayout
 //
 //! Force the quiz form layout to be reflowed.  Generally called after
 //! resizing the canvas.  XXX: This whole method is a big kludge.  There must
@@ -700,7 +700,7 @@ QuizForm::reflowLayout()
 }
 
 //---------------------------------------------------------------------------
-// timerEvent
+//  timerEvent
 //
 //! Reimplementation of QObject::timerEvent.  Called when a timer event
 //! occurs.  Decrements the time remaining, unless the timer is paused.

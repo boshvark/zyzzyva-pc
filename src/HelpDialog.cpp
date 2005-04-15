@@ -27,7 +27,7 @@
 #include <qstringlist.h>
 
 //---------------------------------------------------------------------------
-// HelpDialog
+//  HelpDialog
 //
 //! Constructor.
 //

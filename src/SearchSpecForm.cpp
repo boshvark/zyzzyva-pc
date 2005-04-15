@@ -36,7 +36,7 @@ const QString ANAGRAM_COMBO = "Anagram";
 const QString SUBANAGRAM_COMBO = "Subanagram";
 
 //---------------------------------------------------------------------------
-// SearchSpecForm
+//  SearchSpecForm
 //
 //! Constructor.
 //
@@ -175,7 +175,7 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
 }
 
 //---------------------------------------------------------------------------
-// reset
+//  reset
 //
 //! Reset to defaults.
 //---------------------------------------------------------------------------
@@ -192,7 +192,7 @@ SearchSpecForm::reset()
 }
 
 //---------------------------------------------------------------------------
-// getSearchSpec
+//  getSearchSpec
 //
 //! Get a SearchSpec object corresponding to the values in the form.
 //
@@ -214,7 +214,7 @@ SearchSpecForm::getSearchSpec() const
 }
 
 //---------------------------------------------------------------------------
-// getMatchType
+//  getMatchType
 //
 //! Get the match type as specified by the Match combo box.
 //
@@ -234,7 +234,7 @@ SearchSpecForm::getMatchType() const
 }
 
 //---------------------------------------------------------------------------
-// minLengthChanged
+//  minLengthChanged
 //
 //! Called when the min length value is changed.  Ensure that the max length
 //! value is at least as large as the min length value.
@@ -250,7 +250,7 @@ SearchSpecForm::minLengthChanged (int value)
 }
 
 //---------------------------------------------------------------------------
-// maxLengthChanged
+//  maxLengthChanged
 //
 //! Called when the max length value is changed.  Ensure that the min length
 //! value is at least as small as the max length value.

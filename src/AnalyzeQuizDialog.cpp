@@ -33,7 +33,7 @@ const QString DIALOG_CAPTION = "Analyze Quiz";
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-// AnalyzeQuizDialog
+//  AnalyzeQuizDialog
 //
 //! Constructor.
 //
@@ -111,7 +111,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 }
 
 //---------------------------------------------------------------------------
-// newQuiz
+//  newQuiz
 //
 //! Reset the dialog with a new quiz.
 //---------------------------------------------------------------------------
@@ -125,7 +125,7 @@ AnalyzeQuizDialog::newQuiz (const SearchSpec& spec)
 }
 
 //---------------------------------------------------------------------------
-// updateStats
+//  updateStats
 //
 //! Update the recall and precision statistics.
 //---------------------------------------------------------------------------
@@ -138,7 +138,7 @@ AnalyzeQuizDialog::updateStats()
 }
 
 //---------------------------------------------------------------------------
-// addMissed
+//  addMissed
 //
 //! Add a word to the Missed list.
 //
@@ -152,7 +152,7 @@ AnalyzeQuizDialog::addMissed (const QString& word)
 }
 
 //---------------------------------------------------------------------------
-// addIncorrect
+//  addIncorrect
 //
 //! Add a word to the Incorrect list.
 //
@@ -166,7 +166,7 @@ AnalyzeQuizDialog::addIncorrect (const QString& word)
 }
 
 //---------------------------------------------------------------------------
-// clearMissed
+//  clearMissed
 //
 //! Clear the list of missed words.
 //---------------------------------------------------------------------------
@@ -177,7 +177,7 @@ AnalyzeQuizDialog::clearMissed()
 }
 
 //---------------------------------------------------------------------------
-// clearIncorrect
+//  clearIncorrect
 //
 //! Clear the list of incorrect words.
 //---------------------------------------------------------------------------
@@ -188,7 +188,7 @@ AnalyzeQuizDialog::clearIncorrect()
 }
 
 //---------------------------------------------------------------------------
-// setRecall
+//  setRecall
 //
 //! Set the recall numbers (correct user responses divided by total correct
 //! responses).
@@ -203,7 +203,7 @@ AnalyzeQuizDialog::setRecall (int correct, int total)
 }
 
 //---------------------------------------------------------------------------
-// setPrecision
+//  setPrecision
 //
 //! Set the precision numbers (correct user responses divided by total user
 //! responses).
@@ -218,7 +218,7 @@ AnalyzeQuizDialog::setPrecision (int correct, int total)
 }
 
 //---------------------------------------------------------------------------
-// percentString
+//  percentString
 //
 //! Create a string to represent a percentage to be displayed.
 //

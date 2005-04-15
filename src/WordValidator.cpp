@@ -25,7 +25,7 @@
 #include "WordValidator.h"
 
 //-----------------------------------------------------------------------------
-// validate
+//  validate
 //
 //! Validate an input string.  Possibly modify the string to make it conform,
 //! by upper-casing and removing all whitespace.
@@ -48,7 +48,7 @@ WordValidator::validate (QString& input, int& pos) const
 }
 
 //-----------------------------------------------------------------------------
-// replaceRegExp
+//  replaceRegExp
 //
 //! Replace all sub strings matching the regular expression to the left and
 //! right of the cursor.  Also adjusts the new cursor position accordingly,
