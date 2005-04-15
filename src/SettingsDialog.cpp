@@ -244,8 +244,6 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
                               FONT_DEFINITIONS_BUTTON);
     fontGlay->addWidget (chooseFontDefinitionButton, row, 2);
 
-    mainVlay->addStretch (1);
-
     QVGroupBox* miscGbox = new QVGroupBox (this, "miscGbox");
     Q_CHECK_PTR (miscGbox);
     miscGbox->setTitle ("Miscellaneous");
