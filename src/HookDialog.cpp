@@ -92,7 +92,7 @@ HookDialog::HookDialog (WordEngine* we, const QString& word, QWidget* parent,
     buttonHlay->addWidget (closeButton);
 
     setWord (word);
-    resize (minimumSizeHint());
+    resize (minimumSizeHint().width(), 500);
 }
 
 //---------------------------------------------------------------------------
