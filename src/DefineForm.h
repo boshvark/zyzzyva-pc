@@ -27,9 +27,8 @@
 
 #include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qvgroupbox.h>
 
-class DefinitionLabel;
+class DefinitionBox;
 class WordEngine;
 
 class DefineForm : public QFrame
@@ -47,8 +46,7 @@ class DefineForm : public QFrame
     WordEngine*  engine;
     QLineEdit*   wordLine;
     QPushButton* defineButton;
-    QVGroupBox*  resultBox;
-    DefinitionLabel* resultLabel;
+    DefinitionBox* resultBox;
 };
 
 #endif // DEFINE_FORM_H

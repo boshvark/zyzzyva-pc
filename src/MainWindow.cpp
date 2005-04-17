@@ -269,8 +269,10 @@ MainWindow::readSettings (bool useGeometry)
 
     // Definition font
     fontStr = settingsDialog->getDefinitionFont();
-    if (font.fromString (fontStr))
+    if (font.fromString (fontStr)) {
+        qApp->setFont (font, true, "DefinitionBox");
         qApp->setFont (font, true, "DefinitionLabel");
+    }
     else
         qWarning ("Cannot set font: " + fontStr);
 

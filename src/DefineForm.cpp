@@ -21,7 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "DefineForm.h"
-#include "DefinitionLabel.h"
+#include "DefinitionBox.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
 #include "Auxil.h"
@@ -78,12 +78,9 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (resultHlay);
     mainVlay->addLayout (resultHlay);
 
-    resultBox = new QVGroupBox (this, "resultBox");
+    resultBox = new DefinitionBox (this, "resultBox");
     Q_CHECK_PTR (resultBox);
     resultHlay->addWidget (resultBox);
-
-    resultLabel = new DefinitionLabel (resultBox, "resultLabel");
-    Q_CHECK_PTR (resultLabel);
 
     defineButton->setEnabled (false);
     resultBox->hide();
@@ -124,7 +121,7 @@ DefineForm::defineWord()
         resultStr += "<br>" + definition;
     }
 
-    resultLabel->setText (resultStr);
+    resultBox->setText (resultStr);
     resultBox->setTitle (word);
     resultBox->show();
 }

@@ -14,6 +14,7 @@ SET (SRCS
     src/AnalyzeQuizDialog.cpp
     src/Auxil.cpp
     src/DefineForm.cpp
+    src/DefinitionBox.cpp
     src/DefinitionDialog.cpp
     src/HelpDialog.cpp
     src/HookDialog.cpp
@@ -41,6 +42,7 @@ SET (MOCS
     src/AboutDialog.h
     src/AnalyzeQuizDialog.h
     src/DefineForm.h
+    src/DefinitionBox.h
     src/DefinitionDialog.h
     src/DefinitionLabel.h
     src/HelpDialog.h

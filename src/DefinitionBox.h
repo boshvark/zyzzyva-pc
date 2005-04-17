@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// JudgeForm.h
+// DefinitionBox.h
 //
-// A form for looking up words.
+// A class derived from QVGroupBox, used to display word definitions.
 //
 // Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,33 +22,26 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef JUDGE_FORM_H
-#define JUDGE_FORM_H
+#ifndef DEFINITION_BOX_H
+#define DEFINITION_BOX_H
 
-#include <qtextedit.h>
-#include <qpushbutton.h>
+#include <qvgroupbox.h>
 
-class DefinitionBox;
-class WordEngine;
+class DefinitionLabel;
 
-class JudgeForm : public QFrame
+class DefinitionBox : public QVGroupBox
 {
-  Q_OBJECT
-  public:
-    JudgeForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-               WFlags f = 0);
+    Q_OBJECT
+    public:
+    DefinitionBox (QWidget* parent = 0, const char* name = 0);
+    DefinitionBox (const QString& title, QWidget* parent = 0, const char* name
+                   = 0);
+    void setText (const QString& text);
 
-  public slots:
-    void textChanged();
-    void clear();
-    void judgeWord();
+    private:
+    void init();
 
-  private:
-    WordEngine*  engine;
-    QTextEdit*   wordArea;
-    QPushButton* clearButton;
-    QPushButton* judgeButton;
-    DefinitionBox* resultBox;
+    DefinitionLabel* definitionLabel;
 };
 
-#endif // JUDGE_FORM_H
+#endif // DEFINITION_BOX_H

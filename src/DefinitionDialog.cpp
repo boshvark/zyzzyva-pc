@@ -24,7 +24,7 @@
 
 #include "DefinitionDialog.h"
 #include "WordEngine.h"
-#include "DefinitionLabel.h"
+#include "DefinitionBox.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <qlayout.h>
@@ -54,13 +54,10 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
                                              "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
-    QVGroupBox* groupBox = new QVGroupBox (this, "groupBox");
-    Q_CHECK_PTR (groupBox);
-    groupBox->setTitle (word);
-    mainVlay->addWidget (groupBox);
-
-    DefinitionLabel* label = new DefinitionLabel (groupBox, "label");
-    Q_CHECK_PTR (label);
+    DefinitionBox* defBox = new DefinitionBox (this, "defBox");
+    Q_CHECK_PTR (defBox);
+    defBox->setTitle (word);
+    mainVlay->addWidget (defBox);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
@@ -81,7 +78,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
     if (definition.isEmpty())
         definition = EMPTY_DEFINITION;
 
-    label->setText (Auxil::wordWrap (definition, DEFINITION_WRAP_LENGTH));
+    defBox->setText (Auxil::wordWrap (definition, DEFINITION_WRAP_LENGTH));
 }
 
 //---------------------------------------------------------------------------
