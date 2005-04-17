@@ -42,7 +42,7 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WF
                       f)
     : QListView (parent, name, f), wordEngine (e)
 {
-    // Only connect certain slots of word engine is non-null
+    // Only connect certain slots if word engine is non-null
     if (wordEngine) {
         // XXX: This signal should be connected regardless... only certain
         // popup menu items should be available in the absence of a word
@@ -68,7 +68,7 @@ WordListView::~WordListView()
 //---------------------------------------------------------------------------
 //  setFont
 //
-//! Set the font of the listview and all listview items.
+//! Set the font of all listview items.
 //---------------------------------------------------------------------------
 void
 WordListView::setFont (const QFont& font)

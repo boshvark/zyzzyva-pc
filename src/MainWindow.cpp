@@ -237,22 +237,30 @@ MainWindow::readSettings (bool useGeometry)
     settings.endGroup();
 
     // Main font
-    QFont font;
+    QFont mainFont;
     QString fontStr = settingsDialog->getMainFont();
-    if (font.fromString (fontStr))
-        qApp->setFont (font, true);
-    else
+    bool mainFontOk = true;
+    if (mainFont.fromString (fontStr))
+        qApp->setFont (mainFont, true);
+    else {
         qWarning ("Cannot set font: " + fontStr);
+        mainFontOk = false;
+    }
 
     // Word list font
+    QFont font;
     fontStr = settingsDialog->getWordListFont();
     if (font.fromString (fontStr))
         qApp->setFont (font, true, "WordListView");
     else
         qWarning ("Cannot set font: " + fontStr);
 
+    // Set word list headers back to main font
+    if (mainFontOk)
+        qApp->setFont (mainFont, true, "QHeader");
+
     // Quiz label font
-    fontStr = settingsDialog->getWordListFont();
+    fontStr = settingsDialog->getQuizLabelFont();
     if (font.fromString (fontStr))
         // FIXME: How to get QCanvasText items to update their font?
         qApp->setFont (font, true, "QCanvasText");
