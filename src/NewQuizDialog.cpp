@@ -59,14 +59,14 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
              SLOT (inputChanged (const QString&)));
     mainVlay->addWidget (specForm);
 
-    alphagramCbox = new QCheckBox ("Use individual alphagrams as questions",
+    alphagramCbox = new QCheckBox ("Use individual &alphagrams as questions",
                                    this, "alphagramCbox");
     Q_CHECK_PTR (alphagramCbox);
     connect (alphagramCbox, SIGNAL (toggled (bool)),
              SLOT (alphagramsToggled (bool)));
     mainVlay->addWidget (alphagramCbox);
 
-    randomCbox = new QCheckBox ("Randomize order", this, "randomCbox");
+    randomCbox = new QCheckBox ("&Randomize order", this, "randomCbox");
     Q_CHECK_PTR (randomCbox);
     randomCbox->setEnabled (false);
     mainVlay->addWidget (randomCbox);
@@ -75,7 +75,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
     Q_CHECK_PTR (timerHlay);
     mainVlay->addLayout (timerHlay);
 
-    timerCbox = new QCheckBox ("Timer:", this, "timerCbox");
+    timerCbox = new QCheckBox ("&Timer:", this, "timerCbox");
     Q_CHECK_PTR (timerCbox);
     connect (timerCbox, SIGNAL (toggled (bool)), SLOT (timerToggled (bool)));
     timerHlay->addWidget (timerCbox);
