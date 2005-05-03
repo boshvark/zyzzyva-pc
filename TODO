@@ -18,6 +18,9 @@ Stuff that would be nice:
   not to be used for each question.  Keep track of total quiz time, and
   display it in the Analyze dialog.  Also save best times across sessions.
 
+* Add a title bar icon other than the default (the X logo under Linux and the
+  Command Prompt icon under Windows).
+
 * Configure docs/help/zyzzyva.dcf at compile time with the correct
   QtAssistantClient version.
 
