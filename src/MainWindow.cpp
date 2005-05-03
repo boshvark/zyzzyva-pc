@@ -77,6 +77,11 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 {
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
+    filePopup->insertItem ("New Qui&z", this, SLOT (newQuizForm()));
+    filePopup->insertItem ("New &Search", this, SLOT (newSearchForm()));
+    filePopup->insertItem ("New &Definition", this, SLOT (newDefineForm()));
+    filePopup->insertItem ("New Word &Judge", this, SLOT (newJudgeForm()));
+    filePopup->insertSeparator();
     filePopup->insertItem ("&Open...", this, SLOT (importInteractive()),
                            CTRL+Key_O);
     filePopup->insertSeparator();
@@ -97,22 +102,6 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     tabStack = new QTabWidget (this, "tabStack");
     Q_CHECK_PTR (tabStack);
     setCentralWidget (tabStack);
-
-    quizForm = new QuizForm (quizEngine, wordEngine, tabStack, "quizForm");
-    Q_CHECK_PTR (quizForm);
-    tabStack->addTab (quizForm, QUIZ_TAB_TITLE);
-
-    searchForm = new SearchForm (wordEngine, tabStack, "searchForm");
-    Q_CHECK_PTR (searchForm);
-    tabStack->addTab (searchForm, SEARCH_TAB_TITLE);
-
-    defineForm = new DefineForm (wordEngine, tabStack, "defineForm");
-    Q_CHECK_PTR (defineForm);
-    tabStack->addTab (defineForm, DEFINE_TAB_TITLE);
-
-    judgeForm = new JudgeForm (wordEngine, tabStack, "judgeForm");
-    Q_CHECK_PTR (judgeForm);
-    tabStack->addTab (judgeForm, JUDGE_TAB_TITLE);
 
     messageLabel = new QLabel (this, "messageLabel");
     Q_CHECK_PTR (messageLabel);
@@ -159,6 +148,64 @@ MainWindow::importInteractive()
                               "Loaded " + QString::number (imported)
                               + " words.",
                               QMessageBox::Ok);
+}
+
+//---------------------------------------------------------------------------
+//  newQuizForm
+//
+//! Create a new quiz form.
+//---------------------------------------------------------------------------
+void
+MainWindow::newQuizForm()
+{
+    QuizForm* form = new QuizForm (quizEngine, wordEngine, tabStack,
+                                   "quizForm");
+    Q_CHECK_PTR (form);
+    form->setTileTheme (settingsDialog->getTileTheme());
+    tabStack->addTab (form, QUIZ_TAB_TITLE);
+    tabStack->showPage (form);
+}
+
+//---------------------------------------------------------------------------
+//  newSearchForm
+//
+//! Create a new search form.
+//---------------------------------------------------------------------------
+void
+MainWindow::newSearchForm()
+{
+    SearchForm* form = new SearchForm (wordEngine, tabStack, "searchForm");
+    Q_CHECK_PTR (form);
+    tabStack->addTab (form, SEARCH_TAB_TITLE);
+    tabStack->showPage (form);
+}
+
+//---------------------------------------------------------------------------
+//  newDefineForm
+//
+//! Create a new word definition form.
+//---------------------------------------------------------------------------
+void
+MainWindow::newDefineForm()
+{
+    DefineForm* form = new DefineForm (wordEngine, tabStack, "defineForm");
+    Q_CHECK_PTR (form);
+    tabStack->addTab (form, DEFINE_TAB_TITLE);
+    tabStack->showPage (form);
+}
+
+//---------------------------------------------------------------------------
+//  newJudgeForm
+//
+//! Create a new word judgment form.
+//---------------------------------------------------------------------------
+void
+MainWindow::newJudgeForm()
+{
+    JudgeForm* form = new JudgeForm (wordEngine, tabStack, "judgeForm");
+    Q_CHECK_PTR (form);
+    tabStack->addTab (form, JUDGE_TAB_TITLE);
+    tabStack->showPage (form);
 }
 
 //---------------------------------------------------------------------------
@@ -276,7 +323,15 @@ MainWindow::readSettings (bool useGeometry)
     else
         qWarning ("Cannot set font: " + fontStr);
 
-    quizForm->setTileTheme (settingsDialog->getTileTheme());
+    // Set tile theme for all quiz forms
+    QString tileTheme = settingsDialog->getTileTheme();
+    int count = tabStack->count();
+    for (int i = 0; i < count; ++i) {
+        QuizForm* quizForm = dynamic_cast<QuizForm*> (tabStack->page (i));
+        if (quizForm)
+            quizForm->setTileTheme (tileTheme);
+    }
+
     WordListViewItem::setSortByLength (settingsDialog->getSortByLength());
 }
 

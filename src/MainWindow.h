@@ -31,12 +31,8 @@
 #include <qtabwidget.h>
 
 class AboutDialog;
-class DefineForm;
 class HelpDialog;
-class JudgeForm;
 class QuizEngine;
-class QuizForm;
-class SearchForm;
 class WordEngine;
 class SettingsDialog;
 
@@ -50,6 +46,10 @@ class MainWindow : public QMainWindow
 
   public slots:
     void importInteractive();
+    void newQuizForm();
+    void newSearchForm();
+    void newDefineForm();
+    void newJudgeForm();
     void editSettings();
     void displayAbout();
     void displayHelp();
@@ -64,10 +64,6 @@ class MainWindow : public QMainWindow
     WordEngine* wordEngine;
     QuizEngine* quizEngine;
     QTabWidget* tabStack;
-    DefineForm* defineForm;
-    JudgeForm*  judgeForm;
-    QuizForm*   quizForm;
-    SearchForm* searchForm;
     QLabel*     messageLabel;
     QLabel*     statusLabel;
 
