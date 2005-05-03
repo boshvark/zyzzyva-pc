@@ -14,6 +14,10 @@ Stuff that would be nice:
 
 * Add a toolbar for easily creating quizzes, searches, etc.
 
+* Add an overall timer for the taking of quizzes, even if a cutoff timer is
+  not to be used for each question.  Keep track of total quiz time, and
+  display it in the Analyze dialog.  Also save best times across sessions.
+
 * Configure docs/help/zyzzyva.dcf at compile time with the correct
   QtAssistantClient version.
 
