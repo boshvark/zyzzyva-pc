@@ -50,18 +50,18 @@ const QString UNPAUSE_BUTTON = "Un&pause";
 //
 //! Constructor.
 //
-//! @param qe the quiz engine
 //! @param we the word engine
 //! @param parent the parent widget
 //! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
-                    char* name, WFlags f)
-    : QFrame (parent, name, f), quizEngine (qe), wordEngine (we),
+QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
+                    f)
+    : QFrame (parent, name, f), wordEngine (we),
+    quizEngine (new QuizEngine (wordEngine)),
     newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true)),
-    analyzeDialog (new AnalyzeQuizDialog (qe, we, this, "analyzeDialog",
-                                          false)),
+    analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
+                                          "analyzeDialog", false)),
     numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300),
     timerId (0), timerPaused (0)
 {
@@ -188,6 +188,16 @@ QuizForm::QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent, const
     analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));
     buttonBottomHlay->addWidget (analyzeButton);
+}
+
+//---------------------------------------------------------------------------
+//  ~QuizForm
+//
+//! Destructor.
+//---------------------------------------------------------------------------
+QuizForm::~QuizForm()
+{
+    delete quizEngine;
 }
 
 //---------------------------------------------------------------------------

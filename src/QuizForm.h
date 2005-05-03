@@ -46,8 +46,9 @@ class QuizForm : public QFrame
 {
   Q_OBJECT
   public:
-    QuizForm (QuizEngine* qe, WordEngine* we, QWidget* parent = 0, const char*
-              name = 0, WFlags f = 0);
+    QuizForm (WordEngine* we, QWidget* parent = 0, const char* name = 0,
+              WFlags f = 0);
+    ~QuizForm();
 
   public slots:
     void responseEntered();
@@ -81,8 +82,8 @@ class QuizForm : public QFrame
     void timerEvent (QTimerEvent* event);
 
   private:
-    QuizEngine*   quizEngine;
     WordEngine*   wordEngine;
+    QuizEngine*   quizEngine;
     QLabel*       questionNumLabel;
     QLabel*       timerLabel;
     QWidget*      questionWidget;

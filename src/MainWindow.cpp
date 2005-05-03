@@ -70,7 +70,6 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     : QMainWindow (parent, name, f), wordEngine (new WordEngine()),
-      quizEngine (new QuizEngine (wordEngine)),
       settingsDialog (new SettingsDialog (this, "settingsDialog", true)),
       aboutDialog (new AboutDialog (this, "aboutDialog", true)),
       helpDialog (new HelpDialog (QString::null, this, "helpDialog"))
@@ -101,6 +100,15 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 
     tabStack = new QTabWidget (this, "tabStack");
     Q_CHECK_PTR (tabStack);
+
+    closeButton = new QToolButton (tabStack, "closeButton");
+    Q_CHECK_PTR (closeButton);
+    closeButton->setUsesTextLabel (true);
+    closeButton->setTextLabel ("X", false);
+    tabStack->setCornerWidget (closeButton);
+    closeButton->hide();
+    connect (closeButton, SIGNAL (clicked()), SLOT (closeCurrentTab()));
+
     setCentralWidget (tabStack);
 
     messageLabel = new QLabel (this, "messageLabel");
@@ -158,12 +166,10 @@ MainWindow::importInteractive()
 void
 MainWindow::newQuizForm()
 {
-    QuizForm* form = new QuizForm (quizEngine, wordEngine, tabStack,
-                                   "quizForm");
+    QuizForm* form = new QuizForm (wordEngine, tabStack, "quizForm");
     Q_CHECK_PTR (form);
     form->setTileTheme (settingsDialog->getTileTheme());
-    tabStack->addTab (form, QUIZ_TAB_TITLE);
-    tabStack->showPage (form);
+    newTab (form, QUIZ_TAB_TITLE);
 }
 
 //---------------------------------------------------------------------------
@@ -176,8 +182,7 @@ MainWindow::newSearchForm()
 {
     SearchForm* form = new SearchForm (wordEngine, tabStack, "searchForm");
     Q_CHECK_PTR (form);
-    tabStack->addTab (form, SEARCH_TAB_TITLE);
-    tabStack->showPage (form);
+    newTab (form, SEARCH_TAB_TITLE);
 }
 
 //---------------------------------------------------------------------------
@@ -190,8 +195,7 @@ MainWindow::newDefineForm()
 {
     DefineForm* form = new DefineForm (wordEngine, tabStack, "defineForm");
     Q_CHECK_PTR (form);
-    tabStack->addTab (form, DEFINE_TAB_TITLE);
-    tabStack->showPage (form);
+    newTab (form, DEFINE_TAB_TITLE);
 }
 
 //---------------------------------------------------------------------------
@@ -204,8 +208,7 @@ MainWindow::newJudgeForm()
 {
     JudgeForm* form = new JudgeForm (wordEngine, tabStack, "judgeForm");
     Q_CHECK_PTR (form);
-    tabStack->addTab (form, JUDGE_TAB_TITLE);
-    tabStack->showPage (form);
+    newTab (form, JUDGE_TAB_TITLE);
 }
 
 //---------------------------------------------------------------------------
@@ -247,6 +250,22 @@ void
 MainWindow::displayHelp()
 {
     helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
+}
+
+//---------------------------------------------------------------------------
+//  closeCurrentTab
+//
+//! Close the currently open tab.  If no other tabs exist, hide the button
+//! used for closing tabs.
+//---------------------------------------------------------------------------
+void
+MainWindow::closeCurrentTab()
+{
+    QWidget* w = tabStack->currentPage();
+    tabStack->removePage (w);
+    delete w;
+    if (tabStack->count() == 0)
+        closeButton->hide();
 }
 
 //---------------------------------------------------------------------------
@@ -352,6 +371,22 @@ MainWindow::writeSettings()
     settings.endGroup();
     settingsDialog->writeSettings (settings);
     settings.endGroup();
+}
+
+//---------------------------------------------------------------------------
+//  newTab
+//
+//! Create and display a new tab.
+//
+//! @param widget the widget to display
+//! @param title the title of the tab
+//---------------------------------------------------------------------------
+void
+MainWindow::newTab (QWidget* widget, const QString& title)
+{
+    tabStack->addTab (widget, title);
+    tabStack->showPage (widget);
+    closeButton->show();
 }
 
 //---------------------------------------------------------------------------

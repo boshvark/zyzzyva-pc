@@ -29,6 +29,7 @@
 #include <qmainwindow.h>
 #include <qsettings.h>
 #include <qtabwidget.h>
+#include <qtoolbutton.h>
 
 class AboutDialog;
 class HelpDialog;
@@ -53,19 +54,21 @@ class MainWindow : public QMainWindow
     void editSettings();
     void displayAbout();
     void displayHelp();
+    void closeCurrentTab();
 
   private:
     int  import (const QString& file);
     void setNumWords (int num);
     void readSettings (bool useGeometry);
     void writeSettings();
+    void newTab (QWidget* widget, const QString& title);
 
   private:
-    WordEngine* wordEngine;
-    QuizEngine* quizEngine;
-    QTabWidget* tabStack;
-    QLabel*     messageLabel;
-    QLabel*     statusLabel;
+    WordEngine*  wordEngine;
+    QTabWidget*  tabStack;
+    QToolButton* closeButton;
+    QLabel*      messageLabel;
+    QLabel*      statusLabel;
 
     QSettings       settings;
     SettingsDialog* settingsDialog;
