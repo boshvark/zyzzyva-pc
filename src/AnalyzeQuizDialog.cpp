@@ -148,7 +148,7 @@ void
 AnalyzeQuizDialog::addMissed (const QString& word)
 {
     WordListViewItem* item = new WordListViewItem (missedList, word);
-    item->setTextColor (Qt::magenta);
+    item->setTextColor (VALID_MISSED_WORD_COLOR);
 }
 
 //---------------------------------------------------------------------------
@@ -162,7 +162,7 @@ void
 AnalyzeQuizDialog::addIncorrect (const QString& word)
 {
     WordListViewItem* item = new WordListViewItem (incorrectList, word);
-    item->setTextColor (Qt::red);
+    item->setTextColor (INVALID_WORD_COLOR);
 }
 
 //---------------------------------------------------------------------------

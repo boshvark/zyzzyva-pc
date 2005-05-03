@@ -25,9 +25,13 @@
 #ifndef DEFS_H
 #define DEFS_H
 
+#include <qcolor.h>
 #include <qstring.h>
 
 namespace Defs {
+    const QColor VALID_CORRECT_WORD_COLOR = Qt::blue;
+    const QColor VALID_MISSED_WORD_COLOR = Qt::green;
+    const QColor INVALID_WORD_COLOR = Qt::red;
     const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
     const QString EMPTY_DEFINITION = "(no definition)";
     const int DEFINITION_WRAP_LENGTH = 80;

@@ -222,7 +222,7 @@ QuizForm::responseEntered()
                                                        response);
         responseList->setSelected (item, true);
         responseList->ensureItemVisible (item);
-        item->setTextColor (Qt::blue);
+        item->setTextColor (VALID_CORRECT_WORD_COLOR);
         statusStr = "<font color=\"blue\">Correct</font>";
         analyzeDialog->updateStats();
     }
@@ -338,7 +338,7 @@ QuizForm::checkResponseClicked()
     QStringList::iterator it;
     for (it = unanswered.begin(); it != unanswered.end(); ++it) {
         WordListViewItem* item = new WordListViewItem (responseList, *it);
-        item->setTextColor (Qt::magenta);
+        item->setTextColor (VALID_MISSED_WORD_COLOR);
         analyzeDialog->addMissed (*it);
     }
 
