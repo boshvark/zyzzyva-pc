@@ -45,9 +45,6 @@ using namespace Defs;
 const QString PAUSE_BUTTON = "&Pause";
 const QString UNPAUSE_BUTTON = "Un&pause";
 
-//class QuizCanvas : public QCanvas {
-//};
-
 //---------------------------------------------------------------------------
 //  QuizForm
 //
