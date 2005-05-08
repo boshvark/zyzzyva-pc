@@ -3,6 +3,11 @@ Stuff that would be nice:
 * Bug fix: Figure out how to change the font in the quiz canvas based on the
   user's font settings.  And then do it!
 
+* Bug fix: If a word can be found multiple ways in a search, it is displayed
+  multiple times in the results.  Example: search for K*L*ING.  KILLING,
+  KNELLING, KNOLLING, and other matching words containing multiple Ls appear
+  multiple times in the result list.
+
 * New font preference: Input areas.
 
 * Pop up New Quiz dialog when New Quiz is chosen from the main menu, instead
