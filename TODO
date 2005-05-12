@@ -14,6 +14,8 @@ Stuff that would be nice:
   example, if the question is anagram of EKTY, disallow "KITE" because it
   isn't even a proper anagram of those letters.
 
+* Allow keyboard switching between tabs.  Ctrl-PgUp or something similar.
+
 * Pop up New Quiz dialog when New Quiz is chosen from the main menu, instead
   of continuing to require the user to click the New Quiz button in the quiz
   form.  Get rid of the New Quiz button entirely.
