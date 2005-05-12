@@ -30,6 +30,9 @@ Stuff that would be nice:
 * Add a title bar icon other than the default (the X logo under Linux and the
   Command Prompt icon under Windows).
 
+* Allow right-clicking on any word, anywhere.  Pop up menu should include Show
+  Definition, Show Hooks, etc.
+
 * Configure docs/help/zyzzyva.dcf at compile time with the correct
   QtAssistantClient version.
 
