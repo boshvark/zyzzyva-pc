@@ -10,6 +10,10 @@ Stuff that would be nice:
 
 * New font preference: Input areas.
 
+* Disallow quiz responses that do not correspond to the quiz question.  For
+  example, if the question is anagram of EKTY, disallow "KITE" because it
+  isn't even a proper anagram of those letters.
+
 * Pop up New Quiz dialog when New Quiz is chosen from the main menu, instead
   of continuing to require the user to click the New Quiz button in the quiz
   form.  Get rid of the New Quiz button entirely.
