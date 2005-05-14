@@ -224,12 +224,17 @@ WordGraph::search (const SearchSpec& spec) const
 
                     // If end of word and end of pattern, put the word in the
                     // list
+                    QString wordUpper = word.upper();
                     if (node->eow &&
                         ((unmatched.length() == 1) ||
                         ((unmatched.length() == 2) &&
                          (QChar (unmatched.at (1)) == "*"))) &&
-                        matchesSpec (word.upper(), spec))
-                        wordSet.insert (word);
+                        matchesSpec (wordUpper, spec) &&
+                        !wordSet.count (wordUpper))
+                    {
+                        wordSet.insert (wordUpper);
+                        wordList << word;
+                    }
                 }
 
                 // Special processing for Anagram or Subanagram match
@@ -277,13 +282,6 @@ WordGraph::search (const SearchSpec& spec) const
             word = state.word;
             states.pop();
         }
-    }
-
-    // Build word list from word set for Pattern match
-    if (spec.type == Pattern) {
-        set<QString>::iterator it;
-        for (it = wordSet.begin(); it != wordSet.end(); ++it)
-            wordList << *it;
     }
 
     return wordList;
