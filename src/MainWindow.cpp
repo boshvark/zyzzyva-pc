@@ -27,6 +27,7 @@
 #include "DefineForm.h"
 #include "HelpDialog.h"
 #include "JudgeForm.h"
+#include "NewQuizDialog.h"
 #include "QuizEngine.h"
 #include "QuizForm.h"
 #include "SearchForm.h"
@@ -166,10 +167,17 @@ MainWindow::importInteractive()
 void
 MainWindow::newQuizForm()
 {
-    QuizForm* form = new QuizForm (wordEngine, tabStack, "quizForm");
-    Q_CHECK_PTR (form);
-    form->setTileTheme (settingsDialog->getTileTheme());
-    newTab (form, QUIZ_TAB_TITLE);
+    NewQuizDialog* dialog = new NewQuizDialog (this, "newQuizDialog", true);
+    Q_CHECK_PTR (dialog);
+    int code = dialog->exec();
+    if (code == QDialog::Accepted) {
+        QuizForm* form = new QuizForm (wordEngine, tabStack, "quizForm");
+        Q_CHECK_PTR (form);
+        form->setTileTheme (settingsDialog->getTileTheme());
+        newTab (form, QUIZ_TAB_TITLE);
+        form->newQuiz (dialog);
+    }
+    delete dialog;
 }
 
 //---------------------------------------------------------------------------

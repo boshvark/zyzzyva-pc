@@ -59,7 +59,6 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
                     f)
     : QFrame (parent, name, f), wordEngine (we),
     quizEngine (new QuizEngine (wordEngine)),
-    newQuizDialog (new NewQuizDialog (this, "newQuizDialog", true)),
     analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
                                           "analyzeDialog", false)),
     numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300),
@@ -248,6 +247,30 @@ QuizForm::responseEntered()
         startNewTimer();
 }
 
+
+//---------------------------------------------------------------------------
+//  newQuizClicked
+//
+//! Start a new quiz based on the information in a New Quiz dialog.
+//! XXX: Pass a QuizSpec instead of NewQuizDialog here.
+//
+//! @param dialog a quiz dialog containing the quiz specification
+//---------------------------------------------------------------------------
+void
+QuizForm::newQuiz (NewQuizDialog* dialog)
+{
+    SearchSpec spec = dialog->getSearchSpec();
+    bool alphagrams = dialog->getQuizAlphagrams();
+    bool random = dialog->getQuizRandomOrder();
+    useTimer = dialog->getTimerEnabled();
+    timerDuration = dialog->getTimerDuration();
+    timerType = dialog->getTimerType();
+    quizEngine->newQuiz (spec, alphagrams, random);
+    startQuestion();
+    analyzeDialog->newQuiz (spec);
+}
+
+
 //---------------------------------------------------------------------------
 //  newQuizClicked
 //
@@ -257,21 +280,14 @@ void
 QuizForm::newQuizClicked()
 {
     pauseTimer();
-    int code = newQuizDialog->exec();
+    NewQuizDialog* dialog = new NewQuizDialog (this, "newQuizDialog", true);
+    Q_CHECK_PTR (dialog);
+    int code = dialog->exec();
     if (code != QDialog::Accepted) {
         unpauseTimer();
         return;
     }
-
-    SearchSpec spec = newQuizDialog->getSearchSpec();
-    bool alphagrams = newQuizDialog->getQuizAlphagrams();
-    bool random = newQuizDialog->getQuizRandomOrder();
-    useTimer = newQuizDialog->getTimerEnabled();
-    timerDuration = newQuizDialog->getTimerDuration();
-    timerType = newQuizDialog->getTimerType();
-    quizEngine->newQuiz (spec, alphagrams, random);
-    startQuestion();
-    analyzeDialog->newQuiz (spec);
+    newQuiz (dialog);
 }
 
 //---------------------------------------------------------------------------

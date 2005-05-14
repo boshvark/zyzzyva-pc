@@ -25,6 +25,7 @@
 #ifndef QUIZ_FORM_H
 #define QUIZ_FORM_H
 
+#include "NewQuizDialog.h"
 #include <qcanvas.h>
 #include <qimage.h>
 #include <qlabel.h>
@@ -34,7 +35,6 @@
 #include <qpoint.h>
 #include <qpushbutton.h>
 #include <qstring.h>
-#include "NewQuizDialog.h"
 
 class AnalyzeQuizDialog;
 class DefinitionLabel;
@@ -51,6 +51,7 @@ class QuizForm : public QFrame
     ~QuizForm();
 
   public slots:
+    void newQuiz (NewQuizDialog* dialog);
     void responseEntered();
     void newQuizClicked();
     void nextQuestionClicked();
@@ -106,7 +107,6 @@ class QuizForm : public QFrame
     int timerDuration, timerRemaining, timerPaused;
     QuizTimerType timerType;
 
-    NewQuizDialog* newQuizDialog;
     AnalyzeQuizDialog* analyzeDialog;
 };
 
