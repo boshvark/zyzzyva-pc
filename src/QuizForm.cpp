@@ -592,7 +592,8 @@ QuizForm::setQuestionLabel (const QString& question)
 
         QMap<QString,QImage>::iterator image;
         int x = QUIZ_TILE_MARGIN +
-            ((numCanvasTiles - question.length()) * (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
+            ((numCanvasTiles - question.length()) *
+             (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
 
         for (int i = 0; (i < numCanvasTiles) && (i < question.length()); ++i) {
             QString letter = question[i];
