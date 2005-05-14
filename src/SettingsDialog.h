@@ -46,7 +46,9 @@ class SettingsDialog : public QDialog
     QString getAutoImportFile() const;
     QString getMainFont() const;
     QString getWordListFont() const;
-    QString getQuizLabelFont() const;
+    // XXX: Reinstate this once it's know how to change the font of canvas
+    // text items via QApplication::setFont
+    //QString getQuizLabelFont() const;
     QString getDefinitionFont() const;
     QString getTileTheme() const;
     bool getSortByLength() const;
@@ -69,7 +71,9 @@ class SettingsDialog : public QDialog
     QComboBox*   themeCombo;
     QLineEdit*   fontMainLine;
     QLineEdit*   fontWordListLine;
-    QLineEdit*   fontQuizLabelLine;
+    // XXX: Reinstate this once it's know how to change the font of canvas
+    // text items via QApplication::setFont
+    //QLineEdit*   fontQuizLabelLine;
     QLineEdit*   fontDefinitionLine;
     QCheckBox*   lengthSortCbox;
 };

@@ -199,27 +199,29 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     fontGlay->addWidget (chooseFontWordListButton, row, 2);
 
     // Quiz label font
-    ++row;
-    QLabel* fontQuizLabelLabel = new QLabel ("Quizzes:", fontWidget,
-                                             "fontQuizLabelLabel");
-    Q_CHECK_PTR (fontQuizLabelLabel);
-    fontGlay->addWidget (fontQuizLabelLabel, row, 0, Qt::AlignLeft);
+    // XXX: Reinstate this once it's know how to change the font of canvas
+    // text items via QApplication::setFont
+    //++row;
+    //QLabel* fontQuizLabelLabel = new QLabel ("Quizzes:", fontWidget,
+    //                                         "fontQuizLabelLabel");
+    //Q_CHECK_PTR (fontQuizLabelLabel);
+    //fontGlay->addWidget (fontQuizLabelLabel, row, 0, Qt::AlignLeft);
 
-    fontQuizLabelLine = new QLineEdit (fontWidget, "fontQuizLabelLine");
-    Q_CHECK_PTR (fontQuizLabelLine);
-    fontQuizLabelLine->setReadOnly (true);
-    fontQuizLabelLine->setText (this->font().toString());
-    fontQuizLabelLine->home (false);
-    fontGlay->addWidget (fontQuizLabelLine, row, 1);
+    //fontQuizLabelLine = new QLineEdit (fontWidget, "fontQuizLabelLine");
+    //Q_CHECK_PTR (fontQuizLabelLine);
+    //fontQuizLabelLine->setReadOnly (true);
+    //fontQuizLabelLine->setText (this->font().toString());
+    //fontQuizLabelLine->home (false);
+    //fontGlay->addWidget (fontQuizLabelLine, row, 1);
 
-    QPushButton* chooseFontQuizLabelButton =
-        new QPushButton ("Choose...", fontWidget, "chooseFontButton");
-    Q_CHECK_PTR (chooseFontQuizLabelButton);
-    connect (chooseFontQuizLabelButton, SIGNAL (clicked()), signalMapper,
-             SLOT (map()));
-    signalMapper->setMapping (chooseFontQuizLabelButton,
-                              FONT_QUIZ_LABEL_BUTTON);
-    fontGlay->addWidget (chooseFontQuizLabelButton, row, 2);
+    //QPushButton* chooseFontQuizLabelButton =
+    //    new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    //Q_CHECK_PTR (chooseFontQuizLabelButton);
+    //connect (chooseFontQuizLabelButton, SIGNAL (clicked()), signalMapper,
+    //         SLOT (map()));
+    //signalMapper->setMapping (chooseFontQuizLabelButton,
+    //                          FONT_QUIZ_LABEL_BUTTON);
+    //fontGlay->addWidget (chooseFontQuizLabelButton, row, 2);
 
     // Definition font
     ++row;
@@ -350,12 +352,14 @@ SettingsDialog::readSettings (const QSettings& settings)
     }
 
     // Quiz label font
-    fontStr = settings.readEntry (SETTINGS_FONT_QUIZ_LABEL, QString::null,
-                                  &ok);
-    if (ok) {
-        fontQuizLabelLine->setText (fontStr);
-        fontQuizLabelLine->home (false);
-    }
+    // XXX: Reinstate this once it's know how to change the font of canvas
+    // text items via QApplication::setFont
+    //fontStr = settings.readEntry (SETTINGS_FONT_QUIZ_LABEL, QString::null,
+    //                              &ok);
+    //if (ok) {
+    //    fontQuizLabelLine->setText (fontStr);
+    //    fontQuizLabelLine->home (false);
+    //}
 
     // Definition font
     fontStr = settings.readEntry (SETTINGS_FONT_DEFINITIONS, QString::null,
@@ -383,7 +387,9 @@ SettingsDialog::writeSettings (QSettings& settings)
     settings.writeEntry (SETTINGS_TILE_THEME, themeCombo->currentText());
     settings.writeEntry (SETTINGS_FONT_MAIN, fontMainLine->text());
     settings.writeEntry (SETTINGS_FONT_WORD_LISTS, fontWordListLine->text());
-    settings.writeEntry (SETTINGS_FONT_QUIZ_LABEL, fontQuizLabelLine->text());
+    // XXX: Reinstate this once it's know how to change the font of canvas
+    // text items via QApplication::setFont
+    //settings.writeEntry (SETTINGS_FONT_QUIZ_LABEL, fontQuizLabelLine->text());
     settings.writeEntry (SETTINGS_FONT_DEFINITIONS,
                          fontDefinitionLine->text());
     settings.writeEntry (SETTINGS_SORT_BY_LENGTH,
@@ -435,14 +441,16 @@ SettingsDialog::getWordListFont() const
 //  getQuizLabelFont
 //
 //! Return the quiz label font setting.
+// XXX: Reinstate this once it's know how to change the font of canvas
+// text items via QApplication::setFont
 //
 //! @return the name of the preferred font
 //---------------------------------------------------------------------------
-QString
-SettingsDialog::getQuizLabelFont() const
-{
-    return fontQuizLabelLine->text();
-}
+//QString
+//SettingsDialog::getQuizLabelFont() const
+//{
+//    return fontQuizLabelLine->text();
+//}
 
 //---------------------------------------------------------------------------
 //  getDefinitionFont
@@ -550,7 +558,9 @@ SettingsDialog::chooseFontButtonClicked (int button)
     switch (button) {
         case FONT_MAIN_BUTTON:        lineEdit = fontMainLine; break;
         case FONT_WORD_LISTS_BUTTON:  lineEdit = fontWordListLine; break;
-        case FONT_QUIZ_LABEL_BUTTON:  lineEdit = fontQuizLabelLine; break;
+        // XXX: Reinstate this once it's know how to change the font of canvas
+        // text items via QApplication::setFont
+        //case FONT_QUIZ_LABEL_BUTTON:  lineEdit = fontQuizLabelLine; break;
         case FONT_DEFINITIONS_BUTTON: lineEdit = fontDefinitionLine; break;
         default: return;
     }
