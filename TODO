@@ -20,6 +20,8 @@ Stuff that would be nice:
   of continuing to require the user to click the New Quiz button in the quiz
   form.  Get rid of the New Quiz button entirely.
 
+* Keep track of polyorths and allow them to be displayed.
+
 * Save size of Analyze dialog across sessions.  Also don't always make it
   fixed at the minimum size in both directions.  Maybe just horizontally.
 
