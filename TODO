@@ -1,5 +1,8 @@
 Stuff that would be nice:
 
+* Bug?  What the heck is ASSERT: i <= nodes in
+  /home/mthelen/usr/lib/qt3.3.3-gcc3.4.1-thread/include/qvaluelist.h (372)
+
 * Disallow quiz responses that do not correspond to the quiz question.  For
   example, if the question is anagram of EKTY, disallow "KITE" because it
   isn't even a proper anagram of those letters.
@@ -29,10 +32,15 @@ Stuff that would be nice:
 * New font preferences: Input areas.  Quiz canvas.  Figure out how to change
   the font in the quiz canvas based on the user's font settings.
 
+* Allow saving of word lists to a PDF file or equivalent.  Also in format for
+  offline quizzing using physical paper or index cards.
+
 * Configure docs/help/zyzzyva.dcf at compile time with the correct
   QtAssistantClient version.
 
 * Allow the user to edit word definitions from within Zyzzyva.
+
+* Allow quizzes on mnemonic phrases.  X-to-make-X+1, Front Hook, Back Hook.
 
 * Allow a quiz like "Find the shortest word containing these letters".
   Kind of like the License Plate game.
