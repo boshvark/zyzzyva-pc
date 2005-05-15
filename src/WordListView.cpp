@@ -25,9 +25,9 @@
 #include "WordListView.h"
 #include "WordListViewItem.h"
 #include "DefinitionDialog.h"
-#include "HookDialog.h"
 #include "WordEngine.h"
 #include "WordPopupMenu.h"
+#include "WordVariationDialog.h"
 
 //---------------------------------------------------------------------------
 //  WordListView
@@ -156,8 +156,9 @@ WordListView::displayHooks (const QString& word)
     if (!wordEngine)
         return;
 
-    HookDialog* dialog = new HookDialog (wordEngine, word, this, "dialog",
-                                         true);
+    WordVariationDialog* dialog = new WordVariationDialog (wordEngine, word,
+                                                           this, "dialog",
+                                                           true);
     dialog->exec();
     delete dialog;
 }

@@ -1,9 +1,9 @@
 //---------------------------------------------------------------------------
-// HookDialog.h
+// WordVariationDialog.h
 //
 // A dialog for displaying the front and back hooks of a word.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef HOOK_DIALOG_H
-#define HOOK_DIALOG_H
+#ifndef WORD_VARIATION_DIALOG_H
+#define WORD_VARIATION_DIALOG_H
 
 #include <qdialog.h>
 #include <qlabel.h>
@@ -32,13 +32,14 @@
 class WordEngine;
 class WordListView;
 
-class HookDialog : public QDialog
+class WordVariationDialog : public QDialog
 {
   Q_OBJECT
   public:
-    HookDialog (WordEngine* we, const QString& word, QWidget* parent = 0,
-                const char* name = 0, bool modal = false, WFlags f = 0);
-    ~HookDialog();
+    WordVariationDialog (WordEngine* we, const QString& word, QWidget* parent
+                         = 0, const char* name = 0, bool modal = false, WFlags
+                         f = 0);
+    ~WordVariationDialog();
 
   private:
     void setWord (const QString& word);
@@ -51,5 +52,5 @@ class HookDialog : public QDialog
     QPushButton*  closeButton;
 };
 
-#endif // HOOK_DIALOG_H
+#endif // WORD_VARIATION_DIALOG_H
 

@@ -17,7 +17,6 @@ SET (SRCS
     src/DefinitionBox.cpp
     src/DefinitionDialog.cpp
     src/HelpDialog.cpp
-    src/HookDialog.cpp
     src/ImageItem.cpp
     src/JudgeForm.cpp
     src/main.cpp
@@ -35,6 +34,7 @@ SET (SRCS
     src/WordListViewItem.cpp
     src/WordPopupMenu.cpp
     src/WordValidator.cpp
+    src/WordVariationDialog.cpp
     )
 
 # Header files that must be run through moc
@@ -46,7 +46,6 @@ SET (MOCS
     src/DefinitionDialog.h
     src/DefinitionLabel.h
     src/HelpDialog.h
-    src/HookDialog.h
     src/JudgeForm.h
     src/MainWindow.h
     src/NewQuizDialog.h
@@ -57,6 +56,7 @@ SET (MOCS
     src/WordListView.h
     src/WordPopupMenu.h
     src/WordValidator.h
+    src/WordVariationDialog.h
     )
 
 # Get Zyzzyva version from VERSION

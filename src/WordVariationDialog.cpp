@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// HookDialog.cpp
+// WordVariationDialog.cpp
 //
-// A dialog for displaying the front and back hooks of a word.
+// A dialog for displaying variations of a word, such as hooks, anagrams, etc.
 //
 // This file is part of Zyzzyva.
 //
@@ -20,7 +20,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include "HookDialog.h"
+#include "WordVariationDialog.h"
 #include "Defs.h"
 #include "WordEngine.h"
 #include "WordListView.h"
@@ -32,7 +32,7 @@ const QString DIALOG_CAPTION = "Hook Words for: ";
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-//  HookDialog
+//  WordVariationDialog
 //
 //! Constructor.
 //
@@ -41,8 +41,9 @@ using namespace Defs;
 //! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
-HookDialog::HookDialog (WordEngine* we, const QString& word, QWidget* parent,
-                        const char* name, bool modal, WFlags f)
+WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
+                                          QWidget* parent, const char* name,
+                                          bool modal, WFlags f)
     : QDialog (parent, name, modal, f), wordEngine (we)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
@@ -96,11 +97,11 @@ HookDialog::HookDialog (WordEngine* we, const QString& word, QWidget* parent,
 }
 
 //---------------------------------------------------------------------------
-//  ~HookDialog
+//  ~WordVariationDialog
 //
 //! Destructor.
 //---------------------------------------------------------------------------
-HookDialog::~HookDialog()
+WordVariationDialog::~WordVariationDialog()
 {
 }
 
@@ -112,7 +113,7 @@ HookDialog::~HookDialog()
 //! @param word the word whose hooks are displayed
 //---------------------------------------------------------------------------
 void
-HookDialog::setWord (const QString& word)
+WordVariationDialog::setWord (const QString& word)
 {
     setCaption (DIALOG_CAPTION + word);
     wordLabel->setText (DIALOG_CAPTION + word);
