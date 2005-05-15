@@ -1,71 +1,85 @@
-Stuff that would be nice:
-
-* Bug?  What the heck is ASSERT: i <= nodes in
+Bug Fixes:
+----------
+* What the heck is ASSERT: i <= nodes in
   /home/mthelen/usr/lib/qt3.3.3-gcc3.4.1-thread/include/qvaluelist.h (372)
 
+New Quiz Types:
+---------------
+- Hooks: 2-to
+- Random racks:
+- Find the shortest word containing these letters
+- Top X bingo stems
+- Mnemonic phrases: X-to-make-X+1 (ENTIRE + "IN GREAT CHUNKS"), Front Hook
+  ("KNIGHT SWAM" + AE), Back Hook (KA + "BETSYS FEET")
+- Include letter combinations that meet the search criteria but for which
+  there is no valid quiz response (RETAIN + O = AEINORT).
+
+New Search Criteria:
+--------------------
+- Num Anagrams
+- Probability
+- Top X bingo stems
+- Is a Hook Word (makes valid word without first or last letter)
+
+Major Features:
+---------------
+* Add a Game tab with a crossword game board that the user can manipulate.
+  Eventually add a game engine that can find legal moves, etc.
+
+Build System:
+-------------
+* Configure docs/help/zyzzyva.dcf at compile time with the correct
+  QtAssistantClient version.
+
+Visual Polish:
+--------------
+* Add a title bar icon other than the default (the X logo under Linux and the
+  Command Prompt icon under Windows).
+
+* New font preferences: Input areas.  Quiz canvas.  Figure out how to change
+  the font in the quiz canvas based on the user's font settings.
+
+Usability:
+----------
 * Disallow quiz responses that do not correspond to the quiz question.  For
   example, if the question is anagram of EKTY, disallow "KITE" because it
   isn't even a proper anagram of those letters.
 
 * Allow keyboard switching between tabs.  Ctrl-PgUp or something similar.
 
-* Allow sorting of a word list via a right-click menu rather than an
-  application-wide preference setting.
+* Add a toolbar for easily creating quizzes, searches, etc.
 
-* Keep track of polyorths and allow them to be displayed.
+* Allow unloading of a word list.
 
 * Save size of Analyze dialog across sessions.  Also don't always make it
   fixed at the minimum size in both directions.  Maybe just horizontally.
-
-* Add a toolbar for easily creating quizzes, searches, etc.
 
 * Add an overall timer for the taking of quizzes, even if a cutoff timer is
   not to be used for each question.  Keep track of total quiz time, and
   display it in the Analyze dialog.  Also save best times across sessions.
 
-* Add a title bar icon other than the default (the X logo under Linux and the
-  Command Prompt icon under Windows).
-
 * Allow right-clicking on any word, anywhere.  Pop up menu should include Show
   Definition, Show Hooks, etc.
 
-* New font preferences: Input areas.  Quiz canvas.  Figure out how to change
-  the font in the quiz canvas based on the user's font settings.
-
-* Allow saving of word lists to a PDF file or equivalent.  Also in format for
-  offline quizzing using physical paper or index cards.
-
-* Configure docs/help/zyzzyva.dcf at compile time with the correct
-  QtAssistantClient version.
+* Allow saving of named quizzes and searches.  Use this functionality to
+  include predefined quizzes and searches.
 
 * Allow the user to edit word definitions from within Zyzzyva.
-
-* Allow quizzes on mnemonic phrases.  X-to-make-X+1, Front Hook, Back Hook.
-
-* Allow a quiz like "Find the shortest word containing these letters".
-  Kind of like the License Plate game.
-
-* Allow quizzes based on the disjunction of multiple searches.  For example,
-  allow a quiz based on the top X bingo stems (TISANE?, SATIRE?, RETAIN?,
-  etc).
-
-* Allow quizzes based on a random rack of letters, drawn as if out of a real
-  bag of crossword-game tiles.
-
-* Allow quiz questions whose correct answer is "no words at all".
 
 * Allow quizzes to end after X questions rather than running through all
   possible questions.
 
-* Allow quizzes of hook letters.
-
 * Keep permanent track of high scores on quizzes, words that need to be
   studied, invalid words that need to be forgotten.
 
-* Allow taking back of accidental typos while taking a quiz.
+Word List Right Click Menus:
+----------------------------
+* Allow sorting of a word list via a right-click menu rather than an
+  application-wide preference setting.
 
-* Allow unloading of a word list.
+* Allow export of words from any word list.
 
-* Allow export of search results.
+* Allow saving of word lists to a PDF file or equivalent.  Also in format for
+  offline quizzing using physical paper or index cards.
 
-* Allow export of lists from the Analyze dialog.
+* Keep track of polyorths and allow them to be displayed.
