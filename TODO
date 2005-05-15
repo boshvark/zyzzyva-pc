@@ -77,8 +77,12 @@ Word List Right Click Menus:
 * Allow sorting of a word list via a right-click menu rather than an
   application-wide preference setting.
 
-* Show Anagrams, Show Anagram Hooks, Show Anagrams with one letter changed,
-  Show Pattern Matches with one letter changed.
+* Show Anagrams.
+* Show Subanagrams.
+* Show Anagram Hooks.
+* Show Anagrams with one letter changed.
+* Show Pattern Matches with one letter changed.
+* Show Extensions.
 
 * Allow export of words from any word list.
 
