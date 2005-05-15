@@ -45,6 +45,8 @@ Usability:
   example, if the question is anagram of EKTY, disallow "KITE" because it
   isn't even a proper anagram of those letters.
 
+* Allow word lists to show hooks automatically (three columns).
+
 * Allow keyboard switching between tabs.  Ctrl-PgUp or something similar.
 
 * Add a toolbar for easily creating quizzes, searches, etc.
