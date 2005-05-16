@@ -28,6 +28,7 @@
 #include "WordEngine.h"
 #include "WordPopupMenu.h"
 #include "WordVariationDialog.h"
+#include "WordVariationType.h"
 
 //---------------------------------------------------------------------------
 //  WordListView
@@ -120,9 +121,35 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
         displayDefinition (item->text (0).upper());
         break;
 
+        case WordPopupMenu::ShowAnagrams:
+        displayAnagrams (item->text (0).upper());
+        break;
+
+        case WordPopupMenu::ShowSubanagrams:
+        displaySubanagrams (item->text (0).upper());
+        break;
+
         case WordPopupMenu::ShowHooks:
         displayHooks (item->text (0).upper());
         break;
+
+        case WordPopupMenu::ShowAnagramHooks:
+        displayAnagramHooks (item->text (0).upper());
+        break;
+
+        case WordPopupMenu::ShowBlanagrams:
+        displayBlanagrams (item->text (0).upper());
+        break;
+
+        case WordPopupMenu::ShowBlatterns:
+        displayBlatterns (item->text (0).upper());
+        break;
+
+        case WordPopupMenu::ShowExtensions:
+        displayExtensions (item->text (0).upper());
+        break;
+
+        default: break;
     }
 }
 
@@ -140,7 +167,45 @@ WordListView::displayDefinition (const QString& word)
         return;
 
     DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
-                                                     "dialog", true);
+                                                     "dialog", false);
+    dialog->exec();
+    delete dialog;
+}
+
+//---------------------------------------------------------------------------
+//  displayAnagrams
+//
+//! Displays the anagrams of a word.
+//
+//! @param word the word whose anagrams to display
+//---------------------------------------------------------------------------
+void
+WordListView::displayAnagrams (const QString& word)
+{
+    if (!wordEngine)
+        return;
+
+    WordVariationDialog* dialog = new WordVariationDialog (
+        wordEngine, word, VariationAnagrams, this, "dialog", false);
+    dialog->exec();
+    delete dialog;
+}
+
+//---------------------------------------------------------------------------
+//  displaySubanagrams
+//
+//! Displays the subanagrams of a word.
+//
+//! @param word the word whose subanagrams to display
+//---------------------------------------------------------------------------
+void
+WordListView::displaySubanagrams (const QString& word)
+{
+    if (!wordEngine)
+        return;
+
+    WordVariationDialog* dialog = new WordVariationDialog (
+        wordEngine, word, VariationSubanagrams, this, "dialog", false);
     dialog->exec();
     delete dialog;
 }
@@ -150,7 +215,7 @@ WordListView::displayDefinition (const QString& word)
 //
 //! Displays the hooks of a word.
 //
-//! @param word the word whose definition to display
+//! @param word the word whose hooks to display
 //---------------------------------------------------------------------------
 void
 WordListView::displayHooks (const QString& word)
@@ -159,8 +224,91 @@ WordListView::displayHooks (const QString& word)
         return;
 
     WordVariationDialog* dialog = new WordVariationDialog (
-        wordEngine, word, WordVariationDialog::VariationHooks, this, "dialog",
-        true);
+        wordEngine, word, VariationHooks, this, "dialog", false);
+    dialog->exec();
+    delete dialog;
+}
+
+//---------------------------------------------------------------------------
+//  displayAnagramHooks
+//
+//! Displays the anagram hooks of a word.  An anagram hook is a word that can
+//! be formed by adding an extra letter to the set of letters already in the
+//! word.
+//
+//! @param word the word whose anagram hooks to display
+//---------------------------------------------------------------------------
+void
+WordListView::displayAnagramHooks (const QString& word)
+{
+    if (!wordEngine)
+        return;
+
+    WordVariationDialog* dialog = new WordVariationDialog (
+        wordEngine, word, VariationAnagramHooks, this, "dialog", false);
+    dialog->exec();
+    delete dialog;
+}
+
+//---------------------------------------------------------------------------
+//  displayBlanagrams
+//
+//! Displays the blanagrams of a word.  A blanagram is a word that can be
+//! formed by substituting any letter in the word with another letter, and
+//! rearranging the letters.
+//
+//! @param word the word whose blanagrams to display
+//---------------------------------------------------------------------------
+void
+WordListView::displayBlanagrams (const QString& word)
+{
+    if (!wordEngine)
+        return;
+
+    WordVariationDialog* dialog = new WordVariationDialog (
+        wordEngine, word, VariationBlanagrams, this, "dialog", false);
+    dialog->exec();
+    delete dialog;
+}
+
+//---------------------------------------------------------------------------
+//  displayBlatterns
+//
+//! Displays the blatterns of a word.  A blattern is a word that can be formed
+//! by substituting any letter in the word with another letter, leaving the
+//! letters in their original order.
+//
+//! @param word the word whose blatterns to display
+//---------------------------------------------------------------------------
+void
+WordListView::displayBlatterns (const QString& word)
+{
+    if (!wordEngine)
+        return;
+
+    WordVariationDialog* dialog = new WordVariationDialog (
+        wordEngine, word, VariationBlatterns, this, "dialog", false);
+    dialog->exec();
+    delete dialog;
+}
+
+//---------------------------------------------------------------------------
+//  displayExtensions
+//
+//! Displays the extensions of a word.  An extension is a word that can be
+//! formed by adding one or more letters onto the front, back, or both ends of
+//! the word.
+//
+//! @param word the word whose extensions to display
+//---------------------------------------------------------------------------
+void
+WordListView::displayExtensions (const QString& word)
+{
+    if (!wordEngine)
+        return;
+
+    WordVariationDialog* dialog = new WordVariationDialog (
+        wordEngine, word, VariationExtensions, this, "dialog", false);
     dialog->exec();
     delete dialog;
 }

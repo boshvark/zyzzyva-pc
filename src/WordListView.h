@@ -43,7 +43,13 @@ class WordListView : public QListView
     void doReturnPressed (QListViewItem* item);
     void doPopupMenu (QListViewItem* item, const QPoint& point, int);
     void displayDefinition (const QString& word);
+    void displayAnagrams (const QString& word);
+    void displaySubanagrams (const QString& word);
     void displayHooks (const QString& word);
+    void displayAnagramHooks (const QString& word);
+    void displayBlanagrams (const QString& word);
+    void displayBlatterns (const QString& word);
+    void displayExtensions (const QString& word);
     void setTitle (const QString& title);
 
   private:

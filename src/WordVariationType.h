@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// WordVariationDialog.h
+// WordVariationType.h
 //
-// A dialog for displaying the front and back hooks of a word.
+// An enumeration of word variation types.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,37 +22,18 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_VARIATION_DIALOG_H
-#define WORD_VARIATION_DIALOG_H
+#ifndef WORD_VARIATION_TYPE_H
+#define WORD_VARIATION_TYPE_H
 
-#include "WordVariationType.h"
-#include <qdialog.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-
-class WordEngine;
-class WordListView;
-
-class WordVariationDialog : public QDialog
-{
-  Q_OBJECT
-  public:
-    WordVariationDialog (WordEngine* we, const QString& word,
-                         WordVariationType variation, QWidget* parent = 0,
-                         const char* name = 0, bool modal = false, WFlags f =
-                         0);
-    ~WordVariationDialog();
-
-  private:
-    void setWordVariation (const QString& word, WordVariationType variation);
-
-  private:
-    WordEngine*   wordEngine;
-    QLabel*       wordLabel;
-    WordListView* leftList;
-    WordListView* rightList;
-    QPushButton*  closeButton;
+enum WordVariationType {
+    VariationNone = 0,
+    VariationAnagrams,
+    VariationSubanagrams,
+    VariationHooks,
+    VariationAnagramHooks,
+    VariationBlanagrams,
+    VariationBlatterns,
+    VariationExtensions
 };
 
-#endif // WORD_VARIATION_DIALOG_H
-
+#endif // WORD_VARIATION_TYPE_H

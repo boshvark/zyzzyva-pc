@@ -36,7 +36,13 @@ WordPopupMenu::WordPopupMenu (QWidget* parent, const char* name)
     : QPopupMenu (parent, name)
 {
     insertItem ("Show Definition", ShowDefinition);
+    insertItem ("Show Anagrams", ShowAnagrams);
+    insertItem ("Show Subanagrams", ShowSubanagrams);
     insertItem ("Show Hooks", ShowHooks);
+    insertItem ("Show Anagram Hooks", ShowAnagramHooks);
+    insertItem ("Show Blanagrams", ShowBlanagrams);
+    insertItem ("Show Blatterns", ShowBlatterns);
+    insertItem ("Show Extensions", ShowExtensions);
 }
 
 //---------------------------------------------------------------------------

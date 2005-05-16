@@ -121,6 +121,20 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     SearchSpec rightSpec;
     switch (variation) {
 
+        case VariationAnagrams:
+        title = "Anagrams for: " + word;
+        leftSpec.type = Anagram;
+        leftSpec.pattern = word;
+        leftList->setTitle ("Anagrams");
+        break;
+
+        case VariationSubanagrams:
+        title = "Subanagrams for: " + word;
+        leftSpec.type = Subanagram;
+        leftSpec.pattern = word;
+        leftList->setTitle ("Subanagrams");
+        break;
+
         case VariationHooks:
         title = "Hook words for: " + word;
         leftSpec.type = Pattern;
@@ -129,6 +143,40 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         rightSpec.pattern = word + "?";
         leftList->setTitle ("Front Hooks");
         rightList->setTitle ("Back Hooks");
+        showRightList = true;
+        break;
+
+        case VariationAnagramHooks:
+        title = "Anagram Hook words for: " + word;
+        leftSpec.type = Anagram;
+        leftSpec.pattern = "?" + word;
+        leftList->setTitle ("Anagram Hooks");
+        break;
+
+        //// XXX: Need to do multiple searches!
+        //case VariationBlanagrams:
+        //title = "Blanagrams for: " + word;
+        //leftSpec.type = Anagram;
+        //leftSpec.pattern = "?" + word;
+        //leftList->setTitle ("Blanagrams");
+        //break;
+
+        //// XXX: Need to do multiple searches!
+        //case VariationBlatterns:
+        //title = "Blatterns for: " + word;
+        //leftSpec.type = Pattern;
+        //leftSpec.pattern = "?" + word;
+        //leftList->setTitle ("Blatterns");
+        //break;
+
+        case VariationExtensions:
+        title = "Extension words for: " + word;
+        leftSpec.type = Pattern;
+        leftSpec.pattern = "*?" + word;
+        rightSpec.type = Pattern;
+        rightSpec.pattern = word + "?*";
+        leftList->setTitle ("Front Extensions");
+        rightList->setTitle ("Back Extensions");
         showRightList = true;
         break;
 
