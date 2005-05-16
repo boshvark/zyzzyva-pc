@@ -27,8 +27,6 @@
 #include "WordListViewItem.h"
 #include <qlayout.h>
 
-const QString DIALOG_CAPTION = "Hook Words for: ";
-
 using namespace Defs;
 
 //---------------------------------------------------------------------------
@@ -42,6 +40,7 @@ using namespace Defs;
 //! @param f widget flags
 //---------------------------------------------------------------------------
 WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
+                                          WordVariationType variation,
                                           QWidget* parent, const char* name,
                                           bool modal, WFlags f)
     : QDialog (parent, name, modal, f), wordEngine (we)
@@ -92,7 +91,7 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
     connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (closeButton);
 
-    setWord (word);
+    setWordVariation (word, variation);
     resize (minimumSizeHint().width(), 500);
 }
 
@@ -106,17 +105,20 @@ WordVariationDialog::~WordVariationDialog()
 }
 
 //---------------------------------------------------------------------------
-//  setWord
+//  setWordVariation
 //
 //! Display the front and back hooks of a word.
 //
 //! @param word the word whose hooks are displayed
+//! @param variation the variation of the word to display
 //---------------------------------------------------------------------------
 void
-WordVariationDialog::setWord (const QString& word)
+WordVariationDialog::setWordVariation (const QString& word, WordVariationType
+                                       variation)
 {
-    setCaption (DIALOG_CAPTION + word);
-    wordLabel->setText (DIALOG_CAPTION + word);
+    QString title = "Hook words for: " + word;
+    setCaption (title);
+    wordLabel->setText (title);
 
     // Front hooks
     SearchSpec spec;

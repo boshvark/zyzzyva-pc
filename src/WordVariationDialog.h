@@ -35,14 +35,27 @@ class WordListView;
 class WordVariationDialog : public QDialog
 {
   Q_OBJECT
+
   public:
-    WordVariationDialog (WordEngine* we, const QString& word, QWidget* parent
-                         = 0, const char* name = 0, bool modal = false, WFlags
-                         f = 0);
+    enum WordVariationType {
+        VariationNone = 0,
+        VariationAnagrams,
+        VariationHooks,
+        VariationAnagramHooks,
+        VariationBlanagrams,
+        VariationBlatterns,
+        VariationExtensions
+    };
+
+  public:
+    WordVariationDialog (WordEngine* we, const QString& word,
+                         WordVariationType variation, QWidget* parent = 0,
+                         const char* name = 0, bool modal = false, WFlags f =
+                         0);
     ~WordVariationDialog();
 
   private:
-    void setWord (const QString& word);
+    void setWordVariation (const QString& word, WordVariationType variation);
 
   private:
     WordEngine*   wordEngine;

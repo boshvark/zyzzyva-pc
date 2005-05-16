@@ -156,9 +156,9 @@ WordListView::displayHooks (const QString& word)
     if (!wordEngine)
         return;
 
-    WordVariationDialog* dialog = new WordVariationDialog (wordEngine, word,
-                                                           this, "dialog",
-                                                           true);
+    WordVariationDialog* dialog = new WordVariationDialog (
+        wordEngine, word, WordVariationDialog::VariationHooks, this, "dialog",
+        true);
     dialog->exec();
     delete dialog;
 }
