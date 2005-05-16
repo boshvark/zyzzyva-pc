@@ -115,25 +115,38 @@ void
 WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                                        variation)
 {
-    leftList->setTitle ("Front Hooks");
-    rightList->setTitle ("Back Hooks");
+    bool showRightList = false;
+    QString title;
+    SearchSpec leftSpec;
+    SearchSpec rightSpec;
+    switch (variation) {
 
-    QString title = "Hook words for: " + word;
+        case VariationHooks:
+        title = "Hook words for: " + word;
+        leftSpec.type = Pattern;
+        leftSpec.pattern = "?" + word;
+        rightSpec.type = Pattern;
+        rightSpec.pattern = word + "?";
+        leftList->setTitle ("Front Hooks");
+        rightList->setTitle ("Back Hooks");
+        showRightList = true;
+        break;
+
+        default: break;
+    }
+
     setCaption (title);
     wordLabel->setText (title);
 
-    // Front hooks
-    SearchSpec spec;
-    spec.pattern = "?" + word;
-    spec.type = Pattern;
-    QStringList hooks = wordEngine->search (spec, true);
+    QStringList words = wordEngine->search (leftSpec, true);
     QStringList::iterator it;
-    for (it = hooks.begin(); it != hooks.end(); ++it)
+    for (it = words.begin(); it != words.end(); ++it)
         new WordListViewItem (leftList, *it);
 
-    // Back hooks
-    spec.pattern = word + "?";
-    hooks = wordEngine->search (spec, true);
-    for (it = hooks.begin(); it != hooks.end(); ++it)
-        new WordListViewItem (rightList, *it);
+    if (showRightList) {
+        words = wordEngine->search (rightSpec, true);
+        for (it = words.begin(); it != words.end(); ++it)
+            new WordListViewItem (rightList, *it);
+        rightList->show();
+    }
 }
