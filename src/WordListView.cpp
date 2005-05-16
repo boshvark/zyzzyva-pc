@@ -42,6 +42,8 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WF
                       f)
     : QListView (parent, name, f), wordEngine (e)
 {
+    addColumn ("");
+
     // Only connect certain slots if word engine is non-null
     if (wordEngine) {
         // XXX: This signal should be connected regardless... only certain
@@ -161,4 +163,17 @@ WordListView::displayHooks (const QString& word)
         true);
     dialog->exec();
     delete dialog;
+}
+
+//---------------------------------------------------------------------------
+//  setTitle
+//
+//! Set the displayed title of the list view.
+//
+//! @param title the title to display
+//---------------------------------------------------------------------------
+void
+WordListView::setTitle (const QString& title)
+{
+    setColumnText (0, QIconSet(), title);
 }

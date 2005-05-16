@@ -78,7 +78,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     missedList = new WordListView (wordEngine, this, "missedList");
     Q_CHECK_PTR (missedList);
     missedList->setResizeMode (QListView::LastColumn);
-    missedList->addColumn ("Missed");
+    missedList->setTitle ("Missed");
     missedVlay->addWidget (missedList);
 
     QVBoxLayout* incorrectVlay = new QVBoxLayout (SPACING, "incorrectVlay");
@@ -88,7 +88,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     incorrectList = new WordListView (wordEngine, this, "incorrectList");
     Q_CHECK_PTR (incorrectList);
     incorrectList->setResizeMode (QListView::LastColumn);
-    incorrectList->addColumn ("Incorrect");
+    incorrectList->setTitle ("Incorrect");
     incorrectVlay->addWidget (incorrectList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");

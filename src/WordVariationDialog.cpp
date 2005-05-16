@@ -65,17 +65,16 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
     Q_CHECK_PTR (listHlay);
     mainVlay->addLayout (listHlay);
 
-    frontList = new WordListView (wordEngine, this, "frontList");
-    Q_CHECK_PTR (frontList);
-    frontList->setResizeMode (QListView::LastColumn);
-    frontList->addColumn ("Front Hooks");
-    listHlay->addWidget (frontList);
+    leftList = new WordListView (wordEngine, this, "leftList");
+    Q_CHECK_PTR (leftList);
+    leftList->setResizeMode (QListView::LastColumn);
+    listHlay->addWidget (leftList);
 
-    backList = new WordListView (wordEngine, this, "backList");
-    Q_CHECK_PTR (backList);
-    backList->setResizeMode (QListView::LastColumn);
-    backList->addColumn ("Back Hooks");
-    listHlay->addWidget (backList);
+    rightList = new WordListView (wordEngine, this, "rightList");
+    Q_CHECK_PTR (rightList);
+    rightList->setResizeMode (QListView::LastColumn);
+    rightList->hide();
+    listHlay->addWidget (rightList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
@@ -116,6 +115,9 @@ void
 WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                                        variation)
 {
+    leftList->setTitle ("Front Hooks");
+    rightList->setTitle ("Back Hooks");
+
     QString title = "Hook words for: " + word;
     setCaption (title);
     wordLabel->setText (title);
@@ -127,11 +129,11 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     QStringList hooks = wordEngine->search (spec, true);
     QStringList::iterator it;
     for (it = hooks.begin(); it != hooks.end(); ++it)
-        new WordListViewItem (frontList, *it);
+        new WordListViewItem (leftList, *it);
 
     // Back hooks
     spec.pattern = word + "?";
     hooks = wordEngine->search (spec, true);
     for (it = hooks.begin(); it != hooks.end(); ++it)
-        new WordListViewItem (backList, *it);
+        new WordListViewItem (rightList, *it);
 }

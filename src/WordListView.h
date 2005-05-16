@@ -44,6 +44,7 @@ class WordListView : public QListView
     void doPopupMenu (QListViewItem* item, const QPoint& point, int);
     void displayDefinition (const QString& word);
     void displayHooks (const QString& word);
+    void setTitle (const QString& title);
 
   private:
     WordEngine* wordEngine;

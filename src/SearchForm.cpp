@@ -86,7 +86,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     resultList = new WordListView (engine, this, "resultList");
     Q_CHECK_PTR (resultList);
     resultList->setResizeMode (QListView::LastColumn);
-    resultList->addColumn ("Search Results");
+    resultList->setTitle ("Search Results");
     resultList->setShowSortIndicator (true);
     specVlay->addWidget (resultList);
     updateResultTotal (0);
@@ -141,5 +141,5 @@ SearchForm::updateResultTotal (int num)
 {
     QString text = "Search Results : " + QString::number (num) + " word";
     if (num != 1) text += "s";
-    resultList->setColumnText (0, QIconSet(), text);
+    resultList->setTitle (text);
 }
