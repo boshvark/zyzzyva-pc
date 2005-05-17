@@ -163,9 +163,9 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
         return;
 
     WordVariationDialog* dialog = new WordVariationDialog (
-        wordEngine, word, variation, this, "dialog", false);
-    dialog->exec();
-    delete dialog;
+        wordEngine, word, variation, this, "dialog", false,
+        Qt::WDestructiveClose);
+    dialog->show();
 }
 
 //---------------------------------------------------------------------------
@@ -182,9 +182,9 @@ WordListView::displayDefinition (const QString& word)
         return;
 
     DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
-                                                     "dialog", false);
-    dialog->exec();
-    delete dialog;
+                                                     "dialog", false,
+                                                     Qt::WDestructiveClose);
+    dialog->show();
 }
 
 //---------------------------------------------------------------------------

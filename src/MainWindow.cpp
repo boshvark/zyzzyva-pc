@@ -289,10 +289,10 @@ MainWindow::viewDefinition()
         return;
 
     DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
-                                                     "dialog");
+                                                     "dialog", false,
+                                                     Qt::WDestructiveClose);
     Q_CHECK_PTR (dialog);
-    dialog->exec();
-    delete dialog;
+    dialog->show();
 }
 
 //---------------------------------------------------------------------------
@@ -331,10 +331,10 @@ MainWindow::viewVariation (int variation)
     WordVariationType type = static_cast<WordVariationType>(variation);
     WordVariationDialog* dialog = new WordVariationDialog (wordEngine, word,
                                                            type, this,
-                                                           "dialog");
+                                                           "dialog", false,
+                                                           Qt::WDestructiveClose);
     Q_CHECK_PTR (dialog);
-    dialog->exec();
-    delete dialog;
+    dialog->show();
 }
 
 //---------------------------------------------------------------------------
