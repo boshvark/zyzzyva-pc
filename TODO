@@ -44,6 +44,8 @@ Visual Polish:
 
 Usability:
 ----------
+* Add number of words to word list header for Word Variation dialog.
+
 * Disallow quiz responses that do not correspond to the quiz question.  For
   example, if the question is anagram of EKTY, disallow "KITE" because it
   isn't even a proper anagram of those letters.
