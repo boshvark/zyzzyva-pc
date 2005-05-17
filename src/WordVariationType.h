@@ -30,10 +30,10 @@ enum WordVariationType {
     VariationAnagrams,
     VariationSubanagrams,
     VariationHooks,
+    VariationExtensions,
     VariationAnagramHooks,
     VariationBlankAnagrams,
     VariationBlankMatches,
-    VariationExtensions,
     VariationTranspositions
 };
 

@@ -136,6 +136,10 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
         variation = VariationHooks;
         break;
 
+        case WordPopupMenu::ShowExtensions:
+        variation = VariationExtensions;
+        break;
+
         case WordPopupMenu::ShowAnagramHooks:
         variation = VariationAnagramHooks;
         break;
@@ -146,10 +150,6 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
 
         case WordPopupMenu::ShowBlankMatches:
         variation = VariationBlankMatches;
-        break;
-
-        case WordPopupMenu::ShowExtensions:
-        variation = VariationExtensions;
         break;
 
         case WordPopupMenu::ShowTranspositions:

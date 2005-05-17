@@ -34,6 +34,7 @@
 #include "SettingsDialog.h"
 #include "WordEngine.h"
 #include "WordListViewItem.h"
+#include "WordVariationType.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <qapplication.h>
@@ -92,6 +93,32 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (editPopup);
     editPopup->insertItem ("&Preferences", this, SLOT (editSettings()));
     menuBar()->insertItem ("&Edit", editPopup);
+
+    QPopupMenu* viewPopup = new QPopupMenu (this);
+    Q_CHECK_PTR (viewPopup);
+    viewPopup->insertItem ("&Definition...", this, SLOT (viewDefinition()));
+    viewPopup->insertItem ("&Anagrams...", this, SLOT (viewVariation (int)),
+                           0, VariationAnagrams);
+    viewPopup->insertItem ("&Subanagrams...", this, SLOT (viewVariation
+                                                          (int)),
+                           0, VariationSubanagrams);
+    viewPopup->insertItem ("&Hooks...", this, SLOT (viewVariation (int)),
+                           0, VariationHooks);
+    viewPopup->insertItem ("&Extensions...", this, SLOT (viewVariation (int)),
+                           0, VariationExtensions);
+    viewPopup->insertItem ("Anagram Hoo&ks...", this, SLOT (viewVariation
+                                                            (int)),
+                           0, VariationAnagramHooks);
+    viewPopup->insertItem ("&Blank Anagrams...", this, SLOT (viewVariation
+                                                             (int)),
+                           0, VariationBlankAnagrams);
+    viewPopup->insertItem ("Blank &Matches...", this, SLOT (viewVariation
+                                                            (int)),
+                           0, VariationBlankMatches);
+    viewPopup->insertItem ("&Transpositions...", this, SLOT (viewVariation
+                                                             (int)),
+                           0, VariationTranspositions);
+    menuBar()->insertItem ("&View", viewPopup);
 
     QPopupMenu* helpPopup = new QPopupMenu (this);
     Q_CHECK_PTR (helpPopup);
@@ -236,6 +263,30 @@ MainWindow::editSettings()
         settingsDialog->readSettings (settings);
     settings.endGroup();
     readSettings (false);
+}
+
+//---------------------------------------------------------------------------
+//  viewDefinition
+//
+//! Allow the user to view the definition of a word.  Display a dialog asking
+//! the user for the word.
+//---------------------------------------------------------------------------
+void
+MainWindow::viewDefinition()
+{
+    qDebug ("MainWindow::viewDefinition");
+}
+
+//---------------------------------------------------------------------------
+//  viewVariation
+//
+//! Allow the user to view variations of a word.  Display a dialog asking the
+//! user for the word.
+//---------------------------------------------------------------------------
+void
+MainWindow::viewVariation (int variation)
+{
+    qDebug ("MainWindow::viewVariation" + QString::number (variation));
 }
 
 //---------------------------------------------------------------------------
