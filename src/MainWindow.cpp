@@ -24,6 +24,7 @@
 
 #include "MainWindow.h"
 #include "AboutDialog.h"
+#include "DefinitionDialog.h"
 #include "DefineForm.h"
 #include "HelpDialog.h"
 #include "JudgeForm.h"
@@ -33,6 +34,7 @@
 #include "SearchForm.h"
 #include "SettingsDialog.h"
 #include "WordEngine.h"
+#include "WordEntryDialog.h"
 #include "WordListViewItem.h"
 #include "WordVariationType.h"
 #include "Auxil.h"
@@ -274,7 +276,21 @@ MainWindow::editSettings()
 void
 MainWindow::viewDefinition()
 {
-    qDebug ("MainWindow::viewDefinition");
+    WordEntryDialog* entryDialog = new WordEntryDialog (this,
+                                                        "wordEntryDialog",
+                                                        true);
+    Q_CHECK_PTR (entryDialog);
+    entryDialog->setCaption ("View Word Definition");
+    int code = entryDialog->exec();
+    QString word = entryDialog->getWord();
+    delete entryDialog;
+    if (code != QDialog::Accepted)
+        return;
+
+    DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
+                                                     "dialog");
+    dialog->exec();
+    delete dialog;
 }
 
 //---------------------------------------------------------------------------

@@ -29,6 +29,7 @@ SET (SRCS
     src/SearchSpecForm.cpp
     src/SettingsDialog.cpp
     src/WordEngine.cpp
+    src/WordEntryDialog.cpp
     src/WordGraph.cpp
     src/WordListView.cpp
     src/WordListViewItem.cpp
@@ -53,6 +54,7 @@ SET (MOCS
     src/SearchForm.h
     src/SearchSpecForm.h
     src/SettingsDialog.h
+    src/WordEntryDialog.h
     src/WordListView.h
     src/WordPopupMenu.h
     src/WordValidator.h
