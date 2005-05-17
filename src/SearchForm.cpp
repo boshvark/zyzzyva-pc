@@ -25,7 +25,6 @@
 #include "SearchForm.h"
 #include "SearchSpecForm.h"
 #include "WordEngine.h"
-#include "WordValidator.h"
 #include "WordListView.h"
 #include "WordListViewItem.h"
 #include "Defs.h"
