@@ -22,6 +22,7 @@
 
 #include "WordVariationDialog.h"
 #include "Defs.h"
+#include "DefinitionLabel.h"
 #include "WordEngine.h"
 #include "WordListView.h"
 #include "WordListViewItem.h"
@@ -57,7 +58,7 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
 
     labelHlay->addStretch (1);
 
-    wordLabel = new QLabel (this, "wordLabel");
+    wordLabel = new DefinitionLabel (this, "wordLabel");
     Q_CHECK_PTR (wordLabel);
     labelHlay->addWidget (wordLabel);
 

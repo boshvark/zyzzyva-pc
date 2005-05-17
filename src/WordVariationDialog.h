@@ -30,6 +30,7 @@
 #include <qlabel.h>
 #include <qpushbutton.h>
 
+class DefinitionLabel;
 class WordEngine;
 class WordListView;
 
@@ -48,7 +49,7 @@ class WordVariationDialog : public QDialog
 
   private:
     WordEngine*   wordEngine;
-    QLabel*       wordLabel;
+    DefinitionLabel* wordLabel;
     WordListView* leftList;
     WordListView* rightList;
     QPushButton*  closeButton;
