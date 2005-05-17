@@ -26,6 +26,7 @@
 #include "WordEngine.h"
 #include "WordListView.h"
 #include "WordListViewItem.h"
+#include <qapplication.h>
 #include <qlayout.h>
 #include <set>
 
@@ -209,6 +210,8 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     setCaption (title);
     wordLabel->setText (title);
 
+    QApplication::setOverrideCursor (Qt::waitCursor);
+
     set<QString> wordSet;
     QStringList wordList;
     QStringList::iterator wit;
@@ -234,4 +237,6 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         }
         rightList->show();
     }
+
+    QApplication::restoreOverrideCursor();
 }
