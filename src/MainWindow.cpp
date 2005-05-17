@@ -284,7 +284,7 @@ MainWindow::viewDefinition()
     int code = entryDialog->exec();
     QString word = entryDialog->getWord();
     delete entryDialog;
-    if (code != QDialog::Accepted)
+    if ((code != QDialog::Accepted) || word.isEmpty())
         return;
 
     DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
