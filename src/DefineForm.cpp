@@ -120,6 +120,9 @@ DefineForm::defineWord()
             definition = EMPTY_DEFINITION;
         resultStr += "<br>" + definition;
     }
+    else {
+        word += "*";
+    }
 
     resultBox->setText (resultStr);
     resultBox->setTitle (word);

@@ -54,9 +54,12 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
                                              "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
+    bool acceptable = engine->isAcceptable (word);
+    QString wordAcceptable = acceptable ? word : word + "*";
+
     DefinitionBox* defBox = new DefinitionBox (this, "defBox");
     Q_CHECK_PTR (defBox);
-    defBox->setTitle (word);
+    defBox->setTitle (wordAcceptable);
     mainVlay->addWidget (defBox);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
@@ -72,11 +75,13 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
     connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (closeButton);
 
-    setCaption (DIALOG_CAPTION_PREFIX + word);
+    setCaption (DIALOG_CAPTION_PREFIX + wordAcceptable);
 
     QString definition = engine->getDefinition (word);
-    if (definition.isEmpty())
-        definition = EMPTY_DEFINITION;
+    if (definition.isEmpty()) {
+        definition = acceptable ? EMPTY_DEFINITION :
+            QString ("<font color=\"red\">Unacceptable</font>");
+    }
 
     defBox->setText (Auxil::wordWrap (definition, DEFINITION_WRAP_LENGTH));
 }
