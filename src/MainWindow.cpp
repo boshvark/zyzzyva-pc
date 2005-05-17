@@ -36,6 +36,7 @@
 #include "WordEngine.h"
 #include "WordEntryDialog.h"
 #include "WordListViewItem.h"
+#include "WordVariationDialog.h"
 #include "WordVariationType.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -289,6 +290,7 @@ MainWindow::viewDefinition()
 
     DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
                                                      "dialog");
+    Q_CHECK_PTR (dialog);
     dialog->exec();
     delete dialog;
 }
@@ -302,7 +304,37 @@ MainWindow::viewDefinition()
 void
 MainWindow::viewVariation (int variation)
 {
-    qDebug ("MainWindow::viewVariation" + QString::number (variation));
+    QString caption;
+    switch (variation) {
+        case VariationAnagrams: caption = "View Anagrams"; break;
+        case VariationSubanagrams: caption = "View Subanagrams"; break;
+        case VariationHooks: caption = "View Hooks"; break;
+        case VariationExtensions: caption = "View Extensions"; break;
+        case VariationAnagramHooks: caption = "View Anagram Hooks"; break;
+        case VariationBlankAnagrams: caption = "View Blank Anagrams"; break;
+        case VariationBlankMatches: caption = "View Blank Matches"; break;
+        case VariationTranspositions: caption = "View Transpositions"; break;
+        default: break;
+    }
+
+    WordEntryDialog* entryDialog = new WordEntryDialog (this,
+                                                        "wordEntryDialog",
+                                                        true);
+    Q_CHECK_PTR (entryDialog);
+    entryDialog->setCaption (caption);
+    int code = entryDialog->exec();
+    QString word = entryDialog->getWord();
+    delete entryDialog;
+    if ((code != QDialog::Accepted) || word.isEmpty())
+        return;
+
+    WordVariationType type = static_cast<WordVariationType>(variation);
+    WordVariationDialog* dialog = new WordVariationDialog (wordEngine, word,
+                                                           type, this,
+                                                           "dialog");
+    Q_CHECK_PTR (dialog);
+    dialog->exec();
+    delete dialog;
 }
 
 //---------------------------------------------------------------------------
