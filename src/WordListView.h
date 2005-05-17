@@ -47,8 +47,8 @@ class WordListView : public QListView
     void displaySubanagrams (const QString& word);
     void displayHooks (const QString& word);
     void displayAnagramHooks (const QString& word);
-    void displayBlanagrams (const QString& word);
-    void displayBlatterns (const QString& word);
+    void displayBlankAnagrams (const QString& word);
+    void displayBlankMatches (const QString& word);
     void displayExtensions (const QString& word);
     void setTitle (const QString& title);
 

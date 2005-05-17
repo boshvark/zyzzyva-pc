@@ -26,8 +26,10 @@
 #include "WordListView.h"
 #include "WordListViewItem.h"
 #include <qlayout.h>
+#include <set>
 
 using namespace Defs;
+using std::set;
 
 //---------------------------------------------------------------------------
 //  WordVariationDialog
@@ -115,69 +117,77 @@ void
 WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                                        variation)
 {
-    bool showRightList = false;
     QString title;
-    SearchSpec leftSpec;
-    SearchSpec rightSpec;
+    SearchSpec spec;
+    QValueList<SearchSpec> leftSpecs;
+    QValueList<SearchSpec> rightSpecs;
     switch (variation) {
 
         case VariationAnagrams:
         title = "Anagrams for: " + word;
-        leftSpec.type = Anagram;
-        leftSpec.pattern = word;
+        spec.type = Anagram;
+        spec.pattern = word;
+        leftSpecs << spec;
         leftList->setTitle ("Anagrams");
         break;
 
         case VariationSubanagrams:
         title = "Subanagrams for: " + word;
-        leftSpec.type = Subanagram;
-        leftSpec.pattern = word;
+        spec.type = Subanagram;
+        spec.pattern = word;
+        leftSpecs << spec;
         leftList->setTitle ("Subanagrams");
         break;
 
         case VariationHooks:
         title = "Hook words for: " + word;
-        leftSpec.type = Pattern;
-        leftSpec.pattern = "?" + word;
-        rightSpec.type = Pattern;
-        rightSpec.pattern = word + "?";
+        spec.type = Pattern;
+        spec.pattern = "?" + word;
+        leftSpecs << spec;
+        spec.pattern = word + "?";
+        rightSpecs << spec;
         leftList->setTitle ("Front Hooks");
         rightList->setTitle ("Back Hooks");
-        showRightList = true;
         break;
 
         case VariationAnagramHooks:
         title = "Anagram Hook words for: " + word;
-        leftSpec.type = Anagram;
-        leftSpec.pattern = "?" + word;
+        spec.type = Anagram;
+        spec.pattern = "?" + word;
         leftList->setTitle ("Anagram Hooks");
         break;
 
-        //// XXX: Need to do multiple searches!
-        //case VariationBlanagrams:
-        //title = "Blanagrams for: " + word;
-        //leftSpec.type = Anagram;
-        //leftSpec.pattern = "?" + word;
-        //leftList->setTitle ("Blanagrams");
-        //break;
+        case VariationBlankAnagrams:
+        title = "Blank Anagrams for: " + word;
+        spec.type = Anagram;
+        for (int i = 0; i < word.length(); ++i) {
+            spec.pattern = word.left (i) + "?" +
+                word.right (word.length() - i - 1);
+            leftSpecs << spec;
+        }
+        leftList->setTitle ("Blank Anagrams");
+        break;
 
-        //// XXX: Need to do multiple searches!
-        //case VariationBlatterns:
-        //title = "Blatterns for: " + word;
-        //leftSpec.type = Pattern;
-        //leftSpec.pattern = "?" + word;
-        //leftList->setTitle ("Blatterns");
-        //break;
+        case VariationBlankMatches:
+        title = "Blank Matches for: " + word;
+        spec.type = Pattern;
+        for (int i = 0; i < word.length(); ++i) {
+            spec.pattern = word.left (i) + "?" +
+                word.right (word.length() - i - 1);
+            leftSpecs << spec;
+        }
+        leftList->setTitle ("Blank Matches");
+        break;
 
         case VariationExtensions:
         title = "Extension words for: " + word;
-        leftSpec.type = Pattern;
-        leftSpec.pattern = "*?" + word;
-        rightSpec.type = Pattern;
-        rightSpec.pattern = word + "?*";
+        spec.type = Pattern;
+        spec.pattern = "*?" + word;
+        leftSpecs << spec;
+        spec.pattern = word + "?*";
+        rightSpecs << spec;
         leftList->setTitle ("Front Extensions");
         rightList->setTitle ("Back Extensions");
-        showRightList = true;
         break;
 
         default: break;
@@ -186,15 +196,29 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     setCaption (title);
     wordLabel->setText (title);
 
-    QStringList words = wordEngine->search (leftSpec, true);
-    QStringList::iterator it;
-    for (it = words.begin(); it != words.end(); ++it)
-        new WordListViewItem (leftList, *it);
+    set<QString> wordSet;
+    QStringList wordList;
+    QStringList::iterator wit;
+    QValueList<SearchSpec>::iterator sit;
+    for (sit = leftSpecs.begin(); sit != leftSpecs.end(); ++sit) {
+        wordList = wordEngine->search (*sit, true);
+        for (wit = wordList.begin(); wit != wordList.end(); ++wit) {
+            if (wordSet.find (*wit) == wordSet.end())
+                new WordListViewItem (leftList, *wit);
+            wordSet.insert (*wit);
+        }
+    }
 
-    if (showRightList) {
-        words = wordEngine->search (rightSpec, true);
-        for (it = words.begin(); it != words.end(); ++it)
-            new WordListViewItem (rightList, *it);
+    if (!rightSpecs.empty()) {
+        wordSet.clear();
+        for (sit = rightSpecs.begin(); sit != rightSpecs.end(); ++sit) {
+            wordList = wordEngine->search (*sit, true);
+            for (wit = wordList.begin(); wit != wordList.end(); ++wit) {
+                if (wordSet.find (*wit) == wordSet.end())
+                    new WordListViewItem (rightList, *wit);
+                wordSet.insert (*wit);
+            }
+        }
         rightList->show();
     }
 }

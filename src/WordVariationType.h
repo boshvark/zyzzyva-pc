@@ -31,8 +31,8 @@ enum WordVariationType {
     VariationSubanagrams,
     VariationHooks,
     VariationAnagramHooks,
-    VariationBlanagrams,
-    VariationBlatterns,
+    VariationBlankAnagrams,
+    VariationBlankMatches,
     VariationExtensions
 };
 

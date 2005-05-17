@@ -40,8 +40,8 @@ WordPopupMenu::WordPopupMenu (QWidget* parent, const char* name)
     insertItem ("Show Subanagrams", ShowSubanagrams);
     insertItem ("Show Hooks", ShowHooks);
     insertItem ("Show Anagram Hooks", ShowAnagramHooks);
-    insertItem ("Show Blanagrams", ShowBlanagrams);
-    insertItem ("Show Blatterns", ShowBlatterns);
+    insertItem ("Show Blank Anagrams", ShowBlankAnagrams);
+    insertItem ("Show Blank Matches", ShowBlankMatches);
     insertItem ("Show Extensions", ShowExtensions);
 }
 

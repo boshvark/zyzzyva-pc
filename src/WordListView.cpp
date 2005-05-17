@@ -137,12 +137,12 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
         displayAnagramHooks (item->text (0).upper());
         break;
 
-        case WordPopupMenu::ShowBlanagrams:
-        displayBlanagrams (item->text (0).upper());
+        case WordPopupMenu::ShowBlankAnagrams:
+        displayBlankAnagrams (item->text (0).upper());
         break;
 
-        case WordPopupMenu::ShowBlatterns:
-        displayBlatterns (item->text (0).upper());
+        case WordPopupMenu::ShowBlankMatches:
+        displayBlankMatches (item->text (0).upper());
         break;
 
         case WordPopupMenu::ShowExtensions:
@@ -251,43 +251,41 @@ WordListView::displayAnagramHooks (const QString& word)
 }
 
 //---------------------------------------------------------------------------
-//  displayBlanagrams
+//  displayBlankAnagrams
 //
-//! Displays the blanagrams of a word.  A blanagram is a word that can be
-//! formed by substituting any letter in the word with another letter, and
-//! rearranging the letters.
+//! Displays the possible anagrams of a word if one of the word's letters were
+//! substituted with a blank.
 //
-//! @param word the word whose blanagrams to display
+//! @param word the word whose anagrams to display
 //---------------------------------------------------------------------------
 void
-WordListView::displayBlanagrams (const QString& word)
+WordListView::displayBlankAnagrams (const QString& word)
 {
     if (!wordEngine)
         return;
 
     WordVariationDialog* dialog = new WordVariationDialog (
-        wordEngine, word, VariationBlanagrams, this, "dialog", false);
+        wordEngine, word, VariationBlankAnagrams, this, "dialog", false);
     dialog->exec();
     delete dialog;
 }
 
 //---------------------------------------------------------------------------
-//  displayBlatterns
+//  displayBlankMatches
 //
-//! Displays the blatterns of a word.  A blattern is a word that can be formed
-//! by substituting any letter in the word with another letter, leaving the
-//! letters in their original order.
+//! Displays the words that can be formed by substituting any letter in the
+//! word with another letter, leaving the letters in their original order.
 //
 //! @param word the word whose blatterns to display
 //---------------------------------------------------------------------------
 void
-WordListView::displayBlatterns (const QString& word)
+WordListView::displayBlankMatches (const QString& word)
 {
     if (!wordEngine)
         return;
 
     WordVariationDialog* dialog = new WordVariationDialog (
-        wordEngine, word, VariationBlatterns, this, "dialog", false);
+        wordEngine, word, VariationBlankMatches, this, "dialog", false);
     dialog->exec();
     delete dialog;
 }
