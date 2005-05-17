@@ -43,7 +43,8 @@ class WordPopupMenu : public QPopupMenu
         ShowAnagramHooks,
         ShowBlankAnagrams,
         ShowBlankMatches,
-        ShowExtensions
+        ShowExtensions,
+        ShowTranspositions
     };
 };
 

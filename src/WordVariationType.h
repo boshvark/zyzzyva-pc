@@ -33,7 +33,8 @@ enum WordVariationType {
     VariationAnagramHooks,
     VariationBlankAnagrams,
     VariationBlankMatches,
-    VariationExtensions
+    VariationExtensions,
+    VariationTranspositions
 };
 
 #endif // WORD_VARIATION_TYPE_H

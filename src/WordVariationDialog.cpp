@@ -140,7 +140,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         break;
 
         case VariationHooks:
-        title = "Hook words for: " + word;
+        title = "Hooks for: " + word;
         spec.type = Pattern;
         spec.pattern = "?" + word;
         leftSpecs << spec;
@@ -151,9 +151,10 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         break;
 
         case VariationAnagramHooks:
-        title = "Anagram Hook words for: " + word;
+        title = "Anagram Hooks for: " + word;
         spec.type = Anagram;
         spec.pattern = "?" + word;
+        leftSpecs << spec;
         leftList->setTitle ("Anagram Hooks");
         break;
 
@@ -180,7 +181,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         break;
 
         case VariationExtensions:
-        title = "Extension words for: " + word;
+        title = "Extensions for: " + word;
         spec.type = Pattern;
         spec.pattern = "*?" + word;
         leftSpecs << spec;
@@ -188,6 +189,17 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         rightSpecs << spec;
         leftList->setTitle ("Front Extensions");
         rightList->setTitle ("Back Extensions");
+        break;
+
+        case VariationTranspositions:
+        title = "Transpositions for: " + word;
+        spec.type = Pattern;
+        for (int i = 0; i < word.length() - 1; ++i) {
+            spec.pattern = word.left (i) + word.mid (i + 1, 1) +
+                word.mid (i, 1) + word.right (word.length() - i - 2);
+            leftSpecs << spec;
+        }
+        leftList->setTitle ("Transpositions");
         break;
 
         default: break;
