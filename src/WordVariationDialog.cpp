@@ -72,11 +72,13 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
     leftList = new WordListView (wordEngine, this, "leftList");
     Q_CHECK_PTR (leftList);
     leftList->setResizeMode (QListView::LastColumn);
+    leftList->setShowSortIndicator(true);
     listHlay->addWidget (leftList);
 
     rightList = new WordListView (wordEngine, this, "rightList");
     Q_CHECK_PTR (rightList);
     rightList->setResizeMode (QListView::LastColumn);
+    rightList->setShowSortIndicator(true);
     rightList->hide();
     listHlay->addWidget (rightList);
 
