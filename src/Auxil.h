@@ -31,6 +31,7 @@ namespace Auxil {
     QString getAboutString();
     QString getHelpDir();
     QString getTilesDir();
+    QString getWordsDir();
     QString wordWrap (const QString& str, int wrapLength);
 }
 

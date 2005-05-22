@@ -76,6 +76,24 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
 }
 
 //---------------------------------------------------------------------------
+//  importStems
+//
+//! Import stems from a file.  The file is assumed to be in plain text format,
+//! containing one stem per line.  The file is also assumed to contain stems
+//! of equal length.  All stems of different length than the first stem will
+//! be discarded.
+//
+//! @param filename the name of the file to import
+//! @param errString returns the error string in case of error
+//! @return the number of stems imported
+//---------------------------------------------------------------------------
+int
+WordEngine::importStems (const QString& filename, QString* errString)
+{
+    return 0;
+}
+
+//---------------------------------------------------------------------------
 //  isAcceptable
 //
 //! Determine whether a word is acceptable.

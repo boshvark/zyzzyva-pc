@@ -156,6 +156,8 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     QString importFile = settingsDialog->getAutoImportFile();
     if (!importFile.isEmpty())
         import (importFile);
+
+    importStems();
 }
 
 //---------------------------------------------------------------------------
@@ -518,4 +520,33 @@ MainWindow::import (const QString& file)
     else
         setNumWords (imported);
     return imported;
+}
+
+//---------------------------------------------------------------------------
+//  importStems
+//
+//! Import stems.  XXX: Right now this is hard-coded to load certain North
+//! American stems.  Should be more flexible.
+//
+//! @return the number of imported stems
+//---------------------------------------------------------------------------
+int
+MainWindow::importStems()
+{
+    QStringList stemFiles;
+    stemFiles << Auxil::getWordsDir() + "/north-american/6-letter-stems.txt";
+    stemFiles << Auxil::getWordsDir() + "/north-american/7-letter-stems.txt";
+
+    QString err;
+    QApplication::setOverrideCursor (Qt::waitCursor);
+    QStringList::iterator it;
+    int totalImported = 0;
+    for (it = stemFiles.begin(); it != stemFiles.end(); ++it) {
+        int imported = wordEngine->importStems (*it, &err);
+        qDebug (QString::number (imported) + " stems imported from " + *it);
+        totalImported += imported;
+    }
+    QApplication::restoreOverrideCursor();
+
+    return totalImported;
 }

@@ -60,6 +60,7 @@ class MainWindow : public QMainWindow
 
   private:
     int  import (const QString& file);
+    int  importStems();
     void setNumWords (int num);
     void readSettings (bool useGeometry);
     void writeSettings();

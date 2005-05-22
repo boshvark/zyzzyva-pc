@@ -38,6 +38,7 @@ class WordEngine
 
     int importFile (const QString& filename, bool loadDefinitions = true,
                     QString* errString = 0);
+    int importStems (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;
     QStringList alphagrams (const QStringList& list) const;
@@ -47,6 +48,7 @@ class WordEngine
   private:
     WordGraph graph;
     std::map<QString,QString> definitions;
+    std::map<int, QStringList> stems;
 };
 
 #endif // WORD_ENGINE_H

@@ -78,6 +78,19 @@ Auxil::getTilesDir()
 }
 
 //---------------------------------------------------------------------------
+//  getWordsDir
+//
+//! Return the top-level directory containing subdirectories with word lists.
+//
+//! @return the directory name
+//---------------------------------------------------------------------------
+QString
+Auxil::getWordsDir()
+{
+    return qApp->applicationDirPath() + "/data/words";
+}
+
+//---------------------------------------------------------------------------
 //  wordWrap
 //
 //! Wrap a string so that no line is longer than a certain length.
