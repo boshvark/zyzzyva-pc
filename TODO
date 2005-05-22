@@ -1,11 +1,3 @@
-Bug Fixes:
-----------
-* What the heck is ASSERT: i <= nodes in
-  /home/mthelen/usr/lib/qt3.3.3-gcc3.4.1-thread/include/qvaluelist.h (372)
-
-* Hitting Enter with a word selected in the WordVariationDialog causes the
-  word's definition to flash briefly and immediately disappear.
-
 New Quiz Types:
 ---------------
 - Hooks: 2-to
@@ -19,20 +11,13 @@ New Quiz Types:
 
 New Search Criteria:
 --------------------
-- Num Anagrams
 - Probability
 - Top X bingo stems
-- Is a Hook Word (makes valid word without first or last letter)
 
 Major Features:
 ---------------
 * Add a Game tab with a crossword game board that the user can manipulate.
   Eventually add a game engine that can find legal moves, etc.
-
-Build System:
--------------
-* Configure docs/help/zyzzyva.dcf at compile time with the correct
-  QtAssistantClient version.
 
 Visual Polish:
 --------------
@@ -44,29 +29,9 @@ Visual Polish:
 
 Usability:
 ----------
-* Add number of words to word list header for Word Variation dialog.
-
-* Disallow quiz responses that do not correspond to the quiz question.  For
-  example, if the question is anagram of EKTY, disallow "KITE" because it
-  isn't even a proper anagram of those letters.
-
-* Allow word lists to show hooks automatically (three columns).
-
-* Allow keyboard switching between tabs.  Ctrl-PgUp or something similar.
-
-* Add a toolbar for easily creating quizzes, searches, etc.
-
-* Allow unloading of a word list.
-
-* Save size of Analyze dialog across sessions.  Also don't always make it
-  fixed at the minimum size in both directions.  Maybe just horizontally.
-
 * Add an overall timer for the taking of quizzes, even if a cutoff timer is
   not to be used for each question.  Keep track of total quiz time, and
   display it in the Analyze dialog.  Also save best times across sessions.
-
-* Allow right-clicking on any word, anywhere.  Pop up menu should include Show
-  Definition, Show Hooks, etc.
 
 * Allow saving of named quizzes and searches.  Use this functionality to
   include predefined quizzes and searches.
