@@ -209,6 +209,9 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         default: break;
     }
 
+
+    if (!wordEngine->isAcceptable (word))
+        title += "*";
     setCaption (title);
     wordLabel->setText (title);
 
