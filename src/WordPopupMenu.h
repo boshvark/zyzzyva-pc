@@ -36,15 +36,15 @@ class WordPopupMenu : public QPopupMenu
 
   public:
     enum {
-        ShowDefinition,
-        ShowHooks,
-        ShowAnagrams,
-        ShowSubanagrams,
-        ShowAnagramHooks,
-        ShowBlankAnagrams,
-        ShowBlankMatches,
-        ShowExtensions,
-        ShowTranspositions
+        ViewDefinition,
+        ViewHooks,
+        ViewAnagrams,
+        ViewSubanagrams,
+        ViewAnagramHooks,
+        ViewBlankAnagrams,
+        ViewBlankMatches,
+        ViewExtensions,
+        ViewTranspositions
     };
 };
 

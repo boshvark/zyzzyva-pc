@@ -120,39 +120,39 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
     WordVariationType variation = VariationNone;
 
     switch (choice) {
-        case WordPopupMenu::ShowDefinition:
+        case WordPopupMenu::ViewDefinition:
         displayDefinition (word);
         return;
 
-        case WordPopupMenu::ShowAnagrams:
+        case WordPopupMenu::ViewAnagrams:
         variation = VariationAnagrams;
         break;
 
-        case WordPopupMenu::ShowSubanagrams:
+        case WordPopupMenu::ViewSubanagrams:
         variation = VariationSubanagrams;
         break;
 
-        case WordPopupMenu::ShowHooks:
+        case WordPopupMenu::ViewHooks:
         variation = VariationHooks;
         break;
 
-        case WordPopupMenu::ShowExtensions:
+        case WordPopupMenu::ViewExtensions:
         variation = VariationExtensions;
         break;
 
-        case WordPopupMenu::ShowAnagramHooks:
+        case WordPopupMenu::ViewAnagramHooks:
         variation = VariationAnagramHooks;
         break;
 
-        case WordPopupMenu::ShowBlankAnagrams:
+        case WordPopupMenu::ViewBlankAnagrams:
         variation = VariationBlankAnagrams;
         break;
 
-        case WordPopupMenu::ShowBlankMatches:
+        case WordPopupMenu::ViewBlankMatches:
         variation = VariationBlankMatches;
         break;
 
-        case WordPopupMenu::ShowTranspositions:
+        case WordPopupMenu::ViewTranspositions:
         variation = VariationTranspositions;
         break;
 

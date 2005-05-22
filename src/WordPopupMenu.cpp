@@ -35,15 +35,15 @@
 WordPopupMenu::WordPopupMenu (QWidget* parent, const char* name)
     : QPopupMenu (parent, name)
 {
-    insertItem ("Show Definition", ShowDefinition);
-    insertItem ("Show Anagrams", ShowAnagrams);
-    insertItem ("Show Subanagrams", ShowSubanagrams);
-    insertItem ("Show Hooks", ShowHooks);
-    insertItem ("Show Extensions", ShowExtensions);
-    insertItem ("Show Anagram Hooks", ShowAnagramHooks);
-    insertItem ("Show Blank Anagrams", ShowBlankAnagrams);
-    insertItem ("Show Blank Matches", ShowBlankMatches);
-    insertItem ("Show Transpositions", ShowTranspositions);
+    insertItem ("View Definition", ViewDefinition);
+    insertItem ("View Anagrams", ViewAnagrams);
+    insertItem ("View Subanagrams", ViewSubanagrams);
+    insertItem ("View Hooks", ViewHooks);
+    insertItem ("View Extensions", ViewExtensions);
+    insertItem ("View Anagram Hooks", ViewAnagramHooks);
+    insertItem ("View Blank Anagrams", ViewBlankAnagrams);
+    insertItem ("View Blank Matches", ViewBlankMatches);
+    insertItem ("View Transpositions", ViewTranspositions);
 }
 
 //---------------------------------------------------------------------------
