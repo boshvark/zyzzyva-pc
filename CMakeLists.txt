@@ -24,6 +24,7 @@ SET (SRCS
     src/NewQuizDialog.cpp
     src/QuizEngine.cpp
     src/QuizForm.cpp
+    src/QuizSpec.cpp
     src/SearchForm.cpp
     src/SearchSpec.cpp
     src/SearchSpecForm.cpp

@@ -32,7 +32,7 @@
 #include "MatchType.h"
 
 class QuizEngine;
-class SearchSpec;
+class QuizSpec;
 class WordEngine;
 class WordListView;
 
@@ -46,7 +46,7 @@ class AnalyzeQuizDialog : public QDialog
     ~AnalyzeQuizDialog() { }
 
   public slots:
-    void newQuiz (const SearchSpec& spec);
+    void newQuiz (const QuizSpec& spec);
     void updateStats();
     void addMissed (const QString& word);
     void addIncorrect (const QString& word);

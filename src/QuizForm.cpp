@@ -259,13 +259,14 @@ QuizForm::responseEntered()
 void
 QuizForm::newQuiz (NewQuizDialog* dialog)
 {
-    SearchSpec spec = dialog->getSearchSpec();
-    bool alphagrams = dialog->getQuizAlphagrams();
-    bool random = dialog->getQuizRandomOrder();
+    QuizSpec spec;
+    spec.searchSpec = dialog->getSearchSpec();
+    spec.alphagrams = dialog->getQuizAlphagrams();
+    spec.randomOrder = dialog->getQuizRandomOrder();
     useTimer = dialog->getTimerEnabled();
     timerDuration = dialog->getTimerDuration();
     timerType = dialog->getTimerType();
-    quizEngine->newQuiz (spec, alphagrams, random);
+    quizEngine->newQuiz (spec);
     startQuestion();
     analyzeDialog->newQuiz (spec);
 }

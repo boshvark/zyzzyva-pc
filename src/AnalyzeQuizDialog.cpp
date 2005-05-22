@@ -23,6 +23,7 @@
 #include "AnalyzeQuizDialog.h"
 #include "Defs.h"
 #include "QuizEngine.h"
+#include "QuizSpec.h"
 #include "WordEngine.h"
 #include "WordListView.h"
 #include "WordListViewItem.h"
@@ -116,7 +117,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 //! Reset the dialog with a new quiz.
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::newQuiz (const SearchSpec& spec)
+AnalyzeQuizDialog::newQuiz (const QuizSpec& spec)
 {
     questionLabel->setText (spec.asString());
     clearMissed();

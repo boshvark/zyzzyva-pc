@@ -43,24 +43,24 @@ QuizEngine::QuizEngine (WordEngine* e)
 //! @param input the group of symbols forming the basis of the quiz
 //---------------------------------------------------------------------------
 void
-QuizEngine::newQuiz (const SearchSpec& spec, bool alphagrams, bool randomOrder)
+QuizEngine::newQuiz (const QuizSpec& spec)
 {
-    searchSpec = spec;
+    quizSpec = spec;
     quizQuestions.clear();
 
     // If alphagrams is not specified, then the quiz will be a single question
     // requiring the entire search results of the search spec as an answer.
-    singleSpecQuestion = !alphagrams;
+    singleSpecQuestion = !quizSpec.alphagrams;
 
     // When using alphagrams, always change quiz type to Anagram.  The pattern
     // is used to select the list of alphagrams, then anagrams are used as
     // quiz answers.
-    if (alphagrams) {
-        quizQuestions = wordEngine->search (spec, true);
+    if (!singleSpecQuestion) {
+        quizQuestions = wordEngine->search (quizSpec.searchSpec, true);
         quizQuestions = wordEngine->alphagrams (quizQuestions);
 
         // Do a random shuffle
-        if (randomOrder) {
+        if (quizSpec.randomOrder) {
             QString tmp;
             int num = quizQuestions.size();
             for (int i = 0; i < num ; ++i) {
@@ -203,7 +203,7 @@ QuizEngine::prepareQuestion()
     QStringList answers;
 
     if (singleSpecQuestion)
-        answers = wordEngine->search (searchSpec, true);
+        answers = wordEngine->search (quizSpec.searchSpec, true);
     else {
         SearchSpec spec;
         spec.pattern = question;
