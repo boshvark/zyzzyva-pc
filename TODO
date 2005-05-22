@@ -33,9 +33,6 @@ Usability:
   not to be used for each question.  Keep track of total quiz time, and
   display it in the Analyze dialog.  Also save best times across sessions.
 
-* Allow saving of named quizzes and searches.  Use this functionality to
-  include predefined quizzes and searches.
-
 * Allow the user to edit word definitions from within Zyzzyva.
 
 * Allow quizzes to end after X questions rather than running through all
