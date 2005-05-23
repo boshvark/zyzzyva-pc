@@ -45,6 +45,7 @@ class SearchSpec
     QString consistLetters;
     int minLength;
     int maxLength;
+    QStringList setMemberships;
 };
 
 #endif // SEARCH_SPEC_H

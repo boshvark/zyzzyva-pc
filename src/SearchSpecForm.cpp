@@ -183,11 +183,11 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     QListViewItem* item = 0;
     item = new QListViewItem (setMembershipList, item, "Hook Words");
     item = new QListViewItem (setMembershipList, item, "Type I Sevens");
-    item = new QListViewItem (setMembershipList, item, "Type II Sevens");
-    item = new QListViewItem (setMembershipList, item, "Type III Sevens");
+    //item = new QListViewItem (setMembershipList, item, "Type II Sevens");
+    //item = new QListViewItem (setMembershipList, item, "Type III Sevens");
     item = new QListViewItem (setMembershipList, item, "Type I Eights");
     item = new QListViewItem (setMembershipList, item,
-                              "8s from top 7-letter stems");
+                              "Eights from top 7-letter stems");
     setMembershipList->header()->hide();
     setMembershipList->setSizePolicy (QSizePolicy::Preferred,
                                       QSizePolicy::Maximum);
@@ -211,6 +211,7 @@ SearchSpecForm::reset()
     consistLine->setText ("");
     minLengthSbox->setValue (1);
     maxLengthSbox->setValue (MAX_WORD_LEN);
+    setMembershipList->clearSelection();
 }
 
 //---------------------------------------------------------------------------
@@ -232,6 +233,7 @@ SearchSpecForm::getSearchSpec() const
     spec.consistLetters = getConsistLetters();
     spec.minLength = getMinLength();
     spec.maxLength = getMaxLength();
+    spec.setMemberships = getSetMemberships();
     return spec;
 }
 
