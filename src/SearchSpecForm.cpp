@@ -120,8 +120,7 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (includeHlay);
     mainVlay->addLayout (includeHlay);
 
-    QLabel* includeLabel = new QLabel ("Include Letters:", this,
-                                       "includeLabel");
+    QLabel* includeLabel = new QLabel ("Must Include:", this, "includeLabel");
     Q_CHECK_PTR (includeLabel);
     includeHlay->addWidget (includeLabel);
 
@@ -135,8 +134,7 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (excludeHlay);
     mainVlay->addLayout (excludeHlay);
 
-    QLabel* excludeLabel = new QLabel ("Exclude Letters:", this,
-                                       "excludeLabel");
+    QLabel* excludeLabel = new QLabel ("Must Exclude:", this, "excludeLabel");
     Q_CHECK_PTR (excludeLabel);
     excludeHlay->addWidget (excludeLabel);
 
@@ -150,7 +148,7 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     mainVlay->addLayout (consistHlay);
     Q_CHECK_PTR (consistHlay);
 
-    QLabel* consistLabel = new QLabel ("Consist of:", this,
+    QLabel* consistLabel = new QLabel ("Must Consist of:", this,
                                        "consistLabel");
     Q_CHECK_PTR (consistLabel);
     consistHlay->addWidget (consistLabel);

@@ -99,7 +99,7 @@
   <a name="include-exclude-letters">
   <h2>Including and Excluding Letters</h2>
 
-  <p>The input box labeled <i>Include Letters</i> specifies letters that must
+  <p>The input box labeled <i>Must Include</i> specifies letters that must
   be included in each word in the search results.  This is most useful if you
   want to specify a <i>Pattern</i> match with wildcard characters, and want
   the wildcards to match certain letters in an unspecified order.</p>
@@ -107,28 +107,28 @@
   <p>For example, to find all 7- and 8-letter words beginning with
   <tt>OVER</tt> and containing the letters <tt>A</tt>, <tt>L</tt>, and
   <tt>T</tt> in any order, do the following.  Specify a <i>Pattern</i> match
-  of <tt>OVER*</tt> with minimum length 7, maximum length 8, and <i>Include
-  Letters</i> <tt>ALT</tt>.  This search will find the words
+  of <tt>OVER*</tt> with minimum length 7, maximum length 8, and <i>Must
+  Include</i> <tt>ALT</tt>.  This search will find the words
   <tt>OVERLATE</tt>, <tt>OVERSALT</tt>, and <tt>OVERTALK</tt>.</p>
 
-  <p>If a letter appears more than once in the <i>Include Letters</i> box, the
+  <p>If a letter appears more than once in the <i>Must Include</i> box, the
   letter must appear at least that many times in each word in the search
   results.</p>
 
-  <p>The input box labeled <i>Exclude Letters</i> specifies letters that must
+  <p>The input box labeled <i>Must Exclude</i> specifies letters that must
   not be included in the search results.  This is most useful for generating
   special word lists, such as the list of words containing the letter Q but
   not the letter U.  To find such words, specify a <i>Pattern</i> match of
-  <tt>*</tt> with <i>Include Letters</i> <tt>Q</tt> and <i>Exclude Letters</i>
+  <tt>*</tt> with <i>Must Include</i> <tt>Q</tt> and <i>Must Exclude</i>
   <tt>U</tt>.  This search will find the 21 words containing Q but not U.</p>
 
   <a name="consist-letters">
   <h2>Letter Frequency</h2>
 
-  <p>The area labeled <i>Consist of</i> specifies letters that must occur with
-  a certain minimum frequency.  This is useful for generating special word
-  lists, such as the list of words containing at least 70% vowels.  To find
-  such words, set the value in the percentage box to <tt>70</tt>, and put
+  <p>The area labeled <i>Must Consist of</i> specifies letters that must occur
+  with a certain minimum frequency.  This is useful for generating special
+  word lists, such as the list of words containing at least 70% vowels.  To
+  find such words, set the value in the percentage box to <tt>70</tt>, and put
   <tt>AEIOU</tt> in the input box.</p>
 
   <a name="other-options">
