@@ -26,7 +26,9 @@
 #define SEARCH_SPEC_H
 
 #include "MatchType.h"
+#include "SearchSet.h"
 #include "Defs.h"
+#include <set>
 
 class SearchSpec
 {
@@ -45,7 +47,7 @@ class SearchSpec
     QString consistLetters;
     int minLength;
     int maxLength;
-    QStringList setMemberships;
+    std::set<SearchSet> setMemberships;
 };
 
 #endif // SEARCH_SPEC_H

@@ -26,6 +26,15 @@
 #include <qapplication.h>
 #include <qfile.h>
 
+const QString SET_UNKNOWN_STRING = "Unknown";
+const QString SET_HOOK_WORDS_STRING = "Hook Words";
+const QString SET_TYPE_ONE_SEVENS_STRING = "Type I Sevens";
+const QString SET_TYPE_TWO_SEVENS_STRING = "Type II Sevens";
+const QString SET_TYPE_THREE_SEVENS_STRING = "Type III Sevens";
+const QString SET_TYPE_ONE_EIGHTS_STRING = "Type I Eights";
+const QString SET_EIGHTS_FROM_SEVEN_STEMS_STRING =
+              "Eights From Seven-Letter Stems";
+
 //---------------------------------------------------------------------------
 //  getAboutString
 //
@@ -123,4 +132,54 @@ Auxil::wordWrap (const QString& str, int wrapLength)
         }
     }
     return wrappedStr;
+}
+
+//---------------------------------------------------------------------------
+//  stringToSearchSet
+//
+//! Return a search set enumeration value corresponding to a string.
+//
+//! @param string the string
+//! @return the corresponding search set value
+//---------------------------------------------------------------------------
+SearchSet
+Auxil::stringToSearchSet (const QString& string)
+{
+    if (string == SET_HOOK_WORDS_STRING)
+        return SetHookWords;
+    else if (string == SET_TYPE_ONE_SEVENS_STRING)
+        return SetTypeOneSevens;
+    else if (string == SET_TYPE_TWO_SEVENS_STRING)
+        return SetTypeTwoSevens;
+    else if (string == SET_TYPE_THREE_SEVENS_STRING)
+        return SetTypeThreeSevens;
+    else if (string == SET_TYPE_ONE_EIGHTS_STRING)
+        return SetTypeThreeSevens;
+    else if (string == SET_EIGHTS_FROM_SEVEN_STEMS_STRING)
+        return SetTypeThreeSevens;
+    else
+        return UnknownSearchSet;
+}
+
+//---------------------------------------------------------------------------
+//  searchSetToString
+//
+//! Return a string corresponding to a search set enumeration value.
+//
+//! @param ss the search set value
+//! @return the corresponding string
+//---------------------------------------------------------------------------
+QString
+Auxil::searchSetToString (SearchSet ss)
+{
+    switch (ss) {
+        case SetHookWords: return SET_HOOK_WORDS_STRING;
+        case SetTypeOneSevens: return SET_TYPE_ONE_SEVENS_STRING;
+        case SetTypeTwoSevens: return SET_TYPE_TWO_SEVENS_STRING;
+        case SetTypeThreeSevens: return SET_TYPE_THREE_SEVENS_STRING;
+        case SetTypeOneEights: return SET_TYPE_ONE_EIGHTS_STRING;
+        case SetEightsFromSevenLetterStems:
+            return SET_EIGHTS_FROM_SEVEN_STEMS_STRING;
+        default: return SET_UNKNOWN_STRING;
+    }
 }

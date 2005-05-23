@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "SearchSpecForm.h"
+#include "Auxil.h"
 #include "WordValidator.h"
 #include "Defs.h"
 #include <qbuttongroup.h>
@@ -296,16 +297,16 @@ SearchSpecForm::maxLengthChanged (int value)
 //
 //! @return a list of strings representing sets
 //---------------------------------------------------------------------------
-QStringList
+std::set<SearchSet>
 SearchSpecForm::getSetMemberships() const
 {
-    QStringList sets;
+    std::set<SearchSet> sets;
     QListViewItem* item = 0;
     for (item = setMembershipList->firstChild(); item;
          item = item->nextSibling())
     {
         if (item->isSelected())
-            sets << item->text (0);
+            sets.insert (Auxil::stringToSearchSet (item->text (0)));
     }
     return sets;
 }

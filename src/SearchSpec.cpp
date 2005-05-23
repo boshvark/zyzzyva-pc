@@ -79,9 +79,9 @@ SearchSpec::asString() const
         str += "Max Length: " + QString::number (maxLength);
     }
 
-    if (!setMemberships.isEmpty()) {
+    if (!setMemberships.empty()) {
         str += "Set Membership: ";
-        QStringList::const_iterator it;
+        std::set<SearchSet>::const_iterator it;
         for (it = setMemberships.begin(); it != setMemberships.end(); ++it) {
             if (it != setMemberships.begin())
                 str += ", ";

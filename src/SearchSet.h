@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// Auxil.h
+// SearchSet.h
 //
-// Auxiliary functions.
+// An enumeration of match types.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,20 +22,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef AUXIL_H
-#define AUXIL_H
+#ifndef SEARCH_SET_H
+#define SEARCH_SET_H
 
-#include "SearchSet.h"
 #include <qstring.h>
 
-namespace Auxil {
-    QString getAboutString();
-    QString getHelpDir();
-    QString getTilesDir();
-    QString getWordsDir();
-    QString wordWrap (const QString& str, int wrapLength);
-    QString searchSetToString (SearchSet set);
-    SearchSet stringToSearchSet (const QString& string);
-}
+enum SearchSet {
+    UnknownSearchSet = 0,
+    SetHookWords,
+    SetTypeOneSevens,
+    SetTypeTwoSevens,
+    SetTypeThreeSevens,
+    SetTypeOneEights,
+    SetEightsFromSevenLetterStems
+};
 
-#endif // AUXIL_H
+#endif // SEARCH_SET_H

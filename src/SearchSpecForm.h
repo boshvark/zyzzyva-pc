@@ -33,6 +33,7 @@
 #include <qlistview.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
+#include <set>
 
 class SearchSpecForm : public QFrame
 {
@@ -50,7 +51,7 @@ class SearchSpecForm : public QFrame
     QString getConsistLetters() const { return consistLine->text(); }
     int getMinLength() const { return minLengthSbox->value(); }
     int getMaxLength() const { return maxLengthSbox->value(); }
-    QStringList getSetMemberships() const;
+    std::set<SearchSet> getSetMemberships() const;
 
   signals:
     void returnPressed();
