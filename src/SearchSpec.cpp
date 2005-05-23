@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "SearchSpec.h"
+#include "Auxil.h"
 #include "Defs.h"
 
 using namespace Defs;
@@ -80,12 +81,14 @@ SearchSpec::asString() const
     }
 
     if (!setMemberships.empty()) {
+        if (str.length())
+            str += ", ";
         str += "Set Membership: ";
         std::set<SearchSet>::const_iterator it;
         for (it = setMemberships.begin(); it != setMemberships.end(); ++it) {
             if (it != setMemberships.begin())
                 str += ", ";
-            str += *it;
+            str += Auxil::searchSetToString (*it);
         }
     }
     return str;
