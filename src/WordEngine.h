@@ -46,6 +46,8 @@ class WordEngine
     QString getDefinition (const QString& word) const;
 
   private:
+    bool isSetMember (const QString& word, SearchSet ss) const;
+
     WordGraph graph;
     std::map<QString,QString> definitions;
     std::map<int, QStringList> stems;

@@ -350,8 +350,8 @@ WordGraph::print() const
 //
 //! Determine whether a word matches a search specification.  Only the
 //! following attributes are checked: Include Letters, Consist Letters/Pct,
-//! Min Length.  All other attributes are assumed to have been checked in the
-//! course of finding the word to be checked.
+//! Min Length, Set Membership.  All other attributes are assumed to have been
+//! checked in the course of finding the word to be checked.
 //---------------------------------------------------------------------------
 bool
 WordGraph::matchesSpec (QString word, const SearchSpec& spec) const

@@ -161,13 +161,42 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
 {
     // Allow a smart compiler to optimize by returing directly from
     // WordGraph::search unless we need to manipulate the return list
-    if (!allCaps || !spec.pattern.contains (QRegExp ("[\\*\\?]")))
+    if ((!allCaps || !spec.pattern.contains (QRegExp ("[\\*\\?]"))) &&
+        spec.setMemberships.empty())
+    {
         return graph.search (spec);
+    }
 
     QStringList wordList = graph.search (spec);
-    QStringList::iterator it;
-    for (it = wordList.begin(); it != wordList.end(); ++it)
-        *it = (*it).upper();
+
+    // Check set membership
+    if (!spec.setMemberships.empty()) {
+        QStringList::iterator it;
+        std::set<SearchSet>::const_iterator sit;
+        for (it = wordList.begin(); it != wordList.end();) {
+            bool match = false;
+            for (sit = spec.setMemberships.begin();
+                 sit != spec.setMemberships.end();
+                 ++sit)
+            {
+                if (isSetMember ((*it).upper(), *sit)) {
+                    match = true;
+                    break;
+                }
+            }
+            if (match)
+                ++it;
+            else
+                it = wordList.erase (it);
+        }
+    }
+
+    // Convert to all caps if necessary
+    if (allCaps) {
+        QStringList::iterator it;
+        for (it = wordList.begin(); it != wordList.end(); ++it)
+            *it = (*it).upper();
+    }
     return wordList;
 }
 
@@ -243,4 +272,28 @@ WordEngine::getDefinition (const QString& word) const
 {
     map<QString,QString>::const_iterator it = definitions.find (word);
     return ((it == definitions.end()) ? QString::null : it->second);
+}
+
+//---------------------------------------------------------------------------
+//  isSetMember
+//
+//! Determine whether a word is a member of a set.  Assumes the word has
+//! already been determined to be acceptable.
+//
+//! @param word the word to look up
+//! @param ss the search set
+//! @return true if a member of the set, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::isSetMember (const QString& word, SearchSet ss) const
+{
+    switch (ss) {
+        case SetHookWords:
+        return (isAcceptable (word.left (word.length() - 1)) ||
+                isAcceptable (word.right (word.length() - 1)));
+
+
+
+        default: return false;
+    }
 }
