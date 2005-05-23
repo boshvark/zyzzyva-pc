@@ -30,6 +30,7 @@
 #include <qcombobox.h>
 #include <qframe.h>
 #include <qlineedit.h>
+#include <qlistview.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
 
@@ -49,6 +50,7 @@ class SearchSpecForm : public QFrame
     QString getConsistLetters() const { return consistLine->text(); }
     int getMinLength() const { return minLengthSbox->value(); }
     int getMaxLength() const { return maxLengthSbox->value(); }
+    QStringList getSetMemberships() const;
 
   signals:
     void returnPressed();
@@ -67,6 +69,7 @@ class SearchSpecForm : public QFrame
     QLineEdit* consistLine;
     QSpinBox*  minLengthSbox;
     QSpinBox*  maxLengthSbox;
+    QListView* setMembershipList;
 };
 
 #endif // SEARCH_SPEC_FORM_H

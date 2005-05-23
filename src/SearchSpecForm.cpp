@@ -26,6 +26,7 @@
 #include "WordValidator.h"
 #include "Defs.h"
 #include <qbuttongroup.h>
+#include <qheader.h>
 #include <qlabel.h>
 #include <qlayout.h>
 
@@ -169,6 +170,29 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     connect (consistLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
     consistHlay->addWidget (consistLine);
 
+    QLabel* setMembershipLabel = new QLabel ("Must belong to one of the "
+                                             "following sets:", this,
+                                             "setMembershipLabel");
+    Q_CHECK_PTR (setMembershipLabel);
+    mainVlay->addWidget (setMembershipLabel);
+
+    setMembershipList = new QListView (this, "setMembershipList");
+    Q_CHECK_PTR (setMembershipList);
+    setMembershipList->setSorting (-1);
+    setMembershipList->addColumn ("Set");
+    QListViewItem* item = 0;
+    item = new QListViewItem (setMembershipList, item, "Hook Words");
+    item = new QListViewItem (setMembershipList, item, "Type I Sevens");
+    item = new QListViewItem (setMembershipList, item, "Type II Sevens");
+    item = new QListViewItem (setMembershipList, item, "Type III Sevens");
+    item = new QListViewItem (setMembershipList, item, "Type I Eights");
+    item = new QListViewItem (setMembershipList, item,
+                              "8s from top 7-letter stems");
+    setMembershipList->header()->hide();
+    setMembershipList->setSizePolicy (QSizePolicy::Preferred,
+                                      QSizePolicy::Maximum);
+    mainVlay->addWidget (setMembershipList);
+
     reset();
 }
 
@@ -262,3 +286,25 @@ SearchSpecForm::maxLengthChanged (int value)
         minLengthSbox->blockSignals (false);
     }
 }
+
+//---------------------------------------------------------------------------
+//  getSetMemberships
+//
+//! Return a list of set memberships selected by the user.
+//
+//! @return a list of strings representing sets
+//---------------------------------------------------------------------------
+QStringList
+SearchSpecForm::getSetMemberships() const
+{
+    QStringList sets;
+    QListViewItem* item = 0;
+    for (item = setMembershipList->firstChild(); item;
+         item = item->nextSibling())
+    {
+        if (item->isSelected())
+            sets << item->text (0);
+    }
+    return sets;
+}
+
