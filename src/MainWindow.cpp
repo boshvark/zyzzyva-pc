@@ -543,7 +543,6 @@ MainWindow::importStems()
     int totalImported = 0;
     for (it = stemFiles.begin(); it != stemFiles.end(); ++it) {
         int imported = wordEngine->importStems (*it, &err);
-        qDebug (QString::number (imported) + " stems imported from " + *it);
         totalImported += imported;
     }
     QApplication::restoreOverrideCursor();
