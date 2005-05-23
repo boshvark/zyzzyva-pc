@@ -32,6 +32,7 @@
 using namespace Defs;
 using std::set;
 using std::map;
+using std::make_pair;
 
 const int MAX_INPUT_LINE_LEN = 640;
 
@@ -59,15 +60,17 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
     }
 
     int imported = 0;
-    QString word, line;
+    QString line;
     while (file.readLine (line, MAX_INPUT_LINE_LEN) > 0) {
         line = line.simplifyWhiteSpace();
+        if (!line.length() || (line.at (0) == '#'))
+            continue;
         QString word = line.section (' ', 0, 0);
         graph.addWord (word);
         if (loadDefinitions) {
             QString definition = line.section (' ', 1);
             if (!definition.isEmpty())
-                definitions.insert (std::make_pair (word, definition));
+                definitions.insert (make_pair (word, definition));
         }
         ++imported;
     }
@@ -90,7 +93,44 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
 int
 WordEngine::importStems (const QString& filename, QString* errString)
 {
-    return 0;
+    QFile file (filename);
+    if (!file.open (IO_ReadOnly)) {
+        if (errString)
+            *errString = "Can't open file '" + filename + "': "
+            + file.errorString();
+        return -1;
+    }
+
+    // XXX: At some point, may want to consider allowing words of varying
+    // lengths to be in the same file?
+    QStringList words;
+    int imported = 0;
+    int length = 0;
+    QString line;
+    while (file.readLine (line, MAX_INPUT_LINE_LEN) > 0) {
+        line = line.simplifyWhiteSpace();
+        if (!line.length() || (line.at (0) == '#'))
+            continue;
+        QString word = line.section (' ', 0, 0);
+
+        if (!length)
+            length = word.length();
+
+        if (word.length() != length)
+            continue;
+
+        words << word;
+        ++ imported;
+    }
+
+    // Insert the stem list into the map, or append to an existing stem list
+    map<int, QStringList>::iterator it = stems.find (length);
+    if (it == stems.end())
+        stems.insert (make_pair (length, words));
+    else
+        it->second += words;
+
+    return imported;
 }
 
 //---------------------------------------------------------------------------
