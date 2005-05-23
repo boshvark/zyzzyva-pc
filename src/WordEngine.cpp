@@ -104,6 +104,7 @@ WordEngine::importStems (const QString& filename, QString* errString)
     // XXX: At some point, may want to consider allowing words of varying
     // lengths to be in the same file?
     QStringList words;
+    std::set<QString> alphagrams;
     int imported = 0;
     int length = 0;
     QString line;
@@ -120,15 +121,24 @@ WordEngine::importStems (const QString& filename, QString* errString)
             continue;
 
         words << word;
-        ++ imported;
+        alphagrams.insert (alphagram (word));
+        ++imported;
     }
 
     // Insert the stem list into the map, or append to an existing stem list
     map<int, QStringList>::iterator it = stems.find (length);
-    if (it == stems.end())
+    if (it == stems.end()) {
         stems.insert (make_pair (length, words));
-    else
+        stemAlphagrams.insert (make_pair (length, alphagrams));
+    }
+    else {
         it->second += words;
+        std::map< int, std::set<QString> >::iterator it =
+            stemAlphagrams.find (length);
+        std::set<QString>::iterator sit;
+        for (sit = alphagrams.begin(); sit != alphagrams.end(); ++sit)
+            (it->second).insert (*sit);
+    }
 
     return imported;
 }
@@ -293,6 +303,27 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                 isAcceptable (word.right (word.length() - 1)));
 
 
+        case SetTypeOneSevens: {
+            if (word.length() != 7)
+                return false;
+
+            std::map< int, std::set<QString> >::const_iterator it =
+                stemAlphagrams.find (word.length() - 1);
+            if (it == stemAlphagrams.end())
+                return false;
+
+            const std::set<QString>& alphaset = it->second;
+            QString agram = alphagram (word);
+            for (int i = 0; i < agram.length(); ++i) {
+                if (alphaset.find (agram.left (i) +
+                                   agram.right (agram.length() - i - 1))
+                    != alphaset.end())
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         default: return false;
     }

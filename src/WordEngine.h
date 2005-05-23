@@ -29,6 +29,7 @@
 #include <qstring.h>
 #include <qstringlist.h>
 #include <map>
+#include <set>
 
 class WordEngine
 {
@@ -49,8 +50,9 @@ class WordEngine
     bool isSetMember (const QString& word, SearchSet ss) const;
 
     WordGraph graph;
-    std::map<QString,QString> definitions;
+    std::map<QString, QString> definitions;
     std::map<int, QStringList> stems;
+    std::map< int, std::set<QString> > stemAlphagrams;
 };
 
 #endif // WORD_ENGINE_H
