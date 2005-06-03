@@ -122,6 +122,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                                        variation)
 {
     QString title;
+    // XXX XXX: Don't forget to update the uses of this SearchSpec object!
     SearchSpec spec;
     QValueList<SearchSpec> leftSpecs;
     QValueList<SearchSpec> rightSpecs;
@@ -129,26 +130,26 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
         case VariationAnagrams:
         title = "Anagrams for: " + word;
-        spec.type = Anagram;
-        spec.pattern = word;
+        //spec.type = Anagram;
+        //spec.pattern = word;
         leftSpecs << spec;
         leftList->setTitle ("Anagrams");
         break;
 
         case VariationSubanagrams:
         title = "Subanagrams for: " + word;
-        spec.type = Subanagram;
-        spec.pattern = word;
+        //spec.type = Subanagram;
+        //spec.pattern = word;
         leftSpecs << spec;
         leftList->setTitle ("Subanagrams");
         break;
 
         case VariationHooks:
         title = "Hooks for: " + word;
-        spec.type = Pattern;
-        spec.pattern = "?" + word;
+        //spec.type = Pattern;
+        //spec.pattern = "?" + word;
         leftSpecs << spec;
-        spec.pattern = word + "?";
+        //spec.pattern = word + "?";
         rightSpecs << spec;
         leftList->setTitle ("Front Hooks");
         rightList->setTitle ("Back Hooks");
@@ -156,18 +157,18 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
         case VariationAnagramHooks:
         title = "Anagram Hooks for: " + word;
-        spec.type = Anagram;
-        spec.pattern = "?" + word;
+        //spec.type = Anagram;
+        //spec.pattern = "?" + word;
         leftSpecs << spec;
         leftList->setTitle ("Anagram Hooks");
         break;
 
         case VariationBlankAnagrams:
         title = "Blank Anagrams for: " + word;
-        spec.type = Anagram;
+        //spec.type = Anagram;
         for (int i = 0; i < word.length(); ++i) {
-            spec.pattern = word.left (i) + "?" +
-                word.right (word.length() - i - 1);
+            //spec.pattern = word.left (i) + "?" +
+                //word.right (word.length() - i - 1);
             leftSpecs << spec;
         }
         leftList->setTitle ("Blank Anagrams");
@@ -175,10 +176,10 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
         case VariationBlankMatches:
         title = "Blank Matches for: " + word;
-        spec.type = Pattern;
+        //spec.type = Pattern;
         for (int i = 0; i < word.length(); ++i) {
-            spec.pattern = word.left (i) + "?" +
-                word.right (word.length() - i - 1);
+            //spec.pattern = word.left (i) + "?" +
+                //word.right (word.length() - i - 1);
             leftSpecs << spec;
         }
         leftList->setTitle ("Blank Matches");
@@ -186,10 +187,10 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
         case VariationExtensions:
         title = "Extensions for: " + word;
-        spec.type = Pattern;
-        spec.pattern = "*?" + word;
+        //spec.type = Pattern;
+        //spec.pattern = "*?" + word;
         leftSpecs << spec;
-        spec.pattern = word + "?*";
+        //spec.pattern = word + "?*";
         rightSpecs << spec;
         leftList->setTitle ("Front Extensions");
         rightList->setTitle ("Back Extensions");
@@ -197,10 +198,10 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
         case VariationTranspositions:
         title = "Transpositions for: " + word;
-        spec.type = Pattern;
+        //spec.type = Pattern;
         for (int i = 0; i < word.length() - 1; ++i) {
-            spec.pattern = word.left (i) + word.mid (i + 1, 1) +
-                word.mid (i, 1) + word.right (word.length() - i - 2);
+            //spec.pattern = word.left (i) + word.mid (i + 1, 1) +
+                //word.mid (i, 1) + word.right (word.length() - i - 2);
             leftSpecs << spec;
         }
         leftList->setTitle ("Transpositions");

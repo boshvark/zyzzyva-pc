@@ -59,7 +59,6 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 
     specForm = new SearchSpecForm (this, "specForm");
     Q_CHECK_PTR (specForm);
-    connect (specForm, SIGNAL (returnPressed()), SLOT (search()));
     specVlay->addWidget (specForm);
 
     lowerCaseCbox = new QCheckBox ("Use lower-case letters for wildcard "
@@ -101,8 +100,9 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 void
 SearchForm::search()
 {
-    QString pattern = specForm->getPattern();
-    if (pattern.isEmpty()) return;
+    // XXX XXX: Don't forget to update this!
+    //QString pattern = specForm->getPattern();
+    //if (pattern.isEmpty()) return;
 
     QApplication::setOverrideCursor (Qt::waitCursor);
     resultList->clear();

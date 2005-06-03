@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// SearchSpec.h
+// SearchCondition.h
 //
-// A class to represent a word search specification.
+// A class to represent a word search condition.
 //
 // Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,23 +22,41 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef SEARCH_SPEC_H
-#define SEARCH_SPEC_H
+#ifndef SEARCH_CONDITION_H
+#define SEARCH_CONDITION_H
 
-#include "SearchCondition.h"
-#include "SearchSet.h"
-#include "Defs.h"
+#include <qstring.h>
+#include <set>
 
-class SearchSpec
+class SearchCondition
 {
-  public:
-    SearchSpec() : conjunction (true) { }
-    ~SearchSpec() { }
+    public:
+    enum SearchType {
+        UnknownSearchType,
+        PatternMatch,
+        AnagramMatch,
+        SubanagramMatch,
+        MinLength,
+        MaxLength,
+        MustInclude,
+        MustExclude,
+        MustConsist,
+        MustBelong,
+        MinAnagrams,
+        MaxAnagrams,
+        MinProbability,
+        MaxProbability
+    };
 
+    public:
     QString asString() const;
 
-    bool conjunction;
-    QValueList<SearchCondition> conditions;
+    SearchType type;
+    QString stringValue;
+    int intValue;
+
+    private:
+    SearchType stringToSearchType (const QString&) const;
 };
 
-#endif // SEARCH_SPEC_H
+#endif // SEARCH_CONDITION_H

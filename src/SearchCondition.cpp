@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// SearchSpec.cpp
+// SearchCondition.cpp
 //
-// A class to represent a word search specification.
+// A class to represent a word search condition.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,7 +22,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include "SearchSpec.h"
+#include "SearchCondition.h"
 #include "Auxil.h"
 #include "Defs.h"
 
@@ -36,7 +36,7 @@ using namespace Defs;
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
-SearchSpec::asString() const
+SearchCondition::asString() const
 {
     QString str;
 //    if (pattern.length()) {
@@ -92,4 +92,20 @@ SearchSpec::asString() const
 //        }
 //    }
     return str;
+}
+
+//---------------------------------------------------------------------------
+//  stringToSearchType
+//
+//! Return a search type enumeration value corresponding to a string.
+//
+//! @param string the string
+//! @return the corresponding search type value
+//---------------------------------------------------------------------------
+SearchCondition::SearchType
+SearchCondition::stringToSearchType (const QString& string) const
+{
+    //if (
+
+    return UnknownSearchType;
 }

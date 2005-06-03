@@ -26,6 +26,8 @@ SET (SRCS
     src/QuizForm.cpp
     src/QuizSpec.cpp
     src/SearchForm.cpp
+    src/SearchCondition.cpp
+    src/SearchConditionForm.cpp
     src/SearchSpec.cpp
     src/SearchSpecForm.cpp
     src/SettingsDialog.cpp
@@ -53,6 +55,7 @@ SET (MOCS
     src/NewQuizDialog.h
     src/QuizForm.h
     src/SearchForm.h
+    src/SearchConditionForm.h
     src/SearchSpecForm.h
     src/SettingsDialog.h
     src/WordEntryDialog.h

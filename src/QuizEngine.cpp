@@ -206,8 +206,9 @@ QuizEngine::prepareQuestion()
         answers = wordEngine->search (quizSpec.searchSpec, true);
     else {
         SearchSpec spec;
-        spec.pattern = question;
-        spec.type = Anagram;
+        // XXX XXX: Don't forget to update this!
+        //spec.pattern = question;
+        //spec.type = Anagram;
         answers = wordEngine->search (spec, true);
     }
 

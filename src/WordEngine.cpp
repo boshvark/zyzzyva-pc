@@ -169,37 +169,43 @@ WordEngine::isAcceptable (const QString& word) const
 QStringList
 WordEngine::search (const SearchSpec& spec, bool allCaps) const
 {
+
+
+    // XXX XXX: Don't forget to update this!
+
     // Allow a smart compiler to optimize by returing directly from
     // WordGraph::search unless we need to manipulate the return list
-    if ((!allCaps || !spec.pattern.contains (QRegExp ("[\\*\\?]"))) &&
-        spec.setMemberships.empty())
-    {
-        return graph.search (spec);
-    }
+    //if ((!allCaps || !spec.pattern.contains (QRegExp ("[\\*\\?]"))) &&
+    //    spec.setMemberships.empty())
+    //{
+    //    return graph.search (spec);
+    //}
 
     QStringList wordList = graph.search (spec);
 
+    // XXX XXX: Don't forget to update this!
+
     // Check set membership
-    if (!spec.setMemberships.empty()) {
-        QStringList::iterator it;
-        std::set<SearchSet>::const_iterator sit;
-        for (it = wordList.begin(); it != wordList.end();) {
-            bool match = false;
-            for (sit = spec.setMemberships.begin();
-                 sit != spec.setMemberships.end();
-                 ++sit)
-            {
-                if (isSetMember ((*it).upper(), *sit)) {
-                    match = true;
-                    break;
-                }
-            }
-            if (match)
-                ++it;
-            else
-                it = wordList.erase (it);
-        }
-    }
+    //if (!spec.setMemberships.empty()) {
+    //    QStringList::iterator it;
+    //    std::set<SearchSet>::const_iterator sit;
+    //    for (it = wordList.begin(); it != wordList.end();) {
+    //        bool match = false;
+    //        for (sit = spec.setMemberships.begin();
+    //             sit != spec.setMemberships.end();
+    //             ++sit)
+    //        {
+    //            if (isSetMember ((*it).upper(), *sit)) {
+    //                match = true;
+    //                break;
+    //            }
+    //        }
+    //        if (match)
+    //            ++it;
+    //        else
+    //            it = wordList.erase (it);
+    //    }
+    //}
 
     // Convert to all caps if necessary
     if (allCaps) {

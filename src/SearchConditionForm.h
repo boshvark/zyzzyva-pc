@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// SearchSpecForm.h
+// SearchConditionForm.h
 //
-// A form for specifying a search specification.
+// A form for specifying a search condition.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,43 +22,42 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef SEARCH_SPEC_FORM_H
-#define SEARCH_SPEC_FORM_H
+#ifndef SEARCH_CONDITION_FORM_H
+#define SEARCH_CONDITION_FORM_H
 
-#include "SearchSpec.h"
-#include "MatchType.h"
 #include <qcombobox.h>
 #include <qframe.h>
 #include <qlineedit.h>
-#include <qlistview.h>
-#include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qwidgetstack.h>
 #include <set>
 
-class SearchConditionForm;
+class SearchCondition;
 
-class SearchSpecForm : public QFrame
+class SearchConditionForm : public QFrame
 {
     Q_OBJECT
     public:
-    SearchSpecForm (QWidget* parent = 0, const char* name = 0, WFlags f = 0);
+    SearchConditionForm (QWidget* parent = 0, const char* name = 0, WFlags f =
+                         0);
 
-    void reset();
-    SearchSpec getSearchSpec() const;
+    SearchCondition getSearchCondition() const;
+
+    public slots:
+    void typeChanged (const QString&);
 
     private:
-    //QComboBox* matchCbox;
-    //QLineEdit* patternLine;
-    //QLineEdit* includeLine;
-    //QLineEdit* excludeLine;
-    //QSpinBox*  consistPctSbox;
-    //QLineEdit* consistLine;
-    //QSpinBox*  minLengthSbox;
-    //QSpinBox*  maxLengthSbox;
-    //QListView* setMembershipList;
-
-
+    QComboBox*    typeCbox;
+    QWidgetStack* paramStack;
+    QFrame*       paramLineFrame;
+    QLineEdit*    paramLine;
+    QFrame*       paramSboxFrame;
+    QSpinBox*     paramSbox;
+    QFrame*       paramCboxFrame;
+    QComboBox*    paramCbox;
+    QFrame*       paramConsistFrame;
+    QSpinBox*     paramConsistSbox;
+    QLineEdit*    paramConsistLine;
 };
 
-#endif // SEARCH_SPEC_FORM_H
+#endif // SEARCH_CONDITION_FORM_H

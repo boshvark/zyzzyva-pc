@@ -24,6 +24,7 @@
 
 #include "SearchSpecForm.h"
 #include "Auxil.h"
+#include "SearchConditionForm.h"
 #include "WordValidator.h"
 #include "Defs.h"
 #include <qbuttongroup.h>
@@ -59,144 +60,160 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     patternValidator->setOptions (WordValidator::AllowQuestionMarks |
                                   WordValidator::AllowAsterisks);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
-                                             "mainHlay");
+    QHBoxLayout* mainHlay = new QHBoxLayout (this, 0, SPACING, "mainHlay");
     Q_CHECK_PTR (mainHlay);
+
+//    QStringList types;
+//    types << "Pattern Match" << "Anagram Match" << "Subanagram Match" <<
+//        "Minimum Length" << "Maximum Length" << "Must Include" <<
+//        "Must Exclude" << "Must Consist of" << "Must Belong to" <<
+//        "Minumum Anagrams" << "Maximum Anagrams" << "Minimum Probability" <<
+//        "Maximum Probability";
+//    typeCbox = new QComboBox (this, "typeCbox");
+//    Q_CHECK_PTR (typeCbox);
+//    typeCbox->insertStringList (types);
+//    mainHlay->addWidget (typeCbox);
 
     QVBoxLayout* mainVlay = new QVBoxLayout (SPACING, "mainVlay");
     Q_CHECK_PTR (mainVlay);
     mainHlay->addLayout (mainVlay);
 
-    QHBoxLayout* matchHlay = new QHBoxLayout (SPACING, "matchHlay");
-    Q_CHECK_PTR (matchHlay);
-    mainVlay->addLayout (matchHlay);
 
-    QLabel* matchLabel = new QLabel ("Match:", this, "matchLabel");
-    Q_CHECK_PTR (matchLabel);
-    matchHlay->addWidget (matchLabel);
+    SearchConditionForm* conditionForm = new SearchConditionForm (this,
+                                                                  "conditionForm");
+    Q_CHECK_PTR (conditionForm);
+    mainVlay->addWidget (conditionForm);
 
-    matchCbox = new QComboBox (this, "matchCbox");
-    Q_CHECK_PTR (matchCbox);
-    matchCbox->insertItem (PATTERN_COMBO);
-    matchCbox->insertItem (ANAGRAM_COMBO);
-    matchCbox->insertItem (SUBANAGRAM_COMBO);
-    matchHlay->addWidget (matchCbox);
-
-    patternLine = new QLineEdit (this, "patternLine");
-    Q_CHECK_PTR (patternLine);
-    patternLine->setValidator (patternValidator);
-    connect (patternLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
-    connect (patternLine, SIGNAL (textChanged (const QString&)),
-             SIGNAL (patternChanged (const QString&)));
-    matchHlay->addWidget (patternLine);
-
-    QHBoxLayout* lengthHlay = new QHBoxLayout (SPACING, "lengthHlay");
-    Q_CHECK_PTR (lengthHlay);
-    mainVlay->addLayout (lengthHlay);
-
-    QLabel* minLabel = new QLabel ("Min Length:", this, "minLabel");
-    Q_CHECK_PTR (minLabel);
-    lengthHlay->addWidget (minLabel);
-
-    minLengthSbox = new QSpinBox (this, "minLengthSbox");
-    Q_CHECK_PTR (minLengthSbox);
-    minLengthSbox->setMinValue (1);
-    minLengthSbox->setMaxValue (MAX_WORD_LEN);
-    connect (minLengthSbox, SIGNAL (valueChanged (int)),
-             SLOT (minLengthChanged (int)));
-    lengthHlay->addWidget (minLengthSbox);
-
-    QLabel* maxLabel = new QLabel ("Max Length:", this, "maxLabel");
-    Q_CHECK_PTR (maxLabel);
-    lengthHlay->addWidget (maxLabel);
-
-    maxLengthSbox = new QSpinBox (this, "maxLengthSbox");
-    Q_CHECK_PTR (maxLengthSbox);
-    maxLengthSbox->setMinValue (1);
-    maxLengthSbox->setMaxValue (MAX_WORD_LEN);
-    connect (maxLengthSbox, SIGNAL (valueChanged (int)),
-             SLOT (maxLengthChanged (int)));
-    lengthHlay->addWidget (maxLengthSbox);
-
-    QHBoxLayout* includeHlay = new QHBoxLayout (SPACING, "includeHlay");
-    Q_CHECK_PTR (includeHlay);
-    mainVlay->addLayout (includeHlay);
-
-    QLabel* includeLabel = new QLabel ("Must Include:", this, "includeLabel");
-    Q_CHECK_PTR (includeLabel);
-    includeHlay->addWidget (includeLabel);
-
-    includeLine = new QLineEdit (this, "includeLine");
-    Q_CHECK_PTR (includeLine);
-    includeLine->setValidator (letterValidator);
-    connect (includeLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
-    includeHlay->addWidget (includeLine);
-
-    QHBoxLayout* excludeHlay = new QHBoxLayout (SPACING, "excludeHlay");
-    Q_CHECK_PTR (excludeHlay);
-    mainVlay->addLayout (excludeHlay);
-
-    QLabel* excludeLabel = new QLabel ("Must Exclude:", this, "excludeLabel");
-    Q_CHECK_PTR (excludeLabel);
-    excludeHlay->addWidget (excludeLabel);
-
-    excludeLine = new QLineEdit (this, "excludeLine");
-    Q_CHECK_PTR (excludeLine);
-    excludeLine->setValidator (letterValidator);
-    connect (excludeLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
-    excludeHlay->addWidget (excludeLine);
-
-    QHBoxLayout* consistHlay = new QHBoxLayout (SPACING, "consistHlay");
-    mainVlay->addLayout (consistHlay);
-    Q_CHECK_PTR (consistHlay);
-
-    QLabel* consistLabel = new QLabel ("Must Consist of:", this,
-                                       "consistLabel");
-    Q_CHECK_PTR (consistLabel);
-    consistHlay->addWidget (consistLabel);
-
-    consistPctSbox = new QSpinBox (this, "consistPctSbox");
-    Q_CHECK_PTR (consistPctSbox);
-    consistPctSbox->setMinValue (0);
-    consistPctSbox->setMaxValue (100);
-    consistHlay->addWidget (consistPctSbox);
-
-    QLabel* consistPctLabel = new QLabel ("%", this, "consistPctLabel");
-    Q_CHECK_PTR (consistPctLabel);
-    consistHlay->addWidget (consistPctLabel);
-
-    consistLine = new QLineEdit (this, "consistLine");
-    Q_CHECK_PTR (consistLine);
-    consistLine->setValidator (letterValidator);
-    connect (consistLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
-    consistHlay->addWidget (consistLine);
-
-    QLabel* setMembershipLabel = new QLabel ("Must belong to one of the "
-                                             "following sets:", this,
-                                             "setMembershipLabel");
-    Q_CHECK_PTR (setMembershipLabel);
-    mainVlay->addWidget (setMembershipLabel);
-
-    setMembershipList = new QListView (this, "setMembershipList");
-    Q_CHECK_PTR (setMembershipList);
-    setMembershipList->setSorting (-1);
-    setMembershipList->addColumn ("Set");
-    QListViewItem* item = 0;
-    item = new QListViewItem (setMembershipList, item, "Hook Words");
-    item = new QListViewItem (setMembershipList, item, "Type I Sevens");
-    //item = new QListViewItem (setMembershipList, item, "Type II Sevens");
-    //item = new QListViewItem (setMembershipList, item, "Type III Sevens");
-    item = new QListViewItem (setMembershipList, item, "Type I Eights");
-    item = new QListViewItem (setMembershipList, item,
-                              "Eights from top 7-letter stems");
-    setMembershipList->header()->hide();
-    // XXX: Fix this based on row height or font height
-    setMembershipList->setMaximumHeight (50);
-    setMembershipList->setSizePolicy (QSizePolicy::Preferred,
-                                      QSizePolicy::Fixed);
-    mainVlay->addWidget (setMembershipList);
-
-    reset();
+//    QHBoxLayout* matchHlay = new QHBoxLayout (SPACING, "matchHlay");
+//    Q_CHECK_PTR (matchHlay);
+//    mainVlay->addLayout (matchHlay);
+//
+//    QLabel* matchLabel = new QLabel ("Match:", this, "matchLabel");
+//    Q_CHECK_PTR (matchLabel);
+//    matchHlay->addWidget (matchLabel);
+//
+//    matchCbox = new QComboBox (this, "matchCbox");
+//    Q_CHECK_PTR (matchCbox);
+//    matchCbox->insertItem (PATTERN_COMBO);
+//    matchCbox->insertItem (ANAGRAM_COMBO);
+//    matchCbox->insertItem (SUBANAGRAM_COMBO);
+//    matchHlay->addWidget (matchCbox);
+//
+//    patternLine = new QLineEdit (this, "patternLine");
+//    Q_CHECK_PTR (patternLine);
+//    patternLine->setValidator (patternValidator);
+//    connect (patternLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
+//    connect (patternLine, SIGNAL (textChanged (const QString&)),
+//             SIGNAL (patternChanged (const QString&)));
+//    matchHlay->addWidget (patternLine);
+//
+//    QHBoxLayout* lengthHlay = new QHBoxLayout (SPACING, "lengthHlay");
+//    Q_CHECK_PTR (lengthHlay);
+//    mainVlay->addLayout (lengthHlay);
+//
+//    QLabel* minLabel = new QLabel ("Min Length:", this, "minLabel");
+//    Q_CHECK_PTR (minLabel);
+//    lengthHlay->addWidget (minLabel);
+//
+//    minLengthSbox = new QSpinBox (this, "minLengthSbox");
+//    Q_CHECK_PTR (minLengthSbox);
+//    minLengthSbox->setMinValue (1);
+//    minLengthSbox->setMaxValue (MAX_WORD_LEN);
+//    connect (minLengthSbox, SIGNAL (valueChanged (int)),
+//             SLOT (minLengthChanged (int)));
+//    lengthHlay->addWidget (minLengthSbox);
+//
+//    QLabel* maxLabel = new QLabel ("Max Length:", this, "maxLabel");
+//    Q_CHECK_PTR (maxLabel);
+//    lengthHlay->addWidget (maxLabel);
+//
+//    maxLengthSbox = new QSpinBox (this, "maxLengthSbox");
+//    Q_CHECK_PTR (maxLengthSbox);
+//    maxLengthSbox->setMinValue (1);
+//    maxLengthSbox->setMaxValue (MAX_WORD_LEN);
+//    connect (maxLengthSbox, SIGNAL (valueChanged (int)),
+//             SLOT (maxLengthChanged (int)));
+//    lengthHlay->addWidget (maxLengthSbox);
+//
+//    QHBoxLayout* includeHlay = new QHBoxLayout (SPACING, "includeHlay");
+//    Q_CHECK_PTR (includeHlay);
+//    mainVlay->addLayout (includeHlay);
+//
+//    QLabel* includeLabel = new QLabel ("Must Include:", this, "includeLabel");
+//    Q_CHECK_PTR (includeLabel);
+//    includeHlay->addWidget (includeLabel);
+//
+//    includeLine = new QLineEdit (this, "includeLine");
+//    Q_CHECK_PTR (includeLine);
+//    includeLine->setValidator (letterValidator);
+//    connect (includeLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
+//    includeHlay->addWidget (includeLine);
+//
+//    QHBoxLayout* excludeHlay = new QHBoxLayout (SPACING, "excludeHlay");
+//    Q_CHECK_PTR (excludeHlay);
+//    mainVlay->addLayout (excludeHlay);
+//
+//    QLabel* excludeLabel = new QLabel ("Must Exclude:", this, "excludeLabel");
+//    Q_CHECK_PTR (excludeLabel);
+//    excludeHlay->addWidget (excludeLabel);
+//
+//    excludeLine = new QLineEdit (this, "excludeLine");
+//    Q_CHECK_PTR (excludeLine);
+//    excludeLine->setValidator (letterValidator);
+//    connect (excludeLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
+//    excludeHlay->addWidget (excludeLine);
+//
+//    QHBoxLayout* consistHlay = new QHBoxLayout (SPACING, "consistHlay");
+//    mainVlay->addLayout (consistHlay);
+//    Q_CHECK_PTR (consistHlay);
+//
+//    QLabel* consistLabel = new QLabel ("Must Consist of:", this,
+//                                       "consistLabel");
+//    Q_CHECK_PTR (consistLabel);
+//    consistHlay->addWidget (consistLabel);
+//
+//    consistPctSbox = new QSpinBox (this, "consistPctSbox");
+//    Q_CHECK_PTR (consistPctSbox);
+//    consistPctSbox->setMinValue (0);
+//    consistPctSbox->setMaxValue (100);
+//    consistHlay->addWidget (consistPctSbox);
+//
+//    QLabel* consistPctLabel = new QLabel ("%", this, "consistPctLabel");
+//    Q_CHECK_PTR (consistPctLabel);
+//    consistHlay->addWidget (consistPctLabel);
+//
+//    consistLine = new QLineEdit (this, "consistLine");
+//    Q_CHECK_PTR (consistLine);
+//    consistLine->setValidator (letterValidator);
+//    connect (consistLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
+//    consistHlay->addWidget (consistLine);
+//
+//    QLabel* setMembershipLabel = new QLabel ("Must belong to one of the "
+//                                             "following sets:", this,
+//                                             "setMembershipLabel");
+//    Q_CHECK_PTR (setMembershipLabel);
+//    mainVlay->addWidget (setMembershipLabel);
+//
+//    setMembershipList = new QListView (this, "setMembershipList");
+//    Q_CHECK_PTR (setMembershipList);
+//    setMembershipList->setSorting (-1);
+//    setMembershipList->addColumn ("Set");
+//    QListViewItem* item = 0;
+//    item = new QListViewItem (setMembershipList, item, "Hook Words");
+//    item = new QListViewItem (setMembershipList, item, "Type I Sevens");
+//    //item = new QListViewItem (setMembershipList, item, "Type II Sevens");
+//    //item = new QListViewItem (setMembershipList, item, "Type III Sevens");
+//    item = new QListViewItem (setMembershipList, item, "Type I Eights");
+//    item = new QListViewItem (setMembershipList, item,
+//                              "Eights from top 7-letter stems");
+//    setMembershipList->header()->hide();
+//    // XXX: Fix this based on row height or font height
+//    setMembershipList->setMaximumHeight (50);
+//    setMembershipList->setSizePolicy (QSizePolicy::Preferred,
+//                                      QSizePolicy::Fixed);
+//    mainVlay->addWidget (setMembershipList);
+//
+//    reset();
 }
 
 //---------------------------------------------------------------------------
@@ -207,14 +224,14 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
 void
 SearchSpecForm::reset()
 {
-    patternLine->setText ("");
-    includeLine->setText ("");
-    excludeLine->setText ("");
-    consistPctSbox->setValue (0);
-    consistLine->setText ("");
-    minLengthSbox->setValue (1);
-    maxLengthSbox->setValue (MAX_WORD_LEN);
-    setMembershipList->clearSelection();
+//    patternLine->setText ("");
+//    includeLine->setText ("");
+//    excludeLine->setText ("");
+//    consistPctSbox->setValue (0);
+//    consistLine->setText ("");
+//    minLengthSbox->setValue (1);
+//    maxLengthSbox->setValue (MAX_WORD_LEN);
+//    setMembershipList->clearSelection();
 }
 
 //---------------------------------------------------------------------------
@@ -228,88 +245,15 @@ SearchSpec
 SearchSpecForm::getSearchSpec() const
 {
     SearchSpec spec;
-    spec.pattern = getPattern();
-    spec.type = getMatchType();
-    spec.includeLetters = getIncludeLetters();
-    spec.excludeLetters = getExcludeLetters();
-    spec.consistPercent = getConsistPercent();
-    spec.consistLetters = getConsistLetters();
-    spec.minLength = getMinLength();
-    spec.maxLength = getMaxLength();
-    spec.setMemberships = getSetMemberships();
+    // XXX XXX: Don't forget to update this!
+    //spec.pattern = getPattern();
+    //spec.type = getMatchType();
+    //spec.includeLetters = getIncludeLetters();
+    //spec.excludeLetters = getExcludeLetters();
+    //spec.consistPercent = getConsistPercent();
+    //spec.consistLetters = getConsistLetters();
+    //spec.minLength = getMinLength();
+    //spec.maxLength = getMaxLength();
+    //spec.setMemberships = getSetMemberships();
     return spec;
 }
-
-//---------------------------------------------------------------------------
-//  getMatchType
-//
-//! Get the match type as specified by the Match combo box.
-//
-//! @return the match type
-//---------------------------------------------------------------------------
-MatchType
-SearchSpecForm::getMatchType() const
-{
-    QString type = matchCbox->currentText();
-    if (type == PATTERN_COMBO)
-        return Pattern;
-    else if (type == ANAGRAM_COMBO)
-        return Anagram;
-    else if (type == SUBANAGRAM_COMBO)
-        return Subanagram;
-    return UnknownMatchType;
-}
-
-//---------------------------------------------------------------------------
-//  minLengthChanged
-//
-//! Called when the min length value is changed.  Ensure that the max length
-//! value is at least as large as the min length value.
-//---------------------------------------------------------------------------
-void
-SearchSpecForm::minLengthChanged (int value)
-{
-    if (maxLengthSbox->value() < value) {
-        maxLengthSbox->blockSignals (true);
-        maxLengthSbox->setValue (value);
-        maxLengthSbox->blockSignals (false);
-    }
-}
-
-//---------------------------------------------------------------------------
-//  maxLengthChanged
-//
-//! Called when the max length value is changed.  Ensure that the min length
-//! value is at least as small as the max length value.
-//---------------------------------------------------------------------------
-void
-SearchSpecForm::maxLengthChanged (int value)
-{
-    if (minLengthSbox->value() > value) {
-        minLengthSbox->blockSignals (true);
-        minLengthSbox->setValue (value);
-        minLengthSbox->blockSignals (false);
-    }
-}
-
-//---------------------------------------------------------------------------
-//  getSetMemberships
-//
-//! Return a list of set memberships selected by the user.
-//
-//! @return a list of strings representing sets
-//---------------------------------------------------------------------------
-std::set<SearchSet>
-SearchSpecForm::getSetMemberships() const
-{
-    std::set<SearchSet> sets;
-    QListViewItem* item = 0;
-    for (item = setMembershipList->firstChild(); item;
-         item = item->nextSibling())
-    {
-        if (item->isSelected())
-            sets.insert (Auxil::stringToSearchSet (item->text (0)));
-    }
-    return sets;
-}
-
