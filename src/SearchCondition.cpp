@@ -93,19 +93,3 @@ SearchCondition::asString() const
 //    }
     return str;
 }
-
-//---------------------------------------------------------------------------
-//  stringToSearchType
-//
-//! Return a search type enumeration value corresponding to a string.
-//
-//! @param string the string
-//! @return the corresponding search type value
-//---------------------------------------------------------------------------
-SearchCondition::SearchType
-SearchCondition::stringToSearchType (const QString& string) const
-{
-    //if (
-
-    return UnknownSearchType;
-}

@@ -49,14 +49,12 @@ class SearchCondition
     };
 
     public:
+    SearchCondition() : type (UnknownSearchType), intValue (0) { }
     QString asString() const;
 
     SearchType type;
     QString stringValue;
     int intValue;
-
-    private:
-    SearchType stringToSearchType (const QString&) const;
 };
 
 #endif // SEARCH_CONDITION_H

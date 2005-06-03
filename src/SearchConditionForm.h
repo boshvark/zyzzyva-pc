@@ -25,6 +25,7 @@
 #ifndef SEARCH_CONDITION_FORM_H
 #define SEARCH_CONDITION_FORM_H
 
+#include "SearchCondition.h"
 #include <qcombobox.h>
 #include <qframe.h>
 #include <qlineedit.h>
@@ -45,6 +46,9 @@ class SearchConditionForm : public QFrame
 
     public slots:
     void typeChanged (const QString&);
+
+    private:
+    SearchCondition::SearchType stringToSearchType (const QString&) const;
 
     private:
     QComboBox*    typeCbox;

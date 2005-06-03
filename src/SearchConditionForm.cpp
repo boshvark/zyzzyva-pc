@@ -23,7 +23,6 @@
 //---------------------------------------------------------------------------
 
 #include "SearchConditionForm.h"
-#include "SearchCondition.h"
 #include "SearchSet.h"
 #include "WordValidator.h"
 #include "Auxil.h"
@@ -151,18 +150,41 @@ SearchCondition
 SearchConditionForm::getSearchCondition() const
 {
     SearchCondition condition;
+    QString typeStr = typeCbox->currentText();
+    condition.type = stringToSearchType (typeStr);
 
+    switch (condition.type) {
+        case SearchCondition::PatternMatch:
+        case SearchCondition::AnagramMatch:
+        case SearchCondition::SubanagramMatch:
+        case SearchCondition::MustInclude:
+        case SearchCondition::MustExclude:
+        condition.stringValue = paramLine->text();
+        break;
 
-    // XXX XXX: Don't forget to update this!
-    //spec.pattern = getPattern();
-    //spec.type = getMatchType();
-    //spec.includeLetters = getIncludeLetters();
-    //spec.excludeLetters = getExcludeLetters();
-    //spec.consistPercent = getConsistPercent();
-    //spec.consistLetters = getConsistLetters();
-    //spec.minLength = getMinLength();
-    //spec.maxLength = getMaxLength();
-    //spec.setMemberships = getSetMemberships();
+        case SearchCondition::MinLength:
+        case SearchCondition::MaxLength:
+        case SearchCondition::MinAnagrams:
+        case SearchCondition::MaxAnagrams:
+        case SearchCondition::MinProbability:
+        case SearchCondition::MaxProbability:
+        condition.intValue = paramSbox->value();
+        break;
+
+        case SearchCondition::MustConsist:
+        condition.stringValue = paramConsistLine->text();
+        condition.intValue = paramConsistSbox->value();
+        break;
+
+        case SearchCondition::MustBelong:
+        condition.stringValue = paramCbox->currentText();
+        break;
+
+        default:
+        qWarning ("Unrecognized search condition: " + typeStr);
+        break;
+    }
+
     return condition;
 }
 
@@ -177,10 +199,6 @@ SearchConditionForm::getSearchCondition() const
 void
 SearchConditionForm::typeChanged (const QString& type)
 {
-    qDebug ("Activated: " + type);
-
-
-    // XXX: Remove these magic strings!
     if ((type == PATTERN_MATCH_TYPE) || (type == ANAGRAM_MATCH_TYPE) ||
         (type == SUBANAGRAM_MATCH_TYPE) || (type == MUST_INCLUDE_TYPE) ||
         (type == MUST_EXCLUDE_TYPE))
@@ -214,4 +232,44 @@ SearchConditionForm::typeChanged (const QString& type)
     else {
         qDebug ("Unrecognized type: |" + type + "|");
     }
+}
+
+//---------------------------------------------------------------------------
+//  stringToSearchType
+//
+//! Return a search type enumeration value corresponding to a string.
+//
+//! @param string the string
+//! @return the corresponding search type value
+//---------------------------------------------------------------------------
+SearchCondition::SearchType
+SearchConditionForm::stringToSearchType (const QString& string) const
+{
+    if (string == PATTERN_MATCH_TYPE)
+        return SearchCondition::PatternMatch;
+    else if (string == ANAGRAM_MATCH_TYPE)
+        return SearchCondition::AnagramMatch;
+    else if (string == SUBANAGRAM_MATCH_TYPE)
+        return SearchCondition::SubanagramMatch;
+    else if (string == MIN_LENGTH_TYPE)
+        return SearchCondition::MinLength;
+    else if (string == MAX_LENGTH_TYPE)
+        return SearchCondition::MaxLength;
+    else if (string == MUST_INCLUDE_TYPE)
+        return SearchCondition::MustInclude;
+    else if (string == MUST_EXCLUDE_TYPE)
+        return SearchCondition::MustExclude;
+    else if (string == MUST_CONSIST_TYPE)
+        return SearchCondition::MustConsist;
+    else if (string == MUST_BELONG_TYPE)
+        return SearchCondition::MustBelong;
+    else if (string == MIN_ANAGRAMS_TYPE)
+        return SearchCondition::MinAnagrams;
+    else if (string == MAX_ANAGRAMS_TYPE)
+        return SearchCondition::MaxAnagrams;
+    else if (string == MIN_PROBABILITY_TYPE)
+        return SearchCondition::MinProbability;
+    else if (string == MAX_PROBABILITY_TYPE)
+        return SearchCondition::MaxProbability;
+    return SearchCondition::UnknownSearchType;
 }
