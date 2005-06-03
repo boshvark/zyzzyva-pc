@@ -31,6 +31,7 @@
 #include <qapplication.h>
 #include <qbuttongroup.h>
 #include <qlayout.h>
+#include <qsplitter.h>
 
 using namespace Defs;
 
@@ -87,8 +88,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     resultList->setResizeMode (QListView::LastColumn);
     resultList->setTitle ("Search Results");
     resultList->setShowSortIndicator (true);
-    resultList->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Minimum);
-    specVlay->addWidget (resultList);
+    specVlay->addWidget (resultList, 1);
     updateResultTotal (0);
 }
 

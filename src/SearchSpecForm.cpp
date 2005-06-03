@@ -190,8 +190,10 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     item = new QListViewItem (setMembershipList, item,
                               "Eights from top 7-letter stems");
     setMembershipList->header()->hide();
+    // XXX: Fix this based on row height or font height
+    setMembershipList->setMaximumHeight (50);
     setMembershipList->setSizePolicy (QSizePolicy::Preferred,
-                                      QSizePolicy::Maximum);
+                                      QSizePolicy::Fixed);
     mainVlay->addWidget (setMembershipList);
 
     reset();
