@@ -48,9 +48,6 @@ class SearchConditionForm : public QFrame
     void typeChanged (const QString&);
 
     private:
-    SearchCondition::SearchType stringToSearchType (const QString&) const;
-
-    private:
     QComboBox*    typeCbox;
     QWidgetStack* paramStack;
     QFrame*       paramLineFrame;

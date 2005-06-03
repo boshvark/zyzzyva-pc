@@ -32,7 +32,7 @@ class SearchCondition
 {
     public:
     enum SearchType {
-        UnknownSearchType,
+        UnknownSearchType = 0,
         PatternMatch,
         AnagramMatch,
         SubanagramMatch,

@@ -25,6 +25,7 @@
 #ifndef AUXIL_H
 #define AUXIL_H
 
+#include "SearchCondition.h"
 #include "SearchSet.h"
 #include <qstring.h>
 
@@ -36,6 +37,8 @@ namespace Auxil {
     QString wordWrap (const QString& str, int wrapLength);
     QString searchSetToString (SearchSet set);
     SearchSet stringToSearchSet (const QString& string);
+    QString searchTypeToString (SearchCondition::SearchType type);
+    SearchCondition::SearchType stringToSearchType (const QString& string);
 }
 
 #endif // AUXIL_H

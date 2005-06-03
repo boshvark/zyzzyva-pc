@@ -35,6 +35,20 @@ const QString SET_TYPE_ONE_EIGHTS_STRING = "Type I Eights";
 const QString SET_EIGHTS_FROM_SEVEN_STEMS_STRING =
               "Eights From Seven-Letter Stems";
 
+const QString PATTERN_MATCH_TYPE = "Pattern Match";
+const QString ANAGRAM_MATCH_TYPE = "Anagram Match";
+const QString SUBANAGRAM_MATCH_TYPE = "Subanagram Match";
+const QString MIN_LENGTH_TYPE = "Minimum Length";
+const QString MAX_LENGTH_TYPE = "Maximum Length";
+const QString MUST_INCLUDE_TYPE = "Must Include";
+const QString MUST_EXCLUDE_TYPE = "Must Exclude";
+const QString MUST_CONSIST_TYPE = "Must Consist of";
+const QString MUST_BELONG_TYPE = "Must Belong to";
+const QString MIN_ANAGRAMS_TYPE = "Minimum Anagrams";
+const QString MAX_ANAGRAMS_TYPE = "Maximum Anagrams";
+const QString MIN_PROBABILITY_TYPE = "Minimum Probability";
+const QString MAX_PROBABILITY_TYPE = "Maximum Probability";
+
 //---------------------------------------------------------------------------
 //  getAboutString
 //
@@ -181,5 +195,74 @@ Auxil::searchSetToString (SearchSet ss)
         case SetEightsFromSevenLetterStems:
             return SET_EIGHTS_FROM_SEVEN_STEMS_STRING;
         default: return SET_UNKNOWN_STRING;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  stringToSearchType
+//
+//! Return a search type enumeration value corresponding to a string.
+//
+//! @param string the string
+//! @return the corresponding search type value
+//---------------------------------------------------------------------------
+SearchCondition::SearchType
+Auxil::stringToSearchType (const QString& string)
+{
+    if (string == PATTERN_MATCH_TYPE)
+        return SearchCondition::PatternMatch;
+    else if (string == ANAGRAM_MATCH_TYPE)
+        return SearchCondition::AnagramMatch;
+    else if (string == SUBANAGRAM_MATCH_TYPE)
+        return SearchCondition::SubanagramMatch;
+    else if (string == MIN_LENGTH_TYPE)
+        return SearchCondition::MinLength;
+    else if (string == MAX_LENGTH_TYPE)
+        return SearchCondition::MaxLength;
+    else if (string == MUST_INCLUDE_TYPE)
+        return SearchCondition::MustInclude;
+    else if (string == MUST_EXCLUDE_TYPE)
+        return SearchCondition::MustExclude;
+    else if (string == MUST_CONSIST_TYPE)
+        return SearchCondition::MustConsist;
+    else if (string == MUST_BELONG_TYPE)
+        return SearchCondition::MustBelong;
+    else if (string == MIN_ANAGRAMS_TYPE)
+        return SearchCondition::MinAnagrams;
+    else if (string == MAX_ANAGRAMS_TYPE)
+        return SearchCondition::MaxAnagrams;
+    else if (string == MIN_PROBABILITY_TYPE)
+        return SearchCondition::MinProbability;
+    else if (string == MAX_PROBABILITY_TYPE)
+        return SearchCondition::MaxProbability;
+    return SearchCondition::UnknownSearchType;
+}
+
+//---------------------------------------------------------------------------
+//  searchTypeToString
+//
+//! Return a string corresponding to a search type enumeration value.
+//
+//! @param type the search type value
+//! @return the corresponding string
+//---------------------------------------------------------------------------
+QString
+Auxil::searchTypeToString (SearchCondition::SearchType type)
+{
+    switch (type) {
+        case SearchCondition::PatternMatch:    return PATTERN_MATCH_TYPE;
+        case SearchCondition::AnagramMatch:    return ANAGRAM_MATCH_TYPE;
+        case SearchCondition::SubanagramMatch: return SUBANAGRAM_MATCH_TYPE;
+        case SearchCondition::MinLength:       return MIN_LENGTH_TYPE;
+        case SearchCondition::MaxLength:       return MAX_LENGTH_TYPE;
+        case SearchCondition::MustInclude:     return MUST_INCLUDE_TYPE;
+        case SearchCondition::MustExclude:     return MUST_EXCLUDE_TYPE;
+        case SearchCondition::MustConsist:     return MUST_CONSIST_TYPE;
+        case SearchCondition::MustBelong:      return MUST_BELONG_TYPE;
+        case SearchCondition::MinAnagrams:     return MIN_ANAGRAMS_TYPE;
+        case SearchCondition::MaxAnagrams:     return MAX_ANAGRAMS_TYPE;
+        case SearchCondition::MinProbability:  return MIN_PROBABILITY_TYPE;
+        case SearchCondition::MaxProbability:  return MAX_PROBABILITY_TYPE;
+        default: return QString::null;
     }
 }

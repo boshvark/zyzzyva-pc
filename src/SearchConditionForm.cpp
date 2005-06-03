@@ -32,20 +32,6 @@
 
 using namespace Defs;
 
-const QString PATTERN_MATCH_TYPE = "Pattern Match";
-const QString ANAGRAM_MATCH_TYPE = "Anagram Match";
-const QString SUBANAGRAM_MATCH_TYPE = "Subanagram Match";
-const QString MIN_LENGTH_TYPE = "Minimum Length";
-const QString MAX_LENGTH_TYPE = "Maximum Length";
-const QString MUST_INCLUDE_TYPE = "Must Include";
-const QString MUST_EXCLUDE_TYPE = "Must Exclude";
-const QString MUST_CONSIST_TYPE = "Must Consist of";
-const QString MUST_BELONG_TYPE = "Must Belong to";
-const QString MIN_ANAGRAMS_TYPE = "Minimum Anagrams";
-const QString MAX_ANAGRAMS_TYPE = "Maximum Anagrams";
-const QString MIN_PROBABILITY_TYPE = "Minimum Probability";
-const QString MAX_PROBABILITY_TYPE = "Maximum Probability";
-
 //---------------------------------------------------------------------------
 //  SearchConditionForm
 //
@@ -73,11 +59,20 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     Q_CHECK_PTR (mainHlay);
 
     QStringList types;
-    types << PATTERN_MATCH_TYPE << ANAGRAM_MATCH_TYPE << SUBANAGRAM_MATCH_TYPE
-        << MIN_LENGTH_TYPE << MAX_LENGTH_TYPE << MUST_INCLUDE_TYPE <<
-        MUST_EXCLUDE_TYPE << MUST_CONSIST_TYPE << MUST_BELONG_TYPE <<
-        MIN_ANAGRAMS_TYPE << MAX_ANAGRAMS_TYPE << MIN_PROBABILITY_TYPE <<
-        MAX_PROBABILITY_TYPE;
+    types << Auxil::searchTypeToString (SearchCondition::PatternMatch)
+          << Auxil::searchTypeToString (SearchCondition::AnagramMatch)
+          << Auxil::searchTypeToString (SearchCondition::SubanagramMatch)
+          << Auxil::searchTypeToString (SearchCondition::MinLength)
+          << Auxil::searchTypeToString (SearchCondition::MaxLength)
+          << Auxil::searchTypeToString (SearchCondition::MustInclude)
+          << Auxil::searchTypeToString (SearchCondition::MustExclude)
+          << Auxil::searchTypeToString (SearchCondition::MustConsist)
+          << Auxil::searchTypeToString (SearchCondition::MustBelong)
+          << Auxil::searchTypeToString (SearchCondition::MinAnagrams)
+          << Auxil::searchTypeToString (SearchCondition::MaxAnagrams)
+          << Auxil::searchTypeToString (SearchCondition::MinProbability)
+          << Auxil::searchTypeToString (SearchCondition::MaxProbability);
+
     typeCbox = new QComboBox (this, "typeCbox");
     Q_CHECK_PTR (typeCbox);
     typeCbox->insertStringList (types);
@@ -151,7 +146,7 @@ SearchConditionForm::getSearchCondition() const
 {
     SearchCondition condition;
     QString typeStr = typeCbox->currentText();
-    condition.type = stringToSearchType (typeStr);
+    condition.type = Auxil::stringToSearchType (typeStr);
 
     switch (condition.type) {
         case SearchCondition::PatternMatch:
@@ -188,32 +183,37 @@ SearchConditionForm::getSearchCondition() const
     return condition;
 }
 
-
 //---------------------------------------------------------------------------
 //  typeChanged
 //
 //! Called when an option in the type dropdown box is activated.
 //
-//! @param type the activated option
+//! @param string the activated option
 //---------------------------------------------------------------------------
 void
-SearchConditionForm::typeChanged (const QString& type)
+SearchConditionForm::typeChanged (const QString& string)
 {
-    if ((type == PATTERN_MATCH_TYPE) || (type == ANAGRAM_MATCH_TYPE) ||
-        (type == SUBANAGRAM_MATCH_TYPE) || (type == MUST_INCLUDE_TYPE) ||
-        (type == MUST_EXCLUDE_TYPE))
-    {
+    SearchCondition::SearchType type = Auxil::stringToSearchType (string);
+
+    switch (type) {
+        case SearchCondition::PatternMatch:
+        case SearchCondition::AnagramMatch:
+        case SearchCondition::SubanagramMatch:
+        case SearchCondition::MustInclude:
+        case SearchCondition::MustExclude:
         paramStack->raiseWidget (paramLineFrame);
-    }
+        break;
 
-    else if ((type == MIN_LENGTH_TYPE) || (type == MAX_LENGTH_TYPE) ||
-             (type == MIN_ANAGRAMS_TYPE) || (type == MAX_ANAGRAMS_TYPE) ||
-             (type == MIN_PROBABILITY_TYPE) || (type == MAX_PROBABILITY_TYPE))
-    {
+        case SearchCondition::MinLength:
+        case SearchCondition::MaxLength:
+        case SearchCondition::MinAnagrams:
+        case SearchCondition::MaxAnagrams:
+        case SearchCondition::MinProbability:
+        case SearchCondition::MaxProbability:
         paramStack->raiseWidget (paramSboxFrame);
-    }
+        break;
 
-    else if (type == MUST_BELONG_TYPE) {
+        case SearchCondition::MustBelong:
         paramCbox->clear();
         paramCbox->insertItem (Auxil::searchSetToString (SetHookWords));
         paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneSevens));
@@ -223,53 +223,14 @@ SearchConditionForm::typeChanged (const QString& type)
         paramCbox->insertItem (Auxil::searchSetToString
                                (SetEightsFromSevenLetterStems));
         paramStack->raiseWidget (paramCboxFrame);
-    }
+        break;
 
-    else if (type == MUST_CONSIST_TYPE) {
+        case SearchCondition::MustConsist:
         paramStack->raiseWidget (paramConsistFrame);
-    }
+        break;
 
-    else {
-        qDebug ("Unrecognized type: |" + type + "|");
+        default:
+        qWarning ("Unrecognized search condition: " + string);
+        break;
     }
-}
-
-//---------------------------------------------------------------------------
-//  stringToSearchType
-//
-//! Return a search type enumeration value corresponding to a string.
-//
-//! @param string the string
-//! @return the corresponding search type value
-//---------------------------------------------------------------------------
-SearchCondition::SearchType
-SearchConditionForm::stringToSearchType (const QString& string) const
-{
-    if (string == PATTERN_MATCH_TYPE)
-        return SearchCondition::PatternMatch;
-    else if (string == ANAGRAM_MATCH_TYPE)
-        return SearchCondition::AnagramMatch;
-    else if (string == SUBANAGRAM_MATCH_TYPE)
-        return SearchCondition::SubanagramMatch;
-    else if (string == MIN_LENGTH_TYPE)
-        return SearchCondition::MinLength;
-    else if (string == MAX_LENGTH_TYPE)
-        return SearchCondition::MaxLength;
-    else if (string == MUST_INCLUDE_TYPE)
-        return SearchCondition::MustInclude;
-    else if (string == MUST_EXCLUDE_TYPE)
-        return SearchCondition::MustExclude;
-    else if (string == MUST_CONSIST_TYPE)
-        return SearchCondition::MustConsist;
-    else if (string == MUST_BELONG_TYPE)
-        return SearchCondition::MustBelong;
-    else if (string == MIN_ANAGRAMS_TYPE)
-        return SearchCondition::MinAnagrams;
-    else if (string == MAX_ANAGRAMS_TYPE)
-        return SearchCondition::MaxAnagrams;
-    else if (string == MIN_PROBABILITY_TYPE)
-        return SearchCondition::MinProbability;
-    else if (string == MAX_PROBABILITY_TYPE)
-        return SearchCondition::MaxProbability;
-    return SearchCondition::UnknownSearchType;
 }
