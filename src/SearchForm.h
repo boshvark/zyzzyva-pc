@@ -44,7 +44,6 @@ class SearchForm : public QFrame
 
   public slots:
     void search();
-    void resetSpec();
     void updateResultTotal (int num);
 
   private:
@@ -52,7 +51,6 @@ class SearchForm : public QFrame
     SearchSpecForm* specForm;
     QCheckBox*      lowerCaseCbox;
     WordListView*   resultList;
-    QPushButton*    resetButton;
     QPushButton*    searchButton;
 };
 

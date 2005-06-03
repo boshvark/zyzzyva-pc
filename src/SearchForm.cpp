@@ -70,12 +70,6 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (buttonHlay);
     specVlay->addLayout (buttonHlay);
 
-    resetButton = new QPushButton ("&Reset", this, "resetButton");
-    Q_CHECK_PTR (resetButton);
-    resetButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (resetButton, SIGNAL (clicked()), SLOT (resetSpec()));
-    buttonHlay->addWidget (resetButton);
-
     searchButton = new QPushButton ("&Search", this, "searchButton");
     Q_CHECK_PTR (searchButton);
     searchButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -119,18 +113,6 @@ SearchForm::search()
     resultList->sort();
     updateResultTotal (numWords);
     QApplication::restoreOverrideCursor();
-}
-
-//---------------------------------------------------------------------------
-//  search
-//
-//! Search for the word or pattern in the edit area, and display the results
-//! in the list box.
-//---------------------------------------------------------------------------
-void
-SearchForm::resetSpec()
-{
-    specForm->reset();
 }
 
 //---------------------------------------------------------------------------

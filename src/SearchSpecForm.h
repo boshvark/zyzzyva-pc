@@ -27,6 +27,7 @@
 
 #include <qframe.h>
 #include <qlayout.h>
+#include <qpushbutton.h>
 #include <qvaluelist.h>
 #include <set>
 
@@ -38,15 +39,16 @@ class SearchSpecForm : public QFrame
     Q_OBJECT
     public:
     SearchSpecForm (QWidget* parent = 0, const char* name = 0, WFlags f = 0);
-
-    void reset();
     SearchSpec getSearchSpec() const;
 
-    private:
+    public slots:
     void addConditionForm();
+    void removeConditionForm();
 
     private:
-    QVBoxLayout* mainVlay;
+    QPushButton* moreButton;
+    QPushButton* fewerButton;
+    QVBoxLayout* conditionVlay;
     QValueList<SearchConditionForm*> conditionForms;
 };
 
