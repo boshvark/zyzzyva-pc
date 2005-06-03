@@ -104,6 +104,9 @@ SearchForm::search()
     //QString pattern = specForm->getPattern();
     //if (pattern.isEmpty()) return;
 
+    SearchSpec spec = specForm->getSearchSpec();
+    qDebug (spec.asString()); 
+
     QApplication::setOverrideCursor (Qt::waitCursor);
     resultList->clear();
     QStringList wordList = engine->search (specForm->getSearchSpec(),

@@ -23,13 +23,10 @@
 //---------------------------------------------------------------------------
 
 #include "SearchSpecForm.h"
-#include "Auxil.h"
+#include "SearchSpec.h"
 #include "SearchConditionForm.h"
-#include "WordValidator.h"
+#include "Auxil.h"
 #include "Defs.h"
-#include <qbuttongroup.h>
-#include <qheader.h>
-#include <qlabel.h>
 #include <qlayout.h>
 
 using namespace Defs;
@@ -50,16 +47,6 @@ const QString SUBANAGRAM_COMBO = "Subanagram";
 SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     : QFrame (parent, name, f)
 {
-    WordValidator* letterValidator = new WordValidator (this,
-                                                        "letterValidator");
-    Q_CHECK_PTR (letterValidator);
-
-    WordValidator* patternValidator = new WordValidator (this,
-                                                         "patternValidator");
-    Q_CHECK_PTR (patternValidator);
-    patternValidator->setOptions (WordValidator::AllowQuestionMarks |
-                                  WordValidator::AllowAsterisks);
-
     QHBoxLayout* mainHlay = new QHBoxLayout (this, 0, SPACING, "mainHlay");
     Q_CHECK_PTR (mainHlay);
 
@@ -74,15 +61,12 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
 //    typeCbox->insertStringList (types);
 //    mainHlay->addWidget (typeCbox);
 
-    QVBoxLayout* mainVlay = new QVBoxLayout (SPACING, "mainVlay");
+    mainVlay = new QVBoxLayout (SPACING, "mainVlay");
     Q_CHECK_PTR (mainVlay);
     mainHlay->addLayout (mainVlay);
 
+    addConditionForm();
 
-    SearchConditionForm* conditionForm = new SearchConditionForm (this,
-                                                                  "conditionForm");
-    Q_CHECK_PTR (conditionForm);
-    mainVlay->addWidget (conditionForm);
 
 //    QHBoxLayout* matchHlay = new QHBoxLayout (SPACING, "matchHlay");
 //    Q_CHECK_PTR (matchHlay);
@@ -245,15 +229,24 @@ SearchSpec
 SearchSpecForm::getSearchSpec() const
 {
     SearchSpec spec;
-    // XXX XXX: Don't forget to update this!
-    //spec.pattern = getPattern();
-    //spec.type = getMatchType();
-    //spec.includeLetters = getIncludeLetters();
-    //spec.excludeLetters = getExcludeLetters();
-    //spec.consistPercent = getConsistPercent();
-    //spec.consistLetters = getConsistLetters();
-    //spec.minLength = getMinLength();
-    //spec.maxLength = getMaxLength();
-    //spec.setMemberships = getSetMemberships();
+    spec.conjunction = true;
+    QValueList<SearchConditionForm*>::const_iterator it;
+    for (it = conditionForms.begin(); it != conditionForms.end(); ++it) {
+        spec.conditions << (*it)->getSearchCondition();
+    }
     return spec;
+}
+
+//---------------------------------------------------------------------------
+//  addConditionForm
+//
+//! Add a condition form to the bottom of the layout.
+//---------------------------------------------------------------------------
+void
+SearchSpecForm::addConditionForm()
+{
+    SearchConditionForm* form = new SearchConditionForm (this, "form");
+    Q_CHECK_PTR (form);
+    mainVlay->addWidget (form);
+    conditionForms << form;
 }

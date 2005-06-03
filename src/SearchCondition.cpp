@@ -38,58 +38,40 @@ using namespace Defs;
 QString
 SearchCondition::asString() const
 {
-    QString str;
-//    if (pattern.length()) {
-//        switch (type) {
-//            case Pattern: str += "Pattern: "; break;
-//            case Anagram: str += "Anagram: "; break;
-//            case Subanagram: str += "Subanagram: "; break;
-//            default: break;
-//        }
-//        str += pattern;
-//    }
-//
-//    if (includeLetters.length()) {
-//        if (str.length())
-//            str += ", ";
-//        str += "Include: " + includeLetters;
-//    }
-//
-//    if (excludeLetters.length()) {
-//        if (str.length())
-//            str += ", ";
-//        str += "Exclude: " + excludeLetters;
-//    }
-//
-//    if (consistPercent > 0) {
-//        if (str.length())
-//            str += ", ";
-//        str += "Consist: " + QString::number (consistPercent) + "% " +
-//            consistLetters;
-//    }
-//
-//    if (minLength > 1) {
-//        if (str.length())
-//            str += ", ";
-//        str += "Min Length: " + QString::number (minLength);
-//    }
-//
-//    if (maxLength < MAX_WORD_LEN) {
-//        if (str.length())
-//            str += ", ";
-//        str += "Max Length: " + QString::number (maxLength);
-//    }
-//
-//    if (!setMemberships.empty()) {
-//        if (str.length())
-//            str += ", ";
-//        str += "Set Membership: ";
-//        std::set<SearchSet>::const_iterator it;
-//        for (it = setMemberships.begin(); it != setMemberships.end(); ++it) {
-//            if (it != setMemberships.begin())
-//                str += ", ";
-//            str += Auxil::searchSetToString (*it);
-//        }
-//    }
+    if (type == UnknownSearchType)
+        return QString::null;
+
+    QString str = Auxil::searchTypeToString (type) + ": ";
+
+    switch (type) {
+        case PatternMatch:
+        case AnagramMatch:
+        case SubanagramMatch:
+        case MustInclude:
+        case MustExclude:
+        case MustBelong:
+        str += stringValue;
+        break;
+
+        case MinLength:
+        case MaxLength:
+        case MinAnagrams:
+        case MaxAnagrams:
+        str += QString::number (intValue);
+        break;
+
+        case MinProbability:
+        case MaxProbability:
+        // XXX: Multiply by the correct factor here!
+        str += QString::number (intValue * 1);
+        break;
+
+        case MustConsist:
+        str += QString::number (intValue) + "%% " + stringValue;
+        break;
+
+        default: break;
+    }
+
     return str;
 }

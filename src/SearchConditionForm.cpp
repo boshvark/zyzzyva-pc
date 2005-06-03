@@ -128,8 +128,12 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     paramConsistSbox = new QSpinBox (paramConsistFrame, "paramConsist");
     Q_CHECK_PTR (paramConsistSbox);
     paramConsistHlay->addWidget (paramConsistSbox);
+    QLabel* pctLabel = new QLabel ("%", paramConsistFrame, "pctLabel");
+    Q_CHECK_PTR (pctLabel);
+    paramConsistHlay->addWidget (pctLabel);
     paramConsistLine = new QLineEdit (paramConsistFrame, "paramConsistLine");
     Q_CHECK_PTR (paramConsistLine);
+    paramConsistLine->setValidator (patternValidator);
     paramConsistHlay->addWidget (paramConsistLine);
     paramStack->addWidget (paramConsistFrame);
 }

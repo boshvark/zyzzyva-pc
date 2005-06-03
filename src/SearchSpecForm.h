@@ -25,18 +25,13 @@
 #ifndef SEARCH_SPEC_FORM_H
 #define SEARCH_SPEC_FORM_H
 
-#include "SearchSpec.h"
-#include "MatchType.h"
-#include <qcombobox.h>
 #include <qframe.h>
-#include <qlineedit.h>
-#include <qlistview.h>
-#include <qradiobutton.h>
-#include <qspinbox.h>
-#include <qwidgetstack.h>
+#include <qlayout.h>
+#include <qvaluelist.h>
 #include <set>
 
 class SearchConditionForm;
+class SearchSpec;
 
 class SearchSpecForm : public QFrame
 {
@@ -48,17 +43,11 @@ class SearchSpecForm : public QFrame
     SearchSpec getSearchSpec() const;
 
     private:
-    //QComboBox* matchCbox;
-    //QLineEdit* patternLine;
-    //QLineEdit* includeLine;
-    //QLineEdit* excludeLine;
-    //QSpinBox*  consistPctSbox;
-    //QLineEdit* consistLine;
-    //QSpinBox*  minLengthSbox;
-    //QSpinBox*  maxLengthSbox;
-    //QListView* setMembershipList;
+    void addConditionForm();
 
-
+    private:
+    QVBoxLayout* mainVlay;
+    QValueList<SearchConditionForm*> conditionForms;
 };
 
 #endif // SEARCH_SPEC_FORM_H
