@@ -34,6 +34,7 @@
 #include "WordListViewItem.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <qapplication.h>
 #include <qcolor.h>
 #include <qlayout.h>
 #include <qhgroupbox.h>
@@ -266,7 +267,9 @@ QuizForm::newQuiz (NewQuizDialog* dialog)
     useTimer = dialog->getTimerEnabled();
     timerDuration = dialog->getTimerDuration();
     timerType = dialog->getTimerType();
+    QApplication::setOverrideCursor (Qt::waitCursor);
     quizEngine->newQuiz (spec);
+    QApplication::restoreOverrideCursor();
     startQuestion();
     analyzeDialog->newQuiz (spec);
 }
