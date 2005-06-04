@@ -122,34 +122,39 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                                        variation)
 {
     QString title;
-    // XXX XXX: Don't forget to update the uses of this SearchSpec object!
     SearchSpec spec;
+    SearchCondition condition;
     QValueList<SearchSpec> leftSpecs;
     QValueList<SearchSpec> rightSpecs;
     switch (variation) {
 
         case VariationAnagrams:
         title = "Anagrams for: " + word;
-        //spec.type = Anagram;
-        //spec.pattern = word;
+        condition.type = SearchCondition::AnagramMatch;
+        condition.stringValue = word;
+        spec.conditions << condition;
         leftSpecs << spec;
         leftList->setTitle ("Anagrams");
         break;
 
         case VariationSubanagrams:
         title = "Subanagrams for: " + word;
-        //spec.type = Subanagram;
-        //spec.pattern = word;
+        condition.type = SearchCondition::SubanagramMatch;
+        condition.stringValue = word;
+        spec.conditions << condition;
         leftSpecs << spec;
         leftList->setTitle ("Subanagrams");
         break;
 
         case VariationHooks:
         title = "Hooks for: " + word;
-        //spec.type = Pattern;
-        //spec.pattern = "?" + word;
+        condition.type = SearchCondition::PatternMatch;
+        condition.stringValue = "?" + word;
+        spec.conditions << condition;
         leftSpecs << spec;
-        //spec.pattern = word + "?";
+        condition.stringValue = word + "?";
+        spec.conditions.clear();
+        spec.conditions << condition;
         rightSpecs << spec;
         leftList->setTitle ("Front Hooks");
         rightList->setTitle ("Back Hooks");
@@ -157,18 +162,21 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
         case VariationAnagramHooks:
         title = "Anagram Hooks for: " + word;
-        //spec.type = Anagram;
-        //spec.pattern = "?" + word;
+        condition.type = SearchCondition::AnagramMatch;
+        condition.stringValue = "?" + word;
+        spec.conditions << condition;
         leftSpecs << spec;
         leftList->setTitle ("Anagram Hooks");
         break;
 
         case VariationBlankAnagrams:
         title = "Blank Anagrams for: " + word;
-        //spec.type = Anagram;
+        condition.type = SearchCondition::AnagramMatch;
         for (int i = 0; i < word.length(); ++i) {
-            //spec.pattern = word.left (i) + "?" +
-                //word.right (word.length() - i - 1);
+            condition.stringValue = word.left (i) + "?" +
+                word.right (word.length() - i - 1);
+            spec.conditions.clear();
+            spec.conditions << condition;
             leftSpecs << spec;
         }
         leftList->setTitle ("Blank Anagrams");
@@ -176,10 +184,12 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
         case VariationBlankMatches:
         title = "Blank Matches for: " + word;
-        //spec.type = Pattern;
+        condition.type = SearchCondition::PatternMatch;
         for (int i = 0; i < word.length(); ++i) {
-            //spec.pattern = word.left (i) + "?" +
-                //word.right (word.length() - i - 1);
+            condition.stringValue = word.left (i) + "?" +
+                word.right (word.length() - i - 1);
+            spec.conditions.clear();
+            spec.conditions << condition;
             leftSpecs << spec;
         }
         leftList->setTitle ("Blank Matches");
@@ -187,10 +197,13 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
         case VariationExtensions:
         title = "Extensions for: " + word;
-        //spec.type = Pattern;
-        //spec.pattern = "*?" + word;
+        condition.type = SearchCondition::PatternMatch;
+        condition.stringValue = "*?" + word;
+        spec.conditions << condition;
         leftSpecs << spec;
-        //spec.pattern = word + "?*";
+        condition.stringValue = word + "?*";
+        spec.conditions.clear();
+        spec.conditions << condition;
         rightSpecs << spec;
         leftList->setTitle ("Front Extensions");
         rightList->setTitle ("Back Extensions");
@@ -198,10 +211,12 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
         case VariationTranspositions:
         title = "Transpositions for: " + word;
-        //spec.type = Pattern;
-        for (int i = 0; i < word.length() - 1; ++i) {
-            //spec.pattern = word.left (i) + word.mid (i + 1, 1) +
-                //word.mid (i, 1) + word.right (word.length() - i - 2);
+        condition.type = SearchCondition::PatternMatch;
+        for (int i = 0; i < word.length(); ++i) {
+            condition.stringValue = word.left (i) + word.mid (i + 1, 1) +
+                word.mid (i, 1) + word.right (word.length() - i - 2);
+            spec.conditions.clear();
+            spec.conditions << condition;
             leftSpecs << spec;
         }
         leftList->setTitle ("Transpositions");
