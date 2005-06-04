@@ -27,6 +27,7 @@
 #include "SearchConditionForm.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <qbuttongroup.h>
 #include <qlayout.h>
 
 using namespace Defs;
@@ -47,6 +48,30 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this, 0, SPACING, "mainVlay");
     Q_CHECK_PTR (mainVlay);
+
+    QButtonGroup* radioGroup = new QButtonGroup (this, "radioGroup");
+    Q_CHECK_PTR (radioGroup);
+    radioGroup->hide();
+
+    QFrame* radioFrame = new QFrame (this, "radioFrame");
+    Q_CHECK_PTR (radioFrame);
+    mainVlay->addWidget (radioFrame);
+
+    QHBoxLayout* radioHlay = new QHBoxLayout (radioFrame, 0, SPACING, "radioHlay");
+    Q_CHECK_PTR (radioHlay);
+
+    conjunctionRadio = new QRadioButton ("Match all of the following",
+                                         radioFrame, "conjunctionRadio");
+    Q_CHECK_PTR (conjunctionRadio);
+    conjunctionRadio->setChecked (true);
+    radioGroup->insert (conjunctionRadio, 1);
+    radioHlay->addWidget (conjunctionRadio);
+
+    QRadioButton* disjunctionRadio = new QRadioButton (
+        "Match any of the following", radioFrame, "disjunctionRadio");
+    Q_CHECK_PTR (disjunctionRadio);
+    radioGroup->insert (disjunctionRadio, 1);
+    radioHlay->addWidget (disjunctionRadio);
 
     QHBoxLayout* conditionHlay = new QHBoxLayout (SPACING, "conditionHlay");
     Q_CHECK_PTR (conditionHlay);
@@ -88,7 +113,7 @@ SearchSpec
 SearchSpecForm::getSearchSpec() const
 {
     SearchSpec spec;
-    spec.conjunction = true;
+    spec.conjunction = conjunctionRadio->isChecked();
     QValueList<SearchConditionForm*>::const_iterator it;
     for (it = conditionForms.begin(); it != conditionForms.end(); ++it) {
         if ((*it)->isValid())

@@ -28,6 +28,7 @@
 #include <qframe.h>
 #include <qlayout.h>
 #include <qpushbutton.h>
+#include <qradiobutton.h>
 #include <qvaluelist.h>
 #include <set>
 
@@ -46,9 +47,10 @@ class SearchSpecForm : public QFrame
     void removeConditionForm();
 
     private:
-    QPushButton* moreButton;
-    QPushButton* fewerButton;
-    QVBoxLayout* conditionVlay;
+    QRadioButton* conjunctionRadio;
+    QPushButton*  moreButton;
+    QPushButton*  fewerButton;
+    QVBoxLayout*  conditionVlay;
     QValueList<SearchConditionForm*> conditionForms;
 };
 
