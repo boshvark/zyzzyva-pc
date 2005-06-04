@@ -57,16 +57,16 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
     Q_CHECK_PTR (specForm);
     mainVlay->addWidget (specForm);
 
-    alphagramCbox = new QCheckBox ("Use individual &alphagrams as questions",
-                                   this, "alphagramCbox");
-    Q_CHECK_PTR (alphagramCbox);
-    connect (alphagramCbox, SIGNAL (toggled (bool)),
-             SLOT (alphagramsToggled (bool)));
-    mainVlay->addWidget (alphagramCbox);
+    useListCbox = new QCheckBox ("Use result &list as a single question",
+                                 this, "useListCbox");
+    Q_CHECK_PTR (useListCbox);
+    connect (useListCbox, SIGNAL (toggled (bool)),
+             SLOT (useListToggled (bool)));
+    mainVlay->addWidget (useListCbox);
 
     randomCbox = new QCheckBox ("&Randomize order", this, "randomCbox");
     Q_CHECK_PTR (randomCbox);
-    randomCbox->setEnabled (false);
+    randomCbox->setChecked (true);
     mainVlay->addWidget (randomCbox);
 
     QHBoxLayout* timerHlay = new QHBoxLayout (SPACING, "timerHlay");
@@ -141,17 +141,17 @@ NewQuizDialog::getSearchSpec() const
 }
 
 //---------------------------------------------------------------------------
-//  getQuizAlphagrams
+//  getQuizUseList
 //
-//! Get whether the quiz should use alphagrams of the individual words as
-//! quiz questions.
+//! Get whether the quiz should use the full list of search results as a quiz
+//! question.
 //
-//! @return true if alphagrams should be used, false otherwise
+//! @return true if the full list should be used, false otherwise
 //---------------------------------------------------------------------------
 bool
-NewQuizDialog::getQuizAlphagrams() const
+NewQuizDialog::getQuizUseList() const
 {
-    return alphagramCbox->isChecked();
+    return useListCbox->isChecked();
 }
 
 //---------------------------------------------------------------------------
@@ -214,18 +214,18 @@ NewQuizDialog::getTimerType() const
 }
 
 //---------------------------------------------------------------------------
-//  alphagramsToggled
+//  useListToggled
 //
-//! Called when the Alphagrams checkbox is toggled.  Disable the Random
-//! checkbox unless the Alphagrams checkbox is checked.
+//! Called when the Use List checkbox is toggled.  Disable the Random
+//! checkbox unless the Use List checkbox is checked.
 //
 //! @param on whether the checkbox is checked
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::alphagramsToggled (bool on)
+NewQuizDialog::useListToggled (bool on)
 {
-    randomCbox->setEnabled (on);
-    if (!on)
+    randomCbox->setEnabled (!on);
+    if (on)
         randomCbox->setChecked (false);
 }
 
@@ -233,7 +233,7 @@ NewQuizDialog::alphagramsToggled (bool on)
 //  timerToggled
 //
 //! Called when the Timer checkbox is toggled.  Disable the timer
-//! configuration unless the Alphagrams checkbox is checked.
+//! configuration unless the Timer checkbox is checked.
 //
 //! @param on whether the checkbox is checked
 //---------------------------------------------------------------------------

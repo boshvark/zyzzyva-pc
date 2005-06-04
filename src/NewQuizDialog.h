@@ -53,19 +53,19 @@ class NewQuizDialog : public QDialog
     ~NewQuizDialog() { }
 
     SearchSpec getSearchSpec() const;
-    bool getQuizAlphagrams() const;
+    bool getQuizUseList() const;
     bool getQuizRandomOrder() const;
     bool getTimerEnabled() const;
     int  getTimerDuration() const;
     QuizTimerType getTimerType() const;
 
   public slots:
-    void alphagramsToggled (bool on);
+    void useListToggled (bool on);
     void timerToggled (bool on);
 
   private:
     SearchSpecForm* specForm;
-    QCheckBox*      alphagramCbox;
+    QCheckBox*      useListCbox;
     QCheckBox*      randomCbox;
     QPushButton*    okButton;
     QWidget*        timerWidget;

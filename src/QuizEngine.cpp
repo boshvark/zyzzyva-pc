@@ -50,7 +50,7 @@ QuizEngine::newQuiz (const QuizSpec& spec)
 
     // If alphagrams is not specified, then the quiz will be a single question
     // requiring the entire search results of the search spec as an answer.
-    singleSpecQuestion = !quizSpec.alphagrams;
+    singleSpecQuestion = quizSpec.useList;
 
     // When using alphagrams, always change quiz type to Anagram.  The pattern
     // is used to select the list of alphagrams, then anagrams are used as

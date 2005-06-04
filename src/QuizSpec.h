@@ -41,7 +41,7 @@ enum QuizType {
 class QuizSpec
 {
   public:
-    QuizSpec() : type (QuizAnagrams), alphagrams (true), randomOrder (true)
+    QuizSpec() : type (QuizAnagrams), useList (false), randomOrder (true)
         { }
     ~QuizSpec() { }
 
@@ -49,7 +49,7 @@ class QuizSpec
 
     QuizType type;
     SearchSpec searchSpec;
-    bool alphagrams;
+    bool useList;
     bool randomOrder;
 };
 

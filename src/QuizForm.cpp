@@ -262,7 +262,7 @@ QuizForm::newQuiz (NewQuizDialog* dialog)
 {
     QuizSpec spec;
     spec.searchSpec = dialog->getSearchSpec();
-    spec.alphagrams = dialog->getQuizAlphagrams();
+    spec.useList = dialog->getQuizUseList();
     spec.randomOrder = dialog->getQuizRandomOrder();
     useTimer = dialog->getTimerEnabled();
     timerDuration = dialog->getTimerDuration();
