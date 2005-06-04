@@ -29,13 +29,6 @@ Visual Polish:
 
 Usability:
 ----------
-* Change Search form.  Instead of displaying a million options at once,
-  display a dropdown with the various options in a list, e.g. "Matches
-  Pattern", "Matches Anagram", "Min Length", etc.  Also add a button to allow
-  the addition of more than one condition.  The search then consists of the
-  conjunction of all the specified conditions.  Maybe some true Boolean logic
-  could be added, but simple conjunction may be good enough for now.
-
 * Add an overall timer for the taking of quizzes, even if a cutoff timer is
   not to be used for each question.  Keep track of total quiz time, and
   display it in the Analyze dialog.  Also save best times across sessions.
