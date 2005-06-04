@@ -94,13 +94,11 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 void
 SearchForm::search()
 {
-    // XXX XXX: Don't forget to update this!
-    //QString pattern = specForm->getPattern();
-    //if (pattern.isEmpty()) return;
-
     SearchSpec spec = specForm->getSearchSpec();
-    qDebug (spec.asString()); 
+    if (spec.conditions.empty())
+        return;
 
+    qDebug (spec.asString()); 
     QApplication::setOverrideCursor (Qt::waitCursor);
     resultList->clear();
     QStringList wordList = engine->search (specForm->getSearchSpec(),
