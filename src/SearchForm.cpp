@@ -98,7 +98,6 @@ SearchForm::search()
     if (spec.conditions.empty())
         return;
 
-    qDebug (spec.asString()); 
     QApplication::setOverrideCursor (Qt::waitCursor);
     resultList->clear();
     QStringList wordList = engine->search (specForm->getSearchSpec(),
