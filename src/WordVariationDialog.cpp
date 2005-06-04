@@ -121,7 +121,7 @@ void
 WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                                        variation)
 {
-    QString title;
+    QString title, leftTitle, rightTitle;
     SearchSpec spec;
     SearchCondition condition;
     QValueList<SearchSpec> leftSpecs;
@@ -134,7 +134,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         condition.stringValue = word;
         spec.conditions << condition;
         leftSpecs << spec;
-        leftList->setTitle ("Anagrams");
+        leftTitle = "Anagrams";
         break;
 
         case VariationSubanagrams:
@@ -143,7 +143,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         condition.stringValue = word;
         spec.conditions << condition;
         leftSpecs << spec;
-        leftList->setTitle ("Subanagrams");
+        leftTitle = "Subanagrams";
         break;
 
         case VariationHooks:
@@ -156,8 +156,8 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         spec.conditions.clear();
         spec.conditions << condition;
         rightSpecs << spec;
-        leftList->setTitle ("Front Hooks");
-        rightList->setTitle ("Back Hooks");
+        leftTitle = "Front Hooks";
+        rightTitle = "Back Hooks";
         break;
 
         case VariationAnagramHooks:
@@ -166,7 +166,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         condition.stringValue = "?" + word;
         spec.conditions << condition;
         leftSpecs << spec;
-        leftList->setTitle ("Anagram Hooks");
+        leftTitle = "Anagram Hooks";
         break;
 
         case VariationBlankAnagrams:
@@ -179,7 +179,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             spec.conditions << condition;
             leftSpecs << spec;
         }
-        leftList->setTitle ("Blank Anagrams");
+        leftTitle = "Blank Anagrams";
         break;
 
         case VariationBlankMatches:
@@ -192,7 +192,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             spec.conditions << condition;
             leftSpecs << spec;
         }
-        leftList->setTitle ("Blank Matches");
+        leftTitle = "Blank Matches";
         break;
 
         case VariationExtensions:
@@ -205,8 +205,8 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         spec.conditions.clear();
         spec.conditions << condition;
         rightSpecs << spec;
-        leftList->setTitle ("Front Extensions");
-        rightList->setTitle ("Back Extensions");
+        leftTitle = "Front Extensions";
+        rightTitle = "Back Extensions";
         break;
 
         case VariationTranspositions:
@@ -219,7 +219,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             spec.conditions << condition;
             leftSpecs << spec;
         }
-        leftList->setTitle ("Transpositions");
+        leftTitle = "Transpositions";
         break;
 
         default: break;
@@ -245,6 +245,11 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             wordSet.insert (*wit);
         }
     }
+    int leftWords = leftList->childCount();
+    leftTitle += " : " + QString::number (leftWords) + " word";
+    if (leftWords != 1)
+        leftTitle += "s";
+    leftList->setTitle (leftTitle);
 
     if (!rightSpecs.empty()) {
         wordSet.clear();
@@ -256,6 +261,11 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                 wordSet.insert (*wit);
             }
         }
+        int rightWords = rightList->childCount();
+        rightTitle += " : " + QString::number (rightWords) + " word";
+        if (rightWords != 1)
+            rightTitle += "s";
+        rightList->setTitle (rightTitle);
         rightList->show();
     }
 
