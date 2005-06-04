@@ -62,12 +62,14 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     types << Auxil::searchTypeToString (SearchCondition::PatternMatch)
           << Auxil::searchTypeToString (SearchCondition::AnagramMatch)
           << Auxil::searchTypeToString (SearchCondition::SubanagramMatch)
+          << Auxil::searchTypeToString (SearchCondition::ExactLength)
           << Auxil::searchTypeToString (SearchCondition::MinLength)
           << Auxil::searchTypeToString (SearchCondition::MaxLength)
           << Auxil::searchTypeToString (SearchCondition::MustInclude)
           << Auxil::searchTypeToString (SearchCondition::MustExclude)
           << Auxil::searchTypeToString (SearchCondition::MustConsist)
           << Auxil::searchTypeToString (SearchCondition::MustBelong)
+          << Auxil::searchTypeToString (SearchCondition::ExactAnagrams)
           << Auxil::searchTypeToString (SearchCondition::MinAnagrams)
           << Auxil::searchTypeToString (SearchCondition::MaxAnagrams)
           << Auxil::searchTypeToString (SearchCondition::MinProbability)
@@ -161,8 +163,10 @@ SearchConditionForm::getSearchCondition() const
         condition.stringValue = paramLine->text();
         break;
 
+        case SearchCondition::ExactLength:
         case SearchCondition::MinLength:
         case SearchCondition::MaxLength:
+        case SearchCondition::ExactAnagrams:
         case SearchCondition::MinAnagrams:
         case SearchCondition::MaxAnagrams:
         case SearchCondition::MinProbability:
@@ -208,8 +212,10 @@ SearchConditionForm::typeChanged (const QString& string)
         paramStack->raiseWidget (paramLineFrame);
         break;
 
+        case SearchCondition::ExactLength:
         case SearchCondition::MinLength:
         case SearchCondition::MaxLength:
+        case SearchCondition::ExactAnagrams:
         case SearchCondition::MinAnagrams:
         case SearchCondition::MaxAnagrams:
         case SearchCondition::MinProbability:

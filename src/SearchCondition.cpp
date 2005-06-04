@@ -53,8 +53,10 @@ SearchCondition::asString() const
         str += stringValue;
         break;
 
+        case ExactLength:
         case MinLength:
         case MaxLength:
+        case ExactAnagrams:
         case MinAnagrams:
         case MaxAnagrams:
         str += QString::number (intValue);

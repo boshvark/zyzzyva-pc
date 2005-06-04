@@ -38,12 +38,14 @@ const QString SET_EIGHTS_FROM_SEVEN_STEMS_STRING =
 const QString PATTERN_MATCH_TYPE = "Pattern Match";
 const QString ANAGRAM_MATCH_TYPE = "Anagram Match";
 const QString SUBANAGRAM_MATCH_TYPE = "Subanagram Match";
+const QString EXACT_LENGTH_TYPE = "Exact Length";
 const QString MIN_LENGTH_TYPE = "Minimum Length";
 const QString MAX_LENGTH_TYPE = "Maximum Length";
 const QString MUST_INCLUDE_TYPE = "Must Include";
 const QString MUST_EXCLUDE_TYPE = "Must Exclude";
 const QString MUST_CONSIST_TYPE = "Must Consist of";
 const QString MUST_BELONG_TYPE = "Must Belong to";
+const QString EXACT_ANAGRAMS_TYPE = "Exact Anagrams";
 const QString MIN_ANAGRAMS_TYPE = "Minimum Anagrams";
 const QString MAX_ANAGRAMS_TYPE = "Maximum Anagrams";
 const QString MIN_PROBABILITY_TYPE = "Minimum Probability";
@@ -215,6 +217,8 @@ Auxil::stringToSearchType (const QString& string)
         return SearchCondition::AnagramMatch;
     else if (string == SUBANAGRAM_MATCH_TYPE)
         return SearchCondition::SubanagramMatch;
+    else if (string == EXACT_LENGTH_TYPE)
+        return SearchCondition::ExactLength;
     else if (string == MIN_LENGTH_TYPE)
         return SearchCondition::MinLength;
     else if (string == MAX_LENGTH_TYPE)
@@ -227,6 +231,8 @@ Auxil::stringToSearchType (const QString& string)
         return SearchCondition::MustConsist;
     else if (string == MUST_BELONG_TYPE)
         return SearchCondition::MustBelong;
+    else if (string == EXACT_ANAGRAMS_TYPE)
+        return SearchCondition::ExactAnagrams;
     else if (string == MIN_ANAGRAMS_TYPE)
         return SearchCondition::MinAnagrams;
     else if (string == MAX_ANAGRAMS_TYPE)
@@ -253,12 +259,14 @@ Auxil::searchTypeToString (SearchCondition::SearchType type)
         case SearchCondition::PatternMatch:    return PATTERN_MATCH_TYPE;
         case SearchCondition::AnagramMatch:    return ANAGRAM_MATCH_TYPE;
         case SearchCondition::SubanagramMatch: return SUBANAGRAM_MATCH_TYPE;
+        case SearchCondition::ExactLength:     return EXACT_LENGTH_TYPE;
         case SearchCondition::MinLength:       return MIN_LENGTH_TYPE;
         case SearchCondition::MaxLength:       return MAX_LENGTH_TYPE;
         case SearchCondition::MustInclude:     return MUST_INCLUDE_TYPE;
         case SearchCondition::MustExclude:     return MUST_EXCLUDE_TYPE;
         case SearchCondition::MustConsist:     return MUST_CONSIST_TYPE;
         case SearchCondition::MustBelong:      return MUST_BELONG_TYPE;
+        case SearchCondition::ExactAnagrams:   return EXACT_ANAGRAMS_TYPE;
         case SearchCondition::MinAnagrams:     return MIN_ANAGRAMS_TYPE;
         case SearchCondition::MaxAnagrams:     return MAX_ANAGRAMS_TYPE;
         case SearchCondition::MinProbability:  return MIN_PROBABILITY_TYPE;
