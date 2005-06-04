@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "WordEngine.h"
+#include "Auxil.h"
 #include "Defs.h"
 #include <qfile.h>
 #include <qregexp.h>
@@ -169,43 +170,26 @@ WordEngine::isAcceptable (const QString& word) const
 QStringList
 WordEngine::search (const SearchSpec& spec, bool allCaps) const
 {
-
-
-    // XXX XXX: Don't forget to update this!
-
-    // Allow a smart compiler to optimize by returing directly from
-    // WordGraph::search unless we need to manipulate the return list
-    //if ((!allCaps || !spec.pattern.contains (QRegExp ("[\\*\\?]"))) &&
-    //    spec.setMemberships.empty())
-    //{
-    //    return graph.search (spec);
-    //}
-
     QStringList wordList = graph.search (spec);
 
-    // XXX XXX: Don't forget to update this!
-
     // Check set membership
-    //if (!spec.setMemberships.empty()) {
-    //    QStringList::iterator it;
-    //    std::set<SearchSet>::const_iterator sit;
-    //    for (it = wordList.begin(); it != wordList.end();) {
-    //        bool match = false;
-    //        for (sit = spec.setMemberships.begin();
-    //             sit != spec.setMemberships.end();
-    //             ++sit)
-    //        {
-    //            if (isSetMember ((*it).upper(), *sit)) {
-    //                match = true;
-    //                break;
-    //            }
-    //        }
-    //        if (match)
-    //            ++it;
-    //        else
-    //            it = wordList.erase (it);
-    //    }
-    //}
+    QValueList<SearchCondition>::const_iterator it;
+    for (it = spec.conditions.begin(); it != spec.conditions.end(); ++it) {
+        if ((*it).type != SearchCondition::MustBelong)
+            continue;
+
+        SearchSet searchSet = Auxil::stringToSearchSet ((*it).stringValue);
+        if (searchSet == UnknownSearchSet)
+            continue;
+
+        QStringList::iterator wit;
+        for (wit = wordList.begin(); wit != wordList.end();) {
+            if (isSetMember ((*wit).upper(), searchSet))
+                ++wit;
+            else
+                wit = wordList.erase (wit);
+        }
+    }
 
     // Convert to all caps if necessary
     if (allCaps) {
