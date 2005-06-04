@@ -205,10 +205,11 @@ QuizEngine::prepareQuestion()
     if (singleSpecQuestion)
         answers = wordEngine->search (quizSpec.searchSpec, true);
     else {
+        SearchCondition condition;
+        condition.type = SearchCondition::AnagramMatch;
+        condition.stringValue = question;
         SearchSpec spec;
-        // XXX XXX: Don't forget to update this!
-        //spec.pattern = question;
-        //spec.type = Anagram;
+        spec.conditions << condition;
         answers = wordEngine->search (spec, true);
     }
 
