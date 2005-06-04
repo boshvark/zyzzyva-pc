@@ -91,7 +91,8 @@ SearchSpecForm::getSearchSpec() const
     spec.conjunction = true;
     QValueList<SearchConditionForm*>::const_iterator it;
     for (it = conditionForms.begin(); it != conditionForms.end(); ++it) {
-        spec.conditions << (*it)->getSearchCondition();
+        if ((*it)->isValid())
+            spec.conditions << (*it)->getSearchCondition();
     }
     return spec;
 }

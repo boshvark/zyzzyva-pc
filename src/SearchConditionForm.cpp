@@ -192,6 +192,45 @@ SearchConditionForm::getSearchCondition() const
 }
 
 //---------------------------------------------------------------------------
+//  isValid
+//
+//! Determine whether the input in the form is valid.
+//
+//! @return true if valid, false otherwise 
+//---------------------------------------------------------------------------
+bool
+SearchConditionForm::isValid() const
+{
+    SearchCondition::SearchType type = Auxil::stringToSearchType
+        (typeCbox->currentText());
+
+    switch (type) {
+        case SearchCondition::PatternMatch:
+        case SearchCondition::AnagramMatch:
+        case SearchCondition::SubanagramMatch:
+        case SearchCondition::MustInclude:
+        case SearchCondition::MustExclude:
+        return !paramLine->text().isEmpty();
+
+        case SearchCondition::ExactLength:
+        case SearchCondition::MinLength:
+        case SearchCondition::MaxLength:
+        case SearchCondition::ExactAnagrams:
+        case SearchCondition::MinAnagrams:
+        case SearchCondition::MaxAnagrams:
+        return paramSbox->value() > 0;
+
+        case SearchCondition::MustConsist:
+        return !paramConsistLine->text().isEmpty();
+
+        case SearchCondition::UnknownSearchType:
+        return false;
+
+        default: return true;
+    }
+}
+
+//---------------------------------------------------------------------------
 //  typeChanged
 //
 //! Called when an option in the type dropdown box is activated.

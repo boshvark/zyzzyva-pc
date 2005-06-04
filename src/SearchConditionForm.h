@@ -43,6 +43,7 @@ class SearchConditionForm : public QFrame
                          0);
 
     SearchCondition getSearchCondition() const;
+    bool isValid() const;
 
     public slots:
     void typeChanged (const QString&);
