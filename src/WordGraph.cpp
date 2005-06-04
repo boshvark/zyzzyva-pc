@@ -147,17 +147,8 @@ WordGraph::search (const SearchSpec& spec) const
         return wordList;
 
     QValueList<SearchCondition> matchConditions;
-    QValueList<SearchCondition> consistConditions;
-    int minLength = 0;
     int maxLength = MAX_WORD_LEN;
-    int minAnagrams = 0;
-    int maxAnagrams = 10000;
-    int minProbability = 0;
-    int maxProbability = 10000;
-    QString includeLetters;
     QString excludeLetters;
-
-    // XXX: Detect conflicts, e.g. min length 6, max length 4
 
     QValueList<SearchCondition>::const_iterator it;
     for (it = spec.conditions.begin(); it != spec.conditions.end(); ++it) {
@@ -170,53 +161,13 @@ WordGraph::search (const SearchSpec& spec) const
             matchConditions << condition; 
             break;
 
-            case SearchCondition::MustConsist:
-            consistConditions << condition;
-            break;
-
             case SearchCondition::ExactLength:
-            minLength = maxLength = condition.intValue;
-            break;
-
-            case SearchCondition::MinLength:
-            if (condition.intValue > minLength)
-                minLength = condition.intValue;
+            maxLength = condition.intValue;
             break;
 
             case SearchCondition::MaxLength:
             if (condition.intValue < maxLength)
                 maxLength = condition.intValue;
-            break;
-
-            case SearchCondition::ExactAnagrams:
-            minAnagrams = maxAnagrams = condition.intValue;
-            break;
-
-            case SearchCondition::MinAnagrams:
-            if (condition.intValue > minAnagrams)
-                minAnagrams = condition.intValue;
-            break;
-
-            case SearchCondition::MaxAnagrams:
-            if (condition.intValue < maxAnagrams)
-                maxAnagrams = condition.intValue;
-            break;
-
-            case SearchCondition::MinProbability:
-            if (condition.intValue > minProbability)
-                minProbability = condition.intValue;
-            break;
-
-            case SearchCondition::MaxProbability:
-            if (condition.intValue < maxProbability)
-                maxProbability = condition.intValue;
-            break;
-
-            // XXX: This should really test the current set of include letters
-            // and only add more letters from the stringValue that aren't
-            // already present
-            case SearchCondition::MustInclude:
-            includeLetters += condition.stringValue;
             break;
 
             case SearchCondition::MustExclude:
@@ -242,10 +193,8 @@ WordGraph::search (const SearchSpec& spec) const
     set<QString>::iterator sit;
     int conditionNum = 0;
 
-    // Search for each condition separately, then take the conjunction or
-    // disjunction of the result sets.  This is definitely *not* the most
-    // efficient way to search, but I want to get something working before
-    // trying to refine it.
+    // Search for each condition separately, and take the conjunction or
+    // disjunction of the result sets
     for (it = matchConditions.begin(); it != matchConditions.end(); ++it) {
         SearchCondition condition = *it;
         QString unmatched = condition.stringValue;
@@ -287,13 +236,13 @@ WordGraph::search (const SearchSpec& spec) const
                 QString origWord = word;
                 QString origUnmatched = unmatched;
 
-                // Get the next character in the Pattern match.  Allow a wildcard
-                // to match the empty string.
+                // Get the next character in the Pattern match.  Allow a
+                // wildcard to match the empty string.
                 if (condition.type == SearchCondition::PatternMatch) {
                     c = unmatched.at (0);
                     if (c == "*")
-                        states.push (TraversalState (node, word, unmatched.right (
-                                    unmatched.length() - 1)));
+                        states.push (TraversalState (node, word,
+                            unmatched.right (unmatched.length() - 1)));
                 }
 
                 // Traverse next nodes, looking for matches
@@ -307,7 +256,8 @@ WordGraph::search (const SearchSpec& spec) const
                     // Special processing for Pattern match
                     if (condition.type == SearchCondition::PatternMatch) {
 
-                        // A node matches wildcard characters or its own letter
+                        // A node matches wildcard characters or its own
+                        // letter
                         if (c == node->letter)
                             word += node->letter;
                         else if ((c == "*") || (c == "?"))
@@ -315,41 +265,41 @@ WordGraph::search (const SearchSpec& spec) const
                         else
                             continue;
 
-                        // If this node matches, push its child on the stack to be
-                        // traversed later
+                        // If this node matches, push its child on the stack
+                        // to be traversed later
                         if (node->child) {
                             if (c == "*")
-                                states.push (TraversalState (node->child, word,
+                                states.push (TraversalState (node->child,
+                                                             word,
                                                              unmatched));
 
                             states.push (TraversalState (node->child, word,
-                                                         unmatched.right (
-                                                         unmatched.length() - 1)));
+                                unmatched.right (unmatched.length() - 1)));
                         }
 
-                        // If end of word and end of pattern, put the word in the
-                        // list
+                        // If end of word and end of pattern, put the word in
+                        // the list
                         QString wordUpper = word.upper();
                         if (node->eow &&
                             ((unmatched.length() == 1) ||
                             ((unmatched.length() == 2) &&
                              (QChar (unmatched.at (1)) == "*"))) &&
-                            // XXX: restore this test
-                            //matchesSpec (wordUpper, spec) &&
+                            matchesSpec (wordUpper, spec) &&
                             !wordSet.count (wordUpper))
                         {
                             wordSet.insert (wordUpper);
-                            //wordList << word;
                         }
                     }
 
                     // Special processing for Anagram or Subanagram match
-                    else if ((condition.type == SearchCondition::AnagramMatch) ||
-                             (condition.type == SearchCondition::SubanagramMatch))
+                    else if
+                        ((condition.type == SearchCondition::AnagramMatch) ||
+                         (condition.type == SearchCondition::SubanagramMatch))
                     {
 
-                        // Try to match the current letter against the pattern.
-                        // If the letter doesn't match exactly, match a ? char.
+                        // Try to match the current letter against the
+                        // pattern.  If the letter doesn't match exactly,
+                        // match a ? char.
                         int index = unmatched.find (node->letter);
                         bool wildcardMatch = false;
                         if (index < 0) {
@@ -359,7 +309,8 @@ WordGraph::search (const SearchSpec& spec) const
                         bool match = (index >= 0);
 
                         // If this letter matched or a wildcard was specified,
-                        // keep traversing after possibly adding the current word.
+                        // keep traversing after possibly adding the current
+                        // word.
                         if (match || wildcard) {
                             word += (match && !wildcardMatch) ? node->letter
                                 : node->letter.lower();
@@ -367,24 +318,23 @@ WordGraph::search (const SearchSpec& spec) const
                             if (match)
                                 unmatched.replace (index, 1, "");
 
-                            if (node->child && (wildcard || !unmatched.isEmpty()))
-                                states.push (TraversalState (node->child, word,
+                            if (node->child &&
+                                (wildcard || !unmatched.isEmpty()))
+                            {
+                                states.push (TraversalState (node->child,
+                                                             word,
                                                              unmatched));
+                            }
 
                             QString wordUpper = word.upper();
                             if (node->eow &&
                                 ((condition.type ==
                                   SearchCondition::SubanagramMatch) ||
-                                  unmatched.isEmpty())
-                                && !wordSet.count (wordUpper)
-
-                                // XXX: restore this test
-                                // &&
-                                //matchesSpec (word.upper(), spec)
-                                    )
+                                  unmatched.isEmpty()) &&
+                                  matchesSpec (wordUpper, spec) &&
+                                  !wordSet.count (wordUpper))
                             {
                                 wordSet.insert (wordUpper);
-                                //wordList << word;
                             }
                         }
                     }
@@ -402,7 +352,7 @@ WordGraph::search (const SearchSpec& spec) const
             }
         }
 
-
+        // Take conjunction or disjunction with final result set
         if (!conditionNum) {
             finalWordSet = wordSet;
         }
@@ -414,6 +364,8 @@ WordGraph::search (const SearchSpec& spec) const
                     conjunctionSet.insert (*sit);
             }
             finalWordSet = conjunctionSet;
+            if (conjunctionSet.empty())
+                return wordList;
         }
 
         else {
@@ -425,8 +377,9 @@ WordGraph::search (const SearchSpec& spec) const
         ++conditionNum;
     }
 
+    // Transform word set into word list and return it
     for (sit = finalWordSet.begin(); sit != finalWordSet.end(); ++sit) {
-        wordList << *it;
+        wordList << *sit;
     }
 
     return wordList;
@@ -495,38 +448,63 @@ WordGraph::print() const
 //
 //! Determine whether a word matches a search specification.  Only the
 //! following attributes are checked: Include Letters, Consist Letters/Pct,
-//! Min Length, Set Membership.  All other attributes are assumed to have been
-//! checked in the course of finding the word to be checked.
+//! Min Length, Min Anagrams, Max Anagrams, Min Probability, Max Probability.
+//! All other attributes are assumed to have been checked in the course of
+//! finding the word to be checked.
 //---------------------------------------------------------------------------
 bool
 WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
 {
-    // XXX XXX: Don't forget to update this!
-    // Check Min Length
-//    if (int (word.length()) < spec.minLength)
-//        return false;
-//
-//    // Check Include Letters
-//    QString tmpWord = word;
-//    int includeLen = spec.includeLetters.length();
-//    for (int i = 0; i < includeLen; ++i) {
-//        int index = tmpWord.find (spec.includeLetters.at (i));
-//        if (index < 0)
-//            return false;
-//        tmpWord.replace (index, 1, "");
-//    }
-//
-//    // Check Consist Letters and Consist Percent
-//    if (spec.consistPercent > 0) {
-//        int wordLen = word.length();
-//        int consist = 0;
-//        for (int i = 0; i < wordLen; ++i) {
-//            if (spec.consistLetters.contains (word.at (i)))
-//                ++consist;
-//        }
-//        if (((consist * 100) / wordLen) < spec.consistPercent)
-//            return false;
-//    }
+    QValueList<SearchCondition>::const_iterator it;
+    for (it = spec.conditions.begin(); it != spec.conditions.end(); ++it) {
+        SearchCondition condition = *it;
+
+        switch (condition.type) {
+            case SearchCondition::ExactLength:
+            if (word.length() != condition.intValue)
+                return false;
+            break;
+
+            case SearchCondition::MinLength:
+            if (word.length() < condition.intValue)
+                return false;
+            break;
+
+            case SearchCondition::MustInclude: {
+                QString tmpWord = word;
+                int includeLen = condition.stringValue.length();
+                for (int i = 0; i < includeLen; ++i) {
+                    int index = tmpWord.find (condition.stringValue.at (i));
+                    if (index < 0)
+                        return false;
+                    tmpWord.replace (index, 1, "");
+                }
+            }
+            break;
+
+            case SearchCondition::MustConsist:
+            if (condition.intValue > 0) {
+                int wordLen = word.length();
+                int consist = 0;
+                for (int i = 0; i < wordLen; ++i) {
+                    if (condition.stringValue.contains (word.at (i)))
+                        ++consist;
+                }
+                if (((consist * 100) / wordLen) < condition.intValue)
+                    return false;
+            }
+            break;
+
+            // XXX: Implement these!
+            //case SearchCondition::ExactAnagrams:
+            //case SearchCondition::MinAnagrams:
+            //case SearchCondition::MaxAnagrams:
+            //case SearchCondition::MinProbability:
+            //case SearchCondition::MaxProbability:
+
+            default: break;
+        }
+    }
 
     return true;
 }
