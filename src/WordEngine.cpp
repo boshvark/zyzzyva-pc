@@ -173,6 +173,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     QStringList wordList = graph.search (spec);
 
     // Check set membership
+    // XXX: Disjunction is broken when it comes to set membership!
     QValueList<SearchCondition>::const_iterator it;
     for (it = spec.conditions.begin(); it != spec.conditions.end(); ++it) {
         if ((*it).type != SearchCondition::MustBelong)
