@@ -55,8 +55,6 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
 
     specForm = new SearchSpecForm (this, "specForm");
     Q_CHECK_PTR (specForm);
-    connect (specForm, SIGNAL (patternChanged (const QString&)),
-             SLOT (inputChanged (const QString&)));
     mainVlay->addWidget (specForm);
 
     alphagramCbox = new QCheckBox ("Use individual &alphagrams as questions",
@@ -115,7 +113,6 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
     Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
-    okButton->setEnabled (false);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (okButton);
 
@@ -230,19 +227,6 @@ NewQuizDialog::alphagramsToggled (bool on)
     randomCbox->setEnabled (on);
     if (!on)
         randomCbox->setChecked (false);
-}
-
-//---------------------------------------------------------------------------
-//  inputChanged
-//
-//! Called when the text in the input line changes.
-//
-//! @param text the new text
-//---------------------------------------------------------------------------
-void
-NewQuizDialog::inputChanged (const QString& text)
-{
-    okButton->setEnabled (!text.isEmpty());
 }
 
 //---------------------------------------------------------------------------

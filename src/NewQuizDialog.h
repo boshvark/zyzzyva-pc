@@ -61,7 +61,6 @@ class NewQuizDialog : public QDialog
 
   public slots:
     void alphagramsToggled (bool on);
-    void inputChanged (const QString& text);
     void timerToggled (bool on);
 
   private:
