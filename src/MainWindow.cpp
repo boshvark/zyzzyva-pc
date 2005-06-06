@@ -205,9 +205,9 @@ MainWindow::newQuizForm()
     if (code == QDialog::Accepted) {
         QuizForm* form = new QuizForm (wordEngine, tabStack, "quizForm");
         Q_CHECK_PTR (form);
+        form->newQuiz (dialog);
         form->setTileTheme (settingsDialog->getTileTheme());
         newTab (form, QUIZ_TAB_TITLE);
-        form->newQuiz (dialog);
     }
     delete dialog;
 }

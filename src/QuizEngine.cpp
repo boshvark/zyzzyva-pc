@@ -29,7 +29,8 @@
 #include <ctime>
 
 QuizEngine::QuizEngine (WordEngine* e)
-    : wordEngine (e)
+    : wordEngine (e), quizTotal (0), quizCorrect (0), quizIncorrect (0),
+    singleSpecQuestion (false), questionIndex (0)
 {
     std::time_t now = std::time (0);
     std::srand (now);
