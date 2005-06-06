@@ -47,7 +47,7 @@ class SearchSpecForm : public QFrame
     void removeConditionForm();
 
     private:
-    QRadioButton* conjunctionRadio;
+    //QRadioButton* conjunctionRadio;
     QPushButton*  moreButton;
     QPushButton*  fewerButton;
     QVBoxLayout*  conditionVlay;

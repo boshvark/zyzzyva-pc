@@ -49,7 +49,7 @@ class SearchForm : public QFrame
   private:
     WordEngine*     engine;
     SearchSpecForm* specForm;
-    QCheckBox*      lowerCaseCbox;
+    //QCheckBox*      lowerCaseCbox;
     WordListView*   resultList;
     QPushButton*    searchButton;
 };

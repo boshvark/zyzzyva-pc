@@ -61,10 +61,10 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (specForm);
     specVlay->addWidget (specForm);
 
-    lowerCaseCbox = new QCheckBox ("Use lower-case letters for wildcard "
-                                   "matches", this, "lowerCaseCbox");
-    Q_CHECK_PTR (lowerCaseCbox);
-    specVlay->addWidget (lowerCaseCbox);
+    //lowerCaseCbox = new QCheckBox ("Use lower-case letters for wildcard "
+    //                               "matches", this, "lowerCaseCbox");
+    //Q_CHECK_PTR (lowerCaseCbox);
+    //specVlay->addWidget (lowerCaseCbox);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
@@ -100,8 +100,8 @@ SearchForm::search()
 
     QApplication::setOverrideCursor (Qt::waitCursor);
     resultList->clear();
-    QStringList wordList = engine->search (specForm->getSearchSpec(),
-                                           !lowerCaseCbox->isChecked());
+    QStringList wordList = engine->search (specForm->getSearchSpec(), true);
+                                           //!lowerCaseCbox->isChecked());
     int numWords = 0;
     QStringList::iterator it;
     for (it = wordList.begin(); it != wordList.end(); ++it, ++numWords)

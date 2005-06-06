@@ -68,12 +68,12 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
           << Auxil::searchTypeToString (SearchCondition::MustInclude)
           << Auxil::searchTypeToString (SearchCondition::MustExclude)
           << Auxil::searchTypeToString (SearchCondition::MustConsist)
-          << Auxil::searchTypeToString (SearchCondition::MustBelong)
-          << Auxil::searchTypeToString (SearchCondition::ExactAnagrams)
-          << Auxil::searchTypeToString (SearchCondition::MinAnagrams)
-          << Auxil::searchTypeToString (SearchCondition::MaxAnagrams)
-          << Auxil::searchTypeToString (SearchCondition::MinProbability)
-          << Auxil::searchTypeToString (SearchCondition::MaxProbability);
+          << Auxil::searchTypeToString (SearchCondition::MustBelong);
+          //<< Auxil::searchTypeToString (SearchCondition::ExactAnagrams)
+          //<< Auxil::searchTypeToString (SearchCondition::MinAnagrams)
+          //<< Auxil::searchTypeToString (SearchCondition::MaxAnagrams)
+          //<< Auxil::searchTypeToString (SearchCondition::MinProbability)
+          //<< Auxil::searchTypeToString (SearchCondition::MaxProbability);
 
     typeCbox = new QComboBox (this, "typeCbox");
     Q_CHECK_PTR (typeCbox);
@@ -266,11 +266,11 @@ SearchConditionForm::typeChanged (const QString& string)
         paramCbox->clear();
         paramCbox->insertItem (Auxil::searchSetToString (SetHookWords));
         paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneSevens));
-        paramCbox->insertItem (Auxil::searchSetToString (SetTypeTwoSevens));
-        paramCbox->insertItem (Auxil::searchSetToString (SetTypeThreeSevens));
-        paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneEights));
-        paramCbox->insertItem (Auxil::searchSetToString
-                               (SetEightsFromSevenLetterStems));
+        //paramCbox->insertItem (Auxil::searchSetToString (SetTypeTwoSevens));
+        //paramCbox->insertItem (Auxil::searchSetToString (SetTypeThreeSevens));
+        //paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneEights));
+        //paramCbox->insertItem (Auxil::searchSetToString
+        //                       (SetEightsFromSevenLetterStems));
         paramStack->raiseWidget (paramCboxFrame);
         break;
 

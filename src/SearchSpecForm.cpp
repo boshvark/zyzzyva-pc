@@ -57,21 +57,21 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (radioFrame);
     mainVlay->addWidget (radioFrame);
 
-    QHBoxLayout* radioHlay = new QHBoxLayout (radioFrame, 0, SPACING, "radioHlay");
-    Q_CHECK_PTR (radioHlay);
+    //QHBoxLayout* radioHlay = new QHBoxLayout (radioFrame, 0, SPACING, "radioHlay");
+    //Q_CHECK_PTR (radioHlay);
 
-    conjunctionRadio = new QRadioButton ("Match all of the following",
-                                         radioFrame, "conjunctionRadio");
-    Q_CHECK_PTR (conjunctionRadio);
-    conjunctionRadio->setChecked (true);
-    radioGroup->insert (conjunctionRadio, 1);
-    radioHlay->addWidget (conjunctionRadio);
+    //conjunctionRadio = new QRadioButton ("Match all of the following",
+    //                                     radioFrame, "conjunctionRadio");
+    //Q_CHECK_PTR (conjunctionRadio);
+    //conjunctionRadio->setChecked (true);
+    //radioGroup->insert (conjunctionRadio, 1);
+    //radioHlay->addWidget (conjunctionRadio);
 
-    QRadioButton* disjunctionRadio = new QRadioButton (
-        "Match any of the following", radioFrame, "disjunctionRadio");
-    Q_CHECK_PTR (disjunctionRadio);
-    radioGroup->insert (disjunctionRadio, 1);
-    radioHlay->addWidget (disjunctionRadio);
+    //QRadioButton* disjunctionRadio = new QRadioButton (
+    //    "Match any of the following", radioFrame, "disjunctionRadio");
+    //Q_CHECK_PTR (disjunctionRadio);
+    //radioGroup->insert (disjunctionRadio, 1);
+    //radioHlay->addWidget (disjunctionRadio);
 
     QHBoxLayout* conditionHlay = new QHBoxLayout (SPACING, "conditionHlay");
     Q_CHECK_PTR (conditionHlay);
@@ -113,7 +113,8 @@ SearchSpec
 SearchSpecForm::getSearchSpec() const
 {
     SearchSpec spec;
-    spec.conjunction = conjunctionRadio->isChecked();
+    spec.conjunction = true;
+    //spec.conjunction = conjunctionRadio->isChecked();
     QValueList<SearchConditionForm*>::const_iterator it;
     for (it = conditionForms.begin(); it != conditionForms.end(); ++it) {
         if ((*it)->isValid())
