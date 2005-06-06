@@ -172,24 +172,13 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
 {
     QStringList wordList = graph.search (spec);
 
-    // Check set membership
-    // XXX: Disjunction is broken when it comes to set membership!
-    QValueList<SearchCondition>::const_iterator it;
-    for (it = spec.conditions.begin(); it != spec.conditions.end(); ++it) {
-        if ((*it).type != SearchCondition::MustBelong)
-            continue;
-
-        SearchSet searchSet = Auxil::stringToSearchSet ((*it).stringValue);
-        if (searchSet == UnknownSearchSet)
-            continue;
-
-        QStringList::iterator wit;
-        for (wit = wordList.begin(); wit != wordList.end();) {
-            if (isSetMember ((*wit).upper(), searchSet))
-                ++wit;
-            else
-                wit = wordList.erase (wit);
-        }
+    // Check special conditions
+    QStringList::iterator wit;
+    for (wit = wordList.begin(); wit != wordList.end();) {
+        if (matchesConditions (*wit, spec.conditions))
+            ++wit;
+        else
+            wit = wordList.erase (wit);
     }
 
     // Convert to all caps if necessary
@@ -276,6 +265,57 @@ WordEngine::getDefinition (const QString& word) const
 }
 
 //---------------------------------------------------------------------------
+//  matchesConditions
+//
+//! Test whether a word matches certain conditions.  Not all conditions in the
+//! list are tested.  Only set membership and number of anagrams are currently
+//! tested.
+//
+//! @param word the word to be tested
+//! @param conditions the list of conditions to test
+//! @return true if the word matches all special conditions, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::matchesConditions (const QString& word, const
+                               QValueList<SearchCondition>& conditions) const
+{
+    QValueList<SearchCondition>::const_iterator it;
+    for (it = conditions.begin(); it != conditions.end(); ++it) {
+
+        switch ((*it).type) {
+
+            case SearchCondition::MustBelong: {
+                SearchSet searchSet = Auxil::stringToSearchSet
+                    ((*it).stringValue);
+                if (searchSet == UnknownSearchSet)
+                    continue;
+                if (!isSetMember (word.upper(), searchSet))
+                    return false;
+            }
+
+            case SearchCondition::ExactAnagrams:
+            if (numAnagrams (word) != (*it).intValue)
+                return false;
+            break;
+
+            case SearchCondition::MinAnagrams:
+            if (numAnagrams (word) < (*it).intValue)
+                return false;
+            break;
+
+            case SearchCondition::MaxAnagrams:
+            if (numAnagrams (word) > (*it).intValue)
+                return false;
+            break;
+
+            default: break;
+        }
+    }
+
+    return true;
+}
+
+//---------------------------------------------------------------------------
 //  isSetMember
 //
 //! Determine whether a word is a member of a set.  Assumes the word has
@@ -318,4 +358,23 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 
         default: return false;
     }
+}
+
+//---------------------------------------------------------------------------
+//  numAnagrams
+//
+//! Determine the number of valid anagrams of a word.
+//
+//! @param word the word
+//! @return the number of valid anagrams
+//---------------------------------------------------------------------------
+int
+WordEngine::numAnagrams (const QString& word) const
+{
+    SearchSpec spec;
+    SearchCondition condition;
+    condition.type = SearchCondition::AnagramMatch;
+    condition.stringValue = word;
+    spec.conditions << condition;
+    return search (spec, true).size();
 }

@@ -68,10 +68,10 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
           << Auxil::searchTypeToString (SearchCondition::MustInclude)
           << Auxil::searchTypeToString (SearchCondition::MustExclude)
           << Auxil::searchTypeToString (SearchCondition::MustConsist)
-          << Auxil::searchTypeToString (SearchCondition::MustBelong);
-          //<< Auxil::searchTypeToString (SearchCondition::ExactAnagrams)
-          //<< Auxil::searchTypeToString (SearchCondition::MinAnagrams)
-          //<< Auxil::searchTypeToString (SearchCondition::MaxAnagrams)
+          << Auxil::searchTypeToString (SearchCondition::MustBelong)
+          << Auxil::searchTypeToString (SearchCondition::ExactAnagrams)
+          << Auxil::searchTypeToString (SearchCondition::MinAnagrams)
+          << Auxil::searchTypeToString (SearchCondition::MaxAnagrams);
           //<< Auxil::searchTypeToString (SearchCondition::MinProbability)
           //<< Auxil::searchTypeToString (SearchCondition::MaxProbability);
 
