@@ -95,6 +95,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     paramLine = new QLineEdit (paramLineFrame, "paramLine");
     Q_CHECK_PTR (paramLine);
     paramLine->setValidator (patternValidator);
+    connect (paramLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
     paramLineHlay->addWidget (paramLine);
     paramStack->addWidget (paramLineFrame);
 
@@ -136,6 +137,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     paramConsistLine = new QLineEdit (paramConsistFrame, "paramConsistLine");
     Q_CHECK_PTR (paramConsistLine);
     paramConsistLine->setValidator (patternValidator);
+    connect (paramConsistLine, SIGNAL (returnPressed()),
+             SIGNAL (returnPressed()));
     paramConsistHlay->addWidget (paramConsistLine);
     paramStack->addWidget (paramConsistFrame);
 }

@@ -174,6 +174,7 @@ SearchSpecForm::addConditionForms()
     for (int i = 0; i < MAX_CONDITIONS; ++i) {
         SearchConditionForm* form = new SearchConditionForm (this, "form");
         Q_CHECK_PTR (form);
+        connect (form, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
         conditionVlay->addWidget (form);
         conditionForms << form;
         if (i)

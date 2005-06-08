@@ -45,6 +45,9 @@ class SearchConditionForm : public QFrame
     SearchCondition getSearchCondition() const;
     bool isValid() const;
 
+    signals:
+    void returnPressed();
+
     public slots:
     void typeChanged (const QString&);
     void reset();
