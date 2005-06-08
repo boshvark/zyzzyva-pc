@@ -250,7 +250,7 @@ QuizForm::responseEntered()
 
 
 //---------------------------------------------------------------------------
-//  newQuizClicked
+//  newQuiz
 //
 //! Start a new quiz based on the information in a New Quiz dialog.
 //! XXX: Pass a QuizSpec instead of NewQuizDialog here.
