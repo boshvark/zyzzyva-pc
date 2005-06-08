@@ -36,6 +36,7 @@ ImageItem::ImageItem (const QImage& image, QCanvas* canvas)
     : QCanvasRectangle (canvas)
 {
     pixmap.convertFromImage (image);
+    setSize (pixmap.width(), pixmap.height());
 }
 
 //---------------------------------------------------------------------------
@@ -49,6 +50,7 @@ ImageItem::ImageItem (const QImage& image, QCanvas* canvas)
 ImageItem::ImageItem (const QPixmap& p, QCanvas* canvas)
     : QCanvasRectangle (canvas), pixmap (p)
 {
+    setSize (pixmap.width(), pixmap.height());
 }
 
 //---------------------------------------------------------------------------
