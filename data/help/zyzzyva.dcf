@@ -27,17 +27,15 @@
     </section>
     <section ref="search.html" title="Searching for Words">
       <keyword ref="search.html">search</keyword>
-      <section ref="search.html#match-types" title="Match Types">
-        <section ref="search.html#pattern-match" title="Pattern Match" />
-        <section ref="search.html#anagram-match" title="Anagram Match" />
-        <section ref="search.html#subanagram-match" title="Subanagram Match" />
-      </section>
-      <section ref="search.html#min-max-length"
-               title="Minimum and Maximum Length" />
-      <section ref="search.html#include-exclude-letters"
-               title="Including and Excluding Letters" />
-      <section ref="search.html#consist-letters" title="Letter Frequency" />
-      <section ref="search.html#other-options" title="Other Options" />
+      <section ref="search.html#pattern-match" title="Pattern Match" />
+      <section ref="search.html#anagram-match" title="Anagram Match" />
+      <section ref="search.html#subanagram-match" title="Subanagram Match" />
+      <section ref="search.html#word-length" title="Word Length" />
+      <section ref="search.html#must-include" title="Must Include" />
+      <section ref="search.html#must-exclude" title="Must Exclude" />
+      <section ref="search.html#must-consist" title="Must Consist Of" />
+      <section ref="search.html#must-belong" title="Must Belong To" />
+      <section ref="search.html#num-anagrams" title="Number of Anagrams" />
     </section>
     <section ref="quiz.html" title="Quizzes">
       <keyword ref="quiz.html">quiz</keyword>

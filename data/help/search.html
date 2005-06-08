@@ -6,31 +6,32 @@
 <body>
   <h1>Searching for Words</h1>
 
-  <p>Choose <tt>File-&gt;New Search</tt> from the main menu to
-  create a new Search tab.
-  A Search tab can be used to find all acceptable words that match
-  certain criteria.  The criteria are specified in the top part of the Search
-  tab, and the resulting list of words is displayed in the bottom area.  Click
-  the <i>Search</i> button to perform a search, and click the <i>Reset</i>
-  button to reset the values in the search specification area.</p>
+  <p>Choose <tt>File-&gt;New Search</tt> from the main menu to create a new
+  Search tab.  A Search tab can be used to find all acceptable words that
+  match certain conditions.  The conditions are specified in the top part of
+  the Search tab, and the resulting list of words is displayed in the bottom
+  area.  Initially only a single search condition is displayed.  Add more
+  conditions by clicking the <i>More</i> button.  Remove conditions from the
+  bottom of the list by clicking the <i>Fewer</i> button.  When the search
+  conditions are correct, click the <i>Search</i> button to perform a
+  search.</p>
 
-  <a name="match-types">
-  <h2>Match Types</h2>
+  <a name="search-conditions">
+  <h2>Search Conditions</h2>
 
-  <p>The main search criterion is a pattern of letters to be matched.  This is
-  specified in the <i>Match</i> section.  A match can be specified as
-  <i>Pattern</i>, <i>Anagram</i>, or <i>Subanagram</i>.</p>
+  <p>The available search conditions are described below.  Any number of each
+  type of condition can be specified in a single search.</p>
 
   <a name="pattern-match">
   <h3>Pattern Match</h3>
 
-  <p>The <i>Pattern</i> match type means that the search pattern must be
+  <p>The <i>Pattern Match</i> condition means that the search pattern must be
   matched exactly, in the same order the letters are specified.  Special
   wildcard characters can be used to match any letters: the <tt>?</tt>
   character means "match any single letter" and the <tt>*</tt> character means
   "match any number of letters".  The <tt>*</tt> character also matches
   nothingness.  Multiple wildcard characters can be used in a single pattern.
-  Here are some examples of <i>Pattern</i> matches:</p>
+  Here are some examples of <i>Pattern Match</i> conditions:</p>
 
   <table width="100%">
   <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
@@ -49,12 +50,12 @@
   <a name="anagram-match">
   <h3>Anagram Match</h3>
 
-  <p>The <i>Anagram</i> match type means that the letters in the search
+  <p>The <i>Anagram Match</i> condition means that the letters in the search
   pattern can be matched in any order.  All the letters must be matched
   exactly the number of times they appear in the match pattern.  The same
   special wildcard characters can be used as described in the <a
   href="#pattern-match">Pattern Match</a> section.  Here are some examples of
-  <i>Anagram</i> matches:</p>
+  <i>Anagram Match</i> conditions:</p>
 
   <table width="100%">
   <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
@@ -65,17 +66,17 @@
   <tr><td><tt>*JBX</tt></td><td><tt>JAMBEAUX</tt></td></tr>
   </table>
 
-  <p>Note that with an <i>Anagram</i> match, using more than one <tt>*</tt>
-  character has the same effect as using just one.</p>
+  <p>Note that with an <i>Anagram Match</i> condition, using more than one
+  <tt>*</tt> character has the same effect as using just one.</p>
 
   <a name="subanagram-match">
   <h3>Subanagram Match</h3>
 
-  <p>The <i>Subanagram</i> match type means that the letters in the search
-  pattern can be matched in any order, and not all letters must be used in
-  each matching word.  The same special wildcard characters can be used as
+  <p>The <i>Subanagram Match</i> condition means that the letters in the
+  search pattern can be matched in any order, and not all letters must be used
+  in each matching word.  The same special wildcard characters can be used as
   described in the <a href="#pattern-match">Pattern Match</a> section.  Here
-  are some examples of <i>Subanagram</i> matches:</p>
+  are some examples of <i>Subanagram Match</i> conditions:</p>
 
   <table width="100%">
   <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
@@ -83,54 +84,95 @@
   <tr><td><tt>LX?</tt></td><td><tt>AL, AX, EL, EX, LA, LI, LO, OX, XI, XU, LAX, LEX, LOX, LUX</tt></td></tr>
   </table>
 
-  <p>Note that with an <i>Subanagram</i> match, using a <tt>*</tt>
+  <p>Note that with an <i>Subanagram Match</i> condition, using a <tt>*</tt>
   character will cause the pattern to match every acceptable word.</p>
 
-  <a name="min-max-length">
-  <h2>Minimum and Maximum Length</h2>
+  <a name="word-length">
+  <h2>Word Length</h2>
 
   <p>A minimum and maximum length can be specified for the results of a
-  search.  To change these values, adjust the numbers in the <i>Min Length</i>
-  and <i>Max Length</i> boxes.  For example, if the minimum length is 4 and
-  the maximum length is 6, then the search will only return results that are
-  between four and six letters long.  The minimum length cannot be greater
-  than the maximum length.</p>
+  search.  For example, if the minimum length is 4 and the maximum length is
+  6, then the search will only return results that are between four and six
+  letters long.  To specify minimum or maximum length, choose the <i>Minimum
+  Length</i> or <i>Maximum Length</i> conditions, respectively.  An exact
+  length can also be specified by choosing the <i>Exact Length</i>
+  condition.</p>
 
-  <a name="include-exclude-letters">
-  <h2>Including and Excluding Letters</h2>
+  <a name="must-include">
+  <h2>Must Include</h2>
 
-  <p>The input box labeled <i>Must Include</i> specifies letters that must
+  <p>The <i>Must Include</i> condition specifies letters that must
   be included in each word in the search results.  This is most useful if you
-  want to specify a <i>Pattern</i> match with wildcard characters, and want
-  the wildcards to match certain letters in an unspecified order.</p>
+  want to specify a <i>Pattern Match</i> condition with wildcard characters,
+  and want the wildcards to match certain letters in an unspecified order.</p>
 
   <p>For example, to find all 7- and 8-letter words beginning with
   <tt>OVER</tt> and containing the letters <tt>A</tt>, <tt>L</tt>, and
-  <tt>T</tt> in any order, do the following.  Specify a <i>Pattern</i> match
-  of <tt>OVER*</tt> with minimum length 7, maximum length 8, and <i>Must
-  Include</i> <tt>ALT</tt>.  This search will find the words
-  <tt>OVERLATE</tt>, <tt>OVERSALT</tt>, and <tt>OVERTALK</tt>.</p>
+  <tt>T</tt> in any order, do the following.  Specify a <i>Pattern Match</i>
+  condition of <tt>OVER*</tt>, a <i>Minimum Length</i> condition of 7, a
+  <i>Maximum Length</i> condition of 8, and a <i>Must Include</i> condition of
+  <tt>ALT</tt>.  This search will find the words <tt>OVERLATE</tt>,
+  <tt>OVERSALT</tt>, and <tt>OVERTALK</tt>.</p>
 
-  <p>If a letter appears more than once in the <i>Must Include</i> box, the
-  letter must appear at least that many times in each word in the search
+  <p>If a letter appears multiple times in a <i>Must Include</i> condition,
+  the letter must appear at least that many times in each word in the search
   results.</p>
 
-  <p>The input box labeled <i>Must Exclude</i> specifies letters that must
-  not be included in the search results.  This is most useful for generating
-  special word lists, such as the list of words containing the letter Q but
-  not the letter U.  To find such words, specify a <i>Pattern</i> match of
-  <tt>*</tt> with <i>Must Include</i> <tt>Q</tt> and <i>Must Exclude</i>
-  <tt>U</tt>.  This search will find the 21 words containing Q but not U.</p>
+  <a name="must-exclude">
+  <h2>Must Exclude</h2>
 
-  <a name="consist-letters">
-  <h2>Letter Frequency</h2>
+  <p>The <i>Must Exclude</i> condition specifies letters that must not be
+  included in the search results.  This is most useful for generating special
+  word lists, such as the list of words containing the letter Q but not the
+  letter U.  To find such words, specify a <i>Must Include</i> condition of
+  <tt>Q</tt> and a <i>Must Exclude</i> condition of <tt>U</tt>.  This search
+  will find all the words containing Q but not U.</p>
 
-  <p>The area labeled <i>Must Consist of</i> specifies letters that must occur
+  <a name="must-consist">
+  <h2>Must Consist Of</h2>
+
+  <p>The <i>Must Consist Of</i> condition specifies letters that must occur
   with a certain minimum frequency.  This is useful for generating special
   word lists, such as the list of words containing at least 70% vowels.  To
-  find such words, set the value in the percentage box to <tt>70</tt>, and put
-  <tt>AEIOU</tt> in the input box.</p>
+  find such words, specify a <i>Must Consist Of</i> condition, putting
+  <tt>70</tt> in the numeric area and <tt>AEIOU</tt> in the input box.</p>
 
+  <a name="must-belong">
+  <h2>Must Belong To</h2>
+
+  <p>The <i>Must Belong To</i> condition specifies special sets that each word
+  must belong to.  Currently there are a few sets provided:</p>
+
+  <p><b>Hook words.</b> The <i>Hook Words</i> set consists of all words that
+  can form another valid word by removing the first or last letter.  For
+  example, <tt>SHILL</tt> is a hook word, because the word <tt>HILL</tt> can
+  be formed by removing its first letter.</p>
+
+  <p><b>Type I Sevens.</b> The <i>Type I Sevens</i> set consists of 7-letter
+  words containing a 6-letter bingo stem in the top 100 stems.  For example,
+  <tt>AIRIEST</tt> is a Type I Seven because it contains the bingo stem
+  <tt>SATIRE</tt>, which is in the top 100 stems.</p>
+
+  <p><b>Type I Eights.</b> The <i>Type I Eights</i> set consists of 8-letter
+  words containing a 6-letter bingo stem in the top 100 stems.  For example,
+  <tt>SEXTARII</tt> is a Type I Eight because it contains the bingo stem
+  <tt>SATIRE</tt>, which is in the top 100 stems.</p>
+
+  <a name="num-anagrams">
+  <h2>Number of Anagrams</h2>
+
+  <p>A minimum and maximum number of anagrams can be specified for the results
+  of a search.  For example, if the minimum length is 2 and the maximum is 4,
+  then the search will only return words that have between two and four
+  anagrams.  A word is considered to be an anagram of itself, so every valid
+  word has at least one anagram.</p>
+
+  <p>To specify a minimum or maximum number of anagrams, choose the <i>Minimum
+  Anagrams</i> or <i>Maximum Anagrams</i> conditions, respectively.  An exact
+  number of anagrams can also be specified with the <i>Exact Anagrams</i>
+  condition.</p>
+
+  <!--
   <a name="other-options">
   <h2>Other Options</h2>
 
@@ -141,6 +183,7 @@
   <tt>nEXT</tt>, <tt>sEXT</tt>, <tt>TEXt</tt>, <tt>vEXT</tt> rather than
   <tt>EXIT</tt>, <tt>NEXT</tt>, <tt>SEXT</tt>, <tt>TEXT</tt>,
   <tt>VEXT</tt>.</p>
+  -->
 
   <p>Copyright &copy; 2005 Michael W Thelen.</p>
 </body>
