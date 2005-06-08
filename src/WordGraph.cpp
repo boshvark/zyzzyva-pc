@@ -143,7 +143,7 @@ QStringList
 WordGraph::search (const SearchSpec& spec) const
 {
     QStringList wordList;
-    if (!top)
+    if (!top || spec.conditions.empty())
         return wordList;
 
     QValueList<SearchCondition> matchConditions;

@@ -36,10 +36,7 @@ class SearchSpec
     ~SearchSpec() { }
 
     QString asString() const;
-    // XXX: Implement this - detect conflicts in conditions, simplify
-    // conditions through deduction, put conditions in order of easiness to
-    // test (MinLength first, etc.)
-    //void canonicalize()
+    void optimize();
 
     bool conjunction;
     QValueList<SearchCondition> conditions;

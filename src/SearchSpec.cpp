@@ -47,3 +47,189 @@ SearchSpec::asString() const
     }
     return str;
 }
+
+//---------------------------------------------------------------------------
+//  optimize
+//
+//! Optimize the search specification for fast searches without making any
+//! semantic changes.  Detect conflicts is certain specifications (e.g.
+//! minimum length greater than maximum length), and detect constraints
+//! implicit in certain specifications (e.g. Type I Sevens must have a length
+//! of exactly 7 letters).
+//---------------------------------------------------------------------------
+void
+SearchSpec::optimize()
+{
+    QValueList<SearchCondition> newConditions;
+
+    const int MAX_ANAGRAMS = 65535;
+    QString mustInclude;
+    QString mustExclude;
+    int minLength = 0;
+    int maxLength = MAX_WORD_LEN;
+    int minAnagrams = 0;
+    int maxAnagrams = MAX_ANAGRAMS;
+
+    QValueList<SearchCondition>::iterator it;
+    for (it = conditions.begin(); it != conditions.end(); ++it) {
+
+        int intValue = (*it).intValue;
+        QString stringValue = (*it).stringValue;
+        switch ((*it).type) {
+
+            case SearchCondition::ExactLength:
+            if ((intValue < minLength) || (intValue > maxLength)) {
+                conditions.clear();
+                return;
+            }
+            minLength = maxLength = intValue;
+            break;
+
+            case SearchCondition::MinLength:
+            if (intValue > minLength)
+                minLength = intValue;
+            if ((minLength > MAX_WORD_LEN) || (minLength > maxLength)) {
+                conditions.clear();
+                return;
+            }
+            break;
+
+            case SearchCondition::MaxLength:
+            if (intValue < maxLength)
+                maxLength = intValue;
+            if ((maxLength <= 0) || (maxLength < minLength)) {
+                conditions.clear();
+                return;
+            }
+            break;
+
+            case SearchCondition::MustInclude:
+            if (!mustExclude.isEmpty()) {
+                for (int i = 0; i < stringValue.length(); ++i) {
+                    if (mustExclude.contains (stringValue.at (i))) {
+                        conditions.clear();
+                        return;
+                    }
+                }
+            }
+            mustInclude += stringValue;
+            newConditions << *it;
+            break;
+
+            case SearchCondition::MustExclude:
+            if (!mustInclude.isEmpty()) {
+                for (int i = 0; i < stringValue.length(); ++i) {
+                    if (mustInclude.contains (stringValue.at (i))) {
+                        conditions.clear();
+                        return;
+                    }
+                }
+            }
+            mustExclude += stringValue;
+            newConditions << *it;
+            break;
+
+            case SearchCondition::MustBelong: {
+                SearchSet ss = Auxil::stringToSearchSet (stringValue);
+                if (ss == UnknownSearchSet)
+                    break;
+                SearchCondition condition;
+                switch (ss) {
+                    case SetTypeOneSevens:
+                    case SetTypeTwoSevens:
+                    case SetTypeThreeSevens:
+                    condition.type = SearchCondition::ExactLength;
+                    condition.intValue = 7;
+                    conditions << condition;
+                    break;
+
+                    case SetTypeOneEights:
+                    case SetEightsFromSevenLetterStems:
+                    condition.type = SearchCondition::ExactLength;
+                    condition.intValue = 8;
+                    conditions << condition;
+                    break;
+
+                    default: break;
+                }
+
+                newConditions << *it;
+            }
+            break;
+
+            case SearchCondition::ExactAnagrams:
+            if ((intValue < minAnagrams) || (intValue > maxAnagrams)) {
+                conditions.clear();
+                return;
+            }
+            minAnagrams = maxAnagrams = intValue;
+            break;
+
+            case SearchCondition::MinAnagrams:
+            if (intValue > minAnagrams)
+                minAnagrams = intValue;
+            if (minAnagrams > maxAnagrams) {
+                conditions.clear();
+                return;
+            }
+            break;
+
+            case SearchCondition::MaxAnagrams:
+            if (intValue < maxAnagrams)
+                maxAnagrams = intValue;
+            if ((maxAnagrams <= 0) || (maxAnagrams < minAnagrams)) {
+                conditions.clear();
+                return;
+            }
+            break;
+
+            default:
+            newConditions << *it;
+            break;
+        }
+    }
+
+
+    SearchCondition condition;
+
+    // Add minimum number of anagram conditions
+    if ((minAnagrams > 0) && (minAnagrams == maxAnagrams)) {
+        condition.type = SearchCondition::ExactAnagrams;
+        condition.intValue = minAnagrams;
+        newConditions.push_front (condition);
+    }
+    else {
+        if (minAnagrams > 0) {
+            condition.type = SearchCondition::MinAnagrams;
+            condition.intValue = minAnagrams;
+            newConditions.push_front (condition);
+        }
+        if (maxAnagrams < MAX_ANAGRAMS) {
+            condition.type = SearchCondition::MaxAnagrams;
+            condition.intValue = maxAnagrams;
+            newConditions.push_front (condition);
+        }
+    }
+
+    // Add minimum number of length newConditions
+    if ((minLength > 0) && (minLength == maxLength)) {
+        condition.type = SearchCondition::ExactLength;
+        condition.intValue = minLength;
+        newConditions.push_front (condition);
+    }
+    else {
+        if (minLength > 0) {
+            condition.type = SearchCondition::MinLength;
+            condition.intValue = minLength;
+            newConditions.push_front (condition);
+        }
+        if (maxLength < MAX_WORD_LEN) {
+            condition.type = SearchCondition::MaxLength;
+            condition.intValue = maxLength;
+            newConditions.push_front (condition);
+        }
+    }
+
+    conditions = newConditions;
+}
+

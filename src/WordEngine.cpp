@@ -170,12 +170,15 @@ WordEngine::isAcceptable (const QString& word) const
 QStringList
 WordEngine::search (const SearchSpec& spec, bool allCaps) const
 {
-    QStringList wordList = graph.search (spec);
+    SearchSpec optimizedSpec = spec;
+    optimizedSpec.optimize();
+
+    QStringList wordList = graph.search (optimizedSpec);
 
     // Check special conditions
     QStringList::iterator wit;
     for (wit = wordList.begin(); wit != wordList.end();) {
-        if (matchesConditions (*wit, spec.conditions))
+        if (matchesConditions (*wit, optimizedSpec.conditions))
             ++wit;
         else
             wit = wordList.erase (wit);
