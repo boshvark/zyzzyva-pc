@@ -88,17 +88,19 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    moreButton = new QPushButton ("&Add Condition", this, "moreButton");
+    moreButton = new QPushButton ("&More", this, "moreButton");
     Q_CHECK_PTR (moreButton);
     moreButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (moreButton, SIGNAL (clicked()), SLOT (addConditionForm()));
     buttonHlay->addWidget (moreButton);
 
-    fewerButton = new QPushButton ("&Remove Condition", this, "fewerButton");
+    fewerButton = new QPushButton ("Fe&wer", this, "fewerButton");
     Q_CHECK_PTR (fewerButton);
     fewerButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (fewerButton, SIGNAL (clicked()), SLOT (removeConditionForm()));
     buttonHlay->addWidget (fewerButton);
+
+    buttonHlay->addStretch (1);
 
     fewerButton->setEnabled (false);
 }
