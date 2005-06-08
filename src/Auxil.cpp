@@ -170,9 +170,9 @@ Auxil::stringToSearchSet (const QString& string)
     else if (string == SET_TYPE_THREE_SEVENS_STRING)
         return SetTypeThreeSevens;
     else if (string == SET_TYPE_ONE_EIGHTS_STRING)
-        return SetTypeThreeSevens;
+        return SetTypeOneEights;
     else if (string == SET_EIGHTS_FROM_SEVEN_STEMS_STRING)
-        return SetTypeThreeSevens;
+        return SetEightsFromSevenLetterStems;
     else
         return UnknownSearchSet;
 }
