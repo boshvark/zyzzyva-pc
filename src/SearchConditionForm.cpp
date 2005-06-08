@@ -107,6 +107,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     Q_CHECK_PTR (paramSboxHlay);
     paramSbox = new QSpinBox (paramSboxFrame, "paramSbox");
     Q_CHECK_PTR (paramSbox);
+    paramSbox->setMinValue (0);
     paramSboxHlay->addWidget (paramSbox);
     paramStack->addWidget (paramSboxFrame);
 
@@ -130,6 +131,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     Q_CHECK_PTR (paramConsistHlay);
     paramConsistSbox = new QSpinBox (paramConsistFrame, "paramConsist");
     Q_CHECK_PTR (paramConsistSbox);
+    paramConsistSbox->setMinValue (0);
+    paramConsistSbox->setMaxValue (100);
     paramConsistHlay->addWidget (paramConsistSbox);
     QLabel* pctLabel = new QLabel ("%", paramConsistFrame, "pctLabel");
     Q_CHECK_PTR (pctLabel);
@@ -257,11 +260,20 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::ExactLength:
         case SearchCondition::MinLength:
         case SearchCondition::MaxLength:
+        paramSbox->setMaxValue (MAX_WORD_LEN);
+        paramStack->raiseWidget (paramSboxFrame);
+        break;
+
         case SearchCondition::ExactAnagrams:
         case SearchCondition::MinAnagrams:
         case SearchCondition::MaxAnagrams:
+        paramSbox->setMaxValue (100);
+        paramStack->raiseWidget (paramSboxFrame);
+        break;
+
         case SearchCondition::MinProbability:
         case SearchCondition::MaxProbability:
+        paramSbox->setMaxValue (100);
         paramStack->raiseWidget (paramSboxFrame);
         break;
 
