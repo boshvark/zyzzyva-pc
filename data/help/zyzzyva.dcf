@@ -44,5 +44,18 @@
       <section ref="quiz.html#analyze-quiz"
                title="Analyzing Your Quiz Performance" />
     </section>
+    <section ref="view.html" title="Viewing Word Variations">
+      <keyword ref="view.html">view</keyword>
+      <section ref="view.html#definition" title="Word Definition" />
+      <section ref="view.html#anagrams" title="Anagrams" />
+      <section ref="view.html#subanagrams" title="Subanagrams" />
+      <section ref="view.html#hooks" title="Hooks" />
+      <section ref="view.html#extensions" title="Extensions" />
+      <section ref="view.html#anagram-hooks" title="Anagram Hooks" />
+      <section ref="view.html#blank-anagrams" title="Blank Anagrams" />
+      <section ref="view.html#blank-matches" title="Blank Matches" />
+      <section ref="view.html#transpositions" title="Transpositions" />
+    </section>
+
   </DCF>
 </assistantconfig>
