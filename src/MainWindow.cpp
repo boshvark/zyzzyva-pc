@@ -457,9 +457,12 @@ MainWindow::readSettings (bool useGeometry)
     QString tileTheme = settingsDialog->getTileTheme();
     int count = tabStack->count();
     for (int i = 0; i < count; ++i) {
-        QuizForm* quizForm = dynamic_cast<QuizForm*> (tabStack->page (i));
-        if (quizForm)
+        ActionForm* form = static_cast<ActionForm*> (tabStack->page (i));
+        ActionForm::ActionFormType type = form->getType();
+        if (type == ActionForm::QuizFormType) {
+            QuizForm* quizForm = static_cast<QuizForm*> (form);
             quizForm->setTileTheme (tileTheme);
+        }
     }
 
     WordListViewItem::setSortByLength (settingsDialog->getSortByLength());
