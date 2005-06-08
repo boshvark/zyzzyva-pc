@@ -292,6 +292,7 @@ WordEngine::matchesConditions (const QString& word, const
                 if (!isSetMember (word.upper(), searchSet))
                     return false;
             }
+            break;
 
             case SearchCondition::ExactAnagrams:
             if (numAnagrams (word) != (*it).intValue)
