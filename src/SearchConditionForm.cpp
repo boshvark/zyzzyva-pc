@@ -271,7 +271,7 @@ SearchConditionForm::typeChanged (const QString& string)
         paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneSevens));
         //paramCbox->insertItem (Auxil::searchSetToString (SetTypeTwoSevens));
         //paramCbox->insertItem (Auxil::searchSetToString (SetTypeThreeSevens));
-        //paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneEights));
+        paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneEights));
         //paramCbox->insertItem (Auxil::searchSetToString
         //                       (SetEightsFromSevenLetterStems));
         paramStack->raiseWidget (paramCboxFrame);

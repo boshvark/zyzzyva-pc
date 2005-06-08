@@ -357,6 +357,40 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
             return false;
         }
 
+        case SetTypeOneEights: {
+            if (word.length() != 8)
+                return false;
+
+            std::map< int, std::set<QString> >::const_iterator it =
+                stemAlphagrams.find (word.length() - 2);
+            if (it == stemAlphagrams.end())
+                return false;
+
+            QString agram = alphagram (word);
+
+            // Compare the letters of the word with the letters of each
+            // alphagram, ensuring that no more than two letters in the word
+            // are missing from the alphagram.
+            const std::set<QString>& alphaset = it->second;
+            std::set<QString>::const_iterator ait;
+            for (ait = alphaset.begin(); ait != alphaset.end(); ++ait) {
+                QString setAlphagram = *ait;
+                int missing = 0;
+                int saIndex = 0;
+                for (int i = 0; i < agram.length(); ++i) {
+                    if (agram.at (i) == setAlphagram.at (saIndex))
+                        ++saIndex;
+                    else
+                        ++missing;
+                    if (missing > 2)
+                        break;
+                }
+                if (missing <= 2)
+                    return true;
+            }
+            return false;
+        }
+
         default: return false;
     }
 }
