@@ -349,13 +349,12 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 
             const std::set<QString>& alphaset = it->second;
             QString agram = alphagram (word);
+            std::set<QString>::const_iterator ait;
             for (int i = 0; i < agram.length(); ++i) {
-                if (alphaset.find (agram.left (i) +
-                                   agram.right (agram.length() - i - 1))
-                    != alphaset.end())
-                {
+                ait = alphaset.find (agram.left (i) +
+                                     agram.right (agram.length() - i - 1));
+                if (ait != alphaset.end())
                     return true;
-                }
             }
             return false;
         }
