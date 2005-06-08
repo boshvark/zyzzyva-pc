@@ -47,6 +47,7 @@ class SearchConditionForm : public QFrame
 
     public slots:
     void typeChanged (const QString&);
+    void reset();
 
     private:
     QComboBox*    typeCbox;

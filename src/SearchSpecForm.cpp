@@ -44,7 +44,7 @@ const int MAX_CONDITIONS = 8;
 //! @param f widget flags
 //---------------------------------------------------------------------------
 SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
-    : QFrame (parent, name, f)
+    : QFrame (parent, name, f), visibleForms (0)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this, 0, SPACING, "mainVlay");
     Q_CHECK_PTR (mainVlay);
@@ -82,6 +82,8 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     Q_CHECK_PTR (conditionVlay);
     conditionHlay->addLayout (conditionVlay);
 
+    addConditionForms();
+
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
@@ -98,7 +100,6 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
     connect (fewerButton, SIGNAL (clicked()), SLOT (removeConditionForm()));
     buttonHlay->addWidget (fewerButton);
 
-    addConditionForm();
     fewerButton->setEnabled (false);
 }
 
@@ -123,6 +124,9 @@ SearchSpecForm::getSearchSpec() const
     return spec;
 }
 
+
+
+
 //---------------------------------------------------------------------------
 //  addConditionForm
 //
@@ -131,14 +135,12 @@ SearchSpecForm::getSearchSpec() const
 void
 SearchSpecForm::addConditionForm()
 {
-    SearchConditionForm* form = new SearchConditionForm (this, "form");
-    Q_CHECK_PTR (form);
-    conditionVlay->addWidget (form);
-    conditionForms << form;
-    form->show();
+    conditionForms[visibleForms]->reset();
+    conditionForms[visibleForms]->show();
+    ++visibleForms;
 
     fewerButton->setEnabled (true);
-    if (conditionForms.size() == MAX_CONDITIONS)
+    if (visibleForms == MAX_CONDITIONS)
         moreButton->setEnabled (false);
 }
 
@@ -150,15 +152,34 @@ SearchSpecForm::addConditionForm()
 void
 SearchSpecForm::removeConditionForm()
 {
-    if (conditionForms.size() <= 1)
+    if (visibleForms <= 1)
         return;
 
-    SearchConditionForm* form = conditionForms.last();
-    conditionForms.pop_back();
-    conditionVlay->remove (form);
-    delete form;
+    conditionForms[visibleForms - 1]->hide();
+    --visibleForms;
 
     moreButton->setEnabled (true);
-    if (conditionForms.size() == 1)
+    if (visibleForms == 1)
         fewerButton->setEnabled (false);
+}
+
+//---------------------------------------------------------------------------
+//  addConditionForms
+//
+//! Add condition forms to the layout and hide all but one.
+//---------------------------------------------------------------------------
+void
+SearchSpecForm::addConditionForms()
+{
+    for (int i = 0; i < MAX_CONDITIONS; ++i) {
+        SearchConditionForm* form = new SearchConditionForm (this, "form");
+        Q_CHECK_PTR (form);
+        conditionVlay->addWidget (form);
+        conditionForms << form;
+        if (i)
+            form->hide();
+        else
+            form->show();
+    }
+    visibleForms = 1;
 }

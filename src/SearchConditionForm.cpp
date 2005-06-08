@@ -283,3 +283,20 @@ SearchConditionForm::typeChanged (const QString& string)
         break;
     }
 }
+
+//---------------------------------------------------------------------------
+//  reset
+//
+//! Reset the form to its original, pristine state.
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::reset()
+{
+    paramLine->setText ("");
+    paramSbox->setValue (0);
+    paramCbox->setCurrentItem (0);
+    paramConsistSbox->setValue (0);
+    paramConsistLine->setText ("");
+    typeCbox->setCurrentItem (0);
+    typeChanged (typeCbox->currentText());
+}
