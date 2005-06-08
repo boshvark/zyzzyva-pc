@@ -25,13 +25,14 @@
 #ifndef JUDGE_FORM_H
 #define JUDGE_FORM_H
 
+#include "ActionForm.h"
 #include <qtextedit.h>
 #include <qpushbutton.h>
 
 class DefinitionBox;
 class WordEngine;
 
-class JudgeForm : public QFrame
+class JudgeForm : public ActionForm
 {
   Q_OBJECT
   public:

@@ -1,9 +1,9 @@
 //---------------------------------------------------------------------------
-// SearchForm.h
+// ActionForm.h
 //
-// A form for searching for words, patterns, anagrams, etc.
+// A base class for main action forms.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,36 +22,33 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef SEARCH_FORM_H
-#define SEARCH_FORM_H
+#ifndef ACTION_FORM_H
+#define ACTION_FORM_H
 
-#include "ActionForm.h"
-#include <qcheckbox.h>
-#include <qpoint.h>
-#include <qpushbutton.h>
+#include <qframe.h>
 
-class QListViewItem;
-class SearchSpecForm;
-class WordEngine;
-class WordListView;
-
-class SearchForm : public ActionForm
+class ActionForm : public QFrame
 {
-  Q_OBJECT
-  public:
-    SearchForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-                WFlags f = 0);
+    Q_OBJECT
 
-  public slots:
-    void search();
-    void updateResultTotal (int num);
+    public:
+    enum ActionFormType {
+        UnknownFormType,
+        QuizFormType,
+        SearchFormType,
+        DefineFormType,
+        JudgeFormType
+    };
 
-  private:
-    WordEngine*     engine;
-    SearchSpecForm* specForm;
-    //QCheckBox*      lowerCaseCbox;
-    WordListView*   resultList;
-    QPushButton*    searchButton;
+    public:
+    ActionForm (ActionFormType t, QWidget* parent = 0, const char* name = 0,
+                WFlags f = 0)
+        : QFrame (parent, name, f), type (t) { }
+    virtual ~ActionForm() { }
+    virtual ActionFormType getType() const { return type; }
+
+    protected:
+    ActionFormType type;
 };
 
-#endif // SEARCH_FORM_H
+#endif // ACTION_FORM_H

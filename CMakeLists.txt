@@ -44,6 +44,7 @@ SET (SRCS
 # Header files that must be run through moc
 SET (MOCS
     src/AboutDialog.h
+    src/ActionForm.h
     src/AnalyzeQuizDialog.h
     src/DefineForm.h
     src/DefinitionBox.h

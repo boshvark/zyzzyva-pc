@@ -42,7 +42,7 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 DefineForm::DefineForm (WordEngine* e, QWidget* parent, const char* name,
                         WFlags f)
-    : QFrame (parent, name, f), engine (e)
+    : ActionForm (DefineFormType, parent, name, f), engine (e)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
                                              "mainVlay");

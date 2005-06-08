@@ -41,7 +41,7 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
                         WFlags f)
-    : QFrame (parent, name, f), engine (e)
+    : ActionForm (JudgeFormType, parent, name, f), engine (e)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
                                              "mainVlay");

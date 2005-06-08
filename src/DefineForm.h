@@ -25,13 +25,14 @@
 #ifndef DEFINE_FORM_H
 #define DEFINE_FORM_H
 
+#include "ActionForm.h"
 #include <qlineedit.h>
 #include <qpushbutton.h>
 
 class DefinitionBox;
 class WordEngine;
 
-class DefineForm : public QFrame
+class DefineForm : public ActionForm
 {
   Q_OBJECT
   public:

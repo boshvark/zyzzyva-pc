@@ -47,7 +47,7 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
                         WFlags f)
-    : QFrame (parent, name, f), engine (e)
+    : ActionForm (SearchFormType, parent, name, f), engine (e)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
                                              "mainHlay");

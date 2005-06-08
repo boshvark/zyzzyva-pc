@@ -25,6 +25,7 @@
 #ifndef QUIZ_FORM_H
 #define QUIZ_FORM_H
 
+#include "ActionForm.h"
 #include "NewQuizDialog.h"
 #include <qcanvas.h>
 #include <qimage.h>
@@ -42,7 +43,7 @@ class QuizEngine;
 class WordEngine;
 class WordListView;
 
-class QuizForm : public QFrame
+class QuizForm : public ActionForm
 {
   Q_OBJECT
   public:

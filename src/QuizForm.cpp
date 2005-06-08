@@ -58,7 +58,7 @@ const QString UNPAUSE_BUTTON = "Un&pause";
 //---------------------------------------------------------------------------
 QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
                     f)
-    : QFrame (parent, name, f), wordEngine (we),
+    : ActionForm (QuizFormType, parent, name, f), wordEngine (we),
     quizEngine (new QuizEngine (wordEngine)),
     analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
                                           "analyzeDialog", false)),
