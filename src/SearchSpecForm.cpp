@@ -118,8 +118,11 @@ SearchSpecForm::getSearchSpec() const
     SearchSpec spec;
     spec.conjunction = true;
     //spec.conjunction = conjunctionRadio->isChecked();
+    int i = 0;
     QValueList<SearchConditionForm*>::const_iterator it;
-    for (it = conditionForms.begin(); it != conditionForms.end(); ++it) {
+    for (it = conditionForms.begin();
+         (i < visibleForms) && (it != conditionForms.end()); ++it, ++i)
+    {
         if ((*it)->isValid())
             spec.conditions << (*it)->getSearchCondition();
     }
