@@ -129,6 +129,36 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
 }
 
 //---------------------------------------------------------------------------
+//  getQuizSpec
+//
+//! Get a QuizSpec corresponding to the state of the form.
+//
+//! @return the quiz spec
+//---------------------------------------------------------------------------
+QuizSpec
+NewQuizDialog::getQuizSpec() const
+{
+    QuizSpec spec;
+    spec.type = QuizAnagrams;
+    spec.searchSpec = specForm->getSearchSpec();
+    spec.useList = useListCbox->isChecked();
+    spec.randomOrder = randomCbox->isChecked();
+
+    QuizTimerSpec timerSpec;
+    if (timerCbox->isChecked()) {
+        timerSpec.duration = timerSbox->value();
+        QString timerType = timerCombo->currentText();
+        if (timerType == TIMER_PER_QUESTION)
+            timerSpec.type = PerQuestion;
+        else if (timerType == TIMER_PER_RESPONSE)
+            timerSpec.type = PerResponse;
+    }
+    spec.timerSpec = timerSpec;
+
+    return spec;
+}
+
+//---------------------------------------------------------------------------
 //  setQuizSpec
 //
 //! Set the contents of the dialog form based on the contents of a quiz spec.
@@ -141,92 +171,22 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
     specForm->setSearchSpec (spec.searchSpec);
     useListCbox->setChecked (spec.useList);
     randomCbox->setChecked (spec.randomOrder);
-}
-
-//---------------------------------------------------------------------------
-//  getSearchSpec
-//
-//! Get a SearchSpec corresponding to the state of the SearchSpecForm.
-//
-//! @return the SearchSpec
-//---------------------------------------------------------------------------
-SearchSpec
-NewQuizDialog::getSearchSpec() const
-{
-    return specForm->getSearchSpec();
-}
-
-//---------------------------------------------------------------------------
-//  getQuizUseList
-//
-//! Get whether the quiz should use the full list of search results as a quiz
-//! question.
-//
-//! @return true if the full list should be used, false otherwise
-//---------------------------------------------------------------------------
-bool
-NewQuizDialog::getQuizUseList() const
-{
-    return useListCbox->isChecked();
-}
-
-//---------------------------------------------------------------------------
-//  getQuizRandomOrder
-//
-//! Get whether the quiz should present questions in random order.
-//
-//! @return true if random order, false otherwise
-//---------------------------------------------------------------------------
-bool
-NewQuizDialog::getQuizRandomOrder() const
-{
-    return randomCbox->isChecked();
-}
-
-//---------------------------------------------------------------------------
-//  getTimerEnabled
-//
-//! Get whether the timer should be enabled.
-//
-//! @return true if enabled, false otherwise
-//---------------------------------------------------------------------------
-bool
-NewQuizDialog::getTimerEnabled() const
-{
-    return timerCbox->isChecked();
-}
-
-//---------------------------------------------------------------------------
-//  getTimerDuration
-//
-//! Get the timer duration selected, if the timer is enabled.
-//
-//! @return the duration if the timer is enabled, -1 otherwise
-//---------------------------------------------------------------------------
-int
-NewQuizDialog::getTimerDuration() const
-{
-    return timerCbox->isChecked() ? timerSbox->value() : -1;
-}
-
-//---------------------------------------------------------------------------
-//  getTimerType
-//
-//! Get the timer type, if the timer is enabled.
-//
-//! @return the timer type if the timer is enabled, NoTimer otherwise
-//---------------------------------------------------------------------------
-QuizTimerType
-NewQuizDialog::getTimerType() const
-{
-    if (!timerCbox->isChecked())
-        return NoTimer;
-    QString type = timerCombo->currentText();
-    if (type == TIMER_PER_QUESTION)
-        return PerQuestion;
-    if (type == TIMER_PER_RESPONSE)
-        return PerResponse;
-    return NoTimer;
+    timerCbox->setChecked (false);
+    timerSbox->setValue (0);
+    timerCombo->setCurrentText (TIMER_PER_RESPONSE);
+    if (spec.timerSpec.type != NoTimer) {
+        timerCbox->setChecked (true);
+        timerSbox->setValue (spec.timerSpec.duration);
+        switch (spec.timerSpec.type) {
+            case PerQuestion:
+            timerCombo->setCurrentText (TIMER_PER_QUESTION);
+            break;
+            case PerResponse:
+            timerCombo->setCurrentText (TIMER_PER_RESPONSE);
+            break;
+            default: break;
+        }
+    }
 }
 
 //---------------------------------------------------------------------------

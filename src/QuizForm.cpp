@@ -244,7 +244,7 @@ QuizForm::responseEntered()
     responseStatusLabel->setText (response + " : " + statusStr);
 
     // Restart the timer, if the timer runs per response
-    if (timerId && (timerType == PerResponse))
+    if (timerId && (timerSpec.type == PerResponse))
         startNewTimer();
 }
 
@@ -260,13 +260,8 @@ QuizForm::responseEntered()
 void
 QuizForm::newQuiz (NewQuizDialog* dialog)
 {
-    QuizSpec spec;
-    spec.searchSpec = dialog->getSearchSpec();
-    spec.useList = dialog->getQuizUseList();
-    spec.randomOrder = dialog->getQuizRandomOrder();
-    useTimer = dialog->getTimerEnabled();
-    timerDuration = dialog->getTimerDuration();
-    timerType = dialog->getTimerType();
+    QuizSpec spec = dialog->getQuizSpec();
+    timerSpec = spec.timerSpec;
     QApplication::setOverrideCursor (Qt::waitCursor);
     quizEngine->newQuiz (spec);
     QApplication::restoreOverrideCursor();
@@ -417,10 +412,10 @@ QuizForm::startQuestion()
     checkResponseButton->setEnabled (true);
     nextQuestionButton->setEnabled (false);
     inputLine->setFocus();
-    if (useTimer)
-        startNewTimer();
-    else
+    if (timerSpec.type == NoTimer)
         clearTimerDisplay();
+    else
+        startNewTimer();
 }
 
 //---------------------------------------------------------------------------
@@ -432,8 +427,8 @@ void
 QuizForm::startNewTimer()
 {
     killActiveTimer();
-    timerRemaining = timerDuration;
-    setTimerDisplay (timerDuration);
+    timerRemaining = timerSpec.duration;
+    setTimerDisplay (timerSpec.duration);
     timerId = startTimer (1000);
     pauseButton->setEnabled (true);
 }

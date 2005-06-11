@@ -34,12 +34,6 @@
 #include <qspinbox.h>
 #include "MatchType.h"
 
-enum QuizTimerType {
-    NoTimer,
-    PerQuestion,
-    PerResponse,
-};
-
 class QuizSpec;
 class SearchSpec;
 class SearchSpecForm;
@@ -53,13 +47,8 @@ class NewQuizDialog : public QDialog
 
     ~NewQuizDialog() { }
 
+    QuizSpec getQuizSpec() const;
     void setQuizSpec (const QuizSpec& spec);
-    SearchSpec getSearchSpec() const;
-    bool getQuizUseList() const;
-    bool getQuizRandomOrder() const;
-    bool getTimerEnabled() const;
-    int  getTimerDuration() const;
-    QuizTimerType getTimerType() const;
 
   public slots:
     void useListToggled (bool on);

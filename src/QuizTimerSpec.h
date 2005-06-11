@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// QuizSpec.h
+// QuizTimerSpec.h
 //
-// A class to represent a quiz specification.
+// A class to represent a quiz timer specification.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,37 +22,27 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef QUIZ_SPEC_H
-#define QUIZ_SPEC_H
+#ifndef QUIZ_TIMER_SPEC_H
+#define QUIZ_TIMER_SPEC_H
 
-#include "QuizTimerSpec.h"
-#include "SearchSpec.h"
-#include "Defs.h"
+#include <qstring.h>
 
-enum QuizType {
-    UnknownQuizType = 0,
-    QuizPatterns,
-    QuizAnagrams,
-    QuizSubanagrams,
-    QuizHooks,
-    QuizAnagramHooks,
-    QuizAnagramHookMnemonics
+enum QuizTimerType {
+    NoTimer = 0,
+    PerQuestion,
+    PerResponse,
 };
 
-class QuizSpec
+class QuizTimerSpec
 {
   public:
-    QuizSpec() : type (QuizAnagrams), useList (false), randomOrder (true)
-        { }
-    ~QuizSpec() { }
+    QuizTimerSpec() : type (NoTimer), duration (0) { }
+    ~QuizTimerSpec() { }
 
     QString asString() const;
 
-    QuizType type;
-    SearchSpec searchSpec;
-    QuizTimerSpec timerSpec;
-    bool useList;
-    bool randomOrder;
+    QuizTimerType type;
+    int duration;
 };
 
-#endif // QUIZ_SPEC_H
+#endif // QUIZ_TIMER_SPEC_H

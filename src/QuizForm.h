@@ -27,6 +27,7 @@
 
 #include "ActionForm.h"
 #include "NewQuizDialog.h"
+#include "QuizTimerSpec.h"
 #include <qcanvas.h>
 #include <qimage.h>
 #include <qlabel.h>
@@ -103,10 +104,9 @@ class QuizForm : public ActionForm
     QMap<QString,QImage> tileImages;
     int maxTileWidth, maxTileHeight;
     int numCanvasTiles, minCanvasTiles, minCanvasWidth;
-    bool useTimer;
     int timerId;
-    int timerDuration, timerRemaining, timerPaused;
-    QuizTimerType timerType;
+    int timerRemaining, timerPaused;
+    QuizTimerSpec timerSpec;
 
     AnalyzeQuizDialog* analyzeDialog;
 };
