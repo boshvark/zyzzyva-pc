@@ -43,6 +43,7 @@ class SearchConditionForm : public QFrame
                          0);
 
     SearchCondition getSearchCondition() const;
+    void setSearchCondition (const SearchCondition& condition);
     bool isValid() const;
 
     signals:

@@ -129,8 +129,29 @@ SearchSpecForm::getSearchSpec() const
     return spec;
 }
 
-
-
+//---------------------------------------------------------------------------
+//  setSearchSpec
+//
+//! Set the contents of the form according to the contents of a search spec.
+//
+//! @param spec the search spec
+//---------------------------------------------------------------------------
+void
+SearchSpecForm::setSearchSpec (const SearchSpec& spec)
+{
+    //conjunctionRadio->setChecked (spec->conjunction);
+    QValueList<SearchCondition>::const_iterator cit = spec.conditions.begin();
+    QValueList<SearchConditionForm*>::iterator fit;
+    for (fit = conditionForms.begin(); fit != conditionForms.end(); ++fit) {
+        if (cit == spec.conditions.end())
+            (*fit)->hide();
+        else {
+            (*fit)->setSearchCondition (*cit);
+            (*fit)->show();
+            ++cit;
+        }
+    }
+}
 
 //---------------------------------------------------------------------------
 //  addConditionForm
@@ -144,7 +165,7 @@ SearchSpecForm::addConditionForm()
     conditionForms[visibleForms]->show();
     ++visibleForms;
 
-    fewerButton->setEnabled (true);
+    fewerButton->setEnabled (visibleForms > 1);
     if (visibleForms == MAX_CONDITIONS)
         moreButton->setEnabled (false);
 }

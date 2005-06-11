@@ -40,6 +40,7 @@ enum QuizTimerType {
     PerResponse,
 };
 
+class QuizSpec;
 class SearchSpec;
 class SearchSpecForm;
 
@@ -52,6 +53,7 @@ class NewQuizDialog : public QDialog
 
     ~NewQuizDialog() { }
 
+    void setQuizSpec (const QuizSpec& spec);
     SearchSpec getSearchSpec() const;
     bool getQuizUseList() const;
     bool getQuizRandomOrder() const;

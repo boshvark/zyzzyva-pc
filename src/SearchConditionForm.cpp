@@ -198,6 +198,48 @@ SearchConditionForm::getSearchCondition() const
 }
 
 //---------------------------------------------------------------------------
+//  setSearchCondition
+//
+//! Set the contents of the form according to the contents of a search
+//! condition.
+//
+//! @param condition the search condition
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::setSearchCondition (const SearchCondition& condition)
+{
+    reset();
+    typeCbox->setCurrentText (Auxil::searchTypeToString (condition.type));
+
+    switch (condition.type) {
+        case SearchCondition::PatternMatch:
+        case SearchCondition::AnagramMatch:
+        case SearchCondition::SubanagramMatch:
+        case SearchCondition::MustInclude:
+        case SearchCondition::MustExclude:
+        paramLine->setText (condition.stringValue);
+        break;
+
+        case SearchCondition::ExactLength:
+        case SearchCondition::MinLength:
+        case SearchCondition::MaxLength:
+        case SearchCondition::ExactAnagrams:
+        case SearchCondition::MinAnagrams:
+        case SearchCondition::MaxAnagrams:
+        paramSbox->setValue (condition.intValue);
+        break;
+
+        case SearchCondition::MustConsist:
+        paramConsistSbox->setValue (condition.intValue);
+        paramConsistLine->setText (condition.stringValue);
+        break;
+
+        default: break;
+    }
+    typeChanged (typeCbox->currentText());
+}
+
+//---------------------------------------------------------------------------
 //  isValid
 //
 //! Determine whether the input in the form is valid.

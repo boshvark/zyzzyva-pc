@@ -21,6 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "NewQuizDialog.h"
+#include "QuizSpec.h"
 #include "SearchSpec.h"
 #include "SearchSpecForm.h"
 #include "Defs.h"
@@ -125,6 +126,21 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
 
     resize (minimumSizeHint());
     setCaption (DIALOG_CAPTION);
+}
+
+//---------------------------------------------------------------------------
+//  setQuizSpec
+//
+//! Set the contents of the dialog form based on the contents of a quiz spec.
+//
+//! @param spec the quiz spec
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::setQuizSpec (const QuizSpec& spec)
+{
+    specForm->setSearchSpec (spec.searchSpec);
+    useListCbox->setChecked (spec.useList);
+    randomCbox->setChecked (spec.randomOrder);
 }
 
 //---------------------------------------------------------------------------

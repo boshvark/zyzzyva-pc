@@ -41,6 +41,7 @@ class SearchSpecForm : public QFrame
     public:
     SearchSpecForm (QWidget* parent = 0, const char* name = 0, WFlags f = 0);
     SearchSpec getSearchSpec() const;
+    void setSearchSpec (const SearchSpec& spec);
 
     signals:
     void returnPressed();
