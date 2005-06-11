@@ -34,17 +34,17 @@ class WordEngine;
 
 class JudgeForm : public ActionForm
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     JudgeForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
                WFlags f = 0);
 
-  public slots:
+    public slots:
     void textChanged();
     void clear();
     void judgeWord();
 
-  private:
+    private:
     WordEngine*  engine;
     QTextEdit*   wordArea;
     QPushButton* clearButton;

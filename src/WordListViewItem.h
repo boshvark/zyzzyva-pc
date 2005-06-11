@@ -30,7 +30,7 @@
 
 class WordListViewItem : public QListViewItem
 {
-  public:
+    public:
     WordListViewItem (QListView* parent)
         : QListViewItem (parent) { init(); }
 
@@ -101,12 +101,12 @@ class WordListViewItem : public QListViewItem
     virtual QString key (int column, bool ascending) const;
     virtual int compare (QListViewItem* i, int col, bool ascending) const;
 
-  private:
+    private:
     void init();
     const QColorGroup& getColorGroup();
     static bool sortByLength;
 
-  private:
+    private:
     QFont font;
     QPalette palette;
 };

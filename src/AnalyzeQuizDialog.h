@@ -38,14 +38,14 @@ class WordListView;
 
 class AnalyzeQuizDialog : public QDialog
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget* parent = 0,
                        const char* name = 0, bool modal = false, WFlags f = 0);
 
     ~AnalyzeQuizDialog() { }
 
-  public slots:
+    public slots:
     void newQuiz (const QuizSpec& spec);
     void updateStats();
     void addMissed (const QString& word);
@@ -53,12 +53,12 @@ class AnalyzeQuizDialog : public QDialog
     void clearMissed();
     void clearIncorrect();
 
-  private:
+    private:
     void setRecall (int correct, int total);
     void setPrecision (int correct, int total);
     QString percentString (int numerator, int denominator) const;
 
-  private:
+    private:
     QuizEngine*   quizEngine;
     WordEngine*   wordEngine;
     QLabel*       questionLabel;

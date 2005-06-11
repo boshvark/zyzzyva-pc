@@ -35,7 +35,7 @@ enum QuizTimerType {
 
 class QuizTimerSpec
 {
-  public:
+    public:
     QuizTimerSpec() : type (NoTimer), duration (0) { }
     ~QuizTimerSpec() { }
 

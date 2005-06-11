@@ -31,7 +31,7 @@
 
 class WordGraph
 {
-  public:
+    public:
     WordGraph();
     ~WordGraph();
 
@@ -42,10 +42,10 @@ class WordGraph
     void print() const;
     int getNumNodes() { return numNodes; }
 
-  private:
+    private:
     bool matchesSpec (QString word, const SearchSpec& spec) const;
 
-  private:
+    private:
     class Node {
       public:
         Node (char c = 0, bool e = false);

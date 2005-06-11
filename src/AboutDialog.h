@@ -29,8 +29,8 @@
 
 class AboutDialog : public QDialog
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     AboutDialog (QWidget* parent = 0, const char* name = 0,
                  bool modal = false, WFlags f = WType_TopLevel);
     ~AboutDialog();

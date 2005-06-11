@@ -41,7 +41,7 @@ enum QuizType {
 
 class QuizSpec
 {
-  public:
+    public:
     QuizSpec() : type (QuizAnagrams), useList (false), randomOrder (true)
         { }
     ~QuizSpec() { }

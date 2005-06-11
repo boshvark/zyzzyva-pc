@@ -31,21 +31,21 @@ class WordEngine;
 
 class WordListView : public QListView
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     WordListView (WordEngine* e, QWidget* parent = 0, const char* name = 0,
                   WFlags f = 0);
     ~WordListView();
 
     virtual void setFont (const QFont& font);
 
-  public slots:
+    public slots:
     void doReturnPressed (QListViewItem* item);
     void doPopupMenu (QListViewItem* item, const QPoint& point, int);
     void displayDefinition (const QString& word);
     void setTitle (const QString& title);
 
-  private:
+    private:
     WordEngine* wordEngine;
 };
 

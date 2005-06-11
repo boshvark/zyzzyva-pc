@@ -46,13 +46,13 @@ class WordListView;
 
 class QuizForm : public ActionForm
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     QuizForm (WordEngine* we, QWidget* parent = 0, const char* name = 0,
               WFlags f = 0);
     ~QuizForm();
 
-  public slots:
+    public slots:
     void newQuiz (NewQuizDialog* dialog);
     void responseEntered();
     void newQuizClicked();
@@ -62,7 +62,7 @@ class QuizForm : public ActionForm
     void analyzeClicked();
     void setTileTheme (const QString& theme);
 
-  private:
+    private:
     void updateStats();
     void clearStats();
     void clearQuestionNum();
@@ -84,7 +84,7 @@ class QuizForm : public ActionForm
 
     void timerEvent (QTimerEvent* event);
 
-  private:
+    private:
     WordEngine*   wordEngine;
     QuizEngine*   quizEngine;
     QLabel*       questionNumLabel;

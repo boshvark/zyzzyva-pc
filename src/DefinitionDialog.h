@@ -31,14 +31,14 @@
 
 class DefinitionDialog : public QDialog
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     DefinitionDialog (WordEngine* e, const QString& word, QWidget* parent = 0,
                       const char* name = 0, bool modal = false, WFlags f =
                       WType_TopLevel);
     ~DefinitionDialog();
 
-  private:
+    private:
     WordEngine* engine;
 };
 

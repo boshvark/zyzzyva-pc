@@ -36,14 +36,14 @@ class WordEngine;
 
 class QuizEngine
 {
-  public:
+    public:
     enum ResponseStatus {
         Correct,
         Incorrect,
         Duplicate
     };
 
-  public:
+    public:
     QuizEngine (WordEngine* e);
     ~QuizEngine() { }
 
@@ -65,11 +65,11 @@ class QuizEngine
 
     bool onLastQuestion() const;
 
-  private:
+    private:
     void clearQuestion();
     void prepareQuestion();
 
-  private:
+    private:
     WordEngine*       wordEngine;
     std::set<QString> correctResponses;
     std::set<QString> correctUserResponses;

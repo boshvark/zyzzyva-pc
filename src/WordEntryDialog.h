@@ -32,15 +32,15 @@ class WordValidator;
 
 class WordEntryDialog : public QDialog
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     WordEntryDialog (QWidget* parent = 0, const char* name = 0, bool modal =
                      false, WFlags f = 0);
     ~WordEntryDialog();
 
     QString getWord() const { return wordLine->text(); }
 
-  private:
+    private:
     QLineEdit*     wordLine;
     WordValidator* wordValidator;
 };

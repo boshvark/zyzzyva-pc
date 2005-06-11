@@ -30,8 +30,8 @@
 
 class WordValidator : public QValidator
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     WordValidator (QObject* parent = 0, const char* name = 0)
       : QValidator (parent, name), options (None) { }
 
@@ -46,7 +46,7 @@ class WordValidator : public QValidator
         AllowAsterisks = 2
     };
 
-  private:
+    private:
     void replaceRegExp (const QRegExp& re, const QString& str,
                         QString& input, int& pos) const;
 

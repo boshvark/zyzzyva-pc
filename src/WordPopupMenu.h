@@ -29,12 +29,12 @@
 
 class WordPopupMenu : public QPopupMenu
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     WordPopupMenu (QWidget* parent = 0, const char* name = 0);
     ~WordPopupMenu();
 
-  public:
+    public:
     enum {
         ViewDefinition,
         ViewHooks,

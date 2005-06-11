@@ -39,13 +39,13 @@ class SettingsDialog;
 
 class MainWindow : public QMainWindow
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     MainWindow (QWidget* parent = 0, const char* name = 0,
                 WFlags f = WType_TopLevel);
     ~MainWindow();
 
-  public slots:
+    public slots:
     void importInteractive();
     void newQuizForm();
     void newSearchForm();
@@ -58,7 +58,7 @@ class MainWindow : public QMainWindow
     void displayHelp();
     void closeCurrentTab();
 
-  private:
+    private:
     int  import (const QString& file);
     int  importStems();
     void setNumWords (int num);
@@ -66,7 +66,7 @@ class MainWindow : public QMainWindow
     void writeSettings();
     void newTab (QWidget* widget, const QString& title);
 
-  private:
+    private:
     WordEngine*  wordEngine;
     QTabWidget*  tabStack;
     QToolButton* closeButton;

@@ -31,7 +31,7 @@
 
 class SearchSpec
 {
-  public:
+    public:
     SearchSpec() : conjunction (true) { }
     ~SearchSpec() { }
 

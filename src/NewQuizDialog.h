@@ -40,8 +40,8 @@ class SearchSpecForm;
 
 class NewQuizDialog : public QDialog
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     NewQuizDialog (QWidget* parent = 0, const char* name = 0,
                    bool modal = false, WFlags f = 0);
 
@@ -50,11 +50,11 @@ class NewQuizDialog : public QDialog
     QuizSpec getQuizSpec() const;
     void setQuizSpec (const QuizSpec& spec);
 
-  public slots:
+    public slots:
     void useListToggled (bool on);
     void timerToggled (bool on);
 
-  private:
+    private:
     SearchSpecForm* specForm;
     QCheckBox*      useListCbox;
     QCheckBox*      randomCbox;

@@ -34,16 +34,16 @@ class WordEngine;
 
 class DefineForm : public ActionForm
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     DefineForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
                 WFlags f = 0);
 
-  public slots:
+    public slots:
     void wordChanged (const QString& word);
     void defineWord();
 
-  private:
+    private:
     WordEngine*  engine;
     QLineEdit*   wordLine;
     QPushButton* defineButton;

@@ -36,18 +36,18 @@ class WordListView;
 
 class WordVariationDialog : public QDialog
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     WordVariationDialog (WordEngine* we, const QString& word,
                          WordVariationType variation, QWidget* parent = 0,
                          const char* name = 0, bool modal = false, WFlags f =
                          0);
     ~WordVariationDialog();
 
-  private:
+    private:
     void setWordVariation (const QString& word, WordVariationType variation);
 
-  private:
+    private:
     WordEngine*   wordEngine;
     DefinitionLabel* wordLabel;
     WordListView* leftList;

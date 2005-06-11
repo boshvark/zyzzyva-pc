@@ -33,7 +33,7 @@
 
 class WordEngine
 {
-  public:
+    public:
     WordEngine() { }
     ~WordEngine() { }
 
@@ -46,7 +46,7 @@ class WordEngine
     QString alphagram (const QString& word) const;
     QString getDefinition (const QString& word) const;
 
-  private:
+    private:
     bool matchesConditions (const QString& word, const
                             QValueList<SearchCondition>& conditions) const;
     bool isSetMember (const QString& word, SearchSet ss) const;

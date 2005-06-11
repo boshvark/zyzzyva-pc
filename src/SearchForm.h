@@ -37,16 +37,16 @@ class WordListView;
 
 class SearchForm : public ActionForm
 {
-  Q_OBJECT
-  public:
+    Q_OBJECT
+    public:
     SearchForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
                 WFlags f = 0);
 
-  public slots:
+    public slots:
     void search();
     void updateResultTotal (int num);
 
-  private:
+    private:
     WordEngine*     engine;
     SearchSpecForm* specForm;
     //QCheckBox*      lowerCaseCbox;
