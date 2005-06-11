@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 // QuizSpec.cpp
 //
-// A class to represent a word search specification.
+// A class to represent a quiz specification.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
