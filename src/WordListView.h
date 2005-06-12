@@ -25,6 +25,7 @@
 #ifndef WORD_LIST_VIEW_H
 #define WORD_LIST_VIEW_H
 
+#include <qevent.h>
 #include <qlistview.h>
 
 class WordEngine;
@@ -42,8 +43,13 @@ class WordListView : public QListView
     public slots:
     void doReturnPressed (QListViewItem* item);
     void doPopupMenu (QListViewItem* item, const QPoint& point, int);
+    void exportRequested();
     void displayDefinition (const QString& word);
     void setTitle (const QString& title);
+
+    protected:
+    void contextMenuEvent (QContextMenuEvent* e);
+    bool exportFile (const QString& filename) const;
 
     private:
     WordEngine* wordEngine;

@@ -29,6 +29,9 @@
 #include "WordPopupMenu.h"
 #include "WordVariationDialog.h"
 #include "WordVariationType.h"
+#include "Auxil.h"
+#include <qfile.h>
+#include <qfiledialog.h>
 
 //---------------------------------------------------------------------------
 //  WordListView
@@ -169,6 +172,24 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
 }
 
 //---------------------------------------------------------------------------
+//  exportRequested
+//
+//! Called when the user indicates that the word list should be exported.
+//! Display a dialog to let the user choose where to export the list, then
+//! actually do the export.
+//---------------------------------------------------------------------------
+void
+WordListView::exportRequested()
+{
+    QString filename = QFileDialog::getSaveFileName
+        (Auxil::getWordsDir() + "/saved", "Text Files (*.txt)", this,
+         "exportDialog", "Export Word List");
+
+    if (!filename.isEmpty())
+        exportFile (filename);
+}
+
+//---------------------------------------------------------------------------
 //  displayDefinition
 //
 //! Displays the definition of a word.
@@ -198,4 +219,53 @@ void
 WordListView::setTitle (const QString& title)
 {
     setColumnText (0, QIconSet(), title);
+}
+
+//---------------------------------------------------------------------------
+//  contextMenuEvent
+//
+//! Reimplementation of QWidget::contextMenuEvent.  Called when a context menu
+//! is requested of this list view.
+//
+//! @param e the context menu event
+//---------------------------------------------------------------------------
+void
+WordListView::contextMenuEvent (QContextMenuEvent* e)
+{
+    QPopupMenu* popupMenu = new QPopupMenu (this, "popupMenu");
+    Q_CHECK_PTR (popupMenu);
+
+    popupMenu->insertItem ("Export list...", 1); 
+    int choice = popupMenu->exec (e->globalPos());
+    delete popupMenu;
+
+    switch (choice) {
+        case 1: exportRequested(); break;
+        default: break;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  exportFile
+//
+//! Export the words in the list to a file, one word per line.
+//
+//! @param filename the name of the file
+//---------------------------------------------------------------------------
+bool
+WordListView::exportFile (const QString& filename) const
+{
+    if (childCount() == 0)
+        return false;
+
+    QFile file (filename);
+    if (!file.open (IO_WriteOnly))
+        return false;
+
+    QTextStream stream (&file);
+    for (QListViewItem* item = firstChild(); item; item = item->nextSibling())
+    {
+        stream << item->text (0);
+        endl (stream);
+    }
 }
