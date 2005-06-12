@@ -223,6 +223,7 @@ QuizForm::responseEntered()
     }
 
     QuizEngine::ResponseStatus status = quizEngine->respond (response);
+    QString displayResponse = response;
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
@@ -235,6 +236,7 @@ QuizForm::responseEntered()
         analyzeDialog->updateStats();
     }
     else if (status == QuizEngine::Incorrect) {
+        displayResponse += "*";
         statusStr = "<font color=\"red\">Incorrect</font>";
         analyzeDialog->addIncorrect (response);
         analyzeDialog->updateStats();
@@ -249,7 +251,7 @@ QuizForm::responseEntered()
         updateStats();
 
     // Update the response status label
-    responseStatusLabel->setText (response + " : " + statusStr);
+    responseStatusLabel->setText (displayResponse + " : " + statusStr);
 
     // Restart the timer, if the timer runs per response
     if (timerId && (timerSpec.type == PerResponse))
