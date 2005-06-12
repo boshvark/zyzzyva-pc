@@ -107,20 +107,21 @@ WordListView::doReturnPressed (QListViewItem* item)
 //
 //! Called when a right-click menu is requested.  Creates a popup menu and
 //! allows the user to choose an action for the selected item.
-//! @param item the selected listview item
+//! @param item the selected listview item, or NULL if no listview item is
+//!        selected
 //! @param point the point at which the menu was requested
 //---------------------------------------------------------------------------
 void
 WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
 {
-    if (!item)
-        return;
-
-    WordPopupMenu* menu = new WordPopupMenu (this, "menu");
+    WordPopupMenu* menu = new WordPopupMenu (item, this, "menu");
     int choice = menu->exec (point);
     delete menu;
 
-    QString word = item->text (0).upper();
+    QString word;
+    if (item)
+        word = item->text (0).upper();
+
     WordVariationType variation = VariationNone;
 
     switch (choice) {
@@ -159,6 +160,10 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
         case WordPopupMenu::ViewTranspositions:
         variation = VariationTranspositions;
         break;
+
+        case WordPopupMenu::ExportList:
+        exportRequested();
+        return;
 
         default: break;
     }
@@ -239,17 +244,7 @@ WordListView::setTitle (const QString& title)
 void
 WordListView::contextMenuEvent (QContextMenuEvent* e)
 {
-    QPopupMenu* popupMenu = new QPopupMenu (this, "popupMenu");
-    Q_CHECK_PTR (popupMenu);
-
-    popupMenu->insertItem ("Export list...", 1); 
-    int choice = popupMenu->exec (e->globalPos());
-    delete popupMenu;
-
-    switch (choice) {
-        case 1: exportRequested(); break;
-        default: break;
-    }
+    doPopupMenu (0, e->globalPos(), -1);
 }
 
 //---------------------------------------------------------------------------

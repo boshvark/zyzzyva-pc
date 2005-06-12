@@ -32,18 +32,22 @@
 //! @param parent the parent widget
 //! @param name the name of this widget
 //---------------------------------------------------------------------------
-WordPopupMenu::WordPopupMenu (QWidget* parent, const char* name)
+WordPopupMenu::WordPopupMenu (bool showWordOptions, QWidget* parent, const
+                              char* name)
     : QPopupMenu (parent, name)
 {
-    insertItem ("View Definition", ViewDefinition);
-    insertItem ("View Anagrams", ViewAnagrams);
-    insertItem ("View Subanagrams", ViewSubanagrams);
-    insertItem ("View Hooks", ViewHooks);
-    insertItem ("View Extensions", ViewExtensions);
-    insertItem ("View Anagram Hooks", ViewAnagramHooks);
-    insertItem ("View Blank Anagrams", ViewBlankAnagrams);
-    insertItem ("View Blank Matches", ViewBlankMatches);
-    insertItem ("View Transpositions", ViewTranspositions);
+    if (showWordOptions) {
+        insertItem ("View Definition", ViewDefinition);
+        insertItem ("View Anagrams", ViewAnagrams);
+        insertItem ("View Subanagrams", ViewSubanagrams);
+        insertItem ("View Hooks", ViewHooks);
+        insertItem ("View Extensions", ViewExtensions);
+        insertItem ("View Anagram Hooks", ViewAnagramHooks);
+        insertItem ("View Blank Anagrams", ViewBlankAnagrams);
+        insertItem ("View Blank Matches", ViewBlankMatches);
+        insertItem ("View Transpositions", ViewTranspositions);
+    }
+    insertItem ("Export list...", ExportList);
 }
 
 //---------------------------------------------------------------------------

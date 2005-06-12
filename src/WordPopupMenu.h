@@ -31,7 +31,8 @@ class WordPopupMenu : public QPopupMenu
 {
     Q_OBJECT
     public:
-    WordPopupMenu (QWidget* parent = 0, const char* name = 0);
+    WordPopupMenu (bool showWordOptions, QWidget* parent = 0, const char* name
+                   = 0);
     ~WordPopupMenu();
 
     public:
@@ -44,7 +45,8 @@ class WordPopupMenu : public QPopupMenu
         ViewBlankAnagrams,
         ViewBlankMatches,
         ViewExtensions,
-        ViewTranspositions
+        ViewTranspositions,
+        ExportList
     };
 };
 
