@@ -24,6 +24,7 @@
 
 #include "SearchConditionForm.h"
 #include "SearchSet.h"
+#include "WordLineEdit.h"
 #include "WordValidator.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -92,7 +93,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     QHBoxLayout* paramLineHlay = new QHBoxLayout (paramLineFrame, 0, SPACING,
                                                   "paramLineHlay");
     Q_CHECK_PTR (paramLineHlay);
-    paramLine = new QLineEdit (paramLineFrame, "paramLine");
+    paramLine = new WordLineEdit (paramLineFrame, "paramLine");
     Q_CHECK_PTR (paramLine);
     paramLine->setValidator (patternValidator);
     connect (paramLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
@@ -137,7 +138,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     QLabel* pctLabel = new QLabel ("%", paramConsistFrame, "pctLabel");
     Q_CHECK_PTR (pctLabel);
     paramConsistHlay->addWidget (pctLabel);
-    paramConsistLine = new QLineEdit (paramConsistFrame, "paramConsistLine");
+    paramConsistLine = new WordLineEdit (paramConsistFrame,
+                                         "paramConsistLine");
     Q_CHECK_PTR (paramConsistLine);
     paramConsistLine->setValidator (patternValidator);
     connect (paramConsistLine, SIGNAL (returnPressed()),

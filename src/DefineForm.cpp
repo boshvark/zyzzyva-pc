@@ -23,6 +23,7 @@
 #include "DefineForm.h"
 #include "DefinitionBox.h"
 #include "WordEngine.h"
+#include "WordLineEdit.h"
 #include "WordValidator.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -56,7 +57,7 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, const char* name,
     Q_CHECK_PTR (label);
     lookupHlay->addWidget (label);
 
-    wordLine = new QLineEdit (this, "wordLine");
+    wordLine = new WordLineEdit (this, "wordLine");
     Q_CHECK_PTR (wordLine);
     wordLine->setValidator (new WordValidator (wordLine));
     connect (wordLine, SIGNAL (textChanged (const QString&)),

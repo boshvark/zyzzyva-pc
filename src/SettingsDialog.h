@@ -49,6 +49,7 @@ class SettingsDialog : public QDialog
     // XXX: Reinstate this once it's know how to change the font of canvas
     // text items via QApplication::setFont
     //QString getQuizLabelFont() const;
+    QString getWordInputFont() const;
     QString getDefinitionFont() const;
     QString getTileTheme() const;
     bool getSortByLength() const;
@@ -75,6 +76,7 @@ class SettingsDialog : public QDialog
     // text items via QApplication::setFont
     //QLineEdit*   fontQuizLabelLine;
     QLineEdit*   fontDefinitionLine;
+    QLineEdit*   fontWordInputLine;
     QCheckBox*   lengthSortCbox;
 };
 

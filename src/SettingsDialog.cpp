@@ -40,6 +40,7 @@ const QString SETTINGS_FONT_MAIN = "/font";
 const QString SETTINGS_FONT_WORD_LISTS = "/font_word_lists";
 const QString SETTINGS_FONT_QUIZ_LABEL = "/font_quiz_label";
 const QString SETTINGS_FONT_DEFINITIONS = "/font_definitions";
+const QString SETTINGS_FONT_WORD_INPUT = "/font_word_input";
 const QString SETTINGS_SORT_BY_LENGTH = "/wordlist_sort_by_length";
 const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
 const QString SETTINGS_TILE_THEME = "/tile_theme";
@@ -50,6 +51,7 @@ const int FONT_MAIN_BUTTON = 1;
 const int FONT_WORD_LISTS_BUTTON = 2;
 const int FONT_QUIZ_LABEL_BUTTON = 3;
 const int FONT_DEFINITIONS_BUTTON = 4;
+const int FONT_WORD_INPUT_BUTTON = 5;
 
 using namespace Defs;
 
@@ -223,6 +225,28 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     //                          FONT_QUIZ_LABEL_BUTTON);
     //fontGlay->addWidget (chooseFontQuizLabelButton, row, 2);
 
+    // Input font
+    ++row;
+    QLabel* fontInputLabel = new QLabel ("Word Input:", fontWidget,
+                                         "fontInputLabel");
+    Q_CHECK_PTR (fontInputLabel);
+    fontGlay->addWidget (fontInputLabel, row, 0, Qt::AlignLeft);
+
+    fontWordInputLine = new QLineEdit (fontWidget, "fontWordInputLine");
+    Q_CHECK_PTR (fontWordInputLine);
+    fontWordInputLine->setReadOnly (true);
+    fontWordInputLine->setText (this->font().toString());
+    fontWordInputLine->home (false);
+    fontGlay->addWidget (fontWordInputLine, row, 1);
+
+    QPushButton* chooseFontInputButton =
+        new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    Q_CHECK_PTR (chooseFontInputButton);
+    connect (chooseFontInputButton, SIGNAL (clicked()), signalMapper,
+             SLOT (map()));
+    signalMapper->setMapping (chooseFontInputButton, FONT_WORD_INPUT_BUTTON);
+    fontGlay->addWidget (chooseFontInputButton, row, 2);
+
     // Definition font
     ++row;
     QLabel* fontDefinitionLabel = new QLabel ("Definitions:", fontWidget,
@@ -361,6 +385,14 @@ SettingsDialog::readSettings (const QSettings& settings)
     //    fontQuizLabelLine->home (false);
     //}
 
+    // Word input font
+    fontStr = settings.readEntry (SETTINGS_FONT_WORD_INPUT, QString::null,
+                                  &ok);
+    if (ok) {
+        fontWordInputLine->setText (fontStr);
+        fontWordInputLine->home (false);
+    }
+
     // Definition font
     fontStr = settings.readEntry (SETTINGS_FONT_DEFINITIONS, QString::null,
                                   &ok);
@@ -390,6 +422,8 @@ SettingsDialog::writeSettings (QSettings& settings)
     // XXX: Reinstate this once it's know how to change the font of canvas
     // text items via QApplication::setFont
     //settings.writeEntry (SETTINGS_FONT_QUIZ_LABEL, fontQuizLabelLine->text());
+    settings.writeEntry (SETTINGS_FONT_WORD_INPUT,
+                         fontWordInputLine->text());
     settings.writeEntry (SETTINGS_FONT_DEFINITIONS,
                          fontDefinitionLine->text());
     settings.writeEntry (SETTINGS_SORT_BY_LENGTH,
@@ -451,6 +485,19 @@ SettingsDialog::getWordListFont() const
 //{
 //    return fontQuizLabelLine->text();
 //}
+
+//---------------------------------------------------------------------------
+//  getWordInputFont
+//
+//! Return the word input font setting.
+//
+//! @return the name of the preferred font
+//---------------------------------------------------------------------------
+QString
+SettingsDialog::getWordInputFont() const
+{
+    return fontWordInputLine->text();
+}
 
 //---------------------------------------------------------------------------
 //  getDefinitionFont
@@ -561,6 +608,7 @@ SettingsDialog::chooseFontButtonClicked (int button)
         // XXX: Reinstate this once it's know how to change the font of canvas
         // text items via QApplication::setFont
         //case FONT_QUIZ_LABEL_BUTTON:  lineEdit = fontQuizLabelLine; break;
+        case FONT_WORD_INPUT_BUTTON: lineEdit = fontWordInputLine; break;
         case FONT_DEFINITIONS_BUTTON: lineEdit = fontDefinitionLine; break;
         default: return;
     }

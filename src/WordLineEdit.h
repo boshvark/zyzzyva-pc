@@ -1,7 +1,9 @@
 //---------------------------------------------------------------------------
-// DefineForm.h
+// WordLineEdit.h
 //
-// A form for looking up and displaying word definitions.
+// A class derived from QLineEdit, used to input words.  This class currently
+// does nothing special.  It only exists so objects of this class can be
+// distinguished from other QLineEdit objects when applying font settings.
 //
 // Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,32 +24,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef DEFINE_FORM_H
-#define DEFINE_FORM_H
+#ifndef WORD_LINE_EDIT_H
+#define WORD_LINE_EDIT_H
 
-#include "ActionForm.h"
-#include <qpushbutton.h>
+#include <qlineedit.h>
 
-class DefinitionBox;
-class WordEngine;
-class WordLineEdit;
-
-class DefineForm : public ActionForm
+class WordLineEdit : public QLineEdit
 {
     Q_OBJECT
     public:
-    DefineForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-                WFlags f = 0);
+    WordLineEdit (QWidget* parent, const char* name = 0)
+        : QLineEdit (parent, name) { }
+    WordLineEdit (const QString& contents, QWidget* parent, const char* name =
+                  0)
+        : QLineEdit (contents, parent, name) { }
+    WordLineEdit (const QString& contents, const QString& inputMask, QWidget*
+                  parent, const char* name = 0)
+        : QLineEdit (contents, inputMask, parent, name) { }
 
-    public slots:
-    void wordChanged (const QString& word);
-    void defineWord();
-
-    private:
-    WordEngine*    engine;
-    WordLineEdit*  wordLine;
-    QPushButton*   defineButton;
-    DefinitionBox* resultBox;
+    virtual ~WordLineEdit() { }
 };
 
-#endif // DEFINE_FORM_H
+#endif // WORD_LINE_EDIT_H

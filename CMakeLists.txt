@@ -61,6 +61,7 @@ SET (MOCS
     src/SearchSpecForm.h
     src/SettingsDialog.h
     src/WordEntryDialog.h
+    src/WordLineEdit.h
     src/WordListView.h
     src/WordPopupMenu.h
     src/WordValidator.h

@@ -31,7 +31,6 @@
 #include <qcanvas.h>
 #include <qimage.h>
 #include <qlabel.h>
-#include <qlineedit.h>
 #include <qlistview.h>
 #include <qmap.h>
 #include <qpoint.h>
@@ -42,6 +41,7 @@ class AnalyzeQuizDialog;
 class DefinitionLabel;
 class QuizEngine;
 class WordEngine;
+class WordLineEdit;
 class WordListView;
 
 class QuizForm : public ActionForm
@@ -92,7 +92,7 @@ class QuizForm : public ActionForm
     QWidget*      questionWidget;
     QCanvasView*  questionCanvasView;
     QCanvas*      questionCanvas;
-    QLineEdit*    inputLine;
+    WordLineEdit* inputLine;
     WordListView* responseList;
     DefinitionLabel* responseStatusLabel;
     DefinitionLabel* questionStatusLabel;

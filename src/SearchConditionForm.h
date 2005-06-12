@@ -28,11 +28,11 @@
 #include "SearchCondition.h"
 #include <qcombobox.h>
 #include <qframe.h>
-#include <qlineedit.h>
 #include <qspinbox.h>
 #include <qwidgetstack.h>
 #include <set>
 
+class WordLineEdit;
 class SearchCondition;
 
 class SearchConditionForm : public QFrame
@@ -57,14 +57,14 @@ class SearchConditionForm : public QFrame
     QComboBox*    typeCbox;
     QWidgetStack* paramStack;
     QFrame*       paramLineFrame;
-    QLineEdit*    paramLine;
+    WordLineEdit* paramLine;
     QFrame*       paramSboxFrame;
     QSpinBox*     paramSbox;
     QFrame*       paramCboxFrame;
     QComboBox*    paramCbox;
     QFrame*       paramConsistFrame;
     QSpinBox*     paramConsistSbox;
-    QLineEdit*    paramConsistLine;
+    WordLineEdit* paramConsistLine;
 };
 
 #endif // SEARCH_CONDITION_FORM_H

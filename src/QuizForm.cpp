@@ -30,6 +30,7 @@
 #include "QuizEngine.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
+#include "WordLineEdit.h"
 #include "WordListView.h"
 #include "WordListViewItem.h"
 #include "Auxil.h"
@@ -131,7 +132,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
     statusHlay->addWidget (questionStatusLabel);
 
     // Input line
-    inputLine = new QLineEdit (this, "inputLine");
+    inputLine = new WordLineEdit (this, "inputLine");
     Q_CHECK_PTR (inputLine);
     WordValidator* validator = new WordValidator (inputLine);
     Q_CHECK_PTR (validator);
