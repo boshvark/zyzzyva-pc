@@ -337,6 +337,11 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
         return (isAcceptable (word.left (word.length() - 1)) ||
                 isAcceptable (word.right (word.length() - 1)));
 
+        case SetFrontHooks:
+        return isAcceptable (word.right (word.length() - 1));
+
+        case SetBackHooks:
+        return isAcceptable (word.left (word.length() - 1));
 
         case SetTypeOneSevens: {
             if (word.length() != 7)

@@ -322,6 +322,8 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::MustBelong:
         paramCbox->clear();
         paramCbox->insertItem (Auxil::searchSetToString (SetHookWords));
+        paramCbox->insertItem (Auxil::searchSetToString (SetFrontHooks));
+        paramCbox->insertItem (Auxil::searchSetToString (SetBackHooks));
         paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneSevens));
         //paramCbox->insertItem (Auxil::searchSetToString (SetTypeTwoSevens));
         //paramCbox->insertItem (Auxil::searchSetToString (SetTypeThreeSevens));

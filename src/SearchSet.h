@@ -30,6 +30,8 @@
 enum SearchSet {
     UnknownSearchSet = 0,
     SetHookWords,
+    SetFrontHooks,
+    SetBackHooks,
     SetTypeOneSevens,
     SetTypeTwoSevens,
     SetTypeThreeSevens,
