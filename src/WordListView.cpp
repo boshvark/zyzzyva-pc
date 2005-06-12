@@ -187,6 +187,12 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
 void
 WordListView::exportRequested()
 {
+    if (childCount() == 0) {
+        QMessageBox::warning (this, "Cannot Export Word List",
+                              "Cannot export word list:\nNo words to export.");
+        return;
+    }
+
     QString filename = QFileDialog::getSaveFileName
         (Auxil::getWordsDir() + "/saved", "Text Files (*.txt)", this,
          "exportDialog", "Export Word List");
