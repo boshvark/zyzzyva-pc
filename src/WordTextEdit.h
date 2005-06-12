@@ -1,9 +1,11 @@
 //---------------------------------------------------------------------------
-// JudgeForm.h
+// WordTextEdit.h
 //
-// A form for looking up words.
+// A class derived from QTextEdit, used to input words.  This class currently
+// does nothing special.  It only exists so objects of this class can be
+// distinguished from other QTextEdit objects when applying font settings.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,34 +24,22 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef JUDGE_FORM_H
-#define JUDGE_FORM_H
+#ifndef WORD_TEXT_EDIT_H
+#define WORD_TEXT_EDIT_H
 
-#include "ActionForm.h"
-#include <qpushbutton.h>
+#include <qtextedit.h>
 
-class DefinitionBox;
-class WordEngine;
-class WordTextEdit;
-
-class JudgeForm : public ActionForm
+class WordTextEdit : public QTextEdit
 {
     Q_OBJECT
     public:
-    JudgeForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-               WFlags f = 0);
+    WordTextEdit (const QString& text, const QString& context = QString::null,
+                  QWidget* parent = 0, const char* name = 0)
+        : QTextEdit (text, context, parent, name) { }
+    WordTextEdit (QWidget* parent, const char* name = 0)
+        : QTextEdit (parent, name) { }
 
-    public slots:
-    void textChanged();
-    void clear();
-    void judgeWord();
-
-    private:
-    WordEngine*    engine;
-    WordTextEdit*  wordArea;
-    QPushButton*   clearButton;
-    QPushButton*   judgeButton;
-    DefinitionBox* resultBox;
+    virtual ~WordTextEdit() { }
 };
 
-#endif // JUDGE_FORM_H
+#endif // WORD_TEXT_EDIT_H

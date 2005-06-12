@@ -453,6 +453,7 @@ MainWindow::readSettings (bool useGeometry)
     fontStr = settingsDialog->getWordInputFont();
     if (font.fromString (fontStr)) {
         qApp->setFont (font, true, "WordLineEdit");
+        qApp->setFont (font, true, "WordTextEdit");
     }
     else
         qWarning ("Cannot set font: " + fontStr);

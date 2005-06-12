@@ -64,6 +64,7 @@ SET (MOCS
     src/WordLineEdit.h
     src/WordListView.h
     src/WordPopupMenu.h
+    src/WordTextEdit.h
     src/WordValidator.h
     src/WordVariationDialog.h
     )

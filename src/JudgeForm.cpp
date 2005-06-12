@@ -23,6 +23,7 @@
 #include "JudgeForm.h"
 #include "DefinitionBox.h"
 #include "WordEngine.h"
+#include "WordTextEdit.h"
 #include "WordValidator.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -47,7 +48,7 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
                                              "mainVlay");
     Q_CHECK_PTR (mainVlay);
 
-    wordArea = new QTextEdit (this, "wordArea");
+    wordArea = new WordTextEdit (this, "wordArea");
     Q_CHECK_PTR (wordArea);
     wordArea->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Fixed);
     connect (wordArea, SIGNAL (textChanged()), SLOT (textChanged()));
