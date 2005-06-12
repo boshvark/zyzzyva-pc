@@ -89,6 +89,8 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
     filePopup->insertItem ("&Open...", this, SLOT (importInteractive()),
                            CTRL+Key_O);
     filePopup->insertSeparator();
+    filePopup->insertItem ("&Close Tab", this, SLOT (closeCurrentTab()),
+                           CTRL+Key_W);
     filePopup->insertItem ("&Quit", qApp, SLOT (quit()));
     menuBar()->insertItem ("&File", filePopup);
 
@@ -371,6 +373,9 @@ void
 MainWindow::closeCurrentTab()
 {
     QWidget* w = tabStack->currentPage();
+    if (!w)
+        return;
+
     tabStack->removePage (w);
     delete w;
     if (tabStack->count() == 0)
