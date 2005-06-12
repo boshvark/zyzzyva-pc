@@ -215,6 +215,13 @@ QuizForm::responseEntered()
         return;
     }
 
+    if (!responseMatchesQuestion (response)) {
+        QMessageBox::warning (this, "Response does not match question",
+                              "Sorry, your response does not match the "
+                              "question.");
+        return;
+    }
+
     QuizEngine::ResponseStatus status = quizEngine->respond (response);
     QString statusStr = "";
 
@@ -726,6 +733,35 @@ QuizForm::reflowLayout()
     questionStatusLabel->setText (text);
     questionCanvas->setAllChanged();
     questionCanvas->update();
+}
+
+//---------------------------------------------------------------------------
+//  responseMatchesQuestion
+//
+//! Determine whether a response could possibly be a correct answer to the
+//! current quiz question.
+//
+//! @param response the response to examine
+//
+//! @return true if the response could be valid, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizForm::responseMatchesQuestion (const QString& response) const
+{
+    QString question = quizEngine->getQuestion();
+    QuizSpec spec = quizEngine->getQuizSpec();
+    switch (spec.type) {
+        case QuizAnagrams:
+        if ((response.length() != question.length()) ||
+            (wordEngine->alphagram (response) !=
+             wordEngine->alphagram (question)))
+        {
+            return false;
+        }
+        break;
+
+        default: return true;
+    }
 }
 
 //---------------------------------------------------------------------------

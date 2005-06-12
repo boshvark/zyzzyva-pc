@@ -81,6 +81,7 @@ class QuizForm : public ActionForm
     void setTimerDisplay (int seconds);
     void clearTileTheme();
     void reflowLayout();
+    bool responseMatchesQuestion (const QString& response) const;
 
     void timerEvent (QTimerEvent* event);
 
