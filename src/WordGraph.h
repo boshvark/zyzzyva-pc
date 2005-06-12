@@ -35,6 +35,7 @@ class WordGraph
     WordGraph();
     ~WordGraph();
 
+    void clear();
     void addWord (const QString& w);
     bool containsWord (const QString& w) const;
     QStringList search (const SearchSpec& spec) const;
