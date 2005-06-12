@@ -5,7 +5,7 @@
 // does nothing special.  It only exists so objects of this class can be
 // distinguished from other QLineEdit objects when applying font settings.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
