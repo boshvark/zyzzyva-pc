@@ -49,7 +49,7 @@ class WordListView : public QListView
 
     protected:
     void contextMenuEvent (QContextMenuEvent* e);
-    bool exportFile (const QString& filename) const;
+    bool exportFile (const QString& filename, QString* err = 0) const;
 
     private:
     WordEngine* wordEngine;

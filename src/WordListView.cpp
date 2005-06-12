@@ -32,6 +32,7 @@
 #include "Auxil.h"
 #include <qfile.h>
 #include <qfiledialog.h>
+#include <qmessagebox.h>
 
 //---------------------------------------------------------------------------
 //  WordListView
@@ -185,8 +186,14 @@ WordListView::exportRequested()
         (Auxil::getWordsDir() + "/saved", "Text Files (*.txt)", this,
          "exportDialog", "Export Word List");
 
-    if (!filename.isEmpty())
-        exportFile (filename);
+    if (filename.isEmpty())
+        return;
+
+    QString error;
+    if (!exportFile (filename, &error)) {
+        QMessageBox::warning (this, "Error Exporting Word List",
+                              "Cannot export word list:\n" + error + ".");
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -253,14 +260,20 @@ WordListView::contextMenuEvent (QContextMenuEvent* e)
 //! @param filename the name of the file
 //---------------------------------------------------------------------------
 bool
-WordListView::exportFile (const QString& filename) const
+WordListView::exportFile (const QString& filename, QString* err) const
 {
-    if (childCount() == 0)
+    if (childCount() == 0) {
+        if (err)
+            *err = "No words to export";
         return false;
+    }
 
     QFile file (filename);
-    if (!file.open (IO_WriteOnly))
+    if (!file.open (IO_WriteOnly)) {
+        if (err)
+            *err = file.errorString();
         return false;
+    }
 
     QTextStream stream (&file);
     for (QListViewItem* item = firstChild(); item; item = item->nextSibling())
