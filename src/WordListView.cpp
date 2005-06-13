@@ -114,7 +114,8 @@ WordListView::doReturnPressed (QListViewItem* item)
 void
 WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
 {
-    WordPopupMenu* menu = new WordPopupMenu (item, this, "menu");
+    WordPopupMenu* menu = new WordPopupMenu (item ? true : false, this,
+                                             "menu");
     int choice = menu->exec (point);
     delete menu;
 
