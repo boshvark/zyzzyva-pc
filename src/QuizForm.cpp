@@ -754,16 +754,13 @@ QuizForm::responseMatchesQuestion (const QString& response) const
     QuizSpec spec = quizEngine->getQuizSpec();
     switch (spec.type) {
         case QuizAnagrams:
-        if ((response.length() != question.length()) ||
-            (wordEngine->alphagram (response) !=
-             wordEngine->alphagram (question)))
-        {
-            return false;
-        }
-        break;
+        return ((response.length() == question.length()) &&
+            (wordEngine->alphagram (response) ==
+             wordEngine->alphagram (question)));
 
-        default: return true;
+        default: break;
     }
+    return true;
 }
 
 //---------------------------------------------------------------------------
