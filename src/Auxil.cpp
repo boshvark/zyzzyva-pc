@@ -47,6 +47,7 @@ const QString MUST_INCLUDE_TYPE = "Must Include";
 const QString MUST_EXCLUDE_TYPE = "Must Exclude";
 const QString MUST_CONSIST_TYPE = "Must Consist of";
 const QString MUST_BELONG_TYPE = "Must Belong to";
+const QString IN_WORD_LIST_TYPE = "In Word List";
 const QString EXACT_ANAGRAMS_TYPE = "Exact Anagrams";
 const QString MIN_ANAGRAMS_TYPE = "Minimum Anagrams";
 const QString MAX_ANAGRAMS_TYPE = "Maximum Anagrams";
@@ -239,6 +240,8 @@ Auxil::stringToSearchType (const QString& string)
         return SearchCondition::MustConsist;
     else if (string == MUST_BELONG_TYPE)
         return SearchCondition::MustBelong;
+    else if (string == IN_WORD_LIST_TYPE)
+        return SearchCondition::InWordList;
     else if (string == EXACT_ANAGRAMS_TYPE)
         return SearchCondition::ExactAnagrams;
     else if (string == MIN_ANAGRAMS_TYPE)
@@ -274,6 +277,7 @@ Auxil::searchTypeToString (SearchCondition::SearchType type)
         case SearchCondition::MustExclude:     return MUST_EXCLUDE_TYPE;
         case SearchCondition::MustConsist:     return MUST_CONSIST_TYPE;
         case SearchCondition::MustBelong:      return MUST_BELONG_TYPE;
+        case SearchCondition::InWordList:      return IN_WORD_LIST_TYPE;
         case SearchCondition::ExactAnagrams:   return EXACT_ANAGRAMS_TYPE;
         case SearchCondition::MinAnagrams:     return MIN_ANAGRAMS_TYPE;
         case SearchCondition::MaxAnagrams:     return MAX_ANAGRAMS_TYPE;

@@ -43,6 +43,7 @@ class SearchCondition
         MustExclude,
         MustConsist,
         MustBelong,
+        InWordList,
         ExactAnagrams,
         MinAnagrams,
         MaxAnagrams,

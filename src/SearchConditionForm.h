@@ -51,6 +51,7 @@ class SearchConditionForm : public QFrame
 
     public slots:
     void typeChanged (const QString&);
+    void editListClicked();
     void reset();
 
     private:
@@ -65,6 +66,9 @@ class SearchConditionForm : public QFrame
     QFrame*       paramConsistFrame;
     QSpinBox*     paramConsistSbox;
     WordLineEdit* paramConsistLine;
+    QFrame*       paramWordListFrame;
+    QLineEdit*    paramWordListLine;
+    QString       paramWordListString;
 };
 
 #endif // SEARCH_CONDITION_FORM_H

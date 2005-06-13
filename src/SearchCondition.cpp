@@ -53,6 +53,10 @@ SearchCondition::asString() const
         str += stringValue;
         break;
 
+        case InWordList:
+        str += "...";
+        break;
+
         case ExactLength:
         case MinLength:
         case MaxLength:

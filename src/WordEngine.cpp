@@ -35,8 +35,6 @@ using std::set;
 using std::map;
 using std::make_pair;
 
-const int MAX_INPUT_LINE_LEN = 640;
-
 //---------------------------------------------------------------------------
 //  importFile
 //
@@ -173,9 +171,24 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     SearchSpec optimizedSpec = spec;
     optimizedSpec.optimize();
 
-    QStringList wordList = graph.search (optimizedSpec);
+    QStringList wordList;
 
-    // Check special conditions
+    // XXX: Implement this: big optimization if the only conditions are
+    // InWordList conditions: don't even do a search, just test each word in
+    // the search condition for acceptability.
+    // Check special preconditions
+    //bool wordListsOnly = true;
+    //QValueList<SearchCondition>::iterator cit;
+    //for (cit = spec.conditions.begin(); cit != spec.conditions.end(); ++cit) {
+    //    if ((*cit).type != SearchCondition::InWordList) {
+    //        wordListsOnly = false;
+    //        break;
+    //    }
+    //}
+
+    wordList = graph.search (optimizedSpec);
+
+    // Check special postconditions
     QStringList::iterator wit;
     for (wit = wordList.begin(); wit != wordList.end();) {
         if (matchesConditions (*wit, optimizedSpec.conditions))
@@ -295,6 +308,11 @@ WordEngine::matchesConditions (const QString& word, const
                 if (!isSetMember (word.upper(), searchSet))
                     return false;
             }
+            break;
+
+            case SearchCondition::InWordList:
+            if (!(*it).stringValue.contains (QRegExp ("\\b" + word + "\\b")))
+                return false;
             break;
 
             case SearchCondition::ExactAnagrams:

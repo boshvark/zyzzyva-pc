@@ -35,6 +35,7 @@ SET (SRCS
     src/WordEngine.cpp
     src/WordEntryDialog.cpp
     src/WordGraph.cpp
+    src/WordListDialog.cpp
     src/WordListView.cpp
     src/WordListViewItem.cpp
     src/WordPopupMenu.cpp
@@ -62,6 +63,7 @@ SET (MOCS
     src/SettingsDialog.h
     src/WordEntryDialog.h
     src/WordLineEdit.h
+    src/WordListDialog.h
     src/WordListView.h
     src/WordPopupMenu.h
     src/WordTextEdit.h

@@ -1,9 +1,9 @@
 //---------------------------------------------------------------------------
-// Defs.h
+// WordListDialog.h
 //
-// Definitions.
+// The dialog for editing a list of words.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,25 +22,35 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef DEFS_H
-#define DEFS_H
+#ifndef WORD_LIST_DIALOG_H
+#define WORD_LIST_DIALOG_H
 
-#include <qcolor.h>
-#include <qstring.h>
+#include "WordEngine.h"
+#include <qdialog.h>
+#include <qlistview.h>
 
-namespace Defs {
-    const QColor VALID_CORRECT_WORD_COLOR = Qt::blue;
-    const QColor VALID_MISSED_WORD_COLOR = Qt::green;
-    const QColor INVALID_WORD_COLOR = Qt::red;
-    const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
-    const QString EMPTY_DEFINITION = "(no definition)";
-    const int DEFINITION_WRAP_LENGTH = 80;
-    const int MAX_WORD_LEN = 15;
-    const int MAX_INPUT_LINE_LEN = 640;
-    const int SPACING = 4;
-    const int MARGIN = 4;
-    const int QUIZ_TILE_SPACING = 5;
-    const int QUIZ_TILE_MARGIN = 10;
-}
+class WordListDialog : public QDialog
+{
+    Q_OBJECT
+    public:
+    WordListDialog (QWidget* parent = 0, const char* name = 0, bool modal =
+                    false, WFlags f = WType_TopLevel);
+    ~WordListDialog();
 
-#endif // DEFS_H
+    int numWords() const { return wordList->childCount(); }
+    void setWords (const QString& string);
+    QString getWords() const;
+
+    public slots:
+    void openFileClicked();
+    void clearClicked();
+
+    private:
+    void updateListHeader();
+
+    private:
+    QListView* wordList;
+};
+
+#endif // WORD_LIST_DIALOG_H
+

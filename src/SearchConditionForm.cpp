@@ -25,11 +25,13 @@
 #include "SearchConditionForm.h"
 #include "SearchSet.h"
 #include "WordLineEdit.h"
+#include "WordListDialog.h"
 #include "WordValidator.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qpushbutton.h>
 
 using namespace Defs;
 
@@ -70,6 +72,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
           << Auxil::searchTypeToString (SearchCondition::MustExclude)
           << Auxil::searchTypeToString (SearchCondition::MustConsist)
           << Auxil::searchTypeToString (SearchCondition::MustBelong)
+          << Auxil::searchTypeToString (SearchCondition::InWordList)
           << Auxil::searchTypeToString (SearchCondition::ExactAnagrams)
           << Auxil::searchTypeToString (SearchCondition::MinAnagrams)
           << Auxil::searchTypeToString (SearchCondition::MaxAnagrams);
@@ -146,6 +149,31 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
              SIGNAL (returnPressed()));
     paramConsistHlay->addWidget (paramConsistLine);
     paramStack->addWidget (paramConsistFrame);
+
+    // Frame containing disabled input line and push button for getting word
+    // lists
+    paramWordListFrame = new QFrame (paramStack, "paramWordListFrame");
+    Q_CHECK_PTR (paramWordListFrame);
+    QHBoxLayout* paramWordListHlay = new QHBoxLayout (paramWordListFrame, 0,
+                                                      SPACING,
+                                                      "paramWordListHlay");
+    Q_CHECK_PTR (paramWordListHlay);
+
+    paramWordListLine = new QLineEdit (paramWordListFrame,
+                                       "paramWordListLine");
+    Q_CHECK_PTR (paramWordListLine);
+    paramWordListLine->setText ("0 words");
+    paramWordListLine->setReadOnly (true);
+    paramWordListHlay->addWidget (paramWordListLine);
+
+    QPushButton* paramWordListButton = new QPushButton ("Edit List...",
+                                                        paramWordListFrame,
+                                                        "paramWordListButton");
+    Q_CHECK_PTR (paramWordListButton);
+    connect (paramWordListButton, SIGNAL (clicked()),
+             SLOT (editListClicked()));
+    paramWordListHlay->addWidget (paramWordListButton);
+    paramStack->addWidget (paramWordListFrame);
 }
 
 //---------------------------------------------------------------------------
@@ -189,6 +217,10 @@ SearchConditionForm::getSearchCondition() const
 
         case SearchCondition::MustBelong:
         condition.stringValue = paramCbox->currentText();
+        break;
+
+        case SearchCondition::InWordList:
+        condition.stringValue = paramWordListString;
         break;
 
         default:
@@ -273,6 +305,9 @@ SearchConditionForm::isValid() const
         case SearchCondition::MustConsist:
         return !paramConsistLine->text().isEmpty();
 
+        case SearchCondition::InWordList:
+        return !paramWordListString.isEmpty();
+
         case SearchCondition::UnknownSearchType:
         return false;
 
@@ -339,10 +374,37 @@ SearchConditionForm::typeChanged (const QString& string)
         paramStack->raiseWidget (paramConsistFrame);
         break;
 
+        case SearchCondition::InWordList:
+        paramStack->raiseWidget (paramWordListFrame);
+        break;
+
         default:
         qWarning ("Unrecognized search condition: " + string);
         break;
     }
+}
+
+//---------------------------------------------------------------------------
+//  editListClicked
+//
+//! Called when the Edit List button is clicked.  Display a dialog that allows
+//! the user to enter words or add words from a file.
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::editListClicked()
+{
+    WordListDialog* dialog = new WordListDialog (this, "dialog", true);
+    Q_CHECK_PTR (dialog);
+
+    dialog->setWords (paramWordListString);
+
+    int code = dialog->exec();
+    if (code == QDialog::Accepted) {
+        paramWordListString = dialog->getWords();
+        paramWordListLine->setText (QString::number (dialog->numWords()) +
+                                    " words");
+    }
+    delete dialog;
 }
 
 //---------------------------------------------------------------------------
