@@ -373,9 +373,9 @@ WordGraph::search (const SearchSpec& spec) const
                 if (finalWordSet.find (*sit) != finalWordSet.end())
                     conjunctionSet.insert (*sit);
             }
-            finalWordSet = conjunctionSet;
             if (conjunctionSet.empty())
                 return wordList;
+            finalWordSet = conjunctionSet;
         }
 
         else {

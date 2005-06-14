@@ -171,22 +171,21 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     SearchSpec optimizedSpec = spec;
     optimizedSpec.optimize();
 
-    QStringList wordList;
+    // Big optimization if the only conditions are InWordList conditions:
+    // don't even do a search, just test each word in the search condition for
+    // acceptability.
+    bool wordListsOnly = true;
+    QValueList<SearchCondition>::const_iterator cit;
+    for (cit = spec.conditions.begin(); cit != spec.conditions.end(); ++cit) {
+        if ((*cit).type != SearchCondition::InWordList) {
+            wordListsOnly = false;
+            break;
+        }
+    }
+    if (wordListsOnly)
+        return wordListOnlySearch (optimizedSpec);
 
-    // XXX: Implement this: big optimization if the only conditions are
-    // InWordList conditions: don't even do a search, just test each word in
-    // the search condition for acceptability.
-    // Check special preconditions
-    //bool wordListsOnly = true;
-    //QValueList<SearchCondition>::iterator cit;
-    //for (cit = spec.conditions.begin(); cit != spec.conditions.end(); ++cit) {
-    //    if ((*cit).type != SearchCondition::InWordList) {
-    //        wordListsOnly = false;
-    //        break;
-    //    }
-    //}
-
-    wordList = graph.search (optimizedSpec);
+    QStringList wordList = graph.search (optimizedSpec);
 
     // Check special postconditions
     QStringList::iterator wit;
@@ -437,4 +436,66 @@ WordEngine::numAnagrams (const QString& word) const
     condition.stringValue = word;
     spec.conditions << condition;
     return search (spec, true).size();
+}
+
+//---------------------------------------------------------------------------
+//  wordListOnlySearch
+//
+//! Search for valid words matching In Word List conditions in a search spec.
+//
+//! @param spec the search specification
+//
+//! @return a list of acceptable words matching the In Word List conditions
+//---------------------------------------------------------------------------
+QStringList
+WordEngine::wordListOnlySearch (const SearchSpec& spec) const
+{
+    QStringList wordList;
+    std::set<QString> finalWordSet;
+    std::set<QString>::iterator sit;
+    int conditionNum = 0;
+
+    QValueList<SearchCondition>::const_iterator it;
+    for (it = spec.conditions.begin(); it != spec.conditions.end(); ++it) {
+        if ((*it).type != SearchCondition::InWordList)
+            continue;
+        QStringList words = QStringList::split (" ", (*it).stringValue);
+
+        std::set<QString> wordSet;
+        QStringList::iterator wit;
+        for (wit = words.begin(); wit != words.end(); ++wit) {
+            if (isAcceptable (*wit))
+                wordSet.insert (*wit);
+        }
+
+        if (!conditionNum) {
+            finalWordSet = wordSet;
+        }
+
+        else if (spec.conjunction) {
+            set<QString> conjunctionSet;
+            for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
+                if (finalWordSet.find (*sit) != finalWordSet.end())
+                    conjunctionSet.insert (*sit);
+            }
+            if (conjunctionSet.empty())
+                return wordList;
+            finalWordSet = conjunctionSet;
+        }
+
+        else {
+            for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
+                finalWordSet.insert (*sit);
+            }
+        }
+
+        ++conditionNum;
+    }
+
+    // Transform word set into word list and return it
+    for (sit = finalWordSet.begin(); sit != finalWordSet.end(); ++sit) {
+        wordList << *sit;
+    }
+
+    return wordList;
 }

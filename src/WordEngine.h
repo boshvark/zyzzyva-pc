@@ -51,6 +51,7 @@ class WordEngine
                             QValueList<SearchCondition>& conditions) const;
     bool isSetMember (const QString& word, SearchSet ss) const;
     int numAnagrams (const QString& word) const;
+    QStringList wordListOnlySearch (const SearchSpec& spec) const;
 
     WordGraph graph;
     std::map<QString, QString> definitions;
