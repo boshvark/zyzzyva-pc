@@ -47,7 +47,7 @@ class ActionForm : public QFrame
     virtual ~ActionForm() { }
     virtual ActionFormType getType() const { return type; }
 
-    protected:
+    private:
     ActionFormType type;
 };
 

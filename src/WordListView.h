@@ -38,7 +38,7 @@ class WordListView : public QListView
                   WFlags f = 0);
     ~WordListView();
 
-    virtual void setFont (const QFont& font);
+    void setFont (const QFont& font);
 
     public slots:
     void doReturnPressed (QListViewItem* item);
@@ -47,7 +47,7 @@ class WordListView : public QListView
     void displayDefinition (const QString& word);
     void setTitle (const QString& title);
 
-    protected:
+    private:
     void contextMenuEvent (QContextMenuEvent* e);
     bool exportFile (const QString& filename, QString* err = 0) const;
 
