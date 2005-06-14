@@ -26,7 +26,6 @@
 #define QUIZ_FORM_H
 
 #include "ActionForm.h"
-#include "NewQuizDialog.h"
 #include "QuizTimerSpec.h"
 #include <qcanvas.h>
 #include <qimage.h>
@@ -40,6 +39,7 @@
 class AnalyzeQuizDialog;
 class DefinitionLabel;
 class QuizEngine;
+class QuizSpec;
 class WordEngine;
 class WordLineEdit;
 class WordListView;
@@ -53,7 +53,7 @@ class QuizForm : public ActionForm
     ~QuizForm();
 
     public slots:
-    void newQuiz (NewQuizDialog* dialog);
+    void newQuiz (const QuizSpec& spec);
     void responseEntered();
     void newQuizClicked();
     void nextQuestionClicked();

@@ -46,7 +46,8 @@ class WordPopupMenu : public QPopupMenu
         ViewBlankMatches,
         ViewExtensions,
         ViewTranspositions,
-        ExportList
+        ExportList,
+        CreateQuiz
     };
 };
 

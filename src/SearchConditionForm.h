@@ -55,6 +55,9 @@ class SearchConditionForm : public QFrame
     void reset();
 
     private:
+    void setWordListString (const QString& string);
+
+    private:
     QComboBox*    typeCbox;
     QWidgetStack* paramStack;
     QFrame*       paramLineFrame;

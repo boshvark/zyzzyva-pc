@@ -268,6 +268,10 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
         paramConsistLine->setText (condition.stringValue);
         break;
 
+        case SearchCondition::InWordList:
+        setWordListString (condition.stringValue);
+        break;
+
         default: break;
     }
     typeChanged (typeCbox->currentText());
@@ -400,9 +404,7 @@ SearchConditionForm::editListClicked()
 
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
-        paramWordListString = dialog->getWords();
-        paramWordListLine->setText (QString::number (dialog->numWords()) +
-                                    " words");
+        setWordListString (dialog->getWords());
     }
     delete dialog;
 }
@@ -422,4 +424,19 @@ SearchConditionForm::reset()
     paramConsistLine->setText ("");
     typeCbox->setCurrentItem (0);
     typeChanged (typeCbox->currentText());
+}
+
+//---------------------------------------------------------------------------
+//  setWordListString
+//
+//! Set the value of the word list string, and update the word list line to
+//! reflect the number of words in the list.
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::setWordListString (const QString& string)
+{
+    paramWordListString = string;
+    QStringList wordList = QStringList::split (" ", string);
+    paramWordListLine->setText (QString::number (wordList.size()) + " words");
+    paramWordListLine->home (false);
 }

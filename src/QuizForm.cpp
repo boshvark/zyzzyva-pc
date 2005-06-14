@@ -262,15 +262,13 @@ QuizForm::responseEntered()
 //---------------------------------------------------------------------------
 //  newQuiz
 //
-//! Start a new quiz based on the information in a New Quiz dialog.
-//! XXX: Pass a QuizSpec instead of NewQuizDialog here.
+//! Start a new quiz based on a quiz specification.
 //
-//! @param dialog a quiz dialog containing the quiz specification
+//! @param spec the quiz specification
 //---------------------------------------------------------------------------
 void
-QuizForm::newQuiz (NewQuizDialog* dialog)
+QuizForm::newQuiz (const QuizSpec& spec)
 {
-    QuizSpec spec = dialog->getQuizSpec();
     timerSpec = spec.timerSpec;
     QApplication::setOverrideCursor (Qt::waitCursor);
     quizEngine->newQuiz (spec);
@@ -297,7 +295,7 @@ QuizForm::newQuizClicked()
         unpauseTimer();
         return;
     }
-    newQuiz (dialog);
+    newQuiz (dialog->getQuizSpec());
 }
 
 //---------------------------------------------------------------------------
@@ -611,7 +609,8 @@ QuizForm::setQuestionLabel (const QString& question)
                 letter = "_";
             image = tileImages.find (letter);
             if (image == tileImages.end())
-                qDebug ("Did not find letter '" + letter + "' in tiles map!");
+                qWarning ("Did not find letter '" + letter +
+                          "' in tiles map!");
             else {
                 ImageItem* item = new ImageItem (*image, questionCanvas);
                 item->move (x, QUIZ_TILE_MARGIN);

@@ -25,6 +25,8 @@
 #include "WordListView.h"
 #include "WordListViewItem.h"
 #include "DefinitionDialog.h"
+#include "MainWindow.h"
+#include "QuizSpec.h"
 #include "WordEngine.h"
 #include "WordPopupMenu.h"
 #include "WordVariationDialog.h"
@@ -166,6 +168,10 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
         exportRequested();
         return;
 
+        case WordPopupMenu::CreateQuiz:
+        createQuizRequested();
+        return;
+
         default: break;
     }
 
@@ -206,6 +212,33 @@ WordListView::exportRequested()
         QMessageBox::warning (this, "Error Exporting Word List",
                               "Cannot export word list:\n" + error + ".");
     }
+}
+
+//---------------------------------------------------------------------------
+//  createQuizRequested
+//
+//! Called when the user indicates that the word list should be used to create
+//! a quiz.  Display a quiz dialog with a single In Word List condition
+//! already filled in with the contents of the list.
+//---------------------------------------------------------------------------
+void
+WordListView::createQuizRequested()
+{
+    QuizSpec quizSpec;
+    SearchSpec searchSpec;
+    SearchCondition searchCondition;
+    QString searchString;
+    QListViewItem* item;
+    for (item = firstChild(); item; item = item->nextSibling()) {
+        if (!searchString.isEmpty())
+            searchString += " ";
+        searchString += item->text (0);
+    }
+    searchCondition.type = SearchCondition::InWordList;
+    searchCondition.stringValue = searchString;
+    searchSpec.conditions.push_back (searchCondition);
+    quizSpec.searchSpec = searchSpec;
+    MainWindow::getInstance()->newQuizFormInteractive (quizSpec);
 }
 
 //---------------------------------------------------------------------------

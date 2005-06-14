@@ -33,6 +33,7 @@
 
 class AboutDialog;
 class HelpDialog;
+class QuizSpec;
 class QuizEngine;
 class WordEngine;
 class SettingsDialog;
@@ -45,9 +46,13 @@ class MainWindow : public QMainWindow
                 WFlags f = WType_TopLevel);
     ~MainWindow();
 
+    static MainWindow* getInstance() { return instance; }
+
     public slots:
     void importInteractive();
-    void newQuizForm();
+    void newQuizFormInteractive();
+    void newQuizFormInteractive (const QuizSpec& quizSpec);
+    void newQuizForm (const QuizSpec& quizSpec);
     void newSearchForm();
     void newDefineForm();
     void newJudgeForm();
@@ -77,6 +82,8 @@ class MainWindow : public QMainWindow
     SettingsDialog* settingsDialog;
     AboutDialog*    aboutDialog;
     HelpDialog*     helpDialog;
+
+    static MainWindow*  instance;
 };
 
 #endif // MAIN_WINDOW_H

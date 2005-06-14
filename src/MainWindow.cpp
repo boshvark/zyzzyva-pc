@@ -48,6 +48,8 @@
 #include <qmessagebox.h>
 #include <qstatusbar.h>
 
+MainWindow* MainWindow::instance = 0;
+
 const QString IMPORT_FAILURE_TITLE = "Load Failed";
 const QString IMPORT_COMPLETE_TITLE = "Load Complete";
 const QString DEFINE_TAB_TITLE = "Define";
@@ -81,7 +83,8 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 {
     QPopupMenu* filePopup = new QPopupMenu (this);
     Q_CHECK_PTR (filePopup);
-    filePopup->insertItem ("New Qui&z", this, SLOT (newQuizForm()));
+    filePopup->insertItem ("New Qui&z...", this,
+                           SLOT (newQuizFormInteractive()));
     filePopup->insertItem ("New &Search", this, SLOT (newSearchForm()));
     filePopup->insertItem ("New &Definition", this, SLOT (newDefineForm()));
     filePopup->insertItem ("New Word &Judge", this, SLOT (newJudgeForm()));
@@ -160,6 +163,9 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
         import (importFile);
 
     importStems();
+
+    if (!instance)
+        instance = this;
 }
 
 //---------------------------------------------------------------------------
@@ -194,24 +200,57 @@ MainWindow::importInteractive()
 }
 
 //---------------------------------------------------------------------------
-//  newQuizForm
+//  newQuizFormInteractive
 //
-//! Create a new quiz form.
+//! Create a new quiz form interactively.
 //---------------------------------------------------------------------------
 void
-MainWindow::newQuizForm()
+MainWindow::newQuizFormInteractive()
 {
     NewQuizDialog* dialog = new NewQuizDialog (this, "newQuizDialog", true);
     Q_CHECK_PTR (dialog);
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
-        QuizForm* form = new QuizForm (wordEngine, tabStack, "quizForm");
-        Q_CHECK_PTR (form);
-        form->setTileTheme (settingsDialog->getTileTheme());
-        form->newQuiz (dialog);
-        newTab (form, QUIZ_TAB_TITLE);
+        newQuizForm (dialog->getQuizSpec());
     }
     delete dialog;
+}
+
+//---------------------------------------------------------------------------
+//  newQuizFormInteractive
+//
+//! Create a new quiz form interactively, with the new quiz dialog initialized
+//! from a quiz specification.
+//---------------------------------------------------------------------------
+void
+MainWindow::newQuizFormInteractive (const QuizSpec& quizSpec)
+{
+    NewQuizDialog* dialog = new NewQuizDialog (this, "newQuizDialog", true);
+    Q_CHECK_PTR (dialog);
+    dialog->setQuizSpec (quizSpec);
+    int code = dialog->exec();
+    if (code == QDialog::Accepted) {
+        newQuizForm (dialog->getQuizSpec());
+    }
+    delete dialog;
+}
+
+//---------------------------------------------------------------------------
+//  newQuizForm
+//
+//! Create a new quiz form directly from a quiz specification without
+//! presenting the user with a quiz spec dialog.
+//
+//! @param quizSpec the quiz specification
+//---------------------------------------------------------------------------
+void
+MainWindow::newQuizForm (const QuizSpec& quizSpec)
+{
+    QuizForm* form = new QuizForm (wordEngine, tabStack, "quizForm");
+    Q_CHECK_PTR (form);
+    form->setTileTheme (settingsDialog->getTileTheme());
+    form->newQuiz (quizSpec);
+    newTab (form, QUIZ_TAB_TITLE);
 }
 
 //---------------------------------------------------------------------------

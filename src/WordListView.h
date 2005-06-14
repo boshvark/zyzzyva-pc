@@ -44,6 +44,7 @@ class WordListView : public QListView
     void doReturnPressed (QListViewItem* item);
     void doPopupMenu (QListViewItem* item, const QPoint& point, int);
     void exportRequested();
+    void createQuizRequested();
     void displayDefinition (const QString& word);
     void setTitle (const QString& title);
 
