@@ -214,7 +214,6 @@ WordGraph::search (const SearchSpec& spec) const
         set <QString> wordSet;
         stack <TraversalState> states;
         QString word;
-        QChar c;
 
         bool wildcard = false;
         Node* node = top;
@@ -229,13 +228,23 @@ WordGraph::search (const SearchSpec& spec) const
         }
 
         // If Anagram or Subanagram match contains a wildcard, note it and remove
-        // the wildcard character from the match pattern.
+        // the wildcard character from the match pattern.  Also move character
+        // classes to the end of the string so they will be seen last if
+        // moving sequentially through the string looking for matches.
         else if ((condition.type == SearchCondition::AnagramMatch) ||
                  (condition.type == SearchCondition::SubanagramMatch))
         {
             wildcard = unmatched.contains ('*');
             if (wildcard)
                 unmatched = unmatched.replace ('*', "");
+
+            QRegExp re ("\\[[^\\]]*\\][A-Z]");
+            while (re.search (unmatched) >= 0) {
+                unmatched = unmatched.left (re.pos()) +
+                    unmatched.right (unmatched.length() -
+                                    (re.pos() + re.matchedLength()) + 1) +
+                    unmatched.mid (re.pos(), re.matchedLength() - 1);
+            }
         }
 
         // Traverse the tree looking for matches
@@ -246,13 +255,21 @@ WordGraph::search (const SearchSpec& spec) const
                 QString origWord = word;
                 QString origUnmatched = unmatched;
 
+                QString match;
+                int closeIndex = 0;
+
                 // Get the next character in the Pattern match.  Allow a
                 // wildcard to match the empty string.
                 if (condition.type == SearchCondition::PatternMatch) {
-                    c = unmatched.at (0);
-                    if (c == "*")
+                    match = unmatched.at (0);
+                    if (match == "*")
                         states.push (TraversalState (node, word,
                             unmatched.right (unmatched.length() - 1)));
+
+                    else if (match == "[") {
+                        closeIndex = unmatched.find (']', 0);
+                        match = unmatched.mid (1, closeIndex - 1);
+                    }
                 }
 
                 // Traverse next nodes, looking for matches
@@ -268,9 +285,9 @@ WordGraph::search (const SearchSpec& spec) const
 
                         // A node matches wildcard characters or its own
                         // letter
-                        if (c == node->letter)
+                        if (match.contains (node->letter))
                             word += node->letter;
-                        else if ((c == "*") || (c == "?"))
+                        else if ((match == "*") || (match == "?"))
                             word += node->letter.lower();
                         else
                             continue;
@@ -278,22 +295,23 @@ WordGraph::search (const SearchSpec& spec) const
                         // If this node matches, push its child on the stack
                         // to be traversed later
                         if (node->child) {
-                            if (c == "*")
+                            if (match == "*")
                                 states.push (TraversalState (node->child,
                                                              word,
                                                              unmatched));
 
                             states.push (TraversalState (node->child, word,
-                                unmatched.right (unmatched.length() - 1)));
+                                unmatched.right (unmatched.length() -
+                                                 closeIndex - 1)));
                         }
 
                         // If end of word and end of pattern, put the word in
                         // the list
                         QString wordUpper = word.upper();
                         if (node->eow &&
-                            ((unmatched.length() == 1) ||
-                            ((unmatched.length() == 2) &&
-                             (QChar (unmatched.at (1)) == "*"))) &&
+                            ((unmatched.length() == closeIndex + 1) ||
+                            ((unmatched.length() == closeIndex + 2) &&
+                             (QChar (unmatched.at (closeIndex + 1)) == "*"))) &&
                             matchesSpec (wordUpper, spec) &&
                             !wordSet.count (wordUpper))
                         {
@@ -306,27 +324,93 @@ WordGraph::search (const SearchSpec& spec) const
                         ((condition.type == SearchCondition::AnagramMatch) ||
                          (condition.type == SearchCondition::SubanagramMatch))
                     {
+                        // Find the current letter in the pattern.  First,
+                        // prefer to match the letter itself.  Second, prefer
+                        // to match the letter as part of a character class.
+                        // If the letter matches more than one character
+                        // class, match the first one and push traversal
+                        // states for each of the others that is matched.
+                        // Character classes are guaranteed to be at the end
+                        // of the search string, so once you're in a character
+                        // class, you're always in a character class.
+                        int len = unmatched.length();
+                        bool inGroup = false;
+                        bool found = false;
+                        bool groupMatch = false;
+                        int matchStart = -1;
+                        int matchEnd = -1;
+                        int groupStart = -1;
+                        for (int i = 0; i < len; ++i) {
+                            QChar c = unmatched.at (i);
+
+                            if (c == '[') {
+                                inGroup = true;
+                                groupStart = i;
+                            }
+
+                            else if (inGroup) {
+                                if (c == node->letter) {
+                                    if (!found) {
+                                        found = true;
+                                        matchStart = groupStart;
+                                    }
+                                }
+
+                                else if (c == ']') {
+                                    if (found) {
+                                        if (matchEnd < 0)
+                                            matchEnd = i;
+
+                                        else if (node->child) {
+                                            states.push ( TraversalState
+                                                (node->child, word +
+                                                 node->letter,
+                                                 unmatched.left (groupStart) +
+                                                 unmatched.right
+                                                 (unmatched.length() - i -
+                                                  1)));
+                                        }
+                                    }
+                                    inGroup = false;
+                                    found = false;
+                                }
+                            }
+
+                            // Matched the character itself
+                            else if (c == node->letter) {
+                                found = true;
+                                matchStart = i;
+                                matchEnd = i;
+                                break;
+                            }
+                        }
 
                         // Try to match the current letter against the
                         // pattern.  If the letter doesn't match exactly,
                         // match a ? char.
-                        int index = unmatched.find (node->letter);
+                        //int index = unmatched.find (node->letter);
                         bool wildcardMatch = false;
-                        if (index < 0) {
-                            index = unmatched.find ("?");
+                        found = (matchStart >= 0);
+                        if (!found) {
+                            matchStart = matchEnd = unmatched.find ("?");
+                            found = (matchStart >= 0);
                             wildcardMatch = true;
                         }
-                        bool match = (index >= 0);
 
                         // If this letter matched or a wildcard was specified,
                         // keep traversing after possibly adding the current
                         // word.
-                        if (match || wildcard) {
-                            word += (match && !wildcardMatch) ? node->letter
+                        if (found || wildcard) {
+                            word += (found && !wildcardMatch) ? node->letter
                                 : node->letter.lower();
 
-                            if (match)
-                                unmatched.replace (index, 1, "");
+                            //qDebug ("unmatched before: |" + unmatched + "|");
+                            if (found)
+                                unmatched.replace (matchStart,
+                                                   matchEnd - matchStart + 1,
+                                                   "");
+
+                            //qDebug ("unmatched after:  |" + unmatched + "|");
 
                             if (node->child &&
                                 (wildcard || !unmatched.isEmpty()))
