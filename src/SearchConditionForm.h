@@ -48,6 +48,7 @@ class SearchConditionForm : public QFrame
 
     signals:
     void returnPressed();
+    void contentsChanged();
 
     public slots:
     void typeChanged (const QString&);

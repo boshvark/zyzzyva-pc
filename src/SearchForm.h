@@ -45,6 +45,7 @@ class SearchForm : public ActionForm
     public slots:
     void search();
     void updateResultTotal (int num);
+    void specChanged();
 
     private:
     WordEngine*     engine;

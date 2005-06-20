@@ -42,9 +42,11 @@ class SearchSpecForm : public QFrame
     SearchSpecForm (QWidget* parent = 0, const char* name = 0, WFlags f = 0);
     SearchSpec getSearchSpec() const;
     void setSearchSpec (const SearchSpec& spec);
+    bool isValid() const;
 
     signals:
     void returnPressed();
+    void contentsChanged();
 
     public slots:
     void addConditionForm();

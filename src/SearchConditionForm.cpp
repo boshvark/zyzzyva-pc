@@ -100,6 +100,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     Q_CHECK_PTR (paramLine);
     paramLine->setValidator (patternValidator);
     connect (paramLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
+    connect (paramLine, SIGNAL (textChanged (const QString&)),
+             SIGNAL (contentsChanged()));
     paramLineHlay->addWidget (paramLine);
     paramStack->addWidget (paramLineFrame);
 
@@ -112,6 +114,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     paramSbox = new QSpinBox (paramSboxFrame, "paramSbox");
     Q_CHECK_PTR (paramSbox);
     paramSbox->setMinValue (0);
+    connect (paramSbox, SIGNAL (valueChanged (int)),
+             SIGNAL (contentsChanged()));
     paramSboxHlay->addWidget (paramSbox);
     paramStack->addWidget (paramSboxFrame);
 
@@ -123,6 +127,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     Q_CHECK_PTR (paramCboxHlay);
     paramCbox = new QComboBox (paramCboxFrame, "paramCbox");
     Q_CHECK_PTR (paramCbox);
+    connect (paramCbox, SIGNAL (activated (const QString&)),
+             SIGNAL (contentsChanged()));
     paramCboxHlay->addWidget (paramCbox);
     paramStack->addWidget (paramCboxFrame);
 
@@ -137,6 +143,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     Q_CHECK_PTR (paramConsistSbox);
     paramConsistSbox->setMinValue (0);
     paramConsistSbox->setMaxValue (100);
+    connect (paramConsistSbox, SIGNAL (valueChanged (int)),
+             SIGNAL (contentsChanged()));
     paramConsistHlay->addWidget (paramConsistSbox);
     QLabel* pctLabel = new QLabel ("%", paramConsistFrame, "pctLabel");
     Q_CHECK_PTR (pctLabel);
@@ -147,6 +155,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     paramConsistLine->setValidator (patternValidator);
     connect (paramConsistLine, SIGNAL (returnPressed()),
              SIGNAL (returnPressed()));
+    connect (paramConsistLine, SIGNAL (textChanged (const QString&)),
+             SIGNAL (contentsChanged()));
     paramConsistHlay->addWidget (paramConsistLine);
     paramStack->addWidget (paramConsistFrame);
 
@@ -164,6 +174,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     Q_CHECK_PTR (paramWordListLine);
     paramWordListLine->setText ("0 words");
     paramWordListLine->setReadOnly (true);
+    connect (paramWordListLine, SIGNAL (textChanged (const QString&)),
+             SIGNAL (contentsChanged()));
     paramWordListHlay->addWidget (paramWordListLine);
 
     QPushButton* paramWordListButton = new QPushButton ("Edit List...",
@@ -307,7 +319,8 @@ SearchConditionForm::isValid() const
         return paramSbox->value() > 0;
 
         case SearchCondition::MustConsist:
-        return !paramConsistLine->text().isEmpty();
+        return (paramConsistSbox->value() > 0) &&
+               !paramConsistLine->text().isEmpty();
 
         case SearchCondition::InWordList:
         return !paramWordListString.isEmpty();
@@ -386,6 +399,8 @@ SearchConditionForm::typeChanged (const QString& string)
         qWarning ("Unrecognized search condition: " + string);
         break;
     }
+
+    contentsChanged();
 }
 
 //---------------------------------------------------------------------------

@@ -154,6 +154,28 @@ SearchSpecForm::setSearchSpec (const SearchSpec& spec)
 }
 
 //---------------------------------------------------------------------------
+//  isValid
+//
+//! Determine whether the input in all visible search condition forms is
+//! valid.
+//
+//! @return true if valid, false otherwise 
+//---------------------------------------------------------------------------
+bool
+SearchSpecForm::isValid() const
+{
+    QValueList<SearchConditionForm*>::const_iterator it =
+        conditionForms.begin();
+    for (int i = 0; (i < visibleForms) && (it != conditionForms.end());
+         ++i, ++it)
+    {
+        if (!(*it)->isValid())
+            return false;
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------
 //  addConditionForm
 //
 //! Add a condition form to the bottom of the layout.
@@ -161,13 +183,18 @@ SearchSpecForm::setSearchSpec (const SearchSpec& spec)
 void
 SearchSpecForm::addConditionForm()
 {
-    conditionForms[visibleForms]->reset();
-    conditionForms[visibleForms]->show();
+    SearchConditionForm* form = conditionForms[visibleForms];
+    form->blockSignals (true);
+    form->reset();
+    form->show();
+    form->blockSignals (false);
     ++visibleForms;
 
     fewerButton->setEnabled (visibleForms > 1);
     if (visibleForms == MAX_CONDITIONS)
         moreButton->setEnabled (false);
+
+    contentsChanged();
 }
 
 //---------------------------------------------------------------------------
@@ -187,6 +214,8 @@ SearchSpecForm::removeConditionForm()
     moreButton->setEnabled (true);
     if (visibleForms == 1)
         fewerButton->setEnabled (false);
+
+    contentsChanged();
 }
 
 //---------------------------------------------------------------------------
@@ -201,6 +230,7 @@ SearchSpecForm::addConditionForms()
         SearchConditionForm* form = new SearchConditionForm (this, "form");
         Q_CHECK_PTR (form);
         connect (form, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
+        connect (form, SIGNAL (contentsChanged()), SIGNAL (contentsChanged()));
         conditionVlay->addWidget (form);
         conditionForms << form;
         if (i)

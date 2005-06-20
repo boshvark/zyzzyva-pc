@@ -60,6 +60,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     specForm = new SearchSpecForm (this, "specForm");
     Q_CHECK_PTR (specForm);
     connect (specForm, SIGNAL (returnPressed()), SLOT (search()));
+    connect (specForm, SIGNAL (contentsChanged()), SLOT (specChanged()));
     specVlay->addWidget (specForm);
 
     //lowerCaseCbox = new QCheckBox ("Use lower-case letters for wildcard "
@@ -83,7 +84,9 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     resultList->setTitle ("Search Results");
     resultList->setShowSortIndicator (true);
     specVlay->addWidget (resultList, 1);
+
     updateResultTotal (0);
+    specChanged();
 }
 
 //---------------------------------------------------------------------------
@@ -111,6 +114,18 @@ SearchForm::search()
     resultList->sort();
     updateResultTotal (numWords);
     QApplication::restoreOverrideCursor();
+}
+
+//---------------------------------------------------------------------------
+//  specChanged
+//
+//! Called when the contents of the search spec form change.  Enable or
+//! disable the Search button appropriately.
+//---------------------------------------------------------------------------
+void
+SearchForm::specChanged()
+{
+    searchButton->setEnabled (specForm->isValid());
 }
 
 //---------------------------------------------------------------------------
