@@ -350,10 +350,10 @@ WordGraph::search (const SearchSpec& spec) const
 
                             else if (inGroup) {
                                 if (c == node->letter) {
-                                    if (!found) {
-                                        found = true;
+                                    if (!found && (matchStart < 0)) {
                                         matchStart = groupStart;
                                     }
+                                    found = true;
                                 }
 
                                 else if (c == ']') {
@@ -404,13 +404,10 @@ WordGraph::search (const SearchSpec& spec) const
                             word += (found && !wildcardMatch) ? node->letter
                                 : node->letter.lower();
 
-                            //qDebug ("unmatched before: |" + unmatched + "|");
                             if (found)
                                 unmatched.replace (matchStart,
                                                    matchEnd - matchStart + 1,
                                                    "");
-
-                            //qDebug ("unmatched after:  |" + unmatched + "|");
 
                             if (node->child &&
                                 (wildcard || !unmatched.isEmpty()))
