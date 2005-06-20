@@ -239,7 +239,6 @@ QuizForm::responseEntered()
         displayResponse += "*";
         statusStr = "<font color=\"red\">Incorrect</font>";
         analyzeDialog->addIncorrect (response);
-        analyzeDialog->updateStats();
     }
     else if (status == QuizEngine::Duplicate) {
         statusStr = "<font color=\"purple\">Duplicate</font>";

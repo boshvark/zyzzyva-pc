@@ -30,6 +30,8 @@
 #include <qlayout.h>
 
 const QString DIALOG_CAPTION = "Analyze Quiz";
+const QString MISSED_HEADER_PREFIX = "Missed : ";
+const QString INCORRECT_HEADER_PREFIX = "Incorrect : ";
 
 using namespace Defs;
 
@@ -79,7 +81,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     missedList = new WordListView (wordEngine, this, "missedList");
     Q_CHECK_PTR (missedList);
     missedList->setResizeMode (QListView::LastColumn);
-    missedList->setTitle ("Missed");
+    missedList->setTitle (MISSED_HEADER_PREFIX + "0 words");
     missedVlay->addWidget (missedList);
 
     QVBoxLayout* incorrectVlay = new QVBoxLayout (SPACING, "incorrectVlay");
@@ -89,7 +91,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     incorrectList = new WordListView (wordEngine, this, "incorrectList");
     Q_CHECK_PTR (incorrectList);
     incorrectList->setResizeMode (QListView::LastColumn);
-    incorrectList->setTitle ("Incorrect");
+    incorrectList->setTitle (INCORRECT_HEADER_PREFIX + "0 words");
     incorrectVlay->addWidget (incorrectList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
@@ -136,6 +138,18 @@ AnalyzeQuizDialog::updateStats()
     int correct = quizEngine->getQuizCorrect();
     setRecall (correct, quizEngine->getQuizTotal());
     setPrecision (correct, correct + quizEngine->getQuizIncorrect());
+    int missed = missedList->childCount();
+    QString missedTitle = MISSED_HEADER_PREFIX + QString::number (missed) +
+        " word";
+    if (missed != 1)
+        missedTitle += "s";
+    missedList->setTitle (missedTitle);
+    int incorrect = incorrectList->childCount();
+    QString incorrectTitle = MISSED_HEADER_PREFIX + QString::number
+        (incorrect) + " word";
+    if (incorrect != 1)
+        incorrectTitle += "s";
+    incorrectList->setTitle (incorrectTitle);
 }
 
 //---------------------------------------------------------------------------
@@ -150,6 +164,7 @@ AnalyzeQuizDialog::addMissed (const QString& word)
 {
     WordListViewItem* item = new WordListViewItem (missedList, word);
     item->setTextColor (VALID_MISSED_WORD_COLOR);
+    updateStats();
 }
 
 //---------------------------------------------------------------------------
@@ -164,6 +179,7 @@ AnalyzeQuizDialog::addIncorrect (const QString& word)
 {
     WordListViewItem* item = new WordListViewItem (incorrectList, word);
     item->setTextColor (INVALID_WORD_COLOR);
+    updateStats();
 }
 
 //---------------------------------------------------------------------------
