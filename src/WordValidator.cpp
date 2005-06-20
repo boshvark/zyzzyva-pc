@@ -42,6 +42,8 @@ WordValidator::validate (QString& input, int& pos) const
         re += "?";
     if (options & AllowAsterisks)
         re += "*";
+    if (options & AllowBrackets)
+        re += "\\[\\]";
     re += "]+";
     replaceRegExp(QRegExp(re), "", input, pos);
     return Acceptable;

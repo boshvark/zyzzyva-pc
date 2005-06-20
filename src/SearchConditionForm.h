@@ -57,6 +57,7 @@ class SearchConditionForm : public QFrame
 
     private:
     void setWordListString (const QString& string);
+    bool matchStringIsValid (const QString& string) const;
 
     private:
     QComboBox*    typeCbox;

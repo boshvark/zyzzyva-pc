@@ -56,7 +56,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
                                                          "patternValidator");
     Q_CHECK_PTR (patternValidator);
     patternValidator->setOptions (WordValidator::AllowQuestionMarks |
-                                  WordValidator::AllowAsterisks);
+                                  WordValidator::AllowAsterisks |
+                                  WordValidator::AllowBrackets);
 
     QHBoxLayout* mainHlay = new QHBoxLayout (this, 0, SPACING, "mainHlay");
     Q_CHECK_PTR (mainHlay);
@@ -152,7 +153,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     paramConsistLine = new WordLineEdit (paramConsistFrame,
                                          "paramConsistLine");
     Q_CHECK_PTR (paramConsistLine);
-    paramConsistLine->setValidator (patternValidator);
+    paramConsistLine->setValidator (letterValidator);
     connect (paramConsistLine, SIGNAL (returnPressed()),
              SIGNAL (returnPressed()));
     connect (paramConsistLine, SIGNAL (textChanged (const QString&)),
@@ -294,7 +295,7 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
 //
 //! Determine whether the input in the form is valid.
 //
-//! @return true if valid, false otherwise 
+//! @return true if valid, false otherwise
 //---------------------------------------------------------------------------
 bool
 SearchConditionForm::isValid() const
@@ -308,7 +309,7 @@ SearchConditionForm::isValid() const
         case SearchCondition::SubanagramMatch:
         case SearchCondition::MustInclude:
         case SearchCondition::MustExclude:
-        return !paramLine->text().isEmpty();
+        return matchStringIsValid (paramLine->text());
 
         case SearchCondition::ExactLength:
         case SearchCondition::MinLength:
@@ -454,4 +455,46 @@ SearchConditionForm::setWordListString (const QString& string)
     QStringList wordList = QStringList::split (" ", string);
     paramWordListLine->setText (QString::number (wordList.size()) + " words");
     paramWordListLine->home (false);
+}
+
+//---------------------------------------------------------------------------
+//  matchStringIsValid
+//
+//! Determine whether a string is a valid match string.
+//
+//! @return true if valid, false otherwise
+//---------------------------------------------------------------------------
+bool
+SearchConditionForm::matchStringIsValid (const QString& string) const
+{
+    if (string.isEmpty())
+        return false;
+
+    bool inGroup = false;
+    bool groupLetters = false;
+    int len = string.length();
+    for (int i = 0; i < len; ++i) {
+        QChar c = string.at (i);
+
+        if (inGroup) {
+            if (c == ']') {
+                if (!groupLetters)
+                    return false;
+                inGroup = false;
+                groupLetters = false;
+            }
+            else if ((c == '[') || (c == '*') || (c == '?'))
+                return false;
+            groupLetters = true;
+        }
+
+        else {
+            if (c == '[')
+                inGroup = true;
+            else if (c == ']')
+                return false;
+        }
+    }
+
+    return !inGroup;
 }
