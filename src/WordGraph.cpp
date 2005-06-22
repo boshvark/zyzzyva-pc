@@ -309,8 +309,8 @@ WordGraph::search (const SearchSpec& spec) const
                         // the list
                         QString wordUpper = word.upper();
                         if (node->eow &&
-                            ((unmatched.length() == closeIndex + 1) ||
-                            ((unmatched.length() == closeIndex + 2) &&
+                            ((int (unmatched.length()) == closeIndex + 1) ||
+                            ((int (unmatched.length()) == closeIndex + 2) &&
                              (QChar (unmatched.at (closeIndex + 1)) == "*"))) &&
                             matchesSpec (wordUpper, spec) &&
                             !wordSet.count (wordUpper))
@@ -336,7 +336,6 @@ WordGraph::search (const SearchSpec& spec) const
                         int len = unmatched.length();
                         bool inGroup = false;
                         bool found = false;
-                        bool groupMatch = false;
                         int matchStart = -1;
                         int matchEnd = -1;
                         int groupStart = -1;
@@ -552,12 +551,12 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
 
         switch (condition.type) {
             case SearchCondition::ExactLength:
-            if (word.length() != condition.intValue)
+            if (int (word.length()) != condition.intValue)
                 return false;
             break;
 
             case SearchCondition::MinLength:
-            if (word.length() < condition.intValue)
+            if (int (word.length()) < condition.intValue)
                 return false;
             break;
 

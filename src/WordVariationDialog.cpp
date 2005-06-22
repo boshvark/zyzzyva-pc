@@ -172,7 +172,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         case VariationBlankAnagrams:
         title = "Blank Anagrams for: " + word;
         condition.type = SearchCondition::AnagramMatch;
-        for (int i = 0; i < word.length(); ++i) {
+        for (int i = 0; i < int (word.length()); ++i) {
             condition.stringValue = word.left (i) + "?" +
                 word.right (word.length() - i - 1);
             spec.conditions.clear();
@@ -185,7 +185,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         case VariationBlankMatches:
         title = "Blank Matches for: " + word;
         condition.type = SearchCondition::PatternMatch;
-        for (int i = 0; i < word.length(); ++i) {
+        for (int i = 0; i < int (word.length()); ++i) {
             condition.stringValue = word.left (i) + "?" +
                 word.right (word.length() - i - 1);
             spec.conditions.clear();
@@ -212,7 +212,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         case VariationTranspositions:
         title = "Transpositions for: " + word;
         condition.type = SearchCondition::PatternMatch;
-        for (int i = 0; i < word.length(); ++i) {
+        for (int i = 0; i < int (word.length()); ++i) {
             condition.stringValue = word.left (i) + word.mid (i + 1, 1) +
                 word.mid (i, 1) + word.right (word.length() - i - 2);
             spec.conditions.clear();

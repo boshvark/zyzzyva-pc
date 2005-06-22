@@ -316,4 +316,6 @@ WordListView::exportFile (const QString& filename, QString* err) const
         stream << item->text (0);
         endl (stream);
     }
+
+    return true;
 }

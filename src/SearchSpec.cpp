@@ -105,7 +105,7 @@ SearchSpec::optimize()
 
             case SearchCondition::MustInclude:
             if (!mustExclude.isEmpty()) {
-                for (int i = 0; i < stringValue.length(); ++i) {
+                for (int i = 0; i < int (stringValue.length()); ++i) {
                     if (mustExclude.contains (stringValue.at (i))) {
                         conditions.clear();
                         return;
@@ -118,7 +118,7 @@ SearchSpec::optimize()
 
             case SearchCondition::MustExclude:
             if (!mustInclude.isEmpty()) {
-                for (int i = 0; i < stringValue.length(); ++i) {
+                for (int i = 0; i < int (stringValue.length()); ++i) {
                     if (mustInclude.contains (stringValue.at (i))) {
                         conditions.clear();
                         return;

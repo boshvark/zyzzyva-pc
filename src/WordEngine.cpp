@@ -116,7 +116,7 @@ WordEngine::importStems (const QString& filename, QString* errString)
         if (!length)
             length = word.length();
 
-        if (word.length() != length)
+        if (length != int (word.length()))
             continue;
 
         words << word;
@@ -372,7 +372,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
             const std::set<QString>& alphaset = it->second;
             QString agram = alphagram (word);
             std::set<QString>::const_iterator ait;
-            for (int i = 0; i < agram.length(); ++i) {
+            for (int i = 0; i < int (agram.length()); ++i) {
                 ait = alphaset.find (agram.left (i) +
                                      agram.right (agram.length() - i - 1));
                 if (ait != alphaset.end())
@@ -401,7 +401,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                 QString setAlphagram = *ait;
                 int missing = 0;
                 int saIndex = 0;
-                for (int i = 0; i < agram.length(); ++i) {
+                for (int i = 0; i < int (agram.length()); ++i) {
                     if (agram.at (i) == setAlphagram.at (saIndex))
                         ++saIndex;
                     else

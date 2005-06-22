@@ -61,10 +61,10 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
                     f)
     : ActionForm (QuizFormType, parent, name, f), wordEngine (we),
     quizEngine (new QuizEngine (wordEngine)),
-    analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
-                                          "analyzeDialog", false)),
     numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300),
-    timerId (0), timerPaused (0)
+    timerId (0), timerPaused (0),
+    analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
+                                          "analyzeDialog", false))
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
                                              "mainHlay");
@@ -602,7 +602,9 @@ QuizForm::setQuestionLabel (const QString& question)
             ((numCanvasTiles - question.length()) *
              (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
 
-        for (int i = 0; (i < numCanvasTiles) && (i < question.length()); ++i) {
+        for (int i = 0; (i < numCanvasTiles) && (i < int (question.length()));
+             ++i)
+        {
             QString letter = question[i];
             if (letter == "?")
                 letter = "_";
