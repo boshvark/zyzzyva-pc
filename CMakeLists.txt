@@ -79,6 +79,14 @@ STRING (REGEX REPLACE "\n.*" "" ZYZZYVA_VERSION ${ZYZZYVA_VERSION})
 CONFIGURE_FILE (${ZYZZYVA_SOURCE_DIR}/data/help/about.html.in
                 ${ZYZZYVA_SOURCE_DIR}/data/help/about.html)
 
+IF (UNIX)
+    SET (CMAKE_CXX_FLAGS "-Wall -ansi")
+ELSE (UNIX)
+    IF (WIN32)
+        # Put Borland pedantic flags here
+    ENDIF (WIN32)
+ENDIF (UNIX)
+
 QT_WRAP_CPP(zyzzyva SRCS MOCS)
 ADD_EXECUTABLE (zyzzyva WIN32 SRCS)
 IF (WIN32)
