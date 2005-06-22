@@ -293,6 +293,8 @@ WordListView::contextMenuEvent (QContextMenuEvent* e)
 //! Export the words in the list to a file, one word per line.
 //
 //! @param filename the name of the file
+//
+//! @return true if successful or if the user cancels, false otherwise
 //---------------------------------------------------------------------------
 bool
 WordListView::exportFile (const QString& filename, QString* err) const
@@ -304,6 +306,15 @@ WordListView::exportFile (const QString& filename, QString* err) const
     }
 
     QFile file (filename);
+    if (file.exists()) {
+        int code = QMessageBox::warning (0, "Overwrite Existing File?",
+                                         "The file already exists.  "
+                                         "Overwrite it?", QMessageBox::Yes,
+                                         QMessageBox::No);
+        if (code != QMessageBox::Yes)
+            return true;
+    }
+
     if (!file.open (IO_WriteOnly)) {
         if (err)
             *err = file.errorString();
