@@ -30,7 +30,7 @@
 enum QuizTimerType {
     NoTimer = 0,
     PerQuestion,
-    PerResponse,
+    PerResponse
 };
 
 class QuizTimerSpec

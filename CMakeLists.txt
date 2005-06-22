@@ -80,7 +80,7 @@ CONFIGURE_FILE (${ZYZZYVA_SOURCE_DIR}/data/help/about.html.in
                 ${ZYZZYVA_SOURCE_DIR}/data/help/about.html)
 
 IF (UNIX)
-    SET (CMAKE_CXX_FLAGS "-Wall -ansi")
+    SET (CMAKE_CXX_FLAGS "-Wall -ansi -pedantic -Wno-long-long")
 ELSE (UNIX)
     IF (WIN32)
         # Put Borland pedantic flags here
