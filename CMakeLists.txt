@@ -82,9 +82,9 @@ CONFIGURE_FILE (${ZYZZYVA_SOURCE_DIR}/data/help/about.html.in
 IF (UNIX)
     SET (CMAKE_CXX_FLAGS "-Wall -ansi -pedantic -Wno-long-long")
 ELSE (UNIX)
-    IF (WIN32)
-        # Put Borland pedantic flags here
-    ENDIF (WIN32)
+    IF (BORLAND)
+        SET (CMAKE_CXX_FLAGS "-w")
+    ENDIF (BORLAND)
 ENDIF (UNIX)
 
 QT_WRAP_CPP(zyzzyva SRCS MOCS)
