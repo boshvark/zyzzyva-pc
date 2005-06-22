@@ -549,7 +549,7 @@ SettingsDialog::getSortByLength() const
 void
 SettingsDialog::browseButtonClicked()
 {
-    QString file = QFileDialog::getOpenFileName (QDir::current().path(),
+    QString file = QFileDialog::getOpenFileName (Auxil::getWordsDir(),
                                                  "All Files (*.*)", this,
                                                  "fileDialog",
                                                  IMPORT_CHOOSER_TITLE);
