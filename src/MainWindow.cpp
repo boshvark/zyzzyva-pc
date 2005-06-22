@@ -590,8 +590,8 @@ int
 MainWindow::importStems()
 {
     QStringList stemFiles;
-    stemFiles << Auxil::getWordsDir() + "/north-american/6-letter-stems.txt";
-    stemFiles << Auxil::getWordsDir() + "/north-american/7-letter-stems.txt";
+    stemFiles << (Auxil::getWordsDir() + "/north-american/6-letter-stems.txt");
+    stemFiles << (Auxil::getWordsDir() + "/north-american/7-letter-stems.txt");
 
     QString err;
     QApplication::setOverrideCursor (Qt::waitCursor);
