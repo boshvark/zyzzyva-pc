@@ -31,7 +31,9 @@
   character means "match any single letter" and the <tt>*</tt> character means
   "match any number of letters".  The <tt>*</tt> character also matches
   nothingness.  Multiple wildcard characters can be used in a single pattern.
-  Here are some examples of <i>Pattern Match</i> conditions:</p>
+  The <tt>[</tt> and <tt>]</tt> characters can also be used to specify a set
+  of letters that can be matched.  Here are some examples of <i>Pattern
+  Match</i> conditions:</p>
 
   <table width="100%">
   <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
@@ -40,6 +42,8 @@
   <tr><td><tt>AT??</tt></td><td><tt>ATAP, ATES, ATMA, ATOM,
   ATOP</tt></td></tr>
   <tr><td><tt>T?P</tt></td><td><tt>TAP, TIP, TOP, TUP</tt></td></tr>
+  <tr><td><tt>A[JQXZ]?</tt></td><td><tt>AXE, AZO</tt></td></tr>
+  <tr><td><tt>[AEIOU]D[AEIOU]</tt></td><td><tt>ADO, ODE, UDO</tt></td></tr>
   <tr><td><tt>TO*P</tt></td><td><tt>TOP, TOECAP, TOSSUP, TOUCHUP, TOYSHOP,
   TOWNSHIP</tt></td></tr>
   <tr><td><tt>*WM</tt></td><td><tt>CWM, SHAWM</tt></td></tr>
@@ -60,9 +64,14 @@
   <table width="100%">
   <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
   <tr><td><tt>ATE</tt></td><td><tt>ATE, EAT, ETA, TAE, TEA</tt></td></tr>
-  <tr><td><tt>AENORST</tt></td><td><tt>ATONERS, SENATOR, TREASON</tt></td></tr>
-  <tr><td><tt>ETX?</tt></td><td><tt>EXIT, NEXT, SEXT, TEXT, VEXT</tt></td></tr>
-  <tr><td><tt>PI??Z</tt></td><td><tt>PIZZA, PRIZE, SPITZ, UNZIP, ZIPPY</tt></td></tr>
+  <tr><td><tt>AENORST</tt></td><td><tt>ATONERS, SENATOR,
+  TREASON</tt></td></tr>
+  <tr><td><tt>ETX?</tt></td><td><tt>EXIT, NEXT, SEXT, TEXT,
+  VEXT</tt></td></tr>
+  <tr><td><tt>PI??Z</tt></td><td><tt>PIZZA, PRIZE, SPITZ, UNZIP,
+  ZIPPY</tt></td></tr>
+  <tr><td><tt>Z[AEIOU][AEIOU]</tt></td><td><tt>AZO, ZEE, ZOA,
+  ZOO</tt></td></tr>
   <tr><td><tt>*JBX</tt></td><td><tt>JAMBEAUX</tt></td></tr>
   </table>
 
@@ -80,8 +89,11 @@
 
   <table width="100%">
   <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
-  <tr><td><tt>ATE</tt></td><td><tt>AE, AT, ET, TA, ATE, EAT, ETA, TAE, TEA</tt></td></tr>
-  <tr><td><tt>LX?</tt></td><td><tt>AL, AX, EL, EX, LA, LI, LO, OX, XI, XU, LAX, LEX, LOX, LUX</tt></td></tr>
+  <tr><td><tt>ATE</tt></td><td><tt>AE, AT, ET, TA, ATE, EAT, ETA, TAE,
+  TEA</tt></td></tr>
+  <tr><td><tt>LX?</tt></td><td><tt>AL, AX, EL, EX, LA, LI, LO, OX, XI, XU,
+  LAX, LEX, LOX, LUX</tt></td></tr>
+  <tr><td><tt>LX[AU]</tt></td><td><tt>AL, AX, LA, XU, LAX, LUX</tt></td></tr>
   </table>
 
   <p>Note that with an <i>Subanagram Match</i> condition, using a <tt>*</tt>
@@ -148,6 +160,16 @@
   example, <tt>SHILL</tt> is a hook word, because the word <tt>HILL</tt> can
   be formed by removing its first letter.</p>
 
+  <p><b>Front hooks.</b> The <i>Front Hooks</i> set consists of all words that
+  can form another valid word by removing the first letter.  For example,
+  <tt>AGAZE</tt> is a front hook, because the word <tt>GAZE</tt> can be formed
+  by removing its first letter.</p>
+
+  <p><b>Back hooks.</b> The <i>Back Hooks</i> set consists of all words that
+  can form another valid word by removing the last letter.  For example,
+  <tt>VIGA</tt> is a back hook, because the word <tt>VIG</tt> can be formed by
+  removing its last letter.</p>
+
   <p><b>Type I Sevens.</b> The <i>Type I Sevens</i> set consists of 7-letter
   words containing a 6-letter bingo stem in the top 100 stems.  For example,
   <tt>AIRIEST</tt> is a Type I Seven because it contains the bingo stem
@@ -157,6 +179,24 @@
   words containing a 6-letter bingo stem in the top 100 stems.  For example,
   <tt>SEXTARII</tt> is a Type I Eight because it contains the bingo stem
   <tt>SATIRE</tt>, which is in the top 100 stems.</p>
+
+  <a name="in-word-list">
+  <h2>In Word List</h2>
+
+  <p>The <i>In Word List</i> condition specifies a list that each word must
+  belong to.  Only words in the word list will appear in the search
+  results.</p>
+
+  <p>To create a word list, click the <i>Edit List</i> button.  A window will
+  appear, allowing a word list to be read from a file.  To read a word list
+  from a file, click the <i>Open File</i> button and select the file
+  containing the word list.  A word list file is expected to have one word per
+  line.  Words from more files can be included by clicking the <i>Open
+  File</i> button multiple times.  The word list can be cleared by clicking
+  the <i>Clear</i> button.</p>
+
+  <p>When the word list is complete, click the <i>OK</i> button.  The search
+  area will display the number of words in the list.</p>
 
   <a name="num-anagrams">
   <h2>Number of Anagrams</h2>

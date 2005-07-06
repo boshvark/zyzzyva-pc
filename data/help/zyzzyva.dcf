@@ -35,6 +35,7 @@
       <section ref="search.html#must-exclude" title="Must Exclude" />
       <section ref="search.html#must-consist" title="Must Consist Of" />
       <section ref="search.html#must-belong" title="Must Belong To" />
+      <section ref="search.html#in-word-list" title="In Word List" />
       <section ref="search.html#num-anagrams" title="Number of Anagrams" />
     </section>
     <section ref="quiz.html" title="Quizzes">
@@ -55,6 +56,12 @@
       <section ref="view.html#blank-anagrams" title="Blank Anagrams" />
       <section ref="view.html#blank-matches" title="Blank Matches" />
       <section ref="view.html#transpositions" title="Transpositions" />
+    </section>
+    <section ref="wordlists.html" title="Working with Word Lists">
+      <section ref="wordlists.html#save-word-list"
+               title="Saving a Word List" />
+      <section ref="wordlists.html#quiz-from-word-list"
+               title="Creating a Quiz from a Word List" />
     </section>
 
   </DCF>
