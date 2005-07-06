@@ -47,7 +47,7 @@ WordPopupMenu::WordPopupMenu (bool showWordOptions, QWidget* parent, const
         insertItem ("View Blank Matches", ViewBlankMatches);
         insertItem ("View Transpositions", ViewTranspositions);
     }
-    insertItem ("Export list...", ExportList);
+    insertItem ("Save list...", ExportList);
     insertItem ("Quiz from list...", CreateQuiz);
 }
 

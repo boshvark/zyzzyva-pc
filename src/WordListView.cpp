@@ -195,22 +195,22 @@ void
 WordListView::exportRequested()
 {
     if (childCount() == 0) {
-        QMessageBox::warning (this, "Cannot Export Word List",
-                              "Cannot export word list:\nNo words to export.");
+        QMessageBox::warning (this, "Cannot Save Word List",
+                              "Cannot save word list:\nNo words to save.");
         return;
     }
 
     QString filename = QFileDialog::getSaveFileName
         (Auxil::getWordsDir() + "/saved", "Text Files (*.txt)", this,
-         "exportDialog", "Export Word List");
+         "exportDialog", "Save Word List");
 
     if (filename.isEmpty())
         return;
 
     QString error;
     if (!exportFile (filename, &error)) {
-        QMessageBox::warning (this, "Error Exporting Word List",
-                              "Cannot export word list:\n" + error + ".");
+        QMessageBox::warning (this, "Error Saving Word List",
+                              "Cannot save word list:\n" + error + ".");
     }
 }
 
@@ -301,7 +301,7 @@ WordListView::exportFile (const QString& filename, QString* err) const
 {
     if (childCount() == 0) {
         if (err)
-            *err = "No words to export";
+            *err = "No words to save";
         return false;
     }
 
