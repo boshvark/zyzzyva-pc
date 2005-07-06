@@ -6,7 +6,7 @@
     <property name="aboutmenutext">About Zyzzyva</property>
     <property name="abouturl">./about.html</property>
   </profile>
-  <DCF ref="index.html" title="Zyzzyva">
+  <DCF ref="index.html" title="Zyzzyva Help">
     <section ref="load.html" title="Loading a Word List">
     </section>
     <section ref="preferences.html" title="Preferences">
