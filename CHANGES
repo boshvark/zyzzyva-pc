@@ -1,0 +1,14 @@
+Version 0.7.0
+Released 2005-07-06, from /trunk
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.7.0
+
+ User-visible changes:
+ * Word lists can now be saved to files
+ * New quizzes can now be created from word lists
+ * Front Hooks and Back Hooks are new options for Must Belong search conditions
+ * Tabs can now be closed with Ctrl-W or File->Close Tab
+ * New font preference for input areas
+ * Obviously incorrect responses to quiz questions are now disallowed
+ * In Word List search condition is completely new
+ * Brackets can now be used for character classes in Pattern, Anagram,
+   Subanagram search conditions
