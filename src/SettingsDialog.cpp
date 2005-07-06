@@ -44,6 +44,7 @@ const QString SETTINGS_FONT_WORD_INPUT = "/font_word_input";
 const QString SETTINGS_SORT_BY_LENGTH = "/wordlist_sort_by_length";
 const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
 const QString SETTINGS_TILE_THEME = "/tile_theme";
+const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DIALOG_CAPTION = "Preferences";
 
@@ -330,14 +331,14 @@ SettingsDialog::readSettings (const QSettings& settings)
 {
     bool ok = false;
 
-    bool autoImport = settings.readBoolEntry (SETTINGS_IMPORT, false);
+    bool autoImport = settings.readBoolEntry (SETTINGS_IMPORT, true);
     autoImportCbox->setChecked (autoImport);
     autoImportCboxToggled (autoImport);
 
     QString autoImportFile = settings.readEntry (SETTINGS_IMPORT_FILE,
-                                                 QString::null, &ok);
-    if (ok)
-        autoImportLine->setText (autoImportFile);
+                                                 Auxil::getWordsDir() +
+                                                 DEFAULT_AUTO_IMPORT_FILE);
+    autoImportLine->setText (autoImportFile);
 
     fillThemeCombo();
     bool useTileTheme = settings.readBoolEntry (SETTINGS_USE_TILE_THEME,
