@@ -28,6 +28,12 @@
 
 using namespace Defs;
 
+const QString XML_TOP_ELEMENT = "condition";
+const QString TYPE_ATTR = "type";
+const QString STRING_ATTR = "string";
+const QString NUMBER_ATTR = "number";
+const QString PERCENT_ATTR = "percent";
+
 //---------------------------------------------------------------------------
 //  asString
 //
@@ -80,4 +86,59 @@ SearchCondition::asString() const
     }
 
     return str;
+}
+
+//---------------------------------------------------------------------------
+//  asDomElement
+//
+//! Return a DOM element representing the search spec.
+//
+//! @return the DOM element
+//---------------------------------------------------------------------------
+QDomElement
+SearchCondition::asDomElement() const
+{
+    QDomDocument doc;
+    QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
+
+    if (type == UnknownSearchType)
+        return topElement;
+
+    topElement.setAttribute (TYPE_ATTR, Auxil::searchTypeToString (type));
+
+    switch (type) {
+        case PatternMatch:
+        case AnagramMatch:
+        case SubanagramMatch:
+        case MustInclude:
+        case MustExclude:
+        case MustBelong:
+        case InWordList:
+        topElement.setAttribute (STRING_ATTR, stringValue);
+        break;
+
+        case ExactLength:
+        case MinLength:
+        case MaxLength:
+        case ExactAnagrams:
+        case MinAnagrams:
+        case MaxAnagrams:
+        topElement.setAttribute (NUMBER_ATTR, intValue);
+        break;
+
+        case MinProbability:
+        case MaxProbability:
+        // XXX: Multiply by the correct factor here!
+        topElement.setAttribute (NUMBER_ATTR, (intValue * 1));
+        break;
+
+        case MustConsist:
+        topElement.setAttribute (PERCENT_ATTR, intValue);
+        topElement.setAttribute (STRING_ATTR, stringValue);
+        break;
+
+        default: break;
+    }
+
+    return topElement;
 }

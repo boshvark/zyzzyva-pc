@@ -28,6 +28,7 @@
 #include "SearchCondition.h"
 #include "SearchSet.h"
 #include "Defs.h"
+#include <qdom.h>
 
 class SearchSpec
 {
@@ -36,6 +37,7 @@ class SearchSpec
     ~SearchSpec() { }
 
     QString asString() const;
+    QDomElement asDomElement() const;
     void optimize();
 
     bool conjunction;

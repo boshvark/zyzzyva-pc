@@ -49,8 +49,11 @@ class SearchSpecForm : public QFrame
     void contentsChanged();
 
     public slots:
+    void contentsChangedSlot();
     void addConditionForm();
     void removeConditionForm();
+    void loadSearch();
+    void saveSearch();
 
     private:
     void addConditionForms();
@@ -58,9 +61,11 @@ class SearchSpecForm : public QFrame
     private:
     //QRadioButton* conjunctionRadio;
     int visibleForms;
-    QPushButton*  moreButton;
-    QPushButton*  fewerButton;
-    QVBoxLayout*  conditionVlay;
+    QPushButton* moreButton;
+    QPushButton* fewerButton;
+    QPushButton* loadButton;
+    QPushButton* saveButton;
+    QVBoxLayout* conditionVlay;
     QValueList<SearchConditionForm*> conditionForms;
 };
 

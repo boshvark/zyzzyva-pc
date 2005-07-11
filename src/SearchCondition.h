@@ -25,6 +25,7 @@
 #ifndef SEARCH_CONDITION_H
 #define SEARCH_CONDITION_H
 
+#include <qdom.h>
 #include <qstring.h>
 #include <set>
 
@@ -54,6 +55,7 @@ class SearchCondition
     public:
     SearchCondition() : type (UnknownSearchType), intValue (0) { }
     QString asString() const;
+    QDomElement asDomElement() const;
 
     SearchType type;
     QString stringValue;

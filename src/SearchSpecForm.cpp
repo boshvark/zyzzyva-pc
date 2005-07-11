@@ -28,7 +28,9 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include <qbuttongroup.h>
+#include <qfiledialog.h>
 #include <qlayout.h>
+#include <qmessagebox.h>
 
 using namespace Defs;
 
@@ -102,7 +104,21 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
 
     buttonHlay->addStretch (1);
 
+    loadButton = new QPushButton ("&Load...", this, "loadButton");
+    Q_CHECK_PTR (loadButton);
+    loadButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (loadButton, SIGNAL (clicked()), SLOT (loadSearch()));
+    buttonHlay->addWidget (loadButton);
+
+    saveButton = new QPushButton ("S&ave...", this, "saveButton");
+    Q_CHECK_PTR (saveButton);
+    saveButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (saveButton, SIGNAL (clicked()), SLOT (saveSearch()));
+    buttonHlay->addWidget (saveButton);
+
+    connect (this, SIGNAL (contentsChanged()), SLOT (contentsChangedSlot()));
     fewerButton->setEnabled (false);
+    saveButton->setEnabled (false);
 }
 
 //---------------------------------------------------------------------------
@@ -176,6 +192,18 @@ SearchSpecForm::isValid() const
 }
 
 //---------------------------------------------------------------------------
+//  contentsChangedSlot
+//
+//! Called when the contents of the form change.  Enables or disables the Save
+//! button appropriately.
+//---------------------------------------------------------------------------
+void
+SearchSpecForm::contentsChangedSlot()
+{
+    saveButton->setEnabled (isValid());
+}
+
+//---------------------------------------------------------------------------
 //  addConditionForm
 //
 //! Add a condition form to the bottom of the layout.
@@ -216,6 +244,65 @@ SearchSpecForm::removeConditionForm()
         fewerButton->setEnabled (false);
 
     contentsChanged();
+}
+
+//---------------------------------------------------------------------------
+//  loadSearch
+//
+//! Load a search spec from a file.
+//---------------------------------------------------------------------------
+void
+SearchSpecForm::loadSearch()
+{
+    //qDebug ("loadSearch");
+
+    //contentsChanged();
+}
+
+//---------------------------------------------------------------------------
+//  saveSearch
+//
+//! Save the current search spec to a file.
+//---------------------------------------------------------------------------
+void
+SearchSpecForm::saveSearch()
+{
+    QString filename = QFileDialog::getSaveFileName
+        (Auxil::getSearchDir() + "/saved", "Zyzzyva Search Files (*.zzs)",
+         this, "saveDialog", "Save Search");
+
+    if (filename.isEmpty())
+        return;
+
+    QFile file (filename);
+    if (file.exists()) {
+        int code = QMessageBox::warning (0, "Overwrite Existing File?",
+                                         "The file already exists.  "
+                                         "Overwrite it?", QMessageBox::Yes,
+                                         QMessageBox::No);
+        if (code != QMessageBox::Yes)
+            return;
+    }
+
+    if (!file.open (IO_WriteOnly)) {
+        QMessageBox::warning (this, "Error Saving Search",
+                              "Cannot save search:\n" + file.errorString() +
+                              ".");
+        return;
+    }
+
+    QDomImplementation implementation;
+    QDomDocument document (implementation.createDocumentType
+                           ("zyzzyva-search", QString::null,
+                            "http://pietdepsi.com/dtd/zyzzyva-search.dtd"));
+
+    document.appendChild (getSearchSpec().asDomElement());
+
+    // XXX: There should be a programmatic way to write the <?xml?> header
+    // based on the QDomImplementation, shouldn't there?
+    QTextStream stream (&file);
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+        << document.toString();
 }
 
 //---------------------------------------------------------------------------

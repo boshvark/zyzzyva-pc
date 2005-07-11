@@ -47,7 +47,7 @@ const QString MUST_INCLUDE_TYPE = "Must Include";
 const QString MUST_EXCLUDE_TYPE = "Must Exclude";
 const QString MUST_CONSIST_TYPE = "Must Consist of";
 const QString MUST_BELONG_TYPE = "Must Belong to";
-const QString IN_WORD_LIST_TYPE = "In Word List";
+const QString IN_WORD_LIST_TYPE = "Must Be in Word List";
 const QString EXACT_ANAGRAMS_TYPE = "Exact Anagrams";
 const QString MIN_ANAGRAMS_TYPE = "Minimum Anagrams";
 const QString MAX_ANAGRAMS_TYPE = "Maximum Anagrams";
@@ -89,6 +89,20 @@ QString
 Auxil::getHelpDir()
 {
     return qApp->applicationDirPath() + "/data/help";
+}
+
+//---------------------------------------------------------------------------
+//  getSearchDir
+//
+//! Return the top-level directory containing subdirectories with search
+//! specifications.
+//
+//! @return the directory name
+//---------------------------------------------------------------------------
+QString
+Auxil::getSearchDir()
+{
+    return qApp->applicationDirPath() + "/data/search";
 }
 
 //---------------------------------------------------------------------------

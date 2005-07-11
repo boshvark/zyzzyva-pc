@@ -28,6 +28,11 @@
 
 using namespace Defs;
 
+const QString XML_TOP_ELEMENT = "zyzzyva-search";
+const QString XML_CONDITIONS_ELEMENT = "conditions";
+const QString XML_CONJUNCTION_ELEMENT = "and";
+const QString XML_DISJUNCTION_ELEMENT = "or";
+
 //---------------------------------------------------------------------------
 //  asString
 //
@@ -46,6 +51,39 @@ SearchSpec::asString() const
         str += (*it).asString();
     }
     return str;
+}
+
+//---------------------------------------------------------------------------
+//  asDomElement
+//
+//! Return a DOM element representing the search spec.
+//
+//! @return the DOM element
+//---------------------------------------------------------------------------
+QDomElement
+SearchSpec::asDomElement() const
+{
+    QDomDocument doc;
+    QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
+
+    if (conditions.empty())
+        return topElement;
+
+    QDomElement conditionsElement = doc.createElement
+        (XML_CONDITIONS_ELEMENT);
+    topElement.appendChild (conditionsElement);
+
+    QString conjunctionType = (conjunction ? XML_CONJUNCTION_ELEMENT
+                                           : XML_DISJUNCTION_ELEMENT);
+    QDomElement conjunctionElement = doc.createElement (conjunctionType);
+    conditionsElement.appendChild (conjunctionElement);
+
+    QValueList<SearchCondition>::const_iterator it;
+    for (it = conditions.begin(); it != conditions.end(); ++it) {
+        conjunctionElement.appendChild ((*it).asDomElement());
+    }
+
+    return topElement;
 }
 
 //---------------------------------------------------------------------------
