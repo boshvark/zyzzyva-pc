@@ -142,3 +142,84 @@ SearchCondition::asDomElement() const
 
     return topElement;
 }
+
+//---------------------------------------------------------------------------
+//  fromDomElement
+//
+//! Reset the object based on the contents of a DOM element representing a
+//! search condition.
+//
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+SearchCondition::fromDomElement (const QDomElement& element)
+{
+    if ((element.tagName() != XML_TOP_ELEMENT) ||
+        (!element.hasAttribute (TYPE_ATTR)))
+    {
+        return false;
+    }
+
+    SearchCondition tmpCondition;
+    tmpCondition.type = Auxil::stringToSearchType (element.attribute
+                                                   (TYPE_ATTR));
+    if (tmpCondition.type == UnknownSearchType)
+        return false;
+
+    bool ok = false;
+
+    switch (tmpCondition.type) {
+        case PatternMatch:
+        case AnagramMatch:
+        case SubanagramMatch:
+        case MustInclude:
+        case MustExclude:
+        case MustBelong:
+        case InWordList:
+        if (!element.hasAttribute (STRING_ATTR))
+            return false;
+        tmpCondition.stringValue = element.attribute (STRING_ATTR);
+        break;
+
+        case ExactLength:
+        case MinLength:
+        case MaxLength:
+        case ExactAnagrams:
+        case MinAnagrams:
+        case MaxAnagrams:
+        if (!element.hasAttribute (NUMBER_ATTR))
+            return false;
+        tmpCondition.intValue = element.attribute (NUMBER_ATTR).toInt (&ok);
+        if (!ok)
+            return false;
+        break;
+
+        case MinProbability:
+        case MaxProbability:
+        if (!element.hasAttribute (NUMBER_ATTR))
+            return false;
+        tmpCondition.intValue = element.attribute (NUMBER_ATTR).toInt (&ok);
+        if (!ok)
+            return false;
+        // XXX: Divide by the correct factor here!
+        tmpCondition.intValue /= 1;
+        break;
+
+        case MustConsist:
+        if (!element.hasAttribute (PERCENT_ATTR) || !element.hasAttribute
+            (STRING_ATTR))
+        {
+            return false;
+        }
+        tmpCondition.intValue = element.attribute (PERCENT_ATTR).toInt (&ok);
+        if (!ok)
+            return false;
+        tmpCondition.stringValue = element.attribute (STRING_ATTR);
+        break;
+
+        default: break;
+    }
+
+    *this = tmpCondition;
+    return true;
+}

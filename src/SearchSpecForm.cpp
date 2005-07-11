@@ -27,6 +27,7 @@
 #include "SearchConditionForm.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <qapplication.h>
 #include <qbuttongroup.h>
 #include <qfiledialog.h>
 #include <qlayout.h>
@@ -155,6 +156,10 @@ SearchSpecForm::getSearchSpec() const
 void
 SearchSpecForm::setSearchSpec (const SearchSpec& spec)
 {
+    if (spec.conditions.empty())
+        return;
+
+    visibleForms = 0;
     //conjunctionRadio->setChecked (spec->conjunction);
     QValueList<SearchCondition>::const_iterator cit = spec.conditions.begin();
     QValueList<SearchConditionForm*>::iterator fit;
@@ -165,8 +170,12 @@ SearchSpecForm::setSearchSpec (const SearchSpec& spec)
             (*fit)->setSearchCondition (*cit);
             (*fit)->show();
             ++cit;
+            ++visibleForms;
         }
     }
+
+    fewerButton->setEnabled (visibleForms > 1);
+    moreButton->setEnabled (visibleForms < MAX_CONDITIONS);
 }
 
 //---------------------------------------------------------------------------
@@ -254,9 +263,48 @@ SearchSpecForm::removeConditionForm()
 void
 SearchSpecForm::loadSearch()
 {
-    //qDebug ("loadSearch");
+    QString filename = QFileDialog::getOpenFileName
+        (Auxil::getSearchDir(), "Zyzzyva Search Files (*.zzs)", this,
+         "loadSearchDialog", "Load Search");
+    if (filename.isEmpty())
+        return;
 
-    //contentsChanged();
+    QFile file (filename);
+    if (!file.open (IO_ReadOnly)) {
+        QMessageBox::warning (this, "Error Opening Search File",
+                              "Cannot open file '" + filename + "': " +
+                              file.errorString());
+        return;
+    }
+
+    QString errorMsg;
+    int errorLine = 0;
+    int errorColumn = 0;
+
+    QApplication::setOverrideCursor (Qt::waitCursor);
+    QDomDocument document;
+    bool success = document.setContent (&file, false, &errorMsg, &errorLine,
+                                        &errorColumn);
+    QApplication::restoreOverrideCursor();
+
+    if (!success) {
+        QMessageBox::warning (this, "Error in Search File",
+                              "Error in search file, line " +
+                              QString::number (errorLine) + ", column " +
+                              QString::number (errorColumn) + ": " + 
+                              errorMsg);
+        return;
+    }
+
+    SearchSpec spec;
+    if (!spec.fromDomElement (document.documentElement())) {
+        QMessageBox::warning (this, "Error in Search File",
+                              "Error in search file.");
+        return;
+    }
+
+    setSearchSpec (spec);
+    contentsChanged();
 }
 
 //---------------------------------------------------------------------------

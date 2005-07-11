@@ -87,6 +87,50 @@ SearchSpec::asDomElement() const
 }
 
 //---------------------------------------------------------------------------
+//  fromDomElement
+//
+//! Reset the object based on the contents of a DOM element representing a
+//! search spec.
+//
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+SearchSpec::fromDomElement (const QDomElement& element)
+{
+    if (element.tagName() != XML_TOP_ELEMENT)
+        return false;
+
+    QDomElement elem = element.firstChild().toElement();
+    if (elem.isNull() || (elem.tagName() != XML_CONDITIONS_ELEMENT))
+        return false;
+
+    elem = elem.firstChild().toElement();
+    if (elem.isNull() || ((elem.tagName() != XML_CONJUNCTION_ELEMENT) &&
+                          (elem.tagName() != XML_DISJUNCTION_ELEMENT)))
+    {
+        return false;
+    }
+
+    SearchSpec tmpSpec;
+    tmpSpec.conjunction = (elem.tagName() == XML_CONJUNCTION_ELEMENT);
+
+    for (elem = elem.firstChild().toElement(); !elem.isNull();
+         elem = elem.nextSibling().toElement())
+    {
+        SearchCondition condition;
+        if (!condition.fromDomElement (elem))
+            return false;
+        tmpSpec.conditions << condition;
+    }
+
+    if (tmpSpec.conditions.empty())
+        return false;
+
+    *this = tmpSpec;
+    return true;
+}
+
+//---------------------------------------------------------------------------
 //  optimize
 //
 //! Optimize the search specification for fast searches without making any

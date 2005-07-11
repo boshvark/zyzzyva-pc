@@ -38,6 +38,7 @@ class SearchSpec
 
     QString asString() const;
     QDomElement asDomElement() const;
+    bool fromDomElement (const QDomElement& element);
     void optimize();
 
     bool conjunction;

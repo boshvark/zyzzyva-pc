@@ -56,6 +56,7 @@ class SearchCondition
     SearchCondition() : type (UnknownSearchType), intValue (0) { }
     QString asString() const;
     QDomElement asDomElement() const;
+    bool fromDomElement (const QDomElement& element);
 
     SearchType type;
     QString stringValue;

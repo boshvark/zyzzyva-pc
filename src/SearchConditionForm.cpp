@@ -257,6 +257,7 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
 {
     reset();
     typeCbox->setCurrentText (Auxil::searchTypeToString (condition.type));
+    typeChanged (typeCbox->currentText());
 
     switch (condition.type) {
         case SearchCondition::PatternMatch:
@@ -281,13 +282,16 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
         paramConsistLine->setText (condition.stringValue);
         break;
 
+        case SearchCondition::MustBelong:
+        paramCbox->setCurrentText (condition.stringValue);
+        break;
+
         case SearchCondition::InWordList:
         setWordListString (condition.stringValue);
         break;
 
         default: break;
     }
-    typeChanged (typeCbox->currentText());
 }
 
 //---------------------------------------------------------------------------
