@@ -28,6 +28,7 @@
 #include "DefineForm.h"
 #include "HelpDialog.h"
 #include "JudgeForm.h"
+#include "MainSettings.h"
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
 #include "QuizForm.h"
@@ -158,7 +159,7 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 
     readSettings (true);
 
-    QString importFile = settingsDialog->getAutoImportFile();
+    QString importFile = MainSettings::getAutoImportFile();
     if (!importFile.isEmpty())
         import (importFile);
 
@@ -248,7 +249,7 @@ MainWindow::newQuizForm (const QuizSpec& quizSpec)
 {
     QuizForm* form = new QuizForm (wordEngine, tabStack, "quizForm");
     Q_CHECK_PTR (form);
-    form->setTileTheme (settingsDialog->getTileTheme());
+    form->setTileTheme (MainSettings::getTileTheme());
     form->newQuiz (quizSpec);
     newTab (form, QUIZ_TAB_TITLE);
 }
@@ -302,12 +303,10 @@ MainWindow::newJudgeForm()
 void
 MainWindow::editSettings()
 {
-    settings.beginGroup (SETTINGS_MAIN);
     if (settingsDialog->exec() == QDialog::Accepted)
-        settingsDialog->writeSettings (settings);
+        settingsDialog->writeSettings();
     else
-        settingsDialog->readSettings (settings);
-    settings.endGroup();
+        settingsDialog->readSettings();
     readSettings (false);
 }
 
@@ -442,22 +441,17 @@ MainWindow::setNumWords (int num)
 void
 MainWindow::readSettings (bool useGeometry)
 {
-    settings.beginGroup (SETTINGS_MAIN);
-    if (useGeometry) {
-        settings.beginGroup (SETTINGS_GEOMETRY);
-        int x = settings.readNumEntry (SETTINGS_GEOMETRY_X, 50);
-        int y = settings.readNumEntry (SETTINGS_GEOMETRY_Y, 50);
-        int w = settings.readNumEntry (SETTINGS_GEOMETRY_WIDTH, 640);
-        int h = settings.readNumEntry (SETTINGS_GEOMETRY_HEIGHT, 480);
-        settings.endGroup();
-        setGeometry (x, y, w, h);
-    }
-    settingsDialog->readSettings (settings);
-    settings.endGroup();
+    MainSettings::readSettings();
+
+    if (useGeometry)
+        setGeometry (MainSettings::getMainWindowX(),
+                     MainSettings::getMainWindowY(),
+                     MainSettings::getMainWindowWidth(),
+                     MainSettings::getMainWindowHeight());
 
     // Main font
     QFont mainFont;
-    QString fontStr = settingsDialog->getMainFont();
+    QString fontStr = MainSettings::getMainFont();
     bool mainFontOk = true;
     if (mainFont.fromString (fontStr))
         qApp->setFont (mainFont, true);
@@ -468,7 +462,7 @@ MainWindow::readSettings (bool useGeometry)
 
     // Word list font
     QFont font;
-    fontStr = settingsDialog->getWordListFont();
+    fontStr = MainSettings::getWordListFont();
     if (font.fromString (fontStr))
         qApp->setFont (font, true, "WordListView");
     else
@@ -481,7 +475,7 @@ MainWindow::readSettings (bool useGeometry)
     // Quiz label font
     // XXX: Reinstate this once it's know how to change the font of canvas
     // text items via QApplication::setFont
-    //fontStr = settingsDialog->getQuizLabelFont();
+    //fontStr = MainSettings::getQuizLabelFont();
     //if (font.fromString (fontStr))
     //    // FIXME: How to get QCanvasText items to update their font?
     //    qApp->setFont (font, true, "QCanvasText");
@@ -489,7 +483,7 @@ MainWindow::readSettings (bool useGeometry)
     //    qWarning ("Cannot set font: " + fontStr);
 
     // Word input font
-    fontStr = settingsDialog->getWordInputFont();
+    fontStr = MainSettings::getWordInputFont();
     if (font.fromString (fontStr)) {
         qApp->setFont (font, true, "WordLineEdit");
         qApp->setFont (font, true, "WordTextEdit");
@@ -498,7 +492,7 @@ MainWindow::readSettings (bool useGeometry)
         qWarning ("Cannot set font: " + fontStr);
 
     // Definition font
-    fontStr = settingsDialog->getDefinitionFont();
+    fontStr = MainSettings::getDefinitionFont();
     if (font.fromString (fontStr)) {
         qApp->setFont (font, true, "DefinitionBox");
         qApp->setFont (font, true, "DefinitionLabel");
@@ -507,7 +501,7 @@ MainWindow::readSettings (bool useGeometry)
         qWarning ("Cannot set font: " + fontStr);
 
     // Set tile theme for all quiz forms
-    QString tileTheme = settingsDialog->getTileTheme();
+    QString tileTheme = MainSettings::getTileTheme();
     int count = tabStack->count();
     for (int i = 0; i < count; ++i) {
         ActionForm* form = static_cast<ActionForm*> (tabStack->page (i));
@@ -519,7 +513,7 @@ MainWindow::readSettings (bool useGeometry)
     }
 
     WordListViewItem::setSortByLength
-        (settingsDialog->getWordListSortByLength());
+        (MainSettings::getWordListSortByLength());
 }
 
 //---------------------------------------------------------------------------
@@ -530,15 +524,11 @@ MainWindow::readSettings (bool useGeometry)
 void
 MainWindow::writeSettings()
 {
-    settings.beginGroup (SETTINGS_MAIN);
-    settings.beginGroup (SETTINGS_GEOMETRY);
-    settings.writeEntry (SETTINGS_GEOMETRY_X, x());
-    settings.writeEntry (SETTINGS_GEOMETRY_Y, y());
-    settings.writeEntry (SETTINGS_GEOMETRY_WIDTH, width());
-    settings.writeEntry (SETTINGS_GEOMETRY_HEIGHT, height());
-    settings.endGroup();
-    settingsDialog->writeSettings (settings);
-    settings.endGroup();
+    MainSettings::setMainWindowX (x());
+    MainSettings::setMainWindowY (y());
+    MainSettings::setMainWindowWidth (width());
+    MainSettings::setMainWindowHeight (height());
+    MainSettings::writeSettings();
 }
 
 //---------------------------------------------------------------------------

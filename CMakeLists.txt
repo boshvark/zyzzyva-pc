@@ -20,6 +20,7 @@ SET (SRCS
     src/ImageItem.cpp
     src/JudgeForm.cpp
     src/main.cpp
+    src/MainSettings.cpp
     src/MainWindow.cpp
     src/NewQuizDialog.cpp
     src/QuizEngine.cpp

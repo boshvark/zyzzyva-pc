@@ -78,7 +78,6 @@ class MainWindow : public QMainWindow
     QLabel*      messageLabel;
     QLabel*      statusLabel;
 
-    QSettings       settings;
     SettingsDialog* settingsDialog;
     AboutDialog*    aboutDialog;
     HelpDialog*     helpDialog;

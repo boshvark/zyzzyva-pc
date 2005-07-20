@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "SettingsDialog.h"
+#include "MainSettings.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <qcheckbox.h>
@@ -34,20 +35,6 @@
 #include <qsignalmapper.h>
 #include <qvgroupbox.h>
 
-const QString SETTINGS_IMPORT = "/autoimport";
-const QString SETTINGS_IMPORT_FILE = "/autoimport_file";
-const QString SETTINGS_FONT_MAIN = "/font";
-const QString SETTINGS_FONT_WORD_LISTS = "/font_word_lists";
-const QString SETTINGS_FONT_QUIZ_LABEL = "/font_quiz_label";
-const QString SETTINGS_FONT_DEFINITIONS = "/font_definitions";
-const QString SETTINGS_FONT_WORD_INPUT = "/font_word_input";
-const QString SETTINGS_SORT_BY_LENGTH = "/wordlist_sort_by_length";
-const QString SETTINGS_SHOW_HOOKS = "/wordlist_show_hooks";
-const QString SETTINGS_SHOW_DEFINITIONS = "/wordlist_show_definitions";
-const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
-const QString SETTINGS_TILE_THEME = "/tile_theme";
-const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
-const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DIALOG_CAPTION = "Preferences";
 
 const int FONT_MAIN_BUTTON = 1;
@@ -321,7 +308,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     buttonHlay->addWidget (cancelButton);
 
     setCaption (DIALOG_CAPTION);
-    fillThemeCombo();
+    readSettings();
 }
 
 //---------------------------------------------------------------------------
@@ -339,26 +326,22 @@ SettingsDialog::~SettingsDialog()
 //! Read settings.
 //---------------------------------------------------------------------------
 void
-SettingsDialog::readSettings (const QSettings& settings)
+SettingsDialog::readSettings()
 {
-    bool ok = false;
+    MainSettings::readSettings();
 
-    bool autoImport = settings.readBoolEntry (SETTINGS_IMPORT, true);
+    bool autoImport = MainSettings::getUseAutoImport();
     autoImportCbox->setChecked (autoImport);
     autoImportCboxToggled (autoImport);
 
-    QString autoImportFile = settings.readEntry (SETTINGS_IMPORT_FILE,
-                                                 Auxil::getWordsDir() +
-                                                 DEFAULT_AUTO_IMPORT_FILE);
+    QString autoImportFile = MainSettings::getAutoImportFile();
     autoImportLine->setText (autoImportFile);
 
     fillThemeCombo();
-    bool useTileTheme = settings.readBoolEntry (SETTINGS_USE_TILE_THEME,
-                                                true);
+    bool useTileTheme = MainSettings::getUseTileTheme();
     themeCbox->setChecked (useTileTheme);
     if (themeCbox->isEnabled()) {
-        QString tileTheme = settings.readEntry (SETTINGS_TILE_THEME,
-                                                DEFAULT_TILE_THEME, &ok);
+        QString tileTheme = MainSettings::getTileTheme();
         QString themeStr;
         for (int i = 0; i < themeCombo->count(); ++i) {
             themeStr = themeCombo->text (i);
@@ -366,60 +349,36 @@ SettingsDialog::readSettings (const QSettings& settings)
                 themeCombo->setCurrentItem (i);
                 break;
             }
-            else if (themeStr == DEFAULT_TILE_THEME)
-                themeCombo->setCurrentItem (i);
         }
         themeCboxToggled (useTileTheme);
     }
 
     // Main font
-    QString fontStr = settings.readEntry (SETTINGS_FONT_MAIN, QString::null,
-                                          &ok);
-    if (ok) {
-        fontMainLine->setText (fontStr);
-        fontMainLine->home (false);
-    }
+    fontMainLine->setText (MainSettings::getMainFont());
+    fontMainLine->home (false);
 
     // Word list font
-    fontStr = settings.readEntry (SETTINGS_FONT_WORD_LISTS, QString::null,
-                                  &ok);
-    if (ok) {
-        fontWordListLine->setText (fontStr);
-        fontWordListLine->home (false);
-    }
+    fontWordListLine->setText (MainSettings::getWordListFont());
+    fontWordListLine->home (false);
 
     // Quiz label font
     // XXX: Reinstate this once it's know how to change the font of canvas
     // text items via QApplication::setFont
-    //fontStr = settings.readEntry (SETTINGS_FONT_QUIZ_LABEL, QString::null,
-    //                              &ok);
-    //if (ok) {
-    //    fontQuizLabelLine->setText (fontStr);
-    //    fontQuizLabelLine->home (false);
-    //}
+    //fontQuizLabelLine->setText (MainSettings::getQuizLabelFont());
+    //fontQuizLabelLine->home (false);
 
     // Word input font
-    fontStr = settings.readEntry (SETTINGS_FONT_WORD_INPUT, QString::null,
-                                  &ok);
-    if (ok) {
-        fontWordInputLine->setText (fontStr);
-        fontWordInputLine->home (false);
-    }
+    fontWordInputLine->setText (MainSettings::getWordInputFont());
+    fontWordInputLine->home (false);
 
     // Definition font
-    fontStr = settings.readEntry (SETTINGS_FONT_DEFINITIONS, QString::null,
-                                  &ok);
-    if (ok) {
-        fontDefinitionLine->setText (fontStr);
-        fontDefinitionLine->home (false);
-    }
+    fontDefinitionLine->setText (MainSettings::getDefinitionFont());
+    fontDefinitionLine->home (false);
 
-    bool lengthSort = settings.readBoolEntry (SETTINGS_SORT_BY_LENGTH, false);
-    lengthSortCbox->setChecked (lengthSort);
-    bool showHooks = settings.readBoolEntry (SETTINGS_SHOW_HOOKS, false);
-    showHooksCbox->setChecked (showHooks);
-    bool showDefs = settings.readBoolEntry (SETTINGS_SHOW_DEFINITIONS, false);
-    showDefinitionCbox->setChecked (showDefs);
+    lengthSortCbox->setChecked (MainSettings::getWordListSortByLength());
+    showHooksCbox->setChecked (MainSettings::getWordListShowHooks());
+    showDefinitionCbox->setChecked
+        (MainSettings::getWordListShowDefinitions());
 }
 
 //---------------------------------------------------------------------------
@@ -428,162 +387,24 @@ SettingsDialog::readSettings (const QSettings& settings)
 //! Write settings.
 //---------------------------------------------------------------------------
 void
-SettingsDialog::writeSettings (QSettings& settings)
+SettingsDialog::writeSettings()
 {
-    settings.writeEntry (SETTINGS_IMPORT, autoImportCbox->isChecked());
-    settings.writeEntry (SETTINGS_IMPORT_FILE, autoImportLine->text());
-    settings.writeEntry (SETTINGS_USE_TILE_THEME, themeCbox->isChecked());
-    settings.writeEntry (SETTINGS_TILE_THEME, themeCombo->currentText());
-    settings.writeEntry (SETTINGS_FONT_MAIN, fontMainLine->text());
-    settings.writeEntry (SETTINGS_FONT_WORD_LISTS, fontWordListLine->text());
+    MainSettings::setUseAutoImport (autoImportCbox->isChecked());
+    MainSettings::setAutoImportFile (autoImportLine->text());
+    MainSettings::setUseTileTheme (themeCbox->isChecked());
+    MainSettings::setTileTheme (themeCombo->currentText());
+    MainSettings::setMainFont (fontMainLine->text());
+    MainSettings::setWordListFont (fontWordListLine->text());
     // XXX: Reinstate this once it's know how to change the font of canvas
     // text items via QApplication::setFont
-    //settings.writeEntry (SETTINGS_FONT_QUIZ_LABEL, fontQuizLabelLine->text());
-    settings.writeEntry (SETTINGS_FONT_WORD_INPUT,
-                         fontWordInputLine->text());
-    settings.writeEntry (SETTINGS_FONT_DEFINITIONS,
-                         fontDefinitionLine->text());
-    settings.writeEntry (SETTINGS_SORT_BY_LENGTH,
-                         lengthSortCbox->isChecked());
-    settings.writeEntry (SETTINGS_SHOW_HOOKS,
-                         showHooksCbox->isChecked());
-    settings.writeEntry (SETTINGS_SHOW_DEFINITIONS,
-                         showDefinitionCbox->isChecked());
-}
-
-//---------------------------------------------------------------------------
-//  getAutoImportFile
-//
-//! Return the file to be imported on startup, if auto-importing is
-//! enabled.
-//
-//! @return the auto-import filename
-//---------------------------------------------------------------------------
-QString
-SettingsDialog::getAutoImportFile() const
-{
-    return (autoImportCbox->isChecked() ? autoImportLine->text()
-            : QString::null);
-}
-
-//---------------------------------------------------------------------------
-//  getMainFont
-//
-//! Return the main font setting.
-//
-//! @return the name of the preferred font
-//---------------------------------------------------------------------------
-QString
-SettingsDialog::getMainFont() const
-{
-    return fontMainLine->text();
-}
-
-//---------------------------------------------------------------------------
-//  getWordListFont
-//
-//! Return the word list font setting.
-//
-//! @return the name of the preferred font
-//---------------------------------------------------------------------------
-QString
-SettingsDialog::getWordListFont() const
-{
-    return fontWordListLine->text();
-}
-
-//---------------------------------------------------------------------------
-//  getQuizLabelFont
-//
-//! Return the quiz label font setting.
-// XXX: Reinstate this once it's know how to change the font of canvas
-// text items via QApplication::setFont
-//
-//! @return the name of the preferred font
-//---------------------------------------------------------------------------
-//QString
-//SettingsDialog::getQuizLabelFont() const
-//{
-//    return fontQuizLabelLine->text();
-//}
-
-//---------------------------------------------------------------------------
-//  getWordInputFont
-//
-//! Return the word input font setting.
-//
-//! @return the name of the preferred font
-//---------------------------------------------------------------------------
-QString
-SettingsDialog::getWordInputFont() const
-{
-    return fontWordInputLine->text();
-}
-
-//---------------------------------------------------------------------------
-//  getDefinitionFont
-//
-//! Return the definition font setting.
-//
-//! @return the name of the preferred font
-//---------------------------------------------------------------------------
-QString
-SettingsDialog::getDefinitionFont() const
-{
-    return fontDefinitionLine->text();
-}
-
-//---------------------------------------------------------------------------
-//  getTileTheme
-//
-//! Return the tile theme setting.
-//
-//! @return the name of the tile theme
-//---------------------------------------------------------------------------
-QString
-SettingsDialog::getTileTheme() const
-{
-    return ((themeCbox->isEnabled() && themeCbox->isChecked()) ?
-            themeCombo->currentText() : QString::null);
-}
-
-//---------------------------------------------------------------------------
-//  getWordListSortByLength
-//
-//! Return the default "sort by length" setting for word lists.
-//
-//! @return true if "sort by length" is preferred, false otherwise
-//---------------------------------------------------------------------------
-bool
-SettingsDialog::getWordListSortByLength() const
-{
-    return lengthSortCbox->isChecked();
-}
-
-//---------------------------------------------------------------------------
-//  getWordListShowHooks
-//
-//! Return the default "show hooks" setting for word lists.
-//
-//! @return true if "show hooks" is preferred, false otherwise
-//---------------------------------------------------------------------------
-bool
-SettingsDialog::getWordListShowHooks() const
-{
-    return showHooksCbox->isChecked();
-}
-
-//---------------------------------------------------------------------------
-//  getWordListShowDefinition
-//
-//! Return the default "show word definitions" setting for word lists.
-//
-//! @return true if "show word definitions" is preferred, false otherwise
-//---------------------------------------------------------------------------
-bool
-SettingsDialog::getWordListShowDefinition() const
-{
-    return showDefinitionCbox->isChecked();
+    //MainSettings::setQuizLabelFont (fontQuizLabelLine->text());
+    MainSettings::setWordInputFont (fontWordInputLine->text());
+    MainSettings::setDefinitionFont (fontDefinitionLine->text());
+    MainSettings::setWordListSortByLength (lengthSortCbox->isChecked());
+    MainSettings::setWordListShowHooks (showHooksCbox->isChecked());
+    MainSettings::setWordListShowDefinitions
+        (showDefinitionCbox->isChecked());
+    MainSettings::writeSettings();
 }
 
 //---------------------------------------------------------------------------
