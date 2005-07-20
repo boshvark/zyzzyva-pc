@@ -42,8 +42,8 @@ const QString SETTINGS_FONT_QUIZ_LABEL = "/font_quiz_label";
 const QString SETTINGS_FONT_DEFINITIONS = "/font_definitions";
 const QString SETTINGS_FONT_WORD_INPUT = "/font_word_input";
 const QString SETTINGS_SORT_BY_LENGTH = "/wordlist_sort_by_length";
-const QString SETTINGS_SHOW_HOOKS = "/wordlist_sort_by_length";
-const QString SETTINGS_SHOW_DEFINITIONS = "/wordlist_sort_by_length";
+const QString SETTINGS_SHOW_HOOKS = "/wordlist_show_hooks";
+const QString SETTINGS_SHOW_DEFINITIONS = "/wordlist_show_definitions";
 const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
 const QString SETTINGS_TILE_THEME = "/tile_theme";
 const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
@@ -416,6 +416,10 @@ SettingsDialog::readSettings (const QSettings& settings)
 
     bool lengthSort = settings.readBoolEntry (SETTINGS_SORT_BY_LENGTH, false);
     lengthSortCbox->setChecked (lengthSort);
+    bool showHooks = settings.readBoolEntry (SETTINGS_SHOW_HOOKS, false);
+    showHooksCbox->setChecked (showHooks);
+    bool showDefs = settings.readBoolEntry (SETTINGS_SHOW_DEFINITIONS, false);
+    showDefinitionCbox->setChecked (showDefs);
 }
 
 //---------------------------------------------------------------------------
@@ -441,6 +445,10 @@ SettingsDialog::writeSettings (QSettings& settings)
                          fontDefinitionLine->text());
     settings.writeEntry (SETTINGS_SORT_BY_LENGTH,
                          lengthSortCbox->isChecked());
+    settings.writeEntry (SETTINGS_SHOW_HOOKS,
+                         showHooksCbox->isChecked());
+    settings.writeEntry (SETTINGS_SHOW_DEFINITIONS,
+                         showDefinitionCbox->isChecked());
 }
 
 //---------------------------------------------------------------------------
