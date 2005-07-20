@@ -109,7 +109,7 @@ SearchForm::search()
     int numWords = 0;
     QStringList::iterator it;
     for (it = wordList.begin(); it != wordList.end(); ++it, ++numWords)
-        new WordListViewItem (resultList, *it);
+        resultList->addWord (*it);
 
     resultList->sort();
     updateResultTotal (numWords);

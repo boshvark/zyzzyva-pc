@@ -241,7 +241,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         wordList = wordEngine->search (*sit, true);
         for (wit = wordList.begin(); wit != wordList.end(); ++wit) {
             if (wordSet.find (*wit) == wordSet.end())
-                new WordListViewItem (leftList, *wit);
+                leftList->addWord (*wit);
             wordSet.insert (*wit);
         }
     }
@@ -257,7 +257,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             wordList = wordEngine->search (*sit, true);
             for (wit = wordList.begin(); wit != wordList.end(); ++wit) {
                 if (wordSet.find (*wit) == wordSet.end())
-                    new WordListViewItem (rightList, *wit);
+                    rightList->addWord (*wit);
                 wordSet.insert (*wit);
             }
         }

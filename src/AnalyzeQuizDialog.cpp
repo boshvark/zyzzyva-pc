@@ -162,7 +162,7 @@ AnalyzeQuizDialog::updateStats()
 void
 AnalyzeQuizDialog::addMissed (const QString& word)
 {
-    WordListViewItem* item = new WordListViewItem (missedList, word);
+    WordListViewItem* item = missedList->addWord (word);
     item->setTextColor (VALID_MISSED_WORD_COLOR);
     updateStats();
 }
@@ -177,7 +177,7 @@ AnalyzeQuizDialog::addMissed (const QString& word)
 void
 AnalyzeQuizDialog::addIncorrect (const QString& word)
 {
-    WordListViewItem* item = new WordListViewItem (incorrectList, word);
+    WordListViewItem* item = incorrectList->addWord (word);
     item->setTextColor (INVALID_WORD_COLOR);
     updateStats();
 }

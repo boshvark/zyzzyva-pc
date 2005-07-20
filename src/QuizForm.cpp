@@ -227,8 +227,7 @@ QuizForm::responseEntered()
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
-        WordListViewItem* item = new WordListViewItem (responseList,
-                                                       response);
+        WordListViewItem* item = responseList->addWord (response);
         responseList->setSelected (item, true);
         responseList->ensureItemVisible (item);
         item->setTextColor (VALID_CORRECT_WORD_COLOR);
@@ -360,7 +359,7 @@ QuizForm::checkResponseClicked()
     QStringList unanswered = quizEngine->getMissed();
     QStringList::iterator it;
     for (it = unanswered.begin(); it != unanswered.end(); ++it) {
-        WordListViewItem* item = new WordListViewItem (responseList, *it);
+        WordListViewItem* item = responseList->addWord (*it);
         item->setTextColor (VALID_MISSED_WORD_COLOR);
         analyzeDialog->addMissed (*it);
     }

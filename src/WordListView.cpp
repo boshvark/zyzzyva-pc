@@ -35,6 +35,9 @@
 #include <qfile.h>
 #include <qfiledialog.h>
 #include <qmessagebox.h>
+#include <set>
+
+using namespace std;
 
 //---------------------------------------------------------------------------
 //  WordListView
@@ -49,7 +52,12 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WF
                       f)
     : QListView (parent, name, f), wordEngine (e)
 {
-    addColumn ("");
+    // Not all list views are going to be search results of course - this is a
+    // convenient place holder to get a reasonable initial size
+    addColumn ("Word");
+    addColumn ("Front Hooks");
+    addColumn ("Back Hooks");
+    addColumn ("Definition");
 
     // Only connect certain slots if word engine is non-null
     if (wordEngine) {
@@ -86,6 +94,62 @@ WordListView::setFont (const QFont& font)
     WordListViewItem* item = static_cast<WordListViewItem*> (firstChild());
     for (; item; item = static_cast<WordListViewItem*> (item->nextSibling()))
         item->setFont (font);
+}
+
+//---------------------------------------------------------------------------
+//  addWord
+//
+//! Add a word and populate all available columns.
+//
+//! @param word the word to add to the list
+//! @return the new word list view item
+//---------------------------------------------------------------------------
+WordListViewItem*
+WordListView::addWord (const QString& word)
+{
+    SearchSpec spec;
+    SearchCondition condition;
+
+    condition.type = SearchCondition::PatternMatch;
+    condition.stringValue = "?" + word;
+    spec.conditions << condition;
+
+    // Put first letter of each word in a set, for alphabetical order
+    QStringList frontWords = wordEngine->search (spec, true);
+    set<QChar> frontLetters;
+    QStringList::iterator it;
+    for (it = frontWords.begin(); it != frontWords.end(); ++it)
+        frontLetters.insert ((*it).at (0).lower());
+
+    QString front;
+    set<QChar>::iterator sit;
+    for (sit = frontLetters.begin(); sit != frontLetters.end(); ++sit)
+        front += *sit;
+    if (front.isEmpty())
+        front = "-";
+
+    // Put last letter of each word in a set, for alphabetical order
+    spec.conditions.clear();
+    condition.type = SearchCondition::PatternMatch;
+    condition.stringValue = word + "?";
+    spec.conditions << condition;
+
+    // Put first letter of each word in a set, for alphabetical order
+    QStringList backWords = wordEngine->search (spec, true);
+    set<QChar> backLetters;
+    for (it = backWords.begin(); it != backWords.end(); ++it)
+        backLetters.insert ((*it).at ((*it).length() - 1).lower());
+
+    QString back;
+    for (sit = backLetters.begin(); sit != backLetters.end(); ++sit)
+        back += *sit;
+    if (back.isEmpty())
+        back = "-";
+
+    QString definition = wordEngine->getDefinition (word);
+
+    // XXX: Populate all visible columns
+    return new WordListViewItem (this, word, front, back, definition);
 }
 
 //---------------------------------------------------------------------------

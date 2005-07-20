@@ -29,6 +29,7 @@
 #include <qlistview.h>
 
 class WordEngine;
+class WordListViewItem;
 
 class WordListView : public QListView
 {
@@ -39,6 +40,7 @@ class WordListView : public QListView
     ~WordListView();
 
     void setFont (const QFont& font);
+    WordListViewItem* addWord (const QString& word);
 
     public slots:
     void doReturnPressed (QListViewItem* item);
