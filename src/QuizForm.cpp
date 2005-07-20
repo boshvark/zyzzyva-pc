@@ -113,7 +113,6 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
 
     responseList = new WordListView (wordEngine, this, "responseList");
     Q_CHECK_PTR (responseList);
-    responseList->setResizeMode (QListView::LastColumn);
     mainVlay->addWidget (responseList);
 
     // Question status

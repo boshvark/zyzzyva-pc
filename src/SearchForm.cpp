@@ -84,7 +84,6 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
 
     resultList = new WordListView (engine, this, "resultList");
     Q_CHECK_PTR (resultList);
-    resultList->setResizeMode (QListView::LastColumn);
     resultList->setShowSortIndicator (true);
     specVlay->addWidget (resultList, 1);
 
