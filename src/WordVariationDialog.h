@@ -50,6 +50,8 @@ class WordVariationDialog : public QDialog
     private:
     WordEngine*   wordEngine;
     DefinitionLabel* wordLabel;
+    QLabel*       leftLabel;
+    QLabel*       rightLabel;
     WordListView* leftList;
     WordListView* rightList;
     QPushButton*  closeButton;

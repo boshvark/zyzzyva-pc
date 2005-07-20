@@ -64,6 +64,8 @@ class AnalyzeQuizDialog : public QDialog
     QLabel*       questionLabel;
     QLabel*       recallLabel;
     QLabel*       precisionLabel;
+    QLabel*       missedLabel;
+    QLabel*       incorrectLabel;
     WordListView* missedList;
     WordListView* incorrectList;
     QPushButton*  closeButton;

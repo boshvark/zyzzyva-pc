@@ -326,19 +326,6 @@ WordListView::displayDefinition (const QString& word)
 }
 
 //---------------------------------------------------------------------------
-//  setTitle
-//
-//! Set the displayed title of the list view.
-//
-//! @param title the title to display
-//---------------------------------------------------------------------------
-void
-WordListView::setTitle (const QString& title)
-{
-    setColumnText (0, QIconSet(), title);
-}
-
-//---------------------------------------------------------------------------
 //  contextMenuEvent
 //
 //! Reimplementation of QWidget::contextMenuEvent.  Called when a context menu

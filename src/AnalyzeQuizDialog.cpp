@@ -30,8 +30,8 @@
 #include <qlayout.h>
 
 const QString DIALOG_CAPTION = "Analyze Quiz";
-const QString MISSED_HEADER_PREFIX = "Missed : ";
-const QString INCORRECT_HEADER_PREFIX = "Incorrect : ";
+const QString MISSED_LABEL_PREFIX = "Missed : ";
+const QString INCORRECT_LABEL_PREFIX = "Incorrect : ";
 
 using namespace Defs;
 
@@ -70,6 +70,18 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR (precisionLabel);
     statsHlay->addWidget (precisionLabel);
 
+    QHBoxLayout* totalHlay = new QHBoxLayout (SPACING, "totalHlay");
+    Q_CHECK_PTR (totalHlay);
+    mainVlay->addLayout (totalHlay);
+
+    missedLabel = new QLabel (this, "missedLabel");
+    Q_CHECK_PTR (missedLabel);
+    totalHlay->addWidget (missedLabel);
+
+    incorrectLabel = new QLabel (this, "incorrectLabel");
+    Q_CHECK_PTR (incorrectLabel);
+    totalHlay->addWidget (incorrectLabel);
+
     QHBoxLayout* mainHlay = new QHBoxLayout (SPACING, "mainHlay");
     Q_CHECK_PTR (mainHlay);
     mainVlay->addLayout (mainHlay);
@@ -81,7 +93,6 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     missedList = new WordListView (wordEngine, this, "missedList");
     Q_CHECK_PTR (missedList);
     missedList->setResizeMode (QListView::LastColumn);
-    missedList->setTitle (MISSED_HEADER_PREFIX + "0 words");
     missedVlay->addWidget (missedList);
 
     QVBoxLayout* incorrectVlay = new QVBoxLayout (SPACING, "incorrectVlay");
@@ -91,7 +102,6 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     incorrectList = new WordListView (wordEngine, this, "incorrectList");
     Q_CHECK_PTR (incorrectList);
     incorrectList->setResizeMode (QListView::LastColumn);
-    incorrectList->setTitle (INCORRECT_HEADER_PREFIX + "0 words");
     incorrectVlay->addWidget (incorrectList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
@@ -108,7 +118,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (closeButton);
 
-    resize (minimumSizeHint().width(), 500);
+    resize (minimumSizeHint().width() * 2, 500);
     setCaption (DIALOG_CAPTION);
     updateStats();
 }
@@ -139,17 +149,17 @@ AnalyzeQuizDialog::updateStats()
     setRecall (correct, quizEngine->getQuizTotal());
     setPrecision (correct, correct + quizEngine->getQuizIncorrect());
     int missed = missedList->childCount();
-    QString missedTitle = MISSED_HEADER_PREFIX + QString::number (missed) +
+    QString missedText = MISSED_LABEL_PREFIX + QString::number (missed) +
         " word";
     if (missed != 1)
-        missedTitle += "s";
-    missedList->setTitle (missedTitle);
+        missedText += "s";
+    missedLabel->setText (missedText);
     int incorrect = incorrectList->childCount();
-    QString incorrectTitle = MISSED_HEADER_PREFIX + QString::number
+    QString incorrectText = MISSED_LABEL_PREFIX + QString::number
         (incorrect) + " word";
     if (incorrect != 1)
-        incorrectTitle += "s";
-    incorrectList->setTitle (incorrectTitle);
+        incorrectText += "s";
+    incorrectLabel->setText (incorrectText);
 }
 
 //---------------------------------------------------------------------------

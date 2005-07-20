@@ -78,10 +78,13 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
     connect (searchButton, SIGNAL (clicked()), SLOT (search()));
     buttonHlay->addWidget (searchButton);
 
+    resultLabel = new QLabel (this, "resultLabel");
+    Q_CHECK_PTR (resultLabel);
+    specVlay->addWidget (resultLabel);
+
     resultList = new WordListView (engine, this, "resultList");
     Q_CHECK_PTR (resultList);
     resultList->setResizeMode (QListView::LastColumn);
-    //resultList->setTitle ("Search Results");
     resultList->setShowSortIndicator (true);
     specVlay->addWidget (resultList, 1);
 
@@ -139,7 +142,5 @@ SearchForm::updateResultTotal (int num)
 {
     QString text = "Search Results : " + QString::number (num) + " word";
     if (num != 1) text += "s";
-
-    // FIXME: Don't set listview title.  Instead update a label on the form.
-    //resultList->setTitle (text);
+    resultLabel->setText (text);
 }

@@ -65,6 +65,19 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
 
     labelHlay->addStretch (1);
 
+    QHBoxLayout* totalHlay = new QHBoxLayout (SPACING, "totalHlay");
+    Q_CHECK_PTR (totalHlay);
+    mainVlay->addLayout (totalHlay);
+
+    leftLabel = new QLabel (this, "leftLabel");
+    Q_CHECK_PTR (leftLabel);
+    totalHlay->addWidget (leftLabel);
+
+    rightLabel = new QLabel (this, "rightLabel");
+    Q_CHECK_PTR (rightLabel);
+    rightLabel->hide();
+    totalHlay->addWidget (rightLabel);
+
     QHBoxLayout* listHlay = new QHBoxLayout (SPACING, "listHlay");
     Q_CHECK_PTR (listHlay);
     mainVlay->addLayout (listHlay);
@@ -97,7 +110,7 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
     buttonHlay->addWidget (closeButton);
 
     setWordVariation (word, variation);
-    resize (minimumSizeHint().width(), 500);
+    resize (minimumSizeHint().width() * 2, 500);
 }
 
 //---------------------------------------------------------------------------
@@ -249,7 +262,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     leftTitle += " : " + QString::number (leftWords) + " word";
     if (leftWords != 1)
         leftTitle += "s";
-    leftList->setTitle (leftTitle);
+    leftLabel->setText (leftTitle);
 
     if (!rightSpecs.empty()) {
         wordSet.clear();
@@ -265,7 +278,8 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         rightTitle += " : " + QString::number (rightWords) + " word";
         if (rightWords != 1)
             rightTitle += "s";
-        rightList->setTitle (rightTitle);
+        rightLabel->setText (rightTitle);
+        rightLabel->show();
         rightList->show();
     }
 

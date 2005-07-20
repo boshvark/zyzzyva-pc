@@ -27,10 +27,10 @@
 
 #include "ActionForm.h"
 #include <qcheckbox.h>
+#include <qlabel.h>
 #include <qpoint.h>
 #include <qpushbutton.h>
 
-class QListViewItem;
 class SearchSpecForm;
 class WordEngine;
 class WordListView;
@@ -51,6 +51,7 @@ class SearchForm : public ActionForm
     WordEngine*     engine;
     SearchSpecForm* specForm;
     //QCheckBox*      lowerCaseCbox;
+    QLabel*         resultLabel;
     WordListView*   resultList;
     QPushButton*    searchButton;
 };

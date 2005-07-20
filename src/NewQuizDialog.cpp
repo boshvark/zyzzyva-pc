@@ -58,7 +58,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
     Q_CHECK_PTR (specForm);
     mainVlay->addWidget (specForm);
 
-    useListCbox = new QCheckBox ("Use result &list as a single question",
+    useListCbox = new QCheckBox ("&Use result list as a single question",
                                  this, "useListCbox");
     Q_CHECK_PTR (useListCbox);
     connect (useListCbox, SIGNAL (toggled (bool)),
