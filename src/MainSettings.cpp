@@ -48,6 +48,11 @@ const QString SETTINGS_TILE_THEME = "/tile_theme";
 const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 
+//---------------------------------------------------------------------------
+//  readSettings
+//
+//! Read settings.
+//---------------------------------------------------------------------------
 void
 MainSettings::readSettings()
 {
@@ -89,6 +94,11 @@ MainSettings::readSettings()
     settings.endGroup();
 }
 
+//---------------------------------------------------------------------------
+//  writeSettings
+//
+//! Write settings.
+//---------------------------------------------------------------------------
 void
 MainSettings::writeSettings()
 {
@@ -98,7 +108,8 @@ MainSettings::writeSettings()
     settings.writeEntry (SETTINGS_GEOMETRY_X, instance->mainWindowX);
     settings.writeEntry (SETTINGS_GEOMETRY_Y, instance->mainWindowY);
     settings.writeEntry (SETTINGS_GEOMETRY_WIDTH, instance->mainWindowWidth);
-    settings.writeEntry (SETTINGS_GEOMETRY_HEIGHT, instance->mainWindowHeight);
+    settings.writeEntry (SETTINGS_GEOMETRY_HEIGHT,
+                         instance->mainWindowHeight);
     settings.endGroup();
 
     settings.writeEntry (SETTINGS_IMPORT, instance->useAutoImport);
@@ -110,8 +121,10 @@ MainSettings::writeSettings()
     settings.writeEntry (SETTINGS_FONT_QUIZ_LABEL, instance->quizLabelFont);
     settings.writeEntry (SETTINGS_FONT_WORD_INPUT, instance->wordInputFont);
     settings.writeEntry (SETTINGS_FONT_DEFINITIONS, instance->definitionFont);
-    settings.writeEntry (SETTINGS_SORT_BY_LENGTH, instance->wordListSortByLength);
+    settings.writeEntry (SETTINGS_SORT_BY_LENGTH,
+                         instance->wordListSortByLength);
     settings.writeEntry (SETTINGS_SHOW_HOOKS, instance->wordListShowHooks);
-    settings.writeEntry (SETTINGS_SHOW_DEFINITIONS, instance->wordListShowDefinitions);
+    settings.writeEntry (SETTINGS_SHOW_DEFINITIONS,
+                         instance->wordListShowDefinitions);
     settings.endGroup();
 }
