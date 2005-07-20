@@ -182,8 +182,8 @@ WordListView::resetColumnWidths()
     QFontMetrics fontMetrics (font);
 
     for (int i = 0; i < 4; ++i) {
+        setColumnWidthMode (i, QListView::Manual);
         if (hidden[i]) {
-            setColumnWidthMode (i, QListView::Manual);
             hideColumn (i);
             continue;
         }
@@ -198,9 +198,21 @@ WordListView::resetColumnWidths()
         }
         int width = (fontOk ? fontMetrics.width (header) + (2 * ITEM_MARGIN)
                             : DEFAULT_COLUMN_WIDTH);
-        setColumnWidthMode (i, QListView::Maximum);
         setColumnWidth (i, width);
+        setColumnWidthMode (i, QListView::Maximum);
     }
+}
+
+//---------------------------------------------------------------------------
+//  clear
+//
+//! Clear the word list.  Also reset the column widths.
+//---------------------------------------------------------------------------
+void
+WordListView::clear()
+{
+    QListView::clear();
+    resetColumnWidths();
 }
 
 //---------------------------------------------------------------------------

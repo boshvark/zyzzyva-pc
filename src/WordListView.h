@@ -44,6 +44,7 @@ class WordListView : public QListView
     void resetColumnWidths();
 
     public slots:
+    void clear();
     void doReturnPressed (QListViewItem* item);
     void doPopupMenu (QListViewItem* item, const QPoint& point, int);
     void exportRequested();
