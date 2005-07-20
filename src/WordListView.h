@@ -41,6 +41,7 @@ class WordListView : public QListView
 
     void setFont (const QFont& font);
     WordListViewItem* addWord (const QString& word);
+    void resetColumnWidths();
 
     public slots:
     void doReturnPressed (QListViewItem* item);
@@ -57,6 +58,7 @@ class WordListView : public QListView
 
     private:
     WordEngine* wordEngine;
+    bool hidden[4];
 };
 
 #endif // WORD_LIST_VIEW_H

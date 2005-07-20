@@ -62,8 +62,7 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WF
                       f)
     : QListView (parent, name, f), wordEngine (e)
 {
-    // Not all list views are going to be search results of course - this is a
-    // convenient place holder to get a reasonable initial size
+    hidden[0] = hidden[1] = hidden[2] = hidden[3] = false;
     addColumn (FRONT_HOOK_HEADER);
     addColumn (WORD_HEADER);
     addColumn (BACK_HOOK_HEADER);
@@ -165,6 +164,43 @@ WordListView::addWord (const QString& word)
 
     // XXX: Populate all visible columns
     return new WordListViewItem (this, front, word, back, definition);
+}
+
+//---------------------------------------------------------------------------
+//  resetColumnWidths
+//
+//! Reset the column widths.
+//
+//! @param item the selected listview item
+//---------------------------------------------------------------------------
+void
+WordListView::resetColumnWidths()
+{
+    QFont font;
+    QString fontStr = MainSettings::getMainFont();
+    bool fontOk = font.fromString (fontStr);
+    QFontMetrics fontMetrics (font);
+
+    for (int i = 0; i < 4; ++i) {
+        if (hidden[i]) {
+            setColumnWidthMode (i, QListView::Manual);
+            hideColumn (i);
+            continue;
+        }
+
+        QString header;
+        switch (i) {
+            case 0: header = FRONT_HOOK_HEADER; break;
+            case 1: header = WORD_HEADER; break;
+            case 2: header = BACK_HOOK_HEADER; break;
+            case 3: header = DEFINITION_HEADER; break;
+            default: break;
+        }
+        int width = (fontOk ? fontMetrics.width (header) + (2 * ITEM_MARGIN)
+                            : DEFAULT_COLUMN_WIDTH);
+        setColumnWidthMode (i, QListView::Maximum);
+        setColumnWidth (i, width);
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -349,28 +385,8 @@ WordListView::displayDefinition (const QString& word)
 void
 WordListView::showHooks (bool show)
 {
-    if (show) {
-        QFont font;
-        QString fontStr = MainSettings::getMainFont();
-        bool fontOk = font.fromString (fontStr);
-        QFontMetrics fontMetrics (font);
-
-        int width = (fontOk ? fontMetrics.width (FRONT_HOOK_HEADER) +
-                    (2 * ITEM_MARGIN) : DEFAULT_COLUMN_WIDTH);
-        setColumnWidthMode (0, QListView::Maximum);
-        setColumnWidth (0, width);
-
-        width = (fontOk ? fontMetrics.width (FRONT_HOOK_HEADER) +
-                (2 * ITEM_MARGIN) : DEFAULT_COLUMN_WIDTH);
-        setColumnWidthMode (2, QListView::Maximum);
-        setColumnWidth (2, width);
-    }
-    else {
-        setColumnWidthMode (0, QListView::Manual);
-        setColumnWidthMode (2, QListView::Manual);
-        hideColumn (0);
-        hideColumn (2);
-    }
+    hidden[0] = hidden[2] = !show;
+    resetColumnWidths();
 }
 
 //---------------------------------------------------------------------------
@@ -383,20 +399,8 @@ WordListView::showHooks (bool show)
 void
 WordListView::showDefinitions (bool show)
 {
-    if (show) {
-        QFont font;
-        QString fontStr = MainSettings::getMainFont();
-        bool fontOk = font.fromString (fontStr);
-        QFontMetrics fontMetrics (font);
-        int width = (fontOk ? fontMetrics.width (DEFINITION_HEADER) +
-                    (2 * ITEM_MARGIN) : DEFAULT_COLUMN_WIDTH);
-        setColumnWidthMode (3, QListView::Maximum);
-        setColumnWidth (3, width);
-    }
-    else {
-        setColumnWidthMode (3, QListView::Manual);
-        hideColumn (3);
-    }
+    hidden[3] = !show;
+    resetColumnWidths();
 }
 
 //---------------------------------------------------------------------------
