@@ -326,6 +326,46 @@ WordListView::displayDefinition (const QString& word)
 }
 
 //---------------------------------------------------------------------------
+//  showHooks
+//
+//! Change whether the list displays word hooks.
+//
+//! @param show true if hooks are to be displayed, false otherwise
+//---------------------------------------------------------------------------
+void
+WordListView::showHooks (bool show)
+{
+    if (show) {
+        hideColumn (0);
+        hideColumn (2);
+    }
+
+    else {
+        setColumnWidth (0, 50);
+        setColumnWidth (2, 50);
+    }
+}
+
+//---------------------------------------------------------------------------
+//  showDefinitions
+//
+//! Change whether the list displays word definitions.
+//
+//! @param show true if definitions are to be displayed, false otherwise
+//---------------------------------------------------------------------------
+void
+WordListView::showDefinitions (bool show)
+{
+    if (show) {
+        hideColumn (3);
+    }
+
+    else {
+        setColumnWidth (3, 50);
+    }
+}
+
+//---------------------------------------------------------------------------
 //  contextMenuEvent
 //
 //! Reimplementation of QWidget::contextMenuEvent.  Called when a context menu

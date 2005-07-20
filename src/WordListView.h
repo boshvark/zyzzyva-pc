@@ -48,6 +48,8 @@ class WordListView : public QListView
     void exportRequested();
     void createQuizRequested();
     void displayDefinition (const QString& word);
+    void showHooks (bool show);
+    void showDefinitions (bool show);
 
     private:
     void contextMenuEvent (QContextMenuEvent* e);
