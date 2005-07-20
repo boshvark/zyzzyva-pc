@@ -89,6 +89,7 @@ class WordListViewItem : public QListViewItem
 
     ~WordListViewItem() { }
 
+    QString getWord() const;
     static void setSortByLength (bool b) { sortByLength = b; }
     static bool getSortByLength() { return sortByLength; }
     void setTextColor (const QColor& color);

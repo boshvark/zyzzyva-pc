@@ -54,10 +54,14 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WF
 {
     // Not all list views are going to be search results of course - this is a
     // convenient place holder to get a reasonable initial size
-    addColumn ("Word");
     addColumn ("Front Hooks");
+    addColumn ("Word");
     addColumn ("Back Hooks");
     addColumn ("Definition");
+    setColumnAlignment (0, Qt::AlignRight);
+    setAllColumnsShowFocus (true);
+    setItemMargin (5);
+    setSorting (1);
 
     // Only connect certain slots if word engine is non-null
     if (wordEngine) {
@@ -125,8 +129,7 @@ WordListView::addWord (const QString& word)
     set<QChar>::iterator sit;
     for (sit = frontLetters.begin(); sit != frontLetters.end(); ++sit)
         front += *sit;
-    if (front.isEmpty())
-        front = "-";
+    front += "-";
 
     // Put last letter of each word in a set, for alphabetical order
     spec.conditions.clear();
@@ -140,16 +143,14 @@ WordListView::addWord (const QString& word)
     for (it = backWords.begin(); it != backWords.end(); ++it)
         backLetters.insert ((*it).at ((*it).length() - 1).lower());
 
-    QString back;
+    QString back = "-";
     for (sit = backLetters.begin(); sit != backLetters.end(); ++sit)
         back += *sit;
-    if (back.isEmpty())
-        back = "-";
 
     QString definition = wordEngine->getDefinition (word);
 
     // XXX: Populate all visible columns
-    return new WordListViewItem (this, word, front, back, definition);
+    return new WordListViewItem (this, front, word, back, definition);
 }
 
 //---------------------------------------------------------------------------
@@ -165,7 +166,7 @@ WordListView::doReturnPressed (QListViewItem* item)
 {
     if (!item)
         return;
-    displayDefinition (item->text (0).upper());
+    displayDefinition (item->text (1).upper());
 }
 
 //---------------------------------------------------------------------------
@@ -187,7 +188,7 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
 
     QString word;
     if (item)
-        word = item->text (0).upper();
+        word = item->text (1).upper();
 
     WordVariationType variation = VariationNone;
 
@@ -296,7 +297,7 @@ WordListView::createQuizRequested()
     for (item = firstChild(); item; item = item->nextSibling()) {
         if (!searchString.isEmpty())
             searchString += " ";
-        searchString += item->text (0);
+        searchString += item->text (1);
     }
     searchCondition.type = SearchCondition::InWordList;
     searchCondition.stringValue = searchString;
@@ -388,7 +389,7 @@ WordListView::exportFile (const QString& filename, QString* err) const
     QTextStream stream (&file);
     for (QListViewItem* item = firstChild(); item; item = item->nextSibling())
     {
-        stream << item->text (0);
+        stream << item->text (1);
         endl (stream);
     }
 
