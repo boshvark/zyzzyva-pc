@@ -52,7 +52,9 @@ class SettingsDialog : public QDialog
     QString getWordInputFont() const;
     QString getDefinitionFont() const;
     QString getTileTheme() const;
-    bool getSortByLength() const;
+    bool getWordListSortByLength() const;
+    bool getWordListShowHooks() const;
+    bool getWordListShowDefinition() const;
 
     public slots:
     void browseButtonClicked();
@@ -72,12 +74,14 @@ class SettingsDialog : public QDialog
     QComboBox*   themeCombo;
     QLineEdit*   fontMainLine;
     QLineEdit*   fontWordListLine;
-    // XXX: Reinstate this once it's know how to change the font of canvas
+    // XXX: Reinstate this once it's known how to change the font of canvas
     // text items via QApplication::setFont
     //QLineEdit*   fontQuizLabelLine;
     QLineEdit*   fontDefinitionLine;
     QLineEdit*   fontWordInputLine;
     QCheckBox*   lengthSortCbox;
+    QCheckBox*   showHooksCbox;
+    QCheckBox*   showDefinitionCbox;
 };
 
 #endif // SETTINGS_DIALOG_H

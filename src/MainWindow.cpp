@@ -518,7 +518,8 @@ MainWindow::readSettings (bool useGeometry)
         }
     }
 
-    WordListViewItem::setSortByLength (settingsDialog->getSortByLength());
+    WordListViewItem::setSortByLength
+        (settingsDialog->getWordListSortByLength());
 }
 
 //---------------------------------------------------------------------------

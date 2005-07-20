@@ -42,6 +42,8 @@ const QString SETTINGS_FONT_QUIZ_LABEL = "/font_quiz_label";
 const QString SETTINGS_FONT_DEFINITIONS = "/font_definitions";
 const QString SETTINGS_FONT_WORD_INPUT = "/font_word_input";
 const QString SETTINGS_SORT_BY_LENGTH = "/wordlist_sort_by_length";
+const QString SETTINGS_SHOW_HOOKS = "/wordlist_sort_by_length";
+const QString SETTINGS_SHOW_DEFINITIONS = "/wordlist_sort_by_length";
 const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
 const QString SETTINGS_TILE_THEME = "/tile_theme";
 const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
@@ -271,22 +273,32 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
                               FONT_DEFINITIONS_BUTTON);
     fontGlay->addWidget (chooseFontDefinitionButton, row, 2);
 
-    QVGroupBox* miscGbox = new QVGroupBox (this, "miscGbox");
-    Q_CHECK_PTR (miscGbox);
-    miscGbox->setTitle ("Miscellaneous");
-    mainVlay->addWidget (miscGbox);
+    QVGroupBox* wordListGbox = new QVGroupBox (this, "wordListGbox");
+    Q_CHECK_PTR (wordListGbox);
+    wordListGbox->setTitle ("Word Lists");
+    mainVlay->addWidget (wordListGbox);
 
-    QWidget* miscWidget = new QWidget (miscGbox, "miscWidget");
-    Q_CHECK_PTR (miscWidget);
+    QWidget* wordListWidget = new QWidget (wordListGbox, "wordListWidget");
+    Q_CHECK_PTR (wordListWidget);
 
-    QVBoxLayout* miscVlay = new QVBoxLayout (miscWidget, MARGIN, SPACING,
-                                             "miscVlay");
-    Q_CHECK_PTR (miscVlay);
+    QVBoxLayout* wordListVlay = new QVBoxLayout (wordListWidget, MARGIN,
+                                                 SPACING, "wordListVlay");
+    Q_CHECK_PTR (wordListVlay);
 
-    lengthSortCbox = new QCheckBox ("Sort word lists by word length",
-                                    miscWidget, "lengthSortCbox");
+    lengthSortCbox = new QCheckBox ("Sort by word length", wordListWidget,
+                                    "lengthSortCbox");
     Q_CHECK_PTR (lengthSortCbox);
-    miscVlay->addWidget (lengthSortCbox);
+    wordListVlay->addWidget (lengthSortCbox);
+
+    showHooksCbox = new QCheckBox ("Show hooks", wordListWidget,
+                                   "showHooksCbox");
+    Q_CHECK_PTR (showHooksCbox);
+    wordListVlay->addWidget (showHooksCbox);
+
+    showDefinitionCbox = new QCheckBox ("Show definitions", wordListWidget,
+                                        "showDefinitionCbox");
+    Q_CHECK_PTR (showDefinitionCbox);
+    wordListVlay->addWidget (showDefinitionCbox);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
@@ -528,16 +540,42 @@ SettingsDialog::getTileTheme() const
 }
 
 //---------------------------------------------------------------------------
-//  getSortByLength
+//  getWordListSortByLength
 //
-//! Return the "sort by length" setting.
+//! Return the default "sort by length" setting for word lists.
 //
 //! @return true if "sort by length" is preferred, false otherwise
 //---------------------------------------------------------------------------
 bool
-SettingsDialog::getSortByLength() const
+SettingsDialog::getWordListSortByLength() const
 {
     return lengthSortCbox->isChecked();
+}
+
+//---------------------------------------------------------------------------
+//  getWordListShowHooks
+//
+//! Return the default "show hooks" setting for word lists.
+//
+//! @return true if "show hooks" is preferred, false otherwise
+//---------------------------------------------------------------------------
+bool
+SettingsDialog::getWordListShowHooks() const
+{
+    return showHooksCbox->isChecked();
+}
+
+//---------------------------------------------------------------------------
+//  getWordListShowDefinition
+//
+//! Return the default "show word definitions" setting for word lists.
+//
+//! @return true if "show word definitions" is preferred, false otherwise
+//---------------------------------------------------------------------------
+bool
+SettingsDialog::getWordListShowDefinition() const
+{
+    return showDefinitionCbox->isChecked();
 }
 
 //---------------------------------------------------------------------------
