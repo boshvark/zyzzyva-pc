@@ -65,33 +65,37 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
 
     labelHlay->addStretch (1);
 
-    QHBoxLayout* totalHlay = new QHBoxLayout (SPACING, "totalHlay");
-    Q_CHECK_PTR (totalHlay);
-    mainVlay->addLayout (totalHlay);
+    QHBoxLayout* mainHlay = new QHBoxLayout (SPACING, "mainHlay");
+    Q_CHECK_PTR (mainHlay);
+    mainVlay->addLayout (mainHlay);
+
+    QVBoxLayout* leftVlay = new QVBoxLayout (SPACING, "leftVlay");
+    Q_CHECK_PTR (leftVlay);
+    mainHlay->addLayout (leftVlay);
 
     leftLabel = new QLabel (this, "leftLabel");
     Q_CHECK_PTR (leftLabel);
-    totalHlay->addWidget (leftLabel);
-
-    rightLabel = new QLabel (this, "rightLabel");
-    Q_CHECK_PTR (rightLabel);
-    rightLabel->hide();
-    totalHlay->addWidget (rightLabel);
-
-    QHBoxLayout* listHlay = new QHBoxLayout (SPACING, "listHlay");
-    Q_CHECK_PTR (listHlay);
-    mainVlay->addLayout (listHlay);
+    leftVlay->addWidget (leftLabel);
 
     leftList = new WordListView (wordEngine, this, "leftList");
     Q_CHECK_PTR (leftList);
     leftList->setShowSortIndicator(true);
-    listHlay->addWidget (leftList);
+    leftVlay->addWidget (leftList);
+
+    QVBoxLayout* rightVlay = new QVBoxLayout (SPACING, "rightVlay");
+    Q_CHECK_PTR (rightVlay);
+    mainHlay->addLayout (rightVlay);
+
+    rightLabel = new QLabel (this, "rightLabel");
+    Q_CHECK_PTR (rightLabel);
+    rightLabel->hide();
+    rightVlay->addWidget (rightLabel);
 
     rightList = new WordListView (wordEngine, this, "rightList");
     Q_CHECK_PTR (rightList);
     rightList->setShowSortIndicator(true);
     rightList->hide();
-    listHlay->addWidget (rightList);
+    rightVlay->addWidget (rightList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
