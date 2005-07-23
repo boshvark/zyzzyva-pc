@@ -71,6 +71,10 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WF
     setAllColumnsShowFocus (true);
     setItemMargin (ITEM_MARGIN);
     setSorting (1);
+    setColumnAlignment (0, Qt::AlignRight);
+    setAllColumnsShowFocus (true);
+    setItemMargin (5);
+    setSorting (1);
 
     setResizeMode (QListView::NoColumn);
     showHooks (MainSettings::getWordListShowHooks());
