@@ -408,6 +408,32 @@ SettingsDialog::writeSettings()
 }
 
 //---------------------------------------------------------------------------
+//  getWordListShowHooks
+//
+//! Return the default "show hooks" setting for word lists.
+//
+//! @return true if "show hooks" is preferred, false otherwise
+//---------------------------------------------------------------------------
+bool
+SettingsDialog::getWordListShowHooks() const
+{
+    return showHooksCbox->isChecked();
+}
+
+//---------------------------------------------------------------------------
+//  getWordListShowDefinition
+//
+//! Return the default "show word definitions" setting for word lists.
+//
+//! @return true if "show word definitions" is preferred, false otherwise
+//---------------------------------------------------------------------------
+bool
+SettingsDialog::getWordListShowDefinition() const
+{
+    return showDefinitionCbox->isChecked();
+}
+
+//---------------------------------------------------------------------------
 //  browseButtonClicked
 //
 //! Slot called when the Browse button is clicked.  Create a file chooser
