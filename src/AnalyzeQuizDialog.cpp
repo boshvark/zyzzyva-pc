@@ -153,7 +153,7 @@ AnalyzeQuizDialog::updateStats()
         missedText += "s";
     missedLabel->setText (missedText);
     int incorrect = incorrectList->childCount();
-    QString incorrectText = MISSED_LABEL_PREFIX + QString::number
+    QString incorrectText = INCORRECT_LABEL_PREFIX + QString::number
         (incorrect) + " word";
     if (incorrect != 1)
         incorrectText += "s";
