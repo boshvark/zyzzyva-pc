@@ -379,10 +379,6 @@ SettingsDialog::readSettings()
     showHooksCbox->setChecked (MainSettings::getWordListShowHooks());
     showDefinitionCbox->setChecked
         (MainSettings::getWordListShowDefinitions());
-    bool showHooks = settings.readBoolEntry (SETTINGS_SHOW_HOOKS, false);
-    showHooksCbox->setChecked (showHooks);
-    bool showDefs = settings.readBoolEntry (SETTINGS_SHOW_DEFINITIONS, false);
-    showDefinitionCbox->setChecked (showDefs);
 }
 
 //---------------------------------------------------------------------------
@@ -409,36 +405,6 @@ SettingsDialog::writeSettings()
     MainSettings::setWordListShowDefinitions
         (showDefinitionCbox->isChecked());
     MainSettings::writeSettings();
-    settings.writeEntry (SETTINGS_SHOW_HOOKS,
-                         showHooksCbox->isChecked());
-    settings.writeEntry (SETTINGS_SHOW_DEFINITIONS,
-                         showDefinitionCbox->isChecked());
-}
-
-//---------------------------------------------------------------------------
-//  getWordListShowHooks
-//
-//! Return the default "show hooks" setting for word lists.
-//
-//! @return true if "show hooks" is preferred, false otherwise
-//---------------------------------------------------------------------------
-bool
-SettingsDialog::getWordListShowHooks() const
-{
-    return showHooksCbox->isChecked();
-}
-
-//---------------------------------------------------------------------------
-//  getWordListShowDefinition
-//
-//! Return the default "show word definitions" setting for word lists.
-//
-//! @return true if "show word definitions" is preferred, false otherwise
-//---------------------------------------------------------------------------
-bool
-SettingsDialog::getWordListShowDefinition() const
-{
-    return showDefinitionCbox->isChecked();
 }
 
 //---------------------------------------------------------------------------
