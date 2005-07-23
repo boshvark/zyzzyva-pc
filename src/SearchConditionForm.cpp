@@ -46,15 +46,11 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
                                           WFlags f)
-    : QFrame (parent, name, f)
-{
-    WordValidator* letterValidator = new WordValidator (this,
-                                                        "letterValidator");
-    Q_CHECK_PTR (letterValidator);
+    : QFrame (parent, name, f),
+    letterValidator (new WordValidator (this, "letterValidator")),
+    patternValidator (new WordValidator (this, "patternValidator"))
 
-    WordValidator* patternValidator = new WordValidator (this,
-                                                         "patternValidator");
-    Q_CHECK_PTR (patternValidator);
+{
     patternValidator->setOptions (WordValidator::AllowQuestionMarks |
                                   WordValidator::AllowAsterisks |
                                   WordValidator::AllowCharacterClasses);
@@ -356,6 +352,9 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::MustInclude:
         case SearchCondition::MustExclude:
         paramStack->raiseWidget (paramLineFrame);
+        paramLine->setValidator (((type == SearchCondition::MustExclude) ||
+                                  (type == SearchCondition::MustInclude)) ?
+                                 letterValidator : patternValidator);
         break;
 
         case SearchCondition::ExactLength:

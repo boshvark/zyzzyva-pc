@@ -32,8 +32,9 @@
 #include <qwidgetstack.h>
 #include <set>
 
-class WordLineEdit;
 class SearchCondition;
+class WordLineEdit;
+class WordValidator;
 
 class SearchConditionForm : public QFrame
 {
@@ -74,6 +75,8 @@ class SearchConditionForm : public QFrame
     QFrame*       paramWordListFrame;
     QLineEdit*    paramWordListLine;
     QString       paramWordListString;
+    WordValidator* letterValidator;
+    WordValidator* patternValidator;
 };
 
 #endif // SEARCH_CONDITION_FORM_H
