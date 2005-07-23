@@ -57,7 +57,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     Q_CHECK_PTR (patternValidator);
     patternValidator->setOptions (WordValidator::AllowQuestionMarks |
                                   WordValidator::AllowAsterisks |
-                                  WordValidator::AllowBrackets);
+                                  WordValidator::AllowCharacterClasses);
 
     QHBoxLayout* mainHlay = new QHBoxLayout (this, 0, SPACING, "mainHlay");
     Q_CHECK_PTR (mainHlay);
@@ -476,6 +476,7 @@ SearchConditionForm::matchStringIsValid (const QString& string) const
 
     bool inGroup = false;
     bool groupLetters = false;
+    bool negatedGroup = false;
     int len = string.length();
     for (int i = 0; i < len; ++i) {
         QChar c = string.at (i);
@@ -487,15 +488,21 @@ SearchConditionForm::matchStringIsValid (const QString& string) const
                 inGroup = false;
                 groupLetters = false;
             }
+            else if (c == '^') {
+                if (groupLetters)
+                    return false;
+                negatedGroup = true;
+            }
             else if ((c == '[') || (c == '*') || (c == '?'))
                 return false;
-            groupLetters = true;
+            else
+                groupLetters = true;
         }
 
         else {
             if (c == '[')
                 inGroup = true;
-            else if (c == ']')
+            else if ((c == ']') || (c == '^'))
                 return false;
         }
     }

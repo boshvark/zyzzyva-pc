@@ -44,7 +44,7 @@ class WordValidator : public QValidator
         None = 0,
         AllowQuestionMarks = 1,
         AllowAsterisks = 2,
-        AllowBrackets = 4
+        AllowCharacterClasses = 4
     };
 
     private:

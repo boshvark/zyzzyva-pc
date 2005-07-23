@@ -285,7 +285,8 @@ WordGraph::search (const SearchSpec& spec) const
 
                         // A node matches wildcard characters or its own
                         // letter
-                        if (match.contains (node->letter))
+                        if (match.contains (node->letter) ^
+                            match.contains ("^"))
                             word += node->letter;
                         else if ((match == "*") || (match == "?"))
                             word += node->letter.lower();
@@ -336,6 +337,7 @@ WordGraph::search (const SearchSpec& spec) const
                         int len = unmatched.length();
                         bool inGroup = false;
                         bool found = false;
+                        bool negated = false;
                         int matchStart = -1;
                         int matchEnd = -1;
                         int groupStart = -1;
@@ -344,21 +346,20 @@ WordGraph::search (const SearchSpec& spec) const
 
                             if (c == '[') {
                                 inGroup = true;
+                                negated = false;
                                 groupStart = i;
                             }
 
                             else if (inGroup) {
-                                if (c == node->letter) {
-                                    if (!found && (matchStart < 0)) {
-                                        matchStart = groupStart;
-                                    }
-                                    found = true;
-                                }
+                                if (c == '^')
+                                    negated = true;
 
                                 else if (c == ']') {
-                                    if (found) {
-                                        if (matchEnd < 0)
+                                    if (found ^ negated) {
+                                        if (matchEnd < 0) {
+                                            matchStart = groupStart;
                                             matchEnd = i;
+                                        }
 
                                         else if (node->child) {
                                             states.push ( TraversalState
@@ -372,7 +373,11 @@ WordGraph::search (const SearchSpec& spec) const
                                     }
                                     inGroup = false;
                                     found = false;
+                                    negated = false;
                                 }
+
+                                else if (c == node->letter)
+                                    found = true;
                             }
 
                             // Matched the character itself
