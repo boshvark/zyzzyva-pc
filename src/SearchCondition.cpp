@@ -79,7 +79,7 @@ SearchCondition::asString() const
         break;
 
         case MustConsist:
-        str += QString::number (intValue) + "%% " + stringValue;
+        str += QString::number (intValue) + "% " + stringValue;
         break;
 
         default: break;
