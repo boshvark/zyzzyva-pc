@@ -379,6 +379,10 @@ SettingsDialog::readSettings()
     showHooksCbox->setChecked (MainSettings::getWordListShowHooks());
     showDefinitionCbox->setChecked
         (MainSettings::getWordListShowDefinitions());
+    bool showHooks = settings.readBoolEntry (SETTINGS_SHOW_HOOKS, false);
+    showHooksCbox->setChecked (showHooks);
+    bool showDefs = settings.readBoolEntry (SETTINGS_SHOW_DEFINITIONS, false);
+    showDefinitionCbox->setChecked (showDefs);
 }
 
 //---------------------------------------------------------------------------
@@ -405,6 +409,10 @@ SettingsDialog::writeSettings()
     MainSettings::setWordListShowDefinitions
         (showDefinitionCbox->isChecked());
     MainSettings::writeSettings();
+    settings.writeEntry (SETTINGS_SHOW_HOOKS,
+                         showHooksCbox->isChecked());
+    settings.writeEntry (SETTINGS_SHOW_DEFINITIONS,
+                         showDefinitionCbox->isChecked());
 }
 
 //---------------------------------------------------------------------------
