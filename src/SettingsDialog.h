@@ -43,18 +43,6 @@ class SettingsDialog : public QDialog
 
     void readSettings();
     void writeSettings();
-    //QString getAutoImportFile() const;
-    //QString getMainFont() const;
-    //QString getWordListFont() const;
-    //// XXX: Reinstate this once it's know how to change the font of canvas
-    //// text items via QApplication::setFont
-    ////QString getQuizLabelFont() const;
-    //QString getWordInputFont() const;
-    //QString getDefinitionFont() const;
-    //QString getTileTheme() const;
-    //bool getWordListSortByLength() const;
-    //bool getWordListShowHooks() const;
-    //bool getWordListShowDefinition() const;
 
     public slots:
     void browseButtonClicked();
