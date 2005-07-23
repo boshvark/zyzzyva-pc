@@ -58,30 +58,6 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR (questionLabel);
     mainVlay->addWidget (questionLabel);
 
-    QHBoxLayout* statsHlay = new QHBoxLayout (SPACING, "statsHlay");
-    Q_CHECK_PTR (statsHlay);
-    mainVlay->addLayout (statsHlay);
-
-    recallLabel = new QLabel (this, "recallLabel");
-    Q_CHECK_PTR (recallLabel);
-    statsHlay->addWidget (recallLabel);
-
-    precisionLabel = new QLabel (this, "precisionLabel");
-    Q_CHECK_PTR (precisionLabel);
-    statsHlay->addWidget (precisionLabel);
-
-    QHBoxLayout* totalHlay = new QHBoxLayout (SPACING, "totalHlay");
-    Q_CHECK_PTR (totalHlay);
-    mainVlay->addLayout (totalHlay);
-
-    missedLabel = new QLabel (this, "missedLabel");
-    Q_CHECK_PTR (missedLabel);
-    totalHlay->addWidget (missedLabel);
-
-    incorrectLabel = new QLabel (this, "incorrectLabel");
-    Q_CHECK_PTR (incorrectLabel);
-    totalHlay->addWidget (incorrectLabel);
-
     QHBoxLayout* mainHlay = new QHBoxLayout (SPACING, "mainHlay");
     Q_CHECK_PTR (mainHlay);
     mainVlay->addLayout (mainHlay);
@@ -90,6 +66,14 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR (missedVlay);
     mainHlay->addLayout (missedVlay);
 
+    recallLabel = new QLabel (this, "recallLabel");
+    Q_CHECK_PTR (recallLabel);
+    missedVlay->addWidget (recallLabel);
+
+    missedLabel = new QLabel (this, "missedLabel");
+    Q_CHECK_PTR (missedLabel);
+    missedVlay->addWidget (missedLabel);
+
     missedList = new WordListView (wordEngine, this, "missedList");
     Q_CHECK_PTR (missedList);
     missedVlay->addWidget (missedList);
@@ -97,6 +81,14 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     QVBoxLayout* incorrectVlay = new QVBoxLayout (SPACING, "incorrectVlay");
     Q_CHECK_PTR (incorrectVlay);
     mainHlay->addLayout (incorrectVlay);
+
+    precisionLabel = new QLabel (this, "precisionLabel");
+    Q_CHECK_PTR (precisionLabel);
+    incorrectVlay->addWidget (precisionLabel);
+
+    incorrectLabel = new QLabel (this, "incorrectLabel");
+    Q_CHECK_PTR (incorrectLabel);
+    incorrectVlay ->addWidget (incorrectLabel);
 
     incorrectList = new WordListView (wordEngine, this, "incorrectList");
     Q_CHECK_PTR (incorrectList);
