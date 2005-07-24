@@ -37,15 +37,17 @@ WordPopupMenu::WordPopupMenu (bool showWordOptions, QWidget* parent, const
     : QPopupMenu (parent, name)
 {
     if (showWordOptions) {
-        insertItem ("View Definition", ViewDefinition);
-        insertItem ("View Anagrams", ViewAnagrams);
-        insertItem ("View Subanagrams", ViewSubanagrams);
-        insertItem ("View Hooks", ViewHooks);
-        insertItem ("View Extensions", ViewExtensions);
-        insertItem ("View Anagram Hooks", ViewAnagramHooks);
-        insertItem ("View Blank Anagrams", ViewBlankAnagrams);
-        insertItem ("View Blank Matches", ViewBlankMatches);
-        insertItem ("View Transpositions", ViewTranspositions);
+        QPopupMenu* viewPopup = new QPopupMenu (this, "viewPopup");
+        viewPopup->insertItem ("Definition", ViewDefinition);
+        viewPopup->insertItem ("Anagrams", ViewAnagrams);
+        viewPopup->insertItem ("Subanagrams", ViewSubanagrams);
+        viewPopup->insertItem ("Hooks", ViewHooks);
+        viewPopup->insertItem ("Extensions", ViewExtensions);
+        viewPopup->insertItem ("Anagram Hooks", ViewAnagramHooks);
+        viewPopup->insertItem ("Blank Anagrams", ViewBlankAnagrams);
+        viewPopup->insertItem ("Blank Matches", ViewBlankMatches);
+        viewPopup->insertItem ("Transpositions", ViewTranspositions);
+        insertItem ("View", viewPopup);
     }
     insertItem ("Save list...", ExportList);
     insertItem ("Quiz from list...", CreateQuiz);
