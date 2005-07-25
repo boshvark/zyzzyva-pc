@@ -23,8 +23,23 @@
 //---------------------------------------------------------------------------
 
 #include "WordListViewItem.h"
+#include "WordListView.h"
 
 bool WordListViewItem::sortByLength = false;
+
+//---------------------------------------------------------------------------
+//  getWord
+//
+//! Get the word associated with this item.
+//
+//! @return the word
+//---------------------------------------------------------------------------
+QString
+WordListViewItem::getWord() const
+{
+    return text (WordListView::WORD_COLUMN).remove
+        (WordListView::PARENT_HOOK_CHAR).remove (" ");
+}
 
 //---------------------------------------------------------------------------
 //  setTextColor
@@ -145,7 +160,8 @@ WordListViewItem::getColorGroup()
 QString
 WordListViewItem::key (int column, bool) const
 {
-    return ((column == 1) ? text (column).upper() : text (column));
+    return ((column == WordListView::WORD_COLUMN) ? getWord().upper()
+                                                  : text (column));
 }
 
 //---------------------------------------------------------------------------

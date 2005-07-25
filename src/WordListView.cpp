@@ -42,6 +42,9 @@
 
 using namespace std;
 
+const int WordListView::WORD_COLUMN = 1;
+const QChar WordListView::PARENT_HOOK_CHAR = '~';
+
 const QString FRONT_HOOK_HEADER = "Front Hooks";
 const QString WORD_HEADER = "Word";
 const QString BACK_HOOK_HEADER = "Back Hooks";
@@ -70,11 +73,10 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WF
     setColumnAlignment (0, Qt::AlignRight);
     setAllColumnsShowFocus (true);
     setItemMargin (ITEM_MARGIN);
-    setSorting (1);
     setColumnAlignment (0, Qt::AlignRight);
     setAllColumnsShowFocus (true);
     setItemMargin (5);
-    setSorting (1);
+    setSorting (WORD_COLUMN);
 
     setResizeMode (QListView::NoColumn);
     showHooks (MainSettings::getWordListShowHooks());
@@ -112,9 +114,8 @@ void
 WordListView::setFont (const QFont& font)
 {
     QListView::setFont (font);
-    WordListViewItem* item = static_cast<WordListViewItem*> (firstChild());
-    for (; item; item = static_cast<WordListViewItem*> (item->nextSibling()))
-        item->setFont (font);
+    for (QListViewItem* item = firstChild(); item; item = item->nextSibling())
+        static_cast<WordListViewItem*>(item)->setFont (font);
 }
 
 //---------------------------------------------------------------------------
@@ -130,9 +131,10 @@ WordListView::addWord (const QString& word)
 {
     SearchSpec spec;
     SearchCondition condition;
+    QString wordUpper = word.upper();
 
     condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = "?" + word;
+    condition.stringValue = "?" + wordUpper;
     spec.conditions << condition;
 
     // Put first letter of each word in a set, for alphabetical order
@@ -146,12 +148,11 @@ WordListView::addWord (const QString& word)
     set<QChar>::iterator sit;
     for (sit = frontLetters.begin(); sit != frontLetters.end(); ++sit)
         front += *sit;
-    front += "-";
 
     // Put last letter of each word in a set, for alphabetical order
     spec.conditions.clear();
     condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = word + "?";
+    condition.stringValue = wordUpper + "?";
     spec.conditions << condition;
 
     // Put first letter of each word in a set, for alphabetical order
@@ -160,14 +161,22 @@ WordListView::addWord (const QString& word)
     for (it = backWords.begin(); it != backWords.end(); ++it)
         backLetters.insert ((*it).at ((*it).length() - 1).lower());
 
-    QString back = "-";
+    QString back;
     for (sit = backLetters.begin(); sit != backLetters.end(); ++sit)
         back += *sit;
 
-    QString definition = wordEngine->getDefinition (word);
+    QString definition = wordEngine->getDefinition (wordUpper);
+
+    // Add parent hook designations
+    QString wordCopy =
+        (wordEngine->isAcceptable (wordUpper.right (wordUpper.length() - 1)) ?
+         PARENT_HOOK_CHAR : QChar (' ')) +
+        word +
+        (wordEngine->isAcceptable (wordUpper.left (wordUpper.length() - 1)) ?
+         PARENT_HOOK_CHAR : QChar (' '));
 
     // XXX: Populate all visible columns
-    return new WordListViewItem (this, front, word, back, definition);
+    return new WordListViewItem (this, front, wordCopy, back, definition);
 }
 
 //---------------------------------------------------------------------------
@@ -232,7 +241,8 @@ WordListView::doReturnPressed (QListViewItem* item)
 {
     if (!item)
         return;
-    displayDefinition (item->text (1).upper());
+    displayDefinition
+        (static_cast<WordListViewItem*>(item)->getWord().upper());
 }
 
 //---------------------------------------------------------------------------
@@ -254,7 +264,7 @@ WordListView::doPopupMenu (QListViewItem* item, const QPoint& point, int)
 
     QString word;
     if (item)
-        word = item->text (1).upper();
+        word = static_cast<WordListViewItem*>(item)->getWord().upper();
 
     WordVariationType variation = VariationNone;
 
@@ -363,7 +373,7 @@ WordListView::createQuizRequested()
     for (item = firstChild(); item; item = item->nextSibling()) {
         if (!searchString.isEmpty())
             searchString += " ";
-        searchString += item->text (1);
+        searchString += static_cast<WordListViewItem*>(item)->getWord();
     }
     searchCondition.type = SearchCondition::InWordList;
     searchCondition.stringValue = searchString;
@@ -470,7 +480,7 @@ WordListView::exportFile (const QString& filename, QString* err) const
     QTextStream stream (&file);
     for (QListViewItem* item = firstChild(); item; item = item->nextSibling())
     {
-        stream << item->text (1);
+        stream << static_cast<WordListViewItem*>(item)->getWord();
         endl (stream);
     }
 

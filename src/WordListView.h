@@ -60,6 +60,10 @@ class WordListView : public QListView
     private:
     WordEngine* wordEngine;
     bool hidden[4];
+
+    public:
+    static const int WORD_COLUMN;
+    static const QChar PARENT_HOOK_CHAR;
 };
 
 #endif // WORD_LIST_VIEW_H
