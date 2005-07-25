@@ -72,6 +72,10 @@ class MainSettings
         return instance->wordListShowHooks; }
     static void setWordListShowHooks (bool b) {
         instance->wordListShowHooks = b; }
+    static bool getWordListShowHookParents() {
+        return instance->wordListShowHookParents; }
+    static void setWordListShowHookParents (bool b) {
+        instance->wordListShowHookParents = b; }
     static bool getWordListShowDefinitions() {
         return instance->wordListShowDefinitions; }
     static void setWordListShowDefinitions (bool b) {
@@ -81,8 +85,8 @@ class MainSettings
     MainSettings() : mainWindowX (0), mainWindowY (0), mainWindowWidth (0),
                      mainWindowHeight (0), useAutoImport (false), useTileTheme
                          (false), wordListSortByLength (false),
-                     wordListShowHooks (false), wordListShowDefinitions
-                         (false) { };
+                     wordListShowHooks (false), wordListShowHookParents
+                         (false), wordListShowDefinitions (false) { };
     ~MainSettings() { };
 
     // private and undefined
@@ -106,6 +110,7 @@ class MainSettings
     QString definitionFont;
     bool wordListSortByLength;
     bool wordListShowHooks;
+    bool wordListShowHookParents;
     bool wordListShowDefinitions;
 };
 

@@ -168,12 +168,13 @@ WordListView::addWord (const QString& word)
     QString definition = wordEngine->getDefinition (wordUpper);
 
     // Add parent hook designations
-    QString wordCopy =
-        (wordEngine->isAcceptable (wordUpper.right (wordUpper.length() - 1)) ?
+    QString wordCopy = MainSettings::getWordListShowHookParents() ?
+        ((wordEngine->isAcceptable (wordUpper.right (wordUpper.length() - 1)) ?
          PARENT_HOOK_CHAR : QChar (' ')) +
         word +
         (wordEngine->isAcceptable (wordUpper.left (wordUpper.length() - 1)) ?
-         PARENT_HOOK_CHAR : QChar (' '));
+         PARENT_HOOK_CHAR : QChar (' ')))
+        : word;
 
     // XXX: Populate all visible columns
     return new WordListViewItem (this, front, wordCopy, back, definition);

@@ -42,6 +42,7 @@ const QString SETTINGS_FONT_DEFINITIONS = "/font_definitions";
 const QString SETTINGS_FONT_WORD_INPUT = "/font_word_input";
 const QString SETTINGS_SORT_BY_LENGTH = "/wordlist_sort_by_length";
 const QString SETTINGS_SHOW_HOOKS = "/wordlist_show_hooks";
+const QString SETTINGS_SHOW_HOOK_PARENTS = "/wordlist_show_hook_parents";
 const QString SETTINGS_SHOW_DEFINITIONS = "/wordlist_show_definitions";
 const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
 const QString SETTINGS_TILE_THEME = "/tile_theme";
@@ -89,6 +90,8 @@ MainSettings::readSettings()
         (SETTINGS_SORT_BY_LENGTH, false);
     instance->wordListShowHooks = settings.readBoolEntry (SETTINGS_SHOW_HOOKS,
                                                           false);
+    instance->wordListShowHookParents = settings.readBoolEntry
+        (SETTINGS_SHOW_HOOK_PARENTS, false);
     instance->wordListShowDefinitions = settings.readBoolEntry
         (SETTINGS_SHOW_DEFINITIONS, false);
     settings.endGroup();
@@ -124,6 +127,8 @@ MainSettings::writeSettings()
     settings.writeEntry (SETTINGS_SORT_BY_LENGTH,
                          instance->wordListSortByLength);
     settings.writeEntry (SETTINGS_SHOW_HOOKS, instance->wordListShowHooks);
+    settings.writeEntry (SETTINGS_SHOW_HOOK_PARENTS,
+                         instance->wordListShowHookParents);
     settings.writeEntry (SETTINGS_SHOW_DEFINITIONS,
                          instance->wordListShowDefinitions);
     settings.endGroup();

@@ -282,6 +282,11 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     Q_CHECK_PTR (showHooksCbox);
     wordListVlay->addWidget (showHooksCbox);
 
+    showHookParentsCbox = new QCheckBox ("Show hook parents", wordListWidget,
+                                         "showHookParentsCbox");
+    Q_CHECK_PTR (showHookParentsCbox);
+    wordListVlay->addWidget (showHookParentsCbox);
+
     showDefinitionCbox = new QCheckBox ("Show definitions", wordListWidget,
                                         "showDefinitionCbox");
     Q_CHECK_PTR (showDefinitionCbox);
@@ -377,6 +382,8 @@ SettingsDialog::readSettings()
 
     lengthSortCbox->setChecked (MainSettings::getWordListSortByLength());
     showHooksCbox->setChecked (MainSettings::getWordListShowHooks());
+    showHookParentsCbox->setChecked
+        (MainSettings::getWordListShowHookParents());
     showDefinitionCbox->setChecked
         (MainSettings::getWordListShowDefinitions());
 }
@@ -402,6 +409,8 @@ SettingsDialog::writeSettings()
     MainSettings::setDefinitionFont (fontDefinitionLine->text());
     MainSettings::setWordListSortByLength (lengthSortCbox->isChecked());
     MainSettings::setWordListShowHooks (showHooksCbox->isChecked());
+    MainSettings::setWordListShowHookParents
+        (showHookParentsCbox->isChecked());
     MainSettings::setWordListShowDefinitions
         (showDefinitionCbox->isChecked());
     MainSettings::writeSettings();

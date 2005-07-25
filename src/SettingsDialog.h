@@ -68,6 +68,7 @@ class SettingsDialog : public QDialog
     QLineEdit*   fontDefinitionLine;
     QLineEdit*   fontWordInputLine;
     QCheckBox*   lengthSortCbox;
+    QCheckBox*   showHookParentsCbox;
     QCheckBox*   showHooksCbox;
     QCheckBox*   showDefinitionCbox;
 };
