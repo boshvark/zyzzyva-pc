@@ -145,7 +145,7 @@ WordListViewItem::getColorGroup()
 QString
 WordListViewItem::key (int column, bool) const
 {
-    return ((column == 1) ? text (column).upper() : QString::null);
+    return ((column == 1) ? text (column).upper() : text (column));
 }
 
 //---------------------------------------------------------------------------
@@ -163,9 +163,7 @@ WordListViewItem::key (int column, bool) const
 int
 WordListViewItem::compare (QListViewItem* i, int col, bool ascending) const
 {
-    if (col != 1)
-        return 0;
-    if (!sortByLength)
+    if ((col != 1) || !sortByLength)
         return QListViewItem::compare (i, col, ascending);
 
     QString mkey = key (col, ascending);
