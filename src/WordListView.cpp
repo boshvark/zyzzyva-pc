@@ -64,8 +64,8 @@ const int DEFAULT_COLUMN_WIDTH = 100;
 //! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WFlags
-                      f)
+WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name,
+                            WFlags f)
     : QListView (parent, name, f), wordEngine (e)
 {
     hidden[FRONT_HOOK_COLUMN] = false;
