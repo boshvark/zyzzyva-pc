@@ -56,6 +56,10 @@ class WordListView : public QListView
     private:
     void contextMenuEvent (QContextMenuEvent* e);
     bool exportFile (const QString& filename, QString* err = 0) const;
+    bool isFrontHook (const QString& word) const;
+    bool isBackHook (const QString& word) const;
+    QString getFrontHookLetters (const QString& word) const;
+    QString getBackHookLetters (const QString& word) const;
 
     private:
     WordEngine* wordEngine;

@@ -132,54 +132,26 @@ WordListView::setFont (const QFont& font)
 WordListViewItem*
 WordListView::addWord (const QString& word)
 {
-    SearchSpec spec;
-    SearchCondition condition;
+    QString front, back, definition;
+    QString wordCopy = word;
     QString wordUpper = word.upper();
 
-    condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = "?" + wordUpper;
-    spec.conditions << condition;
+    if (!hidden[FRONT_HOOK_COLUMN])
+        front = getFrontHookLetters (wordUpper);
 
-    // Put first letter of each word in a set, for alphabetical order
-    QStringList frontWords = wordEngine->search (spec, true);
-    set<QChar> frontLetters;
-    QStringList::iterator it;
-    for (it = frontWords.begin(); it != frontWords.end(); ++it)
-        frontLetters.insert ((*it).at (0).lower());
+    if (!hidden[BACK_HOOK_COLUMN])
+        back = getBackHookLetters (wordUpper);
 
-    QString front;
-    set<QChar>::iterator sit;
-    for (sit = frontLetters.begin(); sit != frontLetters.end(); ++sit)
-        front += *sit;
+    if (MainSettings::getWordListShowHookParents()) {
+        wordCopy =
+            (isFrontHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' ')) +
+            word +
+            (isBackHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' '));
+    }
 
-    // Put last letter of each word in a set, for alphabetical order
-    spec.conditions.clear();
-    condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = wordUpper + "?";
-    spec.conditions << condition;
+    if (!hidden[DEFINITION_COLUMN])
+        definition = wordEngine->getDefinition (wordUpper);
 
-    // Put first letter of each word in a set, for alphabetical order
-    QStringList backWords = wordEngine->search (spec, true);
-    set<QChar> backLetters;
-    for (it = backWords.begin(); it != backWords.end(); ++it)
-        backLetters.insert ((*it).at ((*it).length() - 1).lower());
-
-    QString back;
-    for (sit = backLetters.begin(); sit != backLetters.end(); ++sit)
-        back += *sit;
-
-    QString definition = wordEngine->getDefinition (wordUpper);
-
-    // Add parent hook designations
-    QString wordCopy = MainSettings::getWordListShowHookParents() ?
-        ((wordEngine->isAcceptable (wordUpper.right (wordUpper.length() - 1)) ?
-         PARENT_HOOK_CHAR : QChar (' ')) +
-        word +
-        (wordEngine->isAcceptable (wordUpper.left (wordUpper.length() - 1)) ?
-         PARENT_HOOK_CHAR : QChar (' ')))
-        : word;
-
-    // XXX: Populate all visible columns
     return new WordListViewItem (this, front, wordCopy, back, definition);
 }
 
@@ -489,4 +461,96 @@ WordListView::exportFile (const QString& filename, QString* err) const
     }
 
     return true;
+}
+
+//---------------------------------------------------------------------------
+//  isFrontHook
+//
+//! Determine whether a word is a front hook.  A word is a front hook if its
+//! first letter can be removed to form a valid word.
+//
+//! @param word the word, assumed to be upper case
+//! @return true if the word is a front hook, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordListView::isFrontHook (const QString& word) const
+{
+    return wordEngine->isAcceptable (word.right (word.length() - 1));
+}
+
+//---------------------------------------------------------------------------
+//  isBackHook
+//
+//! Determine whether a word is a back hook.  A word is a back hook if its
+//! last letter can be removed to form a valid word.
+//
+//! @param word the word, assumed to be upper case
+//! @return true if the word is a back hook, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordListView::isBackHook (const QString& word) const
+{
+    return wordEngine->isAcceptable (word.left (word.length() - 1));
+}
+
+//---------------------------------------------------------------------------
+//  getFrontHookLetters
+//
+//! Get a string of letters that can be added to the front of a word to make
+//! other valid words.
+//
+//! @param word the word, assumed to be upper case
+//! @return a string containing lower case letters representing front hooks
+//---------------------------------------------------------------------------
+QString
+WordListView::getFrontHookLetters (const QString& word) const
+{
+    SearchSpec spec;
+    SearchCondition condition;
+    condition.type = SearchCondition::PatternMatch;
+    condition.stringValue = "?" + word;
+
+    // Put first letter of each word in a set, for alphabetical order
+    QStringList words = wordEngine->search (spec, true);
+    set<QChar> letters;
+    QStringList::iterator it;
+    for (it = words.begin(); it != words.end(); ++it)
+        letters.insert ((*it).at (0).lower());
+
+    QString ret;
+    set<QChar>::iterator sit;
+    for (sit = letters.begin(); sit != letters.end(); ++sit)
+        ret += *sit;
+    return ret;
+}
+
+//---------------------------------------------------------------------------
+//  getBackHookLetters
+//
+//! Get a string of letters that can be added to the back of a word to make
+//! other valid words.
+//
+//! @param word the word, assumed to be upper case
+//! @return a string containing lower case letters representing back hooks
+//---------------------------------------------------------------------------
+QString
+WordListView::getBackHookLetters (const QString& word) const
+{
+    SearchSpec spec;
+    SearchCondition condition;
+    condition.type = SearchCondition::PatternMatch;
+    condition.stringValue = word + "?";
+
+    // Put first letter of each word in a set, for alphabetical order
+    QStringList words = wordEngine->search (spec, true);
+    set<QChar> letters;
+    QStringList::iterator it;
+    for (it = words.begin(); it != words.end(); ++it)
+        letters.insert ((*it).at (0).lower());
+
+    QString ret;
+    set<QChar>::iterator sit;
+    for (sit = letters.begin(); sit != letters.end(); ++sit)
+        ret += *sit;
+    return ret;
 }
