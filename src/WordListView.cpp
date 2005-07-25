@@ -45,9 +45,9 @@ using namespace std;
 const int WordListView::WORD_COLUMN = 1;
 const QChar WordListView::PARENT_HOOK_CHAR = '~';
 
-const QString FRONT_HOOK_HEADER = "Front Hooks";
+const QString FRONT_HOOK_HEADER = "Hooks";
 const QString WORD_HEADER = "Word";
-const QString BACK_HOOK_HEADER = "Back Hooks";
+const QString BACK_HOOK_HEADER = "Hooks";
 const QString DEFINITION_HEADER = "Definition";
 const int ITEM_MARGIN = 5;
 const int DEFAULT_COLUMN_WIDTH = 100;
