@@ -144,7 +144,7 @@ WordListDialog::getWords() const
         if (!str.isEmpty())
             str += " ";
         // XXX: This may need to be other than 1 sometimes?
-        str += item->text (1);
+        str += item->text (0);
     }
     return str;
 }
