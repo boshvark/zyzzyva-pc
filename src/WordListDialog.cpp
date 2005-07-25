@@ -143,7 +143,6 @@ WordListDialog::getWords() const
     for (item = wordList->firstChild(); item; item = item->nextSibling()) {
         if (!str.isEmpty())
             str += " ";
-        // XXX: This may need to be other than 1 sometimes?
         str += item->text (0);
     }
     return str;
