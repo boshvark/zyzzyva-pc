@@ -201,6 +201,8 @@ void
 WordListView::clear()
 {
     QListView::clear();
+    showHooks (MainSettings::getWordListShowHooks());
+    showDefinitions (MainSettings::getWordListShowDefinitions());
     resetColumnWidths();
 }
 
