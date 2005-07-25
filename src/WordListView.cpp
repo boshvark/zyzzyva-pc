@@ -511,6 +511,7 @@ WordListView::getFrontHookLetters (const QString& word) const
     SearchCondition condition;
     condition.type = SearchCondition::PatternMatch;
     condition.stringValue = "?" + word;
+    spec.conditions << condition;
 
     // Put first letter of each word in a set, for alphabetical order
     QStringList words = wordEngine->search (spec, true);
@@ -542,13 +543,14 @@ WordListView::getBackHookLetters (const QString& word) const
     SearchCondition condition;
     condition.type = SearchCondition::PatternMatch;
     condition.stringValue = word + "?";
+    spec.conditions << condition;
 
     // Put first letter of each word in a set, for alphabetical order
     QStringList words = wordEngine->search (spec, true);
     set<QChar> letters;
     QStringList::iterator it;
     for (it = words.begin(); it != words.end(); ++it)
-        letters.insert ((*it).at (0).lower());
+        letters.insert ((*it).at ((*it).length() - 1).lower());
 
     QString ret;
     set<QChar>::iterator sit;
