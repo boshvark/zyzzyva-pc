@@ -62,7 +62,10 @@ class WordListView : public QListView
     bool hidden[4];
 
     public:
+    static const int FRONT_HOOK_COLUMN;
     static const int WORD_COLUMN;
+    static const int BACK_HOOK_COLUMN;
+    static const int DEFINITION_COLUMN;
     static const QChar PARENT_HOOK_CHAR;
 };
 

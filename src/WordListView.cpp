@@ -42,7 +42,10 @@
 
 using namespace std;
 
+const int WordListView::FRONT_HOOK_COLUMN = 0;
 const int WordListView::WORD_COLUMN = 1;
+const int WordListView::BACK_HOOK_COLUMN = 2;
+const int WordListView::DEFINITION_COLUMN = 3;
 const QChar WordListView::PARENT_HOOK_CHAR = '~';
 
 const QString FRONT_HOOK_HEADER = "Hooks";
@@ -65,17 +68,17 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name, WF
                       f)
     : QListView (parent, name, f), wordEngine (e)
 {
-    hidden[0] = hidden[1] = hidden[2] = hidden[3] = false;
+    hidden[FRONT_HOOK_COLUMN] = false;
+    hidden[WORD_COLUMN] = false;
+    hidden[BACK_HOOK_COLUMN] = false;
+    hidden[DEFINITION_COLUMN] = false;
     addColumn (FRONT_HOOK_HEADER);
     addColumn (WORD_HEADER);
     addColumn (BACK_HOOK_HEADER);
     addColumn (DEFINITION_HEADER);
-    setColumnAlignment (0, Qt::AlignRight);
+    setColumnAlignment (FRONT_HOOK_COLUMN, Qt::AlignRight);
     setAllColumnsShowFocus (true);
     setItemMargin (ITEM_MARGIN);
-    setColumnAlignment (0, Qt::AlignRight);
-    setAllColumnsShowFocus (true);
-    setItemMargin (5);
     setSorting (WORD_COLUMN);
 
     setResizeMode (QListView::NoColumn);
@@ -204,10 +207,10 @@ WordListView::resetColumnWidths()
 
         QString header;
         switch (i) {
-            case 0: header = FRONT_HOOK_HEADER; break;
-            case 1: header = WORD_HEADER; break;
-            case 2: header = BACK_HOOK_HEADER; break;
-            case 3: header = DEFINITION_HEADER; break;
+            case FRONT_HOOK_COLUMN: header = FRONT_HOOK_HEADER; break;
+            case WORD_COLUMN: header = WORD_HEADER; break;
+            case BACK_HOOK_COLUMN: header = BACK_HOOK_HEADER; break;
+            case DEFINITION_COLUMN: header = DEFINITION_HEADER; break;
             default: break;
         }
         int width = (fontOk ? fontMetrics.width (header) + (2 * ITEM_MARGIN)
@@ -412,7 +415,7 @@ WordListView::displayDefinition (const QString& word)
 void
 WordListView::showHooks (bool show)
 {
-    hidden[0] = hidden[2] = !show;
+    hidden[FRONT_HOOK_COLUMN] = hidden[BACK_HOOK_COLUMN] = !show;
     resetColumnWidths();
 }
 
@@ -426,7 +429,7 @@ WordListView::showHooks (bool show)
 void
 WordListView::showDefinitions (bool show)
 {
-    hidden[3] = !show;
+    hidden[DEFINITION_COLUMN] = !show;
     resetColumnWidths();
 }
 
