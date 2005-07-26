@@ -41,7 +41,6 @@ class WordListView : public QListView
 
     void setFont (const QFont& font);
     WordListViewItem* addWord (const QString& word);
-    void resetColumnWidths();
 
     public slots:
     void clear();
@@ -56,6 +55,10 @@ class WordListView : public QListView
     private:
     void contextMenuEvent (QContextMenuEvent* e);
     bool exportFile (const QString& filename, QString* err = 0) const;
+    void resetColumnWidths();
+    void resizeColumns();
+    void resizeColumnText (int column, const QString& text);
+    int getTextColumnWidth (const QString& text) const;
     bool isFrontHook (const QString& word) const;
     bool isBackHook (const QString& word) const;
     QString getFrontHookLetters (const QString& word) const;
@@ -64,6 +67,7 @@ class WordListView : public QListView
     private:
     WordEngine* wordEngine;
     bool hidden[4];
+    int widths[4];
 
     public:
     static const int FRONT_HOOK_COLUMN;

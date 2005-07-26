@@ -54,6 +54,7 @@ const QString BACK_HOOK_HEADER = "Hooks";
 const QString DEFINITION_HEADER = "Definition";
 const int ITEM_MARGIN = 5;
 const int DEFAULT_COLUMN_WIDTH = 100;
+const int NUM_COLUMNS = 4;
 
 //---------------------------------------------------------------------------
 //  WordListView
@@ -68,15 +69,23 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name,
                             WFlags f)
     : QListView (parent, name, f), wordEngine (e)
 {
-    hidden[FRONT_HOOK_COLUMN] = false;
-    hidden[WORD_COLUMN] = false;
-    hidden[BACK_HOOK_COLUMN] = false;
-    hidden[DEFINITION_COLUMN] = false;
     addColumn (FRONT_HOOK_HEADER);
-    addColumn (WORD_HEADER);
-    addColumn (BACK_HOOK_HEADER);
-    addColumn (DEFINITION_HEADER);
+    hidden[FRONT_HOOK_COLUMN] = false;
+    setColumnWidthMode (FRONT_HOOK_COLUMN, QListView::Manual);
     setColumnAlignment (FRONT_HOOK_COLUMN, Qt::AlignRight);
+
+    addColumn (WORD_HEADER);
+    hidden[WORD_COLUMN] = false;
+    setColumnWidthMode (WORD_COLUMN, QListView::Manual);
+
+    addColumn (BACK_HOOK_HEADER);
+    hidden[BACK_HOOK_COLUMN] = false;
+    setColumnWidthMode (BACK_HOOK_COLUMN, QListView::Manual);
+
+    addColumn (DEFINITION_HEADER);
+    hidden[DEFINITION_COLUMN] = false;
+    setColumnWidthMode (DEFINITION_COLUMN, QListView::Manual);
+
     setAllColumnsShowFocus (true);
     setItemMargin (ITEM_MARGIN);
     setSorting (WORD_COLUMN);
@@ -84,6 +93,7 @@ WordListView::WordListView (WordEngine* e, QWidget* parent, const char* name,
     setResizeMode (QListView::NoColumn);
     showHooks (MainSettings::getWordListShowHooks());
     showDefinitions (MainSettings::getWordListShowDefinitions());
+    resetColumnWidths();
 
     // Only connect certain slots if word engine is non-null
     if (wordEngine) {
@@ -136,21 +146,28 @@ WordListView::addWord (const QString& word)
     QString wordCopy = word;
     QString wordUpper = word.upper();
 
-    if (!hidden[FRONT_HOOK_COLUMN])
+    if (!hidden[FRONT_HOOK_COLUMN]) {
         front = getFrontHookLetters (wordUpper);
+        resizeColumnText (FRONT_HOOK_COLUMN, front);
+    }
 
-    if (!hidden[BACK_HOOK_COLUMN])
+    if (!hidden[BACK_HOOK_COLUMN]) {
         back = getBackHookLetters (wordUpper);
+        resizeColumnText (BACK_HOOK_COLUMN, back);
+    }
 
     if (MainSettings::getWordListShowHookParents()) {
         wordCopy =
             (isFrontHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' ')) +
             word +
             (isBackHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' '));
+        resizeColumnText (WORD_COLUMN, wordCopy);
     }
 
-    if (!hidden[DEFINITION_COLUMN])
+    if (!hidden[DEFINITION_COLUMN]) {
         definition = wordEngine->getDefinition (wordUpper);
+        resizeColumnText (DEFINITION_COLUMN, definition);
+    }
 
     return new WordListViewItem (this, front, wordCopy, back, definition);
 }
@@ -170,13 +187,7 @@ WordListView::resetColumnWidths()
     bool fontOk = font.fromString (fontStr);
     QFontMetrics fontMetrics (font);
 
-    for (int i = 0; i < 4; ++i) {
-        setColumnWidthMode (i, QListView::Manual);
-        if (hidden[i]) {
-            hideColumn (i);
-            continue;
-        }
-
+    for (int i = 0; i < NUM_COLUMNS; ++i) {
         QString header;
         switch (i) {
             case FRONT_HOOK_COLUMN: header = FRONT_HOOK_HEADER; break;
@@ -185,11 +196,65 @@ WordListView::resetColumnWidths()
             case DEFINITION_COLUMN: header = DEFINITION_HEADER; break;
             default: break;
         }
-        int width = (fontOk ? fontMetrics.width (header) + (2 * ITEM_MARGIN)
-                            : DEFAULT_COLUMN_WIDTH);
-        setColumnWidth (i, width);
-        setColumnWidthMode (i, QListView::Maximum);
+
+        widths[i] = (fontOk ?  fontMetrics.width (header) + (2 * ITEM_MARGIN)
+                     : DEFAULT_COLUMN_WIDTH);
     }
+    resizeColumns();
+}
+
+//---------------------------------------------------------------------------
+//  resizeColumns
+//
+//! Adjust the column widths so they are at least as wide as their respective
+//! minimum widths.
+//---------------------------------------------------------------------------
+void
+WordListView::resizeColumns()
+{
+    for (int i = 0; i < NUM_COLUMNS; ++i) {
+        setColumnWidth (i, hidden[i] ? 0 : widths[i]);
+    }
+}
+
+//---------------------------------------------------------------------------
+//  resizeColumnText
+//
+//! Resize a column if necessary to be able to display some text.
+//
+//! @param column the column
+//! @param text the text that needs to be displayed
+//---------------------------------------------------------------------------
+void
+WordListView::resizeColumnText (int column, const QString& text)
+{
+    int width = getTextColumnWidth (text);
+    if (width > widths[column]) {
+        widths[column] = width;
+        setColumnWidth (column, width);
+    }
+}
+
+//---------------------------------------------------------------------------
+//  getTextColumnWidth
+//
+//! Determine the width of some text as it would be displayed in a word list
+//! column.  Include the margins.
+//
+//! @param text the text whose width to determine
+//! @return the minimum width of a column that could display the text
+//---------------------------------------------------------------------------
+int
+WordListView::getTextColumnWidth (const QString& text) const
+{
+    QFont font;
+    QString fontStr = MainSettings::getWordListFont();
+    bool fontOk = font.fromString (fontStr);
+    QFontMetrics fontMetrics (font);
+    int width = 2 * ITEM_MARGIN;
+    if (fontOk)
+        width += fontMetrics.width (text);
+    return width;
 }
 
 //---------------------------------------------------------------------------
@@ -390,7 +455,7 @@ void
 WordListView::showHooks (bool show)
 {
     hidden[FRONT_HOOK_COLUMN] = hidden[BACK_HOOK_COLUMN] = !show;
-    resetColumnWidths();
+    resizeColumns();
 }
 
 //---------------------------------------------------------------------------
@@ -404,7 +469,7 @@ void
 WordListView::showDefinitions (bool show)
 {
     hidden[DEFINITION_COLUMN] = !show;
-    resetColumnWidths();
+    resizeColumns();
 }
 
 //---------------------------------------------------------------------------
