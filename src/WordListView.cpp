@@ -42,12 +42,7 @@
 
 using namespace std;
 
-const int WordListView::FRONT_HOOK_COLUMN = 0;
-const int WordListView::WORD_COLUMN = 1;
-const int WordListView::BACK_HOOK_COLUMN = 2;
-const int WordListView::DEFINITION_COLUMN = 3;
 const QChar WordListView::PARENT_HOOK_CHAR = '~';
-
 const QString FRONT_HOOK_HEADER = "Hooks";
 const QString WORD_HEADER = "Word";
 const QString BACK_HOOK_HEADER = "Hooks";

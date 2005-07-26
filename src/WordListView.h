@@ -70,10 +70,13 @@ class WordListView : public QListView
     int widths[4];
 
     public:
-    static const int FRONT_HOOK_COLUMN;
-    static const int WORD_COLUMN;
-    static const int BACK_HOOK_COLUMN;
-    static const int DEFINITION_COLUMN;
+    enum {
+        FRONT_HOOK_COLUMN = 0,
+        WORD_COLUMN = 1,
+        BACK_HOOK_COLUMN = 2,
+        DEFINITION_COLUMN = 3
+    };
+
     static const QChar PARENT_HOOK_CHAR;
 };
 
