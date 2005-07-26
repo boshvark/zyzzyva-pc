@@ -156,8 +156,8 @@ WordListView::addWord (const QString& word)
             (isFrontHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' ')) +
             word +
             (isBackHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' '));
-        resizeColumnText (WORD_COLUMN, wordCopy);
     }
+    resizeColumnText (WORD_COLUMN, wordCopy);
 
     if (!hidden[DEFINITION_COLUMN]) {
         definition = wordEngine->getDefinition (wordUpper);
