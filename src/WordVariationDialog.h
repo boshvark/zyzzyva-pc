@@ -29,6 +29,7 @@
 #include <qdialog.h>
 #include <qlabel.h>
 #include <qpushbutton.h>
+#include <qvbox.h>
 
 class DefinitionLabel;
 class WordEngine;
@@ -46,6 +47,7 @@ class WordVariationDialog : public QDialog
 
     private:
     void setWordVariation (const QString& word, WordVariationType variation);
+    bool needsRightList (WordVariationType variation);
 
     private:
     WordEngine*   wordEngine;

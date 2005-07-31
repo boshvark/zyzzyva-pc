@@ -82,20 +82,21 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
     leftList->setShowSortIndicator(true);
     leftVlay->addWidget (leftList);
 
-    QVBoxLayout* rightVlay = new QVBoxLayout (SPACING, "rightVlay");
-    Q_CHECK_PTR (rightVlay);
-    mainHlay->addLayout (rightVlay, 1);
+    // Only add the right-hand list if necessary
+    if (needsRightList (variation)) {
+        QVBoxLayout* rightVlay = new QVBoxLayout (SPACING, "rightVlay");
+        Q_CHECK_PTR (rightVlay);
+        mainHlay->addLayout (rightVlay, 1);
 
-    rightLabel = new QLabel (this, "rightLabel");
-    Q_CHECK_PTR (rightLabel);
-    rightLabel->hide();
-    rightVlay->addWidget (rightLabel);
+        rightLabel = new QLabel (this, "rightLabel");
+        Q_CHECK_PTR (rightLabel);
+        rightVlay->addWidget (rightLabel);
 
-    rightList = new WordListView (wordEngine, this, "rightList");
-    Q_CHECK_PTR (rightList);
-    rightList->setShowSortIndicator(true);
-    rightList->hide();
-    rightVlay->addWidget (rightList);
+        rightList = new WordListView (wordEngine, this, "rightList");
+        Q_CHECK_PTR (rightList);
+        rightList->setShowSortIndicator(true);
+        rightVlay->addWidget (rightList);
+    }
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
     Q_CHECK_PTR (buttonHlay);
@@ -281,9 +282,26 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         if (rightWords != 1)
             rightTitle += "s";
         rightLabel->setText (rightTitle);
-        rightLabel->show();
-        rightList->show();
     }
 
     QApplication::restoreOverrideCursor();
+}
+
+//---------------------------------------------------------------------------
+//  needsRightList
+//
+//! Determine whether the right-hand list is needed for a word variation type.
+//
+//! @param variation the variation type
+//! @return true if the variation type requires a right-hand list, false
+//! otherwise
+//---------------------------------------------------------------------------
+bool
+WordVariationDialog::needsRightList (WordVariationType variation)
+{
+    switch (variation) {
+        case VariationHooks:
+        case VariationExtensions: return true;
+        default: return false;
+    }
 }
