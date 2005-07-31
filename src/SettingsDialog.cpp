@@ -136,7 +136,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
 
     QVGroupBox* fontGbox = new QVGroupBox (this, "fontGbox");
     Q_CHECK_PTR (fontGbox);
-    fontGbox->setTitle ("Font");
+    fontGbox->setTitle ("Fonts");
     mainVlay->addWidget (fontGbox);
 
     QWidget* fontWidget = new QWidget (fontGbox, "fontWidget");
