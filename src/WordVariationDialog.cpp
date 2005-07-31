@@ -71,7 +71,7 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
 
     QVBoxLayout* leftVlay = new QVBoxLayout (SPACING, "leftVlay");
     Q_CHECK_PTR (leftVlay);
-    mainHlay->addLayout (leftVlay);
+    mainHlay->addLayout (leftVlay, 1);
 
     leftLabel = new QLabel (this, "leftLabel");
     Q_CHECK_PTR (leftLabel);
@@ -84,7 +84,7 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
 
     QVBoxLayout* rightVlay = new QVBoxLayout (SPACING, "rightVlay");
     Q_CHECK_PTR (rightVlay);
-    mainHlay->addLayout (rightVlay);
+    mainHlay->addLayout (rightVlay, 1);
 
     rightLabel = new QLabel (this, "rightLabel");
     Q_CHECK_PTR (rightLabel);

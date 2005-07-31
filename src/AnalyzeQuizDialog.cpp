@@ -64,7 +64,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 
     QVBoxLayout* missedVlay = new QVBoxLayout (SPACING, "missedVlay");
     Q_CHECK_PTR (missedVlay);
-    mainHlay->addLayout (missedVlay);
+    mainHlay->addLayout (missedVlay, 1);
 
     recallLabel = new QLabel (this, "recallLabel");
     Q_CHECK_PTR (recallLabel);
@@ -80,7 +80,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 
     QVBoxLayout* incorrectVlay = new QVBoxLayout (SPACING, "incorrectVlay");
     Q_CHECK_PTR (incorrectVlay);
-    mainHlay->addLayout (incorrectVlay);
+    mainHlay->addLayout (incorrectVlay, 1);
 
     precisionLabel = new QLabel (this, "precisionLabel");
     Q_CHECK_PTR (precisionLabel);
