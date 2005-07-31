@@ -113,7 +113,7 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
     buttonHlay->addWidget (closeButton);
 
     setWordVariation (word, variation);
-    resize (minimumSizeHint().width() * 2, 500);
+    resize (minimumSizeHint().width() * 3, 500);
 }
 
 //---------------------------------------------------------------------------
