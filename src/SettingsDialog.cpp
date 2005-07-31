@@ -75,7 +75,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
                                                    SPACING, "autoImportVlay");
     Q_CHECK_PTR (autoImportVlay);
 
-    autoImportCbox = new QCheckBox ("Automatically import a word list "
+    autoImportCbox = new QCheckBox ("Automatically open a word list "
                                     "on startup", autoImportWidget,
                                     "autoImportCbox");
     Q_CHECK_PTR (autoImportCbox);
