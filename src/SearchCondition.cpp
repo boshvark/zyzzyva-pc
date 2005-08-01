@@ -29,10 +29,10 @@
 using namespace Defs;
 
 const QString XML_TOP_ELEMENT = "condition";
-const QString TYPE_ATTR = "type";
-const QString STRING_ATTR = "string";
-const QString NUMBER_ATTR = "number";
-const QString PERCENT_ATTR = "percent";
+const QString XML_TYPE_ATTR = "type";
+const QString XML_STRING_ATTR = "string";
+const QString XML_NUMBER_ATTR = "number";
+const QString XML_PERCENT_ATTR = "percent";
 
 //---------------------------------------------------------------------------
 //  asString
@@ -104,7 +104,7 @@ SearchCondition::asDomElement() const
     if (type == UnknownSearchType)
         return topElement;
 
-    topElement.setAttribute (TYPE_ATTR, Auxil::searchTypeToString (type));
+    topElement.setAttribute (XML_TYPE_ATTR, Auxil::searchTypeToString (type));
 
     switch (type) {
         case PatternMatch:
@@ -114,7 +114,7 @@ SearchCondition::asDomElement() const
         case MustExclude:
         case MustBelong:
         case InWordList:
-        topElement.setAttribute (STRING_ATTR, stringValue);
+        topElement.setAttribute (XML_STRING_ATTR, stringValue);
         break;
 
         case ExactLength:
@@ -123,18 +123,18 @@ SearchCondition::asDomElement() const
         case ExactAnagrams:
         case MinAnagrams:
         case MaxAnagrams:
-        topElement.setAttribute (NUMBER_ATTR, intValue);
+        topElement.setAttribute (XML_NUMBER_ATTR, intValue);
         break;
 
         case MinProbability:
         case MaxProbability:
         // XXX: Multiply by the correct factor here!
-        topElement.setAttribute (NUMBER_ATTR, (intValue * 1));
+        topElement.setAttribute (XML_NUMBER_ATTR, (intValue * 1));
         break;
 
         case MustConsist:
-        topElement.setAttribute (PERCENT_ATTR, intValue);
-        topElement.setAttribute (STRING_ATTR, stringValue);
+        topElement.setAttribute (XML_PERCENT_ATTR, intValue);
+        topElement.setAttribute (XML_STRING_ATTR, stringValue);
         break;
 
         default: break;
@@ -155,14 +155,14 @@ bool
 SearchCondition::fromDomElement (const QDomElement& element)
 {
     if ((element.tagName() != XML_TOP_ELEMENT) ||
-        (!element.hasAttribute (TYPE_ATTR)))
+        (!element.hasAttribute (XML_TYPE_ATTR)))
     {
         return false;
     }
 
     SearchCondition tmpCondition;
     tmpCondition.type = Auxil::stringToSearchType (element.attribute
-                                                   (TYPE_ATTR));
+                                                   (XML_TYPE_ATTR));
     if (tmpCondition.type == UnknownSearchType)
         return false;
 
@@ -176,9 +176,9 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case MustExclude:
         case MustBelong:
         case InWordList:
-        if (!element.hasAttribute (STRING_ATTR))
+        if (!element.hasAttribute (XML_STRING_ATTR))
             return false;
-        tmpCondition.stringValue = element.attribute (STRING_ATTR);
+        tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
         break;
 
         case ExactLength:
@@ -187,18 +187,20 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case ExactAnagrams:
         case MinAnagrams:
         case MaxAnagrams:
-        if (!element.hasAttribute (NUMBER_ATTR))
+        if (!element.hasAttribute (XML_NUMBER_ATTR))
             return false;
-        tmpCondition.intValue = element.attribute (NUMBER_ATTR).toInt (&ok);
+        tmpCondition.intValue =
+            element.attribute (XML_NUMBER_ATTR).toInt (&ok);
         if (!ok)
             return false;
         break;
 
         case MinProbability:
         case MaxProbability:
-        if (!element.hasAttribute (NUMBER_ATTR))
+        if (!element.hasAttribute (XML_NUMBER_ATTR))
             return false;
-        tmpCondition.intValue = element.attribute (NUMBER_ATTR).toInt (&ok);
+        tmpCondition.intValue =
+            element.attribute (XML_NUMBER_ATTR).toInt (&ok);
         if (!ok)
             return false;
         // XXX: Divide by the correct factor here!
@@ -206,15 +208,16 @@ SearchCondition::fromDomElement (const QDomElement& element)
         break;
 
         case MustConsist:
-        if (!element.hasAttribute (PERCENT_ATTR) || !element.hasAttribute
-            (STRING_ATTR))
+        if (!element.hasAttribute (XML_PERCENT_ATTR) ||
+            !element.hasAttribute (XML_STRING_ATTR))
         {
             return false;
         }
-        tmpCondition.intValue = element.attribute (PERCENT_ATTR).toInt (&ok);
+        tmpCondition.intValue =
+            element.attribute (XML_PERCENT_ATTR).toInt (&ok);
         if (!ok)
             return false;
-        tmpCondition.stringValue = element.attribute (STRING_ATTR);
+        tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
         break;
 
         default: break;
