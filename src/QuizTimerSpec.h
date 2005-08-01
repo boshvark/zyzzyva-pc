@@ -25,6 +25,7 @@
 #ifndef QUIZ_TIMER_SPEC_H
 #define QUIZ_TIMER_SPEC_H
 
+#include <qdom.h>
 #include <qstring.h>
 
 enum QuizTimerType {
@@ -40,6 +41,8 @@ class QuizTimerSpec
     ~QuizTimerSpec() { }
 
     QString asString() const;
+    QDomElement asDomElement() const;
+    bool fromDomElement (const QDomElement& element);
 
     void setType (QuizTimerType t) { type = t; }
     void setDuration (int d) { duration = d; }

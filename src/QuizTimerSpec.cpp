@@ -24,6 +24,10 @@
 
 #include "QuizTimerSpec.h"
 
+const QString XML_TOP_ELEMENT = "timer";
+const QString XML_TYPE_ATTR = "type";
+const QString XML_DURATION_ATTR = "duration";
+
 //---------------------------------------------------------------------------
 //  asString
 //
@@ -44,4 +48,49 @@ QuizTimerSpec::asString() const
         default: break;
     }
     return str;
+}
+
+//---------------------------------------------------------------------------
+//  asDomElement
+//
+//! Return a DOM element representing the quiz timer spec.
+//
+//! @return the DOM element
+//---------------------------------------------------------------------------
+QDomElement
+QuizTimerSpec::asDomElement() const
+{
+    QDomElement element;
+    return element;
+}
+
+//---------------------------------------------------------------------------
+//  fromDomElement
+//
+//! Reset the object based on the contents of a DOM element representing a
+//! quiz timer spec.
+//
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizTimerSpec::fromDomElement (const QDomElement& element)
+{
+    qDebug ("QuizTimerSpec::fromDomElement");
+
+    //if ((element.tagName() != XML_TOP_ELEMENT) ||
+    //    (!element.hasAttribute (XML_
+    //    return false;
+
+    //QDomElement elem = element.firstChild().toElement();
+    //if (elem.isNull())
+    //    return false;
+
+    //QuizTimerSpec tmpSpec;
+
+    //for (; !elem.isNull(); elem = elem.nextSibling().toElement()) {
+    //    qDebug ("Element: " + elem.tagName());
+    //}
+
+    //*this = tmpSpec;
+    return true;
 }
