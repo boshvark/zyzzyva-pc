@@ -31,6 +31,8 @@ using namespace Defs;
 // SearchSpec.cpp and QuizProgress.cpp.  Define them in only one place!
 const QString XML_TOP_ELEMENT = "zyzzyva-quiz";
 const QString XML_QUESTION_SOURCE_ELEMENT = "question-source";
+const QString XML_QUESTION_SOURCE_TYPE_ATTR = "type";
+const QString XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR = "single-question";
 const QString XML_SEARCH_ELEMENT = "zyzzyva-search";
 const QString XML_RANDOMIZER_ELEMENT = "randomizer";
 const QString XML_RANDOMIZER_SEED_ATTR = "seed";
@@ -99,15 +101,31 @@ QuizSpec::fromDomElement (const QDomElement& element)
         return false;
 
     QuizSpec tmpSpec;
+    tmpSpec.setRandomOrder (false);
 
     for (; !elem.isNull(); elem = elem.nextSibling().toElement()) {
         qDebug ("Element: " + elem.tagName());
 
         QString tag = elem.tagName();
+        // XXX: QuizQuestionSource needs to be a class of its own
         if (tag == XML_QUESTION_SOURCE_ELEMENT) {
+
+            if ((!elem.hasAttribute (XML_QUESTION_SOURCE_TYPE_ATTR)) ||
+                (elem.attribute (XML_QUESTION_SOURCE_TYPE_ATTR) != "search"))
+            {
+                return false;
+            }
+
+            if (elem.attribute (XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR) ==
+                "true")
+            {
+                tmpSpec.setUseList (true);
+            }
+
             QDomElement searchElem = elem.firstChild().toElement();
             if (searchElem.tagName() != XML_SEARCH_ELEMENT)
                 return false;
+
             SearchSpec tmpSearchSpec;
             if (!tmpSearchSpec.fromDomElement (searchElem))
                 return false;
@@ -122,6 +140,7 @@ QuizSpec::fromDomElement (const QDomElement& element)
         }
 
         else if (tag == XML_RANDOMIZER_ELEMENT) {
+            tmpSpec.setRandomOrder (true);
         }
 
         else if (tag == XML_PROGRESS_ELEMENT) {
