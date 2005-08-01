@@ -27,6 +27,19 @@
 
 using namespace Defs;
 
+// XXX: The Search and Progress elements are redundant with strings defined in
+// SearchSpec.cpp and QuizProgress.cpp.  Define them in only one place!
+const QString XML_TOP_ELEMENT = "zyzzyva-quiz";
+const QString XML_SEARCH_ELEMENT = "zyzzyva-search";
+const QString XML_QUESTION_SOURCE_ELEMENT = "question-source";
+const QString XML_RANDOMIZER_ELEMENT = "randomizer";
+const QString XML_RANDOMIZER_SEED_ATTR = "seed";
+const QString XML_RANDOMIZER_ALGORITHM_ATTR = "algorithm";
+const QString XML_TIMER_ELEMENT = "timer";
+const QString XML_TIMER_TIMEOUT_ATTR = "timeout";
+const QString XML_TIMER_PERIOD_ATTR = "period";
+const QString XML_PROGRESS_ELEMENT = "progress";
+
 //---------------------------------------------------------------------------
 //  asString
 //
@@ -77,5 +90,20 @@ bool
 QuizSpec::fromDomElement (const QDomElement& element)
 {
     qDebug ("QuizSpec::fromDomElement");
-    return false;
+
+    if (element.tagName() != XML_TOP_ELEMENT)
+        return false;
+
+    QDomElement elem = element.firstChild().toElement();
+    if (elem.isNull())
+        return false;
+
+    QuizSpec tmpSpec;
+
+    for (; !elem.isNull(); elem = elem.nextSibling().toElement()) {
+        qDebug ("Element: " + elem.tagName());
+    }
+
+    *this = tmpSpec;
+    return true;
 }
