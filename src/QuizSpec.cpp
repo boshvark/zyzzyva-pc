@@ -30,8 +30,8 @@ using namespace Defs;
 // XXX: The Search and Progress elements are redundant with strings defined in
 // SearchSpec.cpp and QuizProgress.cpp.  Define them in only one place!
 const QString XML_TOP_ELEMENT = "zyzzyva-quiz";
-const QString XML_SEARCH_ELEMENT = "zyzzyva-search";
 const QString XML_QUESTION_SOURCE_ELEMENT = "question-source";
+const QString XML_SEARCH_ELEMENT = "zyzzyva-search";
 const QString XML_RANDOMIZER_ELEMENT = "randomizer";
 const QString XML_RANDOMIZER_SEED_ATTR = "seed";
 const QString XML_RANDOMIZER_ALGORITHM_ATTR = "algorithm";
@@ -102,6 +102,37 @@ QuizSpec::fromDomElement (const QDomElement& element)
 
     for (; !elem.isNull(); elem = elem.nextSibling().toElement()) {
         qDebug ("Element: " + elem.tagName());
+
+        QString tag = elem.tagName();
+        if (tag == XML_QUESTION_SOURCE_ELEMENT) {
+            QDomElement searchElem = elem.firstChild().toElement();
+            if (searchElem.tagName() != XML_SEARCH_ELEMENT)
+                return false;
+            SearchSpec tmpSearchSpec;
+            if (!tmpSearchSpec.fromDomElement (searchElem))
+                return false;
+            tmpSpec.setSearchSpec (tmpSearchSpec);
+        }
+
+        else if (tag == XML_TIMER_ELEMENT) {
+            QuizTimerSpec tmpTimerSpec;
+            if (!tmpTimerSpec.fromDomElement (elem))
+                return false;
+            tmpSpec.setTimerSpec (tmpTimerSpec);
+        }
+
+        else if (tag == XML_RANDOMIZER_ELEMENT) {
+        }
+
+        else if (tag == XML_PROGRESS_ELEMENT) {
+            QuizProgress tmpProgress;
+            if (!tmpProgress.fromDomElement (elem))
+                return false;
+            tmpSpec.setProgress (tmpProgress);
+        }
+
+        else
+            return false;
     }
 
     *this = tmpSpec;
