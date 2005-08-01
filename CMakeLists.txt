@@ -25,6 +25,7 @@ SET (SRCS
     src/NewQuizDialog.cpp
     src/QuizEngine.cpp
     src/QuizForm.cpp
+    src/QuizProgress.cpp
     src/QuizSpec.cpp
     src/QuizTimerSpec.cpp
     src/SearchForm.cpp
