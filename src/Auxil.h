@@ -32,6 +32,7 @@
 namespace Auxil {
     QString getAboutString();
     QString getHelpDir();
+    QString getQuizDir();
     QString getSearchDir();
     QString getTilesDir();
     QString getWordsDir();

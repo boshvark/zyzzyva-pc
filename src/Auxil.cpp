@@ -92,6 +92,20 @@ Auxil::getHelpDir()
 }
 
 //---------------------------------------------------------------------------
+//  getQuizDir
+//
+//! Return the top-level directory containing subdirectories with quiz
+//! specifications.
+//
+//! @return the directory name
+//---------------------------------------------------------------------------
+QString
+Auxil::getQuizDir()
+{
+    return qApp->applicationDirPath() + "/data/quiz";
+}
+
+//---------------------------------------------------------------------------
 //  getSearchDir
 //
 //! Return the top-level directory containing subdirectories with search
