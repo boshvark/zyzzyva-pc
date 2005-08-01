@@ -161,12 +161,12 @@ NewQuizDialog::getQuizSpec() const
 
     QuizTimerSpec timerSpec;
     if (timerCbox->isChecked()) {
-        timerSpec.duration = timerSbox->value();
+        timerSpec.setDuration (timerSbox->value());
         QString timerType = timerCombo->currentText();
         if (timerType == TIMER_PER_QUESTION)
-            timerSpec.type = PerQuestion;
+            timerSpec.setType (PerQuestion);
         else if (timerType == TIMER_PER_RESPONSE)
-            timerSpec.type = PerResponse;
+            timerSpec.setType (PerResponse);
     }
     spec.setTimerSpec (timerSpec);
 
@@ -190,10 +190,10 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
     timerSbox->setValue (0);
     timerCombo->setCurrentText (TIMER_PER_RESPONSE);
     QuizTimerSpec timerSpec = spec.getTimerSpec();
-    if (timerSpec.type != NoTimer) {
+    if (timerSpec.getType() != NoTimer) {
         timerCbox->setChecked (true);
-        timerSbox->setValue (timerSpec.duration);
-        switch (timerSpec.type) {
+        timerSbox->setValue (timerSpec.getDuration());
+        switch (timerSpec.getType()) {
             case PerQuestion:
             timerCombo->setCurrentText (TIMER_PER_QUESTION);
             break;

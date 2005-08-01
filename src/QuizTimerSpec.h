@@ -41,6 +41,13 @@ class QuizTimerSpec
 
     QString asString() const;
 
+    void setType (QuizTimerType t) { type = t; }
+    void setDuration (int d) { duration = d; }
+
+    QuizTimerType getType() const { return type; }
+    int getDuration() const { return duration; }
+
+    private:
     QuizTimerType type;
     int duration;
 };

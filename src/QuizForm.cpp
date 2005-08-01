@@ -249,7 +249,7 @@ QuizForm::responseEntered()
     responseStatusLabel->setText (displayResponse + " : " + statusStr);
 
     // Restart the timer, if the timer runs per response
-    if (timerId && (timerSpec.type == PerResponse))
+    if (timerId && (timerSpec.getType() == PerResponse))
         startNewTimer();
 }
 
@@ -415,7 +415,7 @@ QuizForm::startQuestion()
     checkResponseButton->setEnabled (true);
     nextQuestionButton->setEnabled (false);
     inputLine->setFocus();
-    if (timerSpec.type == NoTimer)
+    if (timerSpec.getType() == NoTimer)
         clearTimerDisplay();
     else
         startNewTimer();
@@ -430,8 +430,8 @@ void
 QuizForm::startNewTimer()
 {
     killActiveTimer();
-    timerRemaining = timerSpec.duration;
-    setTimerDisplay (timerSpec.duration);
+    timerRemaining = timerSpec.getDuration();
+    setTimerDisplay (timerRemaining);
     timerId = startTimer (1000);
     pauseButton->setEnabled (true);
 }
