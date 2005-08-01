@@ -108,6 +108,17 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
+    QPushButton* loadQuizButton = new QPushButton ("&Load...", this,
+                                                   "loadQuizButton");
+    Q_CHECK_PTR (loadQuizButton);
+    connect (loadQuizButton, SIGNAL (clicked()), SLOT (loadQuiz()));
+    buttonHlay->addWidget (loadQuizButton);
+
+    saveQuizButton = new QPushButton ("&Save...", this, "saveQuizButton");
+    Q_CHECK_PTR (saveQuizButton);
+    connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuiz()));
+    buttonHlay->addWidget (saveQuizButton);
+
     buttonHlay->addStretch (1);
 
     okButton = new QPushButton ("OK", this, "okButton");
@@ -217,4 +228,110 @@ void
 NewQuizDialog::timerToggled (bool on)
 {
     timerWidget->setEnabled (on);
+}
+
+//---------------------------------------------------------------------------
+//  loadQuiz
+//
+//! Load a quiz spec from a file.
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::loadQuiz()
+{
+    qDebug ("loadQuiz");
+
+    // Copied from SearchSpecForm::loadSearch()
+
+    //QString filename = QFileDialog::getOpenFileName
+    //    (Auxil::getSearchDir(), "Zyzzyva Search Files (*.zzs)", this,
+    //     "loadSearchDialog", "Load Search");
+    //if (filename.isEmpty())
+    //    return;
+
+    //QFile file (filename);
+    //if (!file.open (IO_ReadOnly)) {
+    //    QMessageBox::warning (this, "Error Opening Search File",
+    //                          "Cannot open file '" + filename + "': " +
+    //                          file.errorString());
+    //    return;
+    //}
+
+    //QString errorMsg;
+    //int errorLine = 0;
+    //int errorColumn = 0;
+
+    //QApplication::setOverrideCursor (Qt::waitCursor);
+    //QDomDocument document;
+    //bool success = document.setContent (&file, false, &errorMsg, &errorLine,
+    //                                    &errorColumn);
+    //QApplication::restoreOverrideCursor();
+
+    //if (!success) {
+    //    QMessageBox::warning (this, "Error in Search File",
+    //                          "Error in search file, line " +
+    //                          QString::number (errorLine) + ", column " +
+    //                          QString::number (errorColumn) + ": " + 
+    //                          errorMsg);
+    //    return;
+    //}
+
+    //SearchSpec spec;
+    //if (!spec.fromDomElement (document.documentElement())) {
+    //    QMessageBox::warning (this, "Error in Search File",
+    //                          "Error in search file.");
+    //    return;
+    //}
+
+    //setSearchSpec (spec);
+    //contentsChanged();
+}
+
+//---------------------------------------------------------------------------
+//  saveQuiz
+//
+//! Save the current quiz spec to a file.
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::saveQuiz()
+{
+    qDebug ("saveQuiz");
+
+    // Copied from SearchSpecForm::saveSearch
+
+    //QString filename = QFileDialog::getSaveFileName
+    //    (Auxil::getSearchDir() + "/saved", "Zyzzyva Search Files (*.zzs)",
+    //     this, "saveDialog", "Save Search");
+
+    //if (filename.isEmpty())
+    //    return;
+
+    //QFile file (filename);
+    //if (file.exists()) {
+    //    int code = QMessageBox::warning (0, "Overwrite Existing File?",
+    //                                     "The file already exists.  "
+    //                                     "Overwrite it?", QMessageBox::Yes,
+    //                                     QMessageBox::No);
+    //    if (code != QMessageBox::Yes)
+    //        return;
+    //}
+
+    //if (!file.open (IO_WriteOnly)) {
+    //    QMessageBox::warning (this, "Error Saving Search",
+    //                          "Cannot save search:\n" + file.errorString() +
+    //                          ".");
+    //    return;
+    //}
+
+    //QDomImplementation implementation;
+    //QDomDocument document (implementation.createDocumentType
+    //                       ("zyzzyva-search", QString::null,
+    //                        "http://pietdepsi.com/dtd/zyzzyva-search.dtd"));
+
+    //document.appendChild (getSearchSpec().asDomElement());
+
+    //// XXX: There should be a programmatic way to write the <?xml?> header
+    //// based on the QDomImplementation, shouldn't there?
+    //QTextStream stream (&file);
+    //stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+    //    << document.toString();
 }

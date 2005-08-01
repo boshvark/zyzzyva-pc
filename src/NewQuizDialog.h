@@ -53,11 +53,14 @@ class NewQuizDialog : public QDialog
     public slots:
     void useListToggled (bool on);
     void timerToggled (bool on);
+    void loadQuiz();
+    void saveQuiz();
 
     private:
     SearchSpecForm* specForm;
     QCheckBox*      useListCbox;
     QCheckBox*      randomCbox;
+    QPushButton*    saveQuizButton;
     QPushButton*    okButton;
     QWidget*        timerWidget;
     QCheckBox*      timerCbox;
