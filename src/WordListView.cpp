@@ -416,7 +416,7 @@ WordListView::createQuizRequested()
     searchCondition.type = SearchCondition::InWordList;
     searchCondition.stringValue = searchString;
     searchSpec.conditions.push_back (searchCondition);
-    quizSpec.searchSpec = searchSpec;
+    quizSpec.setSearchSpec (searchSpec);
     MainWindow::getInstance()->newQuizFormInteractive (quizSpec);
 }
 

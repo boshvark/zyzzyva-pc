@@ -154,10 +154,10 @@ QuizSpec
 NewQuizDialog::getQuizSpec() const
 {
     QuizSpec spec;
-    spec.type = QuizAnagrams;
-    spec.searchSpec = specForm->getSearchSpec();
-    spec.useList = useListCbox->isChecked();
-    spec.randomOrder = randomCbox->isChecked();
+    spec.setType (QuizAnagrams);
+    spec.setSearchSpec (specForm->getSearchSpec());
+    spec.setUseList (useListCbox->isChecked());
+    spec.setRandomOrder (randomCbox->isChecked());
 
     QuizTimerSpec timerSpec;
     if (timerCbox->isChecked()) {
@@ -168,7 +168,7 @@ NewQuizDialog::getQuizSpec() const
         else if (timerType == TIMER_PER_RESPONSE)
             timerSpec.type = PerResponse;
     }
-    spec.timerSpec = timerSpec;
+    spec.setTimerSpec (timerSpec);
 
     return spec;
 }
@@ -183,16 +183,17 @@ NewQuizDialog::getQuizSpec() const
 void
 NewQuizDialog::setQuizSpec (const QuizSpec& spec)
 {
-    specForm->setSearchSpec (spec.searchSpec);
-    useListCbox->setChecked (spec.useList);
-    randomCbox->setChecked (spec.randomOrder);
+    specForm->setSearchSpec (spec.getSearchSpec());
+    useListCbox->setChecked (spec.getUseList());
+    randomCbox->setChecked (spec.getRandomOrder());
     timerCbox->setChecked (false);
     timerSbox->setValue (0);
     timerCombo->setCurrentText (TIMER_PER_RESPONSE);
-    if (spec.timerSpec.type != NoTimer) {
+    QuizTimerSpec timerSpec = spec.getTimerSpec();
+    if (timerSpec.type != NoTimer) {
         timerCbox->setChecked (true);
-        timerSbox->setValue (spec.timerSpec.duration);
-        switch (spec.timerSpec.type) {
+        timerSbox->setValue (timerSpec.duration);
+        switch (timerSpec.type) {
             case PerQuestion:
             timerCombo->setCurrentText (TIMER_PER_QUESTION);
             break;

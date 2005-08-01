@@ -264,7 +264,7 @@ QuizForm::responseEntered()
 void
 QuizForm::newQuiz (const QuizSpec& spec)
 {
-    timerSpec = spec.timerSpec;
+    timerSpec = spec.getTimerSpec();
     QApplication::setOverrideCursor (Qt::waitCursor);
     quizEngine->newQuiz (spec);
     QApplication::restoreOverrideCursor();
@@ -748,7 +748,7 @@ QuizForm::responseMatchesQuestion (const QString& response) const
 {
     QString question = quizEngine->getQuestion();
     QuizSpec spec = quizEngine->getQuizSpec();
-    switch (spec.type) {
+    switch (spec.getType()) {
         case QuizAnagrams:
         return ((response.length() == question.length()) &&
             (wordEngine->alphagram (response) ==

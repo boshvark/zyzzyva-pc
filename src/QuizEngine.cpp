@@ -51,17 +51,17 @@ QuizEngine::newQuiz (const QuizSpec& spec)
 
     // If alphagrams is not specified, then the quiz will be a single question
     // requiring the entire search results of the search spec as an answer.
-    singleSpecQuestion = quizSpec.useList;
+    singleSpecQuestion = quizSpec.getUseList();
 
     // When using alphagrams, always change quiz type to Anagram.  The pattern
     // is used to select the list of alphagrams, then anagrams are used as
     // quiz answers.
     if (!singleSpecQuestion) {
-        quizQuestions = wordEngine->search (quizSpec.searchSpec, true);
+        quizQuestions = wordEngine->search (quizSpec.getSearchSpec(), true);
         quizQuestions = wordEngine->alphagrams (quizQuestions);
 
         // Do a random shuffle
-        if (quizSpec.randomOrder) {
+        if (quizSpec.getRandomOrder()) {
             QString tmp;
             int num = quizQuestions.size();
             for (int i = 0; i < num ; ++i) {
@@ -204,7 +204,7 @@ QuizEngine::prepareQuestion()
     QStringList answers;
 
     if (singleSpecQuestion)
-        answers = wordEngine->search (quizSpec.searchSpec, true);
+        answers = wordEngine->search (quizSpec.getSearchSpec(), true);
     else {
         SearchCondition condition;
         condition.type = SearchCondition::AnagramMatch;

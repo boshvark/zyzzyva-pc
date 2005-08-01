@@ -50,6 +50,19 @@ class QuizSpec
     QDomElement asDomElement() const;
     bool fromDomElement (const QDomElement& element);
 
+    void setType (QuizType t) { type = t; }
+    void setSearchSpec (const SearchSpec& s) { searchSpec = s; }
+    void setTimerSpec (const QuizTimerSpec& s) { timerSpec = s; }
+    void setUseList (bool b) { useList = b; }
+    void setRandomOrder (bool b) { randomOrder = b; }
+
+    QuizType getType() const { return type; }
+    SearchSpec getSearchSpec() const { return searchSpec; }
+    QuizTimerSpec getTimerSpec() const { return timerSpec; }
+    bool getUseList() const { return useList; }
+    bool getRandomOrder() const { return randomOrder; }
+
+    private:
     QuizType type;
     SearchSpec searchSpec;
     QuizTimerSpec timerSpec;
