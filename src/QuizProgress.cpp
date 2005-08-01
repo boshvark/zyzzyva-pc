@@ -24,20 +24,14 @@
 
 #include "QuizProgress.h"
 
-//---------------------------------------------------------------------------
-//  QuizProgress
-//
-//! Constructor.
-//
-//! @param q the current question number
-//! @param c the number of correct responses
-//! @param i the number of incorrect responses
-//! @param m the number of missed responses
-//---------------------------------------------------------------------------
-QuizProgress::QuizProgress (int q, int c, int i, int m)
-    : question (q), correct (c), incorrect (i), missed (m)
-{
-}
+const QString XML_TOP_ELEMENT = "progress";
+const QString XML_QUESTION_ATTR = "question";
+const QString XML_CORRECT_ATTR = "correct";
+const QString XML_INCORRECT_RESPONSES_ELEMENT = "incorrect-responses";
+const QString XML_MISSED_RESPONSES_ELEMENT = "missed-responses";
+const QString XML_RESPONSE_ELEMENT = "response";
+const QString XML_RESPONSE_WORD_ATTR = "word";
+const QString XML_RESPONSE_COUNT_ATTR = "count";
 
 //---------------------------------------------------------------------------
 //  addIncorrect
@@ -51,6 +45,7 @@ void
 QuizProgress::addIncorrect (const QString& word, int count)
 {
     incorrectWords[word] = count;
+    incorrect += count;
 }
 
 //---------------------------------------------------------------------------
@@ -65,6 +60,7 @@ void
 QuizProgress::addMissed (const QString& word, int count)
 {
     missedWords[word] = count;
+    missed += count;
 }
 
 //---------------------------------------------------------------------------
@@ -92,5 +88,60 @@ QuizProgress::asDomElement() const
 bool
 QuizProgress::fromDomElement (const QDomElement& element)
 {
-    return false;
+    if (element.tagName() != XML_TOP_ELEMENT)
+        return false;
+
+    QuizProgress tmpProgress;
+
+    if (element.hasAttribute (XML_QUESTION_ATTR)) {
+        bool ok = false;
+        int tmpQuestion =
+            element.attribute (XML_QUESTION_ATTR).toInt (&ok);
+        if (!ok)
+            return false;
+        tmpProgress.setQuestion (tmpQuestion);
+    }
+
+    if (element.hasAttribute (XML_CORRECT_ATTR)) {
+        bool ok = false;
+        int tmpCorrect =
+            element.attribute (XML_CORRECT_ATTR).toInt (&ok);
+        if (!ok)
+            return false;
+        tmpProgress.setCorrect (tmpCorrect);
+    }
+
+    QDomElement elem = element.firstChild().toElement();
+    for (; !elem.isNull(); elem = elem.nextSibling().toElement()) {
+
+        bool elemMissed = false;
+        if (elem.tagName() == XML_MISSED_RESPONSES_ELEMENT)
+            elemMissed = true;
+        else if (elem.tagName() != XML_INCORRECT_RESPONSES_ELEMENT)
+            return false;
+
+        QDomElement responseElem = elem.firstChild().toElement();
+        for (; !responseElem.isNull();
+             responseElem = responseElem.nextSibling().toElement())
+        {
+            if (!responseElem.hasAttribute (XML_RESPONSE_WORD_ATTR) ||
+                !responseElem.hasAttribute (XML_RESPONSE_COUNT_ATTR))
+            {
+                return false;
+            }
+            bool ok = false;
+            int count =
+                responseElem.attribute (XML_RESPONSE_COUNT_ATTR).toInt (&ok);
+            if (!ok)
+                return false;
+            QString word = responseElem.attribute (XML_RESPONSE_WORD_ATTR);
+            if (elemMissed)
+                tmpProgress.addMissed (word, count);
+            else
+                tmpProgress.addIncorrect (word, count);
+        }
+    }
+
+    *this = tmpProgress;
+    return true;
 }

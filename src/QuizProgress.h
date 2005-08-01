@@ -31,11 +31,18 @@
 class QuizProgress
 {
     public:
-    QuizProgress (int q = 1, int c = 0, int i = 0, int m = 0);
+    QuizProgress() : question (1), correct (0), incorrect (0), missed (0) { }
     ~QuizProgress() { }
 
+    void setQuestion (int q) { question = q; }
+    void setCorrect (int c) { correct = c; }
     void addIncorrect (const QString& word, int count);
     void addMissed (const QString& word, int count);
+
+    int getQuestion() const { return question; }
+    int getNumCorrect() const { return correct; }
+    int getNumIncorrect() const { return incorrect; }
+    int getNumMissed() const { return missed; }
 
     QDomElement asDomElement() const;
     bool fromDomElement (const QDomElement& element);
