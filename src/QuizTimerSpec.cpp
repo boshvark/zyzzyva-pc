@@ -24,6 +24,8 @@
 
 #include "QuizTimerSpec.h"
 
+const QString PER_QUESTION_TYPE = "per question";
+const QString PER_RESPONSE_TYPE = "per response";
 const QString XML_TOP_ELEMENT = "timer";
 const QString XML_TYPE_ATTR = "type";
 const QString XML_DURATION_ATTR = "duration";
@@ -38,16 +40,9 @@ const QString XML_DURATION_ATTR = "duration";
 QString
 QuizTimerSpec::asString() const
 {
-    if (type == NoTimer)
-        return QString::null;
-
-    QString str = "Timer: " + QString::number (duration) + " seconds";
-    switch (type) {
-        case PerQuestion: str += " per question"; break;
-        case PerResponse: str += " per response"; break;
-        default: break;
-    }
-    return str;
+    return (type == NoTimer) ? QString::null
+                             : "Timer: " + QString::number (duration) +
+                               " seconds " + typeToString (type);
 }
 
 //---------------------------------------------------------------------------
@@ -60,8 +55,15 @@ QuizTimerSpec::asString() const
 QDomElement
 QuizTimerSpec::asDomElement() const
 {
-    QDomElement element;
-    return element;
+    QDomDocument doc;
+    QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
+
+    if (type == NoTimer)
+        return topElement;
+
+    //topElement.setAttribute (XML_TYPE_ATTR
+
+    return topElement;
 }
 
 //---------------------------------------------------------------------------
@@ -75,22 +77,60 @@ QuizTimerSpec::asDomElement() const
 bool
 QuizTimerSpec::fromDomElement (const QDomElement& element)
 {
-    qDebug ("QuizTimerSpec::fromDomElement");
+    QuizTimerSpec tmpSpec;
 
-    //if ((element.tagName() != XML_TOP_ELEMENT) ||
-    //    (!element.hasAttribute (XML_
-    //    return false;
+    if (element.tagName() != XML_TOP_ELEMENT)
+        return false;
 
-    //QDomElement elem = element.firstChild().toElement();
-    //if (elem.isNull())
-    //    return false;
+    if (element.hasAttribute (XML_TYPE_ATTR)) {
+        tmpSpec.type = stringToType (element.attribute (XML_TYPE_ATTR));
 
-    //QuizTimerSpec tmpSpec;
+        if (!element.hasAttribute (XML_DURATION_ATTR))
+            return false;
 
-    //for (; !elem.isNull(); elem = elem.nextSibling().toElement()) {
-    //    qDebug ("Element: " + elem.tagName());
-    //}
+        bool ok = false;
+        tmpSpec.duration = element.attribute (XML_DURATION_ATTR).toInt (&ok);
+        if (!ok)
+            return false;
+    }
 
-    //*this = tmpSpec;
+    *this = tmpSpec;
     return true;
+}
+
+//---------------------------------------------------------------------------
+//  typeToString
+//
+//! Convert a timer type to a string representation.
+//
+//! @param t the timer type
+//! @return the string representation
+//---------------------------------------------------------------------------
+QString
+QuizTimerSpec::typeToString (QuizTimerType t) const
+{
+    switch (t) {
+        case PerQuestion: return PER_QUESTION_TYPE;
+        case PerResponse: return PER_RESPONSE_TYPE;
+        default: return QString::null;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  stringToType
+//
+//! Convert a string representation to a timer type.
+//
+//! @param s the string representation
+//! @return the timer type
+//---------------------------------------------------------------------------
+QuizTimerType
+QuizTimerSpec::stringToType (const QString& s) const
+{
+    if (s == PER_QUESTION_TYPE)
+        return PerQuestion;
+    else if (s == PER_RESPONSE_TYPE)
+        return PerResponse;
+    else
+        return NoTimer;
 }
