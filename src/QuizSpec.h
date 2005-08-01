@@ -25,6 +25,7 @@
 #ifndef QUIZ_SPEC_H
 #define QUIZ_SPEC_H
 
+#include "QuizProgress.h"
 #include "QuizTimerSpec.h"
 #include "SearchSpec.h"
 #include "Defs.h"
@@ -53,12 +54,14 @@ class QuizSpec
     void setType (QuizType t) { type = t; }
     void setSearchSpec (const SearchSpec& s) { searchSpec = s; }
     void setTimerSpec (const QuizTimerSpec& s) { timerSpec = s; }
+    void setProgress (const QuizProgress& p) { progress = p; }
     void setUseList (bool b) { useList = b; }
     void setRandomOrder (bool b) { randomOrder = b; }
 
     QuizType getType() const { return type; }
     SearchSpec getSearchSpec() const { return searchSpec; }
     QuizTimerSpec getTimerSpec() const { return timerSpec; }
+    QuizProgress getProgress() const { return progress; }
     bool getUseList() const { return useList; }
     bool getRandomOrder() const { return randomOrder; }
 
@@ -66,6 +69,7 @@ class QuizSpec
     QuizType type;
     SearchSpec searchSpec;
     QuizTimerSpec timerSpec;
+    QuizProgress progress;
     bool useList;
     bool randomOrder;
 };
