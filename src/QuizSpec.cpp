@@ -91,8 +91,6 @@ QuizSpec::asDomElement() const
 bool
 QuizSpec::fromDomElement (const QDomElement& element)
 {
-    qDebug ("QuizSpec::fromDomElement");
-
     if (element.tagName() != XML_TOP_ELEMENT)
         return false;
 
@@ -104,7 +102,6 @@ QuizSpec::fromDomElement (const QDomElement& element)
     tmpSpec.setRandomOrder (false);
 
     for (; !elem.isNull(); elem = elem.nextSibling().toElement()) {
-        qDebug ("Element: " + elem.tagName());
 
         QString tag = elem.tagName();
         // XXX: QuizQuestionSource needs to be a class of its own
