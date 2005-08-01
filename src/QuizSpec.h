@@ -47,6 +47,8 @@ class QuizSpec
     ~QuizSpec() { }
 
     QString asString() const;
+    QDomElement asDomElement() const;
+    bool fromDomElement (const QDomElement& element);
 
     QuizType type;
     SearchSpec searchSpec;

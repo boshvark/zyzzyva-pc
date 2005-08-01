@@ -50,3 +50,32 @@ QuizSpec::asString() const
     str += searchSpec.asString();
     return str;
 }
+
+//---------------------------------------------------------------------------
+//  asDomElement
+//
+//! Return a DOM element representing the quiz spec.
+//
+//! @return the DOM element
+//---------------------------------------------------------------------------
+QDomElement
+QuizSpec::asDomElement() const
+{
+    QDomElement element;
+    return element;
+}
+
+//---------------------------------------------------------------------------
+//  fromDomElement
+//
+//! Reset the object based on the contents of a DOM element representing a
+//! quiz spec.
+//
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizSpec::fromDomElement (const QDomElement& element)
+{
+    qDebug ("QuizSpec::fromDomElement");
+    return false;
+}

@@ -24,11 +24,15 @@
 #include "QuizSpec.h"
 #include "SearchSpec.h"
 #include "SearchSpecForm.h"
+#include "Auxil.h"
 #include "Defs.h"
 
+#include <qapplication.h>
 #include <qbuttongroup.h>
+#include <qfiledialog.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qmessagebox.h>
 
 const QString DIALOG_CAPTION = "New Quiz";
 const QString TIMER_PER_QUESTION = "per question";
@@ -242,47 +246,48 @@ NewQuizDialog::loadQuiz()
 
     // Copied from SearchSpecForm::loadSearch()
 
-    //QString filename = QFileDialog::getOpenFileName
-    //    (Auxil::getSearchDir(), "Zyzzyva Search Files (*.zzs)", this,
-    //     "loadSearchDialog", "Load Search");
-    //if (filename.isEmpty())
-    //    return;
+    QString filename = QFileDialog::getOpenFileName
+        (Auxil::getQuizDir(), "Zyzzyva Quiz Files (*.zzq)", this,
+         "loadQuizDialog", "Load Quiz");
+    if (filename.isEmpty())
+        return;
 
-    //QFile file (filename);
-    //if (!file.open (IO_ReadOnly)) {
-    //    QMessageBox::warning (this, "Error Opening Search File",
-    //                          "Cannot open file '" + filename + "': " +
-    //                          file.errorString());
-    //    return;
-    //}
+    QFile file (filename);
+    if (!file.open (IO_ReadOnly)) {
+        QMessageBox::warning (this, "Error Opening Quiz File",
+                              "Cannot open file '" + filename + "': " +
+                              file.errorString());
+        return;
+    }
 
-    //QString errorMsg;
-    //int errorLine = 0;
-    //int errorColumn = 0;
+    QString errorMsg;
+    int errorLine = 0;
+    int errorColumn = 0;
 
-    //QApplication::setOverrideCursor (Qt::waitCursor);
-    //QDomDocument document;
-    //bool success = document.setContent (&file, false, &errorMsg, &errorLine,
-    //                                    &errorColumn);
-    //QApplication::restoreOverrideCursor();
+    QApplication::setOverrideCursor (Qt::waitCursor);
+    QDomDocument document;
+    bool success = document.setContent (&file, false, &errorMsg, &errorLine,
+                                        &errorColumn);
+    QApplication::restoreOverrideCursor();
 
-    //if (!success) {
-    //    QMessageBox::warning (this, "Error in Search File",
-    //                          "Error in search file, line " +
-    //                          QString::number (errorLine) + ", column " +
-    //                          QString::number (errorColumn) + ": " + 
-    //                          errorMsg);
-    //    return;
-    //}
+    if (!success) {
+        QMessageBox::warning (this, "Error in Quiz File",
+                              "Error in quiz file, line " +
+                              QString::number (errorLine) + ", column " +
+                              QString::number (errorColumn) + ": " + 
+                              errorMsg);
+        return;
+    }
 
-    //SearchSpec spec;
-    //if (!spec.fromDomElement (document.documentElement())) {
-    //    QMessageBox::warning (this, "Error in Search File",
-    //                          "Error in search file.");
-    //    return;
-    //}
+    QuizSpec spec;
+    if (!spec.fromDomElement (document.documentElement())) {
+        QMessageBox::warning (this, "Error in Quiz File",
+                              "Error in quiz file.");
+        return;
+    }
 
-    //setSearchSpec (spec);
+    setQuizSpec (spec);
+    // XXX: Does something analogous to this still need to be called?
     //contentsChanged();
 }
 
