@@ -73,8 +73,39 @@ QuizProgress::addMissed (const QString& word, int count)
 QDomElement
 QuizProgress::asDomElement() const
 {
-    QDomElement element;
-    return element;
+    QDomDocument doc;
+    QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
+
+    topElement.setAttribute (XML_QUESTION_ATTR, question);
+    topElement.setAttribute (XML_CORRECT_ATTR, correct);
+
+    if (!incorrectWords.empty()) {
+        QDomElement incorrectElement = doc.createElement
+            (XML_INCORRECT_RESPONSES_ELEMENT);
+        topElement.appendChild (incorrectElement);
+        QMap<QString, int>::const_iterator it;
+        for (it = incorrectWords.begin(); it != incorrectWords.end(); ++it) {
+            QDomElement elem = doc.createElement (XML_RESPONSE_ELEMENT);
+            elem.setAttribute (XML_RESPONSE_WORD_ATTR, it.key());
+            elem.setAttribute (XML_RESPONSE_COUNT_ATTR, *it);
+            incorrectElement.appendChild (elem);
+        }
+    }
+
+    if (!missedWords.empty()) {
+        QDomElement missedElement = doc.createElement
+            (XML_MISSED_RESPONSES_ELEMENT);
+        topElement.appendChild (missedElement);
+        QMap<QString, int>::const_iterator it;
+        for (it = missedWords.begin(); it != missedWords.end(); ++it) {
+            QDomElement elem = doc.createElement (XML_RESPONSE_ELEMENT);
+            elem.setAttribute (XML_RESPONSE_WORD_ATTR, it.key());
+            elem.setAttribute (XML_RESPONSE_COUNT_ATTR, *it);
+            missedElement.appendChild (elem);
+        }
+    }
+
+    return topElement;
 }
 
 //---------------------------------------------------------------------------
