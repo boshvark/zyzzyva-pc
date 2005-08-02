@@ -298,6 +298,9 @@ QuizForm::saveQuizClicked()
     if (filename.isEmpty())
         return;
 
+    if (!filename.endsWith (".zzq", false))
+        filename += ".zzq";
+
     QFile file (filename);
     if (file.exists()) {
         int code = QMessageBox::warning (0, "Overwrite Existing File?",
