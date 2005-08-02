@@ -79,10 +79,13 @@ QuizEngine::newQuiz (const QuizSpec& spec)
         quizQuestions << spec.asString();
     }
 
-    questionIndex = 0;
-    quizTotal = 0;
-    quizCorrect = 0;
-    quizIncorrect = 0;
+    // Restore quiz progress
+    QuizProgress progress = spec.getProgress();
+    questionIndex = progress.getQuestion();
+    quizCorrect = progress.getNumCorrect();
+    quizIncorrect = progress.getNumIncorrect();
+    quizTotal = quizCorrect + progress.getNumMissed();
+
     prepareQuestion();
 }
 

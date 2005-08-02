@@ -33,6 +33,7 @@
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include "MatchType.h"
+#include "QuizProgress.h"
 
 class QuizSpec;
 class SearchSpec;
@@ -66,6 +67,9 @@ class NewQuizDialog : public QDialog
     QCheckBox*      timerCbox;
     QSpinBox*       timerSbox;
     QComboBox*      timerCombo;
+
+    // XXX: Hidden progress - would prefer this to be visible (editable?)
+    QuizProgress    progress;
 };
 
 #endif // NEW_QUIZ_DIALOG_H

@@ -170,6 +170,8 @@ NewQuizDialog::getQuizSpec() const
     }
     spec.setTimerSpec (timerSpec);
 
+    spec.setProgress (progress);
+
     return spec;
 }
 
@@ -203,6 +205,7 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
             default: break;
         }
     }
+    progress = spec.getProgress();
 }
 
 //---------------------------------------------------------------------------
