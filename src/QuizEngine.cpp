@@ -49,10 +49,6 @@ QuizEngine::newQuiz (const QuizSpec& spec)
     quizSpec = spec;
     quizQuestions.clear();
 
-
-    qDebug ("Random seed: " + QString::number (spec.getRandomSeed()));
-    qDebug ("Random algorithm: " + QString::number (spec.getRandomAlgorithm()));
-
     // If alphagrams is not specified, then the quiz will be a single question
     // requiring the entire search results of the search spec as an answer.
     singleSpecQuestion = quizSpec.getUseList();
@@ -66,6 +62,9 @@ QuizEngine::newQuiz (const QuizSpec& spec)
 
         // Do a random shuffle
         if (quizSpec.getRandomOrder()) {
+            unsigned int seed = spec.getRandomSeed();
+            std::srand (seed ? seed : std::time (0));
+
             QString tmp;
             int num = quizQuestions.size();
             for (int i = 0; i < num ; ++i) {
