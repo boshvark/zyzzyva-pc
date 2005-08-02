@@ -294,10 +294,6 @@ NewQuizDialog::loadQuiz()
 void
 NewQuizDialog::saveQuiz()
 {
-    qDebug ("saveQuiz");
-
-    // Copied from SearchSpecForm::saveSearch
-
     QString filename = QFileDialog::getSaveFileName
         (Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)",
          this, "saveDialog", "Save Quiz");
