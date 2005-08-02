@@ -76,8 +76,34 @@ QuizSpec::asString() const
 QDomElement
 QuizSpec::asDomElement() const
 {
-    QDomElement element;
-    return element;
+    QDocument doc;
+    QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
+
+    QDomElement sourceElement = doc.createElement
+        (XML_QUESTION_SOURCE_ELEMENT);
+    sourceElement.setAttribute (XML_SOURCE_TYPE_ATTR, "search");
+    sourceElement.setAttribute (XML_SOURCE_SINGLE_QUESTION_ATTR,
+                                (useList ?  QString ("true")
+                                         : QString ("false")));
+
+    sourceElement.appendChild (searchSpec.asDomElement());
+    topElement.appendChild (sourceElement);
+
+    if (randomOrder) {
+        QDomElement randomElement = doc.createElement
+            (XML_RANDOMIZER_ELEMENT);
+        randomElement.setAttribute (XML_RANDOMIZER_SEED_ATTR, randomSeed);
+        randomElement.setAttribute (XML_RANDOMIZER_ALGORITHM_ATTR,
+                                    randomAlgorithm);
+        topElement.appendChild (randomElement);
+    }
+
+    if (timerSpec.getType() != NoTimer)
+        topElement.appendChild (timerSpec.asDomElement());
+
+    topElement.appendChild (progress.asDomElement());
+
+    return topElement;
 }
 
 //---------------------------------------------------------------------------

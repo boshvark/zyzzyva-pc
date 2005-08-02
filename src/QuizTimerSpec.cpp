@@ -61,7 +61,8 @@ QuizTimerSpec::asDomElement() const
     if (type == NoTimer)
         return topElement;
 
-    //topElement.setAttribute (XML_TYPE_ATTR
+    topElement.setAttribute (XML_TYPE_ATTR, typeToString (type));
+    topElement.setAttribute (XML_DURATION_ATTR, duration);
 
     return topElement;
 }
