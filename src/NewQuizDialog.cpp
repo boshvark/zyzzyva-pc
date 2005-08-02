@@ -243,10 +243,6 @@ NewQuizDialog::timerToggled (bool on)
 void
 NewQuizDialog::loadQuiz()
 {
-    qDebug ("loadQuiz");
-
-    // Copied from SearchSpecForm::loadSearch()
-
     QString filename = QFileDialog::getOpenFileName
         (Auxil::getQuizDir(), "Zyzzyva Quiz Files (*.zzq)", this,
          "loadQuizDialog", "Load Quiz");
@@ -288,8 +284,6 @@ NewQuizDialog::loadQuiz()
     }
 
     setQuizSpec (spec);
-    // XXX: Does something analogous to this still need to be called?
-    //contentsChanged();
 }
 
 //---------------------------------------------------------------------------
