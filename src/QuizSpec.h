@@ -60,6 +60,9 @@ class QuizSpec
     void setRandomSeed (unsigned int i) { randomSeed = i; }
     void setRandomAlgorithm (int i) { randomAlgorithm = i; }
 
+    void addIncorrect (const QString& word) { progress.addIncorrect (word); }
+    void addMissed (const QString& word) { progress.addMissed (word); }
+
     QuizType getType() const { return type; }
     SearchSpec getSearchSpec() const { return searchSpec; }
     QuizTimerSpec getTimerSpec() const { return timerSpec; }

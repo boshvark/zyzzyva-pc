@@ -36,6 +36,24 @@ const QString XML_RESPONSE_COUNT_ATTR = "count";
 //---------------------------------------------------------------------------
 //  addIncorrect
 //
+//! Add an incorrect response, incrementing the number of times the response
+//! was made.
+//
+//! @param word the incorrect response word
+//---------------------------------------------------------------------------
+void
+QuizProgress::addIncorrect (const QString& word)
+{
+    if (incorrectWords.contains (word))
+        ++incorrectWords[word];
+    else
+        incorrectWords[word] = 1;
+    ++incorrect;
+}
+
+//---------------------------------------------------------------------------
+//  addIncorrect
+//
 //! Add an incorrect response with the number of times the response was made.
 //
 //! @param word the incorrect response word
@@ -46,6 +64,24 @@ QuizProgress::addIncorrect (const QString& word, int count)
 {
     incorrectWords[word] = count;
     incorrect += count;
+}
+
+//---------------------------------------------------------------------------
+//  addMissed
+//
+//! Add a missed response, incrementing the number of times the response was
+//! missed.
+//
+//! @param word the missed response word
+//---------------------------------------------------------------------------
+void
+QuizProgress::addMissed (const QString& word)
+{
+    if (missedWords.contains (word))
+        ++missedWords[word];
+    else
+        missedWords[word] = 1;
+    ++missed;
 }
 
 //---------------------------------------------------------------------------

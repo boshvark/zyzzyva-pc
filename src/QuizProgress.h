@@ -36,7 +36,9 @@ class QuizProgress
 
     void setQuestion (int q) { question = q; }
     void setCorrect (int c) { correct = c; }
+    void addIncorrect (const QString& word);
     void addIncorrect (const QString& word, int count);
+    void addMissed (const QString& word);
     void addMissed (const QString& word, int count);
 
     int getQuestion() const { return question; }

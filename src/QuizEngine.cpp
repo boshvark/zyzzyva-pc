@@ -106,6 +106,23 @@ QuizEngine::nextQuestion()
         return false;
 
     ++questionIndex;
+
+    // Update progress
+    QuizProgress progress = quizSpec.getProgress();
+    progress.setQuestion (questionIndex);
+    progress.setCorrect (quizCorrect);
+    QStringList missed = getMissed();
+    QStringList::iterator it;
+    for (it = missed.begin(); it != missed.end(); ++it)
+        progress.addMissed (*it);
+
+    for (it = incorrectUserResponses.begin(); it !=
+         incorrectUserResponses.end(); ++it)
+    {
+        progress.addIncorrect (*it);
+    }
+    quizSpec.setProgress (progress);
+
     prepareQuestion();
     return true;
 }
