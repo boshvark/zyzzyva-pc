@@ -298,40 +298,40 @@ NewQuizDialog::saveQuiz()
 
     // Copied from SearchSpecForm::saveSearch
 
-    //QString filename = QFileDialog::getSaveFileName
-    //    (Auxil::getSearchDir() + "/saved", "Zyzzyva Search Files (*.zzs)",
-    //     this, "saveDialog", "Save Search");
+    QString filename = QFileDialog::getSaveFileName
+        (Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)",
+         this, "saveDialog", "Save Quiz");
 
-    //if (filename.isEmpty())
-    //    return;
+    if (filename.isEmpty())
+        return;
 
-    //QFile file (filename);
-    //if (file.exists()) {
-    //    int code = QMessageBox::warning (0, "Overwrite Existing File?",
-    //                                     "The file already exists.  "
-    //                                     "Overwrite it?", QMessageBox::Yes,
-    //                                     QMessageBox::No);
-    //    if (code != QMessageBox::Yes)
-    //        return;
-    //}
+    QFile file (filename);
+    if (file.exists()) {
+        int code = QMessageBox::warning (0, "Overwrite Existing File?",
+                                         "The file already exists.  "
+                                         "Overwrite it?", QMessageBox::Yes,
+                                         QMessageBox::No);
+        if (code != QMessageBox::Yes)
+            return;
+    }
 
-    //if (!file.open (IO_WriteOnly)) {
-    //    QMessageBox::warning (this, "Error Saving Search",
-    //                          "Cannot save search:\n" + file.errorString() +
-    //                          ".");
-    //    return;
-    //}
+    if (!file.open (IO_WriteOnly)) {
+        QMessageBox::warning (this, "Error Saving Quiz",
+                              "Cannot save quiz:\n" + file.errorString() +
+                              ".");
+        return;
+    }
 
-    //QDomImplementation implementation;
-    //QDomDocument document (implementation.createDocumentType
-    //                       ("zyzzyva-search", QString::null,
-    //                        "http://pietdepsi.com/dtd/zyzzyva-search.dtd"));
+    QDomImplementation implementation;
+    QDomDocument document (implementation.createDocumentType
+                           ("zyzzyva-quiz", QString::null,
+                            "http://pietdepsi.com/dtd/zyzzyva-quiz.dtd"));
 
-    //document.appendChild (getSearchSpec().asDomElement());
+    document.appendChild (getQuizSpec().asDomElement());
 
     //// XXX: There should be a programmatic way to write the <?xml?> header
     //// based on the QDomImplementation, shouldn't there?
-    //QTextStream stream (&file);
-    //stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-    //    << document.toString();
+    QTextStream stream (&file);
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+        << document.toString();
 }
