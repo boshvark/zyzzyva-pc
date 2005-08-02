@@ -180,14 +180,14 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
     Q_CHECK_PTR (newQuizButton);
     newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
-    buttonTopHlay->addWidget (newQuizButton);
+    buttonBottomHlay->addWidget (newQuizButton);
 
     QPushButton* saveQuizButton = new QPushButton ("&Save Quiz...", this,
                                                    "saveQuizButton");
     Q_CHECK_PTR (saveQuizButton);
     saveQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuizClicked()));
-    buttonTopHlay->addWidget (saveQuizButton);
+    buttonBottomHlay->addWidget (saveQuizButton);
 
     analyzeButton = new QPushButton ("&Analyze...", this, "analyzeButton");
     Q_CHECK_PTR (analyzeButton);
