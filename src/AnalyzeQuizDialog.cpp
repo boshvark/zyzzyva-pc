@@ -124,6 +124,18 @@ AnalyzeQuizDialog::newQuiz (const QuizSpec& spec)
     questionLabel->setText (spec.asString());
     clearMissed();
     clearIncorrect();
+
+    // Restore incorrect and missed words from quiz progress
+    QuizProgress progress = spec.getProgress();
+    QMap<QString, int> missed = progress.getMissed();
+    QMap<QString, int>::iterator it;
+    for (it = missed.begin(); it != missed.end(); ++it)
+        addMissed (it.key(), false);
+
+    QMap<QString, int> incorrect = progress.getIncorrect();
+    for (it = incorrect.begin(); it != incorrect.end(); ++it)
+        addIncorrect (it.key(), false);
+
     updateStats();
 }
 
@@ -158,13 +170,15 @@ AnalyzeQuizDialog::updateStats()
 //! Add a word to the Missed list.
 //
 //! @param word the missed word
+//! @param update true if visible stats should be updated
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::addMissed (const QString& word)
+AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 {
     WordListViewItem* item = missedList->addWord (word);
     item->setTextColor (VALID_MISSED_WORD_COLOR);
-    updateStats();
+    if (update)
+        updateStats();
 }
 
 //---------------------------------------------------------------------------
@@ -173,13 +187,15 @@ AnalyzeQuizDialog::addMissed (const QString& word)
 //! Add a word to the Incorrect list.
 //
 //! @param word the incorrect word
+//! @param update true if visible stats should be updated
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::addIncorrect (const QString& word)
+AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
 {
     WordListViewItem* item = incorrectList->addWord (word);
     item->setTextColor (INVALID_WORD_COLOR);
-    updateStats();
+    if (update)
+        updateStats();
 }
 
 //---------------------------------------------------------------------------

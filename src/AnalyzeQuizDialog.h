@@ -48,8 +48,8 @@ class AnalyzeQuizDialog : public QDialog
     public slots:
     void newQuiz (const QuizSpec& spec);
     void updateStats();
-    void addMissed (const QString& word);
-    void addIncorrect (const QString& word);
+    void addMissed (const QString& word, bool update = true);
+    void addIncorrect (const QString& word, bool update = true);
     void clearMissed();
     void clearIncorrect();
 
