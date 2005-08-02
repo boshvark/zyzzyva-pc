@@ -63,7 +63,10 @@ QuizEngine::newQuiz (const QuizSpec& spec)
         // Do a random shuffle
         if (quizSpec.getRandomOrder()) {
             unsigned int seed = spec.getRandomSeed();
-            std::srand (seed ? seed : std::time (0));
+            if (!seed)
+                seed = std::time (0);
+            std::srand (seed);
+            quizSpec.setRandomSeed (seed);
 
             QString tmp;
             int num = quizQuestions.size();

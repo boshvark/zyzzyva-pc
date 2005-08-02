@@ -56,6 +56,7 @@ class QuizForm : public ActionForm
     void newQuiz (const QuizSpec& spec);
     void responseEntered();
     void newQuizClicked();
+    void saveQuizClicked();
     void nextQuestionClicked();
     void checkResponseClicked();
     void pauseClicked();

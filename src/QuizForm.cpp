@@ -37,9 +37,10 @@
 #include "Defs.h"
 #include <qapplication.h>
 #include <qcolor.h>
-#include <qlayout.h>
+#include <qfiledialog.h>
 #include <qhgroupbox.h>
 #include <qheader.h>
+#include <qlayout.h>
 #include <qmessagebox.h>
 
 using namespace Defs;
@@ -143,13 +144,6 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
     Q_CHECK_PTR (buttonTopHlay);
     mainVlay->addLayout (buttonTopHlay);
 
-    QPushButton* newQuizButton = new QPushButton ("New &Quiz...", this,
-                                                  "newQuizButton");
-    Q_CHECK_PTR (newQuizButton);
-    newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
-    buttonTopHlay->addWidget (newQuizButton);
-
     nextQuestionButton = new QPushButton ("&Next", this,
                                           "nextQuestionButton");
     Q_CHECK_PTR (nextQuestionButton);
@@ -180,6 +174,20 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
                                                      "buttonBottomHlay");
     Q_CHECK_PTR (buttonBottomHlay);
     mainVlay->addLayout (buttonBottomHlay);
+
+    QPushButton* newQuizButton = new QPushButton ("New &Quiz...", this,
+                                                  "newQuizButton");
+    Q_CHECK_PTR (newQuizButton);
+    newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
+    buttonTopHlay->addWidget (newQuizButton);
+
+    QPushButton* saveQuizButton = new QPushButton ("&Save Quiz...", this,
+                                                   "saveQuizButton");
+    Q_CHECK_PTR (saveQuizButton);
+    saveQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuizClicked()));
+    buttonTopHlay->addWidget (saveQuizButton);
 
     analyzeButton = new QPushButton ("&Analyze...", this, "analyzeButton");
     Q_CHECK_PTR (analyzeButton);
@@ -272,6 +280,54 @@ QuizForm::newQuiz (const QuizSpec& spec)
     analyzeDialog->newQuiz (spec);
 }
 
+//---------------------------------------------------------------------------
+//  saveQuizClicked
+//
+//! Called when the New Quiz button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::saveQuizClicked()
+{
+    pauseTimer();
+
+    // XXX: This code is copied wholesale from NewQuizDialog::saveQuiz!
+    QString filename = QFileDialog::getSaveFileName
+        (Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)",
+         this, "saveDialog", "Save Quiz");
+
+    if (filename.isEmpty())
+        return;
+
+    QFile file (filename);
+    if (file.exists()) {
+        int code = QMessageBox::warning (0, "Overwrite Existing File?",
+                                         "The file already exists.  "
+                                         "Overwrite it?", QMessageBox::Yes,
+                                         QMessageBox::No);
+        if (code != QMessageBox::Yes)
+            return;
+    }
+
+    if (!file.open (IO_WriteOnly)) {
+        QMessageBox::warning (this, "Error Saving Quiz",
+                              "Cannot save quiz:\n" + file.errorString() +
+                              ".");
+        return;
+    }
+
+    QDomImplementation implementation;
+    QDomDocument document (implementation.createDocumentType
+                           ("zyzzyva-quiz", QString::null,
+                            "http://pietdepsi.com/dtd/zyzzyva-quiz.dtd"));
+
+    document.appendChild (quizEngine->getQuizSpec().asDomElement());
+
+    //// XXX: There should be a programmatic way to write the <?xml?> header
+    //// based on the QDomImplementation, shouldn't there?
+    QTextStream stream (&file);
+    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+        << document.toString();
+}
 
 //---------------------------------------------------------------------------
 //  newQuizClicked
