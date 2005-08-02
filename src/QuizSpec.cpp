@@ -30,6 +30,7 @@ using namespace Defs;
 // XXX: The Search and Progress elements are redundant with strings defined in
 // SearchSpec.cpp and QuizProgress.cpp.  Define them in only one place!
 const QString XML_TOP_ELEMENT = "zyzzyva-quiz";
+const QString XML_TOP_TYPE_ATTR = "type";
 const QString XML_QUESTION_SOURCE_ELEMENT = "question-source";
 const QString XML_QUESTION_SOURCE_TYPE_ATTR = "type";
 const QString XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR = "single-question";
@@ -41,6 +42,13 @@ const QString XML_TIMER_ELEMENT = "timer";
 const QString XML_TIMER_TIMEOUT_ATTR = "timeout";
 const QString XML_TIMER_PERIOD_ATTR = "period";
 const QString XML_PROGRESS_ELEMENT = "progress";
+
+const QString PATTERNS_TYPE = "Patterns";
+const QString ANAGRAMS_TYPE = "Anagrams";
+const QString SUBANAGRAMS_TYPE = "Subanagrams";
+const QString HOOKS_TYPE = "Hooks";
+const QString ANAGRAM_HOOKS_TYPE = "Anagram Hooks";
+const QString ANAGRAM_HOOK_MNEMONICS_TYPE = "Anagram Hook Mnemonics";
 
 //---------------------------------------------------------------------------
 //  asString
@@ -78,6 +86,7 @@ QuizSpec::asDomElement() const
 {
     QDomDocument doc;
     QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
+    topElement.setAttribute (XML_TOP_TYPE_ATTR, typeToString (type));
 
     QDomElement sourceElement = doc.createElement
         (XML_QUESTION_SOURCE_ELEMENT);
@@ -195,4 +204,53 @@ QuizSpec::fromDomElement (const QDomElement& element)
 
     *this = tmpSpec;
     return true;
+}
+
+//---------------------------------------------------------------------------
+//  typeToString
+//
+//! Convert a timer type to a string representation.
+//
+//! @param t the timer type
+//! @return the string representation
+//---------------------------------------------------------------------------
+QString
+QuizSpec::typeToString (QuizType t) const
+{
+    switch (t) {
+        case QuizPatterns: return PATTERNS_TYPE;
+        case QuizAnagrams: return ANAGRAMS_TYPE;
+        case QuizSubanagrams: return SUBANAGRAMS_TYPE;
+        case QuizHooks: return HOOKS_TYPE;
+        case QuizAnagramHooks: return ANAGRAM_HOOKS_TYPE;
+        case QuizAnagramHookMnemonics: return ANAGRAM_HOOK_MNEMONICS_TYPE;
+        default: return QString::null;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  stringToType
+//
+//! Convert a string representation to a timer type.
+//
+//! @param s the string representation
+//! @return the timer type
+//---------------------------------------------------------------------------
+QuizType
+QuizSpec::stringToType (const QString& s) const
+{
+    if (s == PATTERNS_TYPE)
+        return QuizPatterns;
+    else if (s == ANAGRAMS_TYPE)
+        return QuizAnagrams;
+    else if (s == SUBANAGRAMS_TYPE)
+        return QuizSubanagrams;
+    else if (s == HOOKS_TYPE)
+        return QuizHooks;
+    else if (s == ANAGRAM_HOOKS_TYPE)
+        return QuizAnagramHooks;
+    else if (s == ANAGRAM_HOOK_MNEMONICS_TYPE)
+        return QuizAnagramHookMnemonics;
+    else
+        return UnknownQuizType;
 }
