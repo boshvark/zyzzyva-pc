@@ -76,13 +76,13 @@ QuizSpec::asString() const
 QDomElement
 QuizSpec::asDomElement() const
 {
-    QDocument doc;
+    QDomDocument doc;
     QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
 
     QDomElement sourceElement = doc.createElement
         (XML_QUESTION_SOURCE_ELEMENT);
-    sourceElement.setAttribute (XML_SOURCE_TYPE_ATTR, "search");
-    sourceElement.setAttribute (XML_SOURCE_SINGLE_QUESTION_ATTR,
+    sourceElement.setAttribute (XML_QUESTION_SOURCE_TYPE_ATTR, "search");
+    sourceElement.setAttribute (XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR,
                                 (useList ?  QString ("true")
                                          : QString ("false")));
 
