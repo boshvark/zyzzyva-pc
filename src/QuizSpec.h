@@ -43,8 +43,8 @@ enum QuizType {
 class QuizSpec
 {
     public:
-    QuizSpec() : type (QuizAnagrams), useList (false), randomOrder (true)
-        { }
+    QuizSpec() : type (QuizAnagrams), useList (false), randomOrder (true),
+                 randomSeed (0), randomAlgorithm (0) { }
     ~QuizSpec() { }
 
     QString asString() const;
@@ -57,6 +57,8 @@ class QuizSpec
     void setProgress (const QuizProgress& p) { progress = p; }
     void setUseList (bool b) { useList = b; }
     void setRandomOrder (bool b) { randomOrder = b; }
+    void setRandomSeed (unsigned int i) { randomSeed = i; }
+    void setRandomAlgorithm (int i) { randomAlgorithm = i; }
 
     QuizType getType() const { return type; }
     SearchSpec getSearchSpec() const { return searchSpec; }
@@ -64,6 +66,8 @@ class QuizSpec
     QuizProgress getProgress() const { return progress; }
     bool getUseList() const { return useList; }
     bool getRandomOrder() const { return randomOrder; }
+    unsigned int getRandomSeed() const { return randomSeed; }
+    int getRandomAlgorithm() const { return randomAlgorithm; }
 
     private:
     QuizType type;
@@ -72,6 +76,8 @@ class QuizSpec
     QuizProgress progress;
     bool useList;
     bool randomOrder;
+    unsigned int randomSeed;
+    int randomAlgorithm;
 };
 
 #endif // QUIZ_SPEC_H

@@ -138,6 +138,22 @@ QuizSpec::fromDomElement (const QDomElement& element)
 
         else if (tag == XML_RANDOMIZER_ELEMENT) {
             tmpSpec.setRandomOrder (true);
+            if (!elem.hasAttribute (XML_RANDOMIZER_SEED_ATTR) ||
+                !elem.hasAttribute (XML_RANDOMIZER_ALGORITHM_ATTR))
+            {
+                return false;
+            }
+            bool ok = false;
+            unsigned int tmpSeed = elem.attribute
+                (XML_RANDOMIZER_SEED_ATTR).toUInt (&ok);
+            if (!ok)
+                return false;
+            tmpSpec.setRandomSeed (tmpSeed);
+            int tmpAlgorithm = elem.attribute
+                (XML_RANDOMIZER_ALGORITHM_ATTR).toInt (&ok);
+            if (!ok)
+                return false;
+            tmpSpec.setRandomAlgorithm (tmpAlgorithm);
         }
 
         else if (tag == XML_PROGRESS_ELEMENT) {

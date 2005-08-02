@@ -151,13 +151,12 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
 //! @return the quiz spec
 //---------------------------------------------------------------------------
 QuizSpec
-NewQuizDialog::getQuizSpec() const
+NewQuizDialog::getQuizSpec()
 {
-    QuizSpec spec;
-    spec.setType (QuizAnagrams);
-    spec.setSearchSpec (specForm->getSearchSpec());
-    spec.setUseList (useListCbox->isChecked());
-    spec.setRandomOrder (randomCbox->isChecked());
+    quizSpec.setType (QuizAnagrams);
+    quizSpec.setSearchSpec (specForm->getSearchSpec());
+    quizSpec.setUseList (useListCbox->isChecked());
+    quizSpec.setRandomOrder (randomCbox->isChecked());
 
     QuizTimerSpec timerSpec;
     if (timerCbox->isChecked()) {
@@ -168,11 +167,8 @@ NewQuizDialog::getQuizSpec() const
         else if (timerType == TIMER_PER_RESPONSE)
             timerSpec.setType (PerResponse);
     }
-    spec.setTimerSpec (timerSpec);
-
-    spec.setProgress (progress);
-
-    return spec;
+    quizSpec.setTimerSpec (timerSpec);
+    return quizSpec;
 }
 
 //---------------------------------------------------------------------------
@@ -185,6 +181,8 @@ NewQuizDialog::getQuizSpec() const
 void
 NewQuizDialog::setQuizSpec (const QuizSpec& spec)
 {
+    quizSpec = spec;
+
     specForm->setSearchSpec (spec.getSearchSpec());
     useListCbox->setChecked (spec.getUseList());
     randomCbox->setChecked (spec.getRandomOrder());
@@ -205,7 +203,6 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
             default: break;
         }
     }
-    progress = spec.getProgress();
 }
 
 //---------------------------------------------------------------------------

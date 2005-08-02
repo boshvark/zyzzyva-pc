@@ -33,9 +33,8 @@
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include "MatchType.h"
-#include "QuizProgress.h"
+#include "QuizSpec.h"
 
-class QuizSpec;
 class SearchSpec;
 class SearchSpecForm;
 
@@ -48,7 +47,7 @@ class NewQuizDialog : public QDialog
 
     ~NewQuizDialog() { }
 
-    QuizSpec getQuizSpec() const;
+    QuizSpec getQuizSpec();
     void setQuizSpec (const QuizSpec& spec);
 
     public slots:
@@ -68,8 +67,7 @@ class NewQuizDialog : public QDialog
     QSpinBox*       timerSbox;
     QComboBox*      timerCombo;
 
-    // XXX: Hidden progress - would prefer this to be visible (editable?)
-    QuizProgress    progress;
+    QuizSpec        quizSpec;
 };
 
 #endif // NEW_QUIZ_DIALOG_H
