@@ -128,4 +128,5 @@ DefineForm::defineWord()
     resultBox->setText (resultStr);
     resultBox->setTitle (word);
     resultBox->show();
+    wordLine->clear();
 }
