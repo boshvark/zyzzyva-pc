@@ -386,6 +386,9 @@ WordListView::exportRequested()
     if (filename.isEmpty())
         return;
 
+    if (!filename.endsWith (".txt", false))
+        filename += ".txt";
+
     QString error;
     if (!exportFile (filename, &error)) {
         QMessageBox::warning (this, "Error Saving Word List",
