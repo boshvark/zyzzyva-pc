@@ -343,7 +343,9 @@ QuizForm::newQuizClicked()
     pauseTimer();
     NewQuizDialog* dialog = new NewQuizDialog (this, "newQuizDialog", true);
     Q_CHECK_PTR (dialog);
-    dialog->setQuizSpec (quizEngine->getQuizSpec());
+    QuizSpec spec = quizEngine->getQuizSpec();
+    spec.setProgress (QuizProgress());
+    dialog->setQuizSpec (spec);
     int code = dialog->exec();
     if (code != QDialog::Accepted) {
         unpauseTimer();
