@@ -1,3 +1,16 @@
+Version 0.8.0
+
+ User-visible changes:
+ * Search specifications can be saved and loaded
+ * Quiz specifications can be saved and loaded
+ * Quizzes can be saved while in progress and loaded in a subsequent session
+ * Hooks can be shown automatically in any word list
+ * Parent hooks can be shown automatically in any word list
+ * Definitions for 2-8 letter North American words and their inflections are
+   included
+ * Some predefined searches are included
+
+
 Version 0.7.0
 Released 2005-07-06, from /trunk
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.7.0
