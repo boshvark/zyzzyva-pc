@@ -92,7 +92,7 @@ QuizSpec::asDomElement() const
         (XML_QUESTION_SOURCE_ELEMENT);
     sourceElement.setAttribute (XML_QUESTION_SOURCE_TYPE_ATTR, "search");
     sourceElement.setAttribute (XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR,
-                                (useList ?  QString ("true")
+                                (useList ? QString ("true")
                                          : QString ("false")));
 
     sourceElement.appendChild (searchSpec.asDomElement());
