@@ -131,6 +131,11 @@ QuizEngine::nextQuestion()
     return true;
 }
 
+//---------------------------------------------------------------------------
+//  completeQuestion
+//
+//! Mark the current question as completed.
+//---------------------------------------------------------------------------
 void
 QuizEngine::completeQuestion()
 {
