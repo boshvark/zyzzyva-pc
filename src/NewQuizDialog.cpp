@@ -112,13 +112,14 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    QPushButton* loadQuizButton = new QPushButton ("&Load...", this,
+    QPushButton* loadQuizButton = new QPushButton ("&Load Quiz...", this,
                                                    "loadQuizButton");
     Q_CHECK_PTR (loadQuizButton);
     connect (loadQuizButton, SIGNAL (clicked()), SLOT (loadQuiz()));
     buttonHlay->addWidget (loadQuizButton);
 
-    saveQuizButton = new QPushButton ("&Save...", this, "saveQuizButton");
+    saveQuizButton = new QPushButton ("&Save Quiz...", this,
+                                      "saveQuizButton");
     Q_CHECK_PTR (saveQuizButton);
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuiz()));
     buttonHlay->addWidget (saveQuizButton);

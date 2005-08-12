@@ -105,13 +105,13 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, const char* name, WFlags f)
 
     buttonHlay->addStretch (1);
 
-    loadButton = new QPushButton ("&Load...", this, "loadButton");
+    loadButton = new QPushButton ("L&oad Search...", this, "loadButton");
     Q_CHECK_PTR (loadButton);
     loadButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (loadButton, SIGNAL (clicked()), SLOT (loadSearch()));
     buttonHlay->addWidget (loadButton);
 
-    saveButton = new QPushButton ("S&ave...", this, "saveButton");
+    saveButton = new QPushButton ("S&ave Search...", this, "saveButton");
     Q_CHECK_PTR (saveButton);
     saveButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (saveButton, SIGNAL (clicked()), SLOT (saveSearch()));
