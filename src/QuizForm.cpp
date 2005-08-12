@@ -412,6 +412,7 @@ QuizForm::checkResponseClicked()
     inputLine->setText ("");
     inputLine->setEnabled (false);
     checkResponseButton->setEnabled (false);
+    quizEngine->completeQuestion();
     analyzeDialog->updateStats();
 
     QStringList unanswered = quizEngine->getMissed();

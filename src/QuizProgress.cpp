@@ -27,6 +27,7 @@
 const QString XML_TOP_ELEMENT = "progress";
 const QString XML_QUESTION_ATTR = "question";
 const QString XML_CORRECT_ATTR = "correct";
+const QString XML_QUESTION_COMPLETE_ATTR = "question-complete";
 const QString XML_INCORRECT_RESPONSES_ELEMENT = "incorrect-responses";
 const QString XML_MISSED_RESPONSES_ELEMENT = "missed-responses";
 const QString XML_RESPONSE_ELEMENT = "response";
@@ -114,6 +115,9 @@ QuizProgress::asDomElement() const
 
     topElement.setAttribute (XML_QUESTION_ATTR, question);
     topElement.setAttribute (XML_CORRECT_ATTR, correct);
+    topElement.setAttribute (XML_QUESTION_COMPLETE_ATTR,
+                             (questionComplete ? QString ("true") :
+                                                 QString ("false")));
 
     if (!incorrectWords.empty()) {
         QDomElement incorrectElement = doc.createElement
@@ -176,6 +180,11 @@ QuizProgress::fromDomElement (const QDomElement& element)
         if (!ok)
             return false;
         tmpProgress.setCorrect (tmpCorrect);
+    }
+
+    if (element.hasAttribute (XML_QUESTION_COMPLETE_ATTR)) {
+        tmpProgress.setQuestionComplete
+            (element.attribute (XML_QUESTION_COMPLETE_ATTR) == "true");
     }
 
     QDomElement elem = element.firstChild().toElement();

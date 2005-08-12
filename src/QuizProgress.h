@@ -31,7 +31,8 @@
 class QuizProgress
 {
     public:
-    QuizProgress() : question (0), correct (0), incorrect (0), missed (0) { }
+    QuizProgress() : question (0), correct (0), incorrect (0), missed (0),
+                     questionComplete (false) { }
     ~QuizProgress() { }
 
     void setQuestion (int q) { question = q; }
@@ -40,11 +41,13 @@ class QuizProgress
     void addIncorrect (const QString& word, int count);
     void addMissed (const QString& word);
     void addMissed (const QString& word, int count);
+    void setQuestionComplete (bool b) { questionComplete = b; }
 
     int getQuestion() const { return question; }
     int getNumCorrect() const { return correct; }
     int getNumIncorrect() const { return incorrect; }
     int getNumMissed() const { return missed; }
+    bool getQuestionComplete() const { return questionComplete; }
 
     QMap<QString, int> getIncorrect() const { return incorrectWords; }
     QMap<QString, int> getMissed() const { return missedWords; }
@@ -57,6 +60,7 @@ class QuizProgress
     int correct;
     int incorrect;
     int missed;
+    bool questionComplete;
     QMap<QString, int> incorrectWords;
     QMap<QString, int> missedWords;
 };

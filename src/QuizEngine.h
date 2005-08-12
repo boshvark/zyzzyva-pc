@@ -49,6 +49,7 @@ class QuizEngine
 
     void newQuiz (const QuizSpec& spec);
     bool nextQuestion();
+    void completeQuestion();
 
     ResponseStatus respond (const QString& response);
     QString getQuestion() const;

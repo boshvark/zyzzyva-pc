@@ -114,6 +114,7 @@ QuizEngine::nextQuestion()
     QuizProgress progress = quizSpec.getProgress();
     progress.setQuestion (questionIndex);
     progress.setCorrect (quizCorrect);
+    progress.setQuestionComplete (false);
     QStringList missed = getMissed();
     QStringList::iterator it;
     for (it = missed.begin(); it != missed.end(); ++it)
@@ -128,6 +129,14 @@ QuizEngine::nextQuestion()
 
     prepareQuestion();
     return true;
+}
+
+void
+QuizEngine::completeQuestion()
+{
+    QuizProgress progress = quizSpec.getProgress();
+    progress.setQuestionComplete (true);
+    quizSpec.setProgress (progress);
 }
 
 //---------------------------------------------------------------------------
