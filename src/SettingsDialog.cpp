@@ -312,6 +312,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
 
+    resize (minimumSizeHint().width() * 2, minimumSizeHint().height());
     setCaption (DIALOG_CAPTION);
     readSettings();
 }
