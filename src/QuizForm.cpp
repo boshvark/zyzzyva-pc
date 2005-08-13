@@ -139,11 +139,18 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
     connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
     mainVlay->addWidget (inputLine);
 
-    // Buttons
-    QHBoxLayout* buttonTopHlay = new QHBoxLayout (SPACING, "buttonTopHlay");
-    Q_CHECK_PTR (buttonTopHlay);
-    mainVlay->addLayout (buttonTopHlay);
+    // Button layout
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    Q_CHECK_PTR (buttonHlay);
+    mainVlay->addLayout (buttonHlay);
 
+    buttonHlay->addStretch (1);
+
+    QGridLayout* buttonGlay = new QGridLayout (2, 3, SPACING, "buttonGlay");
+    Q_CHECK_PTR (buttonGlay);
+    buttonHlay->addLayout (buttonGlay);
+
+    // Buttons
     nextQuestionButton = new QPushButton ("&Next", this,
                                           "nextQuestionButton");
     Q_CHECK_PTR (nextQuestionButton);
@@ -151,49 +158,46 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
     connect (nextQuestionButton, SIGNAL (clicked()),
              SLOT (nextQuestionClicked()));
     nextQuestionButton->setEnabled (false);
-    buttonTopHlay->addWidget (nextQuestionButton);
+    buttonGlay->addWidget (nextQuestionButton, 0, 0, Qt::AlignHCenter);
 
-    checkResponseButton = new QPushButton ("&Check", this,
+    checkResponseButton = new QPushButton ("&Check Answers", this,
                                            "checkResponseButton");
     Q_CHECK_PTR (checkResponseButton);
     checkResponseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (checkResponseButton, SIGNAL (clicked()),
              SLOT (checkResponseClicked()));
     checkResponseButton->setEnabled (false);
-    buttonTopHlay->addWidget (checkResponseButton);
+    buttonGlay->addWidget (checkResponseButton, 0, 1, Qt::AlignHCenter);
 
     pauseButton = new QPushButton (PAUSE_BUTTON, this, "pauseButton");
     Q_CHECK_PTR (pauseButton);
     pauseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (pauseButton, SIGNAL (clicked()), SLOT (pauseClicked()));
     pauseButton->setEnabled (false);
-    buttonTopHlay->addWidget (pauseButton);
-
-    // Buttons
-    QHBoxLayout* buttonBottomHlay = new QHBoxLayout (SPACING,
-                                                     "buttonBottomHlay");
-    Q_CHECK_PTR (buttonBottomHlay);
-    mainVlay->addLayout (buttonBottomHlay);
+    buttonGlay->addWidget (pauseButton, 0, 2, Qt::AlignHCenter);
 
     QPushButton* newQuizButton = new QPushButton ("New &Quiz...", this,
                                                   "newQuizButton");
     Q_CHECK_PTR (newQuizButton);
     newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
-    buttonBottomHlay->addWidget (newQuizButton);
+    buttonGlay->addWidget (newQuizButton, 1, 0, Qt::AlignHCenter);
 
     QPushButton* saveQuizButton = new QPushButton ("&Save Quiz...", this,
                                                    "saveQuizButton");
     Q_CHECK_PTR (saveQuizButton);
     saveQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuizClicked()));
-    buttonBottomHlay->addWidget (saveQuizButton);
+    buttonGlay->addWidget (saveQuizButton, 1, 1, Qt::AlignHCenter);
 
-    analyzeButton = new QPushButton ("&Analyze...", this, "analyzeButton");
+    analyzeButton = new QPushButton ("&Analyze Quiz...", this,
+                                     "analyzeButton");
     Q_CHECK_PTR (analyzeButton);
     analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));
-    buttonBottomHlay->addWidget (analyzeButton);
+    buttonGlay->addWidget (analyzeButton, 1, 2, Qt::AlignHCenter);
+
+    buttonHlay->addStretch (1);
 }
 
 //---------------------------------------------------------------------------
