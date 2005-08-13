@@ -74,6 +74,7 @@ class QuizEngine
     void clearQuestion();
     void prepareQuestion();
     void addQuestionCorrect (const QString& response);
+    void addQuestionIncorrect (const QString& response);
 
     private:
     WordEngine*       wordEngine;

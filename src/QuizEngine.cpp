@@ -165,8 +165,7 @@ QuizEngine::ResponseStatus
 QuizEngine::respond (const QString& response)
 {
     if (correctResponses.find (response) == correctResponses.end()) {
-        incorrectUserResponses << response;
-        ++quizIncorrect;
+        addQuestionIncorrect (response);
         return Incorrect;
     }
 
@@ -284,5 +283,22 @@ QuizEngine::addQuestionCorrect (const QString& response)
     QuizProgress progress = quizSpec.getProgress();
     progress.addQuestionCorrect (response);
     progress.setCorrect (progress.getNumCorrect() + 1);
+    quizSpec.setProgress (progress);
+}
+
+//---------------------------------------------------------------------------
+//  addQuestionIncorrect
+//
+//! Add an incorrect user response to the current question.
+//
+//! @param response the incorrect response
+//---------------------------------------------------------------------------
+void
+QuizEngine::addQuestionIncorrect (const QString& response)
+{
+    incorrectUserResponses << response;
+    ++quizIncorrect;
+    QuizProgress progress = quizSpec.getProgress();
+    progress.addIncorrect (response);
     quizSpec.setProgress (progress);
 }
