@@ -14,10 +14,17 @@
       <section ref="preferences.html#auto-import" title="Auto Import" />
       <section ref="preferences.html#tile-theme" title="Tile Theme" />
       <section ref="preferences.html#font" title="Font Settings" />
-      <section ref="preferences.html#miscellaneous" title="Miscellaneous">
+      <section ref="preferences.html#word-lists" title="Word List Settings">
         <section ref="preferences.html#sort-by-length"
-                 title="Sort word lists by length" />
+                 title="Sort by word length" />
+        <section ref="preferences.html#show-hooks" title="Show hooks" />
+        <section ref="preferences.html#show-inner-hooks"
+                 title="Show inner hooks" />
+        <section ref="preferences.html#show-definitions"
+                 title="Show definitions" />
       </section>
+      <section ref="preferences.html#save-preferences"
+               title="Saving Changes to Preferences" />
     </section>
     <section ref="judge.html" title="Judging Words">
       <keyword ref="judge.html">judge</keyword>
@@ -27,16 +34,22 @@
     </section>
     <section ref="search.html" title="Searching for Words">
       <keyword ref="search.html">search</keyword>
-      <section ref="search.html#pattern-match" title="Pattern Match" />
-      <section ref="search.html#anagram-match" title="Anagram Match" />
-      <section ref="search.html#subanagram-match" title="Subanagram Match" />
-      <section ref="search.html#word-length" title="Word Length" />
-      <section ref="search.html#must-include" title="Must Include" />
-      <section ref="search.html#must-exclude" title="Must Exclude" />
-      <section ref="search.html#must-consist" title="Must Consist Of" />
-      <section ref="search.html#must-belong" title="Must Belong To" />
-      <section ref="search.html#in-word-list" title="In Word List" />
-      <section ref="search.html#num-anagrams" title="Number of Anagrams" />
+      <section ref="search.html#search-conditions"
+               title="Search Conditions">
+        <section ref="search.html#pattern-match" title="Pattern Match" />
+        <section ref="search.html#anagram-match" title="Anagram Match" />
+        <section ref="search.html#subanagram-match"
+                 title="Subanagram Match" />
+        <section ref="search.html#word-length" title="Word Length" />
+        <section ref="search.html#must-include" title="Must Include" />
+        <section ref="search.html#must-exclude" title="Must Exclude" />
+        <section ref="search.html#must-consist" title="Must Consist Of" />
+        <section ref="search.html#must-belong" title="Must Belong To" />
+        <section ref="search.html#in-word-list" title="In Word List" />
+        <section ref="search.html#num-anagrams" title="Number of Anagrams" />
+      </section>
+      <section ref="search.html#load-save-search"
+               title="Loading and Saving Searches" />
     </section>
     <section ref="quiz.html" title="Quizzes">
       <keyword ref="quiz.html">quiz</keyword>
@@ -44,6 +57,8 @@
       <section ref="quiz.html#take-quiz" title="Taking a Quiz" />
       <section ref="quiz.html#analyze-quiz"
                title="Analyzing Your Quiz Performance" />
+      <section ref="quiz.html#load-save-quiz"
+               title="Loading and Saving Quizzes" />
     </section>
     <section ref="view.html" title="Viewing Word Variations">
       <keyword ref="view.html">view</keyword>

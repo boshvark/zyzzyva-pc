@@ -100,7 +100,7 @@
   character will cause the pattern to match every acceptable word.</p>
 
   <a name="word-length">
-  <h2>Word Length</h2>
+  <h3>Word Length</h3>
 
   <p>A minimum and maximum length can be specified for the results of a
   search.  For example, if the minimum length is 4 and the maximum length is
@@ -111,7 +111,7 @@
   condition.</p>
 
   <a name="must-include">
-  <h2>Must Include</h2>
+  <h3>Must Include</h3>
 
   <p>The <i>Must Include</i> condition specifies letters that must
   be included in each word in the search results.  This is most useful if you
@@ -131,7 +131,7 @@
   results.</p>
 
   <a name="must-exclude">
-  <h2>Must Exclude</h2>
+  <h3>Must Exclude</h3>
 
   <p>The <i>Must Exclude</i> condition specifies letters that must not be
   included in the search results.  This is most useful for generating special
@@ -141,7 +141,7 @@
   will find all the words containing Q but not U.</p>
 
   <a name="must-consist">
-  <h2>Must Consist Of</h2>
+  <h3>Must Consist Of</h3>
 
   <p>The <i>Must Consist Of</i> condition specifies letters that must occur
   with a certain minimum frequency.  This is useful for generating special
@@ -150,7 +150,7 @@
   <tt>70</tt> in the numeric area and <tt>AEIOU</tt> in the input box.</p>
 
   <a name="must-belong">
-  <h2>Must Belong To</h2>
+  <h3>Must Belong To</h3>
 
   <p>The <i>Must Belong To</i> condition specifies special sets that each word
   must belong to.  Currently there are a few sets provided:</p>
@@ -181,7 +181,7 @@
   <tt>SATIRE</tt>, which is in the top 100 stems.</p>
 
   <a name="in-word-list">
-  <h2>In Word List</h2>
+  <h3>In Word List</h3>
 
   <p>The <i>In Word List</i> condition specifies a list that each word must
   belong to.  Only words in the word list will appear in the search
@@ -199,7 +199,7 @@
   area will display the number of words in the list.</p>
 
   <a name="num-anagrams">
-  <h2>Number of Anagrams</h2>
+  <h3>Number of Anagrams</h3>
 
   <p>A minimum and maximum number of anagrams can be specified for the results
   of a search.  For example, if the minimum length is 2 and the maximum is 4,
@@ -214,7 +214,7 @@
 
   <!--
   <a name="other-options">
-  <h2>Other Options</h2>
+  <h3>Other Options</h3>
 
   <p>If the <i>Use lower-case letters for wildcard matches</i> checkbox is
   activated, any letters matched by a wildcard character will appear in lower
@@ -224,6 +224,29 @@
   <tt>EXIT</tt>, <tt>NEXT</tt>, <tt>SEXT</tt>, <tt>TEXT</tt>,
   <tt>VEXT</tt>.</p>
   -->
+
+  <a name="load-save-search">
+  <h2>Loading and Saving Searches</h2>
+
+  <p>It can be inconvenient to create complicated searches from scratch each
+  time, especially if the same search is used often.  For this reason, Zyzzyva
+  allows you to save searches and load them again later.  Anywhere that you
+  can create a search (for example, in the Search tab or the New Quiz window),
+  there is a <i>Save Search</i> button.  After creating the desired search
+  conditions, click the <i>Save Search</i> button to save them.  A window will
+  appear to allow you to save the search to a file.</p>
+
+  <p>Later, if you want to repeat the same search you saved, you can click the
+  <i>Load Search</i> button.  A window will appear to allow you to select the
+  saved search file.  After choosing the file, the saved search conditions
+  will appear in the search specification area just as if they had been
+  entered from scratch.</p>
+
+  <p>When saving a search, only the search specification is saved.  The words
+  found by the search are not saved.  This allows for flexibility in
+  searching.  For example, if you save a search that finds 3-letter words,
+  that search will correctly find all 3-letter words no matter what word list
+  Zyzzyva is using.</p>
 
   <p>Copyright &copy; 2005 Michael W Thelen.</p>
 </body>

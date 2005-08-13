@@ -56,21 +56,67 @@
   to the right of the item whose font you wish to change.  A font browser will
   appear, from which you can choose the font to be used.</p>
 
-  <a name="miscellaneous">
-  <h2>Miscellaneous</h2>
+  <a name="word-lists">
+  <h2>Word Lists</h2>
+
+  <p>The following settings apply to all word lists displayed in Zyzzyva.
+  Changing one of these settings will affect that setting for all word
+  lists.</p>
 
   <a name="sort-by-length">
-  <h3>Sort word lists by length</h3>
+  <h3>Sort by word length</h3>
 
-  <p>Often it is useful to see word lists sorted by length, rather than
-  alphabetically.  If the <tt>Sort word lists by length</tt> option is
-  selected, word lists in Zyzzyva will be sorted by word length.  Within
-  groups of words of equal length, the words will continue to be sorted
-  alphabetically.</p>
+  <p>Often it is useful to see word lists sorted by word length, rather than
+  alphabetically.  If the <tt>Sort by word length</tt> option is selected,
+  word lists in Zyzzyva will be sorted by word length.  Within groups of words
+  of equal length, the words will continue to be sorted alphabetically.</p>
+
+  <a name="show-hooks">
+  <h3>Show hooks</h3>
+
+  <p>If the <tt>Show hooks</tt> option is selected, Zyzzyva will automatically
+  display hooks for words in all word lists.  Front hooks (letters that can be
+  added at the beginning of a word to make another valid word) are displayed
+  in a column to the left of the word.  Back hooks (letters that can be added
+  at the end of a word to make another valid word) are displayed in a column
+  to the right of the word.</p>
+
+  <p>Having hooks automatically displayed can be extremely helpful for
+  learning new words, since it requires no manual effort to display hooks.
+  With hooks automatically displayed, each item in a word list is capable of
+  displaying many words simultaneously, instead of just a single word.  Be
+  aware, however, that selecting this option can make searches run more slowly
+  in the Search tab, especially if the search returns a large number of result
+  words.</p>
+
+  <a name="show-inner-hooks">
+  <h3>Show inner hooks</h3>
+
+  <p>If the <tt>Show inner hooks</tt> option is selected, Zyzzyva will
+  automatically display inner hooks for words in all word lists.  An inner
+  hook is a valid word that can be formed by removing the first or last letter
+  of a word.  For example, the word BOWLS has two inner hooks.  The word OWLS
+  can be formed by removing the initial B, and the word BOWL can be formed by
+  removing the trailing S.  When this option is selected, a <tt>~</tt>
+  character will be displayed at the front of words whose first letters can be
+  removed to form valid words, and at the back of words whose last letters can
+  be removed.</p>
+
+  <a name="show-definitions">
+  <h3>Show definitions</h3>
+
+  <p>If the <tt>Show definitions</tt> option is selected, Zyzzyva will
+  automatically display definitions for words in all word lists.  A word's
+  definition will appear in a separate column to the right of the word.</p>
+
+  <a name="save-preferences">
+  <h2>Saving Changes to Preferences</h2>
 
   <p>When you are done configuring your preferences, click the <tt>OK</tt>
-  button to close the Preferences window.  Any changes to the font setting
-  will take effect immediately.</p>
+  button to close the Preferences window.  Any changes to the font settings
+  will take effect immediately.  Most changes to word list settings will take
+  effect immediately, but the <tt>Sort by word length</tt> setting may not
+  take effect for a word list until the list's contents are changed.</p>
 
   <p>Copyright &copy; 2005 Michael W Thelen.</p>
 </body>
