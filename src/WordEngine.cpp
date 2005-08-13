@@ -51,7 +51,7 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
                         QString* errString)
 {
     QFile file (filename);
-    if (!file.open (IO_ReadOnly)) {
+    if (!file.open (IO_ReadOnly | IO_Translate)) {
         if (errString)
             *errString = "Can't open file '" + filename + "': "
             + file.errorString();
@@ -93,7 +93,7 @@ int
 WordEngine::importStems (const QString& filename, QString* errString)
 {
     QFile file (filename);
-    if (!file.open (IO_ReadOnly)) {
+    if (!file.open (IO_ReadOnly | IO_Translate)) {
         if (errString)
             *errString = "Can't open file '" + filename + "': "
             + file.errorString();

@@ -71,7 +71,7 @@ Auxil::getAboutString()
 
     QString aboutFileName = getHelpDir() + "/about.html";
     QFile aboutFile (aboutFileName);
-    if (!aboutFile.open (IO_ReadOnly))
+    if (!aboutFile.open (IO_ReadOnly | IO_Translate))
         return aboutString;
 
     aboutString.append (aboutFile.readAll());

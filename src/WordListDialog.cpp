@@ -163,7 +163,7 @@ WordListDialog::openFileClicked()
         return;
 
     QFile file (filename);
-    if (!file.open (IO_ReadOnly)) {
+    if (!file.open (IO_ReadOnly | IO_Translate)) {
         QMessageBox::warning (this, "Error Opening Word List File",
                               "Cannot open file '" + filename + "': " +
                               file.errorString());

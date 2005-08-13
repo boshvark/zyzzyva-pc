@@ -512,7 +512,7 @@ WordListView::exportFile (const QString& filename, QString* err) const
             return true;
     }
 
-    if (!file.open (IO_WriteOnly)) {
+    if (!file.open (IO_WriteOnly | IO_Translate)) {
         if (err)
             *err = file.errorString();
         return false;
@@ -522,11 +522,6 @@ WordListView::exportFile (const QString& filename, QString* err) const
     for (QListViewItem* item = firstChild(); item; item = item->nextSibling())
     {
         stream << static_cast<WordListViewItem*>(item)->getWord();
-	// XXX: Isn't there a nice way to get the text stream to use correct
-	// line endings automatically?
-#ifdef WIN32
-	stream << "\r";
-#endif // WIN32
         endl (stream);
     }
 

@@ -251,7 +251,7 @@ NewQuizDialog::loadQuiz()
         return;
 
     QFile file (filename);
-    if (!file.open (IO_ReadOnly)) {
+    if (!file.open (IO_ReadOnly | IO_Translate)) {
         QMessageBox::warning (this, "Error Opening Quiz File",
                               "Cannot open file '" + filename + "': " +
                               file.errorString());
@@ -315,7 +315,7 @@ NewQuizDialog::saveQuiz()
             return;
     }
 
-    if (!file.open (IO_WriteOnly)) {
+    if (!file.open (IO_WriteOnly | IO_Translate)) {
         QMessageBox::warning (this, "Error Saving Quiz",
                               "Cannot save quiz:\n" + file.errorString() +
                               ".");

@@ -317,7 +317,7 @@ QuizForm::saveQuizClicked()
             return;
     }
 
-    if (!file.open (IO_WriteOnly)) {
+    if (!file.open (IO_WriteOnly | IO_Translate)) {
         QMessageBox::warning (this, "Error Saving Quiz",
                               "Cannot save quiz:\n" + file.errorString() +
                               ".");
