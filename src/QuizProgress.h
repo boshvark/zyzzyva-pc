@@ -27,6 +27,7 @@
 
 #include <qdom.h>
 #include <qmap.h>
+#include <set>
 
 class QuizProgress
 {
@@ -41,6 +42,8 @@ class QuizProgress
     void addIncorrect (const QString& word, int count);
     void addMissed (const QString& word);
     void addMissed (const QString& word, int count);
+    void addQuestionCorrect (const QString& word);
+    void clearQuestionCorrect() { questionCorrectWords.clear(); }
     void setQuestionComplete (bool b) { questionComplete = b; }
 
     int getQuestion() const { return question; }
@@ -49,6 +52,8 @@ class QuizProgress
     int getNumMissed() const { return missed; }
     bool getQuestionComplete() const { return questionComplete; }
 
+    std::set<QString> getQuestionCorrect() const {
+        return questionCorrectWords; }
     QMap<QString, int> getIncorrect() const { return incorrectWords; }
     QMap<QString, int> getMissed() const { return missedWords; }
 
@@ -61,6 +66,7 @@ class QuizProgress
     int incorrect;
     int missed;
     bool questionComplete;
+    std::set<QString> questionCorrectWords;
     QMap<QString, int> incorrectWords;
     QMap<QString, int> missedWords;
 };

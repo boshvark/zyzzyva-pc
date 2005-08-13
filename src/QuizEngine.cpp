@@ -93,6 +93,14 @@ QuizEngine::newQuiz (const QuizSpec& spec)
     quizTotal = quizCorrect + progress.getNumMissed();
 
     prepareQuestion();
+
+    // Add correct user responses from saved quiz state, and adjust the total
+    // number of quiz answers by subtracting that number of responses.  This
+    // is necessary because we used the quizCorrect total (including these
+    // correct responses) as a base for the quizTotal calculation earlier.
+    correctUserResponses = progress.getQuestionCorrect();
+    if (!correctUserResponses.empty())
+        quizTotal -= correctUserResponses.size();
 }
 
 //---------------------------------------------------------------------------
@@ -115,6 +123,7 @@ QuizEngine::nextQuestion()
     progress.setQuestion (questionIndex);
     progress.setCorrect (quizCorrect);
     progress.setQuestionComplete (false);
+    progress.clearQuestionCorrect();
     QStringList missed = getMissed();
     QStringList::iterator it;
     for (it = missed.begin(); it != missed.end(); ++it)
@@ -164,8 +173,7 @@ QuizEngine::respond (const QString& response)
     if (correctUserResponses.find (response) != correctUserResponses.end())
         return Duplicate;
 
-    correctUserResponses.insert (response);
-    ++quizCorrect;
+    addQuestionCorrect (response);
     return Correct;
 }
 
@@ -259,4 +267,22 @@ QuizEngine::prepareQuestion()
         correctResponses.insert (*it);
     }
     quizTotal += correctResponses.size();
+}
+
+//---------------------------------------------------------------------------
+//  addQuestionCorrect
+//
+//! Add a correct user response to the current question.
+//
+//! @param response the correct response
+//---------------------------------------------------------------------------
+void
+QuizEngine::addQuestionCorrect (const QString& response)
+{
+    correctUserResponses.insert (response);
+    ++quizCorrect;
+    QuizProgress progress = quizSpec.getProgress();
+    progress.addQuestionCorrect (response);
+    progress.setCorrect (progress.getNumCorrect() + 1);
+    quizSpec.setProgress (progress);
 }

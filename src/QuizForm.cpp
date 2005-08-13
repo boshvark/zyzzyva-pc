@@ -278,6 +278,8 @@ QuizForm::newQuiz (const QuizSpec& spec)
     QApplication::restoreOverrideCursor();
     startQuestion();
     analyzeDialog->newQuiz (spec);
+    if (quizEngine->getQuestionComplete())
+        checkResponseClicked();
 }
 
 //---------------------------------------------------------------------------
@@ -472,6 +474,14 @@ QuizForm::startQuestion()
                     quizEngine->numQuestions());
     setQuestionLabel (quizEngine->getQuestion());
     responseList->clear();
+
+    std::set<QString> correct = quizEngine->getQuestionCorrectResponses();
+    std::set<QString>::iterator it;
+    for (it = correct.begin(); it != correct.end(); ++it) {
+        WordListViewItem* item = responseList->addWord (*it);
+        item->setTextColor (VALID_CORRECT_WORD_COLOR);
+    }
+
     responseStatusLabel->setText ("");
     inputLine->setEnabled (true);
     checkResponseButton->setEnabled (true);

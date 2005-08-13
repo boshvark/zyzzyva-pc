@@ -63,12 +63,17 @@ class QuizEngine
     int getQuizTotal() const { return quizTotal; }
     int getQuizCorrect() const { return quizCorrect; }
     int getQuizIncorrect() const { return quizIncorrect; }
+    std::set<QString> getQuestionCorrectResponses() const {
+        return correctUserResponses; }
 
+    bool getQuestionComplete() const {
+        return quizSpec.getProgress().getQuestionComplete(); }
     bool onLastQuestion() const;
 
     private:
     void clearQuestion();
     void prepareQuestion();
+    void addQuestionCorrect (const QString& response);
 
     private:
     WordEngine*       wordEngine;
