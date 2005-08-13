@@ -282,7 +282,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     Q_CHECK_PTR (showHooksCbox);
     wordListVlay->addWidget (showHooksCbox);
 
-    showHookParentsCbox = new QCheckBox ("Show hook parents", wordListWidget,
+    showHookParentsCbox = new QCheckBox ("Show inner hooks", wordListWidget,
                                          "showHookParentsCbox");
     Q_CHECK_PTR (showHookParentsCbox);
     wordListVlay->addWidget (showHookParentsCbox);
