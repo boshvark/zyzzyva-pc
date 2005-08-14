@@ -42,7 +42,7 @@
 
 using namespace std;
 
-const QChar WordListView::PARENT_HOOK_CHAR = '~';
+const QChar WordListView::PARENT_HOOK_CHAR = '-';
 const QString FRONT_HOOK_HEADER = "Hooks";
 const QString WORD_HEADER = "Word";
 const QString BACK_HOOK_HEADER = "Hooks";
