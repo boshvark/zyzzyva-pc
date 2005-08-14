@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE zyzzyva-search SYSTEM "http://pietdepsi.com/dtd/zyzzyva-search.dtd">
+<zyzzyva-search>
+ <conditions>
+  <and>
+   <condition string="DIS*" type="Pattern Match" />
+   <condition number="6" type="Minimum Length" />
+   <condition number="9" type="Maximum Length" />
+  </and>
+ </conditions>
+</zyzzyva-search>
