@@ -3,7 +3,7 @@
 <zyzzyva-search>
  <conditions>
   <and>
-   <condition number="5" type="Maximum Length" />
+   <condition number="5" type="Exact Length" />
    <condition string="J" type="Must Include" />
   </and>
  </conditions>
