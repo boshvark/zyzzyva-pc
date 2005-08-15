@@ -324,6 +324,8 @@ MainWindow::viewDefinition()
                                                         true);
     Q_CHECK_PTR (entryDialog);
     entryDialog->setCaption ("View Word Definition");
+    entryDialog->resize (entryDialog->minimumSizeHint().width() * 2,
+                         entryDialog->minimumSizeHint().height());
     int code = entryDialog->exec();
     QString word = entryDialog->getWord();
     delete entryDialog;
@@ -364,6 +366,8 @@ MainWindow::viewVariation (int variation)
                                                         true);
     Q_CHECK_PTR (entryDialog);
     entryDialog->setCaption (caption);
+    entryDialog->resize (entryDialog->minimumSizeHint().width() * 2,
+                         entryDialog->minimumSizeHint().height());
     int code = entryDialog->exec();
     QString word = entryDialog->getWord();
     delete entryDialog;
