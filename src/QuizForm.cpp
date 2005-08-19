@@ -351,6 +351,7 @@ QuizForm::newQuizClicked()
     Q_CHECK_PTR (dialog);
     QuizSpec spec = quizEngine->getQuizSpec();
     spec.setProgress (QuizProgress());
+    spec.setRandomSeed (0);
     dialog->setQuizSpec (spec);
     int code = dialog->exec();
     if (code != QDialog::Accepted) {
