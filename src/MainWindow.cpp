@@ -359,7 +359,7 @@ MainWindow::newQuizFormInteractive (const QuizSpec& quizSpec)
 void
 MainWindow::newQuizForm (const QuizSpec& quizSpec)
 {
-    QuizForm* form = new QuizForm (wordEngine, tabStack);
+    QuizForm* form = new QuizForm (wordEngine);
     Q_CHECK_PTR (form);
     form->setTileTheme (MainSettings::getTileTheme());
     form->newQuiz (quizSpec);
@@ -374,7 +374,7 @@ MainWindow::newQuizForm (const QuizSpec& quizSpec)
 void
 MainWindow::newSearchForm()
 {
-    SearchForm* form = new SearchForm (wordEngine, tabStack);
+    SearchForm* form = new SearchForm (wordEngine);
     Q_CHECK_PTR (form);
     newTab (form, SEARCH_TAB_TITLE);
 }
@@ -387,7 +387,7 @@ MainWindow::newSearchForm()
 void
 MainWindow::newDefineForm()
 {
-    DefineForm* form = new DefineForm (wordEngine, tabStack);
+    DefineForm* form = new DefineForm (wordEngine);
     Q_CHECK_PTR (form);
     newTab (form, DEFINE_TAB_TITLE);
 }
@@ -400,7 +400,7 @@ MainWindow::newDefineForm()
 void
 MainWindow::newJudgeForm()
 {
-    JudgeForm* form = new JudgeForm (wordEngine, tabStack);
+    JudgeForm* form = new JudgeForm (wordEngine);
     Q_CHECK_PTR (form);
     newTab (form, JUDGE_TAB_TITLE);
 }
