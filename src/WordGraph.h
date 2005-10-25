@@ -26,8 +26,8 @@
 #define WORD_GRAPH_H
 
 #include "SearchSpec.h"
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QString>
+#include <QStringList>
 
 class WordGraph
 {

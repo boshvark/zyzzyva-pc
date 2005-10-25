@@ -25,8 +25,8 @@
 #ifndef SEARCH_CONDITION_H
 #define SEARCH_CONDITION_H
 
-#include <qdom.h>
-#include <qstring.h>
+#include <QDomElement>
+#include <QString>
 #include <set>
 
 class SearchCondition

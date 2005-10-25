@@ -23,7 +23,7 @@
 #include "DefinitionBox.h"
 #include "DefinitionLabel.h"
 #include "Defs.h"
-#include <qlayout.h>
+#include <QVBoxLayout>
 
 using namespace Defs;
 
@@ -33,10 +33,9 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
 //---------------------------------------------------------------------------
-DefinitionBox::DefinitionBox (QWidget* parent, const char* name)
-    : QVGroupBox (parent, name)
+DefinitionBox::DefinitionBox (QWidget* parent)
+    : QGroupBox (parent)
 {
     init();
 }
@@ -48,11 +47,9 @@ DefinitionBox::DefinitionBox (QWidget* parent, const char* name)
 //
 //! @param title the widget title
 //! @param parent the parent widget
-//! @param name the name of this widget
 //---------------------------------------------------------------------------
-DefinitionBox::DefinitionBox (const QString& title, QWidget* parent, const
-                              char* name)
-    : QVGroupBox (title, parent, name)
+DefinitionBox::DefinitionBox (const QString& title, QWidget* parent)
+    : QGroupBox (title, parent)
 {
     init();
 }
@@ -65,15 +62,15 @@ DefinitionBox::DefinitionBox (const QString& title, QWidget* parent, const
 void
 DefinitionBox::init()
 {
-    //QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             //"mainVlay");
-    //Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    Q_CHECK_PTR (mainVlay);
 
-    definitionLabel = new DefinitionLabel (this, "definitionLabel");
+    definitionLabel = new DefinitionLabel;
     Q_CHECK_PTR (definitionLabel);
-    //mainVlay->addWidget (definitionLabel);
+    definitionLabel->setWordWrap (true);
+    mainVlay->addWidget (definitionLabel);
 
-    //mainVlay->addStretch (1);
+    mainVlay->addStretch (1);
 }
 
 //---------------------------------------------------------------------------

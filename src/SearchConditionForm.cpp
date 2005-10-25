@@ -29,9 +29,9 @@
 #include "WordValidator.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
 
 using namespace Defs;
 
@@ -44,18 +44,17 @@ using namespace Defs;
 //! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
-                                          WFlags f)
-    : QFrame (parent, name, f),
-    letterValidator (new WordValidator (this, "letterValidator")),
-    patternValidator (new WordValidator (this, "patternValidator"))
+SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
+    : QFrame (parent, f),
+    letterValidator (new WordValidator (this)),
+    patternValidator (new WordValidator (this))
 
 {
     patternValidator->setOptions (WordValidator::AllowQuestionMarks |
                                   WordValidator::AllowAsterisks |
                                   WordValidator::AllowCharacterClasses);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout (this, 0, SPACING, "mainHlay");
+    QHBoxLayout* mainHlay = new QHBoxLayout (this, 0, SPACING);
     Q_CHECK_PTR (mainHlay);
 
     QStringList types;
@@ -76,24 +75,23 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
           //<< Auxil::searchTypeToString (SearchCondition::MinProbability)
           //<< Auxil::searchTypeToString (SearchCondition::MaxProbability);
 
-    typeCbox = new QComboBox (this, "typeCbox");
+    typeCbox = new QComboBox;
     Q_CHECK_PTR (typeCbox);
     typeCbox->insertStringList (types);
     connect (typeCbox, SIGNAL (activated (const QString&)),
              SLOT (typeChanged (const QString&)));
     mainHlay->addWidget (typeCbox);
 
-    paramStack = new QWidgetStack (this, "paramStack");
+    paramStack = new QStackedWidget;
     Q_CHECK_PTR (paramStack);
     mainHlay->addWidget (paramStack);
 
     // Frame containing just an input line
-    paramLineFrame = new QFrame (paramStack, "paramLineFrame");
+    paramLineFrame = new QFrame;
     Q_CHECK_PTR (paramLineFrame);
-    QHBoxLayout* paramLineHlay = new QHBoxLayout (paramLineFrame, 0, SPACING,
-                                                  "paramLineHlay");
+    QHBoxLayout* paramLineHlay = new QHBoxLayout (paramLineFrame, 0, SPACING);
     Q_CHECK_PTR (paramLineHlay);
-    paramLine = new WordLineEdit (paramLineFrame, "paramLine");
+    paramLine = new WordLineEdit;
     Q_CHECK_PTR (paramLine);
     paramLine->setValidator (patternValidator);
     connect (paramLine, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
@@ -103,26 +101,24 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     paramStack->addWidget (paramLineFrame);
 
     // Frame containing just a spin box
-    paramSboxFrame = new QFrame (paramStack, "paramSboxFrame");
+    paramSboxFrame = new QFrame;
     Q_CHECK_PTR (paramSboxFrame);
-    QHBoxLayout* paramSboxHlay = new QHBoxLayout (paramSboxFrame, 0, SPACING,
-                                                  "paramSboxHlay");
+    QHBoxLayout* paramSboxHlay = new QHBoxLayout (paramSboxFrame, 0, SPACING);
     Q_CHECK_PTR (paramSboxHlay);
-    paramSbox = new QSpinBox (paramSboxFrame, "paramSbox");
+    paramSbox = new QSpinBox;
     Q_CHECK_PTR (paramSbox);
-    paramSbox->setMinValue (0);
+    paramSbox->setMinimum (0);
     connect (paramSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
     paramSboxHlay->addWidget (paramSbox);
     paramStack->addWidget (paramSboxFrame);
 
     // Frame containing just a combo box
-    paramCboxFrame = new QFrame (paramStack, "paramCboxFrame");
+    paramCboxFrame = new QFrame;
     Q_CHECK_PTR (paramCboxFrame);
-    QHBoxLayout* paramCboxHlay = new QHBoxLayout (paramCboxFrame, 0, SPACING,
-                                                  "paramCboxHlay");
+    QHBoxLayout* paramCboxHlay = new QHBoxLayout (paramCboxFrame, 0, SPACING);
     Q_CHECK_PTR (paramCboxHlay);
-    paramCbox = new QComboBox (paramCboxFrame, "paramCbox");
+    paramCbox = new QComboBox;
     Q_CHECK_PTR (paramCbox);
     connect (paramCbox, SIGNAL (activated (const QString&)),
              SIGNAL (contentsChanged()));
@@ -130,24 +126,22 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
     paramStack->addWidget (paramCboxFrame);
 
     // Frame containing spin box and input line
-    paramConsistFrame = new QFrame (paramStack, "paramConsistFrame");
+    paramConsistFrame = new QFrame;
     Q_CHECK_PTR (paramConsistFrame);
     QHBoxLayout* paramConsistHlay = new QHBoxLayout (paramConsistFrame, 0,
-                                                     SPACING,
-                                                     "paramConsistHlay");
+                                                     SPACING);
     Q_CHECK_PTR (paramConsistHlay);
-    paramConsistSbox = new QSpinBox (paramConsistFrame, "paramConsist");
+    paramConsistSbox = new QSpinBox;
     Q_CHECK_PTR (paramConsistSbox);
-    paramConsistSbox->setMinValue (0);
-    paramConsistSbox->setMaxValue (100);
+    paramConsistSbox->setMinimum (0);
+    paramConsistSbox->setMaximum (100);
     connect (paramConsistSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
     paramConsistHlay->addWidget (paramConsistSbox);
-    QLabel* pctLabel = new QLabel ("%", paramConsistFrame, "pctLabel");
+    QLabel* pctLabel = new QLabel ("%");
     Q_CHECK_PTR (pctLabel);
     paramConsistHlay->addWidget (pctLabel);
-    paramConsistLine = new WordLineEdit (paramConsistFrame,
-                                         "paramConsistLine");
+    paramConsistLine = new WordLineEdit;
     Q_CHECK_PTR (paramConsistLine);
     paramConsistLine->setValidator (letterValidator);
     connect (paramConsistLine, SIGNAL (returnPressed()),
@@ -159,15 +153,13 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
 
     // Frame containing disabled input line and push button for getting word
     // lists
-    paramWordListFrame = new QFrame (paramStack, "paramWordListFrame");
+    paramWordListFrame = new QFrame;
     Q_CHECK_PTR (paramWordListFrame);
     QHBoxLayout* paramWordListHlay = new QHBoxLayout (paramWordListFrame, 0,
-                                                      SPACING,
-                                                      "paramWordListHlay");
+                                                      SPACING);
     Q_CHECK_PTR (paramWordListHlay);
 
-    paramWordListLine = new QLineEdit (paramWordListFrame,
-                                       "paramWordListLine");
+    paramWordListLine = new QLineEdit;
     Q_CHECK_PTR (paramWordListLine);
     paramWordListLine->setText ("0 words");
     paramWordListLine->setReadOnly (true);
@@ -175,9 +167,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, const char* name,
              SIGNAL (contentsChanged()));
     paramWordListHlay->addWidget (paramWordListLine);
 
-    QPushButton* paramWordListButton = new QPushButton ("Edit List...",
-                                                        paramWordListFrame,
-                                                        "paramWordListButton");
+    QPushButton* paramWordListButton = new QPushButton ("Edit List...");
     Q_CHECK_PTR (paramWordListButton);
     connect (paramWordListButton, SIGNAL (clicked()),
              SLOT (editListClicked()));
@@ -351,7 +341,7 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::SubanagramMatch:
         case SearchCondition::MustInclude:
         case SearchCondition::MustExclude:
-        paramStack->raiseWidget (paramLineFrame);
+        paramStack->setCurrentWidget (paramLineFrame);
         paramLine->setValidator (((type == SearchCondition::MustExclude) ||
                                   (type == SearchCondition::MustInclude)) ?
                                  letterValidator : patternValidator);
@@ -361,20 +351,20 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::MinLength:
         case SearchCondition::MaxLength:
         paramSbox->setMaxValue (MAX_WORD_LEN);
-        paramStack->raiseWidget (paramSboxFrame);
+        paramStack->setCurrentWidget (paramSboxFrame);
         break;
 
         case SearchCondition::ExactAnagrams:
         case SearchCondition::MinAnagrams:
         case SearchCondition::MaxAnagrams:
         paramSbox->setMaxValue (100);
-        paramStack->raiseWidget (paramSboxFrame);
+        paramStack->setCurrentWidget (paramSboxFrame);
         break;
 
         case SearchCondition::MinProbability:
         case SearchCondition::MaxProbability:
         paramSbox->setMaxValue (100);
-        paramStack->raiseWidget (paramSboxFrame);
+        paramStack->setCurrentWidget (paramSboxFrame);
         break;
 
         case SearchCondition::MustBelong:
@@ -388,15 +378,15 @@ SearchConditionForm::typeChanged (const QString& string)
         paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneEights));
         //paramCbox->insertItem (Auxil::searchSetToString
         //                       (SetEightsFromSevenLetterStems));
-        paramStack->raiseWidget (paramCboxFrame);
+        paramStack->setCurrentWidget (paramCboxFrame);
         break;
 
         case SearchCondition::MustConsist:
-        paramStack->raiseWidget (paramConsistFrame);
+        paramStack->setCurrentWidget (paramConsistFrame);
         break;
 
         case SearchCondition::InWordList:
-        paramStack->raiseWidget (paramWordListFrame);
+        paramStack->setCurrentWidget (paramWordListFrame);
         break;
 
         default:
@@ -404,7 +394,7 @@ SearchConditionForm::typeChanged (const QString& string)
         break;
     }
 
-    contentsChanged();
+    emit contentsChanged();
 }
 
 //---------------------------------------------------------------------------
@@ -416,7 +406,7 @@ SearchConditionForm::typeChanged (const QString& string)
 void
 SearchConditionForm::editListClicked()
 {
-    WordListDialog* dialog = new WordListDialog (this, "dialog", true);
+    WordListDialog* dialog = new WordListDialog (this);
     Q_CHECK_PTR (dialog);
 
     dialog->setWords (paramWordListString);

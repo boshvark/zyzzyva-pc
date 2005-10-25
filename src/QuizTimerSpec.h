@@ -25,8 +25,8 @@
 #ifndef QUIZ_TIMER_SPEC_H
 #define QUIZ_TIMER_SPEC_H
 
-#include <qdom.h>
-#include <qstring.h>
+#include <QDomElement>
+#include <QString>
 
 enum QuizTimerType {
     NoTimer = 0,

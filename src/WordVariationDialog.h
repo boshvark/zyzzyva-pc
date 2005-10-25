@@ -26,14 +26,14 @@
 #define WORD_VARIATION_DIALOG_H
 
 #include "WordVariationType.h"
-#include <qdialog.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qvbox.h>
+#include <QDialog>
+#include <QLabel>
+#include <QPushButton>
 
 class DefinitionLabel;
 class WordEngine;
-class WordListView;
+class WordTableModel;
+class WordTableView;
 
 class WordVariationDialog : public QDialog
 {
@@ -41,8 +41,7 @@ class WordVariationDialog : public QDialog
     public:
     WordVariationDialog (WordEngine* we, const QString& word,
                          WordVariationType variation, QWidget* parent = 0,
-                         const char* name = 0, bool modal = false, WFlags f =
-                         0);
+                         Qt::WFlags f = 0);
     ~WordVariationDialog();
 
     private:
@@ -50,13 +49,15 @@ class WordVariationDialog : public QDialog
     bool needsRightList (WordVariationType variation);
 
     private:
-    WordEngine*   wordEngine;
+    WordEngine*      wordEngine;
     DefinitionLabel* wordLabel;
-    QLabel*       leftLabel;
-    QLabel*       rightLabel;
-    WordListView* leftList;
-    WordListView* rightList;
-    QPushButton*  closeButton;
+    QLabel*          leftLabel;
+    QLabel*          rightLabel;
+    WordTableView*   leftView;
+    WordTableModel*  leftModel;
+    WordTableView*   rightView;
+    WordTableModel*  rightModel;
+    QPushButton*     closeButton;
 };
 
 #endif // WORD_VARIATION_DIALOG_H

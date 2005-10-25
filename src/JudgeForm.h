@@ -26,7 +26,7 @@
 #define JUDGE_FORM_H
 
 #include "ActionForm.h"
-#include <qpushbutton.h>
+#include <QPushButton>
 
 class DefinitionBox;
 class WordEngine;
@@ -36,8 +36,7 @@ class JudgeForm : public ActionForm
 {
     Q_OBJECT
     public:
-    JudgeForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-               WFlags f = 0);
+    JudgeForm (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
 
     public slots:
     void textChanged();

@@ -1,12 +1,15 @@
 PROJECT (ZYZZYVA)
 SET (EXECUTABLE_OUTPUT_PATH ${ZYZZYVA_SOURCE_DIR})
 
-# Find Qt and add its include directories
-FIND_PACKAGE (Qt)
-IF (NOT QT_FOUND)
-   MESSAGE (FATAL_ERROR "Unable to find Qt library")
-ENDIF (NOT QT_FOUND)
-INCLUDE_DIRECTORIES (${QT_INCLUDE_DIR})
+INCLUDE (FindQt4)
+IF (NOT QT4_FOUND)
+   MESSAGE (FATAL_ERROR "Unable to find Qt4")
+ENDIF (NOT QT4_FOUND)
+
+SET (QT_USE_QTASSISTANT TRUE)
+SET (QT_USE_QT3SUPPORT TRUE)
+SET (QT_USE_QTXML TRUE)
+INCLUDE (${QT_USE_FILE})
 
 # Source files
 SET (SRCS
@@ -38,9 +41,8 @@ SET (SRCS
     src/WordEntryDialog.cpp
     src/WordGraph.cpp
     src/WordListDialog.cpp
-    src/WordListView.cpp
-    src/WordListViewItem.cpp
     src/WordPopupMenu.cpp
+    src/WordTableModel.cpp
     src/WordValidator.cpp
     src/WordVariationDialog.cpp
     )
@@ -66,8 +68,9 @@ SET (MOCS
     src/WordEntryDialog.h
     src/WordLineEdit.h
     src/WordListDialog.h
-    src/WordListView.h
     src/WordPopupMenu.h
+    src/WordTableModel.h
+    src/WordTableView.h
     src/WordTextEdit.h
     src/WordValidator.h
     src/WordVariationDialog.h
@@ -89,10 +92,6 @@ ELSE (UNIX)
     ENDIF (BORLAND)
 ENDIF (UNIX)
 
-QT_WRAP_CPP(zyzzyva SRCS MOCS)
-ADD_EXECUTABLE (zyzzyva WIN32 SRCS)
-IF (WIN32)
-    TARGET_LINK_LIBRARIES (zyzzyva ${QT_QTMAIN_LIBRARY})
-    ADD_DEFINITIONS (-DNEEDS_QMAIN)
-ENDIF (WIN32)
-TARGET_LINK_LIBRARIES (zyzzyva ${QT_QT_LIBRARY} ${QT_QASSISTANTCLIENT_LIBRARY})
+QT4_WRAP_CPP (SRCS ${MOCS})
+ADD_EXECUTABLE (zyzzyva WIN32 ${SRCS})
+TARGET_LINK_LIBRARIES (zyzzyva ${QT_LIBRARIES})

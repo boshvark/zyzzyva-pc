@@ -26,16 +26,15 @@
 #define DEFINITION_DIALOG_H
 
 #include "WordEngine.h"
-#include <qdialog.h>
-#include <qstring.h>
+#include <QDialog>
+#include <QString>
 
 class DefinitionDialog : public QDialog
 {
     Q_OBJECT
     public:
     DefinitionDialog (WordEngine* e, const QString& word, QWidget* parent = 0,
-                      const char* name = 0, bool modal = false, WFlags f =
-                      WType_TopLevel);
+                      Qt::WFlags f = Qt::WType_TopLevel);
     ~DefinitionDialog();
 
     private:

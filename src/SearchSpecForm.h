@@ -25,11 +25,11 @@
 #ifndef SEARCH_SPEC_FORM_H
 #define SEARCH_SPEC_FORM_H
 
-#include <qframe.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qvaluelist.h>
+#include <QFrame>
+#include <QList>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QVBoxLayout>
 #include <set>
 
 class SearchConditionForm;
@@ -39,7 +39,7 @@ class SearchSpecForm : public QFrame
 {
     Q_OBJECT
     public:
-    SearchSpecForm (QWidget* parent = 0, const char* name = 0, WFlags f = 0);
+    SearchSpecForm (QWidget* parent = 0, Qt::WFlags f = 0);
     SearchSpec getSearchSpec() const;
     void setSearchSpec (const SearchSpec& spec);
     bool isValid() const;
@@ -66,7 +66,7 @@ class SearchSpecForm : public QFrame
     QPushButton* loadButton;
     QPushButton* saveButton;
     QVBoxLayout* conditionVlay;
-    QValueList<SearchConditionForm*> conditionForms;
+    QList<SearchConditionForm*> conditionForms;
 };
 
 #endif // SEARCH_SPEC_FORM_H

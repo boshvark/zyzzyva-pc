@@ -27,20 +27,17 @@
 #ifndef DEFINITION_LABEL_H
 #define DEFINITION_LABEL_H
 
-#include <qlabel.h>
+#include <QLabel>
 
 class DefinitionLabel : public QLabel
 {
     Q_OBJECT
     public:
-    DefinitionLabel (QWidget* parent, const char* name = 0, WFlags f = 0)
-        : QLabel (parent, name, f) { }
-    DefinitionLabel (const QString& text, QWidget* parent, const char* name =
-                     0, WFlags f = 0)
-        : QLabel (text, parent, name, f) { }
-    DefinitionLabel (QWidget* buddy, const QString& text, QWidget* parent,
-                     const char* name = 0, WFlags f = 0)
-        : QLabel (buddy, text, parent, name, f) { }
+    DefinitionLabel (QWidget* parent = 0, Qt::WFlags f = 0)
+        : QLabel (parent, f) { }
+    DefinitionLabel (const QString& text, QWidget* parent = 0,
+                     Qt::WFlags f = 0)
+        : QLabel (text, parent, f) { }
 
     virtual ~DefinitionLabel() { }
 };

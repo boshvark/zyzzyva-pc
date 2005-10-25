@@ -27,17 +27,16 @@
 #ifndef WORD_TEXT_EDIT_H
 #define WORD_TEXT_EDIT_H
 
-#include <qtextedit.h>
+#include <QTextEdit>
 
 class WordTextEdit : public QTextEdit
 {
     Q_OBJECT
     public:
-    WordTextEdit (const QString& text, const QString& context = QString::null,
-                  QWidget* parent = 0, const char* name = 0)
-        : QTextEdit (text, context, parent, name) { }
-    WordTextEdit (QWidget* parent, const char* name = 0)
-        : QTextEdit (parent, name) { }
+    WordTextEdit (QWidget* parent = 0)
+        : QTextEdit (parent) { }
+    WordTextEdit (const QString& text, QWidget* parent = 0)
+        : QTextEdit (text, parent) { }
 
     virtual ~WordTextEdit() { }
 };

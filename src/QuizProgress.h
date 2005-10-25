@@ -25,8 +25,8 @@
 #ifndef QUIZ_PROGRESS_H
 #define QUIZ_PROGRESS_H
 
-#include <qdom.h>
-#include <qmap.h>
+#include <QDomElement>
+#include <QMap>
 #include <set>
 
 class QuizProgress

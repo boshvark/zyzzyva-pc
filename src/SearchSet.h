@@ -25,7 +25,7 @@
 #ifndef SEARCH_SET_H
 #define SEARCH_SET_H
 
-#include <qstring.h>
+#include <QString>
 
 enum SearchSet {
     UnknownSearchSet = 0,

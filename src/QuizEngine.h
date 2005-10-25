@@ -26,11 +26,10 @@
 #ifndef QUIZ_ENGINE_H
 #define QUIZ_ENGINE_H
 
-#include <qstring.h>
-#include <qstringlist.h>
-#include <qvaluevector.h>
-#include <set>
 #include "QuizSpec.h"
+#include <QString>
+#include <QStringList>
+#include <set>
 
 class WordEngine;
 

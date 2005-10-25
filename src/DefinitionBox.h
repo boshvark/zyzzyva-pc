@@ -25,17 +25,16 @@
 #ifndef DEFINITION_BOX_H
 #define DEFINITION_BOX_H
 
-#include <qvgroupbox.h>
+#include <QGroupBox>
 
 class DefinitionLabel;
 
-class DefinitionBox : public QVGroupBox
+class DefinitionBox : public QGroupBox
 {
     Q_OBJECT
     public:
-    DefinitionBox (QWidget* parent = 0, const char* name = 0);
-    DefinitionBox (const QString& title, QWidget* parent = 0, const char* name
-                   = 0);
+    DefinitionBox (QWidget* parent = 0);
+    DefinitionBox (const QString& title, QWidget* parent = 0);
     void setText (const QString& text);
 
     private:

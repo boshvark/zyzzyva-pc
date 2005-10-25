@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "ImageItem.h"
+#include <QPixmap>
 
 //---------------------------------------------------------------------------
 //  ImageItem
@@ -32,8 +33,8 @@
 //! @param image the image to store in this object
 //! @param canvas the canvas object to associate with this rectangle
 //---------------------------------------------------------------------------
-ImageItem::ImageItem (const QImage& image, QCanvas* canvas)
-    : QCanvasRectangle (canvas)
+ImageItem::ImageItem (const QImage& image, Q3Canvas* canvas)
+    : Q3CanvasRectangle (canvas)
 {
     pixmap.convertFromImage (image);
     setSize (pixmap.width(), pixmap.height());
@@ -47,8 +48,8 @@ ImageItem::ImageItem (const QImage& image, QCanvas* canvas)
 //! @param pixmap the pixmap to store in this object
 //! @param canvas the canvas object to associate with this rectangle
 //---------------------------------------------------------------------------
-ImageItem::ImageItem (const QPixmap& p, QCanvas* canvas)
-    : QCanvasRectangle (canvas), pixmap (p)
+ImageItem::ImageItem (const QPixmap& p, Q3Canvas* canvas)
+    : Q3CanvasRectangle (canvas), pixmap (p)
 {
     setSize (pixmap.width(), pixmap.height());
 }

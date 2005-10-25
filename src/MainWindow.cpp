@@ -36,18 +36,19 @@
 #include "SettingsDialog.h"
 #include "WordEngine.h"
 #include "WordEntryDialog.h"
-#include "WordListViewItem.h"
 #include "WordVariationDialog.h"
 #include "WordVariationType.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qapplication.h>
-#include <qdir.h>
-#include <qfiledialog.h>
-#include <qlayout.h>
-#include <qmenubar.h>
-#include <qmessagebox.h>
-#include <qstatusbar.h>
+#include <QAction>
+#include <QApplication>
+#include <QDir>
+#include <QFileDialog>
+#include <QLabel>
+#include <QMenuBar>
+#include <QMessageBox>
+#include <QSignalMapper>
+#include <QStatusBar>
 
 MainWindow* MainWindow::instance = 0;
 
@@ -73,72 +74,182 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
-    : QMainWindow (parent, name, f), wordEngine (new WordEngine()),
-      settingsDialog (new SettingsDialog (this, "settingsDialog", true)),
-      aboutDialog (new AboutDialog (this, "aboutDialog", true)),
-      helpDialog (new HelpDialog (QString::null, this, "helpDialog"))
+MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
+    : QMainWindow (parent, f), wordEngine (new WordEngine()),
+      settingsDialog (new SettingsDialog (this)),
+      aboutDialog (new AboutDialog (this)),
+      helpDialog (new HelpDialog (QString::null, this))
 {
-    QPopupMenu* filePopup = new QPopupMenu (this);
-    Q_CHECK_PTR (filePopup);
-    filePopup->insertItem ("New Qui&z...", this,
-                           SLOT (newQuizFormInteractive()));
-    filePopup->insertItem ("New &Search", this, SLOT (newSearchForm()));
-    filePopup->insertItem ("New &Definition", this, SLOT (newDefineForm()));
-    filePopup->insertItem ("New Word &Judge", this, SLOT (newJudgeForm()));
-    filePopup->insertSeparator();
-    filePopup->insertItem ("&Open...", this, SLOT (importInteractive()),
-                           CTRL+Key_O);
-    filePopup->insertSeparator();
-    filePopup->insertItem ("&Close Tab", this, SLOT (closeCurrentTab()),
-                           CTRL+Key_W);
-    filePopup->insertItem ("&Quit", qApp, SLOT (quit()));
-    menuBar()->insertItem ("&File", filePopup);
+    // File Menu
+    QMenu* fileMenu = menuBar()->addMenu ("&File");
+    Q_CHECK_PTR (fileMenu);
 
-    QPopupMenu* editPopup = new QPopupMenu (this);
-    Q_CHECK_PTR (editPopup);
-    editPopup->insertItem ("&Preferences", this, SLOT (editSettings()));
-    menuBar()->insertItem ("&Edit", editPopup);
+    // New Quiz
+    QAction* newQuizAction = new QAction ("New Qui&z...", this);
+    Q_CHECK_PTR (newQuizAction);
+    connect (newQuizAction, SIGNAL (triggered()),
+             SLOT (newQuizFormInteractive()));
+    fileMenu->addAction (newQuizAction);
 
-    QPopupMenu* viewPopup = new QPopupMenu (this);
-    Q_CHECK_PTR (viewPopup);
-    viewPopup->insertItem ("&Definition...", this, SLOT (viewDefinition()));
-    viewPopup->insertItem ("&Anagrams...", this, SLOT (viewVariation (int)),
-                           0, VariationAnagrams);
-    viewPopup->insertItem ("&Subanagrams...", this, SLOT (viewVariation
-                                                          (int)),
-                           0, VariationSubanagrams);
-    viewPopup->insertItem ("&Hooks...", this, SLOT (viewVariation (int)),
-                           0, VariationHooks);
-    viewPopup->insertItem ("&Extensions...", this, SLOT (viewVariation (int)),
-                           0, VariationExtensions);
-    viewPopup->insertItem ("Anagram Hoo&ks...", this, SLOT (viewVariation
-                                                            (int)),
-                           0, VariationAnagramHooks);
-    viewPopup->insertItem ("&Blank Anagrams...", this, SLOT (viewVariation
-                                                             (int)),
-                           0, VariationBlankAnagrams);
-    viewPopup->insertItem ("Blank &Matches...", this, SLOT (viewVariation
-                                                            (int)),
-                           0, VariationBlankMatches);
-    viewPopup->insertItem ("&Transpositions...", this, SLOT (viewVariation
-                                                             (int)),
-                           0, VariationTranspositions);
-    menuBar()->insertItem ("&View", viewPopup);
+    // New Search
+    QAction* newSearchAction = new QAction ("New &Search", this);
+    Q_CHECK_PTR (newSearchAction);
+    connect (newSearchAction, SIGNAL (triggered()), SLOT (newSearchForm()));
+    fileMenu->addAction (newSearchAction);
 
-    QPopupMenu* helpPopup = new QPopupMenu (this);
-    Q_CHECK_PTR (helpPopup);
-    helpPopup->insertItem ("&Help", this, SLOT (displayHelp()));
-    helpPopup->insertItem ("&About", this, SLOT (displayAbout()));
-    menuBar()->insertItem ("&Help", helpPopup);
+    // New Definition
+    QAction* newDefinitionAction = new QAction ("New &Definition", this);
+    Q_CHECK_PTR (newDefinitionAction);
+    connect (newDefinitionAction, SIGNAL (triggered()),
+             SLOT (newDefineForm()));
+    fileMenu->addAction (newDefinitionAction);
 
-    tabStack = new QTabWidget (this, "tabStack");
+    // New Word Judge
+    QAction* newJudgeAction = new QAction ("New Word &Judge", this);
+    Q_CHECK_PTR (newJudgeAction);
+    connect (newJudgeAction, SIGNAL (triggered()), SLOT (newJudgeForm()));
+    fileMenu->addAction (newJudgeAction);
+
+    fileMenu->addSeparator();
+
+    // Open Word List
+    QAction* openWordListAction = new QAction ("&Open...", this);
+    Q_CHECK_PTR (openWordListAction);
+    openWordListAction->setShortcut (tr ("Ctrl+O"));
+    connect (openWordListAction, SIGNAL (triggered()),
+             SLOT (importInteractive()));
+    fileMenu->addAction (openWordListAction);
+
+    fileMenu->addSeparator();
+
+    // Close Table
+    QAction* closeTabAction = new QAction ("&Close Tab", this);
+    Q_CHECK_PTR (closeTabAction);
+    closeTabAction->setShortcut (tr ("Ctrl+W"));
+    connect (closeTabAction, SIGNAL (triggered()), SLOT (closeCurrentTab()));
+    fileMenu->addAction (closeTabAction);
+
+    // Quit
+    QAction* quitAction = new QAction ("&Quit", this);
+    Q_CHECK_PTR (quitAction);
+    connect (quitAction, SIGNAL (triggered()), qApp, SLOT (quit()));
+    fileMenu->addAction (quitAction);
+
+    // Edit Menu
+    QMenu* editMenu = menuBar()->addMenu ("&Edit");
+    Q_CHECK_PTR (editMenu);
+
+    // Preferences
+    QAction* editPrefsAction = new QAction ("&Preferences", this);
+    Q_CHECK_PTR (editPrefsAction);
+    connect (editPrefsAction, SIGNAL (triggered()), SLOT (editSettings()));
+    editMenu->addAction (editPrefsAction);
+
+    // View Menu
+    QMenu* viewMenu = menuBar()->addMenu ("&View");
+    Q_CHECK_PTR (viewMenu);
+
+    // View Definition
+    QAction* viewDefinitionAction = new QAction ("&Definition...", this);
+    Q_CHECK_PTR (viewDefinitionAction);
+    connect (viewDefinitionAction, SIGNAL (triggered()),
+             SLOT (viewDefinition()));
+    viewMenu->addAction (viewDefinitionAction);
+
+    QSignalMapper* viewMapper = new QSignalMapper (this);
+    Q_CHECK_PTR (viewMapper);
+
+    // View Anagrams
+    QAction* viewAnagramsAction = new QAction ("&Anagrams...", this);
+    Q_CHECK_PTR (viewAnagramsAction);
+    connect (viewAnagramsAction, SIGNAL (triggered()),
+             viewMapper, SLOT (map()));
+    viewMapper->setMapping (viewAnagramsAction, VariationAnagrams);
+    viewMenu->addAction (viewAnagramsAction);
+
+    // View Subanagrams
+    QAction* viewSubanagramsAction = new QAction ("&Subanagrams...", this);
+    Q_CHECK_PTR (viewSubanagramsAction);
+    connect (viewSubanagramsAction, SIGNAL (triggered()),
+             viewMapper, SLOT (map()));
+    viewMapper->setMapping (viewSubanagramsAction, VariationSubanagrams);
+    viewMenu->addAction (viewSubanagramsAction);
+
+    // View Hooks
+    QAction* viewHooksAction = new QAction ("&Hooks...", this);
+    Q_CHECK_PTR (viewHooksAction);
+    connect (viewHooksAction, SIGNAL (triggered()), viewMapper, SLOT (map()));
+    viewMapper->setMapping (viewHooksAction, VariationHooks);
+    viewMenu->addAction (viewHooksAction);
+
+    // View Extensions
+    QAction* viewExtensionsAction = new QAction ("&Extensions...", this);
+    Q_CHECK_PTR (viewExtensionsAction);
+    connect (viewExtensionsAction, SIGNAL (triggered()),
+             viewMapper, SLOT (map()));
+    viewMapper->setMapping (viewExtensionsAction, VariationExtensions);
+    viewMenu->addAction (viewExtensionsAction);
+
+    // View Anagram Hooks
+    QAction* viewAnagramHooksAction = new QAction ("Anagram Hoo&ks...", this);
+    Q_CHECK_PTR (viewAnagramHooksAction);
+    connect (viewAnagramHooksAction, SIGNAL (triggered()),
+             viewMapper, SLOT (map()));
+    viewMapper->setMapping (viewAnagramHooksAction, VariationAnagramHooks);
+    viewMenu->addAction (viewAnagramHooksAction);
+
+    // View Blank Anagrams
+    QAction* viewBlankAnagramsAction = new QAction ("&Blank Anagrams...",
+                                                    this);
+    Q_CHECK_PTR (viewBlankAnagramsAction);
+    connect (viewBlankAnagramsAction, SIGNAL (triggered()),
+             viewMapper, SLOT (map()));
+    viewMapper->setMapping (viewBlankAnagramsAction, VariationBlankAnagrams);
+    viewMenu->addAction (viewBlankAnagramsAction);
+
+    // View Blank Matches
+    QAction* viewBlankMatchesAction = new QAction ("Blank &Matches...", this);
+    Q_CHECK_PTR (viewBlankMatchesAction);
+    connect (viewBlankMatchesAction, SIGNAL (triggered()),
+             viewMapper, SLOT (map()));
+    viewMapper->setMapping (viewBlankMatchesAction, VariationBlankMatches);
+    viewMenu->addAction (viewBlankMatchesAction);
+
+    // View Transpositions
+    QAction* viewTranspositionsAction = new QAction ("&Transpositions...",
+                                                     this);
+    Q_CHECK_PTR (viewTranspositionsAction);
+    connect (viewTranspositionsAction, SIGNAL (triggered()),
+             viewMapper, SLOT (map()));
+    viewMapper->setMapping (viewTranspositionsAction,
+                            VariationTranspositions);
+    viewMenu->addAction (viewTranspositionsAction);
+
+    // Connect View signal mappings to viewVariation
+    connect (viewMapper, SIGNAL (mapped (int)), SLOT (viewVariation (int)));
+
+    // Help Menu
+    QMenu* helpMenu = menuBar()->addMenu ("&Help");
+    Q_CHECK_PTR (helpMenu);
+
+    // Help
+    QAction* helpAction = new QAction ("&Help", this);
+    Q_CHECK_PTR (helpAction);
+    connect (helpAction, SIGNAL (triggered()), SLOT (displayHelp()));
+    helpMenu->addAction (helpAction);
+
+    // About
+    QAction* aboutAction = new QAction ("&About", this);
+    Q_CHECK_PTR (aboutAction);
+    connect (aboutAction, SIGNAL (triggered()), SLOT (displayAbout()));
+    helpMenu->addAction (aboutAction);
+
+    tabStack = new QTabWidget (this);
     Q_CHECK_PTR (tabStack);
 
-    closeButton = new QToolButton (tabStack, "closeButton");
+    closeButton = new QToolButton (tabStack);
     Q_CHECK_PTR (closeButton);
     closeButton->setUsesTextLabel (true);
     closeButton->setTextLabel ("X", false);
@@ -148,11 +259,11 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 
     setCentralWidget (tabStack);
 
-    messageLabel = new QLabel (this, "messageLabel");
+    messageLabel = new QLabel;
     Q_CHECK_PTR (messageLabel);
     statusBar()->addWidget (messageLabel, 2);
 
-    statusLabel = new QLabel (this, "statusLabel");
+    statusLabel = new QLabel;
     Q_CHECK_PTR (statusLabel);
     statusBar()->addWidget (statusLabel, 1);
     setNumWords (0);
@@ -167,6 +278,8 @@ MainWindow::MainWindow (QWidget* parent, const char* name, WFlags f)
 
     if (!instance)
         instance = this;
+
+    setWindowTitle ("Zyzzyva");
 }
 
 //---------------------------------------------------------------------------
@@ -187,10 +300,9 @@ MainWindow::~MainWindow()
 void
 MainWindow::importInteractive()
 {
-    QString file = QFileDialog::getOpenFileName (QDir::current().path(),
-                                                 "All Files (*.*)", this,
-                                                 "fileDialog",
-                                                 IMPORT_CHOOSER_TITLE);
+    QString file = QFileDialog::getOpenFileName (this, IMPORT_CHOOSER_TITLE,
+        QDir::current().path(), "All Files (*.*)");
+
     if (file.isNull()) return;
     int imported = import (file);
     if (imported < 0) return;
@@ -208,7 +320,7 @@ MainWindow::importInteractive()
 void
 MainWindow::newQuizFormInteractive()
 {
-    NewQuizDialog* dialog = new NewQuizDialog (this, "newQuizDialog", true);
+    NewQuizDialog* dialog = new NewQuizDialog (this);
     Q_CHECK_PTR (dialog);
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
@@ -226,7 +338,7 @@ MainWindow::newQuizFormInteractive()
 void
 MainWindow::newQuizFormInteractive (const QuizSpec& quizSpec)
 {
-    NewQuizDialog* dialog = new NewQuizDialog (this, "newQuizDialog", true);
+    NewQuizDialog* dialog = new NewQuizDialog (this);
     Q_CHECK_PTR (dialog);
     dialog->setQuizSpec (quizSpec);
     int code = dialog->exec();
@@ -247,7 +359,7 @@ MainWindow::newQuizFormInteractive (const QuizSpec& quizSpec)
 void
 MainWindow::newQuizForm (const QuizSpec& quizSpec)
 {
-    QuizForm* form = new QuizForm (wordEngine, tabStack, "quizForm");
+    QuizForm* form = new QuizForm (wordEngine, tabStack);
     Q_CHECK_PTR (form);
     form->setTileTheme (MainSettings::getTileTheme());
     form->newQuiz (quizSpec);
@@ -262,7 +374,7 @@ MainWindow::newQuizForm (const QuizSpec& quizSpec)
 void
 MainWindow::newSearchForm()
 {
-    SearchForm* form = new SearchForm (wordEngine, tabStack, "searchForm");
+    SearchForm* form = new SearchForm (wordEngine, tabStack);
     Q_CHECK_PTR (form);
     newTab (form, SEARCH_TAB_TITLE);
 }
@@ -275,7 +387,7 @@ MainWindow::newSearchForm()
 void
 MainWindow::newDefineForm()
 {
-    DefineForm* form = new DefineForm (wordEngine, tabStack, "defineForm");
+    DefineForm* form = new DefineForm (wordEngine, tabStack);
     Q_CHECK_PTR (form);
     newTab (form, DEFINE_TAB_TITLE);
 }
@@ -288,7 +400,7 @@ MainWindow::newDefineForm()
 void
 MainWindow::newJudgeForm()
 {
-    JudgeForm* form = new JudgeForm (wordEngine, tabStack, "judgeForm");
+    JudgeForm* form = new JudgeForm (wordEngine, tabStack);
     Q_CHECK_PTR (form);
     newTab (form, JUDGE_TAB_TITLE);
 }
@@ -319,9 +431,7 @@ MainWindow::editSettings()
 void
 MainWindow::viewDefinition()
 {
-    WordEntryDialog* entryDialog = new WordEntryDialog (this,
-                                                        "wordEntryDialog",
-                                                        true);
+    WordEntryDialog* entryDialog = new WordEntryDialog (this);
     Q_CHECK_PTR (entryDialog);
     entryDialog->setCaption ("View Word Definition");
     entryDialog->resize (entryDialog->minimumSizeHint().width() * 2,
@@ -333,7 +443,6 @@ MainWindow::viewDefinition()
         return;
 
     DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
-                                                     "dialog", false,
                                                      Qt::WDestructiveClose);
     Q_CHECK_PTR (dialog);
     dialog->show();
@@ -361,9 +470,7 @@ MainWindow::viewVariation (int variation)
         default: break;
     }
 
-    WordEntryDialog* entryDialog = new WordEntryDialog (this,
-                                                        "wordEntryDialog",
-                                                        true);
+    WordEntryDialog* entryDialog = new WordEntryDialog (this);
     Q_CHECK_PTR (entryDialog);
     entryDialog->setCaption (caption);
     entryDialog->resize (entryDialog->minimumSizeHint().width() * 2,
@@ -377,7 +484,6 @@ MainWindow::viewVariation (int variation)
     WordVariationType type = static_cast<WordVariationType>(variation);
     WordVariationDialog* dialog = new WordVariationDialog (wordEngine, word,
                                                            type, this,
-                                                           "dialog", false,
                                                            Qt::WDestructiveClose);
     Q_CHECK_PTR (dialog);
     dialog->show();
@@ -458,7 +564,7 @@ MainWindow::readSettings (bool useGeometry)
     QString fontStr = MainSettings::getMainFont();
     bool mainFontOk = true;
     if (mainFont.fromString (fontStr))
-        qApp->setFont (mainFont, true);
+        qApp->setFont (mainFont);
     else {
         qWarning ("Cannot set font: " + fontStr);
         mainFontOk = false;
@@ -468,13 +574,13 @@ MainWindow::readSettings (bool useGeometry)
     QFont font;
     fontStr = MainSettings::getWordListFont();
     if (font.fromString (fontStr))
-        qApp->setFont (font, true, "WordListView");
+        qApp->setFont (font, "WordTableView");
     else
         qWarning ("Cannot set font: " + fontStr);
 
     // Set word list headers back to main font
     if (mainFontOk)
-        qApp->setFont (mainFont, true, "QHeader");
+        qApp->setFont (mainFont, "QHeaderView");
 
     // Quiz label font
     // XXX: Reinstate this once it's know how to change the font of canvas
@@ -482,15 +588,15 @@ MainWindow::readSettings (bool useGeometry)
     //fontStr = MainSettings::getQuizLabelFont();
     //if (font.fromString (fontStr))
     //    // FIXME: How to get QCanvasText items to update their font?
-    //    qApp->setFont (font, true, "QCanvasText");
+    //    qApp->setFont (font, "QCanvasText");
     //else
     //    qWarning ("Cannot set font: " + fontStr);
 
     // Word input font
     fontStr = MainSettings::getWordInputFont();
     if (font.fromString (fontStr)) {
-        qApp->setFont (font, true, "WordLineEdit");
-        qApp->setFont (font, true, "WordTextEdit");
+        qApp->setFont (font, "WordLineEdit");
+        qApp->setFont (font, "WordTextEdit");
     }
     else
         qWarning ("Cannot set font: " + fontStr);
@@ -498,8 +604,8 @@ MainWindow::readSettings (bool useGeometry)
     // Definition font
     fontStr = MainSettings::getDefinitionFont();
     if (font.fromString (fontStr)) {
-        qApp->setFont (font, true, "DefinitionBox");
-        qApp->setFont (font, true, "DefinitionLabel");
+        qApp->setFont (font, "DefinitionBox");
+        qApp->setFont (font, "DefinitionLabel");
     }
     else
         qWarning ("Cannot set font: " + fontStr);
@@ -516,8 +622,9 @@ MainWindow::readSettings (bool useGeometry)
         }
     }
 
-    WordListViewItem::setSortByLength
-        (MainSettings::getWordListSortByLength());
+    // FIXME: Figure out how to incorporate this with WordTableModel
+    //WordListViewItem::setSortByLength
+    //    (MainSettings::getWordListSortByLength());
 }
 
 //---------------------------------------------------------------------------

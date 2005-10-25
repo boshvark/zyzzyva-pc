@@ -25,14 +25,15 @@
 #ifndef IMAGE_ITEM_H
 #define IMAGE_ITEM_H
 
-#include <qcanvas.h>
-#include <qpainter.h>
+#include <Q3Canvas>
+#include <QPainter>
+#include <QPixmap>
 
-class ImageItem : public QCanvasRectangle
+class ImageItem : public Q3CanvasRectangle
 {
     public:
-    ImageItem (const QImage& image, QCanvas* canvas);
-    ImageItem (const QPixmap& p, QCanvas* canvas);
+    ImageItem (const QImage& image, Q3Canvas* canvas);
+    ImageItem (const QPixmap& p, Q3Canvas* canvas);
 
     virtual void drawShape (QPainter& p);
 

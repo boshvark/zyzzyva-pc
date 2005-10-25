@@ -25,9 +25,8 @@
 #include "WordEngine.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qfile.h>
-#include <qregexp.h>
-#include <qvaluevector.h>
+#include <QFile>
+#include <QRegExp>
 #include <set>
 
 using namespace Defs;
@@ -51,7 +50,9 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
                         QString* errString)
 {
     QFile file (filename);
-    if (!file.open (IO_ReadOnly | IO_Translate)) {
+    // FIXME Qt4: QIODevice::Translate no longer exists!
+    //if (!file.open (QIODevice::ReadOnly | QIODevice::Translate)) {
+    if (!file.open (QIODevice::ReadOnly)) {
         if (errString)
             *errString = "Can't open file '" + filename + "': "
             + file.errorString();
@@ -59,8 +60,9 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
     }
 
     int imported = 0;
-    QString line;
-    while (file.readLine (line, MAX_INPUT_LINE_LEN) > 0) {
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
         line = line.simplifyWhiteSpace();
         if (!line.length() || (line.at (0) == '#'))
             continue;
@@ -74,6 +76,7 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
         ++imported;
     }
 
+    delete[] buffer;
     return imported;
 }
 
@@ -93,7 +96,9 @@ int
 WordEngine::importStems (const QString& filename, QString* errString)
 {
     QFile file (filename);
-    if (!file.open (IO_ReadOnly | IO_Translate)) {
+    // FIXME Qt4: QIODevice::Translate no longer exists!
+    //if (!file.open (QIODevice::ReadOnly | QIODevice::Translate)) {
+    if (!file.open (QIODevice::ReadOnly)) {
         if (errString)
             *errString = "Can't open file '" + filename + "': "
             + file.errorString();
@@ -106,8 +111,9 @@ WordEngine::importStems (const QString& filename, QString* errString)
     std::set<QString> alphagrams;
     int imported = 0;
     int length = 0;
-    QString line;
-    while (file.readLine (line, MAX_INPUT_LINE_LEN) > 0) {
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
         line = line.simplifyWhiteSpace();
         if (!line.length() || (line.at (0) == '#'))
             continue;
@@ -123,6 +129,7 @@ WordEngine::importStems (const QString& filename, QString* errString)
         alphagrams.insert (alphagram (word));
         ++imported;
     }
+    delete[] buffer;
 
     // Insert the stem list into the map, or append to an existing stem list
     map<int, QStringList>::iterator it = stems.find (length);
@@ -175,9 +182,9 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     // don't even do a search, just test each word in the search condition for
     // acceptability.
     bool wordListsOnly = true;
-    QValueList<SearchCondition>::const_iterator cit;
-    for (cit = spec.conditions.begin(); cit != spec.conditions.end(); ++cit) {
-        if ((*cit).type != SearchCondition::InWordList) {
+    QListIterator<SearchCondition> cit (spec.conditions);
+    while (cit.hasNext()) {
+        if (cit.next().type != SearchCondition::InWordList) {
             wordListsOnly = false;
             break;
         }
@@ -244,20 +251,21 @@ WordEngine::alphagrams (const QStringList& list) const
 QString
 WordEngine::alphagram (const QString& word) const
 {
-    QValueVector<QChar> qchars;
+    QList<QChar> qchars;
 
     char chars[MAX_WORD_LEN + 1];
     int wordLength = word.length();
     for (int i = 0; (i < wordLength) && (i < MAX_WORD_LEN); ++i) {
-        qchars.push_back (word.at (i));
+        qchars.append (word.at (i));
     }
 
-    qHeapSort (qchars);
+    qSort (qchars);
 
     int i = 0;
-    QValueVector<QChar>::iterator it;
-    for (it = qchars.begin(); it != qchars.end(); ++it, ++i) {
-        chars[i] = *it;
+    QListIterator<QChar> it (qchars);
+    while (it.hasNext()) {
+        chars[i] = it.next().toAscii();
+        ++i;
     }
     chars[i] = 0;
 
@@ -292,16 +300,17 @@ WordEngine::getDefinition (const QString& word) const
 //---------------------------------------------------------------------------
 bool
 WordEngine::matchesConditions (const QString& word, const
-                               QValueList<SearchCondition>& conditions) const
+                               QList<SearchCondition>& conditions) const
 {
-    QValueList<SearchCondition>::const_iterator it;
-    for (it = conditions.begin(); it != conditions.end(); ++it) {
+    QListIterator<SearchCondition> it (conditions);
+    while (it.hasNext()) {
+        const SearchCondition& condition = it.next();
 
-        switch ((*it).type) {
+        switch (condition.type) {
 
             case SearchCondition::MustBelong: {
                 SearchSet searchSet = Auxil::stringToSearchSet
-                    ((*it).stringValue);
+                    (condition.stringValue);
                 if (searchSet == UnknownSearchSet)
                     continue;
                 if (!isSetMember (word.upper(), searchSet))
@@ -310,22 +319,23 @@ WordEngine::matchesConditions (const QString& word, const
             break;
 
             case SearchCondition::InWordList:
-            if (!(*it).stringValue.contains (QRegExp ("\\b" + word + "\\b")))
+            if (!condition.stringValue.contains
+                (QRegExp ("\\b" + word + "\\b")))
                 return false;
             break;
 
             case SearchCondition::ExactAnagrams:
-            if (numAnagrams (word) != (*it).intValue)
+            if (numAnagrams (word) != condition.intValue)
                 return false;
             break;
 
             case SearchCondition::MinAnagrams:
-            if (numAnagrams (word) < (*it).intValue)
+            if (numAnagrams (word) < condition.intValue)
                 return false;
             break;
 
             case SearchCondition::MaxAnagrams:
-            if (numAnagrams (word) > (*it).intValue)
+            if (numAnagrams (word) > condition.intValue)
                 return false;
             break;
 
@@ -434,7 +444,7 @@ WordEngine::numAnagrams (const QString& word) const
     SearchCondition condition;
     condition.type = SearchCondition::AnagramMatch;
     condition.stringValue = word;
-    spec.conditions << condition;
+    spec.conditions.append (condition);
     return search (spec, true).size();
 }
 
@@ -455,11 +465,12 @@ WordEngine::wordListOnlySearch (const SearchSpec& spec) const
     std::set<QString>::iterator sit;
     int conditionNum = 0;
 
-    QValueList<SearchCondition>::const_iterator it;
-    for (it = spec.conditions.begin(); it != spec.conditions.end(); ++it) {
-        if ((*it).type != SearchCondition::InWordList)
+    QListIterator<SearchCondition> it (spec.conditions);
+    while (it.hasNext()) {
+        const SearchCondition& condition = it.next();
+        if (condition.type != SearchCondition::InWordList)
             continue;
-        QStringList words = QStringList::split (" ", (*it).stringValue);
+        QStringList words = QStringList::split (" ", condition.stringValue);
 
         std::set<QString> wordSet;
         QStringList::iterator wit;

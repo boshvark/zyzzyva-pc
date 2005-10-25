@@ -31,17 +31,21 @@
 #include "WordEngine.h"
 #include "WordValidator.h"
 #include "WordLineEdit.h"
-#include "WordListView.h"
-#include "WordListViewItem.h"
+#include "WordTableModel.h"
+#include "WordTableView.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qapplication.h>
-#include <qcolor.h>
-#include <qfiledialog.h>
-#include <qhgroupbox.h>
-#include <qheader.h>
-#include <qlayout.h>
-#include <qmessagebox.h>
+#include <QApplication>
+#include <QColor>
+#include <QFileDialog>
+#include <QHeaderView>
+#include <QMessageBox>
+#include <QTimerEvent>
+#include <QGridLayout>
+#include <QTextStream>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
 
 using namespace Defs;
 
@@ -55,82 +59,85 @@ const QString UNPAUSE_BUTTON = "Un&pause";
 //
 //! @param we the word engine
 //! @param parent the parent widget
-//! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
-                    f)
-    : ActionForm (QuizFormType, parent, name, f), wordEngine (we),
+QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
+    : ActionForm (QuizFormType, parent, f), wordEngine (we),
     quizEngine (new QuizEngine (wordEngine)),
     numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300),
     timerId (0), timerPaused (0),
-    analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
-                                          "analyzeDialog", false))
+    // FIXME: This dialog should be nonmodal!
+    analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this))
 {
-    QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
-                                             "mainHlay");
+    QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainHlay);
 
-    QVBoxLayout* mainVlay = new QVBoxLayout (SPACING, "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (SPACING);
     Q_CHECK_PTR (mainVlay);
     mainHlay->addLayout (mainVlay);
 
-    QHBoxLayout* topHlay = new QHBoxLayout (SPACING, "topHlay");
+    QHBoxLayout* topHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (topHlay);
     mainVlay->addLayout (topHlay);
 
-    questionNumLabel = new QLabel (this, "questionNumLabel");
+    questionNumLabel = new QLabel;
     Q_CHECK_PTR (questionNumLabel);
     topHlay->addWidget (questionNumLabel);
 
     topHlay->addStretch (1);
 
-    timerLabel = new QLabel (this, "timerLabel");
+    timerLabel = new QLabel;
     Q_CHECK_PTR (timerLabel);
     topHlay->addWidget (timerLabel);
 
-    QHBoxLayout* quizBoxHlay = new QHBoxLayout (SPACING, "quizBoxHlay");
+    QHBoxLayout* quizBoxHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (quizBoxHlay);
     mainVlay->addLayout (quizBoxHlay);
 
     quizBoxHlay->addStretch (1);
 
     // Canvas for tile images - set default background color
-    questionCanvas = new QCanvas (this, "questionCanvas");
+    questionCanvas = new Q3Canvas (this);
     Q_CHECK_PTR (questionCanvas);
     questionCanvas->setBackgroundColor (QColor (192, 192, 192));
 
-    questionCanvasView = new QCanvasView (questionCanvas, this,
-                                          "questionCanvasView");
+    questionCanvasView = new Q3CanvasView (questionCanvas);
     Q_CHECK_PTR (questionCanvasView);
-    questionCanvasView->setVScrollBarMode (QScrollView::AlwaysOff);
-    questionCanvasView->setHScrollBarMode (QScrollView::AlwaysOff);
-    questionCanvasView->setResizePolicy (QScrollView::AutoOneFit);
+    questionCanvasView->setVScrollBarMode (Q3ScrollView::AlwaysOff);
+    questionCanvasView->setHScrollBarMode (Q3ScrollView::AlwaysOff);
+    questionCanvasView->setResizePolicy (Q3ScrollView::AutoOneFit);
     questionCanvasView->setSizePolicy (QSizePolicy::Fixed,
                                        QSizePolicy::Fixed);
     quizBoxHlay->addWidget (questionCanvasView);
 
     quizBoxHlay->addStretch (1);
 
-    responseList = new WordListView (wordEngine, this, "responseList");
-    Q_CHECK_PTR (responseList);
-    mainVlay->addWidget (responseList);
+    responseView = new WordTableView (wordEngine);
+    Q_CHECK_PTR (responseView);
+    responseView->verticalHeader()->hide();
+    mainVlay->addWidget (responseView);
+
+    responseModel = new WordTableModel (wordEngine, this);
+    Q_CHECK_PTR (responseModel);
+    connect (responseModel, SIGNAL (wordsChanged()),
+             responseView, SLOT (resizeAllColumnsToContents()));
+    responseView->setModel (responseModel);
 
     // Question status
-    QHBoxLayout* statusHlay = new QHBoxLayout (SPACING, "questionStatusHlay");
+    QHBoxLayout* statusHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (statusHlay);
     mainVlay->addLayout (statusHlay);
 
-    responseStatusLabel = new DefinitionLabel (this, "responseStatusLabel");
+    responseStatusLabel = new DefinitionLabel;
     Q_CHECK_PTR (responseStatusLabel);
     statusHlay->addWidget (responseStatusLabel);
 
-    questionStatusLabel = new DefinitionLabel (this, "questionStatusLabel");
+    questionStatusLabel = new DefinitionLabel;
     Q_CHECK_PTR (questionStatusLabel);
     statusHlay->addWidget (questionStatusLabel);
 
     // Input line
-    inputLine = new WordLineEdit (this, "inputLine");
+    inputLine = new WordLineEdit;
     Q_CHECK_PTR (inputLine);
     WordValidator* validator = new WordValidator (inputLine);
     Q_CHECK_PTR (validator);
@@ -140,19 +147,18 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
     mainVlay->addWidget (inputLine);
 
     // Button layout
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
     buttonHlay->addStretch (1);
 
-    QGridLayout* buttonGlay = new QGridLayout (2, 3, SPACING, "buttonGlay");
+    QGridLayout* buttonGlay = new QGridLayout (2, 3, SPACING);
     Q_CHECK_PTR (buttonGlay);
     buttonHlay->addLayout (buttonGlay);
 
     // Buttons
-    nextQuestionButton = new QPushButton ("&Next", this,
-                                          "nextQuestionButton");
+    nextQuestionButton = new QPushButton ("&Next");
     Q_CHECK_PTR (nextQuestionButton);
     nextQuestionButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (nextQuestionButton, SIGNAL (clicked()),
@@ -160,8 +166,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
     nextQuestionButton->setEnabled (false);
     buttonGlay->addWidget (nextQuestionButton, 0, 0, Qt::AlignHCenter);
 
-    checkResponseButton = new QPushButton ("&Check Answers", this,
-                                           "checkResponseButton");
+    checkResponseButton = new QPushButton ("&Check Answers");
     Q_CHECK_PTR (checkResponseButton);
     checkResponseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (checkResponseButton, SIGNAL (clicked()),
@@ -169,29 +174,26 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, const char* name, WFlags
     checkResponseButton->setEnabled (false);
     buttonGlay->addWidget (checkResponseButton, 0, 1, Qt::AlignHCenter);
 
-    pauseButton = new QPushButton (PAUSE_BUTTON, this, "pauseButton");
+    pauseButton = new QPushButton (PAUSE_BUTTON);
     Q_CHECK_PTR (pauseButton);
     pauseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (pauseButton, SIGNAL (clicked()), SLOT (pauseClicked()));
     pauseButton->setEnabled (false);
     buttonGlay->addWidget (pauseButton, 0, 2, Qt::AlignHCenter);
 
-    QPushButton* newQuizButton = new QPushButton ("New &Quiz...", this,
-                                                  "newQuizButton");
+    QPushButton* newQuizButton = new QPushButton ("New &Quiz...");
     Q_CHECK_PTR (newQuizButton);
     newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
     buttonGlay->addWidget (newQuizButton, 1, 0, Qt::AlignHCenter);
 
-    QPushButton* saveQuizButton = new QPushButton ("&Save Quiz...", this,
-                                                   "saveQuizButton");
+    QPushButton* saveQuizButton = new QPushButton ("&Save Quiz...");
     Q_CHECK_PTR (saveQuizButton);
     saveQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuizClicked()));
     buttonGlay->addWidget (saveQuizButton, 1, 1, Qt::AlignHCenter);
 
-    analyzeButton = new QPushButton ("&Analyze Quiz...", this,
-                                     "analyzeButton");
+    analyzeButton = new QPushButton ("&Analyze Quiz...");
     Q_CHECK_PTR (analyzeButton);
     analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));
@@ -236,10 +238,10 @@ QuizForm::responseEntered()
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
-        WordListViewItem* item = responseList->addWord (response);
-        responseList->setSelected (item, true);
-        responseList->ensureItemVisible (item);
-        item->setTextColor (VALID_CORRECT_WORD_COLOR);
+        responseModel->addWord (response);
+        //responseList->setSelected (item, true);
+        //responseList->ensureItemVisible (item);
+        //item->setTextColor (VALID_CORRECT_WORD_COLOR);
         statusStr = "<font color=\"blue\">Correct</font>";
         analyzeDialog->updateStats();
     }
@@ -297,9 +299,8 @@ QuizForm::saveQuizClicked()
     pauseTimer();
 
     // XXX: This code is copied wholesale from NewQuizDialog::saveQuiz!
-    QString filename = QFileDialog::getSaveFileName
-        (Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)",
-         this, "saveDialog", "Save Quiz");
+    QString filename = QFileDialog::getSaveFileName (this, "Save Quiz",
+        Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)");
 
     if (filename.isEmpty())
         return;
@@ -317,7 +318,9 @@ QuizForm::saveQuizClicked()
             return;
     }
 
-    if (!file.open (IO_WriteOnly | IO_Translate)) {
+    // FIXME Qt4: QIODevice::Translate no longer exists!
+    //if (!file.open (QIODevice::WriteOnly | QIODevice::Translate)) {
+    if (!file.open (QIODevice::WriteOnly)) {
         QMessageBox::warning (this, "Error Saving Quiz",
                               "Cannot save quiz:\n" + file.errorString() +
                               ".");
@@ -347,7 +350,7 @@ void
 QuizForm::newQuizClicked()
 {
     pauseTimer();
-    NewQuizDialog* dialog = new NewQuizDialog (this, "newQuizDialog", true);
+    NewQuizDialog* dialog = new NewQuizDialog (this);
     Q_CHECK_PTR (dialog);
     QuizSpec spec = quizEngine->getQuizSpec();
     spec.setProgress (QuizProgress());
@@ -425,8 +428,8 @@ QuizForm::checkResponseClicked()
     QStringList unanswered = quizEngine->getMissed();
     QStringList::iterator it;
     for (it = unanswered.begin(); it != unanswered.end(); ++it) {
-        WordListViewItem* item = responseList->addWord (*it);
-        item->setTextColor (VALID_MISSED_WORD_COLOR);
+        responseModel->addWord (*it);
+        //item->setTextColor (VALID_MISSED_WORD_COLOR);
         analyzeDialog->addMissed (*it);
     }
 
@@ -478,13 +481,13 @@ QuizForm::startQuestion()
     setQuestionNum (quizEngine->getQuestionIndex() + 1,
                     quizEngine->numQuestions());
     setQuestionLabel (quizEngine->getQuestion());
-    responseList->clear();
+    responseModel->clear();
 
     std::set<QString> correct = quizEngine->getQuestionCorrectResponses();
     std::set<QString>::iterator it;
     for (it = correct.begin(); it != correct.end(); ++it) {
-        WordListViewItem* item = responseList->addWord (*it);
-        item->setTextColor (VALID_CORRECT_WORD_COLOR);
+        responseModel->addWord (*it);
+        //item->setTextColor (VALID_CORRECT_WORD_COLOR);
     }
 
     responseStatusLabel->setText ("");
@@ -584,8 +587,8 @@ QuizForm::clearTimerDisplay()
 void
 QuizForm::clearCanvas()
 {
-    QCanvasItemList canvasItems = questionCanvas->allItems();
-    QCanvasItemList::iterator cItem;
+    Q3CanvasItemList canvasItems = questionCanvas->allItems();
+    Q3CanvasItemList::iterator cItem;
     for (cItem = canvasItems.begin(); cItem != canvasItems.end(); ++cItem)
         delete *cItem;
     canvasItems.clear();
@@ -655,7 +658,7 @@ QuizForm::setQuestionLabel (const QString& question)
 
     // Question is not an alphagram, or there are no tile images
     if (question.contains (" ") || tileImages.empty()) {
-        QCanvasText* text = new QCanvasText (question, questionCanvas);
+        Q3CanvasText* text = new Q3CanvasText (question, questionCanvas);
         QRect rect = text->boundingRect();
         int width = (2 * QUIZ_TILE_MARGIN) + rect.width();
         if (width < minCanvasWidth)
@@ -678,7 +681,7 @@ QuizForm::setQuestionLabel (const QString& question)
         for (int i = 0; (i < numCanvasTiles) && (i < int (question.length()));
              ++i)
         {
-            QString letter = question[i];
+            QString letter = QString (question[i]);
             if (letter == "?")
                 letter = "_";
             image = tileImages.find (letter);

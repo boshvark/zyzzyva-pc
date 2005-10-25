@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// WordListView.h
+// WordTableModel.h
 //
-// A customized list view.
+// A model for representing word lists.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,43 +22,43 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_LIST_VIEW_H
-#define WORD_LIST_VIEW_H
+#ifndef WORD_TABLE_MODEL_H
+#define WORD_TABLE_MODEL_H
 
-#include <qevent.h>
-#include <qlistview.h>
+#include <QAbstractTableModel>
+#include <QChar>
+#include <QStringList>
 
 class WordEngine;
-class WordListViewItem;
 
-class WordListView : public QListView
+class WordTableModel : public QAbstractTableModel
 {
     Q_OBJECT
     public:
-    WordListView (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-                  WFlags f = 0);
-    ~WordListView();
+    WordTableModel (WordEngine* e, QObject* parent = 0);
+    ~WordTableModel();
 
-    void setFont (const QFont& font);
-    WordListViewItem* addWord (const QString& word);
+    bool clear();
+    bool addWord (const QString& word);
+    bool addWords (const QStringList& words);
 
-    public slots:
-    void clear();
-    void doReturnPressed (QListViewItem* item);
-    void doPopupMenu (QListViewItem* item, const QPoint& point, int);
-    void exportRequested();
-    void createQuizRequested();
-    void displayDefinition (const QString& word);
-    void showHooks (bool show);
-    void showDefinitions (bool show);
+    int rowCount (const QModelIndex& parent = QModelIndex()) const;
+    int columnCount (const QModelIndex& parent = QModelIndex()) const;
+    QVariant data (const QModelIndex& index, int role = Qt::DisplayRole)
+        const;
+    QVariant headerData (int section, Qt::Orientation orientation, int role =
+                         Qt::DisplayRole) const;
+    bool insertRows (int row, int count, const QModelIndex& parent =
+                     QModelIndex());
+    bool removeRows (int row, int count, const QModelIndex& parent =
+                     QModelIndex());
+    bool setData (const QModelIndex& index, const QVariant& value, int role =
+                  Qt::EditRole);
+
+    signals:
+    void wordsChanged();
 
     private:
-    void contextMenuEvent (QContextMenuEvent* e);
-    bool exportFile (const QString& filename, QString* err = 0) const;
-    void resetColumnWidths();
-    void resizeColumns();
-    void resizeColumnText (int column, const QString& text);
-    int getTextColumnWidth (const QString& text) const;
     bool isFrontHook (const QString& word) const;
     bool isBackHook (const QString& word) const;
     QString getFrontHookLetters (const QString& word) const;
@@ -66,8 +66,7 @@ class WordListView : public QListView
 
     private:
     WordEngine* wordEngine;
-    bool hidden[4];
-    int widths[4];
+    QStringList wordList;
 
     public:
     enum {
@@ -80,5 +79,5 @@ class WordListView : public QListView
     static const QChar PARENT_HOOK_CHAR;
 };
 
-#endif // WORD_LIST_VIEW_H
+#endif // WORD_TABLE_MODEL_H
 

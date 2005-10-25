@@ -25,13 +25,13 @@
 #include "WordListDialog.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qapplication.h>
-#include <qfile.h>
-#include <qfiledialog.h>
-#include <qlayout.h>
-#include <qmessagebox.h>
-#include <qpushbutton.h>
-#include <qvgroupbox.h>
+#include <QApplication>
+#include <QFile>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QMessageBox>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Edit Word List";
 const QString LIST_HEADER_PREFIX = "Word List : ";
@@ -44,38 +44,32 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
-//! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
-WordListDialog::WordListDialog (QWidget* parent, const char* name, bool modal,
-                                WFlags f)
-    : QDialog (parent, name, modal, f)
+WordListDialog::WordListDialog (QWidget* parent, Qt::WFlags f)
+    : QDialog (parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    wordList = new QListView (this, "wordList");
+    wordList = new Q3ListView (this);
     Q_CHECK_PTR (wordList);
-    wordList->setResizeMode (QListView::LastColumn);
+    wordList->setResizeMode (Q3ListView::LastColumn);
     wordList->addColumn ("");
     updateListHeader();
     mainVlay->addWidget (wordList);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    QPushButton* openFileButton = new QPushButton ("Open &File...", this,
-                                                   "openFileButton");
+    QPushButton* openFileButton = new QPushButton ("Open &File...");
     Q_CHECK_PTR (openFileButton);
     openFileButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (openFileButton, SIGNAL (clicked()), SLOT (openFileClicked()));
     buttonHlay->addWidget (openFileButton);
 
-    QPushButton* clearButton = new QPushButton ("&Clear", this,
-                                                "clearButton");
+    QPushButton* clearButton = new QPushButton ("&Clear");
     Q_CHECK_PTR (clearButton);
     clearButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (clearButton, SIGNAL (clicked()), SLOT (clearClicked()));
@@ -83,15 +77,14 @@ WordListDialog::WordListDialog (QWidget* parent, const char* name, bool modal,
 
     buttonHlay->addStretch (1);
 
-    QPushButton* okButton = new QPushButton ("&OK", this, "okButton");
+    QPushButton* okButton = new QPushButton ("&OK");
     Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (okButton);
 
-    QPushButton* cancelButton = new QPushButton ("Cancel", this,
-                                                 "cancelButton");
+    QPushButton* cancelButton = new QPushButton ("Cancel");
     Q_CHECK_PTR (cancelButton);
     cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
@@ -124,7 +117,7 @@ WordListDialog::setWords (const QString& string)
     QStringList words = QStringList::split (" ", string);
     QStringList::iterator it;
     for (it = words.begin(); it != words.end(); ++it)
-        new QListViewItem (wordList, *it);
+        new Q3ListViewItem (wordList, *it);
     updateListHeader();
 }
 
@@ -139,7 +132,7 @@ QString
 WordListDialog::getWords() const
 {
     QString str;
-    QListViewItem* item = 0;
+    Q3ListViewItem* item = 0;
     for (item = wordList->firstChild(); item; item = item->nextSibling()) {
         if (!str.isEmpty())
             str += " ";
@@ -156,14 +149,16 @@ WordListDialog::getWords() const
 void
 WordListDialog::openFileClicked()
 {
-    QString filename = QFileDialog::getOpenFileName
-        (Auxil::getWordsDir(), "Text Files (*.txt)", this, "openFileDialog",
-         "Open Word List File");
+    QString filename = QFileDialog::getOpenFileName (this,
+        "Open Word List File", Auxil::getWordsDir(), "Text Files (*.txt)");
+
     if (filename.isEmpty())
         return;
 
     QFile file (filename);
-    if (!file.open (IO_ReadOnly | IO_Translate)) {
+    // FIXME Qt4: QIODevice::Translate does not exist!
+    //if (!file.open (QIODevice::ReadOnly | QIODevice::Translate)) {
+    if (!file.open (QIODevice::ReadOnly)) {
         QMessageBox::warning (this, "Error Opening Word List File",
                               "Cannot open file '" + filename + "': " +
                               file.errorString());
@@ -172,13 +167,17 @@ WordListDialog::openFileClicked()
 
     QApplication::setOverrideCursor (Qt::waitCursor);
     QString line;
-    while (file.readLine (line, MAX_INPUT_LINE_LEN) > 0) {
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
         line = line.simplifyWhiteSpace();
         if (!line.length() || (line.at (0) == '#'))
             continue;
         QString word = line.section (' ', 0, 0);
-        new QListViewItem (wordList, word);
+        new Q3ListViewItem (wordList, word);
     }
+    delete[] buffer;
+
     QApplication::restoreOverrideCursor();
 
     updateListHeader();

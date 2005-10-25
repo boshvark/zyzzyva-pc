@@ -23,8 +23,7 @@
 #include "HelpDialog.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qfile.h>
-#include <qstringlist.h>
+#include <QStringList>
 
 //---------------------------------------------------------------------------
 //  HelpDialog
@@ -32,11 +31,10 @@
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-HelpDialog::HelpDialog (const QString& path, QObject* parent, const char* name)
-    : QAssistantClient (path, parent, name)
+HelpDialog::HelpDialog (const QString& path, QObject* parent)
+    : QAssistantClient (path, parent)
 {
     QString mainHelpFile = Auxil::getHelpDir() + "/zyzzyva.dcf";
     QStringList args;

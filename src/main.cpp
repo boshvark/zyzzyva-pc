@@ -23,8 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "MainWindow.h"
-#include <qapplication.h>
-#include <qwindowdefs.h>
+#include <QApplication>
 
 int main (int argc, char** argv)
 {

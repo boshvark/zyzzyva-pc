@@ -25,13 +25,13 @@
 #ifndef HELP_DIALOG_H
 #define HELP_DIALOG_H
 
-#include <qassistantclient.h>
+#include <QAssistantClient>
 
 class HelpDialog : public QAssistantClient
 {
     Q_OBJECT
     public:
-    HelpDialog (const QString& path, QObject* parent = 0, const char* name = 0);
+    HelpDialog (const QString& path, QObject* parent = 0);
 };
 
 #endif // HELP_DIALOG_H

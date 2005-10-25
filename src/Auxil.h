@@ -27,7 +27,7 @@
 
 #include "SearchCondition.h"
 #include "SearchSet.h"
-#include <qstring.h>
+#include <QString>
 
 namespace Auxil {
     QString getAboutString();

@@ -26,21 +26,20 @@
 #define SEARCH_FORM_H
 
 #include "ActionForm.h"
-#include <qcheckbox.h>
-#include <qlabel.h>
-#include <qpoint.h>
-#include <qpushbutton.h>
+//#include <QCheckBox>
+#include <QLabel>
+#include <QPushButton>
 
 class SearchSpecForm;
 class WordEngine;
-class WordListView;
+class WordTableModel;
+class WordTableView;
 
 class SearchForm : public ActionForm
 {
     Q_OBJECT
     public:
-    SearchForm (WordEngine* e, QWidget* parent = 0, const char* name = 0,
-                WFlags f = 0);
+    SearchForm (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
 
     public slots:
     void search();
@@ -48,11 +47,12 @@ class SearchForm : public ActionForm
     void specChanged();
 
     private:
-    WordEngine*     engine;
+    WordEngine*     wordEngine;
     SearchSpecForm* specForm;
     //QCheckBox*      lowerCaseCbox;
     QLabel*         resultLabel;
-    WordListView*   resultList;
+    WordTableView*  resultView;
+    WordTableModel* resultModel;
     QPushButton*    searchButton;
 };
 

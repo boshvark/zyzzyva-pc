@@ -25,8 +25,8 @@
 #ifndef MAIN_SETTINGS_H
 #define MAIN_SETTINGS_H
 
-#include <qsettings.h>
-#include <qstring.h>
+#include <QSettings>
+#include <QString>
 
 class MainSettings
 {

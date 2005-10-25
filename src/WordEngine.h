@@ -26,8 +26,8 @@
 #define WORD_ENGINE_H
 
 #include "WordGraph.h"
-#include <qstring.h>
-#include <qstringlist.h>
+#include <QString>
+#include <QStringList>
 #include <map>
 #include <set>
 
@@ -47,8 +47,8 @@ class WordEngine
     QString getDefinition (const QString& word) const;
 
     private:
-    bool matchesConditions (const QString& word, const
-                            QValueList<SearchCondition>& conditions) const;
+    bool matchesConditions (const QString& word, const QList<SearchCondition>&
+                            conditions) const;
     bool isSetMember (const QString& word, SearchSet ss) const;
     int numAnagrams (const QString& word) const;
     QStringList wordListOnlySearch (const SearchSpec& spec) const;

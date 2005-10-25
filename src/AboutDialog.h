@@ -25,14 +25,13 @@
 #ifndef ABOUT_DIALOG_H
 #define ABOUT_DIALOG_H
 
-#include <qdialog.h>
+#include <QDialog>
 
 class AboutDialog : public QDialog
 {
     Q_OBJECT
     public:
-    AboutDialog (QWidget* parent = 0, const char* name = 0,
-                 bool modal = false, WFlags f = WType_TopLevel);
+    AboutDialog (QWidget* parent = 0, Qt::WFlags f = Qt::WType_TopLevel);
     ~AboutDialog();
 };
 

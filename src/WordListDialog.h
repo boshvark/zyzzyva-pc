@@ -26,15 +26,14 @@
 #define WORD_LIST_DIALOG_H
 
 #include "WordEngine.h"
-#include <qdialog.h>
-#include <qlistview.h>
+#include <QDialog>
+#include <Q3ListView>
 
 class WordListDialog : public QDialog
 {
     Q_OBJECT
     public:
-    WordListDialog (QWidget* parent = 0, const char* name = 0, bool modal =
-                    false, WFlags f = WType_TopLevel);
+    WordListDialog (QWidget* parent = 0, Qt::WFlags f = Qt::WType_TopLevel);
     ~WordListDialog();
 
     int numWords() const { return wordList->childCount(); }
@@ -49,7 +48,7 @@ class WordListDialog : public QDialog
     void updateListHeader();
 
     private:
-    QListView* wordList;
+    Q3ListView* wordList;
 };
 
 #endif // WORD_LIST_DIALOG_H

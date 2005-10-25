@@ -27,14 +27,13 @@
 
 #include "ActionForm.h"
 #include "QuizTimerSpec.h"
-#include <qcanvas.h>
-#include <qimage.h>
-#include <qlabel.h>
-#include <qlistview.h>
-#include <qmap.h>
-#include <qpoint.h>
-#include <qpushbutton.h>
-#include <qstring.h>
+#include <Q3Canvas>
+#include <QImage>
+#include <QLabel>
+#include <QMap>
+#include <QPushButton>
+#include <QString>
+#include <QTimerEvent>
 
 class AnalyzeQuizDialog;
 class DefinitionLabel;
@@ -42,14 +41,14 @@ class QuizEngine;
 class QuizSpec;
 class WordEngine;
 class WordLineEdit;
-class WordListView;
+class WordTableModel;
+class WordTableView;
 
 class QuizForm : public ActionForm
 {
     Q_OBJECT
     public:
-    QuizForm (WordEngine* we, QWidget* parent = 0, const char* name = 0,
-              WFlags f = 0);
+    QuizForm (WordEngine* we, QWidget* parent = 0, Qt::WFlags f = 0);
     ~QuizForm();
 
     public slots:
@@ -92,10 +91,11 @@ class QuizForm : public ActionForm
     QLabel*       questionNumLabel;
     QLabel*       timerLabel;
     QWidget*      questionWidget;
-    QCanvasView*  questionCanvasView;
-    QCanvas*      questionCanvas;
+    Q3CanvasView*  questionCanvasView;
+    Q3Canvas*      questionCanvas;
     WordLineEdit* inputLine;
-    WordListView* responseList;
+    WordTableView* responseView;
+    WordTableModel* responseModel;
     DefinitionLabel* responseStatusLabel;
     DefinitionLabel* questionStatusLabel;
     QPushButton*  nextQuestionButton;

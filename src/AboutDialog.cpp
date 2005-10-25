@@ -25,9 +25,10 @@
 #include "AboutDialog.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "About Zyzzyva";
 
@@ -39,37 +40,34 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
-//! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
-AboutDialog::AboutDialog (QWidget* parent, const char* name, bool modal,
-                          WFlags f)
-    : QDialog (parent, name, modal, f)
+AboutDialog::AboutDialog (QWidget* parent, Qt::WFlags f)
+    : QDialog (parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    QLabel* label = new QLabel (this, "label");
+    QLabel* label = new QLabel;
     Q_CHECK_PTR (label);
     label->setPaletteBackgroundColor (QColor (255, 255, 255));
     label->setFrameShape (QLabel::StyledPanel);
     label->setFrameShadow (QLabel::Sunken);
     label->setLineWidth (2);
     label->setMargin (2);
-    label->setAlignment (QLabel::WordBreak | QLabel::AlignCenter);
+    // FIXME Qt4: QLabel::WordBreak and QLabel::AlignCenter no longer exist!
+    //label->setAlignment (QLabel::WordBreak | QLabel::AlignCenter);
     label->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
     label->setText (Auxil::getAboutString()); 
     mainVlay->addWidget (label);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
     buttonHlay->addStretch (1);
 
-    QPushButton* closeButton = new QPushButton ("&Close", this, "closeButton");
+    QPushButton* closeButton = new QPushButton ("&Close");
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setDefault (true);

@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "WordPopupMenu.h"
+#include <QMenu>
 
 //---------------------------------------------------------------------------
 //  WordPopupMenu
@@ -30,14 +31,13 @@
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
 //---------------------------------------------------------------------------
-WordPopupMenu::WordPopupMenu (bool showWordOptions, QWidget* parent, const
-                              char* name)
-    : QPopupMenu (parent, name)
+WordPopupMenu::WordPopupMenu (bool showWordOptions, QWidget* parent)
+    : QMenu (parent)
 {
+    init();
     if (showWordOptions) {
-        QPopupMenu* viewPopup = new QPopupMenu (this, "viewPopup");
+        Q3PopupMenu* viewPopup = new Q3PopupMenu (this, "viewPopup");
         viewPopup->insertItem ("Definition", ViewDefinition);
         viewPopup->insertItem ("Anagrams", ViewAnagrams);
         viewPopup->insertItem ("Subanagrams", ViewSubanagrams);
@@ -59,5 +59,10 @@ WordPopupMenu::WordPopupMenu (bool showWordOptions, QWidget* parent, const
 //! Destructor.
 //---------------------------------------------------------------------------
 WordPopupMenu::~WordPopupMenu()
+{
+}
+
+void
+WordPopupMenu::init()
 {
 }

@@ -186,8 +186,8 @@ QuizEngine::respond (const QString& response)
 QString
 QuizEngine::getQuestion() const
 {
-    QStringList::const_iterator it = quizQuestions.at (questionIndex);
-    return it == quizQuestions.end() ? QString::null : *it;
+    return (questionIndex >= quizQuestions.size()) ? QString::null:
+        quizQuestions.at (questionIndex);
 }
 
 //---------------------------------------------------------------------------

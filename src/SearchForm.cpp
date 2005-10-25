@@ -25,13 +25,15 @@
 #include "SearchForm.h"
 #include "SearchSpecForm.h"
 #include "WordEngine.h"
-#include "WordListView.h"
-#include "WordListViewItem.h"
+#include "WordTableModel.h"
+#include "WordTableView.h"
 #include "Defs.h"
-#include <qapplication.h>
-#include <qbuttongroup.h>
-#include <qlayout.h>
-#include <qsplitter.h>
+#include <QApplication>
+#include <QHeaderView>
+#include <QLabel>
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QSplitter>
 
 using namespace Defs;
 
@@ -40,52 +42,55 @@ using namespace Defs;
 //
 //! Constructor.
 //
-//! @e the word engine
+//! @param e the word engine
 //! @param parent the parent widget
-//! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-SearchForm::SearchForm (WordEngine* e, QWidget* parent, const char* name,
-                        WFlags f)
-    : ActionForm (SearchFormType, parent, name, f), engine (e)
+SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
+    : ActionForm (SearchFormType, parent, f), wordEngine (e)
 {
-    QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING,
-                                             "mainHlay");
+    QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainHlay);
 
-    QVBoxLayout* specVlay = new QVBoxLayout (SPACING, "specVlay");
+    QVBoxLayout* specVlay = new QVBoxLayout (SPACING);
     Q_CHECK_PTR (specVlay);
     mainHlay->addLayout (specVlay);
 
-    specForm = new SearchSpecForm (this, "specForm");
+    specForm = new SearchSpecForm;
     Q_CHECK_PTR (specForm);
     connect (specForm, SIGNAL (returnPressed()), SLOT (search()));
     connect (specForm, SIGNAL (contentsChanged()), SLOT (specChanged()));
     specVlay->addWidget (specForm);
 
     //lowerCaseCbox = new QCheckBox ("Use lower-case letters for wildcard "
-    //                               "matches", this, "lowerCaseCbox");
+    //                               "matches");
     //Q_CHECK_PTR (lowerCaseCbox);
     //specVlay->addWidget (lowerCaseCbox);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     specVlay->addLayout (buttonHlay);
 
-    searchButton = new QPushButton ("&Search", this, "searchButton");
+    searchButton = new QPushButton ("&Search");
     Q_CHECK_PTR (searchButton);
     searchButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (searchButton, SIGNAL (clicked()), SLOT (search()));
     buttonHlay->addWidget (searchButton);
 
-    resultLabel = new QLabel (this, "resultLabel");
+    resultLabel = new QLabel;
     Q_CHECK_PTR (resultLabel);
     specVlay->addWidget (resultLabel);
 
-    resultList = new WordListView (engine, this, "resultList");
-    Q_CHECK_PTR (resultList);
-    resultList->setShowSortIndicator (true);
-    specVlay->addWidget (resultList, 1);
+    resultView = new WordTableView (wordEngine);
+    Q_CHECK_PTR (resultView);
+    resultView->verticalHeader()->hide();
+    specVlay->addWidget (resultView, 1);
+
+    resultModel = new WordTableModel (wordEngine, this);
+    Q_CHECK_PTR (resultModel);
+    connect (resultModel, SIGNAL (wordsChanged()),
+             resultView, SLOT (resizeAllColumnsToContents()));
+    resultView->setModel (resultModel);
 
     updateResultTotal (0);
     specChanged();
@@ -105,16 +110,16 @@ SearchForm::search()
         return;
 
     QApplication::setOverrideCursor (Qt::waitCursor);
-    resultList->clear();
-    QStringList wordList = engine->search (specForm->getSearchSpec(), true);
-                                           //!lowerCaseCbox->isChecked());
-    int numWords = 0;
-    QStringList::iterator it;
-    for (it = wordList.begin(); it != wordList.end(); ++it, ++numWords)
-        resultList->addWord (*it);
+    resultModel->removeRows (0, resultModel->rowCount());
 
-    resultList->sort();
-    updateResultTotal (numWords);
+    QStringList wordList = wordEngine->search (specForm->getSearchSpec(),
+                                               true);
+                                           //!lowerCaseCbox->isChecked());
+
+    resultModel->addWords (wordList);
+    //resultView->sort();
+
+    updateResultTotal (wordList.size());
     QApplication::restoreOverrideCursor();
 }
 

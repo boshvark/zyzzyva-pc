@@ -28,7 +28,8 @@
 #include "SearchCondition.h"
 #include "SearchSet.h"
 #include "Defs.h"
-#include <qdom.h>
+#include <QDomElement>
+#include <QList>
 
 class SearchSpec
 {
@@ -42,7 +43,7 @@ class SearchSpec
     void optimize();
 
     bool conjunction;
-    QValueList<SearchCondition> conditions;
+    QList<SearchCondition> conditions;
 };
 
 #endif // SEARCH_SPEC_H

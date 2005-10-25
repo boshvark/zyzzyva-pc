@@ -23,9 +23,10 @@
 #include "WordEntryDialog.h"
 #include "WordValidator.h"
 #include "Defs.h"
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qpushbutton.h>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Enter a word";
 
@@ -41,44 +42,41 @@ using namespace Defs;
 //! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
-WordEntryDialog::WordEntryDialog (QWidget* parent, const char* name, bool
-                                  modal, WFlags f)
-    : QDialog (parent, name, modal, f),
-    wordValidator (new WordValidator (this, "wordValidator"))
+WordEntryDialog::WordEntryDialog (QWidget* parent, Qt::WFlags f)
+    : QDialog (parent, f),
+    wordValidator (new WordValidator (this))
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    QHBoxLayout* lineHlay = new QHBoxLayout (SPACING, "lineHlay");
+    QHBoxLayout* lineHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (lineHlay);
     mainVlay->addLayout (lineHlay);
 
-    QLabel* label = new QLabel ("Word:", this, "label");
+    QLabel* label = new QLabel ("Word:");
     Q_CHECK_PTR (label);
     lineHlay->addWidget (label);
 
-    wordLine = new QLineEdit (this, "wordLine");
+    wordLine = new QLineEdit;
     Q_CHECK_PTR (wordLine);
     wordLine->setValidator (wordValidator);
     lineHlay->addWidget (wordLine);
 
     // OK/Cancel buttons
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
     buttonHlay->addStretch (1);
 
-    QPushButton* okButton = new QPushButton ("OK", this, "okButton");
+    QPushButton* okButton = new QPushButton ("OK");
     Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (okButton);
 
-    QPushButton* cancelButton = new QPushButton ("Cancel", this,
-                                                 "cancelButton");
+    QPushButton* cancelButton = new QPushButton ("Cancel");
     Q_CHECK_PTR (cancelButton);
     cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));

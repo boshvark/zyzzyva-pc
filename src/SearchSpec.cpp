@@ -44,11 +44,11 @@ QString
 SearchSpec::asString() const
 {
     QString str;
-    QValueList<SearchCondition>::const_iterator it;
-    for (it = conditions.begin(); it != conditions.end(); ++it) {
+    QListIterator<SearchCondition> it (conditions);
+    while (it.hasNext()) {
         if (!str.isEmpty())
             str += (conjunction ? QString (" AND ") : QString (" OR "));
-        str += (*it).asString();
+        str += it.next().asString();
     }
     return str;
 }
@@ -78,10 +78,9 @@ SearchSpec::asDomElement() const
     QDomElement conjunctionElement = doc.createElement (conjunctionType);
     conditionsElement.appendChild (conjunctionElement);
 
-    QValueList<SearchCondition>::const_iterator it;
-    for (it = conditions.begin(); it != conditions.end(); ++it) {
-        conjunctionElement.appendChild ((*it).asDomElement());
-    }
+    QListIterator<SearchCondition> it (conditions);
+    while (it.hasNext())
+        conjunctionElement.appendChild (it.next().asDomElement());
 
     return topElement;
 }
@@ -142,7 +141,7 @@ SearchSpec::fromDomElement (const QDomElement& element)
 void
 SearchSpec::optimize()
 {
-    QValueList<SearchCondition> newConditions;
+    QList<SearchCondition> newConditions;
 
     const int MAX_ANAGRAMS = 65535;
     QString mustInclude;
@@ -152,12 +151,13 @@ SearchSpec::optimize()
     int minAnagrams = 0;
     int maxAnagrams = MAX_ANAGRAMS;
 
-    QValueList<SearchCondition>::iterator it;
-    for (it = conditions.begin(); it != conditions.end(); ++it) {
+    QListIterator<SearchCondition> it (conditions);
+    while (it.hasNext()) {
 
-        int intValue = (*it).intValue;
-        QString stringValue = (*it).stringValue;
-        switch ((*it).type) {
+        const SearchCondition& condition = it.next();
+        int intValue = condition.intValue;
+        QString stringValue = condition.stringValue;
+        switch (condition.type) {
 
             case SearchCondition::ExactLength:
             if ((intValue < minLength) || (intValue > maxLength)) {
@@ -195,7 +195,7 @@ SearchSpec::optimize()
                 }
             }
             mustInclude += stringValue;
-            newConditions << *it;
+            newConditions.append (condition);
             break;
 
             case SearchCondition::MustExclude:
@@ -208,7 +208,7 @@ SearchSpec::optimize()
                 }
             }
             mustExclude += stringValue;
-            newConditions << *it;
+            newConditions.append (condition);
             break;
 
             case SearchCondition::MustBelong: {
@@ -235,7 +235,7 @@ SearchSpec::optimize()
                     default: break;
                 }
 
-                newConditions << *it;
+                newConditions.append (condition);
             }
             break;
 
@@ -266,7 +266,7 @@ SearchSpec::optimize()
             break;
 
             default:
-            newConditions << *it;
+            newConditions.append (condition);
             break;
         }
     }

@@ -25,23 +25,23 @@
 #ifndef ANALYZE_QUIZ_DIALOG_H
 #define ANALYZE_QUIZ_DIALOG_H
 
-#include <qdialog.h>
-#include <qlabel.h>
-#include <qlistview.h>
-#include <qpushbutton.h>
+#include <QDialog>
+#include <QLabel>
+#include <QPushButton>
 #include "MatchType.h"
 
 class QuizEngine;
 class QuizSpec;
 class WordEngine;
-class WordListView;
+class WordTableModel;
+class WordTableView;
 
 class AnalyzeQuizDialog : public QDialog
 {
     Q_OBJECT
     public:
     AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget* parent = 0,
-                       const char* name = 0, bool modal = false, WFlags f = 0);
+                       Qt::WFlags f = 0);
 
     ~AnalyzeQuizDialog() { }
 
@@ -66,8 +66,10 @@ class AnalyzeQuizDialog : public QDialog
     QLabel*       precisionLabel;
     QLabel*       missedLabel;
     QLabel*       incorrectLabel;
-    WordListView* missedList;
-    WordListView* incorrectList;
+    WordTableView*  missedView;
+    WordTableModel* missedModel;
+    WordTableView*  incorrectView;
+    WordTableModel* incorrectModel;
     QPushButton*  closeButton;
 };
 

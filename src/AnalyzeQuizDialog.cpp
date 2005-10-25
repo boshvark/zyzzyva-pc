@@ -25,9 +25,12 @@
 #include "QuizEngine.h"
 #include "QuizSpec.h"
 #include "WordEngine.h"
-#include "WordListView.h"
-#include "WordListViewItem.h"
-#include <qlayout.h>
+#include "WordTableModel.h"
+#include "WordTableView.h"
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Analyze Quiz";
 const QString MISSED_LABEL_PREFIX = "Missed : ";
@@ -41,66 +44,76 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
-//! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
 AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
-                                      parent, const char* name, bool modal,
-                                      WFlags f)
-    : QDialog (parent, name, modal, f), quizEngine (qe), wordEngine (we)
+                                      parent, Qt::WFlags f)
+    : QDialog (parent, f), quizEngine (qe), wordEngine (we)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    questionLabel = new QLabel (this, "questionLabel");
+    questionLabel = new QLabel;
     Q_CHECK_PTR (questionLabel);
     mainVlay->addWidget (questionLabel);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout (SPACING, "mainHlay");
+    QHBoxLayout* mainHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (mainHlay);
     mainVlay->addLayout (mainHlay);
 
-    QVBoxLayout* missedVlay = new QVBoxLayout (SPACING, "missedVlay");
+    QVBoxLayout* missedVlay = new QVBoxLayout (SPACING);
     Q_CHECK_PTR (missedVlay);
     mainHlay->addLayout (missedVlay, 1);
 
-    recallLabel = new QLabel (this, "recallLabel");
+    recallLabel = new QLabel;
     Q_CHECK_PTR (recallLabel);
     missedVlay->addWidget (recallLabel);
 
-    missedLabel = new QLabel (this, "missedLabel");
+    missedLabel = new QLabel;
     Q_CHECK_PTR (missedLabel);
     missedVlay->addWidget (missedLabel);
 
-    missedList = new WordListView (wordEngine, this, "missedList");
-    Q_CHECK_PTR (missedList);
-    missedVlay->addWidget (missedList);
+    missedView = new WordTableView (wordEngine);
+    Q_CHECK_PTR (missedView);
+    missedView->verticalHeader()->hide();
+    missedVlay->addWidget (missedView);
 
-    QVBoxLayout* incorrectVlay = new QVBoxLayout (SPACING, "incorrectVlay");
+    missedModel = new WordTableModel (wordEngine, this);
+    Q_CHECK_PTR (missedModel);
+    connect (missedModel, SIGNAL (wordsChanged()),
+             missedView, SLOT (resizeAllColumnsToContents()));
+    missedView->setModel (missedModel);
+
+    QVBoxLayout* incorrectVlay = new QVBoxLayout (SPACING);
     Q_CHECK_PTR (incorrectVlay);
     mainHlay->addLayout (incorrectVlay, 1);
 
-    precisionLabel = new QLabel (this, "precisionLabel");
+    precisionLabel = new QLabel;
     Q_CHECK_PTR (precisionLabel);
     incorrectVlay->addWidget (precisionLabel);
 
-    incorrectLabel = new QLabel (this, "incorrectLabel");
+    incorrectLabel = new QLabel;
     Q_CHECK_PTR (incorrectLabel);
     incorrectVlay ->addWidget (incorrectLabel);
 
-    incorrectList = new WordListView (wordEngine, this, "incorrectList");
-    Q_CHECK_PTR (incorrectList);
-    incorrectVlay->addWidget (incorrectList);
+    incorrectView = new WordTableView (wordEngine);
+    Q_CHECK_PTR (incorrectView);
+    incorrectView->verticalHeader()->hide();
+    incorrectVlay->addWidget (incorrectView);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    incorrectModel = new WordTableModel (wordEngine, this);
+    Q_CHECK_PTR (incorrectModel);
+    connect (incorrectModel, SIGNAL (wordsChanged()),
+             incorrectView, SLOT (resizeAllColumnsToContents()));
+    incorrectView->setModel (incorrectModel);
+
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
     buttonHlay->addStretch (1);
 
-    closeButton = new QPushButton ("&Close", this, "closeButton");
+    closeButton = new QPushButton ("&Close", this);
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setAutoDefault (false);
@@ -150,13 +163,13 @@ AnalyzeQuizDialog::updateStats()
     int correct = quizEngine->getQuizCorrect();
     setRecall (correct, quizEngine->getQuizTotal());
     setPrecision (correct, correct + quizEngine->getQuizIncorrect());
-    int missed = missedList->childCount();
+    int missed = missedModel->rowCount();
     QString missedText = MISSED_LABEL_PREFIX + QString::number (missed) +
         " word";
     if (missed != 1)
         missedText += "s";
     missedLabel->setText (missedText);
-    int incorrect = incorrectList->childCount();
+    int incorrect = incorrectModel->rowCount();
     QString incorrectText = INCORRECT_LABEL_PREFIX + QString::number
         (incorrect) + " word";
     if (incorrect != 1)
@@ -175,8 +188,8 @@ AnalyzeQuizDialog::updateStats()
 void
 AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 {
-    WordListViewItem* item = missedList->addWord (word);
-    item->setTextColor (VALID_MISSED_WORD_COLOR);
+    missedModel->addWord (word);
+    //item->setTextColor (VALID_MISSED_WORD_COLOR);
     if (update)
         updateStats();
 }
@@ -192,8 +205,8 @@ AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 void
 AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
 {
-    WordListViewItem* item = incorrectList->addWord (word);
-    item->setTextColor (INVALID_WORD_COLOR);
+    incorrectModel->addWord (word);
+    //item->setTextColor (INVALID_WORD_COLOR);
     if (update)
         updateStats();
 }
@@ -206,7 +219,7 @@ AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
 void
 AnalyzeQuizDialog::clearMissed()
 {
-    missedList->clear();
+    missedModel->clear();
 }
 
 //---------------------------------------------------------------------------
@@ -217,7 +230,7 @@ AnalyzeQuizDialog::clearMissed()
 void
 AnalyzeQuizDialog::clearIncorrect()
 {
-    incorrectList->clear();
+    incorrectModel->clear();
 }
 
 //---------------------------------------------------------------------------

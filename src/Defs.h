@@ -25,8 +25,8 @@
 #ifndef DEFS_H
 #define DEFS_H
 
-#include <qcolor.h>
-#include <qstring.h>
+#include <QColor>
+#include <QString>
 
 namespace Defs {
     const QColor VALID_CORRECT_WORD_COLOR = Qt::blue;

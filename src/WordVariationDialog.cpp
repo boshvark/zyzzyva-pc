@@ -24,10 +24,14 @@
 #include "Defs.h"
 #include "DefinitionLabel.h"
 #include "WordEngine.h"
-#include "WordListView.h"
-#include "WordListViewItem.h"
-#include <qapplication.h>
-#include <qlayout.h>
+#include "WordTableModel.h"
+#include "WordTableView.h"
+#include <QApplication>
+#include <QHBoxLayout>
+#include <QHeaderView>
+#include <QLabel>
+#include <QList>
+#include <QVBoxLayout>
 #include <set>
 
 using namespace Defs;
@@ -45,66 +49,76 @@ using std::set;
 //---------------------------------------------------------------------------
 WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
                                           WordVariationType variation,
-                                          QWidget* parent, const char* name,
-                                          bool modal, WFlags f)
-    : QDialog (parent, name, modal, f), wordEngine (we)
+                                          QWidget* parent, Qt::WFlags f)
+    : QDialog (parent, f), wordEngine (we)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    QHBoxLayout* labelHlay = new QHBoxLayout (SPACING, "labelHlay");
+    QHBoxLayout* labelHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (labelHlay);
     mainVlay->addLayout (labelHlay);
 
     labelHlay->addStretch (1);
 
-    wordLabel = new DefinitionLabel (this, "wordLabel");
+    wordLabel = new DefinitionLabel;
     Q_CHECK_PTR (wordLabel);
     labelHlay->addWidget (wordLabel);
 
     labelHlay->addStretch (1);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout (SPACING, "mainHlay");
+    QHBoxLayout* mainHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (mainHlay);
     mainVlay->addLayout (mainHlay);
 
-    QVBoxLayout* leftVlay = new QVBoxLayout (SPACING, "leftVlay");
+    QVBoxLayout* leftVlay = new QVBoxLayout (SPACING);
     Q_CHECK_PTR (leftVlay);
     mainHlay->addLayout (leftVlay, 1);
 
-    leftLabel = new QLabel (this, "leftLabel");
+    leftLabel = new QLabel;
     Q_CHECK_PTR (leftLabel);
     leftVlay->addWidget (leftLabel);
 
-    leftList = new WordListView (wordEngine, this, "leftList");
-    Q_CHECK_PTR (leftList);
-    leftList->setShowSortIndicator(true);
-    leftVlay->addWidget (leftList);
+    leftView = new WordTableView (wordEngine);
+    Q_CHECK_PTR (leftView);
+    leftVlay->addWidget (leftView);
+
+    leftModel = new WordTableModel (wordEngine, this);
+    Q_CHECK_PTR (leftModel);
+    leftView->verticalHeader()->hide();
+    connect (leftModel, SIGNAL (wordsChanged()),
+             leftView, SLOT (resizeAllColumnsToContents()));
+    leftView->setModel (leftModel);
 
     // Only add the right-hand list if necessary
     if (needsRightList (variation)) {
-        QVBoxLayout* rightVlay = new QVBoxLayout (SPACING, "rightVlay");
+        QVBoxLayout* rightVlay = new QVBoxLayout (SPACING);
         Q_CHECK_PTR (rightVlay);
         mainHlay->addLayout (rightVlay, 1);
 
-        rightLabel = new QLabel (this, "rightLabel");
+        rightLabel = new QLabel;
         Q_CHECK_PTR (rightLabel);
         rightVlay->addWidget (rightLabel);
 
-        rightList = new WordListView (wordEngine, this, "rightList");
-        Q_CHECK_PTR (rightList);
-        rightList->setShowSortIndicator(true);
-        rightVlay->addWidget (rightList);
+        rightView = new WordTableView (wordEngine);
+        Q_CHECK_PTR (rightView);
+        rightVlay->addWidget (rightView);
+
+        rightModel = new WordTableModel (wordEngine, this);
+        Q_CHECK_PTR (rightModel);
+        rightView->verticalHeader()->hide();
+        connect (rightModel, SIGNAL (wordsChanged()),
+                 rightView, SLOT (resizeAllColumnsToContents()));
+        rightView->setModel (rightModel);
     }
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
     buttonHlay->addStretch (1);
 
-    closeButton = new QPushButton ("&Close", this, "closeButton");
+    closeButton = new QPushButton ("&Close");
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setAutoDefault (false);
@@ -140,16 +154,16 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     QString title, leftTitle, rightTitle;
     SearchSpec spec;
     SearchCondition condition;
-    QValueList<SearchSpec> leftSpecs;
-    QValueList<SearchSpec> rightSpecs;
+    QList<SearchSpec> leftSpecs;
+    QList<SearchSpec> rightSpecs;
     switch (variation) {
 
         case VariationAnagrams:
         title = "Anagrams for: " + word;
         condition.type = SearchCondition::AnagramMatch;
         condition.stringValue = word;
-        spec.conditions << condition;
-        leftSpecs << spec;
+        spec.conditions.append (condition);
+        leftSpecs.append (spec);
         leftTitle = "Anagrams";
         break;
 
@@ -157,8 +171,8 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         title = "Subanagrams for: " + word;
         condition.type = SearchCondition::SubanagramMatch;
         condition.stringValue = word;
-        spec.conditions << condition;
-        leftSpecs << spec;
+        spec.conditions.append (condition);
+        leftSpecs.append (spec);
         leftTitle = "Subanagrams";
         break;
 
@@ -166,12 +180,12 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         title = "Hooks for: " + word;
         condition.type = SearchCondition::PatternMatch;
         condition.stringValue = "?" + word;
-        spec.conditions << condition;
-        leftSpecs << spec;
+        spec.conditions.append (condition);
+        leftSpecs.append (spec);
         condition.stringValue = word + "?";
         spec.conditions.clear();
-        spec.conditions << condition;
-        rightSpecs << spec;
+        spec.conditions.append (condition);
+        rightSpecs.append (spec);
         leftTitle = "Front Hooks";
         rightTitle = "Back Hooks";
         break;
@@ -180,8 +194,8 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         title = "Anagram Hooks for: " + word;
         condition.type = SearchCondition::AnagramMatch;
         condition.stringValue = "?" + word;
-        spec.conditions << condition;
-        leftSpecs << spec;
+        spec.conditions.append (condition);
+        leftSpecs.append (spec);
         leftTitle = "Anagram Hooks";
         break;
 
@@ -192,8 +206,8 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             condition.stringValue = word.left (i) + "?" +
                 word.right (word.length() - i - 1);
             spec.conditions.clear();
-            spec.conditions << condition;
-            leftSpecs << spec;
+            spec.conditions.append (condition);
+            leftSpecs.append (spec);
         }
         leftTitle = "Blank Anagrams";
         break;
@@ -205,8 +219,8 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             condition.stringValue = word.left (i) + "?" +
                 word.right (word.length() - i - 1);
             spec.conditions.clear();
-            spec.conditions << condition;
-            leftSpecs << spec;
+            spec.conditions.append (condition);
+            leftSpecs.append (spec);
         }
         leftTitle = "Blank Matches";
         break;
@@ -215,12 +229,12 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         title = "Extensions for: " + word;
         condition.type = SearchCondition::PatternMatch;
         condition.stringValue = "*?" + word;
-        spec.conditions << condition;
-        leftSpecs << spec;
+        spec.conditions.append (condition);
+        leftSpecs.append (spec);
         condition.stringValue = word + "?*";
         spec.conditions.clear();
-        spec.conditions << condition;
-        rightSpecs << spec;
+        spec.conditions.append (condition);
+        rightSpecs.append (spec);
         leftTitle = "Front Extensions";
         rightTitle = "Back Extensions";
         break;
@@ -232,8 +246,8 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             condition.stringValue = word.left (i) + word.mid (i + 1, 1) +
                 word.mid (i, 1) + word.right (word.length() - i - 2);
             spec.conditions.clear();
-            spec.conditions << condition;
-            leftSpecs << spec;
+            spec.conditions.append (condition);
+            leftSpecs.append (spec);
         }
         leftTitle = "Transpositions";
         break;
@@ -250,18 +264,21 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     QApplication::setOverrideCursor (Qt::waitCursor);
 
     set<QString> wordSet;
+    set<QString>::iterator sit;
     QStringList wordList;
-    QStringList::iterator wit;
-    QValueList<SearchSpec>::iterator sit;
-    for (sit = leftSpecs.begin(); sit != leftSpecs.end(); ++sit) {
-        wordList = wordEngine->search (*sit, true);
-        for (wit = wordList.begin(); wit != wordList.end(); ++wit) {
-            if (wordSet.find (*wit) == wordSet.end())
-                leftList->addWord (*wit);
-            wordSet.insert (*wit);
-        }
+    QListIterator<SearchSpec> lit (leftSpecs);
+    while (lit.hasNext()) {
+        wordList = wordEngine->search (lit.next(), true);
+        QStringListIterator wit (wordList);
+        while (wit.hasNext())
+            wordSet.insert (wit.next());
     }
-    int leftWords = leftList->childCount();
+    wordList.clear();
+    for (sit = wordSet.begin(); sit != wordSet.end(); ++sit)
+        wordList.append (*sit);
+    leftModel->addWords (wordList);
+
+    int leftWords = wordSet.size();
     leftTitle += " : " + QString::number (leftWords) + " word";
     if (leftWords != 1)
         leftTitle += "s";
@@ -269,15 +286,19 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
     if (!rightSpecs.empty()) {
         wordSet.clear();
-        for (sit = rightSpecs.begin(); sit != rightSpecs.end(); ++sit) {
-            wordList = wordEngine->search (*sit, true);
-            for (wit = wordList.begin(); wit != wordList.end(); ++wit) {
-                if (wordSet.find (*wit) == wordSet.end())
-                    rightList->addWord (*wit);
-                wordSet.insert (*wit);
-            }
+        QListIterator<SearchSpec> rit (rightSpecs);
+        while (rit.hasNext()) {
+            wordList = wordEngine->search (rit.next(), true);
+            QStringListIterator wit (wordList);
+            while (wit.hasNext())
+                wordSet.insert (wit.next());
         }
-        int rightWords = rightList->childCount();
+        wordList.clear();
+        for (sit = wordSet.begin(); sit != wordSet.end(); ++sit)
+            wordList.append (*sit);
+        rightModel->addWords (wordList);
+
+        int rightWords = wordSet.size();
         rightTitle += " : " + QString::number (rightWords) + " word";
         if (rightWords != 1)
             rightTitle += "s";

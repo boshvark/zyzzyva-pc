@@ -26,14 +26,16 @@
 #include "MainSettings.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qcheckbox.h>
-#include <qfiledialog.h>
-#include <qfont.h>
-#include <qfontdialog.h>
-#include <qlayout.h>
-#include <qregexp.h>
-#include <qsignalmapper.h>
-#include <qvgroupbox.h>
+#include <QFileDialog>
+#include <QFont>
+#include <QFontDialog>
+#include <QGridLayout>
+#include <QGroupBox>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QRegExp>
+#include <QSignalMapper>
+#include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Preferences";
 
@@ -51,116 +53,95 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
-//! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
-SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
-                                bool modal, WFlags f)
-    : QDialog (parent, name, modal, f)
+SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
+    : QDialog (parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    QVGroupBox* autoImportGbox = new QVGroupBox (this, "autoImportGbox");
+    QGroupBox* autoImportGbox = new QGroupBox ("Auto Import");
     Q_CHECK_PTR (autoImportGbox);
-    autoImportGbox->setTitle ("Auto Import");
     mainVlay->addWidget (autoImportGbox);
 
-    QWidget* autoImportWidget = new QWidget (autoImportGbox,
-                                             "autoImportWidget");
-    Q_CHECK_PTR (autoImportWidget);
-    QVBoxLayout* autoImportVlay = new QVBoxLayout (autoImportWidget, MARGIN,
-                                                   SPACING, "autoImportVlay");
+    QVBoxLayout* autoImportVlay = new QVBoxLayout (autoImportGbox, MARGIN,
+                                                   SPACING);
     Q_CHECK_PTR (autoImportVlay);
 
     autoImportCbox = new QCheckBox ("Automatically open a word list "
-                                    "on startup", autoImportWidget,
-                                    "autoImportCbox");
+                                    "on startup");
     Q_CHECK_PTR (autoImportCbox);
     connect (autoImportCbox, SIGNAL (toggled (bool)),
              SLOT (autoImportCboxToggled (bool)));
     autoImportVlay->addWidget (autoImportCbox);
 
-    QHBoxLayout* autoImportHlay = new QHBoxLayout (SPACING, "autoImportHlay");
+    QHBoxLayout* autoImportHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (autoImportHlay);
     autoImportVlay->addLayout (autoImportHlay);
 
-    autoImportLine = new QLineEdit (autoImportWidget, "autoImportFile");
+    autoImportLine = new QLineEdit;
     Q_CHECK_PTR (autoImportLine);
     autoImportHlay->addWidget (autoImportLine);
 
-    browseButton = new QPushButton ("Browse...", autoImportWidget,
-                                    "browseButton");
+    browseButton = new QPushButton ("Browse...");
     Q_CHECK_PTR (browseButton);
     connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
     autoImportHlay->addWidget (browseButton);
 
-    QVGroupBox* themeGbox = new QVGroupBox (this, "themeGbox");
+    QGroupBox* themeGbox = new QGroupBox ("Tile Theme");
     Q_CHECK_PTR (themeGbox);
-    themeGbox->setTitle ("Tile Theme");
     mainVlay->addWidget (themeGbox);
 
-    QWidget* themeWidget = new QWidget (themeGbox, "themeWidget");
-    Q_CHECK_PTR (themeWidget);
-    QVBoxLayout* themeVlay = new QVBoxLayout (themeWidget, MARGIN, SPACING,
-                                              "themeVlay");
+    QVBoxLayout* themeVlay = new QVBoxLayout (themeGbox, MARGIN, SPACING);
     Q_CHECK_PTR (themeVlay);
 
-    themeCbox = new QCheckBox ("Use tile images in Quiz mode", themeWidget,
-                               "themeCbox");
+    themeCbox = new QCheckBox ("Use tile images in Quiz mode");
     Q_CHECK_PTR (themeCbox);
     connect (themeCbox, SIGNAL (toggled (bool)),
              SLOT (themeCboxToggled (bool)));
     themeVlay->addWidget (themeCbox);
 
-    QHBoxLayout* themeHlay = new QHBoxLayout (SPACING, "themeHlay");
+    QHBoxLayout* themeHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (themeHlay);
     themeVlay->addLayout (themeHlay);
 
-    themeLabel = new QLabel ("Theme:", themeWidget, "themeLabel");
+    themeLabel = new QLabel ("Theme:");
     Q_CHECK_PTR (themeLabel);
     themeLabel->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     themeHlay->addWidget (themeLabel);
 
-    themeCombo = new QComboBox (themeWidget, "themeCombo");
+    themeCombo = new QComboBox;
     Q_CHECK_PTR (themeCombo);
     themeHlay->addWidget (themeCombo);
 
     // Signal mapper for the Choose Font buttons
-    QSignalMapper* signalMapper = new QSignalMapper (this, "signalMapper");
+    QSignalMapper* signalMapper = new QSignalMapper (this);
     Q_CHECK_PTR (signalMapper);
     connect (signalMapper, SIGNAL (mapped (int)),
              SLOT (chooseFontButtonClicked (int)));
 
-    QVGroupBox* fontGbox = new QVGroupBox (this, "fontGbox");
+    QGroupBox* fontGbox = new QGroupBox ("Fonts");
     Q_CHECK_PTR (fontGbox);
-    fontGbox->setTitle ("Fonts");
     mainVlay->addWidget (fontGbox);
 
-    QWidget* fontWidget = new QWidget (fontGbox, "fontWidget");
-    Q_CHECK_PTR (fontWidget);
-
-    QGridLayout* fontGlay = new QGridLayout (fontWidget, 4, 3, MARGIN,
-                                             SPACING, "fontGlay");
+    QGridLayout* fontGlay = new QGridLayout (fontGbox, 4, 3, MARGIN, SPACING);
     Q_CHECK_PTR (fontGlay);
 
     // Main font
     int row = 0;
-    QLabel* fontMainLabel = new QLabel ("Main:", fontWidget, "fontMainLabel");
+    QLabel* fontMainLabel = new QLabel ("Main:");
     Q_CHECK_PTR (fontMainLabel);
     fontGlay->addWidget (fontMainLabel, row, 0, Qt::AlignLeft);
 
-    fontMainLine = new QLineEdit (fontWidget, "fontMainLine");
+    fontMainLine = new QLineEdit;
     Q_CHECK_PTR (fontMainLine);
     fontMainLine->setReadOnly (true);
     fontMainLine->setText (this->font().toString());
     fontMainLine->home (false);
     fontGlay->addWidget (fontMainLine, row, 1);
 
-    QPushButton* chooseFontMainButton =
-        new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    QPushButton* chooseFontMainButton = new QPushButton ("Choose...");
     Q_CHECK_PTR (chooseFontMainButton);
     connect (chooseFontMainButton, SIGNAL (clicked()), signalMapper,
              SLOT (map()));
@@ -169,20 +150,18 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
 
     // Word list font
     ++row;
-    QLabel* fontWordListLabel = new QLabel ("Word Lists:", fontWidget,
-                                            "fontWordListLabel");
+    QLabel* fontWordListLabel = new QLabel ("Word Lists:");
     Q_CHECK_PTR (fontWordListLabel);
     fontGlay->addWidget (fontWordListLabel, row, 0, Qt::AlignLeft);
 
-    fontWordListLine = new QLineEdit (fontWidget, "fontWordListLine");
+    fontWordListLine = new QLineEdit;
     Q_CHECK_PTR (fontWordListLine);
     fontWordListLine->setReadOnly (true);
     fontWordListLine->setText (this->font().toString());
     fontWordListLine->home (false);
     fontGlay->addWidget (fontWordListLine, row, 1);
 
-    QPushButton* chooseFontWordListButton =
-        new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    QPushButton* chooseFontWordListButton = new QPushButton ("Choose...");
     Q_CHECK_PTR (chooseFontWordListButton);
     connect (chooseFontWordListButton, SIGNAL (clicked()), signalMapper,
              SLOT (map()));
@@ -194,20 +173,18 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
     // XXX: Reinstate this once it's know how to change the font of canvas
     // text items via QApplication::setFont
     //++row;
-    //QLabel* fontQuizLabelLabel = new QLabel ("Quizzes:", fontWidget,
-    //                                         "fontQuizLabelLabel");
+    //QLabel* fontQuizLabelLabel = new QLabel ("Quizzes:");
     //Q_CHECK_PTR (fontQuizLabelLabel);
     //fontGlay->addWidget (fontQuizLabelLabel, row, 0, Qt::AlignLeft);
 
-    //fontQuizLabelLine = new QLineEdit (fontWidget, "fontQuizLabelLine");
+    //fontQuizLabelLine = new QLineEdit;
     //Q_CHECK_PTR (fontQuizLabelLine);
     //fontQuizLabelLine->setReadOnly (true);
     //fontQuizLabelLine->setText (this->font().toString());
     //fontQuizLabelLine->home (false);
     //fontGlay->addWidget (fontQuizLabelLine, row, 1);
 
-    //QPushButton* chooseFontQuizLabelButton =
-    //    new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    //QPushButton* chooseFontQuizLabelButton = new QPushButton ("Choose...");
     //Q_CHECK_PTR (chooseFontQuizLabelButton);
     //connect (chooseFontQuizLabelButton, SIGNAL (clicked()), signalMapper,
     //         SLOT (map()));
@@ -217,20 +194,18 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
 
     // Input font
     ++row;
-    QLabel* fontInputLabel = new QLabel ("Word Input:", fontWidget,
-                                         "fontInputLabel");
+    QLabel* fontInputLabel = new QLabel ("Word Input:");
     Q_CHECK_PTR (fontInputLabel);
     fontGlay->addWidget (fontInputLabel, row, 0, Qt::AlignLeft);
 
-    fontWordInputLine = new QLineEdit (fontWidget, "fontWordInputLine");
+    fontWordInputLine = new QLineEdit;
     Q_CHECK_PTR (fontWordInputLine);
     fontWordInputLine->setReadOnly (true);
     fontWordInputLine->setText (this->font().toString());
     fontWordInputLine->home (false);
     fontGlay->addWidget (fontWordInputLine, row, 1);
 
-    QPushButton* chooseFontInputButton =
-        new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    QPushButton* chooseFontInputButton = new QPushButton ("Choose...");
     Q_CHECK_PTR (chooseFontInputButton);
     connect (chooseFontInputButton, SIGNAL (clicked()), signalMapper,
              SLOT (map()));
@@ -239,20 +214,18 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
 
     // Definition font
     ++row;
-    QLabel* fontDefinitionLabel = new QLabel ("Definitions:", fontWidget,
-                                              "fontDefinitionLabel");
+    QLabel* fontDefinitionLabel = new QLabel ("Definitions:");
     Q_CHECK_PTR (fontDefinitionLabel);
     fontGlay->addWidget (fontDefinitionLabel, row, 0, Qt::AlignLeft);
 
-    fontDefinitionLine = new QLineEdit (fontWidget, "fontDefinitionLine");
+    fontDefinitionLine = new QLineEdit;
     Q_CHECK_PTR (fontDefinitionLine);
     fontDefinitionLine->setReadOnly (true);
     fontDefinitionLine->setText (this->font().toString());
     fontDefinitionLine->home (false);
     fontGlay->addWidget (fontDefinitionLine, row, 1);
 
-    QPushButton* chooseFontDefinitionButton =
-        new QPushButton ("Choose...", fontWidget, "chooseFontButton");
+    QPushButton* chooseFontDefinitionButton = new QPushButton ("Choose...");
     Q_CHECK_PTR (chooseFontDefinitionButton);
     connect (chooseFontDefinitionButton, SIGNAL (clicked()), signalMapper,
              SLOT (map()));
@@ -260,53 +233,44 @@ SettingsDialog::SettingsDialog (QWidget* parent, const char* name,
                               FONT_DEFINITIONS_BUTTON);
     fontGlay->addWidget (chooseFontDefinitionButton, row, 2);
 
-    QVGroupBox* wordListGbox = new QVGroupBox (this, "wordListGbox");
+    QGroupBox* wordListGbox = new QGroupBox ("Word Lists");
     Q_CHECK_PTR (wordListGbox);
-    wordListGbox->setTitle ("Word Lists");
     mainVlay->addWidget (wordListGbox);
 
-    QWidget* wordListWidget = new QWidget (wordListGbox, "wordListWidget");
-    Q_CHECK_PTR (wordListWidget);
-
-    QVBoxLayout* wordListVlay = new QVBoxLayout (wordListWidget, MARGIN,
-                                                 SPACING, "wordListVlay");
+    QVBoxLayout* wordListVlay = new QVBoxLayout (wordListGbox, MARGIN,
+                                                 SPACING);
     Q_CHECK_PTR (wordListVlay);
 
-    lengthSortCbox = new QCheckBox ("Sort by word length", wordListWidget,
-                                    "lengthSortCbox");
+    lengthSortCbox = new QCheckBox ("Sort by word length");
     Q_CHECK_PTR (lengthSortCbox);
     wordListVlay->addWidget (lengthSortCbox);
 
-    showHooksCbox = new QCheckBox ("Show hooks", wordListWidget,
-                                   "showHooksCbox");
+    showHooksCbox = new QCheckBox ("Show hooks");
     Q_CHECK_PTR (showHooksCbox);
     wordListVlay->addWidget (showHooksCbox);
 
-    showHookParentsCbox = new QCheckBox ("Show inner hooks", wordListWidget,
-                                         "showHookParentsCbox");
+    showHookParentsCbox = new QCheckBox ("Show inner hooks");
     Q_CHECK_PTR (showHookParentsCbox);
     wordListVlay->addWidget (showHookParentsCbox);
 
-    showDefinitionCbox = new QCheckBox ("Show definitions", wordListWidget,
-                                        "showDefinitionCbox");
+    showDefinitionCbox = new QCheckBox ("Show definitions");
     Q_CHECK_PTR (showDefinitionCbox);
     wordListVlay->addWidget (showDefinitionCbox);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
     buttonHlay->addStretch (1);
 
-    QPushButton* okButton = new QPushButton ("OK", this, "okButton");
+    QPushButton* okButton = new QPushButton ("OK");
     Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (okButton);
 
-    QPushButton* cancelButton = new QPushButton ("Cancel", this,
-                                                 "cancelButton");
+    QPushButton* cancelButton = new QPushButton ("Cancel");
     Q_CHECK_PTR (cancelButton);
     cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
@@ -427,10 +391,9 @@ SettingsDialog::writeSettings()
 void
 SettingsDialog::browseButtonClicked()
 {
-    QString file = QFileDialog::getOpenFileName (Auxil::getWordsDir(),
-                                                 "All Files (*.*)", this,
-                                                 "fileDialog",
-                                                 IMPORT_CHOOSER_TITLE);
+    QString file = QFileDialog::getOpenFileName (this, IMPORT_CHOOSER_TITLE,
+        Auxil::getWordsDir(), "All Files (*.*)");
+
     if (!file.isNull())
         autoImportLine->setText (file);
 }

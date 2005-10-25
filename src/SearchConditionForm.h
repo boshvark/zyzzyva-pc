@@ -26,10 +26,10 @@
 #define SEARCH_CONDITION_FORM_H
 
 #include "SearchCondition.h"
-#include <qcombobox.h>
-#include <qframe.h>
-#include <qspinbox.h>
-#include <qwidgetstack.h>
+#include <QComboBox>
+#include <QFrame>
+#include <QSpinBox>
+#include <QStackedWidget>
 #include <set>
 
 class SearchCondition;
@@ -40,8 +40,7 @@ class SearchConditionForm : public QFrame
 {
     Q_OBJECT
     public:
-    SearchConditionForm (QWidget* parent = 0, const char* name = 0, WFlags f =
-                         0);
+    SearchConditionForm (QWidget* parent = 0, Qt::WFlags f = 0);
 
     SearchCondition getSearchCondition() const;
     void setSearchCondition (const SearchCondition& condition);
@@ -61,22 +60,22 @@ class SearchConditionForm : public QFrame
     bool matchStringIsValid (const QString& string) const;
 
     private:
-    QComboBox*    typeCbox;
-    QWidgetStack* paramStack;
-    QFrame*       paramLineFrame;
-    WordLineEdit* paramLine;
-    QFrame*       paramSboxFrame;
-    QSpinBox*     paramSbox;
-    QFrame*       paramCboxFrame;
-    QComboBox*    paramCbox;
-    QFrame*       paramConsistFrame;
-    QSpinBox*     paramConsistSbox;
-    WordLineEdit* paramConsistLine;
-    QFrame*       paramWordListFrame;
-    QLineEdit*    paramWordListLine;
-    QString       paramWordListString;
-    WordValidator* letterValidator;
-    WordValidator* patternValidator;
+    QComboBox*      typeCbox;
+    QStackedWidget* paramStack;
+    QFrame*         paramLineFrame;
+    WordLineEdit*   paramLine;
+    QFrame*         paramSboxFrame;
+    QSpinBox*       paramSbox;
+    QFrame*         paramCboxFrame;
+    QComboBox*      paramCbox;
+    QFrame*         paramConsistFrame;
+    QSpinBox*       paramConsistSbox;
+    WordLineEdit*   paramConsistLine;
+    QFrame*         paramWordListFrame;
+    QLineEdit*      paramWordListLine;
+    QString         paramWordListString;
+    WordValidator*  letterValidator;
+    WordValidator*  patternValidator;
 };
 
 #endif // SEARCH_CONDITION_FORM_H

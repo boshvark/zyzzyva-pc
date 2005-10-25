@@ -27,9 +27,9 @@
 #include "DefinitionBox.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qlayout.h>
-#include <qpushbutton.h>
-#include <qvgroupbox.h>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QVBoxLayout>
 
 const QString DIALOG_CAPTION_PREFIX = "Define : ";
 
@@ -40,35 +40,33 @@ using namespace Defs;
 //
 //! Constructor.
 //
+//! @param e the word engine to use for looking up definitions
+//! @param word the word to define
 //! @param parent the parent widget
-//! @param name the name of this widget
-//! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
 DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
-                                    QWidget* parent, const char* name, bool
-                                    modal, WFlags f)
-    : QDialog (parent, name, modal, f), engine (e)
+                                    QWidget* parent, Qt::WFlags f)
+    : QDialog (parent, f), engine (e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
     bool acceptable = engine->isAcceptable (word);
     QString wordAcceptable = acceptable ? word : word + "*";
 
-    DefinitionBox* defBox = new DefinitionBox (this, "defBox");
+    DefinitionBox* defBox = new DefinitionBox;
     Q_CHECK_PTR (defBox);
     defBox->setTitle (wordAcceptable);
     mainVlay->addWidget (defBox);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
     buttonHlay->addStretch (1);
 
-    QPushButton* closeButton = new QPushButton ("&Close", this, "closeButton");
+    QPushButton* closeButton = new QPushButton ("&Close");
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setDefault (true);

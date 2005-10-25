@@ -27,7 +27,8 @@
 #include "WordValidator.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qlayout.h>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
 
 using namespace Defs;
 
@@ -37,44 +38,41 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
-                        WFlags f)
-    : ActionForm (JudgeFormType, parent, name, f), engine (e)
+JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
+    : ActionForm (JudgeFormType, parent, f), engine (e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    wordArea = new WordTextEdit (this, "wordArea");
+    wordArea = new WordTextEdit;
     Q_CHECK_PTR (wordArea);
     wordArea->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Fixed);
     connect (wordArea, SIGNAL (textChanged()), SLOT (textChanged()));
     mainVlay->addWidget (wordArea);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    clearButton = new QPushButton ("&Clear", this, "clearButton");
+    clearButton = new QPushButton ("&Clear");
     Q_CHECK_PTR (clearButton);
     clearButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (clearButton, SIGNAL (clicked()), SLOT (clear()));
     buttonHlay->addWidget (clearButton);
 
-    judgeButton = new QPushButton ("&Judge", this, "judgeButton");
+    judgeButton = new QPushButton ("&Judge");
     Q_CHECK_PTR (judgeButton);
     judgeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (judgeButton, SIGNAL (clicked()), SLOT (judgeWord()));
     buttonHlay->addWidget (judgeButton);
 
-    QHBoxLayout* resultHlay = new QHBoxLayout (SPACING, "resultHlay");
+    QHBoxLayout* resultHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (resultHlay);
     mainVlay->addLayout (resultHlay);
 
-    resultBox = new DefinitionBox (this, "resultBox");
+    resultBox = new DefinitionBox;
     Q_CHECK_PTR (resultBox);
     resultHlay->addWidget (resultBox);
 
@@ -92,12 +90,11 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, const char* name,
 void
 JudgeForm::textChanged()
 {
-    int para, index;
-    wordArea->getCursorPosition (&para, &index);
+    QTextCursor cursor = wordArea->textCursor();
     QString text = wordArea->text();
     wordArea->blockSignals (true);
     wordArea->setText (text.upper());
-    wordArea->setCursorPosition (para, index);
+    wordArea->setTextCursor (cursor);
     wordArea->blockSignals (false);
     bool empty = text.stripWhiteSpace().isEmpty();
     judgeButton->setEnabled (!empty);

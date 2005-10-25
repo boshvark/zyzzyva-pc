@@ -25,11 +25,11 @@
 #ifndef MAIN_WINDOW_H
 #define MAIN_WINDOW_H
 
-#include <qlabel.h>
-#include <qmainwindow.h>
-#include <qsettings.h>
-#include <qtabwidget.h>
-#include <qtoolbutton.h>
+#include <QLabel>
+#include <QMainWindow>
+#include <QSettings>
+#include <QTabWidget>
+#include <QToolButton>
 
 class AboutDialog;
 class HelpDialog;
@@ -42,8 +42,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     public:
-    MainWindow (QWidget* parent = 0, const char* name = 0,
-                WFlags f = WType_TopLevel);
+    MainWindow (QWidget* parent = 0, Qt::WFlags f = Qt::WType_TopLevel);
     ~MainWindow();
 
     static MainWindow* getInstance() { return instance; }

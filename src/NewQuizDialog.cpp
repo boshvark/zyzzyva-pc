@@ -26,13 +26,13 @@
 #include "SearchSpecForm.h"
 #include "Auxil.h"
 #include "Defs.h"
-
-#include <qapplication.h>
-#include <qbuttongroup.h>
-#include <qfiledialog.h>
-#include <qlabel.h>
-#include <qlayout.h>
-#include <qmessagebox.h>
+#include <QApplication>
+#include <QFileDialog>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QMessageBox>
+#include <QTextStream>
+#include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "New Quiz";
 const QString TIMER_PER_QUESTION = "per question";
@@ -46,95 +46,88 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
-//! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
-NewQuizDialog::NewQuizDialog (QWidget* parent, const char* name,
-                              bool modal, WFlags f)
-    : QDialog (parent, name, modal, f)
+NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
+    : QDialog (parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    specForm = new SearchSpecForm (this, "specForm");
+    specForm = new SearchSpecForm;
     Q_CHECK_PTR (specForm);
     mainVlay->addWidget (specForm);
 
-    useListCbox = new QCheckBox ("&Use result list as a single question",
-                                 this, "useListCbox");
+    useListCbox = new QCheckBox ("&Use result list as a single question");
     Q_CHECK_PTR (useListCbox);
     connect (useListCbox, SIGNAL (toggled (bool)),
              SLOT (useListToggled (bool)));
     mainVlay->addWidget (useListCbox);
 
-    randomCbox = new QCheckBox ("&Randomize order", this, "randomCbox");
+    randomCbox = new QCheckBox ("&Randomize order");
     Q_CHECK_PTR (randomCbox);
     randomCbox->setChecked (true);
     mainVlay->addWidget (randomCbox);
 
-    QHBoxLayout* timerHlay = new QHBoxLayout (SPACING, "timerHlay");
+    QHBoxLayout* timerHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (timerHlay);
     mainVlay->addLayout (timerHlay);
 
-    timerCbox = new QCheckBox ("&Timer:", this, "timerCbox");
+    timerCbox = new QCheckBox ("&Timer:");
     Q_CHECK_PTR (timerCbox);
     connect (timerCbox, SIGNAL (toggled (bool)), SLOT (timerToggled (bool)));
     timerHlay->addWidget (timerCbox);
 
-    timerWidget = new QWidget (this, "timerWidget");
+    timerWidget = new QWidget;
     Q_CHECK_PTR (timerWidget);
     timerWidget->setEnabled (false);
     timerHlay->addWidget (timerWidget);
 
-    QHBoxLayout* timerWidgetHlay = new QHBoxLayout (timerWidget, 0, SPACING,
-                                                    "timerWidgetHlay");
+    QHBoxLayout* timerWidgetHlay = new QHBoxLayout (timerWidget, 0, SPACING);
     Q_CHECK_PTR (timerWidgetHlay);
 
-    timerSbox = new QSpinBox (1, 9999, 1, timerWidget, "timerSbox");
+    timerSbox = new QSpinBox;
     Q_CHECK_PTR (timerSbox);
+    timerSbox->setMinimum (1);
+    timerSbox->setMaximum (9999);
     timerSbox->setValue (10);
     timerWidgetHlay->addWidget (timerSbox);
 
-    QLabel* timerLabel = new QLabel ("seconds", timerWidget, "timerLabel");
+    QLabel* timerLabel = new QLabel ("seconds");
     Q_CHECK_PTR (timerLabel);
     timerWidgetHlay->addWidget (timerLabel);
 
-    timerCombo = new QComboBox (timerWidget, "timerCombo");
+    timerCombo = new QComboBox;
     timerCombo->insertItem (TIMER_PER_QUESTION);
     timerCombo->insertItem (TIMER_PER_RESPONSE);
     timerCombo->setCurrentText (TIMER_PER_RESPONSE);
     timerWidgetHlay->addWidget (timerCombo);
 
     // OK/Cancel buttons
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    QPushButton* loadQuizButton = new QPushButton ("&Load Quiz...", this,
-                                                   "loadQuizButton");
+    QPushButton* loadQuizButton = new QPushButton ("&Load Quiz...");
     Q_CHECK_PTR (loadQuizButton);
     connect (loadQuizButton, SIGNAL (clicked()), SLOT (loadQuiz()));
     buttonHlay->addWidget (loadQuizButton);
 
-    saveQuizButton = new QPushButton ("&Save Quiz...", this,
-                                      "saveQuizButton");
+    saveQuizButton = new QPushButton ("&Save Quiz...");
     Q_CHECK_PTR (saveQuizButton);
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuiz()));
     buttonHlay->addWidget (saveQuizButton);
 
     buttonHlay->addStretch (1);
 
-    okButton = new QPushButton ("OK", this, "okButton");
+    okButton = new QPushButton ("OK");
     Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (okButton);
 
-    QPushButton* cancelButton = new QPushButton ("Cancel", this,
-                                                 "cancelButton");
+    QPushButton* cancelButton = new QPushButton ("Cancel");
     Q_CHECK_PTR (cancelButton);
     cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
@@ -244,14 +237,16 @@ NewQuizDialog::timerToggled (bool on)
 void
 NewQuizDialog::loadQuiz()
 {
-    QString filename = QFileDialog::getOpenFileName
-        (Auxil::getQuizDir(), "Zyzzyva Quiz Files (*.zzq)", this,
-         "loadQuizDialog", "Load Quiz");
+    QString filename = QFileDialog::getOpenFileName (this, "Load Quiz",
+        Auxil::getQuizDir(), "Zyzzyva Quiz Files (*.zzq)");
+
     if (filename.isEmpty())
         return;
 
     QFile file (filename);
-    if (!file.open (IO_ReadOnly | IO_Translate)) {
+    // FIXME Qt4: QIODevice::Translate no longer exists!
+    //if (!file.open (QIODevice::ReadOnly | QIODevice::Translate)) {
+    if (!file.open (QIODevice::ReadOnly)) {
         QMessageBox::warning (this, "Error Opening Quiz File",
                               "Cannot open file '" + filename + "': " +
                               file.errorString());
@@ -295,9 +290,8 @@ NewQuizDialog::loadQuiz()
 void
 NewQuizDialog::saveQuiz()
 {
-    QString filename = QFileDialog::getSaveFileName
-        (Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)",
-         this, "saveDialog", "Save Quiz");
+    QString filename = QFileDialog::getSaveFileName (this, "Save Quiz",
+        Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)");
 
     if (filename.isEmpty())
         return;
@@ -315,7 +309,9 @@ NewQuizDialog::saveQuiz()
             return;
     }
 
-    if (!file.open (IO_WriteOnly | IO_Translate)) {
+    // FIXME Qt4: QIODevice::Translate no longer exists!
+    //if (!file.open (QIODevice::WriteOnly | QIODevice::Translate)) {
+    if (!file.open (QIODevice::WriteOnly)) {
         QMessageBox::warning (this, "Error Saving Quiz",
                               "Cannot save quiz:\n" + file.errorString() +
                               ".");

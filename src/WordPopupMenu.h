@@ -25,15 +25,17 @@
 #ifndef WORD_POPUP_MENU_H
 #define WORD_POPUP_MENU_H
 
-#include <qpopupmenu.h>
+#include <QMenu>
 
-class WordPopupMenu : public QPopupMenu
+class WordPopupMenu : public QMenu
 {
     Q_OBJECT
     public:
-    WordPopupMenu (bool showWordOptions, QWidget* parent = 0, const char* name
-                   = 0);
+    WordPopupMenu (bool showWordOptions, QWidget* parent = 0);
     ~WordPopupMenu();
+
+    private:
+    void init();
 
     public:
     enum {

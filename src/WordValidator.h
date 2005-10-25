@@ -25,15 +25,15 @@
 #ifndef WORD_VALIDATOR_H
 #define WORD_VALIDATOR_H
 
-#include <qregexp.h>
-#include <qvalidator.h>
+#include <QRegExp>
+#include <QValidator>
 
 class WordValidator : public QValidator
 {
     Q_OBJECT
     public:
-    WordValidator (QObject* parent = 0, const char* name = 0)
-      : QValidator (parent, name), options (None) { }
+    WordValidator (QObject* parent = 0)
+      : QValidator (parent), options (None) { }
 
     QValidator::State validate (QString& input, int& pos) const;
 

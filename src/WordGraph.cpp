@@ -24,7 +24,8 @@
 
 #include "WordGraph.h"
 #include "Defs.h"
-#include <qregexp.h>
+#include <QList>
+#include <QRegExp>
 #include <iostream>
 #include <stack>
 #include <set>
@@ -83,7 +84,7 @@ WordGraph::addWord (const QString& w)
 
         // Empty node, so create a new node and link from its parent
         if (!node) {
-            node = new Node (c);
+            node = new Node (c.toAscii());
             (parentNode ? parentNode->child : top) = node;
             ++numNodes;
         }
@@ -92,7 +93,7 @@ WordGraph::addWord (const QString& w)
         else {
             while (node->letter != c) {
                 if (!node->next) {
-                    node->next = new Node (c);
+                    node->next = new Node (c.toAscii());
                     ++numNodes;
                 }
                 node = node->next;
@@ -156,13 +157,13 @@ WordGraph::search (const SearchSpec& spec) const
     if (!top || spec.conditions.empty())
         return wordList;
 
-    QValueList<SearchCondition> matchConditions;
+    QList<SearchCondition> matchConditions;
     int maxLength = MAX_WORD_LEN;
     QString excludeLetters;
 
-    QValueList<SearchCondition>::const_iterator it;
-    for (it = spec.conditions.begin(); it != spec.conditions.end(); ++it) {
-        SearchCondition condition = *it;
+    QListIterator<SearchCondition> it (spec.conditions);
+    while (it.hasNext()) {
+        const SearchCondition& condition = it.next();
 
         switch (condition.type) {
             case SearchCondition::PatternMatch:
@@ -194,7 +195,7 @@ WordGraph::search (const SearchSpec& spec) const
         SearchCondition condition;
         condition.type = SearchCondition::PatternMatch;
         condition.stringValue = "*";
-        matchConditions << condition;
+        matchConditions.append (condition);
     }
 
     // XXX: Returning wildcard matches with lower case letters is now broken!
@@ -205,8 +206,9 @@ WordGraph::search (const SearchSpec& spec) const
 
     // Search for each condition separately, and take the conjunction or
     // disjunction of the result sets
-    for (it = matchConditions.begin(); it != matchConditions.end(); ++it) {
-        SearchCondition condition = *it;
+    QListIterator<SearchCondition> mit (matchConditions);
+    while (mit.hasNext()) {
+        const SearchCondition& condition = mit.next();
         QString unmatched = condition.stringValue;
 
         // Use set to eliminate duplicates since patterns with wildcards may match
@@ -260,7 +262,9 @@ WordGraph::search (const SearchSpec& spec) const
 
                 // Get the next character in the Pattern match.  Allow a
                 // wildcard to match the empty string.
-                if (condition.type == SearchCondition::PatternMatch) {
+                if ((condition.type == SearchCondition::PatternMatch) &&
+                    (!unmatched.isEmpty()))
+                {
                     match = unmatched.at (0);
                     if (match == "*")
                         states.push (TraversalState (node, word,
@@ -285,8 +289,10 @@ WordGraph::search (const SearchSpec& spec) const
 
                         // A node matches wildcard characters or its own
                         // letter
-                        if (match.contains (node->letter) ^
-                            match.contains ("^"))
+                        bool matchLetter = match.contains (node->letter);
+                        bool matchNegated = match.contains ("^");
+
+                        if (matchLetter ^ matchNegated)
                             word += node->letter;
                         else if ((match == "*") || (match == "?"))
                             word += node->letter.lower();
@@ -312,7 +318,7 @@ WordGraph::search (const SearchSpec& spec) const
                         if (node->eow &&
                             ((int (unmatched.length()) == closeIndex + 1) ||
                             ((int (unmatched.length()) == closeIndex + 2) &&
-                             (QChar (unmatched.at (closeIndex + 1)) == "*"))) &&
+                             (QChar (unmatched.at (closeIndex + 1)) == '*'))) &&
                             matchesSpec (wordUpper, spec) &&
                             !wordSet.count (wordUpper))
                         {
@@ -508,7 +514,7 @@ WordGraph::print() const
     int depth = 0;
 
     while (node) {
-        cout << node->letter;
+        cout << node->letter.toAscii();
         if (node->eow)
             cout << "*";
         else
@@ -550,9 +556,9 @@ WordGraph::print() const
 bool
 WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
 {
-    QValueList<SearchCondition>::const_iterator it;
-    for (it = spec.conditions.begin(); it != spec.conditions.end(); ++it) {
-        SearchCondition condition = *it;
+    QListIterator<SearchCondition> it (spec.conditions);
+    while (it.hasNext()) {
+        const SearchCondition& condition = it.next();
 
         switch (condition.type) {
             case SearchCondition::ExactLength:

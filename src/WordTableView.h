@@ -1,7 +1,10 @@
 //---------------------------------------------------------------------------
-// ActionForm.h
+// WordTableView.h
 //
-// A base class for main action forms.
+// A class derived from QTableView, used to display word lists.  This class
+// currently does nothing special.  It only exists so objects of this class
+// can be distinguished from other QTableView objects when applying font
+// settings.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,32 +25,39 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ACTION_FORM_H
-#define ACTION_FORM_H
+#ifndef WORD_TABLE_VIEW_H
+#define WORD_TABLE_VIEW_H
 
-#include <QFrame>
+#include <QString>
+#include <QTableView>
 
-class ActionForm : public QFrame
+class WordEngine;
+
+class WordTableView : public QTableView
 {
     Q_OBJECT
-
     public:
-    enum ActionFormType {
-        UnknownFormType,
-        QuizFormType,
-        SearchFormType,
-        DefineFormType,
-        JudgeFormType
-    };
+    WordTableView (WordEngine* e, QWidget* parent = 0);
+    virtual ~WordTableView() { }
 
-    public:
-    ActionForm (ActionFormType t, QWidget* parent = 0, Qt::WFlags f = 0)
-        : QFrame (parent, f), type (t) { }
-    virtual ~ActionForm() { }
-    virtual ActionFormType getType() const { return type; }
+    public slots:
+    virtual void resizeAllColumnsToContents();
+
+    protected:
+    virtual void contextMenuEvent (QContextMenuEvent* e);
+
+    private slots:
+    void viewDefinition();
+    void viewVariation (int variation);
+    void exportRequested();
+    void createQuizRequested();
 
     private:
-    ActionFormType type;
+    bool exportFile (const QString& filename, QString* err) const;
+
+    private:
+    WordEngine* wordEngine;
+
 };
 
-#endif // ACTION_FORM_H
+#endif // WORD_TABLE_VIEW_H

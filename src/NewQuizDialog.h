@@ -25,15 +25,15 @@
 #ifndef NEW_QUIZ_DIALOG_H
 #define NEW_QUIZ_DIALOG_H
 
-#include <qcheckbox.h>
-#include <qcombobox.h>
-#include <qdialog.h>
-#include <qlineedit.h>
-#include <qpushbutton.h>
-#include <qradiobutton.h>
-#include <qspinbox.h>
-#include "MatchType.h"
 #include "QuizSpec.h"
+#include "MatchType.h"
+#include <QCheckBox>
+#include <QComboBox>
+#include <QDialog>
+#include <QLineEdit>
+#include <QPushButton>
+#include <QRadioButton>
+#include <QSpinBox>
 
 class SearchSpec;
 class SearchSpecForm;
@@ -42,9 +42,7 @@ class NewQuizDialog : public QDialog
 {
     Q_OBJECT
     public:
-    NewQuizDialog (QWidget* parent = 0, const char* name = 0,
-                   bool modal = false, WFlags f = 0);
-
+    NewQuizDialog (QWidget* parent = 0, Qt::WFlags f = 0);
     ~NewQuizDialog() { }
 
     QuizSpec getQuizSpec();

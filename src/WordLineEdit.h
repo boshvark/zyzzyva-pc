@@ -27,20 +27,16 @@
 #ifndef WORD_LINE_EDIT_H
 #define WORD_LINE_EDIT_H
 
-#include <qlineedit.h>
+#include <QLineEdit>
 
 class WordLineEdit : public QLineEdit
 {
     Q_OBJECT
     public:
-    WordLineEdit (QWidget* parent, const char* name = 0)
-        : QLineEdit (parent, name) { }
-    WordLineEdit (const QString& contents, QWidget* parent, const char* name =
-                  0)
-        : QLineEdit (contents, parent, name) { }
-    WordLineEdit (const QString& contents, const QString& inputMask, QWidget*
-                  parent, const char* name = 0)
-        : QLineEdit (contents, inputMask, parent, name) { }
+    WordLineEdit (QWidget* parent = 0)
+        : QLineEdit (parent) { }
+    WordLineEdit (const QString& contents, QWidget* parent = 0)
+        : QLineEdit (contents, parent) { }
 
     virtual ~WordLineEdit() { }
 };

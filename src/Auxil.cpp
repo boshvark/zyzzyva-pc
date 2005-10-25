@@ -23,8 +23,8 @@
 //---------------------------------------------------------------------------
 
 #include "Auxil.h"
-#include <qapplication.h>
-#include <qfile.h>
+#include <QApplication>
+#include <QFile>
 
 const QString SET_UNKNOWN_STRING = "Unknown";
 const QString SET_HOOK_WORDS_STRING = "Hook Words";
@@ -71,7 +71,9 @@ Auxil::getAboutString()
 
     QString aboutFileName = getHelpDir() + "/about.html";
     QFile aboutFile (aboutFileName);
-    if (!aboutFile.open (IO_ReadOnly | IO_Translate))
+    // FIXME Qt4: QIODevice::Translate no longer exists!
+    //if (!aboutFile.open (QIODevice::ReadOnly | QIODevice::Translate))
+    if (!aboutFile.open (QIODevice::ReadOnly))
         return aboutString;
 
     aboutString.append (aboutFile.readAll());

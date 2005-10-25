@@ -27,8 +27,9 @@
 #include "WordValidator.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <qlabel.h>
-#include <qlayout.h>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QVBoxLayout>
 
 using namespace Defs;
 
@@ -38,26 +39,23 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param parent the parent widget
-//! @param name the name of this widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-DefineForm::DefineForm (WordEngine* e, QWidget* parent, const char* name,
-                        WFlags f)
-    : ActionForm (DefineFormType, parent, name, f), engine (e)
+DefineForm::DefineForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
+    : ActionForm (DefineFormType, parent, f), engine (e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING,
-                                             "mainVlay");
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    QHBoxLayout* lookupHlay = new QHBoxLayout (SPACING, "lookupHlay");
+    QHBoxLayout* lookupHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (lookupHlay);
     mainVlay->addLayout (lookupHlay);
 
-    QLabel* label = new QLabel ("Word : ", this, "label");
+    QLabel* label = new QLabel ("Word : ");
     Q_CHECK_PTR (label);
     lookupHlay->addWidget (label);
 
-    wordLine = new WordLineEdit (this, "wordLine");
+    wordLine = new WordLineEdit;
     Q_CHECK_PTR (wordLine);
     wordLine->setValidator (new WordValidator (wordLine));
     connect (wordLine, SIGNAL (textChanged (const QString&)),
@@ -65,21 +63,21 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, const char* name,
     connect (wordLine, SIGNAL (returnPressed()), SLOT (defineWord()));
     lookupHlay->addWidget (wordLine);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING, "buttonHlay");
+    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    defineButton = new QPushButton ("&Define", this, "defineButton");
+    defineButton = new QPushButton ("&Define");
     Q_CHECK_PTR (defineButton);
     defineButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (defineButton, SIGNAL (clicked()), SLOT (defineWord()));
     buttonHlay->addWidget (defineButton);
 
-    QHBoxLayout* resultHlay = new QHBoxLayout (SPACING, "resultHlay");
+    QHBoxLayout* resultHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (resultHlay);
     mainVlay->addLayout (resultHlay);
 
-    resultBox = new DefinitionBox (this, "resultBox");
+    resultBox = new DefinitionBox;
     Q_CHECK_PTR (resultBox);
     resultHlay->addWidget (resultBox);
 
