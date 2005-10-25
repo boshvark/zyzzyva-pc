@@ -1,3 +1,10 @@
+Version 0.9.0
+Released ????-??-??, from /trunk
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.9.0
+
+ Developer-visible changes:
+ * All code ported to Qt4, except the Q3Canvas class
+
 Version 0.8.0
 Released 2005-08-14, from /trunk
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.8.0
