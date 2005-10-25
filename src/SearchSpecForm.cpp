@@ -323,11 +323,14 @@ SearchSpecForm::saveSearch()
     if (filename.isEmpty())
         return;
 
-    if (!filename.endsWith (".zzs", false))
+    bool filenameEdited = false;
+    if (!filename.endsWith (".zzs", false)) {
         filename += ".zzs";
+        filenameEdited = true;
+    }
 
     QFile file (filename);
-    if (file.exists()) {
+    if (filenameEdited && file.exists()) {
         int code = QMessageBox::warning (0, "Overwrite Existing File?",
                                          "The file already exists.  "
                                          "Overwrite it?", QMessageBox::Yes,
