@@ -49,15 +49,14 @@ class NewQuizDialog : public QDialog
     void setQuizSpec (const QuizSpec& spec);
 
     public slots:
-    void useListToggled (bool on);
     void timerToggled (bool on);
+    void typeActivated (const QString& text);
     void loadQuiz();
     void saveQuiz();
 
     private:
     SearchSpecForm* specForm;
     QComboBox*      typeCombo;
-    QCheckBox*      useListCbox;
     QCheckBox*      randomCbox;
     QPushButton*    saveQuizButton;
     QPushButton*    okButton;

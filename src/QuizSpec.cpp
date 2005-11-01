@@ -54,20 +54,7 @@ const QString XML_PROGRESS_ELEMENT = "progress";
 QString
 QuizSpec::asString() const
 {
-    QString str;
-    switch (type) {
-        case QuizPatterns: str += "Pattern Match Quiz: "; break;
-        case QuizAnagrams: str += "Anagram Quiz: "; break;
-        case QuizSubanagrams: str += "Subanagram Quiz: "; break;
-        case QuizAnagramJumble: str += "Anagram Jumble Quiz: "; break;
-        case QuizSubanagramJumble: str += "Subanagram Jumble Quiz: "; break;
-        case QuizHooks: str += "Hook Quiz: "; break;
-        case QuizAnagramHooks: str += "Quiz Anagram Hooks: "; break;
-        case QuizAnagramHookMnemonics: str += "Quiz Mnemonics: "; break;
-        default: break;
-    }
-    str += searchSpec.asString();
-    return str;
+    return Auxil::quizTypeToString (type) + ": " + searchSpec.asString();
 }
 
 //---------------------------------------------------------------------------
@@ -88,9 +75,6 @@ QuizSpec::asDomElement() const
     QDomElement sourceElement = doc.createElement
         (XML_QUESTION_SOURCE_ELEMENT);
     sourceElement.setAttribute (XML_QUESTION_SOURCE_TYPE_ATTR, "search");
-    sourceElement.setAttribute (XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR,
-                                (useList ? QString ("true")
-                                         : QString ("false")));
 
     sourceElement.appendChild (searchSpec.asDomElement());
     topElement.appendChild (sourceElement);
@@ -126,16 +110,25 @@ QuizSpec::fromDomElement (const QDomElement& element)
     if (element.tagName() != XML_TOP_ELEMENT)
         return false;
 
+    QuizSpec tmpSpec;
+    tmpSpec.setRandomOrder (false);
+
+    if (element.hasAttribute (XML_TOP_TYPE_ATTR)) {
+        QuizSpec::QuizType type = Auxil::stringToQuizType
+            (element.attribute (XML_TOP_TYPE_ATTR));
+        if (type == QuizSpec::UnknownQuizType)
+            return false;
+        tmpSpec.setType (type);
+    }
+
     QDomElement elem = element.firstChild().toElement();
     if (elem.isNull())
         return false;
 
-    QuizSpec tmpSpec;
-    tmpSpec.setRandomOrder (false);
-
     for (; !elem.isNull(); elem = elem.nextSibling().toElement()) {
 
         QString tag = elem.tagName();
+
         // XXX: QuizQuestionSource needs to be a class of its own
         if (tag == XML_QUESTION_SOURCE_ELEMENT) {
 
@@ -145,10 +138,12 @@ QuizSpec::fromDomElement (const QDomElement& element)
                 return false;
             }
 
+            // Only for backward compatibility - "single-question" is no
+            // longer produced as an attribute
             if (elem.attribute (XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR) ==
                 "true")
             {
-                tmpSpec.setUseList (true);
+                tmpSpec.setType (QuizSpec::QuizWordListRecall);
             }
 
             QDomElement searchElem = elem.firstChild().toElement();

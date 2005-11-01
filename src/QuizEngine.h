@@ -85,7 +85,6 @@ class QuizEngine
     int quizCorrect;
     int quizIncorrect;
 
-    bool        singleSpecQuestion;
     QuizSpec    quizSpec;
     QStringList quizQuestions;
     int         questionIndex;

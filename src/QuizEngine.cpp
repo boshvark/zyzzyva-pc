@@ -30,7 +30,7 @@
 
 QuizEngine::QuizEngine (WordEngine* e)
     : wordEngine (e), quizTotal (0), quizCorrect (0), quizIncorrect (0),
-    singleSpecQuestion (false), questionIndex (0)
+    questionIndex (0)
 {
     std::time_t now = std::time (0);
     std::srand (now);
@@ -49,14 +49,12 @@ QuizEngine::newQuiz (const QuizSpec& spec)
     quizSpec = spec;
     quizQuestions.clear();
 
-    // If alphagrams is not specified, then the quiz will be a single question
-    // requiring the entire search results of the search spec as an answer.
-    singleSpecQuestion = quizSpec.getUseList();
+    QuizSpec::QuizType type = quizSpec.getType();
 
     // When using alphagrams, always change quiz type to Anagram.  The pattern
     // is used to select the list of alphagrams, then anagrams are used as
     // quiz answers.
-    if (!singleSpecQuestion) {
+    if (type == QuizSpec::QuizAnagrams) {
         quizQuestions = wordEngine->search (quizSpec.getSearchSpec(), true);
         quizQuestions = wordEngine->alphagrams (quizQuestions);
 
@@ -81,7 +79,7 @@ QuizEngine::newQuiz (const QuizSpec& spec)
         }
     }
 
-    else {
+    else if (type == QuizSpec::QuizWordListRecall) {
         quizQuestions << spec.asString();
     }
 
@@ -249,10 +247,11 @@ QuizEngine::prepareQuestion()
     QString question = getQuestion();
 
     QStringList answers;
+    QuizSpec::QuizType type = quizSpec.getType();
 
-    if (singleSpecQuestion)
+    if (type == QuizSpec::QuizWordListRecall)
         answers = wordEngine->search (quizSpec.getSearchSpec(), true);
-    else {
+    else if (type == QuizSpec::QuizAnagrams) {
         SearchCondition condition;
         condition.type = SearchCondition::AnagramMatch;
         condition.stringValue = question;

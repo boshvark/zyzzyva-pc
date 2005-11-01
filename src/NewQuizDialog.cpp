@@ -65,8 +65,12 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
 
     typeCombo = new QComboBox;
     typeCombo->insertItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
+    typeCombo->insertItem (Auxil::quizTypeToString
+                           (QuizSpec::QuizWordListRecall));
     typeCombo->setCurrentText (Auxil::quizTypeToString
                                (QuizSpec::QuizAnagrams));
+    connect (typeCombo, SIGNAL (activated (const QString&)),
+             SLOT (typeActivated (const QString&)));
     typeHlay->addWidget (typeCombo);
 
     QGroupBox* specGbox = new QGroupBox ("Search Specification");
@@ -79,12 +83,6 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     specForm = new SearchSpecForm;
     Q_CHECK_PTR (specForm);
     specHlay->addWidget (specForm);
-
-    useListCbox = new QCheckBox ("&Use result list as a single question");
-    Q_CHECK_PTR (useListCbox);
-    connect (useListCbox, SIGNAL (toggled (bool)),
-             SLOT (useListToggled (bool)));
-    mainVlay->addWidget (useListCbox);
 
     randomCbox = new QCheckBox ("&Randomize order");
     Q_CHECK_PTR (randomCbox);
@@ -171,7 +169,6 @@ NewQuizDialog::getQuizSpec()
 {
     quizSpec.setType (Auxil::stringToQuizType (typeCombo->currentText()));
     quizSpec.setSearchSpec (specForm->getSearchSpec());
-    quizSpec.setUseList (useListCbox->isChecked());
     quizSpec.setRandomOrder (randomCbox->isChecked());
 
     QuizTimerSpec timerSpec;
@@ -199,8 +196,9 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
 {
     quizSpec = spec;
 
+    typeCombo->setCurrentText (Auxil::quizTypeToString (spec.getType()));
+    typeActivated (typeCombo->currentText());
     specForm->setSearchSpec (spec.getSearchSpec());
-    useListCbox->setChecked (spec.getUseList());
     randomCbox->setChecked (spec.getRandomOrder());
     timerCbox->setChecked (false);
     timerSbox->setValue (0);
@@ -222,19 +220,24 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
 }
 
 //---------------------------------------------------------------------------
-//  useListToggled
+//  typeActivated
 //
-//! Called when the Use List checkbox is toggled.  Disable the Random
-//! checkbox unless the Use List checkbox is checked.
+//! Called when the contents of the Quiz Type combo box are changed.  Disable
+//! the Random checkbox if the Word List Recall type is selected.
 //
-//! @param on whether the checkbox is checked
+//! @param text the text in the combo box
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::useListToggled (bool on)
+NewQuizDialog::typeActivated (const QString& text)
 {
-    randomCbox->setEnabled (!on);
-    if (on)
+    QuizSpec::QuizType type = Auxil::stringToQuizType (text);
+    if (type == QuizSpec::QuizWordListRecall) {
+        randomCbox->setEnabled (false);
         randomCbox->setChecked (false);
+    }
+    else {
+        randomCbox->setEnabled (true);
+    }
 }
 
 //---------------------------------------------------------------------------

@@ -62,6 +62,7 @@ const QString QUIZ_TYPE_SUBANAGRAM_JUMBLE = "Subanagram Jumble";
 const QString QUIZ_TYPE_HOOKS = "Hooks";
 const QString QUIZ_TYPE_ANAGRAM_HOOKS = "Anagram Hooks";
 const QString QUIZ_TYPE_ANAGRAM_HOOK_MNEMONICS = "Anagram Hook Mnemonics";
+const QString QUIZ_TYPE_WORD_LIST_RECALL = "Word List Recall";
 
 //---------------------------------------------------------------------------
 //  getAboutString
@@ -394,6 +395,9 @@ Auxil::quizTypeToString (QuizSpec::QuizType t)
         case QuizSpec::QuizAnagramHookMnemonics:
         return QUIZ_TYPE_ANAGRAM_HOOK_MNEMONICS;
 
+        case QuizSpec::QuizWordListRecall:
+        return QUIZ_TYPE_WORD_LIST_RECALL;
+
         default: return QString::null;
     }
 }
@@ -425,6 +429,8 @@ Auxil::stringToQuizType (const QString& s)
         return QuizSpec::QuizAnagramHooks;
     else if (s == QUIZ_TYPE_ANAGRAM_HOOK_MNEMONICS)
         return QuizSpec::QuizAnagramHookMnemonics;
+    else if (s == QUIZ_TYPE_WORD_LIST_RECALL)
+        return QuizSpec::QuizWordListRecall;
     else
         return QuizSpec::UnknownQuizType;
 }

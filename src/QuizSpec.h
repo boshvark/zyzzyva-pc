@@ -42,12 +42,13 @@ class QuizSpec
         QuizSubanagramJumble,
         QuizHooks,
         QuizAnagramHooks,
-        QuizAnagramHookMnemonics
+        QuizAnagramHookMnemonics,
+        QuizWordListRecall
     };
 
     public:
-    QuizSpec() : type (QuizAnagrams), useList (false), randomOrder (true),
-                 randomSeed (0), randomAlgorithm (0) { }
+    QuizSpec() : type (QuizAnagrams), randomOrder (true), randomSeed (0),
+                 randomAlgorithm (0) { }
     ~QuizSpec() { }
 
     QString asString() const;
@@ -58,7 +59,6 @@ class QuizSpec
     void setSearchSpec (const SearchSpec& s) { searchSpec = s; }
     void setTimerSpec (const QuizTimerSpec& s) { timerSpec = s; }
     void setProgress (const QuizProgress& p) { progress = p; }
-    void setUseList (bool b) { useList = b; }
     void setRandomOrder (bool b) { randomOrder = b; }
     void setRandomSeed (unsigned int i) { randomSeed = i; }
     void setRandomAlgorithm (int i) { randomAlgorithm = i; }
@@ -70,7 +70,6 @@ class QuizSpec
     SearchSpec getSearchSpec() const { return searchSpec; }
     QuizTimerSpec getTimerSpec() const { return timerSpec; }
     QuizProgress getProgress() const { return progress; }
-    bool getUseList() const { return useList; }
     bool getRandomOrder() const { return randomOrder; }
     unsigned int getRandomSeed() const { return randomSeed; }
     int getRandomAlgorithm() const { return randomAlgorithm; }
@@ -80,7 +79,6 @@ class QuizSpec
     SearchSpec searchSpec;
     QuizTimerSpec timerSpec;
     QuizProgress progress;
-    bool useList;
     bool randomOrder;
     unsigned int randomSeed;
     int randomAlgorithm;
