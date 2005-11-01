@@ -25,6 +25,7 @@
 #ifndef AUXIL_H
 #define AUXIL_H
 
+#include "QuizSpec.h"
 #include "SearchCondition.h"
 #include "SearchSet.h"
 #include <QString>
@@ -41,6 +42,8 @@ namespace Auxil {
     SearchSet stringToSearchSet (const QString& string);
     QString searchTypeToString (SearchCondition::SearchType type);
     SearchCondition::SearchType stringToSearchType (const QString& string);
+    QString quizTypeToString (QuizSpec::QuizType type);
+    QuizSpec::QuizType stringToQuizType (const QString& string);
 }
 
 #endif // AUXIL_H

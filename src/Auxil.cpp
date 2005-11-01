@@ -37,22 +37,31 @@ const QString SET_TYPE_ONE_EIGHTS_STRING = "Type I Eights";
 const QString SET_EIGHTS_FROM_SEVEN_STEMS_STRING =
               "Eights From Seven-Letter Stems";
 
-const QString PATTERN_MATCH_TYPE = "Pattern Match";
-const QString ANAGRAM_MATCH_TYPE = "Anagram Match";
-const QString SUBANAGRAM_MATCH_TYPE = "Subanagram Match";
-const QString EXACT_LENGTH_TYPE = "Exact Length";
-const QString MIN_LENGTH_TYPE = "Minimum Length";
-const QString MAX_LENGTH_TYPE = "Maximum Length";
-const QString MUST_INCLUDE_TYPE = "Must Include";
-const QString MUST_EXCLUDE_TYPE = "Must Exclude";
-const QString MUST_CONSIST_TYPE = "Must Consist of";
-const QString MUST_BELONG_TYPE = "Must Belong to";
-const QString IN_WORD_LIST_TYPE = "Must Be in Word List";
-const QString EXACT_ANAGRAMS_TYPE = "Exact Anagrams";
-const QString MIN_ANAGRAMS_TYPE = "Minimum Anagrams";
-const QString MAX_ANAGRAMS_TYPE = "Maximum Anagrams";
-const QString MIN_PROBABILITY_TYPE = "Minimum Probability";
-const QString MAX_PROBABILITY_TYPE = "Maximum Probability";
+const QString SEARCH_TYPE_PATTERN_MATCH = "Pattern Match";
+const QString SEARCH_TYPE_ANAGRAM_MATCH = "Anagram Match";
+const QString SEARCH_TYPE_SUBANAGRAM_MATCH = "Subanagram Match";
+const QString SEARCH_TYPE_EXACT_LENGTH = "Exact Length";
+const QString SEARCH_TYPE_MIN_LENGTH = "Minimum Length";
+const QString SEARCH_TYPE_MAX_LENGTH = "Maximum Length";
+const QString SEARCH_TYPE_MUST_INCLUDE = "Must Include";
+const QString SEARCH_TYPE_MUST_EXCLUDE = "Must Exclude";
+const QString SEARCH_TYPE_MUST_CONSIST = "Must Consist of";
+const QString SEARCH_TYPE_MUST_BELONG = "Must Belong to";
+const QString SEARCH_TYPE_IN_WORD_LIST = "Must Be in Word List";
+const QString SEARCH_TYPE_EXACT_ANAGRAMS = "Exact Anagrams";
+const QString SEARCH_TYPE_MIN_ANAGRAMS = "Minimum Anagrams";
+const QString SEARCH_TYPE_MAX_ANAGRAMS = "Maximum Anagrams";
+const QString SEARCH_TYPE_MIN_PROBABILITY = "Minimum Probability";
+const QString SEARCH_TYPE_MAX_PROBABILITY = "Maximum Probability";
+
+const QString QUIZ_TYPE_PATTERNS = "Patterns";
+const QString QUIZ_TYPE_ANAGRAMS = "Anagrams";
+const QString QUIZ_TYPE_SUBANAGRAMS = "Subanagrams";
+const QString QUIZ_TYPE_ANAGRAM_JUMBLE = "Anagram Jumble";
+const QString QUIZ_TYPE_SUBANAGRAM_JUMBLE = "Subanagram Jumble";
+const QString QUIZ_TYPE_HOOKS = "Hooks";
+const QString QUIZ_TYPE_ANAGRAM_HOOKS = "Anagram Hooks";
+const QString QUIZ_TYPE_ANAGRAM_HOOK_MNEMONICS = "Anagram Hook Mnemonics";
 
 //---------------------------------------------------------------------------
 //  getAboutString
@@ -250,37 +259,37 @@ Auxil::searchSetToString (SearchSet ss)
 SearchCondition::SearchType
 Auxil::stringToSearchType (const QString& string)
 {
-    if (string == PATTERN_MATCH_TYPE)
+    if (string == SEARCH_TYPE_PATTERN_MATCH)
         return SearchCondition::PatternMatch;
-    else if (string == ANAGRAM_MATCH_TYPE)
+    else if (string == SEARCH_TYPE_ANAGRAM_MATCH)
         return SearchCondition::AnagramMatch;
-    else if (string == SUBANAGRAM_MATCH_TYPE)
+    else if (string == SEARCH_TYPE_SUBANAGRAM_MATCH)
         return SearchCondition::SubanagramMatch;
-    else if (string == EXACT_LENGTH_TYPE)
+    else if (string == SEARCH_TYPE_EXACT_LENGTH)
         return SearchCondition::ExactLength;
-    else if (string == MIN_LENGTH_TYPE)
+    else if (string == SEARCH_TYPE_MIN_LENGTH)
         return SearchCondition::MinLength;
-    else if (string == MAX_LENGTH_TYPE)
+    else if (string == SEARCH_TYPE_MAX_LENGTH)
         return SearchCondition::MaxLength;
-    else if (string == MUST_INCLUDE_TYPE)
+    else if (string == SEARCH_TYPE_MUST_INCLUDE)
         return SearchCondition::MustInclude;
-    else if (string == MUST_EXCLUDE_TYPE)
+    else if (string == SEARCH_TYPE_MUST_EXCLUDE)
         return SearchCondition::MustExclude;
-    else if (string == MUST_CONSIST_TYPE)
+    else if (string == SEARCH_TYPE_MUST_CONSIST)
         return SearchCondition::MustConsist;
-    else if (string == MUST_BELONG_TYPE)
+    else if (string == SEARCH_TYPE_MUST_BELONG)
         return SearchCondition::MustBelong;
-    else if (string == IN_WORD_LIST_TYPE)
+    else if (string == SEARCH_TYPE_IN_WORD_LIST)
         return SearchCondition::InWordList;
-    else if (string == EXACT_ANAGRAMS_TYPE)
+    else if (string == SEARCH_TYPE_EXACT_ANAGRAMS)
         return SearchCondition::ExactAnagrams;
-    else if (string == MIN_ANAGRAMS_TYPE)
+    else if (string == SEARCH_TYPE_MIN_ANAGRAMS)
         return SearchCondition::MinAnagrams;
-    else if (string == MAX_ANAGRAMS_TYPE)
+    else if (string == SEARCH_TYPE_MAX_ANAGRAMS)
         return SearchCondition::MaxAnagrams;
-    else if (string == MIN_PROBABILITY_TYPE)
+    else if (string == SEARCH_TYPE_MIN_PROBABILITY)
         return SearchCondition::MinProbability;
-    else if (string == MAX_PROBABILITY_TYPE)
+    else if (string == SEARCH_TYPE_MAX_PROBABILITY)
         return SearchCondition::MaxProbability;
     return SearchCondition::UnknownSearchType;
 }
@@ -297,22 +306,125 @@ QString
 Auxil::searchTypeToString (SearchCondition::SearchType type)
 {
     switch (type) {
-        case SearchCondition::PatternMatch:    return PATTERN_MATCH_TYPE;
-        case SearchCondition::AnagramMatch:    return ANAGRAM_MATCH_TYPE;
-        case SearchCondition::SubanagramMatch: return SUBANAGRAM_MATCH_TYPE;
-        case SearchCondition::ExactLength:     return EXACT_LENGTH_TYPE;
-        case SearchCondition::MinLength:       return MIN_LENGTH_TYPE;
-        case SearchCondition::MaxLength:       return MAX_LENGTH_TYPE;
-        case SearchCondition::MustInclude:     return MUST_INCLUDE_TYPE;
-        case SearchCondition::MustExclude:     return MUST_EXCLUDE_TYPE;
-        case SearchCondition::MustConsist:     return MUST_CONSIST_TYPE;
-        case SearchCondition::MustBelong:      return MUST_BELONG_TYPE;
-        case SearchCondition::InWordList:      return IN_WORD_LIST_TYPE;
-        case SearchCondition::ExactAnagrams:   return EXACT_ANAGRAMS_TYPE;
-        case SearchCondition::MinAnagrams:     return MIN_ANAGRAMS_TYPE;
-        case SearchCondition::MaxAnagrams:     return MAX_ANAGRAMS_TYPE;
-        case SearchCondition::MinProbability:  return MIN_PROBABILITY_TYPE;
-        case SearchCondition::MaxProbability:  return MAX_PROBABILITY_TYPE;
+        case SearchCondition::PatternMatch:
+        return SEARCH_TYPE_PATTERN_MATCH;
+
+        case SearchCondition::AnagramMatch:
+        return SEARCH_TYPE_ANAGRAM_MATCH;
+
+        case SearchCondition::SubanagramMatch:
+        return SEARCH_TYPE_SUBANAGRAM_MATCH;
+
+        case SearchCondition::ExactLength:
+        return SEARCH_TYPE_EXACT_LENGTH;
+
+        case SearchCondition::MinLength:
+        return SEARCH_TYPE_MIN_LENGTH;
+
+        case SearchCondition::MaxLength:
+        return SEARCH_TYPE_MAX_LENGTH;
+
+        case SearchCondition::MustInclude:
+        return SEARCH_TYPE_MUST_INCLUDE;
+
+        case SearchCondition::MustExclude:
+        return SEARCH_TYPE_MUST_EXCLUDE;
+
+        case SearchCondition::MustConsist:
+        return SEARCH_TYPE_MUST_CONSIST;
+
+        case SearchCondition::MustBelong:
+        return SEARCH_TYPE_MUST_BELONG;
+
+        case SearchCondition::InWordList:
+        return SEARCH_TYPE_IN_WORD_LIST;
+
+        case SearchCondition::ExactAnagrams:
+        return SEARCH_TYPE_EXACT_ANAGRAMS;
+
+        case SearchCondition::MinAnagrams:
+        return SEARCH_TYPE_MIN_ANAGRAMS;
+
+        case SearchCondition::MaxAnagrams:
+        return SEARCH_TYPE_MAX_ANAGRAMS;
+
+        case SearchCondition::MinProbability:
+        return SEARCH_TYPE_MIN_PROBABILITY;
+
+        case SearchCondition::MaxProbability:
+        return SEARCH_TYPE_MAX_PROBABILITY;
+
         default: return QString::null;
     }
+}
+
+//---------------------------------------------------------------------------
+//  quizTypeToString
+//
+//! Convert a quiz type to a string representation.
+//
+//! @param t the quiz type
+//! @return the string representation
+//---------------------------------------------------------------------------
+QString
+Auxil::quizTypeToString (QuizSpec::QuizType t)
+{
+    switch (t) {
+        case QuizSpec::QuizPatterns:
+        return QUIZ_TYPE_PATTERNS;
+
+        case QuizSpec::QuizAnagrams:
+        return QUIZ_TYPE_ANAGRAMS;
+
+        case QuizSpec::QuizSubanagrams:
+        return QUIZ_TYPE_SUBANAGRAMS;
+
+        case QuizSpec::QuizAnagramJumble:
+        return QUIZ_TYPE_ANAGRAM_JUMBLE;
+
+        case QuizSpec::QuizSubanagramJumble:
+        return QUIZ_TYPE_SUBANAGRAM_JUMBLE;
+
+        case QuizSpec::QuizHooks:
+        return QUIZ_TYPE_HOOKS;
+
+        case QuizSpec::QuizAnagramHooks:
+        return QUIZ_TYPE_ANAGRAM_HOOKS;
+
+        case QuizSpec::QuizAnagramHookMnemonics:
+        return QUIZ_TYPE_ANAGRAM_HOOK_MNEMONICS;
+
+        default: return QString::null;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  stringToQuizType
+//
+//! Convert a string representation to a quiz type.
+//
+//! @param s the string representation
+//! @return the quiz type
+//---------------------------------------------------------------------------
+QuizSpec::QuizType
+Auxil::stringToQuizType (const QString& s)
+{
+    if (s == QUIZ_TYPE_PATTERNS)
+        return QuizSpec::QuizPatterns;
+    else if (s == QUIZ_TYPE_ANAGRAMS)
+        return QuizSpec::QuizAnagrams;
+    else if (s == QUIZ_TYPE_SUBANAGRAMS)
+        return QuizSpec::QuizSubanagrams;
+    else if (s == QUIZ_TYPE_ANAGRAM_JUMBLE)
+        return QuizSpec::QuizAnagramJumble;
+    else if (s == QUIZ_TYPE_SUBANAGRAM_JUMBLE)
+        return QuizSpec::QuizSubanagramJumble;
+    else if (s == QUIZ_TYPE_HOOKS)
+        return QuizSpec::QuizHooks;
+    else if (s == QUIZ_TYPE_ANAGRAM_HOOKS)
+        return QuizSpec::QuizAnagramHooks;
+    else if (s == QUIZ_TYPE_ANAGRAM_HOOK_MNEMONICS)
+        return QuizSpec::QuizAnagramHookMnemonics;
+    else
+        return QuizSpec::UnknownQuizType;
 }

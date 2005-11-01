@@ -163,7 +163,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
 QuizSpec
 NewQuizDialog::getQuizSpec()
 {
-    quizSpec.setType (QuizAnagrams);
+    quizSpec.setType (QuizSpec::QuizAnagrams);
     quizSpec.setSearchSpec (specForm->getSearchSpec());
     quizSpec.setUseList (useListCbox->isChecked());
     quizSpec.setRandomOrder (randomCbox->isChecked());

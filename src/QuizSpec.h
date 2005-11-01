@@ -30,20 +30,21 @@
 #include "SearchSpec.h"
 #include "Defs.h"
 
-enum QuizType {
-    UnknownQuizType = 0,
-    QuizPatterns,
-    QuizAnagrams,
-    QuizSubanagrams,
-    QuizAnagramJumble,
-    QuizSubanagramJumble,
-    QuizHooks,
-    QuizAnagramHooks,
-    QuizAnagramHookMnemonics
-};
-
 class QuizSpec
 {
+    public:
+    enum QuizType {
+        UnknownQuizType = 0,
+        QuizPatterns,
+        QuizAnagrams,
+        QuizSubanagrams,
+        QuizAnagramJumble,
+        QuizSubanagramJumble,
+        QuizHooks,
+        QuizAnagramHooks,
+        QuizAnagramHookMnemonics
+    };
+
     public:
     QuizSpec() : type (QuizAnagrams), useList (false), randomOrder (true),
                  randomSeed (0), randomAlgorithm (0) { }

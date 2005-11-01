@@ -832,7 +832,7 @@ QuizForm::responseMatchesQuestion (const QString& response) const
     QString question = quizEngine->getQuestion();
     QuizSpec spec = quizEngine->getQuizSpec();
     switch (spec.getType()) {
-        case QuizAnagrams:
+        case QuizSpec::QuizAnagrams:
         // XXX: Cop out for single-question quizzes.  This really should be
         // its own quiz type!
         if (quizEngine->getQuizSpec().getUseList())
