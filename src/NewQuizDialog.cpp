@@ -28,6 +28,7 @@
 #include "Defs.h"
 #include <QApplication>
 #include <QFileDialog>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
@@ -54,9 +55,16 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
+    QGroupBox* specGbox = new QGroupBox ("Search Specification");
+    Q_CHECK_PTR (specGbox);
+    mainVlay->addWidget (specGbox);
+
+    QHBoxLayout* specHlay = new QHBoxLayout (specGbox, MARGIN, SPACING);
+    Q_CHECK_PTR (specHlay);
+
     specForm = new SearchSpecForm;
     Q_CHECK_PTR (specForm);
-    mainVlay->addWidget (specForm);
+    specHlay->addWidget (specForm);
 
     useListCbox = new QCheckBox ("&Use result list as a single question");
     Q_CHECK_PTR (useListCbox);
@@ -133,7 +141,6 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
 
-    resize (minimumSizeHint());
     setCaption (DIALOG_CAPTION);
 }
 
