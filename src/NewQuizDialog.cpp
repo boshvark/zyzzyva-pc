@@ -52,14 +52,22 @@ using namespace Defs;
 NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
     Q_CHECK_PTR (mainVlay);
+
+    QHBoxLayout* typeHlay = new QHBoxLayout;
+    Q_CHECK_PTR (typeHlay);
+    mainVlay->addLayout (typeHlay);
+
+    QLabel* typeLabel = new QLabel ("Quiz Type:");
+    Q_CHECK_PTR (typeLabel);
+    typeHlay->addWidget (typeLabel);
 
     QGroupBox* specGbox = new QGroupBox ("Search Specification");
     Q_CHECK_PTR (specGbox);
     mainVlay->addWidget (specGbox);
 
-    QHBoxLayout* specHlay = new QHBoxLayout (specGbox, MARGIN, SPACING);
+    QHBoxLayout* specHlay = new QHBoxLayout (specGbox);
     Q_CHECK_PTR (specHlay);
 
     specForm = new SearchSpecForm;
@@ -77,7 +85,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     randomCbox->setChecked (true);
     mainVlay->addWidget (randomCbox);
 
-    QHBoxLayout* timerHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* timerHlay = new QHBoxLayout;
     Q_CHECK_PTR (timerHlay);
     mainVlay->addLayout (timerHlay);
 
@@ -91,8 +99,9 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     timerWidget->setEnabled (false);
     timerHlay->addWidget (timerWidget);
 
-    QHBoxLayout* timerWidgetHlay = new QHBoxLayout (timerWidget, 0, SPACING);
+    QHBoxLayout* timerWidgetHlay = new QHBoxLayout (timerWidget);
     Q_CHECK_PTR (timerWidgetHlay);
+    timerWidgetHlay->setMargin (0);
 
     timerSbox = new QSpinBox;
     Q_CHECK_PTR (timerSbox);
@@ -112,7 +121,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     timerWidgetHlay->addWidget (timerCombo);
 
     // OK/Cancel buttons
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
