@@ -76,10 +76,6 @@ class QuizSpec
     int getRandomAlgorithm() const { return randomAlgorithm; }
 
     private:
-    QString typeToString (const QuizType t) const;
-    QuizType stringToType (const QString& s) const;
-
-    private:
     QuizType type;
     SearchSpec searchSpec;
     QuizTimerSpec timerSpec;
