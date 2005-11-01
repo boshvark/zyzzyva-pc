@@ -63,6 +63,12 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (typeLabel);
     typeHlay->addWidget (typeLabel);
 
+    typeCombo = new QComboBox;
+    typeCombo->insertItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
+    typeCombo->setCurrentText (Auxil::quizTypeToString
+                               (QuizSpec::QuizAnagrams));
+    typeHlay->addWidget (typeCombo);
+
     QGroupBox* specGbox = new QGroupBox ("Search Specification");
     Q_CHECK_PTR (specGbox);
     mainVlay->addWidget (specGbox);
@@ -163,7 +169,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
 QuizSpec
 NewQuizDialog::getQuizSpec()
 {
-    quizSpec.setType (QuizSpec::QuizAnagrams);
+    quizSpec.setType (Auxil::stringToQuizType (typeCombo->currentText()));
     quizSpec.setSearchSpec (specForm->getSearchSpec());
     quizSpec.setUseList (useListCbox->isChecked());
     quizSpec.setRandomOrder (randomCbox->isChecked());
