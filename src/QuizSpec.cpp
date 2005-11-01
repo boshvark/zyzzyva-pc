@@ -46,6 +46,8 @@ const QString XML_PROGRESS_ELEMENT = "progress";
 const QString PATTERNS_TYPE = "Patterns";
 const QString ANAGRAMS_TYPE = "Anagrams";
 const QString SUBANAGRAMS_TYPE = "Subanagrams";
+const QString ANAGRAM_JUMBLE_TYPE = "Anagram Jumble";
+const QString SUBANAGRAM_JUMBLE_TYPE = "Subanagram Jumble";
 const QString HOOKS_TYPE = "Hooks";
 const QString ANAGRAM_HOOKS_TYPE = "Anagram Hooks";
 const QString ANAGRAM_HOOK_MNEMONICS_TYPE = "Anagram Hook Mnemonics";
@@ -65,6 +67,8 @@ QuizSpec::asString() const
         case QuizPatterns: str += "Pattern Match Quiz: "; break;
         case QuizAnagrams: str += "Anagram Quiz: "; break;
         case QuizSubanagrams: str += "Subanagram Quiz: "; break;
+        case QuizAnagramJumble: str += "Anagram Jumble Quiz: "; break;
+        case QuizSubanagramJumble: str += "Subanagram Jumble Quiz: "; break;
         case QuizHooks: str += "Hook Quiz: "; break;
         case QuizAnagramHooks: str += "Quiz Anagram Hooks: "; break;
         case QuizAnagramHookMnemonics: str += "Quiz Mnemonics: "; break;
@@ -221,6 +225,8 @@ QuizSpec::typeToString (QuizType t) const
         case QuizPatterns: return PATTERNS_TYPE;
         case QuizAnagrams: return ANAGRAMS_TYPE;
         case QuizSubanagrams: return SUBANAGRAMS_TYPE;
+        case QuizAnagramJumble: return ANAGRAM_JUMBLE_TYPE;
+        case QuizSubanagramJumble: return SUBANAGRAM_JUMBLE_TYPE;
         case QuizHooks: return HOOKS_TYPE;
         case QuizAnagramHooks: return ANAGRAM_HOOKS_TYPE;
         case QuizAnagramHookMnemonics: return ANAGRAM_HOOK_MNEMONICS_TYPE;
@@ -245,6 +251,10 @@ QuizSpec::stringToType (const QString& s) const
         return QuizAnagrams;
     else if (s == SUBANAGRAMS_TYPE)
         return QuizSubanagrams;
+    else if (s == ANAGRAM_JUMBLE_TYPE)
+        return QuizAnagramJumble;
+    else if (s == SUBANAGRAM_JUMBLE_TYPE)
+        return QuizSubanagramJumble;
     else if (s == HOOKS_TYPE)
         return QuizHooks;
     else if (s == ANAGRAM_HOOKS_TYPE)

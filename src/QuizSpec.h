@@ -35,6 +35,8 @@ enum QuizType {
     QuizPatterns,
     QuizAnagrams,
     QuizSubanagrams,
+    QuizAnagramJumble,
+    QuizSubanagramJumble,
     QuizHooks,
     QuizAnagramHooks,
     QuizAnagramHookMnemonics
