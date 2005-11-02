@@ -53,6 +53,9 @@ class MainSettings
     static QString getTileTheme() { return instance->tileTheme; }
     static void setTileTheme (const QString& str) {
         instance->tileTheme = str; }
+    static QString getQuizLetterOrder() { return instance->quizLetterOrder; }
+    static void setQuizLetterOrder (const QString& str) {
+        instance->quizLetterOrder = str; }
     static QString getMainFont() { return instance->mainFont; }
     static void setMainFont (const QString& str) { instance->mainFont = str; }
     static QString getWordListFont() { return instance->wordListFont; }
@@ -103,6 +106,7 @@ class MainSettings
     QString autoImportFile;
     bool useTileTheme;
     QString tileTheme;
+    QString quizLetterOrder;
     QString mainFont;
     QString wordListFont;
     QString quizLabelFont;

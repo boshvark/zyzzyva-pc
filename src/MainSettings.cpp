@@ -46,8 +46,12 @@ const QString SETTINGS_SHOW_HOOK_PARENTS = "/wordlist_show_hook_parents";
 const QString SETTINGS_SHOW_DEFINITIONS = "/wordlist_show_definitions";
 const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
 const QString SETTINGS_TILE_THEME = "/tile_theme";
+const QString SETTINGS_QUIZ_LETTER_ORDER = "/quiz_letter_order";
+
+// XXX: Should these be shared with the SettingsDialog somehow?
 const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
+const QString DEFAULT_QUIZ_LETTER_ORDER = "Alphabetical";
 
 //---------------------------------------------------------------------------
 //  readSettings
@@ -78,6 +82,9 @@ MainSettings::readSettings()
                                                      true);
     instance->tileTheme = settings.readEntry (SETTINGS_TILE_THEME,
                                               DEFAULT_TILE_THEME);
+
+    instance->quizLetterOrder = settings.readEntry
+        (SETTINGS_QUIZ_LETTER_ORDER, DEFAULT_QUIZ_LETTER_ORDER);
 
     instance->mainFont = settings.readEntry (SETTINGS_FONT_MAIN);
     instance->wordListFont = settings.readEntry (SETTINGS_FONT_WORD_LISTS);
@@ -119,6 +126,8 @@ MainSettings::writeSettings()
     settings.writeEntry (SETTINGS_IMPORT_FILE, instance->autoImportFile);
     settings.writeEntry (SETTINGS_USE_TILE_THEME, instance->useTileTheme);
     settings.writeEntry (SETTINGS_TILE_THEME, instance->tileTheme);
+    settings.writeEntry (SETTINGS_QUIZ_LETTER_ORDER,
+                         instance->quizLetterOrder);
     settings.writeEntry (SETTINGS_FONT_MAIN, instance->mainFont);
     settings.writeEntry (SETTINGS_FONT_WORD_LISTS, instance->wordListFont);
     settings.writeEntry (SETTINGS_FONT_QUIZ_LABEL, instance->quizLabelFont);

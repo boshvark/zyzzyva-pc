@@ -50,6 +50,11 @@ const int FONT_QUIZ_LABEL_BUTTON = 3;
 const int FONT_DEFINITIONS_BUTTON = 4;
 const int FONT_WORD_INPUT_BUTTON = 5;
 
+const QString QUIZ_LETTERS_ALPHA = "Alphabetical";
+const QString QUIZ_LETTERS_RANDOM = "Random";
+const QString QUIZ_LETTERS_VOWELS_FIRST = "Vowels First";
+const QString QUIZ_LETTERS_CONSONANTS_FIRST = "Consonants First";
+
 using namespace Defs;
 
 //---------------------------------------------------------------------------
@@ -167,6 +172,33 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     themeCombo = new QComboBox;
     Q_CHECK_PTR (themeCombo);
     themeHlay->addWidget (themeCombo);
+
+    QGroupBox* letterOrderGbox = new QGroupBox ("Letter Order");
+    Q_CHECK_PTR (letterOrderGbox);
+    quizPrefVlay->addWidget (letterOrderGbox);
+    quizPrefVlay->setStretchFactor (letterOrderGbox, 1);
+
+    QVBoxLayout* letterOrderVlay = new QVBoxLayout (letterOrderGbox);
+    Q_CHECK_PTR (letterOrderVlay);
+
+    QHBoxLayout* letterOrderHlay = new QHBoxLayout;
+    Q_CHECK_PTR (letterOrderHlay);
+    letterOrderVlay->addLayout (letterOrderHlay);
+
+    QLabel* letterOrderLabel = new QLabel ("Letter Order:");
+    Q_CHECK_PTR (letterOrderLabel);
+    letterOrderLabel->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    letterOrderHlay->addWidget (letterOrderLabel);
+
+    letterOrderCombo = new QComboBox;
+    Q_CHECK_PTR (letterOrderCombo);
+    letterOrderHlay->addWidget (letterOrderCombo);
+
+    letterOrderCombo->addItem (QUIZ_LETTERS_ALPHA);
+    letterOrderCombo->addItem (QUIZ_LETTERS_RANDOM);
+    letterOrderCombo->addItem (QUIZ_LETTERS_VOWELS_FIRST);
+    letterOrderCombo->addItem (QUIZ_LETTERS_CONSONANTS_FIRST); 
+    letterOrderCombo->setCurrentIndex (0);
 
     quizPrefVlay->addStretch (2);
 
@@ -419,6 +451,13 @@ SettingsDialog::readSettings()
         themeCboxToggled (useTileTheme);
     }
 
+    // Quiz letter order
+    int letterOrderIndex = letterOrderCombo->findText
+        (MainSettings::getQuizLetterOrder());
+    if (letterOrderIndex < 0)
+        letterOrderIndex = 0;
+    letterOrderCombo->setCurrentIndex (letterOrderIndex);
+
     // Main font
     fontMainLine->setText (MainSettings::getMainFont());
     fontMainLine->home (false);
@@ -461,6 +500,7 @@ SettingsDialog::writeSettings()
     MainSettings::setAutoImportFile (autoImportLine->text());
     MainSettings::setUseTileTheme (themeCbox->isChecked());
     MainSettings::setTileTheme (themeCombo->currentText());
+    MainSettings::setQuizLetterOrder (letterOrderCombo->currentText());
     MainSettings::setMainFont (fontMainLine->text());
     MainSettings::setWordListFont (fontWordListLine->text());
     // XXX: Reinstate this once it's know how to change the font of canvas
