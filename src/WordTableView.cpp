@@ -98,7 +98,6 @@ WordTableView::viewVariation (int variation)
     QModelIndex index = currentIndex();
     index = index.sibling (index.row(), WordTableModel::WORD_COLUMN);
     QString word = model()->data (index, Qt::UserRole).toString();
-    qDebug ("Word: |" + word + "|");
     WordVariationType type = static_cast<WordVariationType>(variation);
     WordVariationDialog* dialog = new WordVariationDialog (wordEngine, word,
         type, this, Qt::WDestructiveClose);
