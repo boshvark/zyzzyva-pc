@@ -63,7 +63,6 @@ using namespace Defs;
 SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f)
 {
-
     QVBoxLayout* mainVlay = new QVBoxLayout (this);
     Q_CHECK_PTR (mainVlay);
 
@@ -90,10 +89,17 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
 
     QVBoxLayout* generalPrefVlay = new QVBoxLayout (generalPrefWidget);
     Q_CHECK_PTR (generalPrefVlay);
+    generalPrefVlay->setMargin (0);
+
+    QLabel* generalPrefLabel = new QLabel (GENERAL_PREFS_ITEM);
+    Q_CHECK_PTR (generalPrefLabel);
+    generalPrefLabel->setFrameShape (QFrame::StyledPanel);
+    generalPrefVlay->addWidget (generalPrefLabel);
 
     QGroupBox* autoImportGbox = new QGroupBox ("Auto Import");
     Q_CHECK_PTR (autoImportGbox);
     generalPrefVlay->addWidget (autoImportGbox);
+    generalPrefVlay->setStretchFactor (autoImportGbox, 1);
 
     QVBoxLayout* autoImportVlay = new QVBoxLayout (autoImportGbox, MARGIN,
                                                    SPACING);
@@ -119,6 +125,8 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
     autoImportHlay->addWidget (browseButton);
 
+    generalPrefVlay->addStretch (2);
+
     // Quiz Prefs
     quizPrefWidget = new QWidget;
     Q_CHECK_PTR (quizPrefWidget);
@@ -126,10 +134,17 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
 
     QVBoxLayout* quizPrefVlay = new QVBoxLayout (quizPrefWidget);
     Q_CHECK_PTR (quizPrefVlay);
+    quizPrefVlay->setMargin (0);
+
+    QLabel* quizPrefLabel = new QLabel (QUIZ_PREFS_ITEM);
+    Q_CHECK_PTR (quizPrefLabel);
+    quizPrefLabel->setFrameShape (QFrame::StyledPanel);
+    quizPrefVlay->addWidget (quizPrefLabel);
 
     QGroupBox* themeGbox = new QGroupBox ("Tile Theme");
     Q_CHECK_PTR (themeGbox);
     quizPrefVlay->addWidget (themeGbox);
+    quizPrefVlay->setStretchFactor (themeGbox, 1);
 
     QVBoxLayout* themeVlay = new QVBoxLayout (themeGbox, MARGIN, SPACING);
     Q_CHECK_PTR (themeVlay);
@@ -153,6 +168,8 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (themeCombo);
     themeHlay->addWidget (themeCombo);
 
+    quizPrefVlay->addStretch (2);
+
     // Signal mapper for the Choose Font buttons
     QSignalMapper* signalMapper = new QSignalMapper (this);
     Q_CHECK_PTR (signalMapper);
@@ -166,10 +183,17 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
 
     QVBoxLayout* fontPrefVlay = new QVBoxLayout (fontPrefWidget);
     Q_CHECK_PTR (fontPrefVlay);
+    fontPrefVlay->setMargin (0);
 
-    QGroupBox* fontGbox = new QGroupBox ("Fonts");
+    QLabel* fontPrefLabel = new QLabel (FONT_PREFS_ITEM);
+    Q_CHECK_PTR (fontPrefLabel);
+    fontPrefLabel->setFrameShape (QFrame::StyledPanel);
+    fontPrefVlay->addWidget (fontPrefLabel);
+
+    QGroupBox* fontGbox = new QGroupBox;
     Q_CHECK_PTR (fontGbox);
     fontPrefVlay->addWidget (fontGbox);
+    fontPrefVlay->setStretchFactor (fontGbox, 1);
 
     QGridLayout* fontGlay = new QGridLayout (fontGbox, 4, 3, MARGIN, SPACING);
     Q_CHECK_PTR (fontGlay);
@@ -279,6 +303,8 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
                               FONT_DEFINITIONS_BUTTON);
     fontGlay->addWidget (chooseFontDefinitionButton, row, 2);
 
+    fontPrefVlay->addStretch (2);
+
     // Word List Prefs
     wordListPrefWidget = new QWidget;
     Q_CHECK_PTR (wordListPrefWidget);
@@ -286,10 +312,17 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
 
     QVBoxLayout* wordListPrefVlay = new QVBoxLayout (wordListPrefWidget);
     Q_CHECK_PTR (wordListPrefVlay);
+    wordListPrefVlay->setMargin (0);
 
-    QGroupBox* wordListGbox = new QGroupBox ("Word Lists");
+    QLabel* wordListPrefLabel = new QLabel (WORD_LIST_PREFS_ITEM);
+    Q_CHECK_PTR (wordListPrefLabel);
+    wordListPrefLabel->setFrameShape (QFrame::StyledPanel);
+    wordListPrefVlay->addWidget (wordListPrefLabel);
+
+    QGroupBox* wordListGbox = new QGroupBox;
     Q_CHECK_PTR (wordListGbox);
     wordListPrefVlay->addWidget (wordListGbox);
+    wordListPrefVlay->setStretchFactor (wordListGbox, 1);
 
     QVBoxLayout* wordListVlay = new QVBoxLayout (wordListGbox, MARGIN,
                                                  SPACING);
@@ -311,6 +344,9 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (showDefinitionCbox);
     wordListVlay->addWidget (showDefinitionCbox);
 
+    wordListPrefVlay->addStretch (2);
+
+    // Button layout
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
