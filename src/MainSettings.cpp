@@ -24,6 +24,7 @@
 
 #include "MainSettings.h"
 #include "Auxil.h"
+#include "Defs.h"
 
 MainSettings* MainSettings::instance = new MainSettings();
 
@@ -47,11 +48,9 @@ const QString SETTINGS_SHOW_DEFINITIONS = "/wordlist_show_definitions";
 const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
 const QString SETTINGS_TILE_THEME = "/tile_theme";
 const QString SETTINGS_QUIZ_LETTER_ORDER = "/quiz_letter_order";
-
-// XXX: Should these be shared with the SettingsDialog somehow?
 const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
-const QString DEFAULT_QUIZ_LETTER_ORDER = "Alphabetical";
+const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 
 //---------------------------------------------------------------------------
 //  readSettings

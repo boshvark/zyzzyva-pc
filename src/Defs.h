@@ -41,6 +41,10 @@ namespace Defs {
     const int MARGIN = 4;
     const int QUIZ_TILE_SPACING = 5;
     const int QUIZ_TILE_MARGIN = 10;
+    const QString QUIZ_LETTERS_ALPHA = "Alphabetical";
+    const QString QUIZ_LETTERS_RANDOM = "Random";
+    const QString QUIZ_LETTERS_VOWELS_FIRST = "Vowels First";
+    const QString QUIZ_LETTERS_CONSONANTS_FIRST = "Consonants First";
 }
 
 #endif // DEFS_H

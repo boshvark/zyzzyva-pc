@@ -194,6 +194,21 @@ Auxil::wordWrap (const QString& str, int wrapLength)
 }
 
 //---------------------------------------------------------------------------
+//  isVowel
+//
+//! Determine if a character is a vowel.  Y is not considered to be a vowel.
+//
+//! @param c the character
+//! @return true if the character is a vowel, false otherwise
+//---------------------------------------------------------------------------
+bool
+Auxil::isVowel (QChar c)
+{
+    return ((c == 'A') || (c == 'E') || (c == 'I') ||
+            (c == 'O') || (c == 'U'));
+}
+
+//---------------------------------------------------------------------------
 //  stringToSearchSet
 //
 //! Return a search set enumeration value corresponding to a string.

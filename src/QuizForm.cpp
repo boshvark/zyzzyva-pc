@@ -26,6 +26,7 @@
 #include "AnalyzeQuizDialog.h"
 #include "DefinitionLabel.h"
 #include "ImageItem.h"
+#include "MainSettings.h"
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
 #include "WordEngine.h"
@@ -51,6 +52,28 @@ using namespace Defs;
 
 const QString PAUSE_BUTTON = "&Pause";
 const QString UNPAUSE_BUTTON = "Un&pause";
+
+bool
+vowelsFirstCmp (const QChar& a, const QChar& b)
+{
+    if (Auxil::isVowel (a) && !Auxil::isVowel (b))
+        return true;
+    else if (!Auxil::isVowel (a) && Auxil::isVowel (b))
+        return false;
+    else
+        return (a < b);
+}
+
+bool
+consonantsFirstCmp (const QChar& a, const QChar& b)
+{
+    if (Auxil::isVowel (a) && !Auxil::isVowel (b))
+        return false;
+    else if (!Auxil::isVowel (a) && Auxil::isVowel (b))
+        return true;
+    else
+        return (a < b);
+}
 
 //---------------------------------------------------------------------------
 //  QuizForm
@@ -659,9 +682,55 @@ QuizForm::setQuestionLabel (const QString& question)
 {
     clearCanvas();
 
+    // Order question letters according to preference
+    QString displayQuestion (question);
+    if (!question.contains (" ")) {
+        QString order = MainSettings::getQuizLetterOrder();
+        int length = displayQuestion.length();
+
+        if (order == Defs::QUIZ_LETTERS_RANDOM) {
+            for (int i = 0; i < length; ++i) {
+                int rnum = i + (std::rand() % (length - i));
+                if (rnum == i)
+                    continue;
+                QChar tmp = displayQuestion[rnum];
+                displayQuestion[rnum] = displayQuestion[i];
+                displayQuestion[i] = tmp;
+            }
+        }
+
+        else {
+            QList<QChar> qchars;
+            for (int i = 0; i < length; ++i)
+                qchars.append (displayQuestion.at (i));
+
+            if (order == Defs::QUIZ_LETTERS_VOWELS_FIRST) {
+                qSort (qchars.begin(), qchars.end(), vowelsFirstCmp);
+            }
+            else if (order == Defs::QUIZ_LETTERS_CONSONANTS_FIRST) {
+                qSort (qchars.begin(), qchars.end(), consonantsFirstCmp);
+            }
+            else if (order == Defs::QUIZ_LETTERS_ALPHA) {
+                qSort (qchars.begin(), qchars.end());
+            }
+
+            char chars[MAX_WORD_LEN + 1];
+            int i = 0;
+            QListIterator<QChar> it (qchars);
+            while (it.hasNext()) {
+                chars[i] = it.next().toAscii();
+                ++i;
+            }
+            chars[i] = 0;
+
+            displayQuestion = chars;
+        }
+    }
+
     // Question is not an alphagram, or there are no tile images
-    if (question.contains (" ") || tileImages.empty()) {
-        Q3CanvasText* text = new Q3CanvasText (question, questionCanvas);
+    if (displayQuestion.contains (" ") || tileImages.empty()) {
+        Q3CanvasText* text = new Q3CanvasText (displayQuestion,
+                                               questionCanvas);
         QRect rect = text->boundingRect();
         int width = (2 * QUIZ_TILE_MARGIN) + rect.width();
         if (width < minCanvasWidth)
@@ -674,17 +743,17 @@ QuizForm::setQuestionLabel (const QString& question)
     }
 
     else {
-        setNumCanvasTiles (question.length());
+        setNumCanvasTiles (displayQuestion.length());
 
         QMap<QString,QImage>::iterator image;
         int x = QUIZ_TILE_MARGIN +
-            ((numCanvasTiles - question.length()) *
+            ((numCanvasTiles - displayQuestion.length()) *
              (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
 
-        for (int i = 0; (i < numCanvasTiles) && (i < int (question.length()));
-             ++i)
+        for (int i = 0; (i < numCanvasTiles) &&
+                        (i < int (displayQuestion.length())); ++i)
         {
-            QString letter = QString (question[i]);
+            QString letter = QString (displayQuestion[i]);
             if (letter == "?")
                 letter = "_";
             image = tileImages.find (letter);

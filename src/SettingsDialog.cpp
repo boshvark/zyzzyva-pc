@@ -50,11 +50,6 @@ const int FONT_QUIZ_LABEL_BUTTON = 3;
 const int FONT_DEFINITIONS_BUTTON = 4;
 const int FONT_WORD_INPUT_BUTTON = 5;
 
-const QString QUIZ_LETTERS_ALPHA = "Alphabetical";
-const QString QUIZ_LETTERS_RANDOM = "Random";
-const QString QUIZ_LETTERS_VOWELS_FIRST = "Vowels First";
-const QString QUIZ_LETTERS_CONSONANTS_FIRST = "Consonants First";
-
 using namespace Defs;
 
 //---------------------------------------------------------------------------
@@ -194,10 +189,10 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (letterOrderCombo);
     letterOrderHlay->addWidget (letterOrderCombo);
 
-    letterOrderCombo->addItem (QUIZ_LETTERS_ALPHA);
-    letterOrderCombo->addItem (QUIZ_LETTERS_RANDOM);
-    letterOrderCombo->addItem (QUIZ_LETTERS_VOWELS_FIRST);
-    letterOrderCombo->addItem (QUIZ_LETTERS_CONSONANTS_FIRST); 
+    letterOrderCombo->addItem (Defs::QUIZ_LETTERS_ALPHA);
+    letterOrderCombo->addItem (Defs::QUIZ_LETTERS_RANDOM);
+    letterOrderCombo->addItem (Defs::QUIZ_LETTERS_VOWELS_FIRST);
+    letterOrderCombo->addItem (Defs::QUIZ_LETTERS_CONSONANTS_FIRST); 
     letterOrderCombo->setCurrentIndex (0);
 
     quizPrefVlay->addStretch (2);
@@ -454,6 +449,10 @@ SettingsDialog::readSettings()
     // Quiz letter order
     int letterOrderIndex = letterOrderCombo->findText
         (MainSettings::getQuizLetterOrder());
+    if (letterOrderIndex < 0) {
+        letterOrderIndex = letterOrderCombo->findText
+            (Defs::QUIZ_LETTERS_ALPHA);
+    }
     if (letterOrderIndex < 0)
         letterOrderIndex = 0;
     letterOrderCombo->setCurrentIndex (letterOrderIndex);
