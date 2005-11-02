@@ -30,8 +30,10 @@
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
+#include <QListWidget>
 #include <QPushButton>
 #include <QSettings>
+#include <QStackedWidget>
 
 class SettingsDialog : public QDialog
 {
@@ -44,6 +46,7 @@ class SettingsDialog : public QDialog
     void writeSettings();
 
     public slots:
+    void navTextChanged (const QString& text);
     void browseButtonClicked();
     void autoImportCboxToggled (bool on);
     void themeCboxToggled (bool on);
@@ -53,6 +56,14 @@ class SettingsDialog : public QDialog
     void fillThemeCombo();
 
     private:
+    QListWidget*    navList;
+    QStackedWidget* navStack;
+
+    QWidget*     generalPrefWidget;
+    QWidget*     quizPrefWidget;
+    QWidget*     fontPrefWidget;
+    QWidget*     wordListPrefWidget;
+
     QCheckBox*   autoImportCbox;
     QLineEdit*   autoImportLine;
     QPushButton* browseButton;
@@ -70,6 +81,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   showHookParentsCbox;
     QCheckBox*   showHooksCbox;
     QCheckBox*   showDefinitionCbox;
+
 };
 
 #endif // SETTINGS_DIALOG_H

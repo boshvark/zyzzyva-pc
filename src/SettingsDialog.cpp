@@ -39,6 +39,11 @@
 
 const QString DIALOG_CAPTION = "Preferences";
 
+const QString GENERAL_PREFS_ITEM = "General";
+const QString QUIZ_PREFS_ITEM = "Quiz";
+const QString FONT_PREFS_ITEM = "Fonts";
+const QString WORD_LIST_PREFS_ITEM = "Word Lists";
+
 const int FONT_MAIN_BUTTON = 1;
 const int FONT_WORD_LISTS_BUTTON = 2;
 const int FONT_QUIZ_LABEL_BUTTON = 3;
@@ -58,12 +63,37 @@ using namespace Defs;
 SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
     Q_CHECK_PTR (mainVlay);
+
+    QHBoxLayout* mainHlay = new QHBoxLayout;
+    Q_CHECK_PTR (mainHlay);
+    mainVlay->addLayout (mainHlay);
+
+    navList = new QListWidget;
+    Q_CHECK_PTR (navList);
+    navList->setMaximumWidth (150);
+    navList->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Preferred);
+    connect (navList, SIGNAL (currentTextChanged (const QString&)),
+             SLOT (navTextChanged (const QString&)));
+    mainHlay->addWidget (navList);
+
+    navStack = new QStackedWidget;
+    Q_CHECK_PTR (navStack);
+    mainHlay->addWidget (navStack);
+
+    // General Prefs
+    generalPrefWidget = new QWidget;
+    Q_CHECK_PTR (generalPrefWidget);
+    navStack->addWidget (generalPrefWidget);
+
+    QVBoxLayout* generalPrefVlay = new QVBoxLayout (generalPrefWidget);
+    Q_CHECK_PTR (generalPrefVlay);
 
     QGroupBox* autoImportGbox = new QGroupBox ("Auto Import");
     Q_CHECK_PTR (autoImportGbox);
-    mainVlay->addWidget (autoImportGbox);
+    generalPrefVlay->addWidget (autoImportGbox);
 
     QVBoxLayout* autoImportVlay = new QVBoxLayout (autoImportGbox, MARGIN,
                                                    SPACING);
@@ -89,9 +119,17 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
     autoImportHlay->addWidget (browseButton);
 
+    // Quiz Prefs
+    quizPrefWidget = new QWidget;
+    Q_CHECK_PTR (quizPrefWidget);
+    navStack->addWidget (quizPrefWidget);
+
+    QVBoxLayout* quizPrefVlay = new QVBoxLayout (quizPrefWidget);
+    Q_CHECK_PTR (quizPrefVlay);
+
     QGroupBox* themeGbox = new QGroupBox ("Tile Theme");
     Q_CHECK_PTR (themeGbox);
-    mainVlay->addWidget (themeGbox);
+    quizPrefVlay->addWidget (themeGbox);
 
     QVBoxLayout* themeVlay = new QVBoxLayout (themeGbox, MARGIN, SPACING);
     Q_CHECK_PTR (themeVlay);
@@ -121,9 +159,17 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     connect (signalMapper, SIGNAL (mapped (int)),
              SLOT (chooseFontButtonClicked (int)));
 
+    // Font Prefs
+    fontPrefWidget = new QWidget;
+    Q_CHECK_PTR (fontPrefWidget);
+    navStack->addWidget (fontPrefWidget);
+
+    QVBoxLayout* fontPrefVlay = new QVBoxLayout (fontPrefWidget);
+    Q_CHECK_PTR (fontPrefVlay);
+
     QGroupBox* fontGbox = new QGroupBox ("Fonts");
     Q_CHECK_PTR (fontGbox);
-    mainVlay->addWidget (fontGbox);
+    fontPrefVlay->addWidget (fontGbox);
 
     QGridLayout* fontGlay = new QGridLayout (fontGbox, 4, 3, MARGIN, SPACING);
     Q_CHECK_PTR (fontGlay);
@@ -233,9 +279,17 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
                               FONT_DEFINITIONS_BUTTON);
     fontGlay->addWidget (chooseFontDefinitionButton, row, 2);
 
+    // Word List Prefs
+    wordListPrefWidget = new QWidget;
+    Q_CHECK_PTR (wordListPrefWidget);
+    navStack->addWidget (wordListPrefWidget);
+
+    QVBoxLayout* wordListPrefVlay = new QVBoxLayout (wordListPrefWidget);
+    Q_CHECK_PTR (wordListPrefVlay);
+
     QGroupBox* wordListGbox = new QGroupBox ("Word Lists");
     Q_CHECK_PTR (wordListGbox);
-    mainVlay->addWidget (wordListGbox);
+    wordListPrefVlay->addWidget (wordListGbox);
 
     QVBoxLayout* wordListVlay = new QVBoxLayout (wordListGbox, MARGIN,
                                                  SPACING);
@@ -276,7 +330,13 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
 
-    resize (minimumSizeHint().width() * 2, minimumSizeHint().height());
+    // Add nav list items
+    new QListWidgetItem (GENERAL_PREFS_ITEM, navList);
+    new QListWidgetItem (QUIZ_PREFS_ITEM, navList);
+    new QListWidgetItem (FONT_PREFS_ITEM, navList);
+    new QListWidgetItem (WORD_LIST_PREFS_ITEM, navList);
+    navList->setCurrentRow (0);
+
     setCaption (DIALOG_CAPTION);
     readSettings();
 }
@@ -379,6 +439,27 @@ SettingsDialog::writeSettings()
     MainSettings::setWordListShowDefinitions
         (showDefinitionCbox->isChecked());
     MainSettings::writeSettings();
+}
+
+//---------------------------------------------------------------------------
+//  navTextChanged
+//
+//! Slot called when the current item in the navigation list changes.  Raise
+//! the corresponding frame in the stacked widget.
+//
+//! @param text the current text in the navigation list
+//---------------------------------------------------------------------------
+void
+SettingsDialog::navTextChanged (const QString& text)
+{
+    if (text == GENERAL_PREFS_ITEM)
+        navStack->setCurrentWidget (generalPrefWidget);
+    else if (text == QUIZ_PREFS_ITEM)
+        navStack->setCurrentWidget (quizPrefWidget);
+    else if (text == FONT_PREFS_ITEM)
+        navStack->setCurrentWidget (fontPrefWidget);
+    else if (text == WORD_LIST_PREFS_ITEM)
+        navStack->setCurrentWidget (wordListPrefWidget);
 }
 
 //---------------------------------------------------------------------------
