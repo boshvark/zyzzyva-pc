@@ -143,6 +143,7 @@ SearchSpecForm::getSearchSpec() const
         const SearchConditionForm* form = it.next();
         if (form->isValid())
             spec.conditions.append (form->getSearchCondition());
+        ++i;
     }
     return spec;
 }
