@@ -25,6 +25,7 @@
 #include "MainSettings.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <QSettings>
 
 MainSettings* MainSettings::instance = new MainSettings();
 
@@ -48,9 +49,11 @@ const QString SETTINGS_SHOW_DEFINITIONS = "/wordlist_show_definitions";
 const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
 const QString SETTINGS_TILE_THEME = "/tile_theme";
 const QString SETTINGS_QUIZ_LETTER_ORDER = "/quiz_letter_order";
+const QString SETTINGS_QUIZ_BACKGROUND_COLOR = "/quiz_background_color";
 const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
+const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb (192, 192, 192);
 
 //---------------------------------------------------------------------------
 //  readSettings
@@ -84,6 +87,9 @@ MainSettings::readSettings()
 
     instance->quizLetterOrder = settings.readEntry
         (SETTINGS_QUIZ_LETTER_ORDER, DEFAULT_QUIZ_LETTER_ORDER);
+
+    instance->quizBackgroundColor.setRgb (settings.readNumEntry
+        (SETTINGS_QUIZ_BACKGROUND_COLOR, DEFAULT_QUIZ_BACKGROUND_COLOR));
 
     instance->mainFont = settings.readEntry (SETTINGS_FONT_MAIN);
     instance->wordListFont = settings.readEntry (SETTINGS_FONT_WORD_LISTS);
@@ -127,6 +133,8 @@ MainSettings::writeSettings()
     settings.writeEntry (SETTINGS_TILE_THEME, instance->tileTheme);
     settings.writeEntry (SETTINGS_QUIZ_LETTER_ORDER,
                          instance->quizLetterOrder);
+    settings.writeEntry (SETTINGS_QUIZ_BACKGROUND_COLOR,
+                         instance->quizBackgroundColor.rgb());
     settings.writeEntry (SETTINGS_FONT_MAIN, instance->mainFont);
     settings.writeEntry (SETTINGS_FONT_WORD_LISTS, instance->wordListFont);
     settings.writeEntry (SETTINGS_FONT_QUIZ_LABEL, instance->quizLabelFont);

@@ -122,7 +122,8 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     // Canvas for tile images - set default background color
     questionCanvas = new Q3Canvas (this);
     Q_CHECK_PTR (questionCanvas);
-    questionCanvas->setBackgroundColor (QColor (192, 192, 192));
+    questionCanvas->setBackgroundColor
+        (QColor (MainSettings::getQuizBackgroundColor()));
 
     questionCanvasView = new Q3CanvasView (questionCanvas);
     Q_CHECK_PTR (questionCanvasView);

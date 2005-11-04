@@ -25,7 +25,7 @@
 #ifndef MAIN_SETTINGS_H
 #define MAIN_SETTINGS_H
 
-#include <QSettings>
+#include <QColor>
 #include <QString>
 
 class MainSettings
@@ -56,6 +56,10 @@ class MainSettings
     static QString getQuizLetterOrder() { return instance->quizLetterOrder; }
     static void setQuizLetterOrder (const QString& str) {
         instance->quizLetterOrder = str; }
+    static QColor getQuizBackgroundColor() {
+        return instance->quizBackgroundColor; }
+    static void setQuizBackgroundColor (const QColor& color) {
+        instance->quizBackgroundColor = color; }
     static QString getMainFont() { return instance->mainFont; }
     static void setMainFont (const QString& str) { instance->mainFont = str; }
     static QString getWordListFont() { return instance->wordListFont; }
@@ -107,6 +111,7 @@ class MainSettings
     bool useTileTheme;
     QString tileTheme;
     QString quizLetterOrder;
+    QColor quizBackgroundColor;
     QString mainFont;
     QString wordListFont;
     QString quizLabelFont;
