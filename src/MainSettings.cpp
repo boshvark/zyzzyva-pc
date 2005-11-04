@@ -88,8 +88,9 @@ MainSettings::readSettings()
     instance->quizLetterOrder = settings.readEntry
         (SETTINGS_QUIZ_LETTER_ORDER, DEFAULT_QUIZ_LETTER_ORDER);
 
-    instance->quizBackgroundColor.setRgb (settings.readNumEntry
-        (SETTINGS_QUIZ_BACKGROUND_COLOR, DEFAULT_QUIZ_BACKGROUND_COLOR));
+    instance->quizBackgroundColor.setRgb (settings.readEntry
+        (SETTINGS_QUIZ_BACKGROUND_COLOR,
+         QString::number (DEFAULT_QUIZ_BACKGROUND_COLOR)).toUInt());
 
     instance->mainFont = settings.readEntry (SETTINGS_FONT_MAIN);
     instance->wordListFont = settings.readEntry (SETTINGS_FONT_WORD_LISTS);
@@ -134,7 +135,8 @@ MainSettings::writeSettings()
     settings.writeEntry (SETTINGS_QUIZ_LETTER_ORDER,
                          instance->quizLetterOrder);
     settings.writeEntry (SETTINGS_QUIZ_BACKGROUND_COLOR,
-                         instance->quizBackgroundColor.rgb());
+                         QString::number
+                         (instance->quizBackgroundColor.rgb()));
     settings.writeEntry (SETTINGS_FONT_MAIN, instance->mainFont);
     settings.writeEntry (SETTINGS_FONT_WORD_LISTS, instance->wordListFont);
     settings.writeEntry (SETTINGS_FONT_QUIZ_LABEL, instance->quizLabelFont);

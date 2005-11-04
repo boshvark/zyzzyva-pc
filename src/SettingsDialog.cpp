@@ -26,6 +26,7 @@
 #include "MainSettings.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <QColorDialog>
 #include <QFileDialog>
 #include <QFont>
 #include <QFontDialog>
@@ -194,6 +195,30 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     letterOrderCombo->addItem (Defs::QUIZ_LETTERS_VOWELS_FIRST);
     letterOrderCombo->addItem (Defs::QUIZ_LETTERS_CONSONANTS_FIRST); 
     letterOrderCombo->setCurrentIndex (0);
+
+    QGroupBox* quizBackgroundColorGbox = new QGroupBox ("Background Color");
+    Q_CHECK_PTR (quizBackgroundColorGbox);
+    quizPrefVlay->addWidget (quizBackgroundColorGbox);
+    quizPrefVlay->setStretchFactor (quizBackgroundColorGbox, 1);
+
+    QVBoxLayout* quizBackgroundColorVlay = new QVBoxLayout
+        (quizBackgroundColorGbox);
+    Q_CHECK_PTR (quizBackgroundColorVlay);
+
+    QHBoxLayout* quizBackgroundColorHlay = new QHBoxLayout;
+    Q_CHECK_PTR (quizBackgroundColorHlay);
+    quizBackgroundColorVlay->addLayout (quizBackgroundColorHlay);
+
+    quizBackgroundColorLine = new QLineEdit;
+    Q_CHECK_PTR (quizBackgroundColorLine);
+    quizBackgroundColorLine->setReadOnly (true);
+    quizBackgroundColorHlay->addWidget (quizBackgroundColorLine);
+
+    QPushButton* quizBackgroundColorButton = new QPushButton ("Choose...");
+    Q_CHECK_PTR (quizBackgroundColorButton);
+    connect (quizBackgroundColorButton, SIGNAL (clicked()),
+             SLOT (chooseQuizBackgroundColorButtonClicked()));
+    quizBackgroundColorHlay->addWidget (quizBackgroundColorButton);
 
     quizPrefVlay->addStretch (2);
 
@@ -457,6 +482,9 @@ SettingsDialog::readSettings()
         letterOrderIndex = 0;
     letterOrderCombo->setCurrentIndex (letterOrderIndex);
 
+    quizBackgroundColorLine->setText (QString::number
+        (MainSettings::getQuizBackgroundColor().rgb()));
+
     // Main font
     fontMainLine->setText (MainSettings::getMainFont());
     fontMainLine->home (false);
@@ -500,6 +528,8 @@ SettingsDialog::writeSettings()
     MainSettings::setUseTileTheme (themeCbox->isChecked());
     MainSettings::setTileTheme (themeCombo->currentText());
     MainSettings::setQuizLetterOrder (letterOrderCombo->currentText());
+    MainSettings::setQuizBackgroundColor
+        (QColor (quizBackgroundColorLine->text().toUInt()));
     MainSettings::setMainFont (fontMainLine->text());
     MainSettings::setWordListFont (fontWordListLine->text());
     // XXX: Reinstate this once it's know how to change the font of canvas
@@ -616,6 +646,23 @@ SettingsDialog::chooseFontButtonClicked (int button)
     if (ok) {
         lineEdit->setText (newFont.toString());
         lineEdit->home (false);
+    }
+}
+
+//---------------------------------------------------------------------------
+//  chooseQuizBackgroundColorButtonClicked
+//
+//! Slot called when a Choose button is clicked to choose a quiz background
+//! color.  Create a color chooser dialog and place the name of the chosen
+//! color in the color line edit.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::chooseQuizBackgroundColorButtonClicked()
+{
+    QColor color = QColorDialog::getColor
+        (MainSettings::getQuizBackgroundColor());
+    if (color.isValid()) {
+        quizBackgroundColorLine->setText (QString::number (color.rgb()));
     }
 }
 

@@ -51,6 +51,7 @@ class SettingsDialog : public QDialog
     void autoImportCboxToggled (bool on);
     void themeCboxToggled (bool on);
     void chooseFontButtonClicked (int button);
+    void chooseQuizBackgroundColorButtonClicked();
 
     private:
     void fillThemeCombo();
@@ -71,6 +72,7 @@ class SettingsDialog : public QDialog
     QLabel*      themeLabel;
     QComboBox*   themeCombo;
     QComboBox*   letterOrderCombo;
+    QLineEdit*   quizBackgroundColorLine;
     QLineEdit*   fontMainLine;
     QLineEdit*   fontWordListLine;
     // XXX: Reinstate this once it's known how to change the font of canvas
