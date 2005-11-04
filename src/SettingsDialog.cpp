@@ -429,7 +429,8 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     setCaption (DIALOG_CAPTION);
     readSettings();
 
-    QPalette colorPalette (MainSettings::getQuizBackgroundColor());
+    quizBackgroundColor = MainSettings::getQuizBackgroundColor();
+    QPalette colorPalette (quizBackgroundColor);
     quizBackgroundColorLine->setPalette (colorPalette);
 }
 
@@ -486,10 +487,7 @@ SettingsDialog::readSettings()
         letterOrderIndex = 0;
     letterOrderCombo->setCurrentIndex (letterOrderIndex);
 
-    QColor quizBackgroundColor = MainSettings::getQuizBackgroundColor();
-    quizBackgroundColorLine->setText (QString::number
-                                      (quizBackgroundColor.rgb()));
-
+    quizBackgroundColor = MainSettings::getQuizBackgroundColor();
     QPalette quizBackgroundPalette (quizBackgroundColor);
     quizBackgroundColorLine->setPalette (quizBackgroundPalette);
 
@@ -536,8 +534,7 @@ SettingsDialog::writeSettings()
     MainSettings::setUseTileTheme (themeCbox->isChecked());
     MainSettings::setTileTheme (themeCombo->currentText());
     MainSettings::setQuizLetterOrder (letterOrderCombo->currentText());
-    MainSettings::setQuizBackgroundColor
-        (QColor (quizBackgroundColorLine->text().toUInt()));
+    MainSettings::setQuizBackgroundColor (quizBackgroundColor);
     MainSettings::setMainFont (fontMainLine->text());
     MainSettings::setWordListFont (fontWordListLine->text());
     // XXX: Reinstate this once it's know how to change the font of canvas
@@ -672,7 +669,7 @@ SettingsDialog::chooseQuizBackgroundColorButtonClicked()
     if (color.isValid()) {
         QPalette palette (color);
         quizBackgroundColorLine->setPalette (palette);
-        quizBackgroundColorLine->setText (QString::number (color.rgb()));
+        quizBackgroundColor = color;
     }
 }
 

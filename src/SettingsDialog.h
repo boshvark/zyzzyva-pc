@@ -51,7 +51,7 @@ class SettingsDialog : public QDialog
     void autoImportCboxToggled (bool on);
     void themeCboxToggled (bool on);
     void chooseFontButtonClicked (int button);
-   void chooseQuizBackgroundColorButtonClicked();
+    void chooseQuizBackgroundColorButtonClicked();
 
     private:
     void fillThemeCombo();
@@ -84,6 +84,8 @@ class SettingsDialog : public QDialog
     QCheckBox*   showHookParentsCbox;
     QCheckBox*   showHooksCbox;
     QCheckBox*   showDefinitionCbox;
+
+    QColor       quizBackgroundColor;
 
 };
 
