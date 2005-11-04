@@ -24,6 +24,7 @@
 
 #include "WordTableModel.h"
 #include "WordEngine.h"
+#include "MainSettings.h"
 
 using namespace std;
 
@@ -172,22 +173,32 @@ WordTableModel::data (const QModelIndex& index, int role) const
     QString wordUpper = word.upper();
     switch (index.column()) {
         case FRONT_HOOK_COLUMN:
-        return getFrontHookLetters (wordUpper);
+        return MainSettings::getWordListShowHooks() ?
+            getFrontHookLetters (wordUpper) : QString::null;
 
         case BACK_HOOK_COLUMN:
-        return getBackHookLetters (wordUpper);
+        return MainSettings::getWordListShowHooks() ?
+            getBackHookLetters (wordUpper) : QString::null;
 
         case WORD_COLUMN:
         if (role == Qt::UserRole)
             return wordUpper;
-        else if (role == Qt::DisplayRole)
-            return
-                (isFrontHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' ')) +
-                word +
-                (isBackHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' '));
+        else if (role == Qt::DisplayRole) {
+            if (MainSettings::getWordListShowHookParents()) {
+                return
+                    (isFrontHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' '))
+                    + word +
+                    (isBackHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' '));
+            }
+            else
+                return wordUpper;
+        }
+        else
+            return word;
 
         case DEFINITION_COLUMN:
-        return wordEngine->getDefinition (wordUpper);
+        return MainSettings::getWordListShowDefinitions() ?
+            wordEngine->getDefinition (wordUpper) : QString::null;
 
         default: return word;
     }
@@ -216,11 +227,23 @@ WordTableModel::headerData (int section, Qt::Orientation orientation, int
 
     if (role == Qt::DisplayRole) {
         switch (section) {
-            case FRONT_HOOK_COLUMN: return FRONT_HOOK_HEADER;
-            case BACK_HOOK_COLUMN:  return BACK_HOOK_HEADER;
-            case WORD_COLUMN:       return WORD_HEADER;
-            case DEFINITION_COLUMN: return DEFINITION_HEADER;
-            default:                return "Unknown";
+            case FRONT_HOOK_COLUMN:
+            return MainSettings::getWordListShowHooks() ?
+                FRONT_HOOK_HEADER : QString::null;
+
+            case BACK_HOOK_COLUMN:
+            return MainSettings::getWordListShowHooks() ?
+                BACK_HOOK_HEADER : QString::null;
+
+            case WORD_COLUMN:
+            return WORD_HEADER;
+
+            case DEFINITION_COLUMN:
+            return MainSettings::getWordListShowDefinitions() ?
+                DEFINITION_HEADER : QString::null;
+
+            default:
+            return "Unknown";
         }
     }
     else
