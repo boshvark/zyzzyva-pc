@@ -212,6 +212,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     quizBackgroundColorLine = new QLineEdit;
     Q_CHECK_PTR (quizBackgroundColorLine);
     quizBackgroundColorLine->setReadOnly (true);
+    quizBackgroundColorLine->setEnabled (false);
     quizBackgroundColorHlay->addWidget (quizBackgroundColorLine);
 
     QPushButton* quizBackgroundColorButton = new QPushButton ("Choose...");
@@ -427,6 +428,9 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
 
     setCaption (DIALOG_CAPTION);
     readSettings();
+
+    QPalette colorPalette (MainSettings::getQuizBackgroundColor());
+    quizBackgroundColorLine->setPalette (colorPalette);
 }
 
 //---------------------------------------------------------------------------
@@ -482,8 +486,12 @@ SettingsDialog::readSettings()
         letterOrderIndex = 0;
     letterOrderCombo->setCurrentIndex (letterOrderIndex);
 
+    QColor quizBackgroundColor = MainSettings::getQuizBackgroundColor();
     quizBackgroundColorLine->setText (QString::number
-        (MainSettings::getQuizBackgroundColor().rgb()));
+                                      (quizBackgroundColor.rgb()));
+
+    QPalette quizBackgroundPalette (quizBackgroundColor);
+    quizBackgroundColorLine->setPalette (quizBackgroundPalette);
 
     // Main font
     fontMainLine->setText (MainSettings::getMainFont());
@@ -662,6 +670,8 @@ SettingsDialog::chooseQuizBackgroundColorButtonClicked()
     QColor color = QColorDialog::getColor
         (MainSettings::getQuizBackgroundColor());
     if (color.isValid()) {
+        QPalette palette (color);
+        quizBackgroundColorLine->setPalette (palette);
         quizBackgroundColorLine->setText (QString::number (color.rgb()));
     }
 }
