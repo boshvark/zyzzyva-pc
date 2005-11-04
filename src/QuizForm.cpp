@@ -122,8 +122,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     // Canvas for tile images - set default background color
     questionCanvas = new Q3Canvas (this);
     Q_CHECK_PTR (questionCanvas);
-    questionCanvas->setBackgroundColor
-        (QColor (MainSettings::getQuizBackgroundColor()));
+    setBackgroundColor (QColor (MainSettings::getQuizBackgroundColor()));
 
     questionCanvasView = new Q3CanvasView (questionCanvas);
     Q_CHECK_PTR (questionCanvasView);
@@ -867,6 +866,19 @@ QuizForm::setTileTheme (const QString& theme)
         minimizeCanvas();
     else
         setQuestionLabel (question);
+}
+
+//---------------------------------------------------------------------------
+//  setBackgroundColor
+//
+//! Set the background color of the quiz question area.
+//
+//! @param color the new color
+//---------------------------------------------------------------------------
+void
+QuizForm::setBackgroundColor (const QColor& color)
+{
+    questionCanvas->setBackgroundColor (color);
 }
 
 //---------------------------------------------------------------------------

@@ -610,8 +610,9 @@ MainWindow::readSettings (bool useGeometry)
     else
         qWarning ("Cannot set font: " + fontStr);
 
-    // Set tile theme for all quiz forms
+    // Set tile theme and background color for all quiz forms
     QString tileTheme = MainSettings::getTileTheme();
+    QColor backgroundColor = MainSettings::getQuizBackgroundColor();
     int count = tabStack->count();
     for (int i = 0; i < count; ++i) {
         ActionForm* form = static_cast<ActionForm*> (tabStack->page (i));
@@ -619,6 +620,7 @@ MainWindow::readSettings (bool useGeometry)
         if (type == ActionForm::QuizFormType) {
             QuizForm* quizForm = static_cast<QuizForm*> (form);
             quizForm->setTileTheme (tileTheme);
+            quizForm->setBackgroundColor (backgroundColor);
         }
     }
 

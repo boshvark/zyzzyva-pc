@@ -61,6 +61,7 @@ class QuizForm : public ActionForm
     void pauseClicked();
     void analyzeClicked();
     void setTileTheme (const QString& theme);
+    void setBackgroundColor (const QColor& color);
 
     private:
     void updateStats();
