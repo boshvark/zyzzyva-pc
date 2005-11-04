@@ -54,6 +54,13 @@ WordTableView::WordTableView (WordEngine* e, QWidget* parent)
 {
     setSelectionBehavior (QAbstractItemView::SelectRows);
     setSelectionMode (QAbstractItemView::SingleSelection);
+
+    // FIXME: Once Trolltech fixes the assert in QHeaderView, continue with
+    // statements like these
+    //if (!MainSettings::getWordListShowHooks()) {
+    //    setColumnHidden (WordTableModel::FRONT_HOOK_COLUMN, true);
+    //    setColumnHidden (WordTableModel::BACK_HOOK_COLUMN, true);
+    //}
 }
 
 //---------------------------------------------------------------------------
