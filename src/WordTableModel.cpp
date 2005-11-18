@@ -79,16 +79,18 @@ WordTableModel::clear()
 //! Add a word to the model.
 //
 //! @param word the word to add
+//! @param type the type associated with the word
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::addWord (const QString& word)
+WordTableModel::addWord (const QString& word, WordType type)
 {
     int row = rowCount();
     bool ok = insertRow (row);
     if (!ok)
         return false;
-    setData (index (row, 0), word);
+    setData (index (row, 0), word, Qt::EditRole);
+    setData (index (row, 0), type, Qt::UserRole);
     emit wordsChanged();
     return true;
 }
@@ -99,10 +101,11 @@ WordTableModel::addWord (const QString& word)
 //! Add a list of words to the model.
 //
 //! @param words the words to add
+//! @param type the type associated with the words
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::addWords (const QStringList& words)
+WordTableModel::addWords (const QStringList& words, WordType type)
 {
     int row = rowCount();
     bool ok = insertRows (row, words.size());
@@ -110,7 +113,8 @@ WordTableModel::addWords (const QStringList& words)
         return false;
     QString word;
     foreach (word, words) {
-        setData (index (row, 0), word);
+        setData (index (row, 0), word, Qt::EditRole);
+        setData (index (row, 0), type, Qt::UserRole);
         ++row;
     }
     emit wordsChanged();
@@ -166,7 +170,10 @@ WordTableModel::data (const QModelIndex& index, int role) const
     if ((index.row() < 0) || (index.row() >= wordList.count()))
         return QVariant();
 
-    if ((role != Qt::DisplayRole) && (role != Qt::UserRole))
+    if (role == Qt::UserRole)
+        return wordTypes.at (index.row());
+
+    if (role != Qt::DisplayRole)
         return QVariant();
 
     QString word = wordList.at (index.row());
@@ -266,8 +273,10 @@ WordTableModel::insertRows (int row, int count, const QModelIndex&)
 {
     beginInsertRows (QModelIndex(), row, row + count - 1);
 
-    for (int i = 0; i < count; ++i)
+    for (int i = 0; i < count; ++i) {
         wordList.insert (row, "");
+        wordTypes.insert (row, WordNormal);
+    }
 
     endInsertRows();
     return true;
@@ -289,8 +298,10 @@ WordTableModel::removeRows (int row, int count, const QModelIndex&)
 {
     beginRemoveRows (QModelIndex(), row, row + count - 1);
 
-    for (int i = 0; i < count; ++i)
+    for (int i = 0; i < count; ++i) {
         wordList.removeAt (row);
+        wordTypes.removeAt (row);
+    }
 
     endRemoveRows();
     return true;
@@ -313,6 +324,11 @@ WordTableModel::setData (const QModelIndex& index, const QVariant& value, int
 {
     if (index.isValid() && (role == Qt::EditRole)) {
         wordList.replace (index.row(), value.toString());
+        emit dataChanged (index, index);
+        return true;
+    }
+    else if (index.isValid() && (role == Qt::UserRole)) {
+        wordTypes.replace (index.row(), WordType (value.toInt()));
         emit dataChanged (index, index);
         return true;
     }

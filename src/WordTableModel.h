@@ -33,14 +33,22 @@ class WordEngine;
 
 class WordTableModel : public QAbstractTableModel
 {
+    public:
+    enum WordType {
+        WordNormal = 0,
+        WordCorrect,
+        WordMissed,
+        WordIncorrect
+    };
+
     Q_OBJECT
     public:
     WordTableModel (WordEngine* e, QObject* parent = 0);
     ~WordTableModel();
 
     bool clear();
-    bool addWord (const QString& word);
-    bool addWords (const QStringList& words);
+    bool addWord (const QString& word, WordType type = WordNormal);
+    bool addWords (const QStringList& words, WordType type = WordNormal);
 
     int rowCount (const QModelIndex& parent = QModelIndex()) const;
     int columnCount (const QModelIndex& parent = QModelIndex()) const;
@@ -67,6 +75,7 @@ class WordTableModel : public QAbstractTableModel
     private:
     WordEngine* wordEngine;
     QStringList wordList;
+    QList<WordType> wordTypes;
 
     public:
     enum {

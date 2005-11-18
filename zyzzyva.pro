@@ -62,6 +62,7 @@ SOURCES = \
     src/WordEntryDialog.cpp \
     src/WordGraph.cpp \
     src/WordListDialog.cpp \
+    src/WordTableDelegate.cpp \
     src/WordTableModel.cpp \
     src/WordTableView.cpp \
     src/WordValidator.cpp \
@@ -88,6 +89,7 @@ HEADERS = \
     src/WordEntryDialog.h \
     src/WordLineEdit.h \
     src/WordListDialog.h \
+    src/WordTableDelegate.h \
     src/WordTableModel.h \
     src/WordTableView.h \
     src/WordTextEdit.h \

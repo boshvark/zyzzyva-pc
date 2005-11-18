@@ -1,9 +1,9 @@
 //---------------------------------------------------------------------------
-// Defs.h
+// WordTableDelegate.h
 //
-// Definitions.
+// A class derived from QItemDelegate, used to render items in a word list.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,26 +22,25 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef DEFS_H
-#define DEFS_H
+#ifndef WORD_TABLE_DELEGATE_H
+#define WORD_TABLE_DELEGATE_H
 
-#include <QColor>
 #include <QString>
+#include <QItemDelegate>
 
-namespace Defs {
-    const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
-    const QString EMPTY_DEFINITION = "(no definition)";
-    const int DEFINITION_WRAP_LENGTH = 80;
-    const int MAX_WORD_LEN = 15;
-    const int MAX_INPUT_LINE_LEN = 640;
-    const int SPACING = 4;
-    const int MARGIN = 4;
-    const int QUIZ_TILE_SPACING = 5;
-    const int QUIZ_TILE_MARGIN = 10;
-    const QString QUIZ_LETTERS_ALPHA = "Alphabetical";
-    const QString QUIZ_LETTERS_RANDOM = "Random";
-    const QString QUIZ_LETTERS_VOWELS_FIRST = "Vowels First";
-    const QString QUIZ_LETTERS_CONSONANTS_FIRST = "Consonants First";
-}
+class WordEngine;
 
-#endif // DEFS_H
+class WordTableDelegate : public QItemDelegate
+{
+    Q_OBJECT
+    public:
+    WordTableDelegate (QWidget* parent = 0);
+    virtual ~WordTableDelegate() { }
+
+    protected:
+    virtual void paint (QPainter* painter, const QStyleOptionViewItem& option,
+                        const QModelIndex& index) const;
+
+};
+
+#endif // WORD_TABLE_DELEGATE_H

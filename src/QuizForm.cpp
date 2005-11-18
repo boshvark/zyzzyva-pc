@@ -261,10 +261,9 @@ QuizForm::responseEntered()
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
-        responseModel->addWord (response);
+        responseModel->addWord (response, WordTableModel::WordCorrect);
         //responseList->setSelected (item, true);
         //responseList->ensureItemVisible (item);
-        //item->setTextColor (VALID_CORRECT_WORD_COLOR);
         statusStr = "<font color=\"blue\">Correct</font>";
         analyzeDialog->updateStats();
     }
@@ -454,8 +453,7 @@ QuizForm::checkResponseClicked()
     QStringList unanswered = quizEngine->getMissed();
     QStringList::iterator it;
     for (it = unanswered.begin(); it != unanswered.end(); ++it) {
-        responseModel->addWord (*it);
-        //item->setTextColor (VALID_MISSED_WORD_COLOR);
+        responseModel->addWord (*it, WordTableModel::WordMissed);
         analyzeDialog->addMissed (*it);
     }
 
@@ -512,8 +510,7 @@ QuizForm::startQuestion()
     std::set<QString> correct = quizEngine->getQuestionCorrectResponses();
     std::set<QString>::iterator it;
     for (it = correct.begin(); it != correct.end(); ++it) {
-        responseModel->addWord (*it);
-        //item->setTextColor (VALID_CORRECT_WORD_COLOR);
+        responseModel->addWord (*it, WordTableModel::WordCorrect);
     }
 
     responseStatusLabel->setText ("");

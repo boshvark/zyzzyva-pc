@@ -28,6 +28,7 @@
 #include "QuizSpec.h"
 #include "SearchSpec.h"
 #include "WordEngine.h"
+#include "WordTableDelegate.h"
 #include "WordTableModel.h"
 #include "WordVariationDialog.h"
 #include "WordVariationType.h"
@@ -54,6 +55,9 @@ WordTableView::WordTableView (WordEngine* e, QWidget* parent)
 {
     setSelectionBehavior (QAbstractItemView::SelectRows);
     setSelectionMode (QAbstractItemView::SingleSelection);
+
+    WordTableDelegate* delegate = new WordTableDelegate;
+    setItemDelegate (delegate);
 
     // FIXME: Once Trolltech fixes the assert in QHeaderView, continue with
     // statements like these

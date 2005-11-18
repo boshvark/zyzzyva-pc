@@ -188,8 +188,7 @@ AnalyzeQuizDialog::updateStats()
 void
 AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 {
-    missedModel->addWord (word);
-    //item->setTextColor (VALID_MISSED_WORD_COLOR);
+    missedModel->addWord (word, WordTableModel::WordMissed);
     if (update)
         updateStats();
 }
@@ -205,8 +204,7 @@ AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 void
 AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
 {
-    incorrectModel->addWord (word);
-    //item->setTextColor (INVALID_WORD_COLOR);
+    incorrectModel->addWord (word, WordTableModel::WordIncorrect);
     if (update)
         updateStats();
 }
