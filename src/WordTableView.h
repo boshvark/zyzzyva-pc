@@ -1,10 +1,7 @@
 //---------------------------------------------------------------------------
 // WordTableView.h
 //
-// A class derived from QTableView, used to display word lists.  This class
-// currently does nothing special.  It only exists so objects of this class
-// can be distinguished from other QTableView objects when applying font
-// settings.
+// A class derived from QTableView, used to display word lists.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //

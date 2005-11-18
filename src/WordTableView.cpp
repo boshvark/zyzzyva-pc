@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 // WordTableView.cpp
 //
-// A model for representing word lists.
+// A class derived from QTableView, used to display word lists.
 //
 // Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
