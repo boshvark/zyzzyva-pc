@@ -64,6 +64,10 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
           << Auxil::searchTypeToString (SearchCondition::ExactLength)
           << Auxil::searchTypeToString (SearchCondition::MinLength)
           << Auxil::searchTypeToString (SearchCondition::MaxLength)
+          << Auxil::searchTypeToString (SearchCondition::TakesPrefix)
+          << Auxil::searchTypeToString (SearchCondition::DoesNotTakePrefix)
+          << Auxil::searchTypeToString (SearchCondition::TakesSuffix)
+          << Auxil::searchTypeToString (SearchCondition::DoesNotTakeSuffix)
           << Auxil::searchTypeToString (SearchCondition::MustInclude)
           << Auxil::searchTypeToString (SearchCondition::MustExclude)
           << Auxil::searchTypeToString (SearchCondition::MustConsist)
@@ -193,6 +197,10 @@ SearchConditionForm::getSearchCondition() const
         case SearchCondition::PatternMatch:
         case SearchCondition::AnagramMatch:
         case SearchCondition::SubanagramMatch:
+        case SearchCondition::TakesPrefix:
+        case SearchCondition::DoesNotTakePrefix:
+        case SearchCondition::TakesSuffix:
+        case SearchCondition::DoesNotTakeSuffix:
         case SearchCondition::MustInclude:
         case SearchCondition::MustExclude:
         condition.stringValue = paramLine->text();
@@ -249,6 +257,10 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
         case SearchCondition::PatternMatch:
         case SearchCondition::AnagramMatch:
         case SearchCondition::SubanagramMatch:
+        case SearchCondition::TakesPrefix:
+        case SearchCondition::DoesNotTakePrefix:
+        case SearchCondition::TakesSuffix:
+        case SearchCondition::DoesNotTakeSuffix:
         case SearchCondition::MustInclude:
         case SearchCondition::MustExclude:
         paramLine->setText (condition.stringValue);
@@ -301,6 +313,12 @@ SearchConditionForm::isValid() const
         case SearchCondition::MustExclude:
         return matchStringIsValid (paramLine->text());
 
+        case SearchCondition::TakesPrefix:
+        case SearchCondition::DoesNotTakePrefix:
+        case SearchCondition::TakesSuffix:
+        case SearchCondition::DoesNotTakeSuffix:
+        return !paramLine->text().isEmpty();
+
         case SearchCondition::ExactLength:
         case SearchCondition::MinLength:
         case SearchCondition::MaxLength:
@@ -339,12 +357,18 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::PatternMatch:
         case SearchCondition::AnagramMatch:
         case SearchCondition::SubanagramMatch:
+        paramStack->setCurrentWidget (paramLineFrame);
+        paramLine->setValidator (patternValidator);
+        break;
+
+        case SearchCondition::TakesPrefix:
+        case SearchCondition::DoesNotTakePrefix:
+        case SearchCondition::TakesSuffix:
+        case SearchCondition::DoesNotTakeSuffix:
         case SearchCondition::MustInclude:
         case SearchCondition::MustExclude:
         paramStack->setCurrentWidget (paramLineFrame);
-        paramLine->setValidator (((type == SearchCondition::MustExclude) ||
-                                  (type == SearchCondition::MustInclude)) ?
-                                 letterValidator : patternValidator);
+        paramLine->setValidator (letterValidator);
         break;
 
         case SearchCondition::ExactLength:

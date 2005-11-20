@@ -53,6 +53,10 @@ SearchCondition::asString() const
         case PatternMatch:
         case AnagramMatch:
         case SubanagramMatch:
+        case TakesPrefix:
+        case DoesNotTakePrefix:
+        case TakesSuffix:
+        case DoesNotTakeSuffix:
         case MustInclude:
         case MustExclude:
         case MustBelong:
@@ -110,6 +114,10 @@ SearchCondition::asDomElement() const
         case PatternMatch:
         case AnagramMatch:
         case SubanagramMatch:
+        case TakesPrefix:
+        case DoesNotTakePrefix:
+        case TakesSuffix:
+        case DoesNotTakeSuffix:
         case MustInclude:
         case MustExclude:
         case MustBelong:
@@ -172,6 +180,10 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case PatternMatch:
         case AnagramMatch:
         case SubanagramMatch:
+        case TakesPrefix:
+        case DoesNotTakePrefix:
+        case TakesSuffix:
+        case DoesNotTakeSuffix:
         case MustInclude:
         case MustExclude:
         case MustBelong:

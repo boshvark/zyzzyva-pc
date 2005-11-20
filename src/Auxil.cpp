@@ -43,6 +43,10 @@ const QString SEARCH_TYPE_SUBANAGRAM_MATCH = "Subanagram Match";
 const QString SEARCH_TYPE_EXACT_LENGTH = "Exact Length";
 const QString SEARCH_TYPE_MIN_LENGTH = "Minimum Length";
 const QString SEARCH_TYPE_MAX_LENGTH = "Maximum Length";
+const QString SEARCH_TYPE_TAKES_PREFIX = "Takes Prefix";
+const QString SEARCH_TYPE_DOES_NOT_TAKE_PREFIX = "Does Not Take Prefix";
+const QString SEARCH_TYPE_TAKES_SUFFIX = "Takes Suffix";
+const QString SEARCH_TYPE_DOES_NOT_TAKE_SUFFIX = "Does Not Take Suffix";
 const QString SEARCH_TYPE_MUST_INCLUDE = "Must Include";
 const QString SEARCH_TYPE_MUST_EXCLUDE = "Must Exclude";
 const QString SEARCH_TYPE_MUST_CONSIST = "Must Consist of";
@@ -287,6 +291,14 @@ Auxil::stringToSearchType (const QString& string)
         return SearchCondition::MinLength;
     else if (string == SEARCH_TYPE_MAX_LENGTH)
         return SearchCondition::MaxLength;
+    else if (string == SEARCH_TYPE_TAKES_PREFIX)
+        return SearchCondition::TakesPrefix;
+    else if (string == SEARCH_TYPE_DOES_NOT_TAKE_PREFIX)
+        return SearchCondition::DoesNotTakePrefix;
+    else if (string == SEARCH_TYPE_TAKES_SUFFIX)
+        return SearchCondition::TakesSuffix;
+    else if (string == SEARCH_TYPE_DOES_NOT_TAKE_SUFFIX)
+        return SearchCondition::DoesNotTakeSuffix;
     else if (string == SEARCH_TYPE_MUST_INCLUDE)
         return SearchCondition::MustInclude;
     else if (string == SEARCH_TYPE_MUST_EXCLUDE)
@@ -339,6 +351,18 @@ Auxil::searchTypeToString (SearchCondition::SearchType type)
 
         case SearchCondition::MaxLength:
         return SEARCH_TYPE_MAX_LENGTH;
+
+        case SearchCondition::TakesPrefix:
+        return SEARCH_TYPE_TAKES_PREFIX;
+
+        case SearchCondition::DoesNotTakePrefix:
+        return SEARCH_TYPE_DOES_NOT_TAKE_PREFIX;
+
+        case SearchCondition::TakesSuffix:
+        return SEARCH_TYPE_TAKES_SUFFIX;
+
+        case SearchCondition::DoesNotTakeSuffix:
+        return SEARCH_TYPE_DOES_NOT_TAKE_SUFFIX;
 
         case SearchCondition::MustInclude:
         return SEARCH_TYPE_MUST_INCLUDE;

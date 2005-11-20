@@ -291,8 +291,8 @@ WordEngine::getDefinition (const QString& word) const
 //  matchesConditions
 //
 //! Test whether a word matches certain conditions.  Not all conditions in the
-//! list are tested.  Only set membership and number of anagrams are currently
-//! tested.
+//! list are tested.  Only the conditions that cannot be easily tested in
+//! WordGraph::search are tested here.
 //
 //! @param word the word to be tested
 //! @param conditions the list of conditions to test
@@ -307,6 +307,26 @@ WordEngine::matchesConditions (const QString& word, const
         const SearchCondition& condition = it.next();
 
         switch (condition.type) {
+
+            case SearchCondition::TakesPrefix:
+            if (!isAcceptable (condition.stringValue + word.upper()))
+                return false;
+            break;
+
+            case SearchCondition::DoesNotTakePrefix:
+            if (isAcceptable (condition.stringValue + word.upper()))
+                return false;
+            break;
+
+            case SearchCondition::TakesSuffix:
+            if (!isAcceptable (word.upper() + condition.stringValue))
+                return false;
+            break;
+
+            case SearchCondition::DoesNotTakeSuffix:
+            if (isAcceptable (word.upper() + condition.stringValue))
+                return false;
+            break;
 
             case SearchCondition::MustBelong: {
                 SearchSet searchSet = Auxil::stringToSearchSet
