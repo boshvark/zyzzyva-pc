@@ -89,7 +89,7 @@ WordTableView::viewDefinition()
 {
     QModelIndex index = currentIndex();
     index = index.sibling (index.row(), WordTableModel::WORD_COLUMN);
-    QString word = model()->data (index, Qt::UserRole).toString();
+    QString word = model()->data (index, Qt::EditRole).toString();
     DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
                                                      Qt::WDestructiveClose);
     Q_CHECK_PTR (dialog);
@@ -108,7 +108,7 @@ WordTableView::viewVariation (int variation)
 {
     QModelIndex index = currentIndex();
     index = index.sibling (index.row(), WordTableModel::WORD_COLUMN);
-    QString word = model()->data (index, Qt::UserRole).toString();
+    QString word = model()->data (index, Qt::EditRole).toString();
     WordVariationType type = static_cast<WordVariationType>(variation);
     WordVariationDialog* dialog = new WordVariationDialog (wordEngine, word,
         type, this, Qt::WDestructiveClose);
@@ -172,7 +172,7 @@ WordTableView::createQuizRequested()
     for (int i = 0; i < numWords; ) {
         if (!searchString.isEmpty())
             searchString += " ";
-        searchString += model()->data (index, Qt::UserRole).toString();
+        searchString += model()->data (index, Qt::EditRole).toString();
         index = index.sibling (++i, WordTableModel::WORD_COLUMN);
     }
 
@@ -213,7 +213,7 @@ WordTableView::exportFile (const QString& filename, QString* err) const
     QTextStream stream (&file);
     QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
     for (int i = 0; i < model()->rowCount(); ) {
-        QString word = model()->data (index, Qt::UserRole).toString();
+        QString word = model()->data (index, Qt::EditRole).toString();
         stream << word;
         endl (stream);
         index = index.sibling (++i, WordTableModel::WORD_COLUMN);

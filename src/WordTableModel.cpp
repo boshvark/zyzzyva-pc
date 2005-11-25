@@ -173,7 +173,7 @@ WordTableModel::data (const QModelIndex& index, int role) const
     if (role == Qt::UserRole)
         return wordTypes.at (index.row());
 
-    if (role != Qt::DisplayRole)
+    if ((role != Qt::DisplayRole) && (role != Qt::EditRole))
         return QVariant();
 
     QString word = wordList.at (index.row());
@@ -188,7 +188,7 @@ WordTableModel::data (const QModelIndex& index, int role) const
             getBackHookLetters (wordUpper) : QString::null;
 
         case WORD_COLUMN:
-        if (role == Qt::UserRole)
+        if (role == Qt::EditRole)
             return wordUpper;
         else if (role == Qt::DisplayRole) {
             if (MainSettings::getWordListShowHookParents()) {
