@@ -215,26 +215,27 @@ SearchSpec::optimize()
                 SearchSet ss = Auxil::stringToSearchSet (stringValue);
                 if (ss == UnknownSearchSet)
                     break;
-                SearchCondition condition;
+                SearchCondition addCondition;
                 switch (ss) {
                     case SetTypeOneSevens:
                     case SetTypeTwoSevens:
                     case SetTypeThreeSevens:
-                    condition.type = SearchCondition::ExactLength;
-                    condition.intValue = 7;
+                    addCondition.type = SearchCondition::ExactLength;
+                    addCondition.intValue = 7;
                     break;
 
                     case SetTypeOneEights:
                     case SetEightsFromSevenLetterStems:
-                    condition.type = SearchCondition::ExactLength;
-                    condition.intValue = 8;
+                    addCondition.type = SearchCondition::ExactLength;
+                    addCondition.intValue = 8;
                     break;
 
                     default: break;
                 }
 
-                newConditions.append (condition);
+                newConditions.append (addCondition);
             }
+            newConditions.append (condition);
             break;
 
             case SearchCondition::ExactAnagrams:
