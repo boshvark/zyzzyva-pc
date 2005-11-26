@@ -398,7 +398,7 @@ WordTableModel::getFrontHookLetters (const QString& word) const
     SearchCondition condition;
     condition.type = SearchCondition::PatternMatch;
     condition.stringValue = "?" + word;
-    spec.conditions << condition;
+    spec.conditions.append (condition);
 
     // Put first letter of each word in a set, for alphabetical order
     QStringList words = wordEngine->search (spec, true);
@@ -430,7 +430,7 @@ WordTableModel::getBackHookLetters (const QString& word) const
     SearchCondition condition;
     condition.type = SearchCondition::PatternMatch;
     condition.stringValue = word + "?";
-    spec.conditions << condition;
+    spec.conditions.append (condition);
 
     // Put first letter of each word in a set, for alphabetical order
     QStringList words = wordEngine->search (spec, true);

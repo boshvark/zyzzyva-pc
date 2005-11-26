@@ -119,7 +119,7 @@ SearchSpec::fromDomElement (const QDomElement& element)
         SearchCondition condition;
         if (!condition.fromDomElement (elem))
             return false;
-        tmpSpec.conditions << condition;
+        tmpSpec.conditions.append (condition);
     }
 
     if (tmpSpec.conditions.empty())
@@ -222,14 +222,12 @@ SearchSpec::optimize()
                     case SetTypeThreeSevens:
                     condition.type = SearchCondition::ExactLength;
                     condition.intValue = 7;
-                    conditions << condition;
                     break;
 
                     case SetTypeOneEights:
                     case SetEightsFromSevenLetterStems:
                     condition.type = SearchCondition::ExactLength;
                     condition.intValue = 8;
-                    conditions << condition;
                     break;
 
                     default: break;

@@ -256,7 +256,7 @@ QuizEngine::prepareQuestion()
         condition.type = SearchCondition::AnagramMatch;
         condition.stringValue = question;
         SearchSpec spec;
-        spec.conditions << condition;
+        spec.conditions.append (condition);
         answers = wordEngine->search (spec, true);
     }
 
