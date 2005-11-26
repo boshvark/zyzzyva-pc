@@ -41,6 +41,23 @@ class WordTableModel : public QAbstractTableModel
         WordIncorrect
     };
 
+    class WordItem {
+        public:
+        WordItem (const QString& w, WordType t) : word (w), type (t) { }
+        QString getWord() const { return word; }
+        WordType getType() const { return type; }
+        void setWord (const QString& w) { word = w; }
+        void setType (WordType t) { type = t; }
+
+        bool operator< (const WordItem& other) const {
+            return word < other.word;
+        }
+
+        private:
+        QString word;
+        WordType type;
+    };
+
     Q_OBJECT
     public:
     WordTableModel (WordEngine* e, QObject* parent = 0);
@@ -62,6 +79,7 @@ class WordTableModel : public QAbstractTableModel
                      QModelIndex());
     bool setData (const QModelIndex& index, const QVariant& value, int role =
                   Qt::EditRole);
+    void sort (int column, Qt::SortOrder order = Qt::AscendingOrder);
 
     signals:
     void wordsChanged();
@@ -74,8 +92,7 @@ class WordTableModel : public QAbstractTableModel
 
     private:
     WordEngine* wordEngine;
-    QStringList wordList;
-    QList<WordType> wordTypes;
+    QList<WordItem> wordList;
 
     public:
     enum {

@@ -91,6 +91,7 @@ WordTableModel::addWord (const QString& word, WordType type)
         return false;
     setData (index (row, 0), word, Qt::EditRole);
     setData (index (row, 0), type, Qt::UserRole);
+    sort (WORD_COLUMN);
     emit wordsChanged();
     return true;
 }
@@ -117,6 +118,7 @@ WordTableModel::addWords (const QStringList& words, WordType type)
         setData (index (row, 0), type, Qt::UserRole);
         ++row;
     }
+    sort (WORD_COLUMN);
     emit wordsChanged();
     return true;
 }
@@ -171,12 +173,12 @@ WordTableModel::data (const QModelIndex& index, int role) const
         return QVariant();
 
     if (role == Qt::UserRole)
-        return wordTypes.at (index.row());
+        return wordList.at (index.row()).getType();
 
     if ((role != Qt::DisplayRole) && (role != Qt::EditRole))
         return QVariant();
 
-    QString word = wordList.at (index.row());
+    QString word = wordList.at (index.row()).getWord();
     QString wordUpper = word.upper();
     switch (index.column()) {
         case FRONT_HOOK_COLUMN:
@@ -274,8 +276,7 @@ WordTableModel::insertRows (int row, int count, const QModelIndex&)
     beginInsertRows (QModelIndex(), row, row + count - 1);
 
     for (int i = 0; i < count; ++i) {
-        wordList.insert (row, "");
-        wordTypes.insert (row, WordNormal);
+        wordList.insert (row, WordItem ("", WordNormal));
     }
 
     endInsertRows();
@@ -300,7 +301,6 @@ WordTableModel::removeRows (int row, int count, const QModelIndex&)
 
     for (int i = 0; i < count; ++i) {
         wordList.removeAt (row);
-        wordTypes.removeAt (row);
     }
 
     endRemoveRows();
@@ -323,16 +323,33 @@ WordTableModel::setData (const QModelIndex& index, const QVariant& value, int
                          role)
 {
     if (index.isValid() && (role == Qt::EditRole)) {
-        wordList.replace (index.row(), value.toString());
+        wordList[index.row()].setWord (value.toString());
         emit dataChanged (index, index);
         return true;
     }
     else if (index.isValid() && (role == Qt::UserRole)) {
-        wordTypes.replace (index.row(), WordType (value.toInt()));
+        wordList[index.row()].setType (WordType (value.toInt()));
         emit dataChanged (index, index);
         return true;
     }
     return false;
+}
+
+//---------------------------------------------------------------------------
+//  sort
+//
+//! Sort the model by column in the given order.  Reimplemented from
+//! QAbstractItemModel.
+//
+//! @param column the column to sort by
+//! @param order the sort order
+//---------------------------------------------------------------------------
+void
+WordTableModel::sort (int column, Qt::SortOrder order)
+{
+    qSort (wordList);
+    emit dataChanged (index (0, 0),
+                      index (wordList.size() - 1, DEFINITION_COLUMN));
 }
 
 //---------------------------------------------------------------------------
