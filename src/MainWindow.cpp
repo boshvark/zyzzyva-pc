@@ -49,6 +49,7 @@
 #include <QMessageBox>
 #include <QSignalMapper>
 #include <QStatusBar>
+#include <QToolBar>
 
 MainWindow* MainWindow::instance = 0;
 
@@ -87,27 +88,27 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (fileMenu);
 
     // New Quiz
-    QAction* newQuizAction = new QAction ("New Qui&z...", this);
+    QAction* newQuizAction = new QAction ("Qui&z...", this);
     Q_CHECK_PTR (newQuizAction);
     connect (newQuizAction, SIGNAL (triggered()),
              SLOT (newQuizFormInteractive()));
     fileMenu->addAction (newQuizAction);
 
     // New Search
-    QAction* newSearchAction = new QAction ("New &Search", this);
+    QAction* newSearchAction = new QAction ("&Search", this);
     Q_CHECK_PTR (newSearchAction);
     connect (newSearchAction, SIGNAL (triggered()), SLOT (newSearchForm()));
     fileMenu->addAction (newSearchAction);
 
     // New Definition
-    QAction* newDefinitionAction = new QAction ("New &Definition", this);
+    QAction* newDefinitionAction = new QAction ("&Definition", this);
     Q_CHECK_PTR (newDefinitionAction);
     connect (newDefinitionAction, SIGNAL (triggered()),
              SLOT (newDefineForm()));
     fileMenu->addAction (newDefinitionAction);
 
     // New Word Judge
-    QAction* newJudgeAction = new QAction ("New Word &Judge", this);
+    QAction* newJudgeAction = new QAction ("Word &Judge", this);
     Q_CHECK_PTR (newJudgeAction);
     connect (newJudgeAction, SIGNAL (triggered()), SLOT (newJudgeForm()));
     fileMenu->addAction (newJudgeAction);
@@ -245,6 +246,15 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (aboutAction);
     connect (aboutAction, SIGNAL (triggered()), SLOT (displayAbout()));
     helpMenu->addAction (aboutAction);
+
+    // Tool Bar
+    QToolBar* toolbar = new QToolBar;
+    Q_CHECK_PTR (toolbar);
+    toolbar->addAction (newQuizAction);
+    toolbar->addAction (newSearchAction);
+    toolbar->addAction (newDefinitionAction);
+    toolbar->addAction (newJudgeAction);
+    addToolBar (toolbar);
 
     tabStack = new QTabWidget (this);
     Q_CHECK_PTR (tabStack);
