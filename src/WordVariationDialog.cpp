@@ -121,13 +121,14 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
     closeButton = new QPushButton ("&Close");
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    closeButton->setAutoDefault (false);
-    closeButton->setFocus();
+    closeButton->setAutoDefault (true);
     connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (closeButton);
 
     setWordVariation (word, variation);
     resize (minimumSizeHint().width() * 3, 500);
+
+    closeButton->setFocus();
 }
 
 //---------------------------------------------------------------------------
