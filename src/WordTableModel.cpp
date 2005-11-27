@@ -339,13 +339,13 @@ WordTableModel::setData (const QModelIndex& index, const QVariant& value, int
 //  sort
 //
 //! Sort the model by column in the given order.  Reimplemented from
-//! QAbstractItemModel.
+//! QAbstractItemModel.  NOTE: Both parameters are currently ignored.
 //
 //! @param column the column to sort by
 //! @param order the sort order
 //---------------------------------------------------------------------------
 void
-WordTableModel::sort (int column, Qt::SortOrder order)
+WordTableModel::sort (int, Qt::SortOrder)
 {
     qSort (wordList);
     emit dataChanged (index (0, 0),
