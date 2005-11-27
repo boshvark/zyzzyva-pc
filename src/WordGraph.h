@@ -44,9 +44,6 @@ class WordGraph
     int getNumNodes() { return numNodes; }
 
     private:
-    bool matchesSpec (QString word, const SearchSpec& spec) const;
-
-    private:
     class Node {
       public:
         Node (char c = 0, bool e = false);
@@ -67,7 +64,13 @@ class WordGraph
         QString unmatched;
     };
 
+    private:
+    bool matchesSpec (QString word, const SearchSpec& spec) const;
+    void addWord (const QString& w, bool reverse);
+    QString reverseString (const QString& s) const;
+
     Node* top;
+    Node* rtop;
     int numNodes;
 };
 

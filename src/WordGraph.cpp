@@ -39,7 +39,7 @@ using namespace Defs;
 //! Constructor.
 //---------------------------------------------------------------------------
 WordGraph::WordGraph()
-    : top (0)
+    : top (0), rtop (0)
 {
 }
 
@@ -65,7 +65,8 @@ WordGraph::clear()
 //---------------------------------------------------------------------------
 //  addWord
 //
-//! Add a word to the graph.
+//! Add a word to the graph.  Represent the word in both forward and reverse
+//! order for quick lookup in either direction.
 //
 //! @param w the word to add
 //---------------------------------------------------------------------------
@@ -75,36 +76,8 @@ WordGraph::addWord (const QString& w)
     if (w.isEmpty())
         return;
 
-    Node* node = top;
-    Node* parentNode = 0;
-    QChar c;
-    int wordLength = w.length();
-    for (int i = 0; i < wordLength; ++i) {
-        c = w.at (i);
-
-        // Empty node, so create a new node and link from its parent
-        if (!node) {
-            node = new Node (c.toAscii());
-            (parentNode ? parentNode->child : top) = node;
-            ++numNodes;
-        }
-
-        // Nonempty node, so find the current letter in the chain
-        else {
-            while (node->letter != c) {
-                if (!node->next) {
-                    node->next = new Node (c.toAscii());
-                    ++numNodes;
-                }
-                node = node->next;
-            }
-        }
-
-        parentNode = node;
-        node = node->child;
-    }
-
-    parentNode->eow = true;
+    addWord (w, false);
+    addWord (w, true);
 }
 
 //---------------------------------------------------------------------------
@@ -218,7 +191,7 @@ WordGraph::search (const SearchSpec& spec) const
         QString word;
 
         bool wildcard = false;
-        Node* node = top;
+        bool reversePattern = false;
 
         // If Pattern match is unspecified, change it to a single wildcard
         // character.  Also, remove any redundant wildcards.
@@ -227,6 +200,11 @@ WordGraph::search (const SearchSpec& spec) const
                 unmatched = "*";
             else
                 unmatched.replace (QRegExp ("\\*+"), "*");
+
+            if ((unmatched.left (1) == "*") && (unmatched.right (1) != "*")) {
+                unmatched = reverseString (unmatched);
+                reversePattern = true;
+            }
         }
 
         // If Anagram or Subanagram match contains a wildcard, note it and remove
@@ -248,6 +226,8 @@ WordGraph::search (const SearchSpec& spec) const
                     unmatched.mid (re.pos(), re.matchedLength() - 1);
             }
         }
+
+        Node* node = (reversePattern ? rtop : top);
 
         // Traverse the tree looking for matches
         while (node) {
@@ -313,8 +293,12 @@ WordGraph::search (const SearchSpec& spec) const
                         }
 
                         // If end of word and end of pattern, put the word in
-                        // the list
+                        // the list.  If we are searching the reverse list,
+                        // reverse the word first.
                         QString wordUpper = word.upper();
+                        if (reversePattern)
+                            wordUpper = reverseString (wordUpper);
+
                         if (node->eow &&
                             ((int (unmatched.length()) == closeIndex + 1) ||
                             ((int (unmatched.length()) == closeIndex + 2) &&
@@ -608,6 +592,96 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
     }
 
     return true;
+}
+
+//---------------------------------------------------------------------------
+//  addWord
+//
+//! Add a word at a location in the graph.
+//
+//! @param w the word to add
+//! @param reverse true if the word should be reversed and added to the
+//! reverse list
+//---------------------------------------------------------------------------
+void
+WordGraph::addWord (const QString& w, bool reverse)
+{
+    QString word = (reverse ? reverseString (w) : w);
+    Node* node = (reverse ? rtop : top);
+    Node* parentNode = 0;
+    QChar c;
+    int wordLength = word.length();
+    for (int i = 0; i < wordLength; ++i) {
+        c = word.at (i);
+
+        // Empty node, so create a new node and link from its parent
+        if (!node) {
+            node = new Node (c.toAscii());
+            (parentNode ? parentNode->child : (reverse ? rtop : top)) = node;
+            ++numNodes;
+        }
+
+        // Nonempty node, so find the current letter in the chain
+        else {
+            while (node->letter != c) {
+                if (!node->next) {
+                    node->next = new Node (c.toAscii());
+                    ++numNodes;
+                }
+                node = node->next;
+            }
+        }
+
+        parentNode = node;
+        node = node->child;
+    }
+
+    parentNode->eow = true;
+}
+
+//---------------------------------------------------------------------------
+//  reverseString
+//
+//! Reverse the characters of a string or pattern.  Character classes, e.g.
+//! "[ABCDE]" are treated as single characters and left intact.
+//
+//! @param s the string to reverse
+//! @return the reversed string
+//---------------------------------------------------------------------------
+QString
+WordGraph::reverseString (const QString& s) const
+{
+    QString reverse;
+    QString tmp;
+    bool inCharClass = false;
+    for (int i = 0; i < s.length(); ++i) {
+        QChar c = s[i];
+
+        if (c == ']') {
+            reverse.prepend (c);
+            reverse.prepend (tmp);
+            tmp.clear();
+            inCharClass = false;
+        }
+
+        else if (c == '[') {
+            tmp.append (c);
+            inCharClass = true;
+        }
+
+        else if (inCharClass) {
+            tmp.append (c);
+        }
+
+        else {
+            reverse.prepend (c);
+        }
+    }
+
+    if (inCharClass)
+        reverse.prepend (tmp);
+
+    return reverse;
 }
 
 //---------------------------------------------------------------------------
