@@ -116,14 +116,15 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     closeButton = new QPushButton ("&Close", this);
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    closeButton->setAutoDefault (false);
-    closeButton->setFocus();
+    closeButton->setAutoDefault (true);
     connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (closeButton);
 
     resize (minimumSizeHint().width() * 4, 500);
     setCaption (DIALOG_CAPTION);
     updateStats();
+
+    closeButton->setFocus();
 }
 
 //---------------------------------------------------------------------------
