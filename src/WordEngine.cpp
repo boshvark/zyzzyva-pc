@@ -569,12 +569,83 @@ WordEngine::wordListOnlySearch (const SearchSpec& spec) const
 //
 //! @param definition the definition with links to be replaced
 //! @param maxDepth the maximum number of recursive links to replace
+//! @param useFollow true if the "follow" replacement should be used
 //
 //! @return a string with links replaced
 //---------------------------------------------------------------------------
 QString
-WordEngine::replaceDefinitionLinks (const QString& definition, int maxDepth)
-    const
+WordEngine::replaceDefinitionLinks (const QString& definition, int maxDepth,
+                                    bool useFollow) const
 {
-    return definition;
+    QRegExp followRegex (QString ("\\{(\\w+)=(\\w+)\\}"));
+    QRegExp replaceRegex (QString ("\\<(\\w+)=(\\w+)\\>"));
+
+    // Try to match the follow regex and the replace regex.  If a follow regex
+    // is ever matched, then the "follow" replacements should always be used,
+    // even if the "replace" regex is matched in a later iteration.
+    QRegExp* matchedRegex = 0;
+    int index = followRegex.indexIn (definition, 0);
+    if (index >= 0) {
+        matchedRegex = &followRegex;
+        useFollow = true;
+    }
+    else {
+        index = replaceRegex.indexIn (definition, 0);
+        matchedRegex = &replaceRegex;
+    }
+
+    if (index < 0)
+        return definition;
+
+    QString modified (definition);
+    QString word = matchedRegex->cap (1);
+    QString pos = matchedRegex->cap (2);
+
+    QString replacement;
+    if (!maxDepth) {
+        replacement = word;
+    }
+    else {
+        QString upper = word.toUpper();
+        if (useFollow) {
+            replacement = (matchedRegex == &followRegex) ?
+                word + " (" + getSubDefinition (upper, pos) + ")" :
+                getSubDefinition (upper, pos);
+        }
+        else {
+            replacement = upper + ", " + getSubDefinition (upper, pos);
+        }
+    }
+
+    modified.replace (index, matchedRegex->matchedLength(), replacement);
+    return maxDepth ? replaceDefinitionLinks (modified, maxDepth - 1,
+                                              useFollow) : modified;
+}
+
+//---------------------------------------------------------------------------
+//  getSubDefinition
+//
+//! Return the definition associated with a word and a part of speech.  If
+//! more than one definition is given for a part of speech, pick the first
+//! one.
+//
+//! @param word the word
+//! @param pos the part of speech
+//
+//! @return the definition substring
+//---------------------------------------------------------------------------
+QString
+WordEngine::getSubDefinition (const QString& word, const QString& pos) const
+{
+    std::map<QString, std::multimap<QString, QString> >::const_iterator it =
+        definitions.find (word);
+    if (it == definitions.end())
+        return QString::null;
+
+    const multimap<QString, QString>& mmap = it->second;
+    multimap<QString, QString>::const_iterator mit = mmap.find (pos);
+    if (mit == mmap.end())
+        return QString::null;
+
+    return mit->second.left (mit->second.indexOf (" ["));
 }
