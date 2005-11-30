@@ -52,9 +52,11 @@ class WordEngine
     bool isSetMember (const QString& word, SearchSet ss) const;
     int numAnagrams (const QString& word) const;
     QStringList wordListOnlySearch (const SearchSpec& spec) const;
+    QString replaceDefinitionLinks (const QString& definition, int maxDepth)
+        const;
 
     WordGraph graph;
-    std::map<QString, QString> definitions;
+    std::map<QString, std::multimap<QString, QString> > definitions;
     std::map<int, QStringList> stems;
     std::map< int, std::set<QString> > stemAlphagrams;
 };

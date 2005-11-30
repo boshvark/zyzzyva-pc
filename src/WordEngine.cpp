@@ -29,10 +29,13 @@
 #include <QRegExp>
 #include <set>
 
+const int MAX_DEFINITION_LINKS = 3;
+
 using namespace Defs;
 using std::set;
 using std::map;
 using std::make_pair;
+using std::multimap;
 
 //---------------------------------------------------------------------------
 //  importFile
@@ -59,6 +62,8 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
         return -1;
     }
 
+    QRegExp posRegex (QString ("\\[(\\w+)"));
+
     int imported = 0;
     char* buffer = new char [MAX_INPUT_LINE_LEN];
     while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
@@ -70,8 +75,19 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
         graph.addWord (word);
         if (loadDefinitions) {
             QString definition = line.section (' ', 1);
-            if (!definition.isEmpty())
-                definitions.insert (make_pair (word, definition));
+            if (!definition.isEmpty()) {
+                multimap<QString, QString> defMap;
+                QStringList defs = definition.split (" / ");
+                QString def;
+                foreach (def, defs) {
+                    QString pos;
+                    if (posRegex.indexIn (def, 0) >= 0) {
+                        pos = posRegex.cap (1);
+                    }
+                    defMap.insert (make_pair (pos, def));
+                }
+                definitions.insert (make_pair (word, defMap));
+            }
         }
         ++imported;
     }
@@ -283,8 +299,21 @@ WordEngine::alphagram (const QString& word) const
 QString
 WordEngine::getDefinition (const QString& word) const
 {
-    map<QString,QString>::const_iterator it = definitions.find (word);
-    return ((it == definitions.end()) ? QString::null : it->second);
+    map<QString, multimap<QString, QString> >::const_iterator it =
+        definitions.find (word);
+    if (it == definitions.end())
+        return QString::null;
+
+    const multimap<QString, QString>& mmap = it->second;
+    multimap<QString, QString>::const_iterator mit;
+    QString definition;
+    for (mit = mmap.begin(); mit != mmap.end(); ++mit) {
+        if (!definition.isEmpty())
+            definition += " / ";
+        definition += replaceDefinitionLinks (mit->second,
+                                              MAX_DEFINITION_LINKS);
+    }
+    return definition;
 }
 
 //---------------------------------------------------------------------------
@@ -529,4 +558,23 @@ WordEngine::wordListOnlySearch (const SearchSpec& spec) const
     }
 
     return wordList;
+}
+
+//---------------------------------------------------------------------------
+//  replaceDefinitionLinks
+//
+//! Replace links in a definition with the definitions of the words they are
+//! linked to.  A string is assumed to have a maximum of one link.  Links may
+//! be followed recursively to the maximum depth specified.
+//
+//! @param definition the definition with links to be replaced
+//! @param maxDepth the maximum number of recursive links to replace
+//
+//! @return a string with links replaced
+//---------------------------------------------------------------------------
+QString
+WordEngine::replaceDefinitionLinks (const QString& definition, int maxDepth)
+    const
+{
+    return definition;
 }
