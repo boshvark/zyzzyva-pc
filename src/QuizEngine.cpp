@@ -51,36 +51,40 @@ QuizEngine::newQuiz (const QuizSpec& spec)
 
     QuizSpec::QuizType type = quizSpec.getType();
 
-    // When using alphagrams, always change quiz type to Anagram.  The pattern
-    // is used to select the list of alphagrams, then anagrams are used as
-    // quiz answers.
+    // Anagram Quiz: The search spec is used to select the list of words.
+    // Their alphagrams are used as quiz questions, and their anagrams are
+    // used as quiz answers.
     if (type == QuizSpec::QuizAnagrams) {
         quizQuestions = wordEngine->search (quizSpec.getSearchSpec(), true);
         quizQuestions = wordEngine->alphagrams (quizQuestions);
+    }
 
-        // Do a random shuffle
-        if (quizSpec.getRandomOrder()) {
-            unsigned int seed = spec.getRandomSeed();
-            if (!seed)
-                seed = std::time (0);
-            std::srand (seed);
-            quizSpec.setRandomSeed (seed);
-
-            QString tmp;
-            int num = quizQuestions.size();
-            for (int i = 0; i < num ; ++i) {
-                int rnum = i + (std::rand() % (num - i));
-                if (rnum == i)
-                    continue;
-                tmp = quizQuestions[rnum];
-                quizQuestions[rnum] = quizQuestions[i];
-                quizQuestions[i] = tmp;
-            }
-        }
+    else if (type == QuizSpec::QuizHooks) {
+        quizQuestions = wordEngine->search (quizSpec.getSearchSpec(), true);
     }
 
     else if (type == QuizSpec::QuizWordListRecall) {
         quizQuestions << spec.asString();
+    }
+
+    // Do a random shuffle
+    if (quizSpec.getRandomOrder()) {
+        unsigned int seed = spec.getRandomSeed();
+        if (!seed)
+            seed = std::time (0);
+        std::srand (seed);
+        quizSpec.setRandomSeed (seed);
+
+        QString tmp;
+        int num = quizQuestions.size();
+        for (int i = 0; i < num ; ++i) {
+            int rnum = i + (std::rand() % (num - i));
+            if (rnum == i)
+                continue;
+            tmp = quizQuestions[rnum];
+            quizQuestions[rnum] = quizQuestions[i];
+            quizQuestions[i] = tmp;
+        }
     }
 
     // Restore quiz progress
@@ -258,6 +262,19 @@ QuizEngine::prepareQuestion()
         SearchSpec spec;
         spec.conditions.append (condition);
         answers = wordEngine->search (spec, true);
+    }
+    else if (type == QuizSpec::QuizHooks) {
+        SearchCondition condition;
+        condition.type = SearchCondition::PatternMatch;
+        condition.stringValue = "?" + question;
+        SearchSpec spec;
+        spec.conditions.append (condition);
+        answers = wordEngine->search (spec, true);
+
+        spec.conditions.clear();
+        condition.stringValue = question + "?";
+        spec.conditions.append (condition);
+        answers += wordEngine->search (spec, true);
     }
 
     QStringList::iterator it;

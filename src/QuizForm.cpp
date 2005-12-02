@@ -679,9 +679,12 @@ QuizForm::setQuestionLabel (const QString& question)
 {
     clearCanvas();
 
-    // Order question letters according to preference
     QString displayQuestion (question);
-    if (!question.contains (" ")) {
+    QuizSpec quizSpec = quizEngine->getQuizSpec();
+    QuizSpec::QuizType type = quizSpec.getType();
+
+    // Anagram Quiz: Order letters according to preference
+    if (type == QuizSpec::QuizAnagrams) {
         QString order = MainSettings::getQuizLetterOrder();
         int length = displayQuestion.length();
 
@@ -915,6 +918,11 @@ QuizForm::responseMatchesQuestion (const QString& response) const
         return ((response.length() == question.length()) &&
             (wordEngine->alphagram (response) ==
              wordEngine->alphagram (question)));
+
+        case QuizSpec::QuizHooks:
+        return ((response.length() == (question.length() + 1)) &&
+                ((question == response.right (question.length())) ||
+                 (question == response.left (question.length()))));
 
         default: break;
     }
