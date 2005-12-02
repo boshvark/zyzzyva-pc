@@ -56,7 +56,7 @@ WordTableView::WordTableView (WordEngine* e, QWidget* parent)
     setSelectionBehavior (QAbstractItemView::SelectRows);
     setSelectionMode (QAbstractItemView::SingleSelection);
 
-    WordTableDelegate* delegate = new WordTableDelegate (this);
+    WordTableDelegate* delegate = new WordTableDelegate;
     setItemDelegate (delegate);
 
     // FIXME: Once Trolltech fixes the assert in QHeaderView, continue with
@@ -68,15 +68,13 @@ WordTableView::WordTableView (WordEngine* e, QWidget* parent)
 }
 
 //---------------------------------------------------------------------------
-//  resizeItemsToContents
+//  resizeAllColumnsToContents
 //
-//! Resize all items to fit the model contents.
+//! Resize all columns to fit the model contents.
 //---------------------------------------------------------------------------
 void
-WordTableView::resizeItemsToContents()
+WordTableView::resizeAllColumnsToContents()
 {
-    for (int i = 0; i < model()->rowCount(); ++i)
-        resizeRowToContents (i);
     for (int i = 0; i < model()->columnCount(); ++i)
         resizeColumnToContents (i);
 }
@@ -343,38 +341,4 @@ WordTableView::contextMenuEvent (QContextMenuEvent* e)
 
     popupMenu->exec (QCursor::pos());
     delete popupMenu;
-}
-
-//---------------------------------------------------------------------------
-//  sizeHintForColumn
-//
-//! Return the width size hint for a column.  Directly call the equivalent
-//! function from QAbstractItemView instead of allowing the QTableView version
-//! to take precedence, because we want the content of all rows to be
-//! considered, not just the visible ones.
-//
-//! @param column the column index
-//! @return the size hint for the column
-//---------------------------------------------------------------------------
-int
-WordTableView::sizeHintForColumn (int column) const
-{
-    return QAbstractItemView::sizeHintForColumn (column);
-}
-
-//---------------------------------------------------------------------------
-//  sizeHintForRow
-//
-//! Return the height size hint for a row.  Directly call the equivalent
-//! function from QAbstractItemView instead of allowing the QTableView version
-//! to take precedence, because we want the content of all columns to be
-//! considered, not just the visible ones.
-//
-//! @param row the row index
-//! @return the size hint for the row
-//---------------------------------------------------------------------------
-int
-WordTableView::sizeHintForRow (int row) const
-{
-    return QAbstractItemView::sizeHintForRow (row);
 }

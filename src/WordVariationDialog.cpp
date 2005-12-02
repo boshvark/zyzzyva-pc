@@ -87,7 +87,7 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
     Q_CHECK_PTR (leftModel);
     leftView->verticalHeader()->hide();
     connect (leftModel, SIGNAL (wordsChanged()),
-             leftView, SLOT (resizeItemsToContents()));
+             leftView, SLOT (resizeAllColumnsToContents()));
     leftView->setModel (leftModel);
 
     // Only add the right-hand list if necessary
@@ -108,7 +108,7 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
         Q_CHECK_PTR (rightModel);
         rightView->verticalHeader()->hide();
         connect (rightModel, SIGNAL (wordsChanged()),
-                 rightView, SLOT (resizeItemsToContents()));
+                 rightView, SLOT (resizeAllColumnsToContents()));
         rightView->setModel (rightModel);
     }
 

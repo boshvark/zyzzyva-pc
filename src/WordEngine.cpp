@@ -309,7 +309,7 @@ WordEngine::getDefinition (const QString& word) const
     QString definition;
     for (mit = mmap.begin(); mit != mmap.end(); ++mit) {
         if (!definition.isEmpty())
-            definition += "\n";
+            definition += " / ";
         definition += replaceDefinitionLinks (mit->second,
                                               MAX_DEFINITION_LINKS);
     }

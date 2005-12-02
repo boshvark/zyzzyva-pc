@@ -81,7 +81,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     missedModel = new WordTableModel (wordEngine, this);
     Q_CHECK_PTR (missedModel);
     connect (missedModel, SIGNAL (wordsChanged()),
-             missedView, SLOT (resizeItemsToContents()));
+             missedView, SLOT (resizeAllColumnsToContents()));
     missedView->setModel (missedModel);
 
     QVBoxLayout* incorrectVlay = new QVBoxLayout (SPACING);
@@ -104,7 +104,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     incorrectModel = new WordTableModel (wordEngine, this);
     Q_CHECK_PTR (incorrectModel);
     connect (incorrectModel, SIGNAL (wordsChanged()),
-             incorrectView, SLOT (resizeItemsToContents()));
+             incorrectView, SLOT (resizeAllColumnsToContents()));
     incorrectView->setModel (incorrectModel);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);

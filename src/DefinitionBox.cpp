@@ -83,7 +83,5 @@ DefinitionBox::init()
 void
 DefinitionBox::setText (const QString& text)
 {
-    QString richText (text);
-    richText.replace ("\n", "<br>");
-    definitionLabel->setText (richText);
+    definitionLabel->setText (text);
 }
