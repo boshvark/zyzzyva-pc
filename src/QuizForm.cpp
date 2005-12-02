@@ -143,7 +143,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     responseModel = new WordTableModel (wordEngine, this);
     Q_CHECK_PTR (responseModel);
     connect (responseModel, SIGNAL (wordsChanged()),
-             responseView, SLOT (resizeAllColumnsToContents()));
+             responseView, SLOT (resizeItemsToContents()));
     responseView->setModel (responseModel);
 
     // Question status

@@ -116,3 +116,22 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
                        index.model()->data (index,
                                             Qt::DisplayRole).toString());
 }
+
+//---------------------------------------------------------------------------
+//  sizeHint
+//
+//! Paint an item in a word list.
+//
+//! @param painter the painter to use
+//! @param option style option
+//! @param index the model index corresponding to the item
+//---------------------------------------------------------------------------
+QSize
+WordTableDelegate::sizeHint (const QStyleOptionViewItem& option, const
+                             QModelIndex& index) const
+{
+    QString text = index.model()->data (index, Qt::DisplayRole).toString();
+    QFontMetrics fm (option.font);
+    QRect rect = fm.boundingRect (QRect (0, 0, 1000, 1000), 0, text);
+    return QSize (rect.width(), rect.height());
+}

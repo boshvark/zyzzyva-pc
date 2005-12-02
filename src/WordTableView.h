@@ -38,10 +38,12 @@ class WordTableView : public QTableView
     virtual ~WordTableView() { }
 
     public slots:
-    virtual void resizeAllColumnsToContents();
+    virtual void resizeItemsToContents();
 
     protected:
     virtual void contextMenuEvent (QContextMenuEvent* e);
+    virtual int sizeHintForColumn (int column) const;
+    virtual int sizeHintForRow (int row) const;
 
     private slots:
     void viewDefinition();

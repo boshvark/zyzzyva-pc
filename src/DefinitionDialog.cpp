@@ -82,6 +82,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
     }
 
     defBox->setText (Auxil::wordWrap (definition, DEFINITION_WRAP_LENGTH));
+    resize (minimumSizeHint().width() * 2, minimumSizeHint().height());
 }
 
 //---------------------------------------------------------------------------
