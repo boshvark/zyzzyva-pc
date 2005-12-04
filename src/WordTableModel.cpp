@@ -38,6 +38,45 @@ const int DEFAULT_COLUMN_WIDTH = 100;
 const int NUM_COLUMNS = 4;
 
 //---------------------------------------------------------------------------
+//  lengthLessThan
+//
+//! A comparison function that compares by length as well as lexical value.
+//
+//! @param a the first word item to compare
+//! @param b the second word item to compare
+//! @return true if a is shorter than b, or else a is lexically less than b
+//---------------------------------------------------------------------------
+bool
+lengthLessThan (const WordTableModel::WordItem& a,
+                const WordTableModel::WordItem& b)
+{
+    if (a.getWord().length() < b.getWord().length()) {
+        return true;
+    }
+    else if (a.getWord().length() > b.getWord().length()) {
+        return false;
+    }
+
+    return a.getWord() < b.getWord();
+}
+
+//---------------------------------------------------------------------------
+//  lessThan
+//
+//! A comparison function that compares by lexical value.
+//
+//! @param a the first word item to compare
+//! @param b the second word item to compare
+//! @return true if a is lexically less than b
+//---------------------------------------------------------------------------
+bool
+lessThan (const WordTableModel::WordItem& a,
+          const WordTableModel::WordItem& b)
+{
+    return (a.getWord() < b.getWord());
+}
+
+//---------------------------------------------------------------------------
 //  WordTableModel
 //
 //! Constructor.
@@ -347,7 +386,11 @@ WordTableModel::setData (const QModelIndex& index, const QVariant& value, int
 void
 WordTableModel::sort (int, Qt::SortOrder)
 {
-    qSort (wordList);
+    if (MainSettings::getWordListSortByLength())
+        qSort (wordList.begin(), wordList.end(), lengthLessThan);
+    else
+        qSort (wordList.begin(), wordList.end(), lessThan);
+
     emit dataChanged (index (0, 0),
                       index (wordList.size() - 1, DEFINITION_COLUMN));
 }
