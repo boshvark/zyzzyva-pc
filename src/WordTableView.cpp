@@ -56,7 +56,7 @@ WordTableView::WordTableView (WordEngine* e, QWidget* parent)
     setSelectionBehavior (QAbstractItemView::SelectRows);
     setSelectionMode (QAbstractItemView::SingleSelection);
 
-    WordTableDelegate* delegate = new WordTableDelegate;
+    WordTableDelegate* delegate = new WordTableDelegate (this);
     setItemDelegate (delegate);
 
     // FIXME: Once Trolltech fixes the assert in QHeaderView, continue with
