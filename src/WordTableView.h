@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_TABLE_VIEW_H
-#define WORD_TABLE_VIEW_H
+#ifndef ZYZZYVA_WORD_TABLE_VIEW_H
+#define ZYZZYVA_WORD_TABLE_VIEW_H
 
 #include <QString>
 #include <QTableView>
@@ -57,4 +57,4 @@ class WordTableView : public QTableView
 
 };
 
-#endif // WORD_TABLE_VIEW_H
+#endif // ZYZZYVA_WORD_TABLE_VIEW_H

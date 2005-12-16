@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef SEARCH_FORM_H
-#define SEARCH_FORM_H
+#ifndef ZYZZYVA_SEARCH_FORM_H
+#define ZYZZYVA_SEARCH_FORM_H
 
 #include "ActionForm.h"
 //#include <QCheckBox>
@@ -56,4 +56,4 @@ class SearchForm : public ActionForm
     QPushButton*    searchButton;
 };
 
-#endif // SEARCH_FORM_H
+#endif // ZYZZYVA_SEARCH_FORM_H

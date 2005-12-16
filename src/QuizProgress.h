@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef QUIZ_PROGRESS_H
-#define QUIZ_PROGRESS_H
+#ifndef ZYZZYVA_QUIZ_PROGRESS_H
+#define ZYZZYVA_QUIZ_PROGRESS_H
 
 #include <QDomElement>
 #include <QMap>
@@ -71,5 +71,5 @@ class QuizProgress
     QMap<QString, int> missedWords;
 };
 
-#endif // QUIZ_PROGRESS_H
+#endif // ZYZZYVA_QUIZ_PROGRESS_H
 

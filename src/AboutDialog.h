@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ABOUT_DIALOG_H
-#define ABOUT_DIALOG_H
+#ifndef ZYZZYVA_ABOUT_DIALOG_H
+#define ZYZZYVA_ABOUT_DIALOG_H
 
 #include <QDialog>
 
@@ -35,5 +35,5 @@ class AboutDialog : public QDialog
     ~AboutDialog();
 };
 
-#endif // ABOUT_DIALOG_H
+#endif // ZYZZYVA_ABOUT_DIALOG_H
 

@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef QUIZ_SPEC_H
-#define QUIZ_SPEC_H
+#ifndef ZYZZYVA_QUIZ_SPEC_H
+#define ZYZZYVA_QUIZ_SPEC_H
 
 #include "QuizProgress.h"
 #include "QuizTimerSpec.h"
@@ -84,4 +84,4 @@ class QuizSpec
     int randomAlgorithm;
 };
 
-#endif // QUIZ_SPEC_H
+#endif // ZYZZYVA_QUIZ_SPEC_H

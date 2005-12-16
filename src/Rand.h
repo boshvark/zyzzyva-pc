@@ -23,8 +23,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_RAND_H
-#define ZYZZYVA_RAND_H
+#ifndef ZYZZYVA_ZYZZYVA_RAND_H
+#define ZYZZYVA_ZYZZYVA_RAND_H
 
 class Rand
 {
@@ -33,4 +33,4 @@ class Rand
     ~Rand() { }
 };
 
-#endif // ZYZZYVA_RAND_H
+#endif // ZYZZYVA_ZYZZYVA_RAND_H

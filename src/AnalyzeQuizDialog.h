@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ANALYZE_QUIZ_DIALOG_H
-#define ANALYZE_QUIZ_DIALOG_H
+#ifndef ZYZZYVA_ANALYZE_QUIZ_DIALOG_H
+#define ZYZZYVA_ANALYZE_QUIZ_DIALOG_H
 
 #include <QDialog>
 #include <QLabel>
@@ -73,5 +73,5 @@ class AnalyzeQuizDialog : public QDialog
     QPushButton*  closeButton;
 };
 
-#endif // ANALYZE_QUIZ_DIALOG_H
+#endif // ZYZZYVA_ANALYZE_QUIZ_DIALOG_H
 

@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_LIST_DIALOG_H
-#define WORD_LIST_DIALOG_H
+#ifndef ZYZZYVA_WORD_LIST_DIALOG_H
+#define ZYZZYVA_WORD_LIST_DIALOG_H
 
 #include "WordEngine.h"
 #include <QDialog>
@@ -51,5 +51,5 @@ class WordListDialog : public QDialog
     Q3ListView* wordList;
 };
 
-#endif // WORD_LIST_DIALOG_H
+#endif // ZYZZYVA_WORD_LIST_DIALOG_H
 

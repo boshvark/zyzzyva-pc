@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_ENTRY_DIALOG_H
-#define WORD_ENTRY_DIALOG_H
+#ifndef ZYZZYVA_WORD_ENTRY_DIALOG_H
+#define ZYZZYVA_WORD_ENTRY_DIALOG_H
 
 #include <QDialog>
 #include <QLineEdit>
@@ -44,5 +44,5 @@ class WordEntryDialog : public QDialog
     WordValidator* wordValidator;
 };
 
-#endif // WORD_ENTRY_DIALOG_H
+#endif // ZYZZYVA_WORD_ENTRY_DIALOG_H
 

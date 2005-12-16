@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef DEFINITION_DIALOG_H
-#define DEFINITION_DIALOG_H
+#ifndef ZYZZYVA_DEFINITION_DIALOG_H
+#define ZYZZYVA_DEFINITION_DIALOG_H
 
 #include "WordEngine.h"
 #include <QDialog>
@@ -41,5 +41,5 @@ class DefinitionDialog : public QDialog
     WordEngine* engine;
 };
 
-#endif // DEFINITION_DIALOG_H
+#endif // ZYZZYVA_DEFINITION_DIALOG_H
 

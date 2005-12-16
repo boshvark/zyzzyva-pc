@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef DEFINE_FORM_H
-#define DEFINE_FORM_H
+#ifndef ZYZZYVA_DEFINE_FORM_H
+#define ZYZZYVA_DEFINE_FORM_H
 
 #include "ActionForm.h"
 #include <QPushButton>
@@ -49,4 +49,4 @@ class DefineForm : public ActionForm
     DefinitionBox* resultBox;
 };
 
-#endif // DEFINE_FORM_H
+#endif // ZYZZYVA_DEFINE_FORM_H

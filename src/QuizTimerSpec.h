@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef QUIZ_TIMER_SPEC_H
-#define QUIZ_TIMER_SPEC_H
+#ifndef ZYZZYVA_QUIZ_TIMER_SPEC_H
+#define ZYZZYVA_QUIZ_TIMER_SPEC_H
 
 #include <QDomElement>
 #include <QString>
@@ -59,4 +59,4 @@ class QuizTimerSpec
     int duration;
 };
 
-#endif // QUIZ_TIMER_SPEC_H
+#endif // ZYZZYVA_QUIZ_TIMER_SPEC_H

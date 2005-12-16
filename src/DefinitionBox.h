@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef DEFINITION_BOX_H
-#define DEFINITION_BOX_H
+#ifndef ZYZZYVA_DEFINITION_BOX_H
+#define ZYZZYVA_DEFINITION_BOX_H
 
 #include <QGroupBox>
 
@@ -43,4 +43,4 @@ class DefinitionBox : public QGroupBox
     DefinitionLabel* definitionLabel;
 };
 
-#endif // DEFINITION_BOX_H
+#endif // ZYZZYVA_DEFINITION_BOX_H

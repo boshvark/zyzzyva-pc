@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef QUIZ_FORM_H
-#define QUIZ_FORM_H
+#ifndef ZYZZYVA_QUIZ_FORM_H
+#define ZYZZYVA_QUIZ_FORM_H
 
 #include "ActionForm.h"
 #include "QuizTimerSpec.h"
@@ -114,4 +114,4 @@ class QuizForm : public ActionForm
     AnalyzeQuizDialog* analyzeDialog;
 };
 
-#endif // QUIZ_FORM_H
+#endif // ZYZZYVA_QUIZ_FORM_H

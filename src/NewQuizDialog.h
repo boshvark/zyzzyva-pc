@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef NEW_QUIZ_DIALOG_H
-#define NEW_QUIZ_DIALOG_H
+#ifndef ZYZZYVA_NEW_QUIZ_DIALOG_H
+#define ZYZZYVA_NEW_QUIZ_DIALOG_H
 
 #include "QuizSpec.h"
 #include "MatchType.h"
@@ -68,5 +68,5 @@ class NewQuizDialog : public QDialog
     QuizSpec        quizSpec;
 };
 
-#endif // NEW_QUIZ_DIALOG_H
+#endif // ZYZZYVA_NEW_QUIZ_DIALOG_H
 

@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef SETTINGS_DIALOG_H
-#define SETTINGS_DIALOG_H
+#ifndef ZYZZYVA_SETTINGS_DIALOG_H
+#define ZYZZYVA_SETTINGS_DIALOG_H
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -89,4 +89,4 @@ class SettingsDialog : public QDialog
 
 };
 
-#endif // SETTINGS_DIALOG_H
+#endif // ZYZZYVA_SETTINGS_DIALOG_H

@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef AUXIL_H
-#define AUXIL_H
+#ifndef ZYZZYVA_AUXIL_H
+#define ZYZZYVA_AUXIL_H
 
 #include "QuizSpec.h"
 #include "SearchCondition.h"
@@ -47,4 +47,4 @@ namespace Auxil {
     QuizSpec::QuizType stringToQuizType (const QString& string);
 }
 
-#endif // AUXIL_H
+#endif // ZYZZYVA_AUXIL_H

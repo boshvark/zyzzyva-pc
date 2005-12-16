@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef SEARCH_SPEC_H
-#define SEARCH_SPEC_H
+#ifndef ZYZZYVA_SEARCH_SPEC_H
+#define ZYZZYVA_SEARCH_SPEC_H
 
 #include "SearchCondition.h"
 #include "SearchSet.h"
@@ -46,4 +46,4 @@ class SearchSpec
     QList<SearchCondition> conditions;
 };
 
-#endif // SEARCH_SPEC_H
+#endif // ZYZZYVA_SEARCH_SPEC_H

@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef MAIN_SETTINGS_H
-#define MAIN_SETTINGS_H
+#ifndef ZYZZYVA_MAIN_SETTINGS_H
+#define ZYZZYVA_MAIN_SETTINGS_H
 
 #include <QColor>
 #include <QString>
@@ -123,4 +123,4 @@ class MainSettings
     bool wordListShowDefinitions;
 };
 
-#endif // MAIN_SETTINGS_H
+#endif // ZYZZYVA_MAIN_SETTINGS_H

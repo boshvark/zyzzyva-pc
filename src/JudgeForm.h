@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef JUDGE_FORM_H
-#define JUDGE_FORM_H
+#ifndef ZYZZYVA_JUDGE_FORM_H
+#define ZYZZYVA_JUDGE_FORM_H
 
 #include "ActionForm.h"
 #include <QPushButton>
@@ -51,4 +51,4 @@ class JudgeForm : public ActionForm
     DefinitionBox* resultBox;
 };
 
-#endif // JUDGE_FORM_H
+#endif // ZYZZYVA_JUDGE_FORM_H

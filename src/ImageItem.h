@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef IMAGE_ITEM_H
-#define IMAGE_ITEM_H
+#ifndef ZYZZYVA_IMAGE_ITEM_H
+#define ZYZZYVA_IMAGE_ITEM_H
 
 #include <Q3Canvas>
 #include <QPainter>
@@ -41,4 +41,4 @@ class ImageItem : public Q3CanvasRectangle
     QPixmap pixmap;
 };
 
-#endif // IMAGE_ITEM_H
+#endif // ZYZZYVA_IMAGE_ITEM_H

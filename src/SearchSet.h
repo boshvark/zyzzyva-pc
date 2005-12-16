@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef SEARCH_SET_H
-#define SEARCH_SET_H
+#ifndef ZYZZYVA_SEARCH_SET_H
+#define ZYZZYVA_SEARCH_SET_H
 
 #include <QString>
 
@@ -39,4 +39,4 @@ enum SearchSet {
     SetEightsFromSevenLetterStems
 };
 
-#endif // SEARCH_SET_H
+#endif // ZYZZYVA_SEARCH_SET_H

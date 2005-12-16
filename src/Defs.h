@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef DEFS_H
-#define DEFS_H
+#ifndef ZYZZYVA_DEFS_H
+#define ZYZZYVA_DEFS_H
 
 #include <QColor>
 #include <QString>
@@ -44,4 +44,4 @@ namespace Defs {
     const QString QUIZ_LETTERS_CONSONANTS_FIRST = "Consonants First";
 }
 
-#endif // DEFS_H
+#endif // ZYZZYVA_DEFS_H

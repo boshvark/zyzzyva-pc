@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef HELP_DIALOG_H
-#define HELP_DIALOG_H
+#ifndef ZYZZYVA_HELP_DIALOG_H
+#define ZYZZYVA_HELP_DIALOG_H
 
 #include <QAssistantClient>
 
@@ -34,4 +34,4 @@ class HelpDialog : public QAssistantClient
     HelpDialog (const QString& path, QObject* parent = 0);
 };
 
-#endif // HELP_DIALOG_H
+#endif // ZYZZYVA_HELP_DIALOG_H

@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_GRAPH_H
-#define WORD_GRAPH_H
+#ifndef ZYZZYVA_WORD_GRAPH_H
+#define ZYZZYVA_WORD_GRAPH_H
 
 #include "SearchSpec.h"
 #include <QString>
@@ -74,4 +74,4 @@ class WordGraph
     int numNodes;
 };
 
-#endif // WORD_GRAPH_H
+#endif // ZYZZYVA_WORD_GRAPH_H

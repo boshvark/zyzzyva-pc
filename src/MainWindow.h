@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef MAIN_WINDOW_H
-#define MAIN_WINDOW_H
+#ifndef ZYZZYVA_MAIN_WINDOW_H
+#define ZYZZYVA_MAIN_WINDOW_H
 
 #include <QLabel>
 #include <QMainWindow>
@@ -84,4 +84,4 @@ class MainWindow : public QMainWindow
     static MainWindow*  instance;
 };
 
-#endif // MAIN_WINDOW_H
+#endif // ZYZZYVA_MAIN_WINDOW_H

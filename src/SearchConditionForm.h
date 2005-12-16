@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef SEARCH_CONDITION_FORM_H
-#define SEARCH_CONDITION_FORM_H
+#ifndef ZYZZYVA_SEARCH_CONDITION_FORM_H
+#define ZYZZYVA_SEARCH_CONDITION_FORM_H
 
 #include "SearchCondition.h"
 #include <QComboBox>
@@ -78,4 +78,4 @@ class SearchConditionForm : public QFrame
     WordValidator*  patternValidator;
 };
 
-#endif // SEARCH_CONDITION_FORM_H
+#endif // ZYZZYVA_SEARCH_CONDITION_FORM_H

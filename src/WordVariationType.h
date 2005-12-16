@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_VARIATION_TYPE_H
-#define WORD_VARIATION_TYPE_H
+#ifndef ZYZZYVA_WORD_VARIATION_TYPE_H
+#define ZYZZYVA_WORD_VARIATION_TYPE_H
 
 enum WordVariationType {
     VariationNone = 0,
@@ -37,4 +37,4 @@ enum WordVariationType {
     VariationTranspositions
 };
 
-#endif // WORD_VARIATION_TYPE_H
+#endif // ZYZZYVA_WORD_VARIATION_TYPE_H

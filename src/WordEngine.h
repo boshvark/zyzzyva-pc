@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_ENGINE_H
-#define WORD_ENGINE_H
+#ifndef ZYZZYVA_WORD_ENGINE_H
+#define ZYZZYVA_WORD_ENGINE_H
 
 #include "WordGraph.h"
 #include <QString>
@@ -62,4 +62,4 @@ class WordEngine
     std::map< int, std::set<QString> > stemAlphagrams;
 };
 
-#endif // WORD_ENGINE_H
+#endif // ZYZZYVA_WORD_ENGINE_H

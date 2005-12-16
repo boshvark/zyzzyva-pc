@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_POPUP_MENU_H
-#define WORD_POPUP_MENU_H
+#ifndef ZYZZYVA_WORD_POPUP_MENU_H
+#define ZYZZYVA_WORD_POPUP_MENU_H
 
 #include <QMenu>
 
@@ -53,5 +53,5 @@ class WordPopupMenu : public QMenu
     };
 };
 
-#endif // WORD_POPUP_MENU_H
+#endif // ZYZZYVA_WORD_POPUP_MENU_H
 

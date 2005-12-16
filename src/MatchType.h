@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef MATCH_TYPE_H
-#define MATCH_TYPE_H
+#ifndef ZYZZYVA_MATCH_TYPE_H
+#define ZYZZYVA_MATCH_TYPE_H
 
 enum MatchType {
     UnknownMatchType = 0,
@@ -32,4 +32,4 @@ enum MatchType {
     Subanagram
 };
 
-#endif // MATCH_TYPE_H
+#endif // ZYZZYVA_MATCH_TYPE_H

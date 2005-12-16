@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_VALIDATOR_H
-#define WORD_VALIDATOR_H
+#ifndef ZYZZYVA_WORD_VALIDATOR_H
+#define ZYZZYVA_WORD_VALIDATOR_H
 
 #include <QRegExp>
 #include <QValidator>
@@ -54,4 +54,4 @@ class WordValidator : public QValidator
     int options;
 };
 
-#endif // WORD_VALIDATOR_H
+#endif // ZYZZYVA_WORD_VALIDATOR_H

@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ACTION_FORM_H
-#define ACTION_FORM_H
+#ifndef ZYZZYVA_ACTION_FORM_H
+#define ZYZZYVA_ACTION_FORM_H
 
 #include <QFrame>
 
@@ -50,4 +50,4 @@ class ActionForm : public QFrame
     ActionFormType type;
 };
 
-#endif // ACTION_FORM_H
+#endif // ZYZZYVA_ACTION_FORM_H

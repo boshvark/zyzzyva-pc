@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_VARIATION_DIALOG_H
-#define WORD_VARIATION_DIALOG_H
+#ifndef ZYZZYVA_WORD_VARIATION_DIALOG_H
+#define ZYZZYVA_WORD_VARIATION_DIALOG_H
 
 #include "WordVariationType.h"
 #include <QDialog>
@@ -60,5 +60,5 @@ class WordVariationDialog : public QDialog
     QPushButton*     closeButton;
 };
 
-#endif // WORD_VARIATION_DIALOG_H
+#endif // ZYZZYVA_WORD_VARIATION_DIALOG_H
 

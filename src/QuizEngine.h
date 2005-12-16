@@ -23,8 +23,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef QUIZ_ENGINE_H
-#define QUIZ_ENGINE_H
+#ifndef ZYZZYVA_QUIZ_ENGINE_H
+#define ZYZZYVA_QUIZ_ENGINE_H
 
 #include "QuizSpec.h"
 #include <QString>
@@ -90,4 +90,4 @@ class QuizEngine
     int         questionIndex;
 };
 
-#endif // QUIZ_ENGINE_H
+#endif // ZYZZYVA_QUIZ_ENGINE_H

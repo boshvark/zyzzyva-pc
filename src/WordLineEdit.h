@@ -24,8 +24,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef WORD_LINE_EDIT_H
-#define WORD_LINE_EDIT_H
+#ifndef ZYZZYVA_WORD_LINE_EDIT_H
+#define ZYZZYVA_WORD_LINE_EDIT_H
 
 #include <QLineEdit>
 
@@ -41,4 +41,4 @@ class WordLineEdit : public QLineEdit
     virtual ~WordLineEdit() { }
 };
 
-#endif // WORD_LINE_EDIT_H
+#endif // ZYZZYVA_WORD_LINE_EDIT_H
