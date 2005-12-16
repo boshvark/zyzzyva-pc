@@ -52,6 +52,7 @@ SOURCES = \
     src/QuizProgress.cpp \
     src/QuizSpec.cpp \
     src/QuizTimerSpec.cpp \
+    src/Rand.cpp \
     src/SearchForm.cpp \
     src/SearchCondition.cpp \
     src/SearchConditionForm.cpp \
