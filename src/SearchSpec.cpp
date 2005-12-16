@@ -159,6 +159,43 @@ SearchSpec::optimize()
         QString stringValue = condition.stringValue;
         switch (condition.type) {
 
+            case SearchCondition::PatternMatch:
+            case SearchCondition::AnagramMatch:
+            case SearchCondition::SubanagramMatch: {
+
+                if (stringValue.contains ("*")) {
+                    newConditions.append (condition);
+                    break;
+                }
+
+                int length = stringValue.length();
+                if (stringValue.contains ("[")) {
+                    int subtract = 0;
+                    bool inCharClass = false;
+                    for (int i = 0; i < length; ++i) {
+                        QChar c = stringValue.at (i);
+                        if (c == '[')
+                            inCharClass = true;
+                        else if (c == ']') {
+                            inCharClass = false;
+                            ++subtract;
+                        }
+                        else if (inCharClass)
+                            ++subtract;
+                    }
+                    length -= subtract;
+                }
+
+                if ((condition.type == SearchCondition::PatternMatch) ||
+                    (condition.type == SearchCondition::AnagramMatch))
+                    minLength = maxLength = length;
+                else
+                    maxLength = length;
+
+                newConditions.append (condition);
+            }
+            break;
+
             case SearchCondition::ExactLength:
             if ((intValue < minLength) || (intValue > maxLength)) {
                 conditions.clear();
