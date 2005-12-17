@@ -143,12 +143,17 @@ AnalyzeQuizDialog::newQuiz (const QuizSpec& spec)
     QuizProgress progress = spec.getProgress();
     QMap<QString, int> missed = progress.getMissed();
     QMap<QString, int>::iterator it;
+
+    QStringList missedList;
     for (it = missed.begin(); it != missed.end(); ++it)
-        addMissed (it.key(), false);
+        missedList.append (it.key());
+    addMissed (missedList, false);
 
     QMap<QString, int> incorrect = progress.getIncorrect();
+    QStringList incorrectList;
     for (it = incorrect.begin(); it != incorrect.end(); ++it)
-        addIncorrect (it.key(), false);
+        incorrectList.append (it.key());
+    addIncorrect (incorrectList, false);
 
     updateStats();
 }
@@ -195,6 +200,22 @@ AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 }
 
 //---------------------------------------------------------------------------
+//  addMissed
+//
+//! Add a list of words to the Missed list.
+//
+//! @param words the missed words
+//! @param update true if visible stats should be updated
+//---------------------------------------------------------------------------
+void
+AnalyzeQuizDialog::addMissed (const QStringList& words, bool update)
+{
+    missedModel->addWords (words, WordTableModel::WordMissed);
+    if (update)
+        updateStats();
+}
+
+//---------------------------------------------------------------------------
 //  addIncorrect
 //
 //! Add a word to the Incorrect list.
@@ -206,6 +227,22 @@ void
 AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
 {
     incorrectModel->addWord (word, WordTableModel::WordIncorrect);
+    if (update)
+        updateStats();
+}
+
+//---------------------------------------------------------------------------
+//  addIncorrect
+//
+//! Add a list of words to the Incorrect list.
+//
+//! @param words the incorrect words
+//! @param update true if visible stats should be updated
+//---------------------------------------------------------------------------
+void
+AnalyzeQuizDialog::addIncorrect (const QStringList& words, bool update)
+{
+    incorrectModel->addWords (words, WordTableModel::WordIncorrect);
     if (update)
         updateStats();
 }

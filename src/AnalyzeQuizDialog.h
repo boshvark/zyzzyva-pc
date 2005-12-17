@@ -49,7 +49,9 @@ class AnalyzeQuizDialog : public QDialog
     void newQuiz (const QuizSpec& spec);
     void updateStats();
     void addMissed (const QString& word, bool update = true);
+    void addMissed (const QStringList& words, bool update = true);
     void addIncorrect (const QString& word, bool update = true);
+    void addIncorrect (const QStringList& words, bool update = true);
     void clearMissed();
     void clearIncorrect();
 
