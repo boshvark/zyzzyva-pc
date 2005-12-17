@@ -48,9 +48,10 @@ Rand::rand (unsigned int max)
     if ((max == 0) || (max == 4294967295U))
         return randnum;
 
-    // XXX: Do not use mod!  For MWC in particular, we're just throwing away
-    // all the high order bits, which sort of defeats the point.
-    return randnum % (max + 1);
+    switch (algorithm) {
+        case SystemRand: return randnum % (max + 1);
+        default: return (randnum / ((4294967295U / (max + 1)) + 1));
+    }
 }
 
 //---------------------------------------------------------------------------
