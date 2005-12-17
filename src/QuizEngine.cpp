@@ -32,8 +32,8 @@ QuizEngine::QuizEngine (WordEngine* e)
     : wordEngine (e), quizTotal (0), quizCorrect (0), quizIncorrect (0),
     questionIndex (0)
 {
-    std::time_t now = std::time (0);
-    std::srand (now);
+    rng.setAlgorithm (Rand::SystemRand);
+    rng.srand (std::time (0));
 }
 
 //---------------------------------------------------------------------------
@@ -72,13 +72,15 @@ QuizEngine::newQuiz (const QuizSpec& spec)
         unsigned int seed = spec.getRandomSeed();
         if (!seed)
             seed = std::time (0);
-        std::srand (seed);
+        rng.setAlgorithm (spec.getRandomAlgorithm());
+        rng.srand (seed);
         quizSpec.setRandomSeed (seed);
 
         QString tmp;
         int num = quizQuestions.size();
         for (int i = 0; i < num ; ++i) {
-            int rnum = i + (std::rand() % (num - i));
+            unsigned int randnum = rng.rand (num - i - 1);
+            int rnum = i + randnum;
             if (rnum == i)
                 continue;
             tmp = quizQuestions[rnum];

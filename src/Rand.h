@@ -26,11 +26,36 @@
 #ifndef ZYZZYVA_RAND_H
 #define ZYZZYVA_RAND_H
 
+#include <cstdlib>
+
 class Rand
 {
     public:
-    Rand();
+    enum Algorithm {
+        SystemRand = 0,
+        MarsagliaKiss = 1,
+        MarsagliaMwc = 2
+    };
+
+    public:
+    Rand (int a = MarsagliaKiss, unsigned int z0 = 362436069,
+          unsigned int w0 = 521288629)
+        : algorithm (Algorithm (a)), z (z0), w (w0) { }
     ~Rand() { }
+
+    void setAlgorithm (int a) { algorithm = Algorithm (a); }
+    void srand (unsigned int z0) { std::srand (z0); }
+    void srand (unsigned int z0, unsigned int w0) { z = z0; w = w0; }
+    unsigned int rand (unsigned int max = 4294967295U);
+
+    private:
+    unsigned int znew();
+    unsigned int wnew();
+
+    private:
+    Algorithm algorithm;
+    unsigned int z;
+    unsigned int w;
 };
 
 #endif // ZYZZYVA_RAND_H

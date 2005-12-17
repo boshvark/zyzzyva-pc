@@ -24,3 +24,25 @@
 //---------------------------------------------------------------------------
 
 #include "Rand.h"
+
+unsigned int
+Rand::rand (unsigned int max)
+{
+    switch (algorithm) {
+        // FIXME: test what happens when max is 2^32 - 1 and overflows!
+        case SystemRand: return (std::rand() % (max + 1));
+        default: return 0;
+    }
+}
+
+unsigned int
+Rand::znew()
+{
+    return z;
+}
+
+unsigned int
+Rand::wnew()
+{
+    return w;
+}

@@ -27,6 +27,7 @@
 #define ZYZZYVA_QUIZ_ENGINE_H
 
 #include "QuizSpec.h"
+#include "Rand.h"
 #include <QString>
 #include <QStringList>
 #include <set>
@@ -85,6 +86,7 @@ class QuizEngine
     int quizCorrect;
     int quizIncorrect;
 
+    Rand        rng;
     QuizSpec    quizSpec;
     QStringList quizQuestions;
     int         questionIndex;
