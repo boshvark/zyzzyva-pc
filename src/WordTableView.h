@@ -42,6 +42,7 @@ class WordTableView : public QTableView
 
     protected:
     virtual void contextMenuEvent (QContextMenuEvent* e);
+    virtual int sizeHintForColumn (int column) const;
 
     private slots:
     void viewDefinition();

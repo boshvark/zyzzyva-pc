@@ -342,3 +342,20 @@ WordTableView::contextMenuEvent (QContextMenuEvent* e)
     popupMenu->exec (QCursor::pos());
     delete popupMenu;
 }
+
+//---------------------------------------------------------------------------
+//  sizeHintForColumn
+//
+//! Return the width size hint for a column.  Directly call the equivalent
+//! function from QAbstractItemView instead of allowing the QTableView version
+//! to take precedence, because we want the content of all rows to be
+//! considered, not just the visible ones.
+//
+//! @param column the column index
+//! @return the size hint for the column
+//---------------------------------------------------------------------------
+int
+WordTableView::sizeHintForColumn (int column) const
+{
+    return QAbstractItemView::sizeHintForColumn (column);
+}
