@@ -147,7 +147,7 @@ SearchSpec::optimize()
     QString mustInclude;
     QString mustExclude;
     int minLength = 0;
-    int maxLength = MAX_WORD_LEN;
+    int maxLength = MAX_WORD_LEN + 1;
     int minAnagrams = 0;
     int maxAnagrams = MAX_ANAGRAMS;
 
@@ -341,7 +341,7 @@ SearchSpec::optimize()
             condition.intValue = minLength;
             newConditions.push_front (condition);
         }
-        if (maxLength < MAX_WORD_LEN) {
+        if (maxLength < MAX_WORD_LEN + 1) {
             condition.type = SearchCondition::MaxLength;
             condition.intValue = maxLength;
             newConditions.push_front (condition);
