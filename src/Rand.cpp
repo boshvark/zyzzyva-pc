@@ -25,24 +25,72 @@
 
 #include "Rand.h"
 
+#include <QString>
+
+//---------------------------------------------------------------------------
+//  rand
+//
+//! Return a random number between zero and a maximum value, inclusive.
+//
+//! @param max the maximum value to return
+//! @return a random number
+//---------------------------------------------------------------------------
 unsigned int
 Rand::rand (unsigned int max)
 {
+    unsigned int randnum = 0;
     switch (algorithm) {
-        // FIXME: test what happens when max is 2^32 - 1 and overflows!
-        case SystemRand: return (std::rand() % (max + 1));
-        default: return 0;
+        case SystemRand:   randnum = std::rand(); break;
+        case MarsagliaMwc: randnum = mwc(); break;
+        default: break;
     }
+
+    if ((max == 0) || (max == 4294967295U))
+        return randnum;
+
+    // XXX: Do not use mod!  For MWC in particular, we're just throwing away
+    // all the high order bits, which sort of defeats the point.
+    return randnum % (max + 1);
 }
 
+//---------------------------------------------------------------------------
+//  mwc
+//
+//! Return a random number using the Marsaglia multiply with carry (MWC)
+//! algorithm.
+//
+//! @return a random number
+//---------------------------------------------------------------------------
+unsigned int
+Rand::mwc()
+{
+    return ((znew() << 16) + wnew());
+}
+
+//---------------------------------------------------------------------------
+//  znew
+//
+//! Modify the Z seed and return its modified value.
+//
+//! @return the modified value of the Z seed
+//---------------------------------------------------------------------------
 unsigned int
 Rand::znew()
 {
+    z = 36969 * (z & 65535) + (z >> 16);
     return z;
 }
 
+//---------------------------------------------------------------------------
+//  wnew
+//
+//! Modify the W seed and return its modified value.
+//
+//! @return the modified value of the W seed
+//---------------------------------------------------------------------------
 unsigned int
 Rand::wnew()
 {
+    w = 18000 * (w & 65535) + (w >> 16);
     return w;
 }

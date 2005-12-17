@@ -27,6 +27,7 @@
 
 #include "QuizProgress.h"
 #include "QuizTimerSpec.h"
+#include "Rand.h"
 #include "SearchSpec.h"
 #include "Defs.h"
 
@@ -48,7 +49,7 @@ class QuizSpec
 
     public:
     QuizSpec() : type (QuizAnagrams), randomOrder (true), randomSeed (0),
-                 randomAlgorithm (0) { }
+                 randomAlgorithm (Rand::MarsagliaMwc) { }
     ~QuizSpec() { }
 
     QString asString() const;

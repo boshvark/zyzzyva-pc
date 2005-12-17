@@ -32,8 +32,6 @@ QuizEngine::QuizEngine (WordEngine* e)
     : wordEngine (e), quizTotal (0), quizCorrect (0), quizIncorrect (0),
     questionIndex (0)
 {
-    rng.setAlgorithm (Rand::SystemRand);
-    rng.srand (std::time (0));
 }
 
 //---------------------------------------------------------------------------
@@ -78,7 +76,7 @@ QuizEngine::newQuiz (const QuizSpec& spec)
 
         QString tmp;
         int num = quizQuestions.size();
-        for (int i = 0; i < num ; ++i) {
+        for (int i = 0; i < num - 1; ++i) {
             unsigned int randnum = rng.rand (num - i - 1);
             int rnum = i + randnum;
             if (rnum == i)
@@ -87,6 +85,22 @@ QuizEngine::newQuiz (const QuizSpec& spec)
             quizQuestions[rnum] = quizQuestions[i];
             quizQuestions[i] = tmp;
         }
+
+        // XXX: We need a Shuffle class to handle shuffling using various
+        // algorithms!
+
+        // Original shuffle algorithm (flawed! but must be preserved for
+        // compatibility)
+//        int num = quizQuestions.size();
+//        for (int i = 0; i < num ; ++i) {
+//            unsigned int randnum = rng.rand (num - i - 1);
+//            int rnum = i + randnum;
+//            if (rnum == i)
+//                continue;
+//            tmp = quizQuestions[rnum];
+//            quizQuestions[rnum] = quizQuestions[i];
+//            quizQuestions[i] = tmp;
+//        }
     }
 
     // Restore quiz progress

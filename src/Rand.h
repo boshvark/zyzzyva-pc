@@ -33,12 +33,11 @@ class Rand
     public:
     enum Algorithm {
         SystemRand = 0,
-        MarsagliaKiss = 1,
-        MarsagliaMwc = 2
+        MarsagliaMwc = 1
     };
 
     public:
-    Rand (int a = MarsagliaKiss, unsigned int z0 = 362436069,
+    Rand (int a = MarsagliaMwc, unsigned int z0 = 362436069,
           unsigned int w0 = 521288629)
         : algorithm (Algorithm (a)), z (z0), w (w0) { }
     ~Rand() { }
@@ -49,6 +48,7 @@ class Rand
     unsigned int rand (unsigned int max = 4294967295U);
 
     private:
+    unsigned int mwc();
     unsigned int znew();
     unsigned int wnew();
 
