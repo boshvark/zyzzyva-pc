@@ -73,13 +73,11 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect (defineButton, SIGNAL (clicked()), SLOT (defineWord()));
     buttonHlay->addWidget (defineButton);
 
-    QHBoxLayout* resultHlay = new QHBoxLayout (SPACING);
-    Q_CHECK_PTR (resultHlay);
-    mainVlay->addLayout (resultHlay);
-
     resultBox = new DefinitionBox;
     Q_CHECK_PTR (resultBox);
-    resultHlay->addWidget (resultBox);
+    mainVlay->addWidget (resultBox, 1);
+
+    mainVlay->addStretch (0);
 
     defineButton->setEnabled (false);
     resultBox->hide();

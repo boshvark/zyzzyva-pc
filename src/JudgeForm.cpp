@@ -68,13 +68,11 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect (judgeButton, SIGNAL (clicked()), SLOT (judgeWord()));
     buttonHlay->addWidget (judgeButton);
 
-    QHBoxLayout* resultHlay = new QHBoxLayout (SPACING);
-    Q_CHECK_PTR (resultHlay);
-    mainVlay->addLayout (resultHlay);
-
     resultBox = new DefinitionBox;
     Q_CHECK_PTR (resultBox);
-    resultHlay->addWidget (resultBox);
+    mainVlay->addWidget (resultBox, 1);
+
+    mainVlay->addStretch (0);
 
     judgeButton->setEnabled (false);
     clearButton->setEnabled (false);
