@@ -28,6 +28,7 @@
 #include "ImageItem.h"
 #include "MainSettings.h"
 #include "NewQuizDialog.h"
+#include "Rand.h"
 #include "QuizEngine.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
@@ -379,6 +380,7 @@ QuizForm::newQuizClicked()
     Q_CHECK_PTR (dialog);
     QuizSpec spec = quizEngine->getQuizSpec();
     spec.setProgress (QuizProgress());
+    spec.setRandomAlgorithm (Rand::MarsagliaMwc);
     spec.setRandomSeed (0);
     dialog->setQuizSpec (spec);
     int code = dialog->exec();
