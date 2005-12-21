@@ -31,6 +31,7 @@
 #include <QString>
 
 namespace Auxil {
+    unsigned int getPid();
     QString getAboutString();
     QString getHelpDir();
     QString getQuizDir();

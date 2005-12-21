@@ -25,6 +25,7 @@
 #include "Auxil.h"
 #include <QApplication>
 #include <QFile>
+#include <unistd.h>
 
 const QString SET_UNKNOWN_STRING = "Unknown";
 const QString SET_HOOK_WORDS_STRING = "Hook Words";
@@ -67,6 +68,19 @@ const QString QUIZ_TYPE_HOOKS = "Hooks";
 const QString QUIZ_TYPE_ANAGRAM_HOOKS = "Anagram Hooks";
 const QString QUIZ_TYPE_ANAGRAM_HOOK_MNEMONICS = "Anagram Hook Mnemonics";
 const QString QUIZ_TYPE_WORD_LIST_RECALL = "Word List Recall";
+
+//---------------------------------------------------------------------------
+//  getPid
+//
+//! Return the process ID of the current process.
+//
+//! @return the process ID
+//---------------------------------------------------------------------------
+unsigned int
+Auxil::getPid()
+{
+    return getpid();
+}
 
 //---------------------------------------------------------------------------
 //  getAboutString
