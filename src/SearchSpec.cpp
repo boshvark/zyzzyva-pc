@@ -307,7 +307,6 @@ SearchSpec::optimize()
         }
     }
 
-
     SearchCondition condition;
 
     // Add minimum number of anagram conditions
