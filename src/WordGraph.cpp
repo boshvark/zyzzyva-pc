@@ -27,8 +27,8 @@
 #include <QList>
 #include <QRegExp>
 #include <iostream>
+#include <map>
 #include <stack>
-#include <set>
 
 using namespace std;
 using namespace Defs;
@@ -133,6 +133,7 @@ WordGraph::search (const SearchSpec& spec) const
     QList<SearchCondition> matchConditions;
     int maxLength = MAX_WORD_LEN;
     QString excludeLetters;
+    int numWildcardConditions = 0;
 
     QListIterator<SearchCondition> it (spec.conditions);
     while (it.hasNext()) {
@@ -143,6 +144,8 @@ WordGraph::search (const SearchSpec& spec) const
             case SearchCondition::AnagramMatch:
             case SearchCondition::SubanagramMatch:
             matchConditions << condition; 
+            if (condition.stringValue.contains ("?"))
+                ++numWildcardConditions;
             break;
 
             case SearchCondition::ExactLength:
@@ -162,6 +165,13 @@ WordGraph::search (const SearchSpec& spec) const
         }
     }
 
+    // Only replace wildcard matches with lower case letters if there is
+    // exactly one pattern using wildcards
+    // XXX: Commented out because it may be a reasonable default to use the
+    // lower case lettering as matched by the first such condition
+    //bool wildcardLower = (numWildcardConditions == 1);
+    bool wildcardLower = true;
+
     // If no match condition was specified, search for all words matching the
     // other conditions
     if (matchConditions.empty()) {
@@ -171,10 +181,8 @@ WordGraph::search (const SearchSpec& spec) const
         matchConditions.append (condition);
     }
 
-    // XXX: Returning wildcard matches with lower case letters is now broken!
-
-    set<QString> finalWordSet;
-    set<QString>::iterator sit;
+    map<QString, QString> finalWordSet;
+    map<QString, QString>::iterator sit;
     int conditionNum = 0;
 
     // Search for each condition separately, and take the conjunction or
@@ -184,9 +192,9 @@ WordGraph::search (const SearchSpec& spec) const
         const SearchCondition& condition = mit.next();
         QString unmatched = condition.stringValue;
 
-        // Use set to eliminate duplicates since patterns with wildcards may match
-        // the same word in more than one way
-        set <QString> wordSet;
+        // Use set to eliminate duplicates since patterns with wildcards may
+        // match the same word in more than one way
+        map<QString, QString> wordSet;
         stack <TraversalState> states;
         QString word;
 
@@ -272,9 +280,9 @@ WordGraph::search (const SearchSpec& spec) const
                         bool matchLetter = match.contains (node->letter);
                         bool matchNegated = match.contains ("^");
 
-                        if (matchLetter ^ matchNegated)
+                        if ((matchLetter ^ matchNegated) || (match == "*"))
                             word += node->letter;
-                        else if ((match == "*") || (match == "?"))
+                        else if (match == "?")
                             word += node->letter.lower();
                         else
                             continue;
@@ -306,7 +314,9 @@ WordGraph::search (const SearchSpec& spec) const
                             matchesSpec (wordUpper, spec) &&
                             !wordSet.count (wordUpper))
                         {
-                            wordSet.insert (wordUpper);
+                            wordSet.insert (make_pair (wordUpper,
+                                reversePattern ? reverseString (word)
+                                               : word));
                         }
                     }
 
@@ -419,7 +429,7 @@ WordGraph::search (const SearchSpec& spec) const
                                   matchesSpec (wordUpper, spec) &&
                                   !wordSet.count (wordUpper))
                             {
-                                wordSet.insert (wordUpper);
+                                wordSet.insert (make_pair (wordUpper, word));
                             }
                         }
                     }
@@ -443,9 +453,9 @@ WordGraph::search (const SearchSpec& spec) const
         }
 
         else if (spec.conjunction) {
-            set<QString> conjunctionSet;
+            map<QString, QString> conjunctionSet;
             for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
-                if (finalWordSet.find (*sit) != finalWordSet.end())
+                if (finalWordSet.find (sit->first) != finalWordSet.end())
                     conjunctionSet.insert (*sit);
             }
             if (conjunctionSet.empty())
@@ -464,7 +474,7 @@ WordGraph::search (const SearchSpec& spec) const
 
     // Transform word set into word list and return it
     for (sit = finalWordSet.begin(); sit != finalWordSet.end(); ++sit) {
-        wordList << *sit;
+        wordList << (wildcardLower ? sit->second : sit->first);
     }
 
     return wordList;
