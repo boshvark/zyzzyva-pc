@@ -382,6 +382,7 @@ QuizForm::newQuizClicked()
     spec.setProgress (QuizProgress());
     spec.setRandomAlgorithm (Rand::MarsagliaMwc);
     spec.setRandomSeed (0);
+    spec.setRandomSeed2 (0);
     dialog->setQuizSpec (spec);
     int code = dialog->exec();
     if (code != QDialog::Accepted) {
