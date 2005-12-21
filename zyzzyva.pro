@@ -31,6 +31,7 @@ MOC_DIR = build/moc
 OBJECTS_DIR = build/obj
 INCLUDEPATH += build/moc
 DEPENDPATH += build/moc
+RESOURCES = zyzzyva.qrc
 
 # Source files
 SOURCES = \

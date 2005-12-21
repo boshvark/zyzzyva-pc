@@ -290,6 +290,7 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
         instance = this;
 
     setWindowTitle ("Zyzzyva");
+    setWindowIcon (QIcon (":/zyzzyva-32x32.bmp"));
 }
 
 //---------------------------------------------------------------------------

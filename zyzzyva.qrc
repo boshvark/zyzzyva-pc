@@ -1,0 +1,6 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+<qresource>
+    <file alias="zyzzyva-32x32.bmp">images/zyzzyva-32x32.bmp</file>
+</qresource>
+</RCC>
