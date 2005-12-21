@@ -49,7 +49,7 @@ class QuizSpec
 
     public:
     QuizSpec() : type (QuizAnagrams), randomOrder (true), randomSeed (0),
-                 randomAlgorithm (Rand::MarsagliaMwc) { }
+                 randomSeed2 (0), randomAlgorithm (Rand::MarsagliaMwc) { }
     ~QuizSpec() { }
 
     QString asString() const;
@@ -62,6 +62,7 @@ class QuizSpec
     void setProgress (const QuizProgress& p) { progress = p; }
     void setRandomOrder (bool b) { randomOrder = b; }
     void setRandomSeed (unsigned int i) { randomSeed = i; }
+    void setRandomSeed2 (unsigned int i) { randomSeed2 = i; }
     void setRandomAlgorithm (int i) { randomAlgorithm = i; }
 
     void addIncorrect (const QString& word) { progress.addIncorrect (word); }
@@ -73,6 +74,7 @@ class QuizSpec
     QuizProgress getProgress() const { return progress; }
     bool getRandomOrder() const { return randomOrder; }
     unsigned int getRandomSeed() const { return randomSeed; }
+    unsigned int getRandomSeed2() const { return randomSeed2; }
     int getRandomAlgorithm() const { return randomAlgorithm; }
 
     private:
@@ -82,6 +84,7 @@ class QuizSpec
     QuizProgress progress;
     bool randomOrder;
     unsigned int randomSeed;
+    unsigned int randomSeed2;
     int randomAlgorithm;
 };
 

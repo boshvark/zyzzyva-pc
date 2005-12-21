@@ -38,6 +38,7 @@ const QString XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR = "single-question";
 const QString XML_SEARCH_ELEMENT = "zyzzyva-search";
 const QString XML_RANDOMIZER_ELEMENT = "randomizer";
 const QString XML_RANDOMIZER_SEED_ATTR = "seed";
+const QString XML_RANDOMIZER_SEED2_ATTR = "seed2";
 const QString XML_RANDOMIZER_ALGORITHM_ATTR = "algorithm";
 const QString XML_TIMER_ELEMENT = "timer";
 const QString XML_TIMER_TIMEOUT_ATTR = "timeout";
@@ -83,6 +84,7 @@ QuizSpec::asDomElement() const
         QDomElement randomElement = doc.createElement
             (XML_RANDOMIZER_ELEMENT);
         randomElement.setAttribute (XML_RANDOMIZER_SEED_ATTR, randomSeed);
+        randomElement.setAttribute (XML_RANDOMIZER_SEED2_ATTR, randomSeed2);
         randomElement.setAttribute (XML_RANDOMIZER_ALGORITHM_ATTR,
                                     randomAlgorithm);
         topElement.appendChild (randomElement);
@@ -176,6 +178,12 @@ QuizSpec::fromDomElement (const QDomElement& element)
             if (!ok)
                 return false;
             tmpSpec.setRandomSeed (tmpSeed);
+
+            tmpSeed = elem.attribute
+                (XML_RANDOMIZER_SEED2_ATTR).toUInt (&ok);
+            if (ok)
+                tmpSpec.setRandomSeed2 (tmpSeed);
+
             int tmpAlgorithm = elem.attribute
                 (XML_RANDOMIZER_ALGORITHM_ATTR).toInt (&ok);
             if (!ok)
