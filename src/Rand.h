@@ -43,8 +43,10 @@ class Rand
     ~Rand() { }
 
     void setAlgorithm (int a) { algorithm = Algorithm (a); }
-    void srand (unsigned int z0) { std::srand (z0); }
-    void srand (unsigned int z0, unsigned int w0) { z = z0; w = w0; }
+    void srand (unsigned int z0, unsigned int w0 = 0) {
+        if (algorithm == SystemRand) std::srand (z0);
+        z = z0; w = w0;
+    }
     unsigned int rand (unsigned int max = 4294967295U);
 
     private:
