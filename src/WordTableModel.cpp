@@ -38,6 +38,22 @@ const int DEFAULT_COLUMN_WIDTH = 100;
 const int NUM_COLUMNS = 4;
 
 //---------------------------------------------------------------------------
+//  lessThan
+//
+//! A comparison function that compares by lexical value.
+//
+//! @param a the first word item to compare
+//! @param b the second word item to compare
+//! @return true if a is lexically less than b
+//---------------------------------------------------------------------------
+bool
+lessThan (const WordTableModel::WordItem& a,
+          const WordTableModel::WordItem& b)
+{
+    return (a.getWord().upper() < b.getWord().upper());
+}
+
+//---------------------------------------------------------------------------
 //  lengthLessThan
 //
 //! A comparison function that compares by length as well as lexical value.
@@ -57,23 +73,7 @@ lengthLessThan (const WordTableModel::WordItem& a,
         return false;
     }
 
-    return a.getWord() < b.getWord();
-}
-
-//---------------------------------------------------------------------------
-//  lessThan
-//
-//! A comparison function that compares by lexical value.
-//
-//! @param a the first word item to compare
-//! @param b the second word item to compare
-//! @return true if a is lexically less than b
-//---------------------------------------------------------------------------
-bool
-lessThan (const WordTableModel::WordItem& a,
-          const WordTableModel::WordItem& b)
-{
-    return (a.getWord() < b.getWord());
+    return lessThan (a, b);
 }
 
 //---------------------------------------------------------------------------
@@ -239,7 +239,7 @@ WordTableModel::data (const QModelIndex& index, int role) const
                     (isBackHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' '));
             }
             else
-                return wordUpper;
+                return word;
         }
         else
             return word;
