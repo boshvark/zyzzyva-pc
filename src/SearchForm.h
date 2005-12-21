@@ -26,7 +26,7 @@
 #define ZYZZYVA_SEARCH_FORM_H
 
 #include "ActionForm.h"
-//#include <QCheckBox>
+#include <QCheckBox>
 #include <QLabel>
 #include <QPushButton>
 
@@ -49,7 +49,7 @@ class SearchForm : public ActionForm
     private:
     WordEngine*     wordEngine;
     SearchSpecForm* specForm;
-    //QCheckBox*      lowerCaseCbox;
+    QCheckBox*      lowerCaseCbox;
     QLabel*         resultLabel;
     WordTableView*  resultView;
     WordTableModel* resultModel;
