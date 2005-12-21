@@ -25,6 +25,7 @@
 
 #include "QuizEngine.h"
 #include "WordEngine.h"
+#include "Auxil.h"
 #include <cstdlib>
 #include <ctime>
 
@@ -70,9 +71,13 @@ QuizEngine::newQuiz (const QuizSpec& spec)
         unsigned int seed = spec.getRandomSeed();
         if (!seed)
             seed = std::time (0);
+        unsigned int seed2 = spec.getRandomSeed2();
+        if (!seed2)
+            seed2 = Auxil::getPid();
         rng.setAlgorithm (spec.getRandomAlgorithm());
-        rng.srand (seed);
+        rng.srand (seed, seed2);
         quizSpec.setRandomSeed (seed);
+        quizSpec.setRandomSeed2 (seed2);
 
         QString tmp;
         int num = quizQuestions.size();
