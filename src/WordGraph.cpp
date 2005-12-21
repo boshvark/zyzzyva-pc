@@ -455,8 +455,10 @@ WordGraph::search (const SearchSpec& spec) const
         else if (spec.conjunction) {
             map<QString, QString> conjunctionSet;
             for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
-                if (finalWordSet.find (sit->first) != finalWordSet.end())
-                    conjunctionSet.insert (*sit);
+                map<QString, QString>::iterator found =
+                    finalWordSet.find (sit->first);
+                if (found != finalWordSet.end())
+                    conjunctionSet.insert (*found);
             }
             if (conjunctionSet.empty())
                 return wordList;
