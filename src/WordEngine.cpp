@@ -331,6 +331,7 @@ bool
 WordEngine::matchesConditions (const QString& word, const
                                QList<SearchCondition>& conditions) const
 {
+    QString wordUpper = word.upper();
     QListIterator<SearchCondition> it (conditions);
     while (it.hasNext()) {
         const SearchCondition& condition = it.next();
@@ -338,22 +339,22 @@ WordEngine::matchesConditions (const QString& word, const
         switch (condition.type) {
 
             case SearchCondition::TakesPrefix:
-            if (!isAcceptable (condition.stringValue + word.upper()))
+            if (!isAcceptable (condition.stringValue + wordUpper))
                 return false;
             break;
 
             case SearchCondition::DoesNotTakePrefix:
-            if (isAcceptable (condition.stringValue + word.upper()))
+            if (isAcceptable (condition.stringValue + wordUpper))
                 return false;
             break;
 
             case SearchCondition::TakesSuffix:
-            if (!isAcceptable (word.upper() + condition.stringValue))
+            if (!isAcceptable (wordUpper + condition.stringValue))
                 return false;
             break;
 
             case SearchCondition::DoesNotTakeSuffix:
-            if (isAcceptable (word.upper() + condition.stringValue))
+            if (isAcceptable (wordUpper + condition.stringValue))
                 return false;
             break;
 
@@ -362,29 +363,29 @@ WordEngine::matchesConditions (const QString& word, const
                     (condition.stringValue);
                 if (searchSet == UnknownSearchSet)
                     continue;
-                if (!isSetMember (word.upper(), searchSet))
+                if (!isSetMember (wordUpper, searchSet))
                     return false;
             }
             break;
 
             case SearchCondition::InWordList:
             if (!condition.stringValue.contains
-                (QRegExp ("\\b" + word + "\\b")))
+                (QRegExp ("\\b" + wordUpper + "\\b")))
                 return false;
             break;
 
             case SearchCondition::ExactAnagrams:
-            if (numAnagrams (word) != condition.intValue)
+            if (numAnagrams (wordUpper) != condition.intValue)
                 return false;
             break;
 
             case SearchCondition::MinAnagrams:
-            if (numAnagrams (word) < condition.intValue)
+            if (numAnagrams (wordUpper) < condition.intValue)
                 return false;
             break;
 
             case SearchCondition::MaxAnagrams:
-            if (numAnagrams (word) > condition.intValue)
+            if (numAnagrams (wordUpper) > condition.intValue)
                 return false;
             break;
 
