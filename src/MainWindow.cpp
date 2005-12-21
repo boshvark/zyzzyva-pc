@@ -261,8 +261,7 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
 
     closeButton = new QToolButton (tabStack);
     Q_CHECK_PTR (closeButton);
-    closeButton->setUsesTextLabel (true);
-    closeButton->setTextLabel ("X", false);
+    closeButton->setIcon (QIcon (":/close-tab"));
     tabStack->setCornerWidget (closeButton);
     closeButton->hide();
     connect (closeButton, SIGNAL (clicked()), SLOT (closeCurrentTab()));
@@ -290,7 +289,7 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
         instance = this;
 
     setWindowTitle ("Zyzzyva");
-    setWindowIcon (QIcon (":/zyzzyva-32x32.bmp"));
+    setWindowIcon (QIcon (":/zyzzyva-32x32"));
 }
 
 //---------------------------------------------------------------------------
