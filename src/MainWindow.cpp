@@ -90,6 +90,7 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     // New Quiz
     QAction* newQuizAction = new QAction ("Qui&z...", this);
     Q_CHECK_PTR (newQuizAction);
+    newQuizAction->setIcon (QIcon (":/quiz-icon"));
     connect (newQuizAction, SIGNAL (triggered()),
              SLOT (newQuizFormInteractive()));
     fileMenu->addAction (newQuizAction);
@@ -97,12 +98,14 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     // New Search
     QAction* newSearchAction = new QAction ("&Search", this);
     Q_CHECK_PTR (newSearchAction);
+    newSearchAction->setIcon (QIcon (":/search-icon"));
     connect (newSearchAction, SIGNAL (triggered()), SLOT (newSearchForm()));
     fileMenu->addAction (newSearchAction);
 
     // New Definition
     QAction* newDefinitionAction = new QAction ("&Definition", this);
     Q_CHECK_PTR (newDefinitionAction);
+    newDefinitionAction->setIcon (QIcon (":/define-icon"));
     connect (newDefinitionAction, SIGNAL (triggered()),
              SLOT (newDefineForm()));
     fileMenu->addAction (newDefinitionAction);
@@ -110,6 +113,7 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     // New Word Judge
     QAction* newJudgeAction = new QAction ("Word &Judge", this);
     Q_CHECK_PTR (newJudgeAction);
+    newJudgeAction->setIcon (QIcon (":/judge-icon"));
     connect (newJudgeAction, SIGNAL (triggered()), SLOT (newJudgeForm()));
     fileMenu->addAction (newJudgeAction);
 
@@ -145,6 +149,7 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     // Preferences
     QAction* editPrefsAction = new QAction ("&Preferences", this);
     Q_CHECK_PTR (editPrefsAction);
+    editPrefsAction->setIcon (QIcon (":/preferences-icon"));
     connect (editPrefsAction, SIGNAL (triggered()), SLOT (editSettings()));
     editMenu->addAction (editPrefsAction);
 
@@ -238,6 +243,7 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     // Help
     QAction* helpAction = new QAction ("&Help", this);
     Q_CHECK_PTR (helpAction);
+    helpAction->setIcon (QIcon (":/help-icon"));
     connect (helpAction, SIGNAL (triggered()), SLOT (displayHelp()));
     helpMenu->addAction (helpAction);
 
@@ -250,10 +256,14 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     // Tool Bar
     QToolBar* toolbar = new QToolBar;
     Q_CHECK_PTR (toolbar);
+    toolbar->setIconSize (QSize (22, 22));
     toolbar->addAction (newQuizAction);
     toolbar->addAction (newSearchAction);
     toolbar->addAction (newDefinitionAction);
     toolbar->addAction (newJudgeAction);
+    toolbar->addSeparator();
+    toolbar->addAction (editPrefsAction);
+    toolbar->addAction (helpAction);
     addToolBar (toolbar);
 
     tabStack = new QTabWidget (this);
@@ -261,7 +271,7 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
 
     closeButton = new QToolButton (tabStack);
     Q_CHECK_PTR (closeButton);
-    closeButton->setIcon (QIcon (":/close-tab"));
+    closeButton->setIcon (QIcon (":/close-tab-icon"));
     tabStack->setCornerWidget (closeButton);
     closeButton->hide();
     connect (closeButton, SIGNAL (clicked()), SLOT (closeCurrentTab()));
