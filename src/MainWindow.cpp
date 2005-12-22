@@ -55,8 +55,8 @@ MainWindow* MainWindow::instance = 0;
 
 const QString IMPORT_FAILURE_TITLE = "Load Failed";
 const QString IMPORT_COMPLETE_TITLE = "Load Complete";
-const QString DEFINE_TAB_TITLE = "Define";
-const QString JUDGE_TAB_TITLE = "Judge";
+const QString DEFINE_TAB_TITLE = "Definition";
+const QString JUDGE_TAB_TITLE = "Word Judge";
 const QString QUIZ_TAB_TITLE = "Quiz";
 const QString SEARCH_TAB_TITLE = "Search";
 
