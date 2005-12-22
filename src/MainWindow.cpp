@@ -383,7 +383,7 @@ MainWindow::newQuizForm (const QuizSpec& quizSpec)
     Q_CHECK_PTR (form);
     form->setTileTheme (MainSettings::getTileTheme());
     form->newQuiz (quizSpec);
-    newTab (form, QUIZ_TAB_TITLE);
+    newTab (form, QIcon (":/quiz-icon"), QUIZ_TAB_TITLE);
 }
 
 //---------------------------------------------------------------------------
@@ -396,7 +396,7 @@ MainWindow::newSearchForm()
 {
     SearchForm* form = new SearchForm (wordEngine);
     Q_CHECK_PTR (form);
-    newTab (form, SEARCH_TAB_TITLE);
+    newTab (form, QIcon (":/search-icon"), SEARCH_TAB_TITLE);
 }
 
 //---------------------------------------------------------------------------
@@ -409,7 +409,7 @@ MainWindow::newDefineForm()
 {
     DefineForm* form = new DefineForm (wordEngine);
     Q_CHECK_PTR (form);
-    newTab (form, DEFINE_TAB_TITLE);
+    newTab (form, QIcon (":/define-icon"), DEFINE_TAB_TITLE);
 }
 
 //---------------------------------------------------------------------------
@@ -422,7 +422,7 @@ MainWindow::newJudgeForm()
 {
     JudgeForm* form = new JudgeForm (wordEngine);
     Q_CHECK_PTR (form);
-    newTab (form, JUDGE_TAB_TITLE);
+    newTab (form, QIcon (":/judge-icon"), JUDGE_TAB_TITLE);
 }
 
 //---------------------------------------------------------------------------
@@ -670,12 +670,13 @@ MainWindow::writeSettings()
 //! Create and display a new tab.
 //
 //! @param widget the widget to display
+//! @param icon the icon of the tab
 //! @param title the title of the tab
 //---------------------------------------------------------------------------
 void
-MainWindow::newTab (QWidget* widget, const QString& title)
+MainWindow::newTab (QWidget* widget, const QIcon& icon, const QString& title)
 {
-    tabStack->addTab (widget, title);
+    tabStack->addTab (widget, icon, title);
     tabStack->showPage (widget);
     closeButton->show();
 }

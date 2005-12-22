@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_MAIN_WINDOW_H
 #define ZYZZYVA_MAIN_WINDOW_H
 
+#include <QIcon>
 #include <QLabel>
 #include <QMainWindow>
 #include <QSettings>
@@ -68,7 +69,7 @@ class MainWindow : public QMainWindow
     void setNumWords (int num);
     void readSettings (bool useGeometry);
     void writeSettings();
-    void newTab (QWidget* widget, const QString& title);
+    void newTab (QWidget* widget, const QIcon& icon, const QString& title);
 
     private:
     WordEngine*  wordEngine;
