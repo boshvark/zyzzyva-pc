@@ -67,21 +67,13 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
 
     labelHlay->addStretch (1);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout (SPACING);
-    Q_CHECK_PTR (mainHlay);
-    mainVlay->addLayout (mainHlay);
-
-    QVBoxLayout* leftVlay = new QVBoxLayout (SPACING);
-    Q_CHECK_PTR (leftVlay);
-    mainHlay->addLayout (leftVlay, 1);
-
     leftLabel = new QLabel;
     Q_CHECK_PTR (leftLabel);
-    leftVlay->addWidget (leftLabel);
+    mainVlay->addWidget (leftLabel);
 
     leftView = new WordTableView (wordEngine);
     Q_CHECK_PTR (leftView);
-    leftVlay->addWidget (leftView);
+    mainVlay->addWidget (leftView);
 
     leftModel = new WordTableModel (wordEngine, this);
     Q_CHECK_PTR (leftModel);
@@ -92,17 +84,13 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
 
     // Only add the right-hand list if necessary
     if (needsRightList (variation)) {
-        QVBoxLayout* rightVlay = new QVBoxLayout (SPACING);
-        Q_CHECK_PTR (rightVlay);
-        mainHlay->addLayout (rightVlay, 1);
-
         rightLabel = new QLabel;
         Q_CHECK_PTR (rightLabel);
-        rightVlay->addWidget (rightLabel);
+        mainVlay->addWidget (rightLabel);
 
         rightView = new WordTableView (wordEngine);
         Q_CHECK_PTR (rightView);
-        rightVlay->addWidget (rightView);
+        mainVlay->addWidget (rightView);
 
         rightModel = new WordTableModel (wordEngine, this);
         Q_CHECK_PTR (rightModel);
