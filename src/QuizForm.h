@@ -68,7 +68,6 @@ class QuizForm : public ActionForm
     private:
     void updateStats();
     void clearStats();
-    void clearQuestionNum();
     void clearTimerDisplay();
     void startQuestion();
     void startNewTimer();
@@ -78,7 +77,6 @@ class QuizForm : public ActionForm
     void clearCanvas();
     void minimizeCanvas();
     void setNumCanvasTiles (int num);
-    void setQuestionNum (int num, int total);
     void setQuestionLabel (const QString& question);
     void setQuestionStatus (int correct, int total);
     void setStatusString (const QString& status);
@@ -92,7 +90,6 @@ class QuizForm : public ActionForm
     private:
     WordEngine*   wordEngine;
     QuizEngine*   quizEngine;
-    QLabel*       questionNumLabel;
     QLabel*       timerLabel;
     QWidget*      questionWidget;
     Q3CanvasView*  questionCanvasView;

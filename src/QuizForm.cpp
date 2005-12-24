@@ -104,10 +104,6 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (topHlay);
     mainVlay->addLayout (topHlay);
 
-    questionNumLabel = new QLabel;
-    Q_CHECK_PTR (questionNumLabel);
-    topHlay->addWidget (questionNumLabel);
-
     topHlay->addStretch (1);
 
     timerLabel = new QLabel;
@@ -522,8 +518,6 @@ void
 QuizForm::startQuestion()
 {
     clearStats();
-    setQuestionNum (quizEngine->getQuestionIndex() + 1,
-                    quizEngine->numQuestions());
     setQuestionLabel (quizEngine->getQuestion());
     responseModel->clear();
 
@@ -603,17 +597,6 @@ QuizForm::clearStats()
 }
 
 //---------------------------------------------------------------------------
-//  clearQuestionNum
-//
-//! Clear the question number label.
-//---------------------------------------------------------------------------
-void
-QuizForm::clearQuestionNum()
-{
-    questionNumLabel->setText ("");
-}
-
-//---------------------------------------------------------------------------
 //  clearTimerDisplay
 //
 //! Clear the timer label.
@@ -672,21 +655,6 @@ QuizForm::setNumCanvasTiles (int num)
                 ((num - 1) * QUIZ_TILE_SPACING);
     int height = (2 * QUIZ_TILE_MARGIN) + maxTileHeight;
     questionCanvas->resize (width, height);
-}
-
-//---------------------------------------------------------------------------
-//  setQuestionNum
-//
-//! Set the current question number and the total number of questions.
-//
-//! @param num the current question number
-//! @param total the total number of questions
-//---------------------------------------------------------------------------
-void
-QuizForm::setQuestionNum (int num, int total)
-{
-    questionNumLabel->setText ("Question " + QString::number (num)
-                               + " of " + QString::number (total));
 }
 
 //---------------------------------------------------------------------------
