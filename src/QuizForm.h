@@ -80,6 +80,8 @@ class QuizForm : public ActionForm
     void setQuestionNum (int num, int total);
     void setQuestionLabel (const QString& question);
     void setQuestionStatus (int correct, int total);
+    void updateStatusString();
+    void setStatusString (const QString& status);
     void setTimerDisplay (int seconds);
     void clearTileTheme();
     void reflowLayout();
@@ -111,6 +113,7 @@ class QuizForm : public ActionForm
     int timerId;
     int timerRemaining, timerPaused;
     QuizTimerSpec timerSpec;
+    QString statusString;
 
     AnalyzeQuizDialog* analyzeDialog;
 };

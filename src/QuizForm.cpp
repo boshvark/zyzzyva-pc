@@ -246,7 +246,7 @@ QuizForm::~QuizForm()
 QString
 QuizForm::getStatusString() const
 {
-    return "I am a Quiz form.";
+    return statusString;
 }
 
 //---------------------------------------------------------------------------
@@ -301,6 +301,8 @@ QuizForm::responseEntered()
     // Restart the timer, if the timer runs per response
     if (timerId && (timerSpec.getType() == PerResponse))
         startNewTimer();
+
+    updateStatusString();
 }
 
 
@@ -479,6 +481,8 @@ QuizForm::checkResponseClicked()
     }
     else
         analyzeButton->setFocus();
+
+    updateStatusString();
 }
 
 //---------------------------------------------------------------------------
@@ -538,6 +542,8 @@ QuizForm::startQuestion()
         clearTimerDisplay();
     else
         startNewTimer();
+
+    updateStatusString();
 }
 
 //---------------------------------------------------------------------------
@@ -802,6 +808,36 @@ QuizForm::setQuestionStatus (int correct, int total)
 {
     questionStatusLabel->setText ("Correct: " + QString::number (correct)
                           + " of " + QString::number (total));
+}
+
+//---------------------------------------------------------------------------
+//  updateStatusString
+//
+//! Update the status string with the current quiz status.
+//---------------------------------------------------------------------------
+void
+QuizForm::updateStatusString()
+{
+    QString status = "Question: " +
+        QString::number (quizEngine->getQuestionIndex() + 1) + "/" +
+        QString::number (quizEngine->numQuestions()) + ", Correct: " +
+        QString::number (quizEngine->getQuestionCorrect()) + "/" +
+        QString::number (quizEngine->getQuestionTotal());
+    setStatusString (status);
+}
+
+//---------------------------------------------------------------------------
+//  setStatusString
+//
+//! Set the status string, and 
+//---------------------------------------------------------------------------
+void
+QuizForm::setStatusString (const QString& status)
+{
+    if (status == statusString)
+        return;
+    statusString = status;
+    emit statusChanged (status);
 }
 
 //---------------------------------------------------------------------------

@@ -63,6 +63,7 @@ class MainWindow : public QMainWindow
     void displayHelp();
     void closeCurrentTab();
     void currentTabChanged (int index);
+    void tabStatusChanged (const QString& status);
 
     private:
     int  import (const QString& file);

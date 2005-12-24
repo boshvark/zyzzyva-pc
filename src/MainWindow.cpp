@@ -390,6 +390,8 @@ MainWindow::newQuizForm (const QuizSpec& quizSpec)
     form->setTileTheme (MainSettings::getTileTheme());
     form->newQuiz (quizSpec);
     newTab (form, QIcon (":/quiz-icon"), QUIZ_TAB_TITLE);
+    connect (form, SIGNAL (statusChanged (const QString&)),
+             SLOT (tabStatusChanged (const QString&)));
 }
 
 //---------------------------------------------------------------------------
@@ -403,6 +405,8 @@ MainWindow::newSearchForm()
     SearchForm* form = new SearchForm (wordEngine);
     Q_CHECK_PTR (form);
     newTab (form, QIcon (":/search-icon"), SEARCH_TAB_TITLE);
+    connect (form, SIGNAL (statusChanged (const QString&)),
+             SLOT (tabStatusChanged (const QString&)));
 }
 
 //---------------------------------------------------------------------------
@@ -416,6 +420,8 @@ MainWindow::newDefineForm()
     DefineForm* form = new DefineForm (wordEngine);
     Q_CHECK_PTR (form);
     newTab (form, QIcon (":/define-icon"), DEFINE_TAB_TITLE);
+    connect (form, SIGNAL (statusChanged (const QString&)),
+             SLOT (tabStatusChanged (const QString&)));
 }
 
 //---------------------------------------------------------------------------
@@ -429,6 +435,8 @@ MainWindow::newJudgeForm()
     JudgeForm* form = new JudgeForm (wordEngine);
     Q_CHECK_PTR (form);
     newTab (form, QIcon (":/judge-icon"), JUDGE_TAB_TITLE);
+    connect (form, SIGNAL (statusChanged (const QString&)),
+             SLOT (tabStatusChanged (const QString&)));
 }
 
 //---------------------------------------------------------------------------
@@ -572,6 +580,25 @@ MainWindow::currentTabChanged (int)
         status = form->getStatusString();
     }
     formStatusLabel->setText (status);
+}
+
+//---------------------------------------------------------------------------
+//  tabStatusChanged
+//
+//! Called when the status string for a tab changes.
+//
+//! @param the new status string
+//---------------------------------------------------------------------------
+void
+MainWindow::tabStatusChanged (const QString& status)
+{
+    QObject* object = sender();
+    if (!object)
+        return;
+    ActionForm* form = static_cast<ActionForm*>(object);
+    int index = tabStack->indexOf (form);
+    if (index == tabStack->currentIndex())
+        formStatusLabel->setText (form->getStatusString());
 }
 
 //---------------------------------------------------------------------------
