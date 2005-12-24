@@ -209,6 +209,20 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
              SLOT (chooseQuizBackgroundColorButtonClicked()));
     quizBackgroundColorHlay->addWidget (quizBackgroundColorButton);
 
+    QGroupBox* quizHintsGbox = new QGroupBox ("Hints");
+    Q_CHECK_PTR (quizHintsGbox);
+    quizPrefVlay->addWidget (quizHintsGbox);
+    quizPrefVlay->setStretchFactor (quizHintsGbox, 1);
+
+    QVBoxLayout* quizHintsVlay = new QVBoxLayout (quizHintsGbox, MARGIN,
+                                                  SPACING);
+    Q_CHECK_PTR (quizHintsVlay);
+
+    quizShowNumResponsesCbox = new QCheckBox ("Show number of responses "
+                                              "in status bar");
+    Q_CHECK_PTR (quizShowNumResponsesCbox);
+    quizHintsVlay->addWidget (quizShowNumResponsesCbox);
+
     quizPrefVlay->addStretch (2);
 
     // Signal mapper for the Choose Font buttons
@@ -479,6 +493,9 @@ SettingsDialog::readSettings()
     QPalette quizBackgroundPalette (quizBackgroundColor);
     quizBackgroundColorLine->setPalette (quizBackgroundPalette);
 
+    quizShowNumResponsesCbox->setChecked
+        (MainSettings::getQuizShowNumResponses());
+
     // Main font
     fontMainLine->setText (MainSettings::getMainFont());
     fontMainLine->home (false);
@@ -523,6 +540,8 @@ SettingsDialog::writeSettings()
     MainSettings::setTileTheme (themeCombo->currentText());
     MainSettings::setQuizLetterOrder (letterOrderCombo->currentText());
     MainSettings::setQuizBackgroundColor (quizBackgroundColor);
+    MainSettings::setQuizShowNumResponses
+        (quizShowNumResponsesCbox->isChecked());
     MainSettings::setMainFont (fontMainLine->text());
     MainSettings::setWordListFont (fontWordListLine->text());
     // XXX: Reinstate this once it's know how to change the font of canvas

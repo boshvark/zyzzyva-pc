@@ -820,9 +820,12 @@ QuizForm::updateStatusString()
 {
     QString status = "Question: " +
         QString::number (quizEngine->getQuestionIndex() + 1) + "/" +
-        QString::number (quizEngine->numQuestions()) + ", Correct: " +
-        QString::number (quizEngine->getQuestionCorrect()) + "/" +
-        QString::number (quizEngine->getQuestionTotal());
+        QString::number (quizEngine->numQuestions());
+    if (MainSettings::getQuizShowNumResponses()) {
+        status += ", Correct: " +
+            QString::number (quizEngine->getQuestionCorrect()) + "/" +
+            QString::number (quizEngine->getQuestionTotal());
+    }
     setStatusString (status);
 }
 

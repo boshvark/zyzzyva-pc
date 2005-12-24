@@ -50,6 +50,7 @@ const QString SETTINGS_USE_TILE_THEME = "/use_tile_theme";
 const QString SETTINGS_TILE_THEME = "/tile_theme";
 const QString SETTINGS_QUIZ_LETTER_ORDER = "/quiz_letter_order";
 const QString SETTINGS_QUIZ_BACKGROUND_COLOR = "/quiz_background_color";
+const QString SETTINGS_QUIZ_SHOW_NUM_RESPONSES = "/quiz_show_num_responses";
 const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
@@ -91,6 +92,9 @@ MainSettings::readSettings()
     instance->quizBackgroundColor.setRgb (settings.readEntry
         (SETTINGS_QUIZ_BACKGROUND_COLOR,
          QString::number (DEFAULT_QUIZ_BACKGROUND_COLOR)).toUInt());
+
+    instance->quizShowNumResponses = settings.readBoolEntry
+        (SETTINGS_QUIZ_SHOW_NUM_RESPONSES, true);
 
     instance->mainFont = settings.readEntry (SETTINGS_FONT_MAIN);
     instance->wordListFont = settings.readEntry (SETTINGS_FONT_WORD_LISTS);
@@ -137,6 +141,8 @@ MainSettings::writeSettings()
     settings.writeEntry (SETTINGS_QUIZ_BACKGROUND_COLOR,
                          QString::number
                          (instance->quizBackgroundColor.rgb()));
+    settings.writeEntry (SETTINGS_QUIZ_SHOW_NUM_RESPONSES,
+                         instance->quizShowNumResponses);
     settings.writeEntry (SETTINGS_FONT_MAIN, instance->mainFont);
     settings.writeEntry (SETTINGS_FONT_WORD_LISTS, instance->wordListFont);
     settings.writeEntry (SETTINGS_FONT_QUIZ_LABEL, instance->quizLabelFont);

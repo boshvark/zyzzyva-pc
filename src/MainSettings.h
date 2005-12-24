@@ -60,6 +60,10 @@ class MainSettings
         return instance->quizBackgroundColor; }
     static void setQuizBackgroundColor (const QColor& color) {
         instance->quizBackgroundColor = color; }
+    static bool getQuizShowNumResponses() {
+        return instance->quizShowNumResponses; }
+    static void setQuizShowNumResponses (bool b) {
+        instance->quizShowNumResponses = b; }
     static QString getMainFont() { return instance->mainFont; }
     static void setMainFont (const QString& str) { instance->mainFont = str; }
     static QString getWordListFont() { return instance->wordListFont; }
@@ -112,6 +116,7 @@ class MainSettings
     QString tileTheme;
     QString quizLetterOrder;
     QColor quizBackgroundColor;
+    bool quizShowNumResponses;
     QString mainFont;
     QString wordListFont;
     QString quizLabelFont;
