@@ -299,6 +299,15 @@ QuizForm::responseEntered()
         startNewTimer();
 
     updateStatusString();
+
+    // If all correct answers have been provided, and the Quiz Auto Check
+    // preference is set, act as if the Check Responses button has been
+    // clicked
+    if (MainSettings::getQuizAutoCheck() && 
+        (quizEngine->getQuestionCorrect() == quizEngine->getQuestionTotal()))
+    {
+        checkResponseClicked();
+    }
 }
 
 

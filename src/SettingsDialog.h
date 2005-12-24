@@ -74,6 +74,7 @@ class SettingsDialog : public QDialog
     QComboBox*   letterOrderCombo;
     QLineEdit*   quizBackgroundColorLine;
     QCheckBox*   quizShowNumResponsesCbox;
+    QCheckBox*   quizAutoCheckCbox;
     QLineEdit*   fontMainLine;
     QLineEdit*   fontWordListLine;
     // XXX: Reinstate this once it's known how to change the font of canvas

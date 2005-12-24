@@ -64,6 +64,8 @@ class MainSettings
         return instance->quizShowNumResponses; }
     static void setQuizShowNumResponses (bool b) {
         instance->quizShowNumResponses = b; }
+    static bool getQuizAutoCheck() { return instance->quizAutoCheck; }
+    static void setQuizAutoCheck (bool b) { instance->quizAutoCheck = b; }
     static QString getMainFont() { return instance->mainFont; }
     static void setMainFont (const QString& str) { instance->mainFont = str; }
     static QString getWordListFont() { return instance->wordListFont; }
@@ -117,6 +119,7 @@ class MainSettings
     QString quizLetterOrder;
     QColor quizBackgroundColor;
     bool quizShowNumResponses;
+    bool quizAutoCheck;
     QString mainFont;
     QString wordListFont;
     QString quizLabelFont;
