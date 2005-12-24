@@ -97,7 +97,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     generalPrefLabel->setFrameShape (QFrame::StyledPanel);
     generalPrefVlay->addWidget (generalPrefLabel);
 
-    QGroupBox* autoImportGbox = new QGroupBox ("Auto Import");
+    QGroupBox* autoImportGbox = new QGroupBox ("Dictionary");
     Q_CHECK_PTR (autoImportGbox);
     generalPrefVlay->addWidget (autoImportGbox);
     generalPrefVlay->setStretchFactor (autoImportGbox, 1);
@@ -142,25 +142,26 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     quizPrefLabel->setFrameShape (QFrame::StyledPanel);
     quizPrefVlay->addWidget (quizPrefLabel);
 
-    QGroupBox* themeGbox = new QGroupBox ("Tile Theme");
-    Q_CHECK_PTR (themeGbox);
-    quizPrefVlay->addWidget (themeGbox);
-    quizPrefVlay->setStretchFactor (themeGbox, 1);
+    QGroupBox* quizQuestionGbox = new QGroupBox ("Question Display");
+    Q_CHECK_PTR (quizQuestionGbox);
+    quizPrefVlay->addWidget (quizQuestionGbox);
+    quizPrefVlay->setStretchFactor (quizQuestionGbox, 1);
 
-    QVBoxLayout* themeVlay = new QVBoxLayout (themeGbox, MARGIN, SPACING);
-    Q_CHECK_PTR (themeVlay);
+    QVBoxLayout* quizQuestionVlay = new QVBoxLayout (quizQuestionGbox, MARGIN,
+                                                     SPACING);
+    Q_CHECK_PTR (quizQuestionVlay);
 
-    themeCbox = new QCheckBox ("Use tile images in Quiz mode");
+    themeCbox = new QCheckBox ("Use tile images");
     Q_CHECK_PTR (themeCbox);
     connect (themeCbox, SIGNAL (toggled (bool)),
              SLOT (themeCboxToggled (bool)));
-    themeVlay->addWidget (themeCbox);
+    quizQuestionVlay->addWidget (themeCbox);
 
     QHBoxLayout* themeHlay = new QHBoxLayout (SPACING);
     Q_CHECK_PTR (themeHlay);
-    themeVlay->addLayout (themeHlay);
+    quizQuestionVlay->addLayout (themeHlay);
 
-    themeLabel = new QLabel ("Theme:");
+    themeLabel = new QLabel ("Tile Theme:");
     Q_CHECK_PTR (themeLabel);
     themeLabel->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     themeHlay->addWidget (themeLabel);
@@ -169,17 +170,9 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (themeCombo);
     themeHlay->addWidget (themeCombo);
 
-    QGroupBox* letterOrderGbox = new QGroupBox ("Letter Order");
-    Q_CHECK_PTR (letterOrderGbox);
-    quizPrefVlay->addWidget (letterOrderGbox);
-    quizPrefVlay->setStretchFactor (letterOrderGbox, 1);
-
-    QVBoxLayout* letterOrderVlay = new QVBoxLayout (letterOrderGbox);
-    Q_CHECK_PTR (letterOrderVlay);
-
     QHBoxLayout* letterOrderHlay = new QHBoxLayout;
     Q_CHECK_PTR (letterOrderHlay);
-    letterOrderVlay->addLayout (letterOrderHlay);
+    quizQuestionVlay->addLayout (letterOrderHlay);
 
     QLabel* letterOrderLabel = new QLabel ("Letter Order:");
     Q_CHECK_PTR (letterOrderLabel);
@@ -196,18 +189,13 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     letterOrderCombo->addItem (Defs::QUIZ_LETTERS_CONSONANTS_FIRST); 
     letterOrderCombo->setCurrentIndex (0);
 
-    QGroupBox* quizBackgroundColorGbox = new QGroupBox ("Background Color");
-    Q_CHECK_PTR (quizBackgroundColorGbox);
-    quizPrefVlay->addWidget (quizBackgroundColorGbox);
-    quizPrefVlay->setStretchFactor (quizBackgroundColorGbox, 1);
-
-    QVBoxLayout* quizBackgroundColorVlay = new QVBoxLayout
-        (quizBackgroundColorGbox);
-    Q_CHECK_PTR (quizBackgroundColorVlay);
-
     QHBoxLayout* quizBackgroundColorHlay = new QHBoxLayout;
     Q_CHECK_PTR (quizBackgroundColorHlay);
-    quizBackgroundColorVlay->addLayout (quizBackgroundColorHlay);
+    quizQuestionVlay->addLayout (quizBackgroundColorHlay);
+
+    QLabel* quizBackgroundColorLabel = new QLabel ("Background Color:");
+    Q_CHECK_PTR (quizBackgroundColorLabel);
+    quizBackgroundColorHlay->addWidget (quizBackgroundColorLabel);
 
     quizBackgroundColorLine = new QLineEdit;
     Q_CHECK_PTR (quizBackgroundColorLine);
