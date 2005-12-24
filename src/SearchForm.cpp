@@ -106,7 +106,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 QString
 SearchForm::getStatusString() const
 {
-    return "I am a Search form.";
+    return statusString;
 }
 
 //---------------------------------------------------------------------------
@@ -156,7 +156,10 @@ SearchForm::specChanged()
 void
 SearchForm::updateResultTotal (int num)
 {
-    QString text = "Search Results : " + QString::number (num) + " word";
-    if (num != 1) text += "s";
+    QString wordStr = QString::number (num) + " word";
+    if (num != 1) wordStr += "s";
+    QString text = "Search Results : " + wordStr;
     resultLabel->setText (text);
+    statusString = "Search: " + wordStr;
+    emit statusChanged (statusString);
 }

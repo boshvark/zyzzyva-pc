@@ -55,6 +55,7 @@ class SearchForm : public ActionForm
     WordTableView*  resultView;
     WordTableModel* resultModel;
     QPushButton*    searchButton;
+    QString         statusString;
 };
 
 #endif // ZYZZYVA_SEARCH_FORM_H

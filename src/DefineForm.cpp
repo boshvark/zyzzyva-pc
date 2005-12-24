@@ -93,7 +93,7 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 QString
 DefineForm::getStatusString() const
 {
-    return "I am a Define form.";
+    return QString::null;
 }
 
 //---------------------------------------------------------------------------

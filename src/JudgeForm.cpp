@@ -89,7 +89,7 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 QString
 JudgeForm::getStatusString() const
 {
-    return "I am a Judge form.";
+    return statusString;
 }
 
 //---------------------------------------------------------------------------
@@ -124,6 +124,8 @@ JudgeForm::clear()
     resultBox->hide();
     judgeButton->setEnabled (false);
     clearButton->setEnabled (false);
+    statusString = QString::null;
+    emit statusChanged (statusString);
 }
 
 //---------------------------------------------------------------------------
@@ -157,4 +159,7 @@ JudgeForm::judgeWord()
     resultBox->setText (resultStr);
     resultBox->setTitle ("The play is");
     resultBox->show();
+    statusString = QString ("Play is ") +
+        (acceptable ? QString ("Acceptable") : QString ("Unacceptable"));
+    emit statusChanged (statusString);
 }

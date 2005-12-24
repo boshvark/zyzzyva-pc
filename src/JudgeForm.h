@@ -50,6 +50,7 @@ class JudgeForm : public ActionForm
     QPushButton*   clearButton;
     QPushButton*   judgeButton;
     DefinitionBox* resultBox;
+    QString        statusString;
 };
 
 #endif // ZYZZYVA_JUDGE_FORM_H
