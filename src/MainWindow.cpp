@@ -284,10 +284,6 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (messageLabel);
     statusBar()->addWidget (messageLabel, 2);
 
-    formStatusLabel = new QLabel;
-    Q_CHECK_PTR (formStatusLabel);
-    statusBar()->addWidget (formStatusLabel, 2);
-
     dictionaryLabel = new QLabel;
     Q_CHECK_PTR (dictionaryLabel);
     statusBar()->addWidget (dictionaryLabel, 1);
@@ -561,7 +557,7 @@ MainWindow::closeCurrentTab()
     tabStack->removePage (w);
     delete w;
     if (tabStack->count() == 0) {
-        formStatusLabel->setText (QString::null);
+        messageLabel->setText (QString::null);
         closeButton->hide();
     }
 }
@@ -581,7 +577,7 @@ MainWindow::currentTabChanged (int)
         ActionForm* form = static_cast<ActionForm*>(w);
         status = form->getStatusString();
     }
-    formStatusLabel->setText (status);
+    messageLabel->setText (status);
 }
 
 //---------------------------------------------------------------------------
@@ -600,7 +596,7 @@ MainWindow::tabStatusChanged (const QString& status)
     ActionForm* form = static_cast<ActionForm*>(object);
     int index = tabStack->indexOf (form);
     if (index == tabStack->currentIndex())
-        formStatusLabel->setText (form->getStatusString());
+        messageLabel->setText (form->getStatusString());
 }
 
 //---------------------------------------------------------------------------

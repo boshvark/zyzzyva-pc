@@ -78,7 +78,6 @@ class MainWindow : public QMainWindow
     QTabWidget*  tabStack;
     QToolButton* closeButton;
     QLabel*      messageLabel;
-    QLabel*      formStatusLabel;
     QLabel*      dictionaryLabel;
 
     SettingsDialog* settingsDialog;
