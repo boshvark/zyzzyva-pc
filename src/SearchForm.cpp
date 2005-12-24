@@ -160,6 +160,6 @@ SearchForm::updateResultTotal (int num)
     if (num != 1) wordStr += "s";
     QString text = "Search Results : " + wordStr;
     resultLabel->setText (text);
-    statusString = "Search: " + wordStr;
+    statusString = "Search found " + wordStr;
     emit statusChanged (statusString);
 }
