@@ -690,6 +690,7 @@ MainWindow::readSettings (bool useGeometry)
             QuizForm* quizForm = static_cast<QuizForm*> (form);
             quizForm->setTileTheme (tileTheme);
             quizForm->setBackgroundColor (backgroundColor);
+            quizForm->updateStatusString();
         }
     }
 

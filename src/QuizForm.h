@@ -63,6 +63,7 @@ class QuizForm : public ActionForm
     void analyzeClicked();
     void setTileTheme (const QString& theme);
     void setBackgroundColor (const QColor& color);
+    void updateStatusString();
 
     private:
     void updateStats();
@@ -80,7 +81,6 @@ class QuizForm : public ActionForm
     void setQuestionNum (int num, int total);
     void setQuestionLabel (const QString& question);
     void setQuestionStatus (int correct, int total);
-    void updateStatusString();
     void setStatusString (const QString& status);
     void setTimerDisplay (int seconds);
     void clearTileTheme();
