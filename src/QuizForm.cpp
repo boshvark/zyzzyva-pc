@@ -795,7 +795,7 @@ QuizForm::setQuestionStatus (int correct, int total)
 void
 QuizForm::updateStatusString()
 {
-    QString status = "Question: " +
+    QString status = "Question " +
         QString::number (quizEngine->getQuestionIndex() + 1) + "/" +
         QString::number (quizEngine->numQuestions());
     if (MainSettings::getQuizShowNumResponses()) {
