@@ -560,8 +560,10 @@ MainWindow::closeCurrentTab()
 
     tabStack->removePage (w);
     delete w;
-    if (tabStack->count() == 0)
+    if (tabStack->count() == 0) {
+        formStatusLabel->setText (QString::null);
         closeButton->hide();
+    }
 }
 
 //---------------------------------------------------------------------------
