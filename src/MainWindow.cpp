@@ -596,7 +596,7 @@ MainWindow::tabStatusChanged (const QString& status)
     ActionForm* form = static_cast<ActionForm*>(object);
     int index = tabStack->indexOf (form);
     if (index == tabStack->currentIndex())
-        messageLabel->setText (form->getStatusString());
+        messageLabel->setText (status);
 }
 
 //---------------------------------------------------------------------------
