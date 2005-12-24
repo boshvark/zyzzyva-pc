@@ -268,6 +268,8 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
 
     tabStack = new QTabWidget (this);
     Q_CHECK_PTR (tabStack);
+    connect (tabStack, SIGNAL (currentChanged (int)),
+             SLOT (currentTabChanged (int)));
 
     closeButton = new QToolButton (tabStack);
     Q_CHECK_PTR (closeButton);
@@ -282,9 +284,13 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (messageLabel);
     statusBar()->addWidget (messageLabel, 2);
 
-    statusLabel = new QLabel;
-    Q_CHECK_PTR (statusLabel);
-    statusBar()->addWidget (statusLabel, 1);
+    formStatusLabel = new QLabel;
+    Q_CHECK_PTR (formStatusLabel);
+    statusBar()->addWidget (formStatusLabel, 2);
+
+    dictionaryLabel = new QLabel;
+    Q_CHECK_PTR (dictionaryLabel);
+    statusBar()->addWidget (dictionaryLabel, 1);
     setNumWords (0);
 
     readSettings (true);
@@ -551,6 +557,24 @@ MainWindow::closeCurrentTab()
 }
 
 //---------------------------------------------------------------------------
+//  currentTabChanged
+//
+//! Called when the current tab changes.  Sets the contents of the form
+//! used for closing tabs.
+//---------------------------------------------------------------------------
+void
+MainWindow::currentTabChanged (int)
+{
+    QWidget* w = tabStack->currentWidget();
+    QString status;
+    if (w) {
+        ActionForm* form = static_cast<ActionForm*>(w);
+        status = form->getStatusString();
+    }
+    formStatusLabel->setText (status);
+}
+
+//---------------------------------------------------------------------------
 //  setNumWords
 //
 //! Update the label displaying the number of words loaded.
@@ -560,7 +584,7 @@ MainWindow::closeCurrentTab()
 void
 MainWindow::setNumWords (int num)
 {
-    statusLabel->setText (QString::number (num) + " words loaded");
+    dictionaryLabel->setText (QString::number (num) + " words");
 }
 
 //---------------------------------------------------------------------------

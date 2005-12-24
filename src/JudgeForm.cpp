@@ -80,6 +80,19 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 }
 
 //---------------------------------------------------------------------------
+//  getStatusString
+//
+//! Returns the current status string.
+//
+//! @return the current status string
+//---------------------------------------------------------------------------
+QString
+JudgeForm::getStatusString() const
+{
+    return "I am a Judge form.";
+}
+
+//---------------------------------------------------------------------------
 //  textChanged
 //
 //! Called when the contents of the input area change.  Changes the input area

@@ -50,6 +50,7 @@ class QuizForm : public ActionForm
     public:
     QuizForm (WordEngine* we, QWidget* parent = 0, Qt::WFlags f = 0);
     ~QuizForm();
+    QString getStatusString() const;
 
     public slots:
     void newQuiz (const QuizSpec& spec);

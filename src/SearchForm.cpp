@@ -97,6 +97,19 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 }
 
 //---------------------------------------------------------------------------
+//  getStatusString
+//
+//! Returns the current status string.
+//
+//! @return the current status string
+//---------------------------------------------------------------------------
+QString
+SearchForm::getStatusString() const
+{
+    return "I am a Search form.";
+}
+
+//---------------------------------------------------------------------------
 //  search
 //
 //! Search for the word or pattern in the edit area, and display the results

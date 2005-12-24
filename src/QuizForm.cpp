@@ -237,6 +237,19 @@ QuizForm::~QuizForm()
 }
 
 //---------------------------------------------------------------------------
+//  getStatusString
+//
+//! Returns the current status string.
+//
+//! @return the current status string
+//---------------------------------------------------------------------------
+QString
+QuizForm::getStatusString() const
+{
+    return "I am a Quiz form.";
+}
+
+//---------------------------------------------------------------------------
 //  responseEntered
 //
 //! Called when a response is entered into the input line.

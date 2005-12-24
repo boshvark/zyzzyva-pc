@@ -40,6 +40,7 @@ class SearchForm : public ActionForm
     Q_OBJECT
     public:
     SearchForm (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
+    QString getStatusString() const;
 
     public slots:
     void search();

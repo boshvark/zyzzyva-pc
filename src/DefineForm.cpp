@@ -84,6 +84,19 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 }
 
 //---------------------------------------------------------------------------
+//  getStatusString
+//
+//! Returns the current status string.
+//
+//! @return the current status string
+//---------------------------------------------------------------------------
+QString
+DefineForm::getStatusString() const
+{
+    return "I am a Define form.";
+}
+
+//---------------------------------------------------------------------------
 //  wordChanged
 //
 //! Called when the contents of the input line change.  Enables or disables

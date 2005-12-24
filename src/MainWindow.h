@@ -62,6 +62,7 @@ class MainWindow : public QMainWindow
     void displayAbout();
     void displayHelp();
     void closeCurrentTab();
+    void currentTabChanged (int index);
 
     private:
     int  import (const QString& file);
@@ -76,7 +77,8 @@ class MainWindow : public QMainWindow
     QTabWidget*  tabStack;
     QToolButton* closeButton;
     QLabel*      messageLabel;
-    QLabel*      statusLabel;
+    QLabel*      formStatusLabel;
+    QLabel*      dictionaryLabel;
 
     SettingsDialog* settingsDialog;
     AboutDialog*    aboutDialog;

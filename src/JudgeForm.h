@@ -37,6 +37,7 @@ class JudgeForm : public ActionForm
     Q_OBJECT
     public:
     JudgeForm (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
+    QString getStatusString() const;
 
     public slots:
     void textChanged();

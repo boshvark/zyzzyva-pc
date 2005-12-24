@@ -26,6 +26,7 @@
 #define ZYZZYVA_ACTION_FORM_H
 
 #include <QFrame>
+#include <QString>
 
 class ActionForm : public QFrame
 {
@@ -45,6 +46,10 @@ class ActionForm : public QFrame
         : QFrame (parent, f), type (t) { }
     virtual ~ActionForm() { }
     virtual ActionFormType getType() const { return type; }
+    virtual QString getStatusString() const { return QString::null; }
+
+    signals:
+    void statusChanged (const QString& status);
 
     private:
     ActionFormType type;
