@@ -54,6 +54,15 @@ using namespace Defs;
 const QString PAUSE_BUTTON = "&Pause";
 const QString UNPAUSE_BUTTON = "Un&pause";
 
+//---------------------------------------------------------------------------
+//  vowelsFirstCmp
+//
+//! A character comparison function that sorts vowels before consonants as a
+//! primary key, and alphabetically as a secondary key.
+//
+//! @param a character
+//! @param another character
+//---------------------------------------------------------------------------
 bool
 vowelsFirstCmp (const QChar& a, const QChar& b)
 {
@@ -65,6 +74,15 @@ vowelsFirstCmp (const QChar& a, const QChar& b)
         return (a < b);
 }
 
+//---------------------------------------------------------------------------
+//  consonantsFirstCmp
+//
+//! A character comparison function that sorts consonants before vowels as a
+//! primary key, and alphabetically as a secondary key.
+//
+//! @param a character
+//! @param another character
+//---------------------------------------------------------------------------
 bool
 consonantsFirstCmp (const QChar& a, const QChar& b)
 {
