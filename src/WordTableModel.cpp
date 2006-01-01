@@ -84,7 +84,7 @@ lengthLessThan (const WordTableModel::WordItem& a,
 //! @param parent the parent object
 //---------------------------------------------------------------------------
 WordTableModel::WordTableModel (WordEngine* e, QObject* parent)
-    : QAbstractTableModel (parent), wordEngine (e)
+    : QAbstractTableModel (parent), wordEngine (e), lastAddedIndex (-1)
 {
 }
 
@@ -119,10 +119,12 @@ WordTableModel::clear()
 //
 //! @param word the word to add
 //! @param type the type associated with the word
+//! @param updateLastAdded whether to update the last added index
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::addWord (const QString& word, WordType type)
+WordTableModel::addWord (const QString& word, WordType type, bool
+                         updateLastAdded)
 {
     int row = rowCount();
     bool ok = insertRow (row);
@@ -131,6 +133,8 @@ WordTableModel::addWord (const QString& word, WordType type)
     setData (index (row, 0), word, Qt::EditRole);
     setData (index (row, 0), type, Qt::UserRole);
     sort (WORD_COLUMN);
+    lastAddedIndex = updateLastAdded ? wordList.indexOf (WordItem (word, type))
+                                     : -1;
     emit wordsChanged();
     return true;
 }
@@ -158,6 +162,7 @@ WordTableModel::addWords (const QStringList& words, WordType type)
         ++row;
     }
     sort (WORD_COLUMN);
+    lastAddedIndex = -1;
     emit wordsChanged();
     return true;
 }

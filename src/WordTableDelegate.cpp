@@ -36,6 +36,8 @@ const QColor VALID_CORRECT_WORD_FOREGROUND = Qt::black;
 const QColor VALID_CORRECT_WORD_BACKGROUND = Qt::white;
 const QColor VALID_MISSED_WORD_FOREGROUND = Qt::black;
 const QColor VALID_MISSED_WORD_BACKGROUND = Qt::green;
+const QColor LAST_ADDED_WORD_FOREGROUND = Qt::black;
+const QColor LAST_ADDED_WORD_BACKGROUND = Qt::gray;
 const QColor INVALID_WORD_FOREGROUND = Qt::black;
 const QColor INVALID_WORD_BACKGROUND = Qt::red;
 
@@ -64,7 +66,14 @@ void
 WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
                           option, const QModelIndex& index) const
 {
+    // XXX: Yuck - instead of doing this, the WordTableModel should implement
+    // another user-defined role to represent "last-added-ness".
+    const WordTableModel* wordModel =
+        static_cast<const WordTableModel*>(index.model());
+    int lastAddedIndex = wordModel->getLastAddedIndex();
+
     WordTableModel::WordType type =
+        (lastAddedIndex == index.row()) ? WordTableModel::WordLastAdded :
         WordTableModel::WordType (index.model()->data (index,
                                                        Qt::UserRole).toInt());
 
@@ -84,6 +93,9 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
         case WordTableModel::WordIncorrect:
         color = INVALID_WORD_BACKGROUND;
         break;
+        case WordTableModel::WordLastAdded:
+        color = LAST_ADDED_WORD_BACKGROUND;
+        break;
         default: break;
     }
     painter->setBrush (QBrush (color));
@@ -102,6 +114,9 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
         break;
         case WordTableModel::WordIncorrect:
         color = INVALID_WORD_FOREGROUND;
+        break;
+        case WordTableModel::WordLastAdded:
+        color = LAST_ADDED_WORD_FOREGROUND;
         break;
         default: break;
     }

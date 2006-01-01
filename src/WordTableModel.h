@@ -38,7 +38,8 @@ class WordTableModel : public QAbstractTableModel
         WordNormal = 0,
         WordCorrect,
         WordMissed,
-        WordIncorrect
+        WordIncorrect,
+        WordLastAdded
     };
 
     class WordItem {
@@ -49,6 +50,9 @@ class WordTableModel : public QAbstractTableModel
         void setWord (const QString& w) { word = w; }
         void setType (WordType t) { type = t; }
 
+        bool operator== (const WordItem& other) const {
+            return ((word == other.word) && (type == other.type));
+        }
         bool operator< (const WordItem& other) const {
             return word < other.word;
         }
@@ -64,7 +68,8 @@ class WordTableModel : public QAbstractTableModel
     ~WordTableModel();
 
     bool clear();
-    bool addWord (const QString& word, WordType type = WordNormal);
+    bool addWord (const QString& word, WordType type = WordNormal, bool
+                  updateLastAdded = true);
     bool addWords (const QStringList& words, WordType type = WordNormal);
 
     int rowCount (const QModelIndex& parent = QModelIndex()) const;
@@ -80,6 +85,7 @@ class WordTableModel : public QAbstractTableModel
     bool setData (const QModelIndex& index, const QVariant& value, int role =
                   Qt::EditRole);
     void sort (int column, Qt::SortOrder order = Qt::AscendingOrder);
+    int getLastAddedIndex() const { return lastAddedIndex; }
 
     signals:
     void wordsChanged();
@@ -93,6 +99,7 @@ class WordTableModel : public QAbstractTableModel
     private:
     WordEngine* wordEngine;
     QList<WordItem> wordList;
+    int lastAddedIndex;
 
     public:
     enum {
