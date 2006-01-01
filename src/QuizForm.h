@@ -90,6 +90,7 @@ class QuizForm : public ActionForm
     private:
     WordEngine*   wordEngine;
     QuizEngine*   quizEngine;
+    QLabel*       quizTypeLabel;
     QLabel*       timerLabel;
     QWidget*      questionWidget;
     Q3CanvasView*  questionCanvasView;

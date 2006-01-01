@@ -122,6 +122,10 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (topHlay);
     mainVlay->addLayout (topHlay);
 
+    quizTypeLabel = new QLabel;
+    Q_CHECK_PTR (quizTypeLabel);
+    topHlay->addWidget (quizTypeLabel);
+
     topHlay->addStretch (1);
 
     timerLabel = new QLabel;
@@ -343,6 +347,8 @@ QuizForm::newQuiz (const QuizSpec& spec)
     QApplication::setOverrideCursor (Qt::waitCursor);
     quizEngine->newQuiz (spec);
     QApplication::restoreOverrideCursor();
+    quizTypeLabel->setText (Auxil::quizTypeToString
+                            (quizEngine->getQuizSpec().getType()));
     startQuestion();
     analyzeDialog->newQuiz (spec);
     if (quizEngine->getQuestionComplete())
