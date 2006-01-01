@@ -746,10 +746,7 @@ MainWindow::import (const QString& file)
     int imported = wordEngine->importFile (file, true, &err);
     QApplication::restoreOverrideCursor();
 
-    if (imported < 0)
-        QMessageBox::warning (this, IMPORT_FAILURE_TITLE, err);
-    else
-        setNumWords (imported);
+    setNumWords (imported);
     return imported;
 }
 

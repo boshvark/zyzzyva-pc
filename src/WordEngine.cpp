@@ -59,7 +59,7 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
         if (errString)
             *errString = "Can't open file '" + filename + "': "
             + file.errorString();
-        return -1;
+        return 0;
     }
 
     QRegExp posRegex (QString ("\\[(\\w+)"));
