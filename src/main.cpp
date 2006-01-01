@@ -25,9 +25,16 @@
 #include "MainWindow.h"
 #include <QApplication>
 
+const QString SETTINGS_ORGANIZATION_NAME = "Piet Depsi";
+const QString SETTINGS_DOMAIN_NAME = "pietdepsi.com";
+const QString SETTINGS_APPLICATION_NAME = "Zyzzyva";
+
 int main (int argc, char** argv)
 {
     QApplication app (argc, argv);
+    QCoreApplication::setOrganizationName (SETTINGS_ORGANIZATION_NAME);
+    QCoreApplication::setOrganizationDomain (SETTINGS_DOMAIN_NAME);
+    QCoreApplication::setApplicationName (SETTINGS_APPLICATION_NAME);
     MainWindow window (0);
     app.setMainWidget (&window);
     window.show();
