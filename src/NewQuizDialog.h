@@ -57,6 +57,7 @@ class NewQuizDialog : public QDialog
     private:
     SearchSpecForm* specForm;
     QComboBox*      typeCombo;
+    QCheckBox*      progressCbox;
     QCheckBox*      randomCbox;
     QPushButton*    saveQuizButton;
     QPushButton*    okButton;

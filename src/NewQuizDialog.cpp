@@ -85,6 +85,11 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (specForm);
     specHlay->addWidget (specForm);
 
+    progressCbox = new QCheckBox ("Restore &progress");
+    Q_CHECK_PTR (progressCbox);
+    progressCbox->setEnabled (false);
+    mainVlay->addWidget (progressCbox);
+
     randomCbox = new QCheckBox ("&Randomize order");
     Q_CHECK_PTR (randomCbox);
     randomCbox->setChecked (true);
@@ -182,6 +187,10 @@ NewQuizDialog::getQuizSpec()
             timerSpec.setType (PerResponse);
     }
     quizSpec.setTimerSpec (timerSpec);
+
+    if (!progressCbox->isChecked())
+        quizSpec.setProgress (QuizProgress());
+
     return quizSpec;
 }
 
@@ -218,6 +227,8 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
             default: break;
         }
     }
+    progressCbox->setEnabled (true);
+    progressCbox->setChecked (true);
 }
 
 //---------------------------------------------------------------------------
