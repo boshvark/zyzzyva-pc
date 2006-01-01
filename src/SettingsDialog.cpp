@@ -43,7 +43,7 @@ const QString DIALOG_CAPTION = "Preferences";
 const QString GENERAL_PREFS_ITEM = "General";
 const QString QUIZ_PREFS_ITEM = "Quiz";
 const QString FONT_PREFS_ITEM = "Fonts";
-const QString WORD_LIST_PREFS_ITEM = "Word Lists";
+const QString WORD_LIST_PREFS_ITEM = "Word Tables";
 
 const int FONT_MAIN_BUTTON = 1;
 const int FONT_WORD_LISTS_BUTTON = 2;
@@ -280,7 +280,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
 
     // Word list font
     ++row;
-    QLabel* fontWordListLabel = new QLabel ("Word Lists:");
+    QLabel* fontWordListLabel = new QLabel ("Word Tables:");
     Q_CHECK_PTR (fontWordListLabel);
     fontGlay->addWidget (fontWordListLabel, row, 0, Qt::AlignLeft);
 
