@@ -109,11 +109,11 @@ MainSettings::readSettings()
     instance->wordListSortByLength = settings.readBoolEntry
         (SETTINGS_SORT_BY_LENGTH, false);
     instance->wordListShowHooks = settings.readBoolEntry (SETTINGS_SHOW_HOOKS,
-                                                          false);
+                                                          true);
     instance->wordListShowHookParents = settings.readBoolEntry
-        (SETTINGS_SHOW_HOOK_PARENTS, false);
+        (SETTINGS_SHOW_HOOK_PARENTS, true);
     instance->wordListShowDefinitions = settings.readBoolEntry
-        (SETTINGS_SHOW_DEFINITIONS, false);
+        (SETTINGS_SHOW_DEFINITIONS, true);
     settings.endGroup();
 }
 
