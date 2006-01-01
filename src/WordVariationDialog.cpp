@@ -3,6 +3,8 @@
 //
 // A dialog for displaying variations of a word, such as hooks, anagrams, etc.
 //
+// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
+//
 // This file is part of Zyzzyva.
 //
 // Zyzzyva is free software; you can redistribute it and/or modify
