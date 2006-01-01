@@ -255,6 +255,7 @@ NewQuizDialog::typeActivated (const QString& text)
     else {
         randomCbox->setEnabled (true);
     }
+    disableProgress();
 }
 
 //---------------------------------------------------------------------------
