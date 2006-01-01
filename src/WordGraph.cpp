@@ -144,7 +144,8 @@ WordGraph::search (const SearchSpec& spec) const
             case SearchCondition::AnagramMatch:
             case SearchCondition::SubanagramMatch:
             matchConditions << condition; 
-            if (condition.stringValue.contains ("?"))
+            if (condition.stringValue.contains ("?") ||
+                condition.stringValue.contains ("["))
                 ++numWildcardConditions;
             break;
 
@@ -260,7 +261,7 @@ WordGraph::search (const SearchSpec& spec) const
 
                     else if (match == "[") {
                         closeIndex = unmatched.find (']', 0);
-                        match = unmatched.mid (1, closeIndex - 1);
+                        match = unmatched.mid (0, closeIndex - 1);
                     }
                 }
 
@@ -279,11 +280,12 @@ WordGraph::search (const SearchSpec& spec) const
                         // letter
                         bool matchLetter = match.contains (node->letter);
                         bool matchNegated = match.contains ("^");
+                        QChar c = (match.contains ("[") || (match == "?"))
+                            ? node->letter.lower() : node->letter;
 
-                        if ((matchLetter ^ matchNegated) || (match == "*"))
-                            word += node->letter;
-                        else if (match == "?")
-                            word += node->letter.lower();
+                        if ((match == "*") || (match == "?") ||
+                            (matchLetter ^ matchNegated))
+                            word += c;
                         else
                             continue;
 
@@ -341,6 +343,7 @@ WordGraph::search (const SearchSpec& spec) const
                         int matchStart = -1;
                         int matchEnd = -1;
                         int groupStart = -1;
+                        bool wildcardMatch = false;
                         for (int i = 0; i < len; ++i) {
                             QChar c = unmatched.at (i);
 
@@ -359,6 +362,7 @@ WordGraph::search (const SearchSpec& spec) const
                                         if (matchEnd < 0) {
                                             matchStart = groupStart;
                                             matchEnd = i;
+                                            wildcardMatch = true;
                                         }
 
                                         else if (node->child) {
@@ -393,7 +397,6 @@ WordGraph::search (const SearchSpec& spec) const
                         // pattern.  If the letter doesn't match exactly,
                         // match a ? char.
                         //int index = unmatched.find (node->letter);
-                        bool wildcardMatch = false;
                         found = (matchStart >= 0);
                         if (!found) {
                             matchStart = matchEnd = unmatched.find ("?");
