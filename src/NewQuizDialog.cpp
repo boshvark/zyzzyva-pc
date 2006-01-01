@@ -3,6 +3,8 @@
 //
 // A dialog for prompting the user for a quiz.
 //
+// Copyright 2004, 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
+//
 // This file is part of Zyzzyva.
 //
 // Zyzzyva is free software; you can redistribute it and/or modify
