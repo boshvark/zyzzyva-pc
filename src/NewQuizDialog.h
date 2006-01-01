@@ -51,8 +51,13 @@ class NewQuizDialog : public QDialog
     public slots:
     void timerToggled (bool on);
     void typeActivated (const QString& text);
+    void searchContentsChanged();
+    void randomToggled (bool on);
     void loadQuiz();
     void saveQuiz();
+
+    private:
+    void disableProgress();
 
     private:
     SearchSpecForm* specForm;

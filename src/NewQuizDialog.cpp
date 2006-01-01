@@ -83,6 +83,8 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
 
     specForm = new SearchSpecForm;
     Q_CHECK_PTR (specForm);
+    connect (specForm, SIGNAL (contentsChanged()),
+             SLOT (searchContentsChanged()));
     specHlay->addWidget (specForm);
 
     progressCbox = new QCheckBox ("Restore &progress");
@@ -93,6 +95,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     randomCbox = new QCheckBox ("&Randomize order");
     Q_CHECK_PTR (randomCbox);
     randomCbox->setChecked (true);
+    connect (randomCbox, SIGNAL (toggled (bool)), SLOT (randomToggled (bool)));
     mainVlay->addWidget (randomCbox);
 
     QHBoxLayout* timerHlay = new QHBoxLayout;
@@ -267,6 +270,30 @@ NewQuizDialog::timerToggled (bool on)
 }
 
 //---------------------------------------------------------------------------
+//  searchContentsChanged
+//
+//! Called when the contents of the search form change.
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::searchContentsChanged()
+{
+    disableProgress();
+}
+
+//---------------------------------------------------------------------------
+//  randomToggled
+//
+//! Called when the Randomize Order checkbox is toggled.
+//
+//! @param on whether the checkbox is checked
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::randomToggled (bool)
+{
+    disableProgress();
+}
+
+//---------------------------------------------------------------------------
 //  loadQuiz
 //
 //! Load a quiz spec from a file.
@@ -370,4 +397,16 @@ NewQuizDialog::saveQuiz()
     QTextStream stream (&file);
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
         << document.toString();
+}
+
+//---------------------------------------------------------------------------
+//  disableProgress
+//
+//! Disable the progress checkbox and set its state to unchecked.
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::disableProgress()
+{
+    progressCbox->setChecked (false);
+    progressCbox->setEnabled (false);
 }
