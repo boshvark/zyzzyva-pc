@@ -224,7 +224,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     quizHintsVlay->addWidget (quizShowNumResponsesCbox);
 
     quizAutoCheckCbox = new QCheckBox
-        ("End question after all correct responses are entered");
+        ("End question after all correct responses");
     Q_CHECK_PTR (quizAutoCheckCbox);
     quizHintsVlay->addWidget (quizAutoCheckCbox);
 
