@@ -133,7 +133,7 @@ SearchSpec::fromDomElement (const QDomElement& element)
 //  optimize
 //
 //! Optimize the search specification for fast searches without making any
-//! semantic changes.  Detect conflicts is certain specifications (e.g.
+//! semantic changes.  Detect conflicts in certain specifications (e.g.
 //! minimum length greater than maximum length), and detect constraints
 //! implicit in certain specifications (e.g. Type I Sevens must have a length
 //! of exactly 7 letters).
