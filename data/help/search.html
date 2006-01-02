@@ -6,15 +6,14 @@
 <body>
   <h1>Searching for Words</h1>
 
-  <p>Choose <tt>File-&gt;New Search</tt> from the main menu to create a new
-  Search tab.  A Search tab can be used to find all acceptable words that
-  match certain conditions.  The conditions are specified in the top part of
-  the Search tab, and the resulting list of words is displayed in the bottom
-  area.  Initially only a single search condition is displayed.  Add more
-  conditions by clicking the <i>More</i> button.  Remove conditions from the
-  bottom of the list by clicking the <i>Fewer</i> button.  When the search
-  conditions are correct, click the <i>Search</i> button to perform a
-  search.</p>
+  <p>Choose <tt>File-&gt;Search</tt> from the main menu to create a new Search
+  tab.  A Search tab can be used to find all acceptable words that match
+  certain conditions.  The conditions are specified in the top part of the
+  Search tab, and the resulting list of words is displayed in the bottom area.
+  Initially only a single search condition is displayed.  Add more conditions
+  by clicking the <i>More</i> button.  Remove conditions from the bottom of
+  the list by clicking the <i>Fewer</i> button.  When the search conditions
+  are correct, click the <i>Search</i> button to perform a search.</p>
 
   <a name="search-conditions">
   <h2>Search Conditions</h2>
@@ -110,6 +109,38 @@
   length can also be specified by choosing the <i>Exact Length</i>
   condition.</p>
 
+  <a name="prefixes-suffixes">
+  <h3>Prefixes and Suffixes</h3>
+
+  <p>There are four conditions for specifying that search results must take or
+  not take certain prefixes or suffixes.</p>
+
+  <p>The <i>Takes Prefix</i> condition specifies that every search result must
+  also form a valid word when the specified prefix is added.  For example, if
+  a <i>Takes Prefix</i> condition of <tt>PRE</tt> is specified in conjunction
+  with a <i>Pattern Match</i> condition of <tt>VAL*</tt>, the word VALENCE
+  will be found because PREVALENCE is also valid.  However, the word VALID
+  will not be found because PREVALID* is not a valid word.</p>
+
+  <p>The <i>Does Not Take Prefix</i> condition is exactly the opposite of the
+  <i>Takes Prefix</i> condition.  In the previous example, the word VALID
+  would appear in the search results because it does <i>not</i> take
+  <tt>PRE</tt> as a prefix, and VALENCE would not appear, because it
+  <i>does</i> take <tt>PRE</tt> as a prefix.</p>
+
+  <p>The <i>Takes Suffix</i> condition specifies that every search result must
+  also form a valid word when the specified suffix is added.  For example, if
+  a <i>Takes Suffix</i> condition of <tt>S</tt> is specified in conjunction
+  with a <i>Pattern Match</i> condition of <tt>*ING</tt>, the word MOLDING
+  will be found because MOLDINGS is also valid.  However, the word KICKING
+  will not be found because KICKINGS* is not a valid word.</p>
+
+  <p>The <i>Does Not Take Suffix</i> condition is exactly the opposite of the
+  <i>Takes Suffix</i> condition.  In the previous example, the word KICKING
+  would appear in the search results because it does <i>not</i> take
+  <tt>S</tt> as a suffix, and MOLDING would not appear, because it <i>does</i>
+  take <tt>S</tt> as a suffix.</p>
+
   <a name="must-include">
   <h3>Must Include</h3>
 
@@ -181,10 +212,10 @@
   <tt>SATIRE</tt>, which is in the top 100 stems.</p>
 
   <a name="in-word-list">
-  <h3>In Word List</h3>
+  <h3>Must Be In Word List</h3>
 
-  <p>The <i>In Word List</i> condition specifies a list that each word must
-  belong to.  Only words in the word list will appear in the search
+  <p>The <i>Must Be In Word List</i> condition specifies a list that each word
+  must belong to.  Only words in the word list will appear in the search
   results.</p>
 
   <p>To create a word list, click the <i>Edit List</i> button.  A window will
@@ -212,18 +243,17 @@
   number of anagrams can also be specified with the <i>Exact Anagrams</i>
   condition.</p>
 
-  <!--
   <a name="other-options">
   <h3>Other Options</h3>
 
   <p>If the <i>Use lower-case letters for wildcard matches</i> checkbox is
-  activated, any letters matched by a wildcard character will appear in lower
-  case in the search results.  For example, with this checkbox activated, an
-  <i>Anagram</i> search of <tt>EXT?</tt> will result in <tt>EXiT</tt>,
-  <tt>nEXT</tt>, <tt>sEXT</tt>, <tt>TEXt</tt>, <tt>vEXT</tt> rather than
-  <tt>EXIT</tt>, <tt>NEXT</tt>, <tt>SEXT</tt>, <tt>TEXT</tt>,
+  activated, any letters matched by a question mark (<tt>?</tt>) or a
+  character class in square brackets (e.g. <tt>[ABC]</tt>) will appear in
+  lower case in the search results.  For example, with this checkbox
+  activated, an <i>Anagram Match</i> search of <tt>EXT?</tt> will result in
+  <tt>EXiT</tt>, <tt>nEXT</tt>, <tt>sEXT</tt>, <tt>TEXt</tt>, <tt>vEXT</tt>
+  rather than <tt>EXIT</tt>, <tt>NEXT</tt>, <tt>SEXT</tt>, <tt>TEXT</tt>,
   <tt>VEXT</tt>.</p>
-  -->
 
   <a name="load-save-search">
   <h2>Loading and Saving Searches</h2>
@@ -248,7 +278,7 @@
   that search will correctly find all 3-letter words no matter what word list
   Zyzzyva is using.</p>
 
-  <p>Copyright &copy; 2005 Michael W Thelen.</p>
+  <p>Copyright &copy; 2005, 2006 Michael W Thelen.</p>
 </body>
 </html>
 

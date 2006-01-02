@@ -10,11 +10,19 @@
     <section ref="load.html" title="Loading a Word List">
     </section>
     <section ref="preferences.html" title="Preferences">
-      <keyword ref="preferences.html#auto-import">auto import</keyword>
-      <section ref="preferences.html#auto-import" title="Auto Import" />
-      <section ref="preferences.html#tile-theme" title="Tile Theme" />
-      <section ref="preferences.html#font" title="Font Settings" />
-      <section ref="preferences.html#word-lists" title="Word List Settings">
+      <section ref="preferences.html#general" title="General Preferences">
+        <keyword ref="preferences.html#auto-load-dictionary">dictionary</keyword>
+        <section ref="preferences.html#auto-load-dictionary"
+                 title="Dictionary" />
+      </section>
+      <section ref="preferences.html#quiz" title="Quiz Preferences">
+        <section ref="preferences.html#question-display"
+                 title="Question Display" />
+        <section ref="preferences.html#quiz-hints" title="Hints" />
+      </section>
+      <section ref="preferences.html#fonts" title="Font Preferences" />
+      <section ref="preferences.html#word-tables"
+               title="Word Table Preferences">
         <section ref="preferences.html#sort-by-length"
                  title="Sort by word length" />
         <section ref="preferences.html#show-hooks" title="Show hooks" />
@@ -41,13 +49,16 @@
         <section ref="search.html#subanagram-match"
                  title="Subanagram Match" />
         <section ref="search.html#word-length" title="Word Length" />
+        <section ref="search.html#prefixes-suffixes"
+                 title="Prefixes and Suffixes" />
         <section ref="search.html#must-include" title="Must Include" />
         <section ref="search.html#must-exclude" title="Must Exclude" />
         <section ref="search.html#must-consist" title="Must Consist Of" />
         <section ref="search.html#must-belong" title="Must Belong To" />
-        <section ref="search.html#in-word-list" title="In Word List" />
+        <section ref="search.html#in-word-list" title="Must Be In Word List" />
         <section ref="search.html#num-anagrams" title="Number of Anagrams" />
       </section>
+      <section ref="search.html#other-options" title="Other Options" />
       <section ref="search.html#load-save-search"
                title="Loading and Saving Searches" />
     </section>
@@ -72,7 +83,7 @@
       <section ref="view.html#blank-matches" title="Blank Matches" />
       <section ref="view.html#transpositions" title="Transpositions" />
     </section>
-    <section ref="wordlists.html" title="Working with Word Lists">
+    <section ref="wordlists.html" title="Working with Word Tables">
       <section ref="wordlists.html#save-word-list"
                title="Saving a Word List" />
       <section ref="wordlists.html#quiz-from-word-list"

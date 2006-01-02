@@ -6,7 +6,7 @@
 <body>
   <h1>Quizzes</h1>
 
-  <p>Choose <tt>File-&gt;New Quiz</tt> from the main menu to create a new Quiz
+  <p>Choose <tt>File-&gt;Quiz</tt> from the main menu to create a new Quiz
   tab.  A Quiz tab can be used to create quizzes to increase your word
   knowledge and anagramming skills.</p>
 
@@ -18,36 +18,50 @@
   word list and selecting <i>Quiz from list</i>.  The quiz creation window
   includes a search definition area that is exactly the same as the one on the
   Search tab.  Please see <a href="search.html">Searching for Words</a> for
-  more details about creating a search.</p>
+  more details about creating a search.  The specified search will select a
+  list of words to be used in quiz questions.</p>
 
-  <p>The specified search will select a list of words to be used in quiz
-  questions.  Once the list of words is determined, there are two ways they
-  might be presented as quiz questions.  The first option is for the quiz to
-  have just one question, requiring the full list of words as an answer.  This
-  option is useful when trying to recall a specific list of words from memory,
-  such as the list of all three-letter words.  This option is specified by
-  activating the <i>Use result list as a single question</i> checkbox.</p>
+  <p>Once the list of words is determined, there are various ways they might
+  be presented as quiz questions.  These options are known as Quiz Types.</p>
 
-  <p>The second option is for each unique combination of letters to be used as
-  quiz questions, with each question requiring anagrams as an answer.  Each
-  unique combination of letters will be presented with the letters in
-  alphabetical order (as an "alphagram").  If the <i>Randomize order</i>
-  checkbox is activated, the quiz questions will be presented in random
-  order.</p>
+  <p><b>Anagram Quiz:</b> In the Anagram quiz type, each unique combination of
+  letters is used as a quiz question, with each question requiring anagrams as
+  an answer.  Each unique combination of letters will be presented with the
+  letters in order as specified in the <a
+  href="preferences.html#question-display">Quiz Question Display</a>
+  preferences.</p>
 
-  <p>The alphagram option is most useful for improving one's anagramming
+  <p>The Anagram quiz type is most useful for improving one's anagramming
   skills, since each question will be a jumble of letters to be unscrambled.
   For example, with an <i>Anagram Match</i> condition of <tt>SATIRE?</tt>, the
-  quiz questions will consist of
-  <tt>AAEIRST</tt>, <tt>ABEIRST</tt>, <tt>ACEIRST</tt>, etc.  With the
-  randomize option checked, the questions will appear in random order.</p>
+  quiz questions will consist of <tt>AAEIRST</tt>, <tt>ABEIRST</tt>,
+  <tt>ACEIRST</tt>, etc.  With the randomize option checked, the questions
+  will appear in random order.</p>
 
-  <p>A timer can also be configured to add extra challenge to the quiz.
-  Activating the <i>Timer</i> checkbox will allow you to specify a time limit
-  on a <i>per response</i> or <i>per question</i> basis.  If the <i>per
-  response</i> timer is chosen, you will have the specified amount of time to
-  enter each individual response to a question.  The timer will reset itself
-  each time a response is entered.  If the <i>per question</i> timer is
+  <p><b>Word List Recall:</b> In the Word List Recall quiz type, the quiz has
+  just one question, requiring the full list of words as an answer.  This quiz
+  type is useful when trying to recall a specific list of words from memory,
+  such as the list of all three-letter words.</p>
+
+  <p><b>Hook Quiz:</b> In the Hook quiz type, each word is used as a quiz
+  question, with each question requiring hooks as an answer (all words that
+  can be formed by adding a single letter to the front or back of the
+  word).</p>
+
+  <p>The <i>Restore progress</i> checkbox is used when loading previously
+  saved quizzes.  See <a href="quiz.html#load-save-quiz">Loading and Saving
+  Quizzes</a> for more details.</p>
+
+  <p>If the <i>Randomize order</i> checkbox is activated, the quiz
+  questions will be presented in random order.  If the checkbox is not
+  activated, the questions will be presented in alphabetical order.</p>
+
+  <p>A timer can also be configured for any quiz type to add extra challenge
+  to the quiz.  Activating the <i>Timer</i> checkbox will allow you to specify
+  a time limit on a <i>per response</i> or <i>per question</i> basis.  If the
+  <i>per response</i> timer is chosen, you will have the specified amount of
+  time to enter each individual response to a question.  The timer will reset
+  itself each time a response is entered.  If the <i>per question</i> timer is
   chosen, you will have the specified amount of time to enter <i>all</i>
   responses to a question.  The timer will not reset itself after each
   response is entered.</p>
@@ -58,44 +72,39 @@
   <a name="take-quiz">
   <h2>Taking a Quiz</h2>
 
-  <p>Each quiz question requires a list of words as an answer.  If the quiz
-  question is an alphagram, the correct answer to the question will be the
-  list of words containing all the letters in the alphagram.  If the quiz
-  question is a search specification, the correct answer will be the list of
-  words matching the specification.</p>
+  <p>Each quiz question requires a list of words as an answer.  Enter each
+  word by typing the word in the input box near the bottom of the Quiz tab and
+  pressing Enter.  If the word is a valid response, it will appear above the
+  input box with the word "Correct", and it will also be added to the response
+  list.  If the word is not a valid response, it will appear above the input
+  box with the word "Incorrect".</p>
 
-  <p>Enter each word by typing the word in the input box near the bottom of
-  the Quiz tab and pressing Enter.  If the word is a valid response, it will
-  appear above the input box with the word "Correct", and it will also be
-  added to the response list.  If the word is not a valid response, it will
-  appear above the input box with the word "Incorrect".</p>
+  <p>Once all the response words have been entered, click the <i>Check
+  Answers</i> button or press Enter in the empty input box.  This will submit
+  the current word list as the final response to the quiz question.  If any
+  valid responses were missed, they will appear in the word list with a green
+  background color.  The number of correct words entered and the total number
+  of valid responses will also be displayed above the input box.  For example,
+  if the quiz question is <tt>ACEIRST</tt> and the valid responses
+  <tt>RACIEST</tt> and <tt>STEARIC</tt> were entered, then the forgotten word
+  <tt>CRISTAE</tt> will appear in the response list, and the message "Correct:
+  2 of 3" will appear above the input box.</p>
 
-  <p>Once all the response words have been entered, click the <i>Check</i>
-  button or press Enter in the empty input box.  This will submit the current
-  word list as the final response to the quiz question.  If any valid
-  responses were missed, they will appear in the word list in a magenta
-  color.  The number of correct words entered and the total number of valid
-  responses will also be displayed above the input box.  For example, if the
-  quiz question is <tt>ACEIRST</tt> and the valid responses <tt>RACIEST</tt>
-  and <tt>STEARIC</tt> were entered, then the forgotten word <tt>CRISTAE</tt>
-  will appear in the response list, and the message "Correct: 2 of 3" will
-  appear above the input box.</p>
-
-  <p>After clicking the <i>Check</i> button and reviewing the judgment of your
-  response, click the <i>Next</i> button to continue to the next quiz
+  <p>After clicking the <i>Check Answers</i> button and reviewing the judgment
+  of your response, click the <i>Next</i> button to continue to the next quiz
   question.</p>
 
   <p>If the quiz is using a timer, the timer can be paused at any time by
   clicking the <i>Pause</i> button.  Unpause the timer by clicking the
   <i>Unpause</i> button.  If the timer runs down to zero, the correct
-  responses will be displayed automatically, as if the <i>Check</i> button
-  were clicked.</p>
+  responses will be displayed automatically, as if the <i>Check Answers</i>
+  button were clicked.</p>
 
   <a name="analyze-quiz">
   <h2>Analyzing Your Quiz Performance</h2>
 
   <p>At any time while taking a quiz or after a quiz is completed, you can
-  analyze your performance by clicking the <i>Analyze</i> button.  A quiz
+  analyze your performance by clicking the <i>Analyze Quiz</i> button.  A quiz
   analysis window will appear.  At the top of the window is a summary of the
   current quiz, along with some statistics about your performance so far.</p>
 
@@ -129,14 +138,16 @@
   can click the <i>Save Quiz</i> button at any time to save your progress.  A
   window will appear to allow you to save the quiz to a file.</p>
 
-  <p>Later, if you want to resume the quiz, choose <tt>File-&gt;New Quiz</tt>
-  from the main menu, and click the <i>Load Quiz</i> button within the New
-  Quiz window.  A window will appear to allow you to select the saved quiz
-  file.  After choosing the file, the saved quiz will appear in the quiz
-  specification area.  After clicking <i>OK</i>, the quiz will resume where it
-  left off.</p>
+  <p>Later, if you want to resume the quiz, choose <tt>File-&gt;Quiz</tt> from
+  the main menu, and click the <i>Load Quiz</i> button within the New Quiz
+  window.  A window will appear to allow you to select the saved quiz file.
+  After choosing the file, the saved quiz will appear in the quiz
+  specification area.  By default after loading a quiz, the <i>Restore
+  progress</i> checkbox will be activated.  To start the quiz from the
+  beginning instead of resuming where it was left off, deactivate the
+  <i>Restore progress</i> checkbox.  The checkbox will also become disabled if
+  the quiz specification is modified after loading it.  After clicking
+  <i>OK</i>, the quiz will begin.</p>
 
-  <p>Copyright &copy; 2005 Michael W Thelen.</p>
-</body>
-</html>
+  <p>Copyright &copy; 2005, 2006 Michael W Thelen.</p> </body> </html>
 

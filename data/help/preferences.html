@@ -9,24 +9,30 @@
   <p>Preferences can be configured by choosing <tt>Edit-&gt;Preferences</tt>
   from the main menu.</p>
 
-  <a name="auto-import">
-  <h2>Auto Import</h2>
+  <a name="general">
+  <h2>General Preferences</h2>
 
-  <p>Zyzzyva can be configured to import a word list automatically each time
-  it starts.  To do so, select the <tt>Automatically import a word list on
+  <a name="auto-load-dictionary">
+  <h3>Dictionary</h3>
+
+  <p>Zyzzyva can be configured to open a word list automatically each time it
+  starts.  To do so, select the <tt>Automatically open a word list on
   startup</tt> option.  Click the <tt>Browse</tt> button to bring up a file
   browser, from which you can choose the word list file to be loaded.</p>
 
-  <a name="tile-theme">
-  <h2>Tile Theme</h2>
+  <a name="quiz">
+  <h2>Quiz Preferences</h2>
 
-  <p>Questions in Quiz mode can be displayed using the configured font, or
-  using an image for each letter.  The set of images representing each letter
-  is collectively known as a tile theme.  To enable tile themes, select the
-  <tt>Use tile images in Quiz mode</tt> option.  The dropdown box with
-  available themes will become enabled, and a tile theme can then be selected.
-  Once a tile theme is selected, quiz questions will be displayed using the
-  chosen tile theme.</p>
+  <a name="question-display">
+  <h3>Question Display</h3>
+
+  <p><b>Tile Theme:</b> Quiz questions can be displayed using the configured
+  font, or using an image for each letter.  The set of images representing
+  each letter is collectively known as a tile theme.  To enable tile themes,
+  select the <tt>Use tile images</tt> option.  The dropdown box with available
+  themes will become enabled, and a tile theme can then be selected.  Once a
+  tile theme is selected, quiz questions will be displayed using the chosen
+  tile theme.</p>
 
   <p>Zyzzyva comes with several tile themes by default.  A new tile theme can
   be added by putting images in a new subdirectory under the
@@ -34,8 +40,39 @@
   26 images named A.png through Z.png, and a 27th image named _.png
   (representing a blank tile).</p>
 
-  <a name="font">
-  <h2>Font Settings</h2>
+  <p><b>Letter Order:</b> The letters of a quiz question can be displayed in
+  various orders.  The default order is <tt>Alphabetical</tt>.  Also available
+  are <tt>Random</tt>, <tt>Vowels First</tt>, and <tt>Consonants
+  First</tt>.</p>
+
+  <p><b>Background Color:</b> The quiz question background field can be
+  configured to be any color.  To choose the color, click the <tt>Choose</tt>
+  button next to the <tt>Background Color</tt> preference.  A window will
+  appear that allows the color to be chosen.</p>
+
+  <a name="quiz-hints">
+  <h3>Hints</h3>
+
+  <p>Some hints and conveniences are available when taking a quiz.  They can
+  help quizzes to go more quickly, or to provide helpful information to guide
+  you to the correct answers.</p>
+
+  <p><b>Show number of responses in the status bar:</b> If this option is
+  selected, the total number of correct responses for the current question
+  will be displayed in the main status bar.  For example, if the question is
+  AELZ, the status bar will say "Correct: 0/2".  Once a correct answer is
+  entered (either LAZE or ZEAL), the status bar will say "Correct: 1/2".
+  After another correct answer, the status bar will say "Correct: 2/2",
+  indicating that all correct answers have been entered.</p>
+
+  <p><b>End question after all correct responses:</b> If this option is
+  selected, a quiz question will end automatically after all correct responses
+  have been entered.  The effect is exactly as if the <tt>Check Answers</tt>
+  button were clicked immediately after the last correct response is
+  entered.</p>
+
+  <a name="fonts">
+  <h2>Font Preferences</h2>
 
   <p>The fonts used by Zyzzyva can be configured in the Font selection area.
   Fonts can be configured individually for the following items:</p>
@@ -43,7 +80,7 @@
   <ul>
   <li><b>Main:</b> The main application font, used for all displayed text not
   falling into one of the categories listed below.</li>
-  <li><b>Word lists:</b> Lists of words that are displayed, e.g. the
+  <li><b>Word tables:</b> Tables of words that are displayed, e.g. the
   results of a search or the correct answers to a quiz question.</li>
   <li><b>Word input:</b> Input areas where words are to be entered, e.g. the
   input lines of the Search tab or the input area of the Judge tab.</li>
@@ -56,30 +93,31 @@
   to the right of the item whose font you wish to change.  A font browser will
   appear, from which you can choose the font to be used.</p>
 
-  <a name="word-lists">
-  <h2>Word Lists</h2>
+  <a name="word-tables">
+  <h2>Word Table Preferences</h2>
 
-  <p>The following settings apply to all word lists displayed in Zyzzyva.
+  <p>The following settings apply to all word tables displayed in Zyzzyva.
   Changing one of these settings will affect that setting for all word
-  lists.</p>
+  tables.</p>
 
   <a name="sort-by-length">
   <h3>Sort by word length</h3>
 
-  <p>Often it is useful to see word lists sorted by word length, rather than
+  <p>Often it is useful to see word tables sorted by word length, rather than
   alphabetically.  If the <tt>Sort by word length</tt> option is selected,
-  word lists in Zyzzyva will be sorted by word length.  Within groups of words
-  of equal length, the words will continue to be sorted alphabetically.</p>
+  word tables in Zyzzyva will be sorted by word length.  Within groups of
+  words of equal length, the words will continue to be sorted
+  alphabetically.</p>
 
   <a name="show-hooks">
   <h3>Show hooks</h3>
 
   <p>If the <tt>Show hooks</tt> option is selected, Zyzzyva will automatically
-  display hooks for words in all word lists.  Front hooks (letters that can be
-  added at the beginning of a word to make another valid word) are displayed
-  in a column to the left of the word.  Back hooks (letters that can be added
-  at the end of a word to make another valid word) are displayed in a column
-  to the right of the word.</p>
+  display hooks for words in all word tables.  Front hooks (letters that can
+  be added at the beginning of a word to make another valid word) are
+  displayed in a column to the left of the word.  Back hooks (letters that can
+  be added at the end of a word to make another valid word) are displayed in a
+  column to the right of the word.</p>
 
   <p>Having hooks automatically displayed can be extremely helpful for
   learning new words, since it requires no manual effort to display hooks.
@@ -93,7 +131,7 @@
   <h3>Show inner hooks</h3>
 
   <p>If the <tt>Show inner hooks</tt> option is selected, Zyzzyva will
-  automatically display inner hooks for words in all word lists.  An inner
+  automatically display inner hooks for words in all word tables.  An inner
   hook is a valid word that can be formed by removing the first or last letter
   of a word.  For example, the word BOWLS has two inner hooks.  The word OWLS
   can be formed by removing the initial B, and the word BOWL can be formed by
@@ -106,7 +144,7 @@
   <h3>Show definitions</h3>
 
   <p>If the <tt>Show definitions</tt> option is selected, Zyzzyva will
-  automatically display definitions for words in all word lists.  A word's
+  automatically display definitions for words in all word tables.  A word's
   definition will appear in a separate column to the right of the word.</p>
 
   <a name="save-preferences">
@@ -118,7 +156,7 @@
   effect immediately, but the <tt>Sort by word length</tt> setting may not
   take effect for a word list until the list's contents are changed.</p>
 
-  <p>Copyright &copy; 2005 Michael W Thelen.</p>
+  <p>Copyright &copy; 2005, 2006 Michael W Thelen.</p>
 </body>
 </html>
 
