@@ -1,9 +1,28 @@
 Version 0.9.0
-Released ????-??-??, from /trunk
+Released 2006-01-??, from /trunk
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.9.0
+
+ User-visible changes:
+ * Toolbar with buttons for various actions
+ * New search conditions to account for prefixes and suffixes
+ * Preferences broken out into subsections in the preference dialog box
+ * New preference for quiz background color
+ * New preference for quiz question letter order
+ * New preferences for quiz hints
+ * New dropdown for choosing the Quiz Type when creating a quiz
+ * Option to restore or discard quiz progress after loading a saved quiz
+ * New Hook Quiz type
+ * Quiz responses are kept in sorted order
+ * Most recent quiz response is highlighted and kept visible
+ * Missed quiz responses are highlighted
+ * Optimized searches for extensions and patterns beginning with *
+ * Status bar messages from each tab
+ * Various bug fixes
 
  Developer-visible changes:
  * All code ported to Qt4, except the Q3Canvas class
+ * Stronger, portable random number generation
+
 
 Version 0.8.0
 Released 2005-08-14, from /trunk
