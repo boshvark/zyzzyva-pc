@@ -142,6 +142,7 @@ void
 SearchSpec::optimize()
 {
     QList<SearchCondition> newConditions;
+    QList<SearchCondition> wildcardConditions;
 
     const int MAX_ANAGRAMS = 65535;
     QString mustInclude;
@@ -168,6 +169,8 @@ SearchSpec::optimize()
                     break;
                 }
 
+                bool wildcard = (stringValue.contains ("[") ||
+                                 stringValue.contains ("?"));
                 int length = stringValue.length();
                 if (stringValue.contains ("[")) {
                     int subtract = 0;
@@ -192,7 +195,10 @@ SearchSpec::optimize()
                 else
                     maxLength = length;
 
-                newConditions.append (condition);
+                if (wildcard)
+                    wildcardConditions.append (condition);
+                else
+                    newConditions.append (condition);
             }
             break;
 
@@ -347,6 +353,6 @@ SearchSpec::optimize()
         }
     }
 
-    conditions = newConditions;
+    conditions = wildcardConditions + newConditions;
 }
 
