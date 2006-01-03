@@ -261,7 +261,7 @@ WordGraph::search (const SearchSpec& spec) const
 
                     else if (match == "[") {
                         closeIndex = unmatched.find (']', 0);
-                        match = unmatched.mid (0, closeIndex - 1);
+                        match = unmatched.mid (1, closeIndex);
                     }
                 }
 
@@ -280,7 +280,7 @@ WordGraph::search (const SearchSpec& spec) const
                         // letter
                         bool matchLetter = match.contains (node->letter);
                         bool matchNegated = match.contains ("^");
-                        QChar c = (match.contains ("[") || (match == "?"))
+                        QChar c = (match.contains ("]") || (match == "?"))
                             ? node->letter.lower() : node->letter;
 
                         if ((match == "*") || (match == "?") ||
