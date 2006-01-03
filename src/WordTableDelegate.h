@@ -34,6 +34,9 @@ class WordTableDelegate : public QItemDelegate
 {
     Q_OBJECT
     public:
+    static const int ITEM_XPADDING;
+
+    public:
     WordTableDelegate (QWidget* parent = 0);
     virtual ~WordTableDelegate() { }
 

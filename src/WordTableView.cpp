@@ -357,5 +357,6 @@ WordTableView::contextMenuEvent (QContextMenuEvent* e)
 int
 WordTableView::sizeHintForColumn (int column) const
 {
-    return QAbstractItemView::sizeHintForColumn (column);
+    return QAbstractItemView::sizeHintForColumn (column) +
+        (2 * WordTableDelegate::ITEM_XPADDING);
 }
