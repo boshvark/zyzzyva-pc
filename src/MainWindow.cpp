@@ -632,8 +632,12 @@ MainWindow::readSettings (bool useGeometry)
     QFont mainFont;
     QString fontStr = MainSettings::getMainFont();
     bool mainFontOk = true;
-    if (mainFont.fromString (fontStr))
+    if (fontStr.isEmpty())
+        ; // do nothing
+    else if (mainFont.fromString (fontStr)) {
         qApp->setFont (mainFont);
+        qDebug ("Setting font: |" + fontStr + "|");
+    }
     else {
         qWarning ("Cannot set font: " + fontStr);
         mainFontOk = false;
@@ -642,7 +646,9 @@ MainWindow::readSettings (bool useGeometry)
     // Word list font
     QFont font;
     fontStr = MainSettings::getWordListFont();
-    if (font.fromString (fontStr))
+    if (fontStr.isEmpty())
+        ; // do nothing
+    else if (font.fromString (fontStr))
         qApp->setFont (font, "WordTableView");
     else
         qWarning ("Cannot set font: " + fontStr);
@@ -655,7 +661,9 @@ MainWindow::readSettings (bool useGeometry)
     // XXX: Reinstate this once it's know how to change the font of canvas
     // text items via QApplication::setFont
     //fontStr = MainSettings::getQuizLabelFont();
-    //if (font.fromString (fontStr))
+    //if (fontStr.isEmpty())
+    //    ; // do nothing
+    //else if (font.fromString (fontStr))
     //    // FIXME: How to get QCanvasText items to update their font?
     //    qApp->setFont (font, "QCanvasText");
     //else
@@ -663,7 +671,9 @@ MainWindow::readSettings (bool useGeometry)
 
     // Word input font
     fontStr = MainSettings::getWordInputFont();
-    if (font.fromString (fontStr)) {
+    if (fontStr.isEmpty())
+        ; // do nothing
+    else if (font.fromString (fontStr)) {
         qApp->setFont (font, "WordLineEdit");
         qApp->setFont (font, "WordTextEdit");
     }
@@ -672,7 +682,9 @@ MainWindow::readSettings (bool useGeometry)
 
     // Definition font
     fontStr = MainSettings::getDefinitionFont();
-    if (font.fromString (fontStr)) {
+    if (fontStr.isEmpty())
+        ; // do nothing
+    else if (font.fromString (fontStr)) {
         qApp->setFont (font, "DefinitionBox");
         qApp->setFont (font, "DefinitionLabel");
     }
