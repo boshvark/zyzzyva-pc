@@ -311,9 +311,7 @@ NewQuizDialog::loadQuiz()
         return;
 
     QFile file (filename);
-    // FIXME Qt4: QIODevice::Translate no longer exists!
-    //if (!file.open (QIODevice::ReadOnly | QIODevice::Translate)) {
-    if (!file.open (QIODevice::ReadOnly)) {
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
         QMessageBox::warning (this, "Error Opening Quiz File",
                               "Cannot open file '" + filename + "': " +
                               file.errorString());
@@ -379,9 +377,7 @@ NewQuizDialog::saveQuiz()
             return;
     }
 
-    // FIXME Qt4: QIODevice::Translate no longer exists!
-    //if (!file.open (QIODevice::WriteOnly | QIODevice::Translate)) {
-    if (!file.open (QIODevice::WriteOnly)) {
+    if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
         QMessageBox::warning (this, "Error Saving Quiz",
                               "Cannot save quiz:\n" + file.errorString() +
                               ".");

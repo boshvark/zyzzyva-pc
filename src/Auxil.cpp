@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -99,9 +99,7 @@ Auxil::getAboutString()
 
     QString aboutFileName = getHelpDir() + "/about.html";
     QFile aboutFile (aboutFileName);
-    // FIXME Qt4: QIODevice::Translate no longer exists!
-    //if (!aboutFile.open (QIODevice::ReadOnly | QIODevice::Translate))
-    if (!aboutFile.open (QIODevice::ReadOnly))
+    if (!aboutFile.open (QIODevice::ReadOnly | QIODevice::Text))
         return aboutString;
 
     aboutString.append (aboutFile.readAll());

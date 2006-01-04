@@ -3,7 +3,7 @@
 //
 // A class derived from QTableView, used to display word lists.
 //
-// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -201,10 +201,8 @@ WordTableView::exportFile (const QString& filename, QString* err) const
         return false;
     }
 
-    // FIXME Qt4: QIODevice::Translate does not exist!
-    //if (!file.open (QIODevice::WriteOnly | QIODevice::Translate)) {
     QFile file (filename);
-    if (!file.open (QIODevice::WriteOnly)) {
+    if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
         if (err)
             *err = file.errorString();
         return false;

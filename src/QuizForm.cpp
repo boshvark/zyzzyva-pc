@@ -3,7 +3,7 @@
 //
 // A form for quizzing the user.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2004, 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -389,9 +389,7 @@ QuizForm::saveQuizClicked()
             return;
     }
 
-    // FIXME Qt4: QIODevice::Translate no longer exists!
-    //if (!file.open (QIODevice::WriteOnly | QIODevice::Translate)) {
-    if (!file.open (QIODevice::WriteOnly)) {
+    if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
         QMessageBox::warning (this, "Error Saving Quiz",
                               "Cannot save quiz:\n" + file.errorString() +
                               ".");
