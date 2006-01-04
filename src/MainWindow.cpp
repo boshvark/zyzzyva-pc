@@ -693,10 +693,6 @@ MainWindow::readSettings (bool useGeometry)
             quizForm->updateStatusString();
         }
     }
-
-    // FIXME: Figure out how to incorporate this with WordTableModel
-    //WordListViewItem::setSortByLength
-    //    (MainSettings::getWordListSortByLength());
 }
 
 //---------------------------------------------------------------------------
