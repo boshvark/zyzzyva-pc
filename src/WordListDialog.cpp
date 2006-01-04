@@ -156,9 +156,7 @@ WordListDialog::openFileClicked()
         return;
 
     QFile file (filename);
-    // FIXME Qt4: QIODevice::Translate does not exist!
-    //if (!file.open (QIODevice::ReadOnly | QIODevice::Translate)) {
-    if (!file.open (QIODevice::ReadOnly)) {
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
         QMessageBox::warning (this, "Error Opening Word List File",
                               "Cannot open file '" + filename + "': " +
                               file.errorString());

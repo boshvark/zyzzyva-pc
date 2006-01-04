@@ -201,10 +201,8 @@ WordTableView::exportFile (const QString& filename, QString* err) const
         return false;
     }
 
-    // FIXME Qt4: QIODevice::Translate does not exist!
-    //if (!file.open (QIODevice::WriteOnly | QIODevice::Translate)) {
     QFile file (filename);
-    if (!file.open (QIODevice::WriteOnly)) {
+    if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
         if (err)
             *err = file.errorString();
         return false;
