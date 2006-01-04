@@ -55,7 +55,7 @@ const QString SETTINGS_QUIZ_AUTO_CHECK = "/quiz_auto_check";
 const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
-const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb (240, 255, 127);
+const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb (0, 0, 127);
 
 //---------------------------------------------------------------------------
 //  readSettings
