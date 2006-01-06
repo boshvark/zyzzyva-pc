@@ -636,7 +636,6 @@ MainWindow::readSettings (bool useGeometry)
         ; // do nothing
     else if (mainFont.fromString (fontStr)) {
         qApp->setFont (mainFont);
-        qDebug ("Setting font: |" + fontStr + "|");
     }
     else {
         qWarning ("Cannot set font: " + fontStr);
