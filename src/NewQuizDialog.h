@@ -31,12 +31,12 @@
 #include <QComboBox>
 #include <QDialog>
 #include <QLineEdit>
-#include <QPushButton>
 #include <QRadioButton>
 #include <QSpinBox>
 
 class SearchSpec;
 class SearchSpecForm;
+class ZPushButton;
 
 class NewQuizDialog : public QDialog
 {
@@ -64,8 +64,8 @@ class NewQuizDialog : public QDialog
     QComboBox*      typeCombo;
     QCheckBox*      progressCbox;
     QCheckBox*      randomCbox;
-    QPushButton*    saveQuizButton;
-    QPushButton*    okButton;
+    ZPushButton*    saveQuizButton;
+    ZPushButton*    okButton;
     QWidget*        timerWidget;
     QCheckBox*      timerCbox;
     QSpinBox*       timerSbox;

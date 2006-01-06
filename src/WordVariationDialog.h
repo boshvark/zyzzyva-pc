@@ -28,12 +28,12 @@
 #include "WordVariationType.h"
 #include <QDialog>
 #include <QLabel>
-#include <QPushButton>
 
 class DefinitionLabel;
 class WordEngine;
 class WordTableModel;
 class WordTableView;
+class ZPushButton;
 
 class WordVariationDialog : public QDialog
 {
@@ -57,7 +57,7 @@ class WordVariationDialog : public QDialog
     WordTableModel*  leftModel;
     WordTableView*   rightView;
     WordTableModel*  rightModel;
-    QPushButton*     closeButton;
+    ZPushButton*     closeButton;
 };
 
 #endif // ZYZZYVA_WORD_VARIATION_DIALOG_H

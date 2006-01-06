@@ -27,6 +27,7 @@
 #include "WordEngine.h"
 #include "WordTableModel.h"
 #include "WordTableView.h"
+#include "ZPushButton.h"
 #include "Defs.h"
 #include <QApplication>
 #include <QHeaderView>
@@ -71,7 +72,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (buttonHlay);
     specVlay->addLayout (buttonHlay);
 
-    searchButton = new QPushButton ("&Search");
+    searchButton = new ZPushButton ("&Search");
     Q_CHECK_PTR (searchButton);
     searchButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (searchButton, SIGNAL (clicked()), SLOT (search()));

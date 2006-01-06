@@ -26,6 +26,7 @@
 #include "QuizSpec.h"
 #include "SearchSpec.h"
 #include "SearchSpecForm.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QApplication>
@@ -140,26 +141,26 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    QPushButton* loadQuizButton = new QPushButton ("&Load Quiz...");
+    ZPushButton* loadQuizButton = new ZPushButton ("&Load Quiz...");
     Q_CHECK_PTR (loadQuizButton);
     connect (loadQuizButton, SIGNAL (clicked()), SLOT (loadQuiz()));
     buttonHlay->addWidget (loadQuizButton);
 
-    saveQuizButton = new QPushButton ("&Save Quiz...");
+    saveQuizButton = new ZPushButton ("&Save Quiz...");
     Q_CHECK_PTR (saveQuizButton);
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuiz()));
     buttonHlay->addWidget (saveQuizButton);
 
     buttonHlay->addStretch (1);
 
-    okButton = new QPushButton ("OK");
+    okButton = new ZPushButton ("OK");
     Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (okButton);
 
-    QPushButton* cancelButton = new QPushButton ("Cancel");
+    ZPushButton* cancelButton = new ZPushButton ("Cancel");
     Q_CHECK_PTR (cancelButton);
     cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));

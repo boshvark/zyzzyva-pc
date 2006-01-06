@@ -27,11 +27,11 @@
 #include "WordLineEdit.h"
 #include "WordListDialog.h"
 #include "WordValidator.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPushButton>
 
 using namespace Defs;
 
@@ -171,7 +171,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
              SIGNAL (contentsChanged()));
     paramWordListHlay->addWidget (paramWordListLine);
 
-    QPushButton* paramWordListButton = new QPushButton ("Edit List...");
+    ZPushButton* paramWordListButton = new ZPushButton ("Edit List...");
     Q_CHECK_PTR (paramWordListButton);
     connect (paramWordListButton, SIGNAL (clicked()),
              SLOT (editListClicked()));

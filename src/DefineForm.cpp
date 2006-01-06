@@ -25,6 +25,7 @@
 #include "WordEngine.h"
 #include "WordLineEdit.h"
 #include "WordValidator.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QHBoxLayout>
@@ -67,7 +68,7 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    defineButton = new QPushButton ("&Define");
+    defineButton = new ZPushButton ("&Define");
     Q_CHECK_PTR (defineButton);
     defineButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (defineButton, SIGNAL (clicked()), SLOT (defineWord()));

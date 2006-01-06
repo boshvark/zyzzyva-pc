@@ -25,6 +25,7 @@
 #include "SearchSpecForm.h"
 #include "SearchSpec.h"
 #include "SearchConditionForm.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QApplication>
@@ -91,13 +92,13 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    moreButton = new QPushButton ("&More");
+    moreButton = new ZPushButton ("&More");
     Q_CHECK_PTR (moreButton);
     moreButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (moreButton, SIGNAL (clicked()), SLOT (addConditionForm()));
     buttonHlay->addWidget (moreButton);
 
-    fewerButton = new QPushButton ("Fe&wer");
+    fewerButton = new ZPushButton ("Fe&wer");
     Q_CHECK_PTR (fewerButton);
     fewerButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (fewerButton, SIGNAL (clicked()), SLOT (removeConditionForm()));
@@ -105,13 +106,13 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, Qt::WFlags f)
 
     buttonHlay->addStretch (1);
 
-    loadButton = new QPushButton ("L&oad Search...");
+    loadButton = new ZPushButton ("L&oad Search...");
     Q_CHECK_PTR (loadButton);
     loadButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (loadButton, SIGNAL (clicked()), SLOT (loadSearch()));
     buttonHlay->addWidget (loadButton);
 
-    saveButton = new QPushButton ("S&ave Search...");
+    saveButton = new ZPushButton ("S&ave Search...");
     Q_CHECK_PTR (saveButton);
     saveButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (saveButton, SIGNAL (clicked()), SLOT (saveSearch()));

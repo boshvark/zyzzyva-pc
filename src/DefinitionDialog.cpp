@@ -23,12 +23,12 @@
 //---------------------------------------------------------------------------
 
 #include "DefinitionDialog.h"
-#include "WordEngine.h"
 #include "DefinitionBox.h"
+#include "WordEngine.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QHBoxLayout>
-#include <QPushButton>
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION_PREFIX = "Define : ";
@@ -66,7 +66,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
 
     buttonHlay->addStretch (1);
 
-    QPushButton* closeButton = new QPushButton ("&Close");
+    ZPushButton* closeButton = new ZPushButton ("&Close");
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setDefault (true);

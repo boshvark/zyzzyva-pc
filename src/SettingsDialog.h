@@ -31,9 +31,10 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QListWidget>
-#include <QPushButton>
 #include <QSettings>
 #include <QStackedWidget>
+
+class ZPushButton;
 
 class SettingsDialog : public QDialog
 {
@@ -67,7 +68,7 @@ class SettingsDialog : public QDialog
 
     QCheckBox*   autoImportCbox;
     QLineEdit*   autoImportLine;
-    QPushButton* browseButton;
+    ZPushButton* browseButton;
     QCheckBox*   themeCbox;
     QLabel*      themeLabel;
     QComboBox*   themeCombo;

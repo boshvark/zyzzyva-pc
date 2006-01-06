@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 // ZPushButton.cpp
 //
-// A class derived from QPushButton.  This class allows buttons to be clicked
+// A class derived from ZPushButton.  This class allows buttons to be clicked
 // by pressing Enter as well as the space bar.
 //
 // Copyright 2006 Michael W Thelen <mike@pietdepsi.com>.
@@ -41,5 +41,5 @@ ZPushButton::keyPressEvent (QKeyEvent* e)
     if (e && ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter)))
         animateClick();
     else
-        QPushButton::keyPressEvent (e);
+        ZPushButton::keyPressEvent (e);
 }

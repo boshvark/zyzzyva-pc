@@ -25,6 +25,7 @@
 #include "WordEngine.h"
 #include "WordTextEdit.h"
 #include "WordValidator.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QHBoxLayout>
@@ -56,13 +57,13 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    clearButton = new QPushButton ("&Clear");
+    clearButton = new ZPushButton ("&Clear");
     Q_CHECK_PTR (clearButton);
     clearButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (clearButton, SIGNAL (clicked()), SLOT (clear()));
     buttonHlay->addWidget (clearButton);
 
-    judgeButton = new QPushButton ("&Judge");
+    judgeButton = new ZPushButton ("&Judge");
     Q_CHECK_PTR (judgeButton);
     judgeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (judgeButton, SIGNAL (clicked()), SLOT (judgeWord()));

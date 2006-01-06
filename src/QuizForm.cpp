@@ -35,6 +35,7 @@
 #include "WordLineEdit.h"
 #include "WordTableModel.h"
 #include "WordTableView.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QApplication>
@@ -200,7 +201,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     buttonHlay->addLayout (buttonGlay);
 
     // Buttons
-    nextQuestionButton = new QPushButton ("&Next");
+    nextQuestionButton = new ZPushButton ("&Next");
     Q_CHECK_PTR (nextQuestionButton);
     nextQuestionButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (nextQuestionButton, SIGNAL (clicked()),
@@ -208,7 +209,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     nextQuestionButton->setEnabled (false);
     buttonGlay->addWidget (nextQuestionButton, 0, 0, Qt::AlignHCenter);
 
-    checkResponseButton = new QPushButton ("&Check Answers");
+    checkResponseButton = new ZPushButton ("&Check Answers");
     Q_CHECK_PTR (checkResponseButton);
     checkResponseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (checkResponseButton, SIGNAL (clicked()),
@@ -216,26 +217,26 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     checkResponseButton->setEnabled (false);
     buttonGlay->addWidget (checkResponseButton, 0, 1, Qt::AlignHCenter);
 
-    pauseButton = new QPushButton (PAUSE_BUTTON);
+    pauseButton = new ZPushButton (PAUSE_BUTTON);
     Q_CHECK_PTR (pauseButton);
     pauseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (pauseButton, SIGNAL (clicked()), SLOT (pauseClicked()));
     pauseButton->setEnabled (false);
     buttonGlay->addWidget (pauseButton, 0, 2, Qt::AlignHCenter);
 
-    QPushButton* newQuizButton = new QPushButton ("New &Quiz...");
+    ZPushButton* newQuizButton = new ZPushButton ("New &Quiz...");
     Q_CHECK_PTR (newQuizButton);
     newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
     buttonGlay->addWidget (newQuizButton, 1, 0, Qt::AlignHCenter);
 
-    QPushButton* saveQuizButton = new QPushButton ("&Save Quiz...");
+    ZPushButton* saveQuizButton = new ZPushButton ("&Save Quiz...");
     Q_CHECK_PTR (saveQuizButton);
     saveQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuizClicked()));
     buttonGlay->addWidget (saveQuizButton, 1, 1, Qt::AlignHCenter);
 
-    analyzeButton = new QPushButton ("&Analyze Quiz...");
+    analyzeButton = new ZPushButton ("&Analyze Quiz...");
     Q_CHECK_PTR (analyzeButton);
     analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));

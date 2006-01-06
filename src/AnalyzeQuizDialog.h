@@ -27,7 +27,6 @@
 
 #include <QDialog>
 #include <QLabel>
-#include <QPushButton>
 #include "MatchType.h"
 
 class QuizEngine;
@@ -35,6 +34,7 @@ class QuizSpec;
 class WordEngine;
 class WordTableModel;
 class WordTableView;
+class ZPushButton;
 
 class AnalyzeQuizDialog : public QDialog
 {
@@ -72,7 +72,7 @@ class AnalyzeQuizDialog : public QDialog
     WordTableModel* missedModel;
     WordTableView*  incorrectView;
     WordTableModel* incorrectModel;
-    QPushButton*  closeButton;
+    ZPushButton*  closeButton;
 };
 
 #endif // ZYZZYVA_ANALYZE_QUIZ_DIALOG_H

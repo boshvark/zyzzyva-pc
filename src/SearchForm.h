@@ -28,12 +28,12 @@
 #include "ActionForm.h"
 #include <QCheckBox>
 #include <QLabel>
-#include <QPushButton>
 
 class SearchSpecForm;
 class WordEngine;
 class WordTableModel;
 class WordTableView;
+class ZPushButton;
 
 class SearchForm : public ActionForm
 {
@@ -54,7 +54,7 @@ class SearchForm : public ActionForm
     QLabel*         resultLabel;
     WordTableView*  resultView;
     WordTableModel* resultModel;
-    QPushButton*    searchButton;
+    ZPushButton*    searchButton;
     QString         statusString;
 };
 

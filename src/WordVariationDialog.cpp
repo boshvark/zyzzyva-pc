@@ -28,6 +28,7 @@
 #include "WordEngine.h"
 #include "WordTableModel.h"
 #include "WordTableView.h"
+#include "ZPushButton.h"
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -108,7 +109,7 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
 
     buttonHlay->addStretch (1);
 
-    closeButton = new QPushButton ("&Close");
+    closeButton = new ZPushButton ("&Close");
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setAutoDefault (true);
