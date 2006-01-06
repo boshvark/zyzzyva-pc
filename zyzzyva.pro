@@ -68,7 +68,8 @@ SOURCES = \
     src/WordTableModel.cpp \
     src/WordTableView.cpp \
     src/WordValidator.cpp \
-    src/WordVariationDialog.cpp
+    src/WordVariationDialog.cpp \
+    src/ZPushButton.cpp
 
 # Header files that must be run through moc
 HEADERS = \
@@ -96,4 +97,5 @@ HEADERS = \
     src/WordTableView.h \
     src/WordTextEdit.h \
     src/WordValidator.h \
-    src/WordVariationDialog.h
+    src/WordVariationDialog.h \
+    src/ZPushButton.h
