@@ -31,7 +31,6 @@
 #include <QImage>
 #include <QLabel>
 #include <QMap>
-#include <QPushButton>
 #include <QString>
 #include <QTimerEvent>
 
@@ -43,6 +42,7 @@ class WordEngine;
 class WordLineEdit;
 class WordTableModel;
 class WordTableView;
+class ZPushButton;
 
 class QuizForm : public ActionForm
 {
@@ -100,10 +100,10 @@ class QuizForm : public ActionForm
     WordTableModel* responseModel;
     DefinitionLabel* responseStatusLabel;
     DefinitionLabel* questionStatusLabel;
-    QPushButton*  nextQuestionButton;
-    QPushButton*  checkResponseButton;
-    QPushButton*  pauseButton;
-    QPushButton*  analyzeButton;
+    ZPushButton*  nextQuestionButton;
+    ZPushButton*  checkResponseButton;
+    ZPushButton*  pauseButton;
+    ZPushButton*  analyzeButton;
 
     QMap<QString,QImage> tileImages;
     int maxTileWidth, maxTileHeight;

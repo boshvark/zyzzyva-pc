@@ -26,7 +26,7 @@
 #define ZYZZYVA_DEFINE_FORM_H
 
 #include "ActionForm.h"
-#include <QPushButton>
+#include "ZPushButton.h"
 
 class DefinitionBox;
 class WordEngine;
@@ -46,7 +46,7 @@ class DefineForm : public ActionForm
     private:
     WordEngine*    engine;
     WordLineEdit*  wordLine;
-    QPushButton*   defineButton;
+    ZPushButton*   defineButton;
     DefinitionBox* resultBox;
 };
 

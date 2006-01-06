@@ -27,13 +27,13 @@
 
 #include <QFrame>
 #include <QList>
-#include <QPushButton>
 #include <QRadioButton>
 #include <QVBoxLayout>
 #include <set>
 
 class SearchConditionForm;
 class SearchSpec;
+class ZPushButton;
 
 class SearchSpecForm : public QFrame
 {
@@ -61,10 +61,10 @@ class SearchSpecForm : public QFrame
     private:
     //QRadioButton* conjunctionRadio;
     int visibleForms;
-    QPushButton* moreButton;
-    QPushButton* fewerButton;
-    QPushButton* loadButton;
-    QPushButton* saveButton;
+    ZPushButton* moreButton;
+    ZPushButton* fewerButton;
+    ZPushButton* loadButton;
+    ZPushButton* saveButton;
     QVBoxLayout* conditionVlay;
     QList<SearchConditionForm*> conditionForms;
 };

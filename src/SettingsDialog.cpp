@@ -24,6 +24,7 @@
 
 #include "SettingsDialog.h"
 #include "MainSettings.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QColorDialog>
@@ -121,7 +122,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (autoImportLine);
     autoImportHlay->addWidget (autoImportLine);
 
-    browseButton = new QPushButton ("Browse...");
+    browseButton = new ZPushButton ("Browse...");
     Q_CHECK_PTR (browseButton);
     connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
     autoImportHlay->addWidget (browseButton);
@@ -203,7 +204,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     quizBackgroundColorLine->setEnabled (false);
     quizBackgroundColorHlay->addWidget (quizBackgroundColorLine);
 
-    QPushButton* quizBackgroundColorButton = new QPushButton ("Choose...");
+    ZPushButton* quizBackgroundColorButton = new ZPushButton ("Choose...");
     Q_CHECK_PTR (quizBackgroundColorButton);
     connect (quizBackgroundColorButton, SIGNAL (clicked()),
              SLOT (chooseQuizBackgroundColorButtonClicked()));
@@ -271,7 +272,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     fontMainLine->home (false);
     fontGlay->addWidget (fontMainLine, row, 1);
 
-    QPushButton* chooseFontMainButton = new QPushButton ("Choose...");
+    ZPushButton* chooseFontMainButton = new ZPushButton ("Choose...");
     Q_CHECK_PTR (chooseFontMainButton);
     connect (chooseFontMainButton, SIGNAL (clicked()), signalMapper,
              SLOT (map()));
@@ -291,7 +292,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     fontWordListLine->home (false);
     fontGlay->addWidget (fontWordListLine, row, 1);
 
-    QPushButton* chooseFontWordListButton = new QPushButton ("Choose...");
+    ZPushButton* chooseFontWordListButton = new ZPushButton ("Choose...");
     Q_CHECK_PTR (chooseFontWordListButton);
     connect (chooseFontWordListButton, SIGNAL (clicked()), signalMapper,
              SLOT (map()));
@@ -314,7 +315,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     //fontQuizLabelLine->home (false);
     //fontGlay->addWidget (fontQuizLabelLine, row, 1);
 
-    //QPushButton* chooseFontQuizLabelButton = new QPushButton ("Choose...");
+    //ZPushButton* chooseFontQuizLabelButton = new ZPushButton ("Choose...");
     //Q_CHECK_PTR (chooseFontQuizLabelButton);
     //connect (chooseFontQuizLabelButton, SIGNAL (clicked()), signalMapper,
     //         SLOT (map()));
@@ -335,7 +336,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     fontWordInputLine->home (false);
     fontGlay->addWidget (fontWordInputLine, row, 1);
 
-    QPushButton* chooseFontInputButton = new QPushButton ("Choose...");
+    ZPushButton* chooseFontInputButton = new ZPushButton ("Choose...");
     Q_CHECK_PTR (chooseFontInputButton);
     connect (chooseFontInputButton, SIGNAL (clicked()), signalMapper,
              SLOT (map()));
@@ -355,7 +356,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     fontDefinitionLine->home (false);
     fontGlay->addWidget (fontDefinitionLine, row, 1);
 
-    QPushButton* chooseFontDefinitionButton = new QPushButton ("Choose...");
+    ZPushButton* chooseFontDefinitionButton = new ZPushButton ("Choose...");
     Q_CHECK_PTR (chooseFontDefinitionButton);
     connect (chooseFontDefinitionButton, SIGNAL (clicked()), signalMapper,
              SLOT (map()));
@@ -413,14 +414,14 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
 
     buttonHlay->addStretch (1);
 
-    QPushButton* okButton = new QPushButton ("OK");
+    ZPushButton* okButton = new ZPushButton ("OK");
     Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (okButton);
 
-    QPushButton* cancelButton = new QPushButton ("Cancel");
+    ZPushButton* cancelButton = new ZPushButton ("Cancel");
     Q_CHECK_PTR (cancelButton);
     cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));

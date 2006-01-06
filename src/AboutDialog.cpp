@@ -23,11 +23,11 @@
 //---------------------------------------------------------------------------
 
 #include "AboutDialog.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPushButton>
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "About Zyzzyva";
@@ -67,7 +67,7 @@ AboutDialog::AboutDialog (QWidget* parent, Qt::WFlags f)
 
     buttonHlay->addStretch (1);
 
-    QPushButton* closeButton = new QPushButton ("&Close");
+    ZPushButton* closeButton = new ZPushButton ("&Close");
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setDefault (true);

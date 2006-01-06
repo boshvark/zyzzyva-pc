@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "WordListDialog.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QApplication>
@@ -30,7 +31,6 @@
 #include <QFileDialog>
 #include <QHBoxLayout>
 #include <QMessageBox>
-#include <QPushButton>
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Edit Word List";
@@ -63,13 +63,13 @@ WordListDialog::WordListDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
-    QPushButton* openFileButton = new QPushButton ("Open &File...");
+    ZPushButton* openFileButton = new ZPushButton ("Open &File...");
     Q_CHECK_PTR (openFileButton);
     openFileButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (openFileButton, SIGNAL (clicked()), SLOT (openFileClicked()));
     buttonHlay->addWidget (openFileButton);
 
-    QPushButton* clearButton = new QPushButton ("&Clear");
+    ZPushButton* clearButton = new ZPushButton ("&Clear");
     Q_CHECK_PTR (clearButton);
     clearButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (clearButton, SIGNAL (clicked()), SLOT (clearClicked()));
@@ -77,14 +77,14 @@ WordListDialog::WordListDialog (QWidget* parent, Qt::WFlags f)
 
     buttonHlay->addStretch (1);
 
-    QPushButton* okButton = new QPushButton ("&OK");
+    ZPushButton* okButton = new ZPushButton ("&OK");
     Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (okButton);
 
-    QPushButton* cancelButton = new QPushButton ("Cancel");
+    ZPushButton* cancelButton = new ZPushButton ("Cancel");
     Q_CHECK_PTR (cancelButton);
     cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));

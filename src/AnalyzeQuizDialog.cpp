@@ -29,6 +29,7 @@
 #include "WordEngine.h"
 #include "WordTableModel.h"
 #include "WordTableView.h"
+#include "ZPushButton.h"
 #include <QHBoxLayout>
 #include <QHeaderView>
 #include <QLabel>
@@ -115,7 +116,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 
     buttonHlay->addStretch (1);
 
-    closeButton = new QPushButton ("&Close", this);
+    closeButton = new ZPushButton ("&Close", this);
     Q_CHECK_PTR (closeButton);
     closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setAutoDefault (true);

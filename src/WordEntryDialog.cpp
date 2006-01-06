@@ -24,10 +24,10 @@
 
 #include "WordEntryDialog.h"
 #include "WordValidator.h"
+#include "ZPushButton.h"
 #include "Defs.h"
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPushButton>
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Enter a word";
@@ -71,14 +71,14 @@ WordEntryDialog::WordEntryDialog (QWidget* parent, Qt::WFlags f)
 
     buttonHlay->addStretch (1);
 
-    QPushButton* okButton = new QPushButton ("OK");
+    ZPushButton* okButton = new ZPushButton ("OK");
     Q_CHECK_PTR (okButton);
     okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault (true);
     connect (okButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (okButton);
 
-    QPushButton* cancelButton = new QPushButton ("Cancel");
+    ZPushButton* cancelButton = new ZPushButton ("Cancel");
     Q_CHECK_PTR (cancelButton);
     cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
