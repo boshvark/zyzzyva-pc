@@ -103,11 +103,27 @@ void
 JudgeForm::textChanged()
 {
     QTextCursor cursor = wordArea->textCursor();
-    QString text = wordArea->text();
+    int origCursorPosition = cursor.position();
+    int deletedBeforeCursor = 0;
+
     wordArea->blockSignals (true);
-    wordArea->setText (text.upper());
+    cursor.movePosition (QTextCursor::Start);
+    QString text = wordArea->text();
+    for (int i = 0; i < text.length(); ++i) {
+        QChar c = text.at (i);
+        cursor.deleteChar();
+        if (c.isLetter() || c.isSpace())
+            cursor.insertText (QString (c.upper()));
+        else if (i < origCursorPosition)
+            ++deletedBeforeCursor;
+    }
+
+    cursor.setPosition (origCursorPosition - deletedBeforeCursor);
     wordArea->setTextCursor (cursor);
+    wordArea->update();
     wordArea->blockSignals (false);
+
+    text = wordArea->text();
     bool empty = text.stripWhiteSpace().isEmpty();
     judgeButton->setEnabled (!empty);
     clearButton->setEnabled (!empty || resultBox->isShown());
