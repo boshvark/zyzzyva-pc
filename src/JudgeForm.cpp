@@ -107,20 +107,23 @@ JudgeForm::textChanged()
     int deletedBeforeCursor = 0;
 
     wordArea->blockSignals (true);
-    cursor.movePosition (QTextCursor::Start);
-    QString text = wordArea->text();
+    QString text = wordArea->text().upper();
+    int lookIndex = 0;
     for (int i = 0; i < text.length(); ++i) {
-        QChar c = text.at (i);
-        cursor.deleteChar();
-        if (c.isLetter() || c.isSpace())
-            cursor.insertText (QString (c.upper()));
-        else if (i < origCursorPosition)
-            ++deletedBeforeCursor;
+        QChar c = text.at (lookIndex);
+        if (c.isLetter() || c.isSpace()) {
+            ++lookIndex;
+        }
+        else {
+            text.remove (lookIndex, 1);
+            if (i < origCursorPosition)
+                ++deletedBeforeCursor;
+        }
     }
 
+    wordArea->setText (text);
     cursor.setPosition (origCursorPosition - deletedBeforeCursor);
     wordArea->setTextCursor (cursor);
-    wordArea->update();
     wordArea->blockSignals (false);
 
     text = wordArea->text();
