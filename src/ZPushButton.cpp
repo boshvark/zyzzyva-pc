@@ -41,5 +41,5 @@ ZPushButton::keyPressEvent (QKeyEvent* e)
     if (e && ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter)))
         animateClick();
     else
-        ZPushButton::keyPressEvent (e);
+        QPushButton::keyPressEvent (e);
 }
