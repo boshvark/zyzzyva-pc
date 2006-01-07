@@ -229,6 +229,11 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (quizAutoCheckCbox);
     quizHintsVlay->addWidget (quizAutoCheckCbox);
 
+    quizAutoAdvanceCbox = new QCheckBox
+        ("Go to next question after all correct responses");
+    Q_CHECK_PTR (quizAutoAdvanceCbox);
+    quizHintsVlay->addWidget (quizAutoAdvanceCbox);
+
     quizPrefVlay->addStretch (2);
 
     // Signal mapper for the Choose Font buttons
@@ -502,6 +507,7 @@ SettingsDialog::readSettings()
     quizShowNumResponsesCbox->setChecked
         (MainSettings::getQuizShowNumResponses());
     quizAutoCheckCbox->setChecked (MainSettings::getQuizAutoCheck());
+    quizAutoAdvanceCbox->setChecked (MainSettings::getQuizAutoAdvance());
 
     // Main font
     fontMainLine->setText (MainSettings::getMainFont());
@@ -550,6 +556,7 @@ SettingsDialog::writeSettings()
     MainSettings::setQuizShowNumResponses
         (quizShowNumResponsesCbox->isChecked());
     MainSettings::setQuizAutoCheck (quizAutoCheckCbox->isChecked());
+    MainSettings::setQuizAutoAdvance (quizAutoAdvanceCbox->isChecked());
     MainSettings::setMainFont (fontMainLine->text());
     MainSettings::setWordListFont (fontWordListLine->text());
     // XXX: Reinstate this once it's know how to change the font of canvas

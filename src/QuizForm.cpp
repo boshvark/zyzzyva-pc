@@ -357,6 +357,11 @@ QuizForm::responseEntered()
         (quizEngine->getQuestionCorrect() == quizEngine->getQuestionTotal()))
     {
         checkResponseClicked();
+        if (MainSettings::getQuizAutoAdvance() &&
+            nextQuestionButton->isEnabled())
+        {
+            nextQuestionClicked();
+        }
     }
 }
 
