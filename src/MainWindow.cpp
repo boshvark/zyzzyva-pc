@@ -77,7 +77,7 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
+MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     : QMainWindow (parent, f), wordEngine (new WordEngine()),
       settingsDialog (new SettingsDialog (this)),
       aboutDialog (new AboutDialog (this)),
@@ -292,9 +292,18 @@ MainWindow::MainWindow (QWidget* parent, Qt::WFlags f)
     readSettings (true);
 
     QString importFile = MainSettings::getAutoImportFile();
-    if (!importFile.isEmpty())
+    if (!importFile.isEmpty()) {
+        if (splash) {
+            splash->showMessage ("Loading dictionary...",
+                                 Qt::AlignHCenter | Qt::AlignBottom);
+        }
         import (importFile);
+    }
 
+    if (splash) {
+        splash->showMessage ("Loading stems...",
+                             Qt::AlignHCenter | Qt::AlignBottom);
+    }
     importStems();
 
     if (!instance)

@@ -24,6 +24,8 @@
 
 #include "MainWindow.h"
 #include <QApplication>
+#include <QPixmap>
+#include <QSplashScreen>
 
 const QString SETTINGS_ORGANIZATION_NAME = "Piet Depsi";
 const QString SETTINGS_DOMAIN_NAME = "pietdepsi.com";
@@ -35,8 +37,17 @@ int main (int argc, char** argv)
     QCoreApplication::setOrganizationName (SETTINGS_ORGANIZATION_NAME);
     QCoreApplication::setOrganizationDomain (SETTINGS_DOMAIN_NAME);
     QCoreApplication::setApplicationName (SETTINGS_APPLICATION_NAME);
-    MainWindow window (0);
-    app.setMainWidget (&window);
-    window.show();
+
+    QPixmap pixmap (":/zyzzyva-splash");
+    QSplashScreen* splash = new QSplashScreen (pixmap);
+    splash->show();
+
+    MainWindow* window = new MainWindow (0, splash);
+    app.setMainWidget (window);
+    window->show();
+
+    splash->finish (window);
+    delete splash;
+
     return app.exec();
 }
