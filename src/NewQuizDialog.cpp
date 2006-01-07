@@ -233,8 +233,10 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
             default: break;
         }
     }
-    progressCbox->setEnabled (true);
-    progressCbox->setChecked (true);
+    if (!spec.getProgress().isEmpty()) {
+        progressCbox->setEnabled (true);
+        progressCbox->setChecked (true);
+    }
 }
 
 //---------------------------------------------------------------------------
