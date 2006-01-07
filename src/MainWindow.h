@@ -29,6 +29,7 @@
 #include <QLabel>
 #include <QMainWindow>
 #include <QSettings>
+#include <QSplashScreen>
 #include <QTabWidget>
 #include <QToolButton>
 
@@ -43,7 +44,8 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
     public:
-    MainWindow (QWidget* parent = 0, Qt::WFlags f = Qt::WType_TopLevel);
+    MainWindow (QWidget* parent = 0, QSplashScreen* splash = 0,
+                Qt::WFlags f = Qt::WType_TopLevel);
     ~MainWindow();
 
     static MainWindow* getInstance() { return instance; }
