@@ -39,6 +39,22 @@ const QString XML_RESPONSE_COUNT_ATTR = "count";
 using namespace std;
 
 //---------------------------------------------------------------------------
+//  isEmpty
+//
+//! Determine whether the progress represented in this object is empty.
+//
+//! @return true if empty, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizProgress::isEmpty() const
+{
+    return ((question == 0) && (correct == 0) && (incorrect == 0) &&
+            (missed == 0) && (questionComplete == false) &&
+            questionCorrectWords.empty() && incorrectWords.isEmpty() &&
+            missedWords.isEmpty());
+}
+
+//---------------------------------------------------------------------------
 //  addIncorrect
 //
 //! Add an incorrect response, incrementing the number of times the response

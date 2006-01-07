@@ -36,6 +36,8 @@ class QuizProgress
                      questionComplete (false) { }
     ~QuizProgress() { }
 
+    bool isEmpty() const;
+
     void setQuestion (int q) { question = q; }
     void setCorrect (int c) { correct = c; }
     void addIncorrect (const QString& word);
