@@ -55,6 +55,8 @@ class QuizForm : public ActionForm
     public slots:
     void newQuiz (const QuizSpec& spec);
     void responseEntered();
+    void alphaOrderClicked();
+    void randomOrderClicked();
     void newQuizClicked();
     void saveQuizClicked();
     void nextQuestionClicked();
@@ -77,7 +79,8 @@ class QuizForm : public ActionForm
     void clearCanvas();
     void minimizeCanvas();
     void setNumCanvasTiles (int num);
-    void setQuestionLabel (const QString& question);
+    void setQuestionLabel (const QString& question, const QString& order =
+                           QString::null);
     void setQuestionStatus (int correct, int total);
     void setStatusString (const QString& status);
     void setTimerDisplay (int seconds);
@@ -100,6 +103,9 @@ class QuizForm : public ActionForm
     WordTableModel* responseModel;
     DefinitionLabel* responseStatusLabel;
     DefinitionLabel* questionStatusLabel;
+    QLabel*       letterOrderLabel;
+    ZPushButton*  alphaOrderButton;
+    ZPushButton*  randomOrderButton;
     ZPushButton*  nextQuestionButton;
     ZPushButton*  checkResponseButton;
     ZPushButton*  pauseButton;
