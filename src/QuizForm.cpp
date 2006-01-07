@@ -155,6 +155,32 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
 
     quizBoxHlay->addStretch (1);
 
+    QHBoxLayout* letterOrderHlay = new QHBoxLayout;
+    Q_CHECK_PTR (letterOrderHlay);
+    mainVlay->addLayout (letterOrderHlay);
+
+    letterOrderHlay->addStretch (1);
+
+    letterOrderLabel = new QLabel ("Letter order:");
+    Q_CHECK_PTR (letterOrderLabel);
+    letterOrderHlay->addWidget (letterOrderLabel);
+
+    alphaOrderButton = new ZPushButton ("&Alpha");
+    Q_CHECK_PTR (alphaOrderButton);
+    alphaOrderButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (alphaOrderButton, SIGNAL (clicked()),
+             SLOT (alphaOrderClicked()));
+    letterOrderHlay->addWidget (alphaOrderButton);
+
+    randomOrderButton = new ZPushButton ("&Random");
+    Q_CHECK_PTR (randomOrderButton);
+    randomOrderButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (randomOrderButton, SIGNAL (clicked()),
+             SLOT (randomOrderClicked()));
+    letterOrderHlay->addWidget (randomOrderButton);
+
+    letterOrderHlay->addStretch (1);
+
     responseView = new WordTableView (wordEngine);
     Q_CHECK_PTR (responseView);
     responseView->verticalHeader()->hide();
@@ -236,7 +262,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuizClicked()));
     buttonGlay->addWidget (saveQuizButton, 1, 1, Qt::AlignHCenter);
 
-    analyzeButton = new ZPushButton ("&Analyze Quiz...");
+    analyzeButton = new ZPushButton ("Analy&ze Quiz...");
     Q_CHECK_PTR (analyzeButton);
     analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));
@@ -346,6 +372,26 @@ void
 QuizForm::newQuiz (const QuizSpec& spec)
 {
     timerSpec = spec.getTimerSpec();
+
+    // Enable or disable Alpha and Random buttons depending on Quiz type
+    bool enableLetterOrder = false;
+    switch (spec.getType()) {
+        case QuizSpec::QuizAnagrams:
+        case QuizSpec::QuizSubanagrams:
+        case QuizSpec::QuizAnagramJumble:
+        case QuizSpec::QuizSubanagramJumble:
+        case QuizSpec::QuizAnagramHooks:
+        enableLetterOrder = true;
+        break;
+
+        default:
+        enableLetterOrder = false;
+        break;
+    }
+    letterOrderLabel->setEnabled (enableLetterOrder);
+    alphaOrderButton->setEnabled (enableLetterOrder);
+    randomOrderButton->setEnabled (enableLetterOrder);
+
     QApplication::setOverrideCursor (Qt::waitCursor);
     quizEngine->newQuiz (spec);
     QApplication::restoreOverrideCursor();
@@ -409,6 +455,28 @@ QuizForm::saveQuizClicked()
     QTextStream stream (&file);
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
         << document.toString();
+}
+
+//---------------------------------------------------------------------------
+//  alphaOrderClicked
+//
+//! Called when the Alpha button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::alphaOrderClicked()
+{
+    setQuestionLabel (quizEngine->getQuestion(), Defs::QUIZ_LETTERS_ALPHA);
+}
+
+//---------------------------------------------------------------------------
+//  randomOrderClicked
+//
+//! Called when the Random button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::randomOrderClicked()
+{
+    setQuestionLabel (quizEngine->getQuestion(), Defs::QUIZ_LETTERS_RANDOM);
 }
 
 //---------------------------------------------------------------------------
@@ -698,7 +766,7 @@ QuizForm::setNumCanvasTiles (int num)
 //! @param question the question
 //---------------------------------------------------------------------------
 void
-QuizForm::setQuestionLabel (const QString& question)
+QuizForm::setQuestionLabel (const QString& question, const QString& order)
 {
     clearCanvas();
 
@@ -708,10 +776,12 @@ QuizForm::setQuestionLabel (const QString& question)
 
     // Anagram Quiz: Order letters according to preference
     if (type == QuizSpec::QuizAnagrams) {
-        QString order = MainSettings::getQuizLetterOrder();
+        QString letterOrder (order);
+        if (letterOrder.isEmpty())
+            letterOrder = MainSettings::getQuizLetterOrder();
         int length = displayQuestion.length();
 
-        if (order == Defs::QUIZ_LETTERS_RANDOM) {
+        if (letterOrder == Defs::QUIZ_LETTERS_RANDOM) {
             for (int i = 0; i < length; ++i) {
                 int rnum = i + (std::rand() % (length - i));
                 if (rnum == i)
@@ -727,13 +797,13 @@ QuizForm::setQuestionLabel (const QString& question)
             for (int i = 0; i < length; ++i)
                 qchars.append (displayQuestion.at (i));
 
-            if (order == Defs::QUIZ_LETTERS_VOWELS_FIRST) {
+            if (letterOrder == Defs::QUIZ_LETTERS_VOWELS_FIRST) {
                 qSort (qchars.begin(), qchars.end(), vowelsFirstCmp);
             }
-            else if (order == Defs::QUIZ_LETTERS_CONSONANTS_FIRST) {
+            else if (letterOrder == Defs::QUIZ_LETTERS_CONSONANTS_FIRST) {
                 qSort (qchars.begin(), qchars.end(), consonantsFirstCmp);
             }
-            else if (order == Defs::QUIZ_LETTERS_ALPHA) {
+            else if (letterOrder == Defs::QUIZ_LETTERS_ALPHA) {
                 qSort (qchars.begin(), qchars.end());
             }
 
