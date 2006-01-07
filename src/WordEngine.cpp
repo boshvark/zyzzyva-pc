@@ -69,7 +69,7 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
         line = line.simplifyWhiteSpace();
         if (!line.length() || (line.at (0) == '#'))
             continue;
-        QString word = line.section (' ', 0, 0);
+        QString word = line.section (' ', 0, 0).upper();
 
         if (!graph.containsWord (word)) {
             QString alpha = alphagram (word);
