@@ -51,6 +51,7 @@ class SettingsDialog : public QDialog
     void browseButtonClicked();
     void autoImportCboxToggled (bool on);
     void themeCboxToggled (bool on);
+    void autoCheckCboxToggled (bool on);
     void chooseFontButtonClicked (int button);
     void chooseQuizBackgroundColorButtonClicked();
 

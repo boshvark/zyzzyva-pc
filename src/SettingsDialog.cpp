@@ -227,6 +227,8 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     quizAutoCheckCbox = new QCheckBox
         ("End question after all correct responses");
     Q_CHECK_PTR (quizAutoCheckCbox);
+    connect (quizAutoCheckCbox, SIGNAL (toggled (bool)),
+             SLOT (autoCheckCboxToggled (bool)));
     quizHintsVlay->addWidget (quizAutoCheckCbox);
 
     quizAutoAdvanceCbox = new QCheckBox
@@ -506,8 +508,10 @@ SettingsDialog::readSettings()
 
     quizShowNumResponsesCbox->setChecked
         (MainSettings::getQuizShowNumResponses());
-    quizAutoCheckCbox->setChecked (MainSettings::getQuizAutoCheck());
+    bool autoCheck = MainSettings::getQuizAutoCheck();
+    quizAutoCheckCbox->setChecked (autoCheck);
     quizAutoAdvanceCbox->setChecked (MainSettings::getQuizAutoAdvance());
+    autoCheckCboxToggled (autoCheck);
 
     // Main font
     fontMainLine->setText (MainSettings::getMainFont());
@@ -624,6 +628,20 @@ SettingsDialog::autoImportCboxToggled (bool on)
 {
     autoImportLine->setEnabled (on);
     browseButton->setEnabled (on);
+}
+
+//---------------------------------------------------------------------------
+//  autoCheckCboxToggled
+//
+//! Slot called when the Auto Check check box is toggled.  Enable or disable
+//! the auto-advance check box.
+//
+//! @param on true if the check box is on, false if it is off
+//---------------------------------------------------------------------------
+void
+SettingsDialog::autoCheckCboxToggled (bool on)
+{
+    quizAutoAdvanceCbox->setEnabled (on);
 }
 
 //---------------------------------------------------------------------------
