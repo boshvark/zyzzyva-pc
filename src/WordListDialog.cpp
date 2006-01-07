@@ -171,7 +171,7 @@ WordListDialog::openFileClicked()
         line = line.simplifyWhiteSpace();
         if (!line.length() || (line.at (0) == '#'))
             continue;
-        QString word = line.section (' ', 0, 0);
+        QString word = line.section (' ', 0, 0).upper();
         new Q3ListViewItem (wordList, word);
     }
     delete[] buffer;
