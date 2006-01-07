@@ -70,6 +70,12 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
         if (!line.length() || (line.at (0) == '#'))
             continue;
         QString word = line.section (' ', 0, 0);
+
+        if (!graph.containsWord (word)) {
+            QString alpha = alphagram (word);
+            ++numAnagramsMap[alpha];
+        }
+
         graph.addWord (word);
         if (loadDefinitions) {
             QString definition = line.section (' ', 1);
@@ -486,12 +492,8 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 int
 WordEngine::numAnagrams (const QString& word) const
 {
-    SearchSpec spec;
-    SearchCondition condition;
-    condition.type = SearchCondition::AnagramMatch;
-    condition.stringValue = word;
-    spec.conditions.append (condition);
-    return search (spec, true).size();
+    QString alpha = alphagram (word);
+    return numAnagramsMap.contains (alpha) ? numAnagramsMap[alpha] : 0;
 }
 
 //---------------------------------------------------------------------------
