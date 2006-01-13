@@ -31,6 +31,7 @@
 #include <QImage>
 #include <QLabel>
 #include <QMap>
+#include <QStackedWidget>
 #include <QString>
 #include <QTimerEvent>
 
@@ -95,9 +96,10 @@ class QuizForm : public ActionForm
     QuizEngine*   quizEngine;
     QLabel*       quizTypeLabel;
     QLabel*       timerLabel;
-    QWidget*      questionWidget;
+    QStackedWidget* questionStack;
     Q3CanvasView*  questionCanvasView;
     Q3Canvas*      questionCanvas;
+    QLabel*       questionLabel;
     WordLineEdit* inputLine;
     WordTableView* responseView;
     WordTableModel* responseModel;

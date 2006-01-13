@@ -139,8 +139,13 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
 
     quizBoxHlay->addStretch (1);
 
+    questionStack = new QStackedWidget;
+    Q_CHECK_PTR (questionStack);
+    questionStack->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    quizBoxHlay->addWidget (questionStack);
+
     // Canvas for tile images - set default background color
-    questionCanvas = new Q3Canvas (this);
+    questionCanvas = new Q3Canvas;
     Q_CHECK_PTR (questionCanvas);
     setBackgroundColor (QColor (MainSettings::getQuizBackgroundColor()));
 
@@ -151,9 +156,14 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     questionCanvasView->setResizePolicy (Q3ScrollView::AutoOneFit);
     questionCanvasView->setSizePolicy (QSizePolicy::Fixed,
                                        QSizePolicy::Fixed);
-    quizBoxHlay->addWidget (questionCanvasView);
+    questionStack->addWidget (questionCanvasView);
 
     quizBoxHlay->addStretch (1);
+
+    questionLabel = new QLabel;
+    Q_CHECK_PTR (questionLabel);
+    questionLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+    questionStack->addWidget (questionLabel);
 
     QHBoxLayout* letterOrderHlay = new QHBoxLayout;
     Q_CHECK_PTR (letterOrderHlay);
@@ -826,18 +836,11 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
     }
 
     // Question is not an alphagram, or there are no tile images
-    if (displayQuestion.contains (" ") || tileImages.empty()) {
-        Q3CanvasText* text = new Q3CanvasText (displayQuestion,
-                                               questionCanvas);
-        QRect rect = text->boundingRect();
-        int width = (2 * QUIZ_TILE_MARGIN) + rect.width();
-        if (width < minCanvasWidth)
-            width = minCanvasWidth;
-        questionCanvas->resize (width, (2 * QUIZ_TILE_MARGIN) +
-                                rect.height());
-        text->move ((width - rect.width()) / 2, QUIZ_TILE_MARGIN);
-        text->show();
-        questionCanvas->setAllChanged();
+    if (!MainSettings::getUseTileTheme() || displayQuestion.contains (" ")
+        || tileImages.empty())
+    {
+        questionLabel->setText (displayQuestion);
+        questionStack->setCurrentWidget (questionLabel);
     }
 
     else {
@@ -866,6 +869,7 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
             }
             x += maxTileWidth + QUIZ_TILE_SPACING;
         }
+        questionStack->setCurrentWidget (questionCanvasView);
     }
 
     reflowLayout();
