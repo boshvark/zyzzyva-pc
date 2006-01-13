@@ -38,6 +38,7 @@
 class AnalyzeQuizDialog;
 class DefinitionLabel;
 class QuizEngine;
+class QuizQuestionLabel;
 class QuizSpec;
 class WordEngine;
 class WordLineEdit;
@@ -99,7 +100,7 @@ class QuizForm : public ActionForm
     QStackedWidget* questionStack;
     Q3CanvasView*  questionCanvasView;
     Q3Canvas*      questionCanvas;
-    QLabel*       questionLabel;
+    QuizQuestionLabel* questionLabel;
     WordLineEdit* inputLine;
     WordTableView* responseView;
     WordTableModel* responseModel;

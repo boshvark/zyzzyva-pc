@@ -80,9 +80,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   quizAutoAdvanceCbox;
     QLineEdit*   fontMainLine;
     QLineEdit*   fontWordListLine;
-    // XXX: Reinstate this once it's known how to change the font of canvas
-    // text items via QApplication::setFont
-    //QLineEdit*   fontQuizLabelLine;
+    QLineEdit*   fontQuizLabelLine;
     QLineEdit*   fontDefinitionLine;
     QLineEdit*   fontWordInputLine;
     QCheckBox*   lengthSortCbox;

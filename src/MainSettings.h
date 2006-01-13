@@ -73,6 +73,9 @@ class MainSettings
     static QString getWordListFont() { return instance->wordListFont; }
     static void setWordListFont (const QString& str) {
         instance->wordListFont = str; }
+    static QString getQuizLabelFont() { return instance->quizLabelFont; }
+    static void setQuizLabelFont (const QString& str) {
+        instance->quizLabelFont = str; }
     static QString getWordInputFont() { return instance->wordInputFont; }
     static void setWordInputFont (const QString& str) {
         instance->wordInputFont = str; }

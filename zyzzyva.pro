@@ -85,6 +85,7 @@ HEADERS = \
     src/MainWindow.h \
     src/NewQuizDialog.h \
     src/QuizForm.h \
+    src/QuizQuestionLabel.h \
     src/SearchForm.h \
     src/SearchConditionForm.h \
     src/SearchSpecForm.h \

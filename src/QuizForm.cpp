@@ -30,6 +30,7 @@
 #include "NewQuizDialog.h"
 #include "Rand.h"
 #include "QuizEngine.h"
+#include "QuizQuestionLabel.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
 #include "WordLineEdit.h"
@@ -160,7 +161,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
 
     quizBoxHlay->addStretch (1);
 
-    questionLabel = new QLabel;
+    questionLabel = new QuizQuestionLabel;
     Q_CHECK_PTR (questionLabel);
     questionLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
     questionStack->addWidget (questionLabel);
