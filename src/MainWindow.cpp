@@ -666,16 +666,13 @@ MainWindow::readSettings (bool useGeometry)
         qApp->setFont (mainFont, "QHeaderView");
 
     // Quiz label font
-    // XXX: Reinstate this once it's know how to change the font of canvas
-    // text items via QApplication::setFont
-    //fontStr = MainSettings::getQuizLabelFont();
-    //if (fontStr.isEmpty())
-    //    ; // do nothing
-    //else if (font.fromString (fontStr))
-    //    // FIXME: How to get QCanvasText items to update their font?
-    //    qApp->setFont (font, "QCanvasText");
-    //else
-    //    qWarning ("Cannot set font: " + fontStr);
+    fontStr = MainSettings::getQuizLabelFont();
+    if (fontStr.isEmpty())
+        ; // do nothing
+    else if (font.fromString (fontStr))
+        qApp->setFont (font, "QuizQuestionLabel");
+    else
+        qWarning ("Cannot set font: " + fontStr);
 
     // Word input font
     fontStr = MainSettings::getWordInputFont();

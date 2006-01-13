@@ -308,27 +308,25 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     fontGlay->addWidget (chooseFontWordListButton, row, 2);
 
     // Quiz label font
-    // XXX: Reinstate this once it's know how to change the font of canvas
-    // text items via QApplication::setFont
-    //++row;
-    //QLabel* fontQuizLabelLabel = new QLabel ("Quizzes:");
-    //Q_CHECK_PTR (fontQuizLabelLabel);
-    //fontGlay->addWidget (fontQuizLabelLabel, row, 0, Qt::AlignLeft);
+    ++row;
+    QLabel* fontQuizLabelLabel = new QLabel ("Quizzes:");
+    Q_CHECK_PTR (fontQuizLabelLabel);
+    fontGlay->addWidget (fontQuizLabelLabel, row, 0, Qt::AlignLeft);
 
-    //fontQuizLabelLine = new QLineEdit;
-    //Q_CHECK_PTR (fontQuizLabelLine);
-    //fontQuizLabelLine->setReadOnly (true);
-    //fontQuizLabelLine->setText (this->font().toString());
-    //fontQuizLabelLine->home (false);
-    //fontGlay->addWidget (fontQuizLabelLine, row, 1);
+    fontQuizLabelLine = new QLineEdit;
+    Q_CHECK_PTR (fontQuizLabelLine);
+    fontQuizLabelLine->setReadOnly (true);
+    fontQuizLabelLine->setText (this->font().toString());
+    fontQuizLabelLine->home (false);
+    fontGlay->addWidget (fontQuizLabelLine, row, 1);
 
-    //ZPushButton* chooseFontQuizLabelButton = new ZPushButton ("Choose...");
-    //Q_CHECK_PTR (chooseFontQuizLabelButton);
-    //connect (chooseFontQuizLabelButton, SIGNAL (clicked()), signalMapper,
-    //         SLOT (map()));
-    //signalMapper->setMapping (chooseFontQuizLabelButton,
-    //                          FONT_QUIZ_LABEL_BUTTON);
-    //fontGlay->addWidget (chooseFontQuizLabelButton, row, 2);
+    ZPushButton* chooseFontQuizLabelButton = new ZPushButton ("Choose...");
+    Q_CHECK_PTR (chooseFontQuizLabelButton);
+    connect (chooseFontQuizLabelButton, SIGNAL (clicked()), signalMapper,
+             SLOT (map()));
+    signalMapper->setMapping (chooseFontQuizLabelButton,
+                              FONT_QUIZ_LABEL_BUTTON);
+    fontGlay->addWidget (chooseFontQuizLabelButton, row, 2);
 
     // Input font
     ++row;
@@ -522,10 +520,8 @@ SettingsDialog::readSettings()
     fontWordListLine->home (false);
 
     // Quiz label font
-    // XXX: Reinstate this once it's know how to change the font of canvas
-    // text items via QApplication::setFont
-    //fontQuizLabelLine->setText (MainSettings::getQuizLabelFont());
-    //fontQuizLabelLine->home (false);
+    fontQuizLabelLine->setText (MainSettings::getQuizLabelFont());
+    fontQuizLabelLine->home (false);
 
     // Word input font
     fontWordInputLine->setText (MainSettings::getWordInputFont());
@@ -563,9 +559,7 @@ SettingsDialog::writeSettings()
     MainSettings::setQuizAutoAdvance (quizAutoAdvanceCbox->isChecked());
     MainSettings::setMainFont (fontMainLine->text());
     MainSettings::setWordListFont (fontWordListLine->text());
-    // XXX: Reinstate this once it's know how to change the font of canvas
-    // text items via QApplication::setFont
-    //MainSettings::setQuizLabelFont (fontQuizLabelLine->text());
+    MainSettings::setQuizLabelFont (fontQuizLabelLine->text());
     MainSettings::setWordInputFont (fontWordInputLine->text());
     MainSettings::setDefinitionFont (fontDefinitionLine->text());
     MainSettings::setWordListSortByLength (lengthSortCbox->isChecked());
@@ -677,10 +671,8 @@ SettingsDialog::chooseFontButtonClicked (int button)
     switch (button) {
         case FONT_MAIN_BUTTON:        lineEdit = fontMainLine; break;
         case FONT_WORD_LISTS_BUTTON:  lineEdit = fontWordListLine; break;
-        // XXX: Reinstate this once it's know how to change the font of canvas
-        // text items via QApplication::setFont
-        //case FONT_QUIZ_LABEL_BUTTON:  lineEdit = fontQuizLabelLine; break;
-        case FONT_WORD_INPUT_BUTTON: lineEdit = fontWordInputLine; break;
+        case FONT_QUIZ_LABEL_BUTTON:  lineEdit = fontQuizLabelLine; break;
+        case FONT_WORD_INPUT_BUTTON:  lineEdit = fontWordInputLine; break;
         case FONT_DEFINITIONS_BUTTON: lineEdit = fontDefinitionLine; break;
         default: return;
     }
