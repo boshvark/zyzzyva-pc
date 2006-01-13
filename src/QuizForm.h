@@ -101,6 +101,7 @@ class QuizForm : public ActionForm
     Q3CanvasView*  questionCanvasView;
     Q3Canvas*      questionCanvas;
     QuizQuestionLabel* questionLabel;
+    QLabel*       questionSpecLabel;
     WordLineEdit* inputLine;
     WordTableView* responseView;
     WordTableModel* responseModel;
