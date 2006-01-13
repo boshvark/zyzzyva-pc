@@ -63,7 +63,7 @@ QuizEngine::newQuiz (const QuizSpec& spec)
     }
 
     else if (type == QuizSpec::QuizWordListRecall) {
-        quizQuestions << spec.asString();
+        quizQuestions << spec.getSearchSpec().asString();
     }
 
     // Do a random shuffle
