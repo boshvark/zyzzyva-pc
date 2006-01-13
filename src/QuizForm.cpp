@@ -166,6 +166,11 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     questionLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
     questionStack->addWidget (questionLabel);
 
+    questionSpecLabel = new QLabel;
+    Q_CHECK_PTR (questionSpecLabel);
+    questionSpecLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+    questionStack->addWidget (questionSpecLabel);
+
     QHBoxLayout* letterOrderHlay = new QHBoxLayout;
     Q_CHECK_PTR (letterOrderHlay);
     mainVlay->addLayout (letterOrderHlay);
@@ -840,8 +845,10 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
     if (!MainSettings::getUseTileTheme() || displayQuestion.contains (" ")
         || tileImages.empty())
     {
-        questionLabel->setText (displayQuestion);
-        questionStack->setCurrentWidget (questionLabel);
+        QLabel* label = (quizSpec.getType() == QuizSpec::QuizWordListRecall) ?
+            questionSpecLabel : questionLabel;
+        label->setText (displayQuestion);
+        questionStack->setCurrentWidget (label);
     }
 
     else {
