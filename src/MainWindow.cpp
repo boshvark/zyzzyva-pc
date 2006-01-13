@@ -667,8 +667,11 @@ MainWindow::readSettings (bool useGeometry)
 
     // Quiz label font
     fontStr = MainSettings::getQuizLabelFont();
-    if (fontStr.isEmpty())
-        ; // do nothing
+    if (fontStr.isEmpty()) {
+        font = qApp->font();
+        font.setPixelSize (60);
+        qApp->setFont (font, "QuizQuestionLabel");
+    }
     else if (font.fromString (fontStr))
         qApp->setFont (font, "QuizQuestionLabel");
     else
