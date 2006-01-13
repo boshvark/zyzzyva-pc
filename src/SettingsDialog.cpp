@@ -309,7 +309,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
 
     // Quiz label font
     ++row;
-    QLabel* fontQuizLabelLabel = new QLabel ("Quizzes:");
+    QLabel* fontQuizLabelLabel = new QLabel ("Quiz Questions:");
     Q_CHECK_PTR (fontQuizLabelLabel);
     fontGlay->addWidget (fontQuizLabelLabel, row, 0, Qt::AlignLeft);
 
