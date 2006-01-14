@@ -11,9 +11,9 @@
     </section>
     <section ref="preferences.html" title="Preferences">
       <section ref="preferences.html#general" title="General Preferences">
-        <keyword ref="preferences.html#auto-load-dictionary">dictionary</keyword>
-        <section ref="preferences.html#auto-load-dictionary"
-                 title="Dictionary" />
+        <keyword ref="preferences.html#auto-load-lexicon">lexicon</keyword>
+        <section ref="preferences.html#auto-load-lexicon"
+                 title="Lexicon" />
       </section>
       <section ref="preferences.html#quiz" title="Quiz Preferences">
         <section ref="preferences.html#question-display"

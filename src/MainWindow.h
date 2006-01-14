@@ -80,7 +80,7 @@ class MainWindow : public QMainWindow
     QTabWidget*  tabStack;
     QToolButton* closeButton;
     QLabel*      messageLabel;
-    QLabel*      dictionaryLabel;
+    QLabel*      lexiconLabel;
 
     SettingsDialog* settingsDialog;
     AboutDialog*    aboutDialog;

@@ -98,7 +98,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     generalPrefLabel->setFrameShape (QFrame::StyledPanel);
     generalPrefVlay->addWidget (generalPrefLabel);
 
-    QGroupBox* autoImportGbox = new QGroupBox ("Dictionary");
+    QGroupBox* autoImportGbox = new QGroupBox ("Lexicon");
     Q_CHECK_PTR (autoImportGbox);
     generalPrefVlay->addWidget (autoImportGbox);
     generalPrefVlay->setStretchFactor (autoImportGbox, 1);
@@ -107,7 +107,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
                                                    SPACING);
     Q_CHECK_PTR (autoImportVlay);
 
-    autoImportCbox = new QCheckBox ("Automatically open a word list "
+    autoImportCbox = new QCheckBox ("Automatically load a lexicon "
                                     "on startup");
     Q_CHECK_PTR (autoImportCbox);
     connect (autoImportCbox, SIGNAL (toggled (bool)),
