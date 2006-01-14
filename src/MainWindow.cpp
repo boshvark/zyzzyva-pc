@@ -284,9 +284,9 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     Q_CHECK_PTR (messageLabel);
     statusBar()->addWidget (messageLabel, 2);
 
-    dictionaryLabel = new QLabel;
-    Q_CHECK_PTR (dictionaryLabel);
-    statusBar()->addWidget (dictionaryLabel, 1);
+    lexiconLabel = new QLabel;
+    Q_CHECK_PTR (lexiconLabel);
+    statusBar()->addWidget (lexiconLabel, 1);
     setNumWords (0);
 
     readSettings (true);
@@ -294,7 +294,7 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     QString importFile = MainSettings::getAutoImportFile();
     if (!importFile.isEmpty()) {
         if (splash) {
-            splash->showMessage ("Loading dictionary...",
+            splash->showMessage ("Loading lexicon...",
                                  Qt::AlignHCenter | Qt::AlignBottom);
         }
         import (importFile);
@@ -618,7 +618,7 @@ MainWindow::tabStatusChanged (const QString& status)
 void
 MainWindow::setNumWords (int num)
 {
-    dictionaryLabel->setText (QString::number (num) + " words");
+    lexiconLabel->setText (QString::number (num) + " words");
 }
 
 //---------------------------------------------------------------------------
