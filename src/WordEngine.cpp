@@ -463,7 +463,9 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                 QString setAlphagram = *ait;
                 int missing = 0;
                 int saIndex = 0;
-                for (int i = 0; i < int (agram.length()); ++i) {
+                for (int i = 0; (i < int (agram.length())) &&
+                                (saIndex < setAlphagram.length()); ++i)
+                {
                     if (agram.at (i) == setAlphagram.at (saIndex))
                         ++saIndex;
                     else
