@@ -73,6 +73,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
           << Auxil::searchTypeToString (SearchCondition::MustConsist)
           << Auxil::searchTypeToString (SearchCondition::MustBelong)
           << Auxil::searchTypeToString (SearchCondition::InWordList)
+          << Auxil::searchTypeToString (SearchCondition::NotInWordList)
           << Auxil::searchTypeToString (SearchCondition::ExactAnagrams)
           << Auxil::searchTypeToString (SearchCondition::MinAnagrams)
           << Auxil::searchTypeToString (SearchCondition::MaxAnagrams);
@@ -227,6 +228,7 @@ SearchConditionForm::getSearchCondition() const
         break;
 
         case SearchCondition::InWordList:
+        case SearchCondition::NotInWordList:
         condition.stringValue = paramWordListString;
         break;
 
@@ -285,6 +287,7 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
         break;
 
         case SearchCondition::InWordList:
+        case SearchCondition::NotInWordList:
         setWordListString (condition.stringValue);
         break;
 
@@ -332,6 +335,7 @@ SearchConditionForm::isValid() const
                !paramConsistLine->text().isEmpty();
 
         case SearchCondition::InWordList:
+        case SearchCondition::NotInWordList:
         return !paramWordListString.isEmpty();
 
         case SearchCondition::UnknownSearchType:
@@ -410,6 +414,7 @@ SearchConditionForm::typeChanged (const QString& string)
         break;
 
         case SearchCondition::InWordList:
+        case SearchCondition::NotInWordList:
         paramStack->setCurrentWidget (paramWordListFrame);
         break;
 
