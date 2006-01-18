@@ -376,6 +376,12 @@ WordEngine::matchesConditions (const QString& word, const
                 return false;
             break;
 
+            case SearchCondition::NotInWordList:
+            if (condition.stringValue.contains
+                (QRegExp ("\\b" + wordUpper + "\\b")))
+                return false;
+            break;
+
             case SearchCondition::ExactAnagrams:
             if (numAnagrams (wordUpper) != condition.intValue)
                 return false;
