@@ -191,9 +191,21 @@ SearchSpec::optimize()
 
                 if ((condition.type == SearchCondition::PatternMatch) ||
                     (condition.type == SearchCondition::AnagramMatch))
+                {
+                    if ((length < minLength) || (length > maxLength)) {
+                        conditions.clear();
+                        return;
+                    }
                     minLength = maxLength = length;
-                else
-                    maxLength = length;
+                }
+                else {
+                    if (length < minLength) {
+                        conditions.clear();
+                        return;
+                    }
+                    else if (length < maxLength)
+                        maxLength = length;
+                }
 
                 if (wildcard)
                     wildcardConditions.append (condition);
