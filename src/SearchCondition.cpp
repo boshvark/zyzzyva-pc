@@ -3,7 +3,7 @@
 //
 // A class to represent a word search condition.
 //
-// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -64,6 +64,7 @@ SearchCondition::asString() const
         break;
 
         case InWordList:
+        case NotInWordList:
         str += "...";
         break;
 
@@ -122,6 +123,7 @@ SearchCondition::asDomElement() const
         case MustExclude:
         case MustBelong:
         case InWordList:
+        case NotInWordList:
         topElement.setAttribute (XML_STRING_ATTR, stringValue);
         break;
 
@@ -188,6 +190,7 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case MustExclude:
         case MustBelong:
         case InWordList:
+        case NotInWordList:
         if (!element.hasAttribute (XML_STRING_ATTR))
             return false;
         tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
