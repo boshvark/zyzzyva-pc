@@ -24,7 +24,7 @@
 
 TEMPLATE = app
 TARGET = zyzzyva
-CONFIG += qt thread warn_on assistant
+CONFIG += qt release thread warn_on assistant
 QT += qt3support xml
 
 MOC_DIR = build/moc

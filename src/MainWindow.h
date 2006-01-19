@@ -63,6 +63,7 @@ class MainWindow : public QMainWindow
     void viewVariation (int variation);
     void displayAbout();
     void displayHelp();
+    void helpDialogError (const QString& message);
     void closeCurrentTab();
     void currentTabChanged (int index);
     void tabStatusChanged (const QString& status);

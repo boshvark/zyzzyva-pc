@@ -311,6 +311,9 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     setWindowTitle ("Zyzzyva");
     setWindowIcon (QIcon (":/zyzzyva-32x32"));
+
+    connect (helpDialog, SIGNAL (error (const QString&)),
+             SLOT (helpDialogError (const QString&)));
 }
 
 //---------------------------------------------------------------------------
@@ -548,6 +551,19 @@ void
 MainWindow::displayHelp()
 {
     helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
+}
+
+//---------------------------------------------------------------------------
+//  helpDialogError
+//
+//! Called when an error occurs in the help dialog.
+//
+//! @param message the error message
+//---------------------------------------------------------------------------
+void
+MainWindow::helpDialogError (const QString& message)
+{
+    QMessageBox::warning (this, "Help Display Error", message);
 }
 
 //---------------------------------------------------------------------------
