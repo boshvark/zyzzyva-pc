@@ -3,7 +3,7 @@
 //
 // A class to represent a word search condition.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2004, 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -49,6 +49,7 @@ class SearchCondition
         MustConsist,
         MustBelong,
         InWordList,
+        NotInWordList,
         ExactAnagrams,
         MinAnagrams,
         MaxAnagrams,
