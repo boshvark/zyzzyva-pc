@@ -26,6 +26,8 @@
 #define ZYZZYVA_MAIN_SETTINGS_H
 
 #include <QColor>
+#include <QPoint>
+#include <QSize>
 #include <QString>
 
 class MainSettings
@@ -34,15 +36,10 @@ class MainSettings
     static void readSettings();
     static void writeSettings();
 
-    static int getMainWindowX() { return instance->mainWindowX; }
-    static void setMainWindowX (int i) { instance->mainWindowX = i; }
-    static int getMainWindowY() { return instance->mainWindowY; }
-    static void setMainWindowY (int i) { instance->mainWindowY = i; }
-    static int getMainWindowWidth() { return instance->mainWindowWidth; }
-    static void setMainWindowWidth (int i) { instance->mainWindowWidth = i; }
-    static int getMainWindowHeight() { return instance->mainWindowHeight; }
-    static void setMainWindowHeight (int i) {
-        instance->mainWindowHeight = i; }
+    static QPoint getMainWindowPos() { return instance->mainWindowPos; }
+    static void setMainWindowPos (QPoint p) { instance->mainWindowPos = p; }
+    static QSize getMainWindowSize() { return instance->mainWindowSize; }
+    static void setMainWindowSize (QSize s) { instance->mainWindowSize = s; }
     static bool getUseAutoImport() { return instance->useAutoImport; }
     static void setUseAutoImport (bool b) { instance->useAutoImport = b; }
     static QString getAutoImportFile() { return instance->autoImportFile; }
@@ -100,11 +97,10 @@ class MainSettings
         instance->wordListShowDefinitions = b; }
 
     private:
-    MainSettings() : mainWindowX (0), mainWindowY (0), mainWindowWidth (0),
-                     mainWindowHeight (0), useAutoImport (false), useTileTheme
-                         (false), wordListSortByLength (false),
-                     wordListShowHooks (false), wordListShowHookParents
-                         (false), wordListShowDefinitions (false) { };
+    MainSettings() : useAutoImport (false), useTileTheme (false),
+                     wordListSortByLength (false), wordListShowHooks (false),
+                     wordListShowHookParents (false),
+                     wordListShowDefinitions (false) { };
     ~MainSettings() { };
 
     // private and undefined
@@ -113,10 +109,8 @@ class MainSettings
 
     static MainSettings* instance;
 
-    int mainWindowX;
-    int mainWindowY;
-    int mainWindowWidth;
-    int mainWindowHeight;
+    QPoint mainWindowPos;
+    QSize mainWindowSize;
     bool useAutoImport;
     QString autoImportFile;
     bool useTileTheme;
