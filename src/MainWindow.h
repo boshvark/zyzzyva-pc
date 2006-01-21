@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_MAIN_WINDOW_H
 #define ZYZZYVA_MAIN_WINDOW_H
 
+#include <QCloseEvent>
 #include <QIcon>
 #include <QLabel>
 #include <QMainWindow>
@@ -46,7 +47,7 @@ class MainWindow : public QMainWindow
     public:
     MainWindow (QWidget* parent = 0, QSplashScreen* splash = 0,
                 Qt::WFlags f = Qt::WType_TopLevel);
-    ~MainWindow();
+    ~MainWindow() { }
 
     static MainWindow* getInstance() { return instance; }
 
@@ -67,6 +68,9 @@ class MainWindow : public QMainWindow
     void closeCurrentTab();
     void currentTabChanged (int index);
     void tabStatusChanged (const QString& status);
+
+    protected:
+    virtual void closeEvent (QCloseEvent* event);
 
     private:
     int  import (const QString& file);

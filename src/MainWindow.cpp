@@ -317,16 +317,6 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 }
 
 //---------------------------------------------------------------------------
-//  ~MainWindow
-//
-//! Destructor.  Save application settings.
-//---------------------------------------------------------------------------
-MainWindow::~MainWindow()
-{
-    writeSettings();
-}
-
-//---------------------------------------------------------------------------
 //  importInteractive
 //
 //! Allow the user to import a word list from a file.
@@ -625,6 +615,21 @@ MainWindow::tabStatusChanged (const QString& status)
 }
 
 //---------------------------------------------------------------------------
+//  closeEvent
+//
+//! The event handler for widget close events, called when the main window is
+//! closed.
+//
+//! @param event the close event
+//---------------------------------------------------------------------------
+void
+MainWindow::closeEvent (QCloseEvent* event)
+{
+    writeSettings();
+    event->accept();
+}
+
+//---------------------------------------------------------------------------
 //  setNumWords
 //
 //! Update the label displaying the number of words loaded.
@@ -647,11 +652,10 @@ MainWindow::readSettings (bool useGeometry)
 {
     MainSettings::readSettings();
 
-    if (useGeometry)
-        setGeometry (MainSettings::getMainWindowX(),
-                     MainSettings::getMainWindowY(),
-                     MainSettings::getMainWindowWidth(),
-                     MainSettings::getMainWindowHeight());
+    if (useGeometry) {
+        resize (MainSettings::getMainWindowSize());
+        move (MainSettings::getMainWindowPos());
+    }
 
     // Main font
     QFont mainFont;
@@ -739,10 +743,8 @@ MainWindow::readSettings (bool useGeometry)
 void
 MainWindow::writeSettings()
 {
-    MainSettings::setMainWindowX (x());
-    MainSettings::setMainWindowY (y());
-    MainSettings::setMainWindowWidth (width());
-    MainSettings::setMainWindowHeight (height());
+    MainSettings::setMainWindowPos (pos());
+    MainSettings::setMainWindowSize (size());
     MainSettings::writeSettings();
 }
 
