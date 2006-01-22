@@ -1,9 +1,10 @@
 //---------------------------------------------------------------------------
-// JudgeForm.cpp
+// JudgeDialog.cpp
 //
-// A form for looking up words.
+// A full-screen dialog for Word Judge functionality, in which the user can
+// very easily judge the validity of one or more words.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2006 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -20,84 +21,63 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include "JudgeForm.h"
 #include "JudgeDialog.h"
 #include "DefinitionBox.h"
 #include "WordEngine.h"
 #include "WordTextEdit.h"
-#include "WordValidator.h"
-#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <QApplication>
 #include <QHBoxLayout>
+#include <QTimer>
 #include <QVBoxLayout>
 
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-//  JudgeForm
+//  JudgeDialog
 //
 //! Constructor.
 //
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : ActionForm (JudgeFormType, parent, f), engine (e)
+JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
+    : QDialog (parent, f), engine (e)
 {
+    QFont formFont = qApp->font();
+    formFont.setPixelSize (40);
+
     QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
+
+    widgetStack = new QStackedWidget;
+    Q_CHECK_PTR (widgetStack);
+    mainVlay->addWidget (widgetStack);
 
     wordArea = new WordTextEdit;
     Q_CHECK_PTR (wordArea);
     wordArea->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Fixed);
+    wordArea->setFont (formFont);
     connect (wordArea, SIGNAL (textChanged()), SLOT (textChanged()));
-    mainVlay->addWidget (wordArea);
+    widgetStack->addWidget (wordArea);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
-    Q_CHECK_PTR (buttonHlay);
-    mainVlay->addLayout (buttonHlay);
+    resultGbox = new QGroupBox;
+    Q_CHECK_PTR (resultGbox);
+    resultGbox->setFont (formFont);
+    widgetStack->addWidget (resultGbox);
 
-    judgeButton = new ZPushButton ("&Judge");
-    Q_CHECK_PTR (judgeButton);
-    judgeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (judgeButton, SIGNAL (clicked()), SLOT (judgeWord()));
-    buttonHlay->addWidget (judgeButton);
+    QHBoxLayout* resultHlay = new QHBoxLayout (resultGbox, MARGIN, SPACING);
+    Q_CHECK_PTR (resultHlay);
 
-    clearButton = new ZPushButton ("&Clear");
-    Q_CHECK_PTR (clearButton);
-    clearButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (clearButton, SIGNAL (clicked()), SLOT (clear()));
-    buttonHlay->addWidget (clearButton);
+    resultLabel = new QLabel;
+    Q_CHECK_PTR (resultLabel);
+    resultLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+    resultLabel->setWordWrap (true);
+    resultHlay->addWidget (resultLabel);
 
-    ZPushButton* fullScreenButton = new ZPushButton ("Full &Screen");
-    Q_CHECK_PTR (fullScreenButton);
-    fullScreenButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (fullScreenButton, SIGNAL (clicked()), SLOT (doFullScreen()));
-    buttonHlay->addWidget (fullScreenButton);
-
-    resultBox = new DefinitionBox;
-    Q_CHECK_PTR (resultBox);
-    mainVlay->addWidget (resultBox, 1);
-
-    mainVlay->addStretch (0);
-
-    judgeButton->setEnabled (false);
-    clearButton->setEnabled (false);
-    resultBox->hide();
-}
-
-//---------------------------------------------------------------------------
-//  getStatusString
-//
-//! Returns the current status string.
-//
-//! @return the current status string
-//---------------------------------------------------------------------------
-QString
-JudgeForm::getStatusString() const
-{
-    return statusString;
+    clear();
+    showFullScreen();
 }
 
 //---------------------------------------------------------------------------
@@ -107,7 +87,7 @@ JudgeForm::getStatusString() const
 //! contents to upper case, and enables or disables the buttons appropriately.
 //---------------------------------------------------------------------------
 void
-JudgeForm::textChanged()
+JudgeDialog::textChanged()
 {
     QTextCursor cursor = wordArea->textCursor();
     int origCursorPosition = cursor.position();
@@ -116,27 +96,37 @@ JudgeForm::textChanged()
     wordArea->blockSignals (true);
     QString text = wordArea->text().upper();
     int lookIndex = 0;
+    bool afterSpace = false;
+    bool doJudge = false;
     for (int i = 0; i < text.length(); ++i) {
         QChar c = text.at (lookIndex);
-        if (c.isLetter() || c.isSpace()) {
+
+        if (c.isLetter()) {
+            afterSpace = false;
+            ++lookIndex;
+        }
+        else if (c.isSpace() && (c != '\t') && !afterSpace) {
+            text.replace (lookIndex, 1, "\n");
+            afterSpace = true;
             ++lookIndex;
         }
         else {
+            if (c == '\t')
+                doJudge = true;
             text.remove (lookIndex, 1);
             if (i < origCursorPosition)
                 ++deletedBeforeCursor;
         }
     }
+    text.replace (QRegExp ("\\n+"), "\n");
 
     wordArea->setText (text);
     cursor.setPosition (origCursorPosition - deletedBeforeCursor);
     wordArea->setTextCursor (cursor);
     wordArea->blockSignals (false);
 
-    text = wordArea->text();
-    bool empty = text.stripWhiteSpace().isEmpty();
-    judgeButton->setEnabled (!empty);
-    clearButton->setEnabled (!empty || resultBox->isShown());
+    if (doJudge)
+        judgeWord();
 }
 
 //---------------------------------------------------------------------------
@@ -145,14 +135,10 @@ JudgeForm::textChanged()
 //! Clear the input area and the result area.
 //---------------------------------------------------------------------------
 void
-JudgeForm::clear()
+JudgeDialog::clear()
 {
     wordArea->clear();
-    resultBox->hide();
-    judgeButton->setEnabled (false);
-    clearButton->setEnabled (false);
-    statusString = QString::null;
-    emit statusChanged (statusString);
+    widgetStack->setCurrentWidget (wordArea);
 }
 
 //---------------------------------------------------------------------------
@@ -162,7 +148,7 @@ JudgeForm::clear()
 //! edit area.
 //---------------------------------------------------------------------------
 void
-JudgeForm::judgeWord()
+JudgeDialog::judgeWord()
 {
     bool acceptable = true;
 
@@ -179,28 +165,14 @@ JudgeForm::judgeWord()
     }
 
     QString resultStr = (acceptable
-                 ? QString ("<font color=\"blue\">Acceptable</font>")
-                 : QString ("<font color=\"red\">Unacceptable</font>"))
-        + "<br>" + wordStr;
+                 ? QString ("<font color=\"blue\">YES, the play is "
+                            "ACCEPTABLE</font>")
+                 : QString ("<font color=\"red\">NO, the play is "
+                            "UNACCEPTABLE</font>"))
+        + "<br><br>" + wordStr;
 
-    resultBox->setText (resultStr);
-    resultBox->setTitle ("The play is");
-    resultBox->show();
-    statusString = QString ("Play is ") +
-        (acceptable ? QString ("Acceptable") : QString ("Unacceptable"));
-    emit statusChanged (statusString);
-}
+    resultLabel->setText (resultStr);
+    widgetStack->setCurrentWidget (resultGbox);
 
-//---------------------------------------------------------------------------
-//  doFullScreen
-//
-//! Enter full-screen Word Judge mode using a JudgeDialog.
-//---------------------------------------------------------------------------
-void
-JudgeForm::doFullScreen()
-{
-    JudgeDialog* dialog = new JudgeDialog (engine, this);
-    Q_CHECK_PTR (dialog);
-    dialog->exec();
-    delete dialog;
+    QTimer::singleShot (5000, this, SLOT (clear()));
 }

@@ -39,7 +39,7 @@ const QColor VALID_CORRECT_WORD_BACKGROUND = Qt::white;
 const QColor VALID_MISSED_WORD_FOREGROUND = Qt::black;
 const QColor VALID_MISSED_WORD_BACKGROUND = Qt::green;
 const QColor LAST_ADDED_WORD_FOREGROUND = Qt::black;
-const QColor LAST_ADDED_WORD_BACKGROUND = Qt::gray;
+const QColor LAST_ADDED_WORD_BACKGROUND = Qt::cyan;
 const QColor INVALID_WORD_FOREGROUND = Qt::black;
 const QColor INVALID_WORD_BACKGROUND = Qt::red;
 
