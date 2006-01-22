@@ -33,9 +33,9 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-const int FONT_PIXEL_SIZE = 40;
+const int FONT_PIXEL_SIZE = 50;
 const int INPUT_MARGIN = 30;
-const int RESULT_BORDER_WIDTH = 15;
+const int RESULT_BORDER_WIDTH = 20;
 
 using namespace Defs;
 
