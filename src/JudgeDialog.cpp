@@ -128,7 +128,7 @@ JudgeDialog::textChanged()
             afterSpace = false;
             ++lookIndex;
         }
-        else if (c.isSpace() && (c != '\t') && !afterSpace) {
+        else if ((lookIndex > 0) && c.isSpace() && (c != '\t') && !afterSpace) {
             text.replace (lookIndex, 1, "\n");
             afterSpace = true;
             ++lookIndex;
