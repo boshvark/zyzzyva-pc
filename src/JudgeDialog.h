@@ -1,9 +1,10 @@
 //---------------------------------------------------------------------------
-// JudgeForm.h
+// JudgeDialog.h
 //
-// A form for looking up words.
+// A full-screen dialog for Word Judge functionality, in which the user can
+// very easily judge the validity of one or more words.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2006 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,36 +23,35 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_JUDGE_FORM_H
-#define ZYZZYVA_JUDGE_FORM_H
+#ifndef ZYZZYVA_JUDGE_DIALOG_H
+#define ZYZZYVA_JUDGE_DIALOG_H
 
-#include "ActionForm.h"
+#include <QDialog>
+#include <QLabel>
+#include <QStackedWidget>
+#include <QWidget>
 
-class DefinitionBox;
 class WordEngine;
 class WordTextEdit;
-class ZPushButton;
 
-class JudgeForm : public ActionForm
+class JudgeDialog : public QDialog
 {
     Q_OBJECT
     public:
-    JudgeForm (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
-    QString getStatusString() const;
+    JudgeDialog (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
 
     public slots:
     void textChanged();
     void clear();
     void judgeWord();
-    void doFullScreen();
 
     private:
-    WordEngine*    engine;
-    WordTextEdit*  wordArea;
-    ZPushButton*   clearButton;
-    ZPushButton*   judgeButton;
-    DefinitionBox* resultBox;
-    QString        statusString;
+    WordEngine*     engine;
+    QStackedWidget* widgetStack;
+    QWidget*        inputWidget;
+    WordTextEdit*   inputArea;
+    QWidget*        resultWidget;
+    QLabel*         resultLabel;
 };
 
-#endif // ZYZZYVA_JUDGE_FORM_H
+#endif // ZYZZYVA_JUDGE_DIALOG_H

@@ -44,6 +44,7 @@ SOURCES = \
     src/HelpDialog.cpp \
     src/ImageItem.cpp \
     src/JudgeForm.cpp \
+    src/JudgeDialog.cpp \
     src/main.cpp \
     src/MainSettings.cpp \
     src/MainWindow.cpp \
@@ -82,6 +83,7 @@ HEADERS = \
     src/DefinitionLabel.h \
     src/HelpDialog.h \
     src/JudgeForm.h \
+    src/JudgeDialog.h \
     src/MainWindow.h \
     src/NewQuizDialog.h \
     src/QuizForm.h \

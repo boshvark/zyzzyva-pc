@@ -21,6 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "JudgeForm.h"
+#include "JudgeDialog.h"
 #include "DefinitionBox.h"
 #include "WordEngine.h"
 #include "WordTextEdit.h"
@@ -57,17 +58,23 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
+    judgeButton = new ZPushButton ("&Judge");
+    Q_CHECK_PTR (judgeButton);
+    judgeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (judgeButton, SIGNAL (clicked()), SLOT (judgeWord()));
+    buttonHlay->addWidget (judgeButton);
+
     clearButton = new ZPushButton ("&Clear");
     Q_CHECK_PTR (clearButton);
     clearButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (clearButton, SIGNAL (clicked()), SLOT (clear()));
     buttonHlay->addWidget (clearButton);
 
-    judgeButton = new ZPushButton ("&Judge");
-    Q_CHECK_PTR (judgeButton);
-    judgeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (judgeButton, SIGNAL (clicked()), SLOT (judgeWord()));
-    buttonHlay->addWidget (judgeButton);
+    ZPushButton* fullScreenButton = new ZPushButton ("Full &Screen");
+    Q_CHECK_PTR (fullScreenButton);
+    fullScreenButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (fullScreenButton, SIGNAL (clicked()), SLOT (doFullScreen()));
+    buttonHlay->addWidget (fullScreenButton);
 
     resultBox = new DefinitionBox;
     Q_CHECK_PTR (resultBox);
@@ -182,4 +189,18 @@ JudgeForm::judgeWord()
     statusString = QString ("Play is ") +
         (acceptable ? QString ("Acceptable") : QString ("Unacceptable"));
     emit statusChanged (statusString);
+}
+
+//---------------------------------------------------------------------------
+//  doFullScreen
+//
+//! Enter full-screen Word Judge mode using a JudgeDialog.
+//---------------------------------------------------------------------------
+void
+JudgeForm::doFullScreen()
+{
+    JudgeDialog* dialog = new JudgeDialog (engine, this);
+    Q_CHECK_PTR (dialog);
+    dialog->exec();
+    delete dialog;
 }
