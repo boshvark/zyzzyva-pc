@@ -48,7 +48,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     QFont formFont = qApp->font();
     formFont.setPixelSize (40);
 
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this, 0, 0);
     Q_CHECK_PTR (mainVlay);
 
     widgetStack = new QStackedWidget;
