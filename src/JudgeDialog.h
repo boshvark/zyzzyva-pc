@@ -31,7 +31,6 @@
 #include <QStackedWidget>
 #include <QWidget>
 
-class DefinitionBox;
 class WordEngine;
 class WordTextEdit;
 
