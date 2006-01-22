@@ -33,9 +33,9 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-const int FONT_PIXEL_SIZE = 40;
+const int FONT_PIXEL_SIZE = 50;
 const int INPUT_MARGIN = 30;
-const int RESULT_BORDER_WIDTH = 15;
+const int RESULT_BORDER_WIDTH = 20;
 
 using namespace Defs;
 
@@ -64,8 +64,15 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (inputWidget);
     widgetStack->addWidget (inputWidget);
 
-    QHBoxLayout* inputVlay = new QHBoxLayout (inputWidget, INPUT_MARGIN, 0);
+    QVBoxLayout* inputVlay = new QVBoxLayout (inputWidget, INPUT_MARGIN, 0);
     Q_CHECK_PTR (inputVlay);
+
+    QLabel* instLabel = new QLabel ("Hit the Space bar or Enter key to "
+                                    "separate words.  Hit the Tab key to "
+                                    "judge the play.");
+    Q_CHECK_PTR (instLabel);
+    instLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+    inputVlay->addWidget (instLabel);
 
     inputArea = new WordTextEdit;
     Q_CHECK_PTR (inputArea);
@@ -80,7 +87,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
                                  QSizePolicy::Expanding);
     widgetStack->addWidget (resultWidget);
 
-    QHBoxLayout* resultVlay = new QHBoxLayout (resultWidget, 0, 0);
+    QVBoxLayout* resultVlay = new QVBoxLayout (resultWidget, 0, 0);
     Q_CHECK_PTR (resultVlay);
 
     resultLabel = new QLabel;
@@ -121,7 +128,7 @@ JudgeDialog::textChanged()
             afterSpace = false;
             ++lookIndex;
         }
-        else if (c.isSpace() && (c != '\t') && !afterSpace) {
+        else if ((lookIndex > 0) && c.isSpace() && (c != '\t') && !afterSpace) {
             text.replace (lookIndex, 1, "\n");
             afterSpace = true;
             ++lookIndex;
@@ -141,7 +148,7 @@ JudgeDialog::textChanged()
     inputArea->setTextCursor (cursor);
     inputArea->blockSignals (false);
 
-    if (doJudge)
+    if (doJudge && !text.isEmpty())
         judgeWord();
 }
 
