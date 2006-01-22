@@ -64,7 +64,8 @@ install_name_tool -change \
 
 # Create disk image
 echo "Creating disk image..."
-hdiutil create -size 32m -fs HFS+ -volname Zyzzyva zyzzyva.dmg
+rm -rf zyzzyva.dmg
+hdiutil create -srcfolder zyzzyva.app -volname Zyzzyva zyzzyva.dmg
 hdiutil attach zyzzyva.dmg
 DEVS=$(hdiutil attach zyzzyva.dmg | cut -f 1)
 DEV=$(echo $DEVS | cut -f 1 -d ' ')
