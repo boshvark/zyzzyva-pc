@@ -55,26 +55,35 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (widgetStack);
     mainVlay->addWidget (widgetStack);
 
-    wordArea = new WordTextEdit;
-    Q_CHECK_PTR (wordArea);
-    wordArea->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Fixed);
-    wordArea->setFont (formFont);
-    connect (wordArea, SIGNAL (textChanged()), SLOT (textChanged()));
-    widgetStack->addWidget (wordArea);
+    inputWidget = new QWidget;
+    Q_CHECK_PTR (inputWidget);
+    widgetStack->addWidget (inputWidget);
 
-    resultGbox = new QGroupBox;
-    Q_CHECK_PTR (resultGbox);
-    resultGbox->setFont (formFont);
-    widgetStack->addWidget (resultGbox);
+    QHBoxLayout* inputVlay = new QHBoxLayout (inputWidget, 30, 0);
+    Q_CHECK_PTR (inputVlay);
 
-    QHBoxLayout* resultHlay = new QHBoxLayout (resultGbox, MARGIN, SPACING);
-    Q_CHECK_PTR (resultHlay);
+    inputArea = new WordTextEdit;
+    Q_CHECK_PTR (inputArea);
+    inputArea->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
+    inputArea->setFont (formFont);
+    connect (inputArea, SIGNAL (textChanged()), SLOT (textChanged()));
+    inputVlay->addWidget (inputArea);
+
+    resultWidget = new QWidget;
+    Q_CHECK_PTR (resultWidget);
+    inputWidget->setSizePolicy (QSizePolicy::Expanding,
+                                QSizePolicy::Expanding);
+    widgetStack->addWidget (resultWidget);
+
+    QHBoxLayout* resultVlay = new QHBoxLayout (resultWidget, MARGIN, SPACING);
+    Q_CHECK_PTR (resultVlay);
 
     resultLabel = new QLabel;
     Q_CHECK_PTR (resultLabel);
+    resultLabel->setFont (formFont);
     resultLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
     resultLabel->setWordWrap (true);
-    resultHlay->addWidget (resultLabel);
+    resultVlay->addWidget (resultLabel);
 
     clear();
     showFullScreen();
@@ -89,12 +98,12 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
 void
 JudgeDialog::textChanged()
 {
-    QTextCursor cursor = wordArea->textCursor();
+    QTextCursor cursor = inputArea->textCursor();
     int origCursorPosition = cursor.position();
     int deletedBeforeCursor = 0;
 
-    wordArea->blockSignals (true);
-    QString text = wordArea->text().upper();
+    inputArea->blockSignals (true);
+    QString text = inputArea->text().upper();
     int lookIndex = 0;
     bool afterSpace = false;
     bool doJudge = false;
@@ -120,10 +129,10 @@ JudgeDialog::textChanged()
     }
     text.replace (QRegExp ("\\n+"), "\n");
 
-    wordArea->setText (text);
+    inputArea->setText (text);
     cursor.setPosition (origCursorPosition - deletedBeforeCursor);
-    wordArea->setTextCursor (cursor);
-    wordArea->blockSignals (false);
+    inputArea->setTextCursor (cursor);
+    inputArea->blockSignals (false);
 
     if (doJudge)
         judgeWord();
@@ -137,8 +146,8 @@ JudgeDialog::textChanged()
 void
 JudgeDialog::clear()
 {
-    wordArea->clear();
-    widgetStack->setCurrentWidget (wordArea);
+    inputArea->clear();
+    widgetStack->setCurrentWidget (inputWidget);
 }
 
 //---------------------------------------------------------------------------
@@ -152,7 +161,7 @@ JudgeDialog::judgeWord()
 {
     bool acceptable = true;
 
-    QString text = wordArea->text().simplifyWhiteSpace();
+    QString text = inputArea->text().simplifyWhiteSpace();
     QStringList words = QStringList::split (QChar(' '), text);
     QStringList::iterator it;
     QString wordStr;
@@ -172,7 +181,7 @@ JudgeDialog::judgeWord()
         + "<br><br>" + wordStr;
 
     resultLabel->setText (resultStr);
-    widgetStack->setCurrentWidget (resultGbox);
+    widgetStack->setCurrentWidget (resultWidget);
 
     QTimer::singleShot (5000, this, SLOT (clear()));
 }

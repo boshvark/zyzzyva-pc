@@ -27,9 +27,9 @@
 #define ZYZZYVA_JUDGE_DIALOG_H
 
 #include <QDialog>
-#include <QGroupBox>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QWidget>
 
 class DefinitionBox;
 class WordEngine;
@@ -49,8 +49,9 @@ class JudgeDialog : public QDialog
     private:
     WordEngine*     engine;
     QStackedWidget* widgetStack;
-    WordTextEdit*   wordArea;
-    QGroupBox*      resultGbox;
+    QWidget*        inputWidget;
+    WordTextEdit*   inputArea;
+    QWidget*        resultWidget;
     QLabel*         resultLabel;
 };
 
