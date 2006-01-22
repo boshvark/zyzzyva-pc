@@ -23,44 +23,44 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #-----------------------------------------------------------------------------
 
-## Copy data directory into bundle
-#echo "Copying data directory into bundle..."
-#rm -rf zyzzyva.app/Contents/MacOS/data
-#cp -r data zyzzyva.app/Contents/MacOS
-#
-## Create Contents/Frameworks directory in bundle
-#echo "Creating Contents/Frameworks directory in bundle..."
-#rm -rf zyzzyva.app/Contents/Frameworks
-#mkdir -p zyzzyva.app/Contents/Frameworks
-#
-## Copy Qt frameworks into bundle and tell the executable to link to them
-#for i in Qt3Support QtGui QtNetwork QtSql QtXml QtCore ; do
-#
-#    # Copy Qt framework into bundle
-#    echo "Copying $i.framework into bundle..."
-#    cp -R /usr/local/Trolltech/Qt-4.0.1/lib/$i.framework \
-#        zyzzyva.app/Contents/Frameworks
-#
-#    # Set identification names for the private framework
-#    echo "Setting identification name for $i.framework..."
-#    install_name_tool \
-#        -id @executable_path/../Frameworks/$i.framework/Versions/4.0/$i \
-#        zyzzyva.app/Contents/Frameworks/$i.framework/Versions/4.0/$i
-#
-#    # Change link locations for framework in executable
-#    echo "Changing link location for $i.framework in Zyzzyva executable..."
-#    install_name_tool -change \
-#        /usr/local/Trolltech/Qt-4.0.1/lib/$i.framework/Versions/4.0/$i \
-#        @executable_path/../Frameworks/$i.framework/Versions/4.0/$i \
-#        zyzzyva.app/Contents/MacOS/zyzzyva
-#done
-#
-## Change reference to QtCore in QtGui framework
-#echo "Changing link location for QtCore.framework in QtGui.framework..."
-#install_name_tool -change \
-#    /usr/local/Trolltech/Qt-4.0.1/lib/QtCore.framework/Versions/4.0/QtCore \
-#    @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore \
-#    zyzzyva.app/Contents/Frameworks/QtGui.framework/Versions/4.0/QtGui
+# Copy data directory into bundle
+echo "Copying data directory into bundle..."
+rm -rf zyzzyva.app/Contents/MacOS/data
+cp -r data zyzzyva.app/Contents/MacOS
+
+# Create Contents/Frameworks directory in bundle
+echo "Creating Contents/Frameworks directory in bundle..."
+rm -rf zyzzyva.app/Contents/Frameworks
+mkdir -p zyzzyva.app/Contents/Frameworks
+
+# Copy Qt frameworks into bundle and tell the executable to link to them
+for i in Qt3Support QtGui QtNetwork QtSql QtXml QtCore ; do
+
+    # Copy Qt framework into bundle
+    echo "Copying $i.framework into bundle..."
+    cp -R /usr/local/Trolltech/Qt-4.0.1/lib/$i.framework \
+        zyzzyva.app/Contents/Frameworks
+
+    # Set identification names for the private framework
+    echo "Setting identification name for $i.framework..."
+    install_name_tool \
+        -id @executable_path/../Frameworks/$i.framework/Versions/4.0/$i \
+        zyzzyva.app/Contents/Frameworks/$i.framework/Versions/4.0/$i
+
+    # Change link locations for framework in executable
+    echo "Changing link location for $i.framework in Zyzzyva executable..."
+    install_name_tool -change \
+        /usr/local/Trolltech/Qt-4.0.1/lib/$i.framework/Versions/4.0/$i \
+        @executable_path/../Frameworks/$i.framework/Versions/4.0/$i \
+        zyzzyva.app/Contents/MacOS/zyzzyva
+done
+
+# Change reference to QtCore in QtGui framework
+echo "Changing link location for QtCore.framework in QtGui.framework..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtCore.framework/Versions/4.0/QtCore \
+    @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore \
+    zyzzyva.app/Contents/Frameworks/QtGui.framework/Versions/4.0/QtGui
 
 # Create disk image
 echo "Creating disk image..."
