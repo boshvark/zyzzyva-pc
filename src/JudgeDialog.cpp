@@ -29,8 +29,13 @@
 #include "Defs.h"
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QPalette>
 #include <QTimer>
 #include <QVBoxLayout>
+
+const int FONT_PIXEL_SIZE = 40;
+const int INPUT_MARGIN = 30;
+const int RESULT_BORDER_WIDTH = 15;
 
 using namespace Defs;
 
@@ -46,7 +51,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f), engine (e)
 {
     QFont formFont = qApp->font();
-    formFont.setPixelSize (40);
+    formFont.setPixelSize (FONT_PIXEL_SIZE);
 
     QVBoxLayout* mainVlay = new QVBoxLayout (this, 0, 0);
     Q_CHECK_PTR (mainVlay);
@@ -59,7 +64,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (inputWidget);
     widgetStack->addWidget (inputWidget);
 
-    QHBoxLayout* inputVlay = new QHBoxLayout (inputWidget, 30, 0);
+    QHBoxLayout* inputVlay = new QHBoxLayout (inputWidget, INPUT_MARGIN, 0);
     Q_CHECK_PTR (inputVlay);
 
     inputArea = new WordTextEdit;
@@ -71,11 +76,11 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     resultWidget = new QWidget;
     Q_CHECK_PTR (resultWidget);
-    inputWidget->setSizePolicy (QSizePolicy::Expanding,
-                                QSizePolicy::Expanding);
+    resultWidget->setSizePolicy (QSizePolicy::Expanding,
+                                 QSizePolicy::Expanding);
     widgetStack->addWidget (resultWidget);
 
-    QHBoxLayout* resultVlay = new QHBoxLayout (resultWidget, MARGIN, SPACING);
+    QHBoxLayout* resultVlay = new QHBoxLayout (resultWidget, 0, 0);
     Q_CHECK_PTR (resultVlay);
 
     resultLabel = new QLabel;
@@ -83,6 +88,8 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     resultLabel->setFont (formFont);
     resultLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
     resultLabel->setWordWrap (true);
+    resultLabel->setFrameStyle (QFrame::Box | QFrame::Plain);
+    resultLabel->setLineWidth (RESULT_BORDER_WIDTH);
     resultVlay->addWidget (resultLabel);
 
     clear();
@@ -173,12 +180,21 @@ JudgeDialog::judgeWord()
         wordStr += *it;
     }
 
-    QString resultStr = (acceptable
-                 ? QString ("<font color=\"blue\">YES, the play is "
-                            "ACCEPTABLE</font>")
-                 : QString ("<font color=\"red\">NO, the play is "
-                            "UNACCEPTABLE</font>"))
-        + "<br><br>" + wordStr;
+    QString resultStr;
+    QColor resultColor;
+    if (acceptable) {
+        resultStr = "<font color=\"blue\">YES, the play is ACCEPTABLE</font>";
+        resultColor = Qt::blue;
+    }
+    else {
+        resultStr = "<font color=\"red\">NO, the play is UNACCEPTABLE</font>";
+        resultColor = Qt::red;
+    }
+    resultStr += "<br><br>" + wordStr;
+
+    QPalette pal = resultLabel->palette();
+    pal.setColor (QPalette::Foreground, resultColor);
+    resultLabel->setPalette (pal);
 
     resultLabel->setText (resultStr);
     widgetStack->setCurrentWidget (resultWidget);
