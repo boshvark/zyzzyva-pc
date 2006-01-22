@@ -54,7 +54,7 @@ for i in Qt3Support QtGui QtNetwork QtSql QtXml QtCore ; do
         -id @executable_path/../Frameworks/$i.framework/Versions/4.0/$i \
         zyzzyva.app/Contents/Frameworks/$i.framework/Versions/4.0/$i
 
-    # Change link locations for framework in executable
+    # Change link locations for framework in executable - ORIG
     echo "Changing link location for $i.framework in Zyzzyva executable..."
     install_name_tool -change \
         /usr/local/Trolltech/Qt-4.0.1/lib/$i.framework/Versions/4.0/$i \
@@ -68,6 +68,62 @@ install_name_tool -change \
     /usr/local/Trolltech/Qt-4.0.1/lib/QtCore.framework/Versions/4.0/QtCore \
     @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore \
     zyzzyva.app/Contents/Frameworks/QtGui.framework/Versions/4.0/QtGui
+
+# Change reference to QtCore in QtNetwork framework
+echo "Changing link location for QtCore.framework in QtNetwork.framework..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtCore.framework/Versions/4.0/QtCore \
+    @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore \
+    zyzzyva.app/Contents/Frameworks/QtNetwork.framework/Versions/4.0/QtNetwork
+
+# Change reference to QtCore in QtSql framework
+echo "Changing link location for QtCore.framework in QtSql.framework..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtCore.framework/Versions/4.0/QtCore \
+    @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore \
+    zyzzyva.app/Contents/Frameworks/QtSql.framework/Versions/4.0/QtSql
+
+# Change reference to QtCore in QtXml framework
+echo "Changing link location for QtCore.framework in QtXml.framework..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtCore.framework/Versions/4.0/QtCore \
+    @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore \
+    zyzzyva.app/Contents/Frameworks/QtXml.framework/Versions/4.0/QtXml
+
+# Change reference to QtCore in Qt3Support framework
+echo "Changing link location for QtCore.framework in Qt3Support.framework..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtCore.framework/Versions/4.0/QtCore \
+    @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore \
+    zyzzyva.app/Contents/Frameworks/Qt3Support.framework/Versions/4.0/Qt3Support
+
+# Change reference to QtGui in Qt3Support framework
+echo "Changing link location for QtGui.framework in Qt3Support.framework..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtGui.framework/Versions/4.0/QtGui \
+    @executable_path/../Frameworks/QtGui.framework/Versions/4.0/QtGui \
+    zyzzyva.app/Contents/Frameworks/Qt3Support.framework/Versions/4.0/Qt3Support
+
+# Change reference to QtNetwork in Qt3Support framework
+echo "Changing link location for QtNetwork.framework in Qt3Support.framework..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtNetwork.framework/Versions/4.0/QtNetwork \
+    @executable_path/../Frameworks/QtNetwork.framework/Versions/4.0/QtNetwork \
+    zyzzyva.app/Contents/Frameworks/Qt3Support.framework/Versions/4.0/Qt3Support
+
+# Change reference to QtSql in Qt3Support framework
+echo "Changing link location for QtSql.framework in Qt3Support.framework..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtSql.framework/Versions/4.0/QtSql \
+    @executable_path/../Frameworks/QtSql.framework/Versions/4.0/QtSql \
+    zyzzyva.app/Contents/Frameworks/Qt3Support.framework/Versions/4.0/Qt3Support
+
+# Change reference to QtXml in Qt3Support framework
+echo "Changing link location for QtXml.framework in Qt3Support.framework..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtXml.framework/Versions/4.0/QtXml \
+    @executable_path/../Frameworks/QtXml.framework/Versions/4.0/QtXml \
+    zyzzyva.app/Contents/Frameworks/Qt3Support.framework/Versions/4.0/Qt3Support
 
 # Create disk image
 echo "Creating disk image..."
