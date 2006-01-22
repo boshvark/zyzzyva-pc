@@ -64,8 +64,15 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (inputWidget);
     widgetStack->addWidget (inputWidget);
 
-    QHBoxLayout* inputVlay = new QHBoxLayout (inputWidget, INPUT_MARGIN, 0);
+    QVBoxLayout* inputVlay = new QVBoxLayout (inputWidget, INPUT_MARGIN, 0);
     Q_CHECK_PTR (inputVlay);
+
+    QLabel* instLabel = new QLabel ("Hit the Space bar or Enter key to "
+                                    "separate words.  Hit the Tab key to "
+                                    "judge the play.");
+    Q_CHECK_PTR (instLabel);
+    instLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+    inputVlay->addWidget (instLabel);
 
     inputArea = new WordTextEdit;
     Q_CHECK_PTR (inputArea);
@@ -80,7 +87,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
                                  QSizePolicy::Expanding);
     widgetStack->addWidget (resultWidget);
 
-    QHBoxLayout* resultVlay = new QHBoxLayout (resultWidget, 0, 0);
+    QVBoxLayout* resultVlay = new QVBoxLayout (resultWidget, 0, 0);
     Q_CHECK_PTR (resultVlay);
 
     resultLabel = new QLabel;
