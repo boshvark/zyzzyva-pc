@@ -41,6 +41,13 @@ for i in Qt3Support QtGui QtNetwork QtSql QtXml QtCore ; do
     cp -R /usr/local/Trolltech/Qt-4.0.1/lib/$i.framework \
         zyzzyva.app/Contents/Frameworks
 
+    # Delete headers and debug libraries
+    echo "Deleting $i.framework headers and debug libraries..."
+    rm zyzzyva.app/Contents/Frameworks/$i.framework/Headers
+    rm -rf zyzzyva.app/Contents/Frameworks/$i.framework/Versions/4.0/Headers
+    find zyzzyva.app/Contents/Frameworks -name arch -or -name '*debug*' \
+        -print0 | xargs -0 rm -rf
+
     # Set identification names for the private framework
     echo "Setting identification name for $i.framework..."
     install_name_tool \
