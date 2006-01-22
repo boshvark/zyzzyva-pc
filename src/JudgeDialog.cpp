@@ -148,7 +148,7 @@ JudgeDialog::textChanged()
     inputArea->setTextCursor (cursor);
     inputArea->blockSignals (false);
 
-    if (doJudge)
+    if (doJudge && !text.isEmpty())
         judgeWord();
 }
 
