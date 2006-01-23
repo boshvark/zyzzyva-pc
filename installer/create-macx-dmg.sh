@@ -23,10 +23,23 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #-----------------------------------------------------------------------------
 
+QTDIR=/usr/local/Trolltech/Qt-4.0.1
+
 # Copy data directory into bundle
 echo "Copying data directory into bundle..."
 rm -rf zyzzyva.app/Contents/MacOS/data
 cp -r data zyzzyva.app/Contents/MacOS
+
+# Copy Assistant client into bundle
+echo "Copying Assistant client into bundle..."
+cp $QTDIR/bin/assistant.app/Contents/MacOS/assistant \
+    zyzzyva.app/Contents/MacOS
+
+# Copy assistant.icns into bundle
+echo "Copying assistant.icns into bundle..."
+mkdir -p zyzzyva.app/Contents/Resources
+cp $QTDIR/bin/assistant.app/Contents/Resources/assistant.icns \
+    zyzzyva.app/Contents/Resources
 
 # Create Contents/Frameworks directory in bundle
 echo "Creating Contents/Frameworks directory in bundle..."
@@ -124,6 +137,34 @@ install_name_tool -change \
     /usr/local/Trolltech/Qt-4.0.1/lib/QtXml.framework/Versions/4.0/QtXml \
     @executable_path/../Frameworks/QtXml.framework/Versions/4.0/QtXml \
     zyzzyva.app/Contents/Frameworks/Qt3Support.framework/Versions/4.0/Qt3Support
+
+# Change reference to QtCore in Assistant client
+echo "Changing link location for QtCore.framework in Assistant client..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtCore.framework/Versions/4.0/QtCore \
+    @executable_path/../Frameworks/QtCore.framework/Versions/4.0/QtCore \
+    zyzzyva.app/Contents/MacOS/assistant
+
+# Change reference to QtGui in Assistant client
+echo "Changing link location for QtGui.framework in Assistant client..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtGui.framework/Versions/4.0/QtGui \
+    @executable_path/../Frameworks/QtGui.framework/Versions/4.0/QtGui \
+    zyzzyva.app/Contents/MacOS/assistant
+
+# Change reference to QtNetwork in Assistant client
+echo "Changing link location for QtNetwork.framework in Assistant client..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtNetwork.framework/Versions/4.0/QtNetwork \
+    @executable_path/../Frameworks/QtNetwork.framework/Versions/4.0/QtNetwork \
+    zyzzyva.app/Contents/MacOS/assistant
+
+# Change reference to QtXml in Assistant client
+echo "Changing link location for QtXml.framework in Assistant client..."
+install_name_tool -change \
+    /usr/local/Trolltech/Qt-4.0.1/lib/QtXml.framework/Versions/4.0/QtXml \
+    @executable_path/../Frameworks/QtXml.framework/Versions/4.0/QtXml \
+    zyzzyva.app/Contents/MacOS/assistant
 
 # Create disk image
 echo "Creating disk image..."
