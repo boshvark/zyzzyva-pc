@@ -26,8 +26,9 @@
 #define ZYZZYVA_JUDGE_FORM_H
 
 #include "ActionForm.h"
+#include <QGroupBox>
 
-class DefinitionBox;
+class DefinitionLabel;
 class WordEngine;
 class WordTextEdit;
 class ZPushButton;
@@ -50,7 +51,8 @@ class JudgeForm : public ActionForm
     WordTextEdit*  wordArea;
     ZPushButton*   clearButton;
     ZPushButton*   judgeButton;
-    DefinitionBox* resultBox;
+    QGroupBox*     resultBox;
+    DefinitionLabel* resultLabel;
     QString        statusString;
 };
 
