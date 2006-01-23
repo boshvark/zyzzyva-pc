@@ -22,7 +22,7 @@
 
 #include "JudgeForm.h"
 #include "JudgeDialog.h"
-#include "DefinitionBox.h"
+#include "DefinitionLabel.h"
 #include "WordEngine.h"
 #include "WordTextEdit.h"
 #include "WordValidator.h"
@@ -76,9 +76,17 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect (fullScreenButton, SIGNAL (clicked()), SLOT (doFullScreen()));
     buttonHlay->addWidget (fullScreenButton);
 
-    resultBox = new DefinitionBox;
+    resultBox = new QGroupBox;
     Q_CHECK_PTR (resultBox);
     mainVlay->addWidget (resultBox, 1);
+
+    QVBoxLayout* resultVlay = new QVBoxLayout (resultBox, MARGIN, SPACING);
+    Q_CHECK_PTR (resultVlay);
+
+    resultLabel = new DefinitionLabel;
+    Q_CHECK_PTR (resultLabel);
+    resultLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+    resultVlay->addWidget (resultLabel);
 
     mainVlay->addStretch (0);
 
@@ -116,9 +124,17 @@ JudgeForm::textChanged()
     wordArea->blockSignals (true);
     QString text = wordArea->text().upper();
     int lookIndex = 0;
+    bool afterSpace = false;
     for (int i = 0; i < text.length(); ++i) {
         QChar c = text.at (lookIndex);
-        if (c.isLetter() || c.isSpace()) {
+
+        if (c.isLetter()) {
+            afterSpace = false;
+            ++lookIndex;
+        }
+        else if ((lookIndex > 0) && c.isSpace() && !afterSpace) {
+            text.replace (lookIndex, 1, "\n");
+            afterSpace = true;
             ++lookIndex;
         }
         else {
@@ -127,6 +143,7 @@ JudgeForm::textChanged()
                 ++deletedBeforeCursor;
         }
     }
+    text.replace (QRegExp ("\\n+"), "\n");
 
     wordArea->setText (text);
     cursor.setPosition (origCursorPosition - deletedBeforeCursor);
@@ -178,16 +195,22 @@ JudgeForm::judgeWord()
         wordStr += *it;
     }
 
-    QString resultStr = (acceptable
-                 ? QString ("<font color=\"blue\">Acceptable</font>")
-                 : QString ("<font color=\"red\">Unacceptable</font>"))
-        + "<br>" + wordStr;
+    QString resultStr;
+    QColor resultColor;
+    if (acceptable) {
+        resultStr = "<font color=\"blue\">YES, the play is ACCEPTABLE</font>";
+        resultColor = Qt::blue;
+    }
+    else {
+        resultStr = "<font color=\"red\">NO, the play is UNACCEPTABLE</font>";
+        resultColor = Qt::red;
+    }
+    resultStr += "<br><br>" + wordStr;
 
-    resultBox->setText (resultStr);
-    resultBox->setTitle ("The play is");
+    resultLabel->setText (resultStr);
     resultBox->show();
     statusString = QString ("Play is ") +
-        (acceptable ? QString ("Acceptable") : QString ("Unacceptable"));
+        (acceptable ? QString ("ACCEPTABLE") : QString ("UNACCEPTABLE"));
     emit statusChanged (statusString);
 }
 
