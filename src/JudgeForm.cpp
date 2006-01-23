@@ -51,6 +51,7 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     wordArea = new WordTextEdit;
     Q_CHECK_PTR (wordArea);
     wordArea->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Fixed);
+    wordArea->setTabChangesFocus (true);
     connect (wordArea, SIGNAL (textChanged()), SLOT (textChanged()));
     mainVlay->addWidget (wordArea);
 
