@@ -1,9 +1,22 @@
+Version 0.9.6
+Released 2006-01-22, from /branches/0.9.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.9.6
+
+ User-visible changes:
+ * Mac OS X disk image for 10.3.9 and later
+ * Full-screen Word Judge mode
+ * Must Not Be in Word List search condition
+ * Various word definition fixes in OWL and OWL2 lexicons
+ * Bug fix for restoring window size and position between sessions
+
+
 Version 0.9.5
 Released 2006-01-15, from /branches/0.9.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.9.5
 
  User-visible changes:
  * Bug fix for Type I Eights search
+
 
 Version 0.9.4
 Released 2006-01-14, from /branches/0.9.x
