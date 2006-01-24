@@ -107,25 +107,49 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
                                                    SPACING);
     Q_CHECK_PTR (autoImportVlay);
 
-    autoImportCbox = new QCheckBox ("Automatically load a lexicon "
-                                    "on startup");
+    QHBoxLayout* autoImportLexiconHlay = new QHBoxLayout (SPACING);
+    Q_CHECK_PTR (autoImportLexiconHlay);
+    autoImportVlay->addLayout (autoImportLexiconHlay);
+
+    autoImportCbox = new QCheckBox ("Automatically load a lexicon:");
     Q_CHECK_PTR (autoImportCbox);
     connect (autoImportCbox, SIGNAL (toggled (bool)),
              SLOT (autoImportCboxToggled (bool)));
-    autoImportVlay->addWidget (autoImportCbox);
+    autoImportLexiconHlay->addWidget (autoImportCbox);
 
-    QHBoxLayout* autoImportHlay = new QHBoxLayout (SPACING);
-    Q_CHECK_PTR (autoImportHlay);
-    autoImportVlay->addLayout (autoImportHlay);
+    autoImportLexiconCombo = new QComboBox;
+    Q_CHECK_PTR (autoImportLexiconCombo);
+    autoImportLexiconCombo->addItem ("OWL");
+    autoImportLexiconCombo->addItem ("OWL2");
+    autoImportLexiconCombo->addItem ("SOWPODS");
+    autoImportLexiconCombo->addItem ("ODS");
+    autoImportLexiconCombo->addItem ("Custom");
+    autoImportLexiconCombo->setCurrentIndex
+        (autoImportLexiconCombo->findText ("OWL"));
+    connect (autoImportLexiconCombo, SIGNAL (activated (const QString&)),
+             SLOT (autoImportLexiconActivated (const QString&)));
+    autoImportLexiconHlay->addWidget (autoImportLexiconCombo);
 
-    autoImportLine = new QLineEdit;
-    Q_CHECK_PTR (autoImportLine);
-    autoImportHlay->addWidget (autoImportLine);
+    autoImportCustomWidget = new QWidget;
+    Q_CHECK_PTR (autoImportCustomWidget);
+    autoImportVlay->addWidget (autoImportCustomWidget);
+
+    QHBoxLayout* autoImportCustomHlay = new QHBoxLayout
+        (autoImportCustomWidget, MARGIN, SPACING);
+    Q_CHECK_PTR (autoImportCustomHlay);
+
+    QLabel* autoImportCustomLabel = new QLabel ("Custom:");
+    Q_CHECK_PTR (autoImportCustomLabel);
+    autoImportCustomHlay->addWidget (autoImportCustomLabel);
+
+    autoImportCustomLine = new QLineEdit;
+    Q_CHECK_PTR (autoImportCustomLine);
+    autoImportCustomHlay->addWidget (autoImportCustomLine);
 
     browseButton = new ZPushButton ("Browse...");
     Q_CHECK_PTR (browseButton);
     connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
-    autoImportHlay->addWidget (browseButton);
+    autoImportCustomHlay->addWidget (browseButton);
 
     generalPrefVlay->addStretch (2);
 
@@ -471,7 +495,7 @@ SettingsDialog::readSettings()
     autoImportCboxToggled (autoImport);
 
     QString autoImportFile = MainSettings::getAutoImportFile();
-    autoImportLine->setText (autoImportFile);
+    autoImportCustomLine->setText (autoImportFile);
 
     fillThemeCombo();
     bool useTileTheme = MainSettings::getUseTileTheme();
@@ -548,7 +572,7 @@ void
 SettingsDialog::writeSettings()
 {
     MainSettings::setUseAutoImport (autoImportCbox->isChecked());
-    MainSettings::setAutoImportFile (autoImportLine->text());
+    MainSettings::setAutoImportFile (autoImportCustomLine->text());
     MainSettings::setUseTileTheme (themeCbox->isChecked());
     MainSettings::setTileTheme (themeCombo->currentText());
     MainSettings::setQuizLetterOrder (letterOrderCombo->currentText());
@@ -606,7 +630,7 @@ SettingsDialog::browseButtonClicked()
         Auxil::getWordsDir(), "All Files (*.*)");
 
     if (!file.isNull())
-        autoImportLine->setText (file);
+        autoImportCustomLine->setText (file);
 }
 
 //---------------------------------------------------------------------------
@@ -620,8 +644,26 @@ SettingsDialog::browseButtonClicked()
 void
 SettingsDialog::autoImportCboxToggled (bool on)
 {
-    autoImportLine->setEnabled (on);
-    browseButton->setEnabled (on);
+    autoImportLexiconCombo->setEnabled (on);
+    if (on)
+        autoImportLexiconActivated (autoImportLexiconCombo->currentText());
+    else
+        autoImportCustomWidget->setEnabled (false);
+}
+
+//---------------------------------------------------------------------------
+//  autoImportLexiconActivated
+//
+//! Slot called when the Auto Import Lexicon combo box is activated.  Enable
+//! or disable the auto-import custom file edit area.
+//
+//! @param text the activated text in the combo box
+//---------------------------------------------------------------------------
+void
+SettingsDialog::autoImportLexiconActivated (const QString& text)
+{
+    bool customActive = (text == "Custom");
+    autoImportCustomWidget->setEnabled (customActive);
 }
 
 //---------------------------------------------------------------------------

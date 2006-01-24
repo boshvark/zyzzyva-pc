@@ -50,6 +50,7 @@ class SettingsDialog : public QDialog
     void navTextChanged (const QString& text);
     void browseButtonClicked();
     void autoImportCboxToggled (bool on);
+    void autoImportLexiconActivated (const QString& text);
     void themeCboxToggled (bool on);
     void autoCheckCboxToggled (bool on);
     void chooseFontButtonClicked (int button);
@@ -68,7 +69,9 @@ class SettingsDialog : public QDialog
     QWidget*     wordListPrefWidget;
 
     QCheckBox*   autoImportCbox;
-    QLineEdit*   autoImportLine;
+    QComboBox*   autoImportLexiconCombo;
+    QWidget*     autoImportCustomWidget;
+    QLineEdit*   autoImportCustomLine;
     ZPushButton* browseButton;
     QCheckBox*   themeCbox;
     QLabel*      themeLabel;
