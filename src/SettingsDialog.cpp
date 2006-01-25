@@ -135,7 +135,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     autoImportVlay->addWidget (autoImportCustomWidget);
 
     QHBoxLayout* autoImportCustomHlay = new QHBoxLayout
-        (autoImportCustomWidget, MARGIN, SPACING);
+        (autoImportCustomWidget, 0, SPACING);
     Q_CHECK_PTR (autoImportCustomHlay);
 
     QLabel* autoImportCustomLabel = new QLabel ("Custom:");
