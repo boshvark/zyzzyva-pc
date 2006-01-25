@@ -494,12 +494,13 @@ SettingsDialog::readSettings()
     autoImportCbox->setChecked (autoImport);
     autoImportCboxToggled (autoImport);
 
-    QString autoImportFile = MainSettings::getAutoImportFile();
-    autoImportCustomLine->setText (autoImportFile);
-
     QString autoImportLexicon = MainSettings::getAutoImportLexicon();
     int index = autoImportLexiconCombo->findText (autoImportLexicon);
     autoImportLexiconCombo->setCurrentIndex (index >= 0 ? index : 0);
+    autoImportLexiconActivated (autoImportLexiconCombo->currentText());
+
+    QString autoImportFile = MainSettings::getAutoImportFile();
+    autoImportCustomLine->setText (autoImportFile);
 
     fillThemeCombo();
     bool useTileTheme = MainSettings::getUseTileTheme();
