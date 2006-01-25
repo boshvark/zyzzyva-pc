@@ -33,6 +33,7 @@ const QString SETTINGS_MAIN = "Zyzzyva";
 const QString SETTINGS_MAIN_WINDOW_POS = "main_window_pos";
 const QString SETTINGS_MAIN_WINDOW_SIZE = "main_window_size";
 const QString SETTINGS_IMPORT = "autoimport";
+const QString SETTINGS_IMPORT_LEXICON = "autoimport_lexicon";
 const QString SETTINGS_IMPORT_FILE = "autoimport_file";
 const QString SETTINGS_FONT_MAIN = "font";
 const QString SETTINGS_FONT_WORD_LISTS = "font_word_lists";
@@ -50,6 +51,7 @@ const QString SETTINGS_QUIZ_BACKGROUND_COLOR = "quiz_background_color";
 const QString SETTINGS_QUIZ_SHOW_NUM_RESPONSES = "quiz_show_num_responses";
 const QString SETTINGS_QUIZ_AUTO_CHECK = "quiz_auto_check";
 const QString SETTINGS_QUIZ_AUTO_ADVANCE = "quiz_auto_advance";
+const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL";
 const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
@@ -73,6 +75,10 @@ MainSettings::readSettings()
                           QSize (640, 480)).toSize();
 
     instance->useAutoImport = settings.value (SETTINGS_IMPORT, true).toBool();
+    instance->autoImportLexicon
+        = settings.value (SETTINGS_IMPORT_LEXICON, Auxil::getWordsDir() +
+                          DEFAULT_AUTO_IMPORT_LEXICON).toString();
+
     instance->autoImportFile
         = settings.value (SETTINGS_IMPORT_FILE, Auxil::getWordsDir() +
                           DEFAULT_AUTO_IMPORT_FILE).toString();
@@ -135,6 +141,7 @@ MainSettings::writeSettings()
     settings.setValue (SETTINGS_MAIN_WINDOW_SIZE, instance->mainWindowSize);
 
     settings.setValue (SETTINGS_IMPORT, instance->useAutoImport);
+    settings.setValue (SETTINGS_IMPORT_LEXICON, instance->autoImportLexicon);
     settings.setValue (SETTINGS_IMPORT_FILE, instance->autoImportFile);
     settings.setValue (SETTINGS_USE_TILE_THEME, instance->useTileTheme);
     settings.setValue (SETTINGS_TILE_THEME, instance->tileTheme);

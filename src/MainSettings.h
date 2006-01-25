@@ -42,7 +42,12 @@ class MainSettings
     static void setMainWindowSize (QSize s) { instance->mainWindowSize = s; }
     static bool getUseAutoImport() { return instance->useAutoImport; }
     static void setUseAutoImport (bool b) { instance->useAutoImport = b; }
-    static QString getAutoImportFile() { return instance->autoImportFile; }
+    static QString getAutoImportLexicon() {
+        return instance->autoImportLexicon; }
+    static void setAutoImportLexicon (const QString& str) {
+        instance->autoImportLexicon = str; }
+    static QString getAutoImportFile() {
+        return instance->autoImportFile; }
     static void setAutoImportFile (const QString& str) {
         instance->autoImportFile = str; }
     static bool getUseTileTheme() { return instance->useTileTheme; }
@@ -112,6 +117,7 @@ class MainSettings
     QPoint mainWindowPos;
     QSize mainWindowSize;
     bool useAutoImport;
+    QString autoImportLexicon;
     QString autoImportFile;
     bool useTileTheme;
     QString tileTheme;

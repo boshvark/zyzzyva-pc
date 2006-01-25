@@ -497,6 +497,10 @@ SettingsDialog::readSettings()
     QString autoImportFile = MainSettings::getAutoImportFile();
     autoImportCustomLine->setText (autoImportFile);
 
+    QString autoImportLexicon = MainSettings::getAutoImportLexicon();
+    int index = autoImportLexiconCombo->findText (autoImportLexicon);
+    autoImportLexiconCombo->setCurrentIndex (index >= 0 ? index : 0);
+
     fillThemeCombo();
     bool useTileTheme = MainSettings::getUseTileTheme();
     themeCbox->setChecked (useTileTheme);
@@ -572,6 +576,8 @@ void
 SettingsDialog::writeSettings()
 {
     MainSettings::setUseAutoImport (autoImportCbox->isChecked());
+    MainSettings::setAutoImportLexicon
+        (autoImportLexiconCombo->currentText());
     MainSettings::setAutoImportFile (autoImportCustomLine->text());
     MainSettings::setUseTileTheme (themeCbox->isChecked());
     MainSettings::setTileTheme (themeCombo->currentText());
