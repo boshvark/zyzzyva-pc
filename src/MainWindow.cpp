@@ -324,7 +324,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     }
     else {
         QMap<QString, QString> lexiconMap;
-        lexiconMap["OWL"] = "/north-american/twl98.txt";
+        lexiconMap["OWL"] = "/north-american/owl.txt";
         lexiconMap["OWL2"] = "/north-american/owl2.txt";
         lexiconMap["SOWPODS"] = "/british/sowpods.txt";
         lexiconMap["ODS"] = "/french/ods4.txt";
