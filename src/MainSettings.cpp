@@ -52,7 +52,6 @@ const QString SETTINGS_QUIZ_SHOW_NUM_RESPONSES = "quiz_show_num_responses";
 const QString SETTINGS_QUIZ_AUTO_CHECK = "quiz_auto_check";
 const QString SETTINGS_QUIZ_AUTO_ADVANCE = "quiz_auto_advance";
 const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL";
-const QString DEFAULT_AUTO_IMPORT_FILE = "/north-american/twl98.txt";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb (0, 0, 127);
@@ -79,8 +78,7 @@ MainSettings::readSettings()
         = settings.value (SETTINGS_IMPORT_LEXICON, "OWL").toString();
 
     instance->autoImportFile
-        = settings.value (SETTINGS_IMPORT_FILE, Auxil::getWordsDir() +
-                          DEFAULT_AUTO_IMPORT_FILE).toString();
+        = settings.value (SETTINGS_IMPORT_FILE).toString();
 
     instance->useTileTheme
         = settings.value (SETTINGS_USE_TILE_THEME, true).toBool();
