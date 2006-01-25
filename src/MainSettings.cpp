@@ -76,8 +76,7 @@ MainSettings::readSettings()
 
     instance->useAutoImport = settings.value (SETTINGS_IMPORT, true).toBool();
     instance->autoImportLexicon
-        = settings.value (SETTINGS_IMPORT_LEXICON, Auxil::getWordsDir() +
-                          DEFAULT_AUTO_IMPORT_LEXICON).toString();
+        = settings.value (SETTINGS_IMPORT_LEXICON, "OWL").toString();
 
     instance->autoImportFile
         = settings.value (SETTINGS_IMPORT_FILE, Auxil::getWordsDir() +
