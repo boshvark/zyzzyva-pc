@@ -44,13 +44,14 @@ using std::multimap;
 //! containing one word per line.
 //
 //! @param filename the name of the file to import
+//! @param lexName the name of the lexicon
 //! @param loadDefinitions whether to load word definitions
 //! @param errString returns the error string in case of error
 //! @return the number of words imported
 //---------------------------------------------------------------------------
 int
-WordEngine::importFile (const QString& filename, bool loadDefinitions,
-                        QString* errString)
+WordEngine::importFile (const QString& filename, const QString& lexName,
+                        bool loadDefinitions, QString* errString)
 {
     QFile file (filename);
     if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
@@ -97,6 +98,8 @@ WordEngine::importFile (const QString& filename, bool loadDefinitions,
     }
 
     delete[] buffer;
+
+    lexiconName = lexName;
     return imported;
 }
 

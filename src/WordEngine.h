@@ -38,14 +38,15 @@ class WordEngine
     WordEngine() { }
     ~WordEngine() { }
 
-    int importFile (const QString& filename, bool loadDefinitions = true,
-                    QString* errString = 0);
+    int importFile (const QString& filename, const QString& lexName,
+                    bool loadDefinitions = true, QString* errString = 0);
     int importStems (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;
     QStringList alphagrams (const QStringList& list) const;
     QString alphagram (const QString& word) const;
     QString getDefinition (const QString& word) const;
+    QString getLexiconName() const { return lexiconName; }
 
     private:
     bool matchesConditions (const QString& word, const QList<SearchCondition>&
@@ -57,6 +58,7 @@ class WordEngine
                                     bool useFollow = false) const;
     QString getSubDefinition (const QString& word, const QString& pos) const;
 
+    QString lexiconName;
     WordGraph graph;
     std::map<QString, std::multimap<QString, QString> > definitions;
     std::map<int, QStringList> stems;

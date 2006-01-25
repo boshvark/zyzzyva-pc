@@ -317,9 +317,9 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
 
     // FIXME: This should not be part of the MainWindow class.  Lexicons (and
     // mapping lexicons to actual files) should be handled by someone else.
-    currentLexicon = MainSettings::getAutoImportLexicon();
+    QString lexicon = MainSettings::getAutoImportLexicon();
     QString importFile;
-    if (currentLexicon == "Custom") {
+    if (lexicon == "Custom") {
         importFile = MainSettings::getAutoImportFile();
     }
     else {
@@ -329,21 +329,21 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
         lexiconMap["SOWPODS"] = "/british/sowpods.txt";
         lexiconMap["ODS"] = "/french/ods4.txt";
 
-        if (lexiconMap.contains (currentLexicon)) {
+        if (lexiconMap.contains (lexicon)) {
             importFile = Auxil::getWordsDir()
-                + lexiconMap.value (currentLexicon);
+                + lexiconMap.value (lexicon);
         }
     }
 
     if (importFile.isEmpty())
         return;
 
-    QString splashMessage = "Loading " + currentLexicon + " lexicon...";
+    QString splashMessage = "Loading " + lexicon + " lexicon...";
     if (splash) {
         splash->showMessage (splashMessage,
                              Qt::AlignHCenter | Qt::AlignBottom);
     }
-    import (importFile);
+    import (importFile, lexicon);
 
     if (splash) {
         splash->showMessage ("Loading stems...",
@@ -365,7 +365,7 @@ MainWindow::importInteractive()
         QDir::current().path(), "All Files (*.*)");
 
     if (file.isNull()) return;
-    int imported = import (file);
+    int imported = import (file, "Custom");
     if (imported < 0) return;
     QMessageBox::information (this, IMPORT_COMPLETE_TITLE,
                               "Loaded " + QString::number (imported)
@@ -677,7 +677,8 @@ void
 MainWindow::setNumWords (int num)
 {
     lexiconLabel->setText (num ? QString::number (num) + " words in "
-                                 + currentLexicon + " lexicon"
+                                 + wordEngine->getLexiconName()
+                                 + " lexicon"
                                : "No words loaded");
 }
 
@@ -809,14 +810,16 @@ MainWindow::newTab (QWidget* widget, const QIcon& icon, const QString& title)
 //
 //! Import words from a file.
 //
+//! @param file the file to import words from
+//! @param lexiconName the name of the lexicon
 //! @return the number of imported words
 //---------------------------------------------------------------------------
 int
-MainWindow::import (const QString& file)
+MainWindow::import (const QString& file, const QString& lexiconName)
 {
     QString err;
     QApplication::setOverrideCursor (Qt::waitCursor);
-    int imported = wordEngine->importFile (file, true, &err);
+    int imported = wordEngine->importFile (file, lexiconName, true, &err);
     QApplication::restoreOverrideCursor();
 
     setNumWords (imported);

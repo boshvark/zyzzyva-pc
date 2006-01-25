@@ -74,7 +74,7 @@ class MainWindow : public QMainWindow
     virtual void closeEvent (QCloseEvent* event);
 
     private:
-    int  import (const QString& file);
+    int  import (const QString& file, const QString& lexiconName);
     int  importStems();
     void setNumWords (int num);
     void readSettings (bool useGeometry);
@@ -87,8 +87,6 @@ class MainWindow : public QMainWindow
     QToolButton* closeButton;
     QLabel*      messageLabel;
     QLabel*      lexiconLabel;
-
-    QString      currentLexicon;
 
     SettingsDialog* settingsDialog;
     AboutDialog*    aboutDialog;
