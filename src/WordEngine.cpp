@@ -126,7 +126,7 @@ WordEngine::importStems (const QString& filename, QString* errString)
     // XXX: At some point, may want to consider allowing words of varying
     // lengths to be in the same file?
     QStringList words;
-    std::set<QString> alphagrams;
+    set<QString> alphagrams;
     int imported = 0;
     int length = 0;
     char* buffer = new char [MAX_INPUT_LINE_LEN];
@@ -157,9 +157,9 @@ WordEngine::importStems (const QString& filename, QString* errString)
     }
     else {
         it->second += words;
-        std::map< int, std::set<QString> >::iterator it =
+        std::map< int, set<QString> >::iterator it =
             stemAlphagrams.find (length);
-        std::set<QString>::iterator sit;
+        set<QString>::iterator sit;
         for (sit = alphagrams.begin(); sit != alphagrams.end(); ++sit)
             (it->second).insert (*sit);
     }
@@ -196,19 +196,29 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     SearchSpec optimizedSpec = spec;
     optimizedSpec.optimize();
 
-    // Big optimization if the only conditions are InWordList conditions:
-    // don't even do a search, just test each word in the search condition for
-    // acceptability.
-    bool wordListsOnly = true;
+    // Big optimization if the only conditions are conditions that can be
+    // matched without searching the word graph
+    bool mustSearchGraph = false;
+    bool wordListCondition = false;
     QListIterator<SearchCondition> cit (spec.conditions);
     while (cit.hasNext()) {
-        if (cit.next().type != SearchCondition::InWordList) {
-            wordListsOnly = false;
+        switch (cit.next().type) {
+            case SearchCondition::InWordList:
+            wordListCondition = true;
+            break;
+
+            case SearchCondition::ExactAnagrams:
+            case SearchCondition::MinAnagrams:
+            case SearchCondition::MaxAnagrams:
+            break;
+
+            default:
+            mustSearchGraph = true;
             break;
         }
     }
-    if (wordListsOnly)
-        return wordListOnlySearch (optimizedSpec);
+    if (wordListCondition && !mustSearchGraph)
+        return nonGraphSearch (optimizedSpec);
 
     QStringList wordList = graph.search (optimizedSpec);
 
@@ -432,14 +442,14 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
             if (word.length() != 7)
                 return false;
 
-            std::map< int, std::set<QString> >::const_iterator it =
+            std::map< int, set<QString> >::const_iterator it =
                 stemAlphagrams.find (word.length() - 1);
             if (it == stemAlphagrams.end())
                 return false;
 
-            const std::set<QString>& alphaset = it->second;
+            const set<QString>& alphaset = it->second;
             QString agram = alphagram (word);
-            std::set<QString>::const_iterator ait;
+            set<QString>::const_iterator ait;
             for (int i = 0; i < int (agram.length()); ++i) {
                 ait = alphaset.find (agram.left (i) +
                                      agram.right (agram.length() - i - 1));
@@ -453,7 +463,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
             if (word.length() != 8)
                 return false;
 
-            std::map< int, std::set<QString> >::const_iterator it =
+            std::map< int, set<QString> >::const_iterator it =
                 stemAlphagrams.find (word.length() - 2);
             if (it == stemAlphagrams.end())
                 return false;
@@ -463,8 +473,8 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
             // Compare the letters of the word with the letters of each
             // alphagram, ensuring that no more than two letters in the word
             // are missing from the alphagram.
-            const std::set<QString>& alphaset = it->second;
-            std::set<QString>::const_iterator ait;
+            const set<QString>& alphaset = it->second;
+            set<QString>::const_iterator ait;
             for (ait = alphaset.begin(); ait != alphaset.end(); ++ait) {
                 QString setAlphagram = *ait;
                 int missing = 0;
@@ -505,36 +515,67 @@ WordEngine::numAnagrams (const QString& word) const
 }
 
 //---------------------------------------------------------------------------
-//  wordListOnlySearch
+//  nonGraphSearch
 //
-//! Search for valid words matching In Word List conditions in a search spec.
+//! Search for valid words matching conditions that can be matched without
+//! searching the word graph.
 //
 //! @param spec the search specification
 //
 //! @return a list of acceptable words matching the In Word List conditions
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::wordListOnlySearch (const SearchSpec& spec) const
+WordEngine::nonGraphSearch (const SearchSpec& spec) const
 {
     QStringList wordList;
-    std::set<QString> finalWordSet;
-    std::set<QString>::iterator sit;
+    set<QString> finalWordSet;
+    set<QString>::iterator sit;
     int conditionNum = 0;
 
+    const int MAX_ANAGRAMS = 65535;
+    int minAnagrams = 0;
+    int maxAnagrams = MAX_ANAGRAMS;
+
+    // Look for InWordList conditions first, to narrow the search as much as
+    // possible
     QListIterator<SearchCondition> it (spec.conditions);
     while (it.hasNext()) {
         const SearchCondition& condition = it.next();
+
+        // Note the minimum and maximum number of anagrams from any Number of
+        // Anagrams conditions
+        if (condition.type == SearchCondition::ExactAnagrams) {
+            if ((condition.intValue < minAnagrams) ||
+                (condition.intValue > maxAnagrams))
+                return wordList;
+            minAnagrams = condition.intValue;
+            maxAnagrams = condition.intValue;
+        }
+        else if (condition.type == SearchCondition::MinAnagrams) {
+            if (condition.intValue > maxAnagrams)
+                return wordList;
+            minAnagrams = condition.intValue;
+        }
+        else if (condition.type == SearchCondition::MaxAnagrams) {
+            if (condition.intValue < minAnagrams)
+                return wordList;
+            maxAnagrams = condition.intValue;
+        }
+
+        // Only InWordList conditions allowed beyond this point - look up
+        // words for acceptability and combine the word lists
         if (condition.type != SearchCondition::InWordList)
             continue;
         QStringList words = QStringList::split (" ", condition.stringValue);
 
-        std::set<QString> wordSet;
+        set<QString> wordSet;
         QStringList::iterator wit;
         for (wit = words.begin(); wit != words.end(); ++wit) {
             if (isAcceptable (*wit))
                 wordSet.insert (*wit);
         }
 
+        // Combine search result set with words already found
         if (!conditionNum) {
             finalWordSet = wordSet;
         }
@@ -557,6 +598,27 @@ WordEngine::wordListOnlySearch (const SearchSpec& spec) const
         }
 
         ++conditionNum;
+    }
+
+    // Now limit the set only to those words containing the requisite number
+    // of anagrams.  If some words are already in the finalWordSet, then only
+    // test those words.  Otherwise, run through the map of number of anagrams
+    // and pull out all words matching the conditions.
+    if (!finalWordSet.empty() &&
+        ((minAnagrams > 0) || (maxAnagrams < MAX_ANAGRAMS)))
+    {
+        set<QString> wordSet;
+        for (sit = finalWordSet.begin(); sit != finalWordSet.end();
+                ++sit)
+        {
+            int numAnagrams = numAnagramsMap[ alphagram (*sit) ];
+            if ((numAnagrams >= minAnagrams) &&
+                (numAnagrams <= maxAnagrams))
+            {
+                wordSet.insert (*sit);
+            }
+        }
+        finalWordSet = wordSet;
     }
 
     // Transform word set into word list and return it

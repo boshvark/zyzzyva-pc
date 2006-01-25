@@ -52,7 +52,7 @@ class WordEngine
                             conditions) const;
     bool isSetMember (const QString& word, SearchSet ss) const;
     int numAnagrams (const QString& word) const;
-    QStringList wordListOnlySearch (const SearchSpec& spec) const;
+    QStringList nonGraphSearch (const SearchSpec& spec) const;
     QString replaceDefinitionLinks (const QString& definition, int maxDepth,
                                     bool useFollow = false) const;
     QString getSubDefinition (const QString& word, const QString& pos) const;
