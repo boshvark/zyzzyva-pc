@@ -52,6 +52,7 @@ class MainWindow : public QMainWindow
     static MainWindow* getInstance() { return instance; }
 
     public slots:
+    void tryAutoImport (QSplashScreen* splash);
     void importInteractive();
     void newQuizFormInteractive();
     void newQuizFormInteractive (const QuizSpec& quizSpec);
@@ -86,6 +87,8 @@ class MainWindow : public QMainWindow
     QToolButton* closeButton;
     QLabel*      messageLabel;
     QLabel*      lexiconLabel;
+
+    QString      currentLexicon;
 
     SettingsDialog* settingsDialog;
     AboutDialog*    aboutDialog;

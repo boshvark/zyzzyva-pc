@@ -291,20 +291,7 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     readSettings (true);
 
-    QString importFile = MainSettings::getAutoImportFile();
-    if (!importFile.isEmpty()) {
-        if (splash) {
-            splash->showMessage ("Loading lexicon...",
-                                 Qt::AlignHCenter | Qt::AlignBottom);
-        }
-        import (importFile);
-    }
-
-    if (splash) {
-        splash->showMessage ("Loading stems...",
-                             Qt::AlignHCenter | Qt::AlignBottom);
-    }
-    importStems();
+    tryAutoImport (splash);
 
     if (!instance)
         instance = this;
@@ -314,6 +301,56 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     connect (helpDialog, SIGNAL (error (const QString&)),
              SLOT (helpDialogError (const QString&)));
+}
+
+//---------------------------------------------------------------------------
+//  tryAutoImport
+//
+//! Try automatically importing a lexicon, if the user has enabled it in
+//! preferences.
+//---------------------------------------------------------------------------
+void
+MainWindow::tryAutoImport (QSplashScreen* splash)
+{
+    if (!MainSettings::getUseAutoImport())
+        return;
+
+    // FIXME: This should not be part of the MainWindow class.  Lexicons (and
+    // mapping lexicons to actual files) should be handled by someone else.
+    currentLexicon = MainSettings::getAutoImportLexicon();
+    QString importFile;
+    if (currentLexicon == "Custom") {
+        importFile = MainSettings::getAutoImportFile();
+    }
+    else {
+        QMap<QString, QString> lexiconMap;
+        lexiconMap["OWL"] = "/north-american/twl98.txt";
+        lexiconMap["OWL2"] = "/north-american/owl2.txt";
+        lexiconMap["SOWPODS"] = "/british/sowpods.txt";
+        lexiconMap["ODS"] = "/french/ods4.txt";
+
+        if (lexiconMap.contains (currentLexicon)) {
+            importFile = Auxil::getWordsDir()
+                + lexiconMap.value (currentLexicon);
+        }
+    }
+
+    if (importFile.isEmpty())
+        return;
+
+    QString splashMessage = "Loading " + currentLexicon + " lexicon...";
+    if (splash) {
+        splash->showMessage (splashMessage,
+                             Qt::AlignHCenter | Qt::AlignBottom);
+    }
+    import (importFile);
+
+    if (splash) {
+        splash->showMessage ("Loading stems...",
+                             Qt::AlignHCenter | Qt::AlignBottom);
+    }
+
+    importStems();
 }
 
 //---------------------------------------------------------------------------
@@ -639,7 +676,9 @@ MainWindow::closeEvent (QCloseEvent* event)
 void
 MainWindow::setNumWords (int num)
 {
-    lexiconLabel->setText (QString::number (num) + " words");
+    lexiconLabel->setText (num ? QString::number (num) + " words in "
+                                 + currentLexicon + " lexicon"
+                               : "No words loaded");
 }
 
 //---------------------------------------------------------------------------
