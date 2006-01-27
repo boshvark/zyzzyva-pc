@@ -67,10 +67,10 @@ WordEngine::importFile (const QString& filename, const QString& lexName,
     char* buffer = new char [MAX_INPUT_LINE_LEN];
     while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
-        line = line.simplifyWhiteSpace();
+        line = line.simplified();
         if (!line.length() || (line.at (0) == '#'))
             continue;
-        QString word = line.section (' ', 0, 0).upper();
+        QString word = line.section (' ', 0, 0).toUpper();
 
         if (!graph.containsWord (word)) {
             QString alpha = alphagram (word);
@@ -135,7 +135,7 @@ WordEngine::importStems (const QString& filename, QString* errString)
     char* buffer = new char [MAX_INPUT_LINE_LEN];
     while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
-        line = line.simplifyWhiteSpace();
+        line = line.simplified();
         if (!line.length() || (line.at (0) == '#'))
             continue;
         QString word = line.section (' ', 0, 0);
@@ -238,7 +238,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     if (allCaps) {
         QStringList::iterator it;
         for (it = wordList.begin(); it != wordList.end(); ++it)
-            *it = (*it).upper();
+            *it = (*it).toUpper();
     }
     return wordList;
 }
@@ -346,7 +346,7 @@ bool
 WordEngine::matchesConditions (const QString& word, const
                                QList<SearchCondition>& conditions) const
 {
-    QString wordUpper = word.upper();
+    QString wordUpper = word.toUpper();
     QListIterator<SearchCondition> it (conditions);
     while (it.hasNext()) {
         const SearchCondition& condition = it.next();
@@ -569,7 +569,7 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
         // words for acceptability and combine the word lists
         if (condition.type != SearchCondition::InWordList)
             continue;
-        QStringList words = QStringList::split (" ", condition.stringValue);
+        QStringList words = condition.stringValue.split (QChar (' '));
 
         set<QString> wordSet;
         QStringList::iterator wit;

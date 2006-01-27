@@ -54,8 +54,10 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
                                   WordValidator::AllowAsterisks |
                                   WordValidator::AllowCharacterClasses);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout (this, 0, SPACING);
+    QHBoxLayout* mainHlay = new QHBoxLayout (this);
     Q_CHECK_PTR (mainHlay);
+    mainHlay->setMargin (0);
+    mainHlay->setSpacing (SPACING);
 
     QStringList types;
     types << Auxil::searchTypeToString (SearchCondition::PatternMatch)
@@ -82,7 +84,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
 
     typeCbox = new QComboBox;
     Q_CHECK_PTR (typeCbox);
-    typeCbox->insertStringList (types);
+    typeCbox->addItems (types);
     connect (typeCbox, SIGNAL (activated (const QString&)),
              SLOT (typeChanged (const QString&)));
     mainHlay->addWidget (typeCbox);
@@ -94,8 +96,10 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     // Frame containing just an input line
     paramLineFrame = new QFrame;
     Q_CHECK_PTR (paramLineFrame);
-    QHBoxLayout* paramLineHlay = new QHBoxLayout (paramLineFrame, 0, SPACING);
+    QHBoxLayout* paramLineHlay = new QHBoxLayout (paramLineFrame);
     Q_CHECK_PTR (paramLineHlay);
+    paramLineHlay->setMargin (0);
+    paramLineHlay->setSpacing (SPACING);
     paramLine = new WordLineEdit;
     Q_CHECK_PTR (paramLine);
     paramLine->setValidator (patternValidator);
@@ -108,8 +112,10 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     // Frame containing just a spin box
     paramSboxFrame = new QFrame;
     Q_CHECK_PTR (paramSboxFrame);
-    QHBoxLayout* paramSboxHlay = new QHBoxLayout (paramSboxFrame, 0, SPACING);
+    QHBoxLayout* paramSboxHlay = new QHBoxLayout (paramSboxFrame);
     Q_CHECK_PTR (paramSboxHlay);
+    paramSboxHlay->setMargin (0);
+    paramSboxHlay->setSpacing (SPACING);
     paramSbox = new QSpinBox;
     Q_CHECK_PTR (paramSbox);
     paramSbox->setMinimum (0);
@@ -121,8 +127,10 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     // Frame containing just a combo box
     paramCboxFrame = new QFrame;
     Q_CHECK_PTR (paramCboxFrame);
-    QHBoxLayout* paramCboxHlay = new QHBoxLayout (paramCboxFrame, 0, SPACING);
+    QHBoxLayout* paramCboxHlay = new QHBoxLayout (paramCboxFrame);
     Q_CHECK_PTR (paramCboxHlay);
+    paramCboxHlay->setMargin (0);
+    paramCboxHlay->setSpacing (SPACING);
     paramCbox = new QComboBox;
     Q_CHECK_PTR (paramCbox);
     connect (paramCbox, SIGNAL (activated (const QString&)),
@@ -133,9 +141,10 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     // Frame containing spin box and input line
     paramConsistFrame = new QFrame;
     Q_CHECK_PTR (paramConsistFrame);
-    QHBoxLayout* paramConsistHlay = new QHBoxLayout (paramConsistFrame, 0,
-                                                     SPACING);
+    QHBoxLayout* paramConsistHlay = new QHBoxLayout (paramConsistFrame);
     Q_CHECK_PTR (paramConsistHlay);
+    paramConsistHlay->setMargin (0);
+    paramConsistHlay->setSpacing (SPACING);
     paramConsistSbox = new QSpinBox;
     Q_CHECK_PTR (paramConsistSbox);
     paramConsistSbox->setMinimum (0);
@@ -160,9 +169,10 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     // lists
     paramWordListFrame = new QFrame;
     Q_CHECK_PTR (paramWordListFrame);
-    QHBoxLayout* paramWordListHlay = new QHBoxLayout (paramWordListFrame, 0,
-                                                      SPACING);
+    QHBoxLayout* paramWordListHlay = new QHBoxLayout (paramWordListFrame);
     Q_CHECK_PTR (paramWordListHlay);
+    paramWordListHlay->setMargin (0);
+    paramWordListHlay->setSpacing (SPACING);
 
     paramWordListLine = new QLineEdit;
     Q_CHECK_PTR (paramWordListLine);
@@ -233,7 +243,7 @@ SearchConditionForm::getSearchCondition() const
         break;
 
         default:
-        qWarning ("Unrecognized search condition: " + typeStr);
+        //qWarning ("Unrecognized search condition: " + typeStr);
         break;
     }
 
@@ -252,7 +262,8 @@ void
 SearchConditionForm::setSearchCondition (const SearchCondition& condition)
 {
     reset();
-    typeCbox->setCurrentText (Auxil::searchTypeToString (condition.type));
+    typeCbox->setCurrentIndex (typeCbox->findText (Auxil::searchTypeToString
+                                                   (condition.type)));
     typeChanged (typeCbox->currentText());
 
     switch (condition.type) {
@@ -283,7 +294,8 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
         break;
 
         case SearchCondition::MustBelong:
-        paramCbox->setCurrentText (condition.stringValue);
+        paramCbox->setCurrentIndex (paramCbox->findText
+                                    (condition.stringValue));
         break;
 
         case SearchCondition::InWordList:
@@ -378,33 +390,33 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::ExactLength:
         case SearchCondition::MinLength:
         case SearchCondition::MaxLength:
-        paramSbox->setMaxValue (MAX_WORD_LEN);
+        paramSbox->setMaximum (MAX_WORD_LEN);
         paramStack->setCurrentWidget (paramSboxFrame);
         break;
 
         case SearchCondition::ExactAnagrams:
         case SearchCondition::MinAnagrams:
         case SearchCondition::MaxAnagrams:
-        paramSbox->setMaxValue (100);
+        paramSbox->setMaximum (100);
         paramStack->setCurrentWidget (paramSboxFrame);
         break;
 
         case SearchCondition::MinProbability:
         case SearchCondition::MaxProbability:
-        paramSbox->setMaxValue (100);
+        paramSbox->setMaximum (100);
         paramStack->setCurrentWidget (paramSboxFrame);
         break;
 
         case SearchCondition::MustBelong:
         paramCbox->clear();
-        paramCbox->insertItem (Auxil::searchSetToString (SetHookWords));
-        paramCbox->insertItem (Auxil::searchSetToString (SetFrontHooks));
-        paramCbox->insertItem (Auxil::searchSetToString (SetBackHooks));
-        paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneSevens));
-        //paramCbox->insertItem (Auxil::searchSetToString (SetTypeTwoSevens));
-        //paramCbox->insertItem (Auxil::searchSetToString (SetTypeThreeSevens));
-        paramCbox->insertItem (Auxil::searchSetToString (SetTypeOneEights));
-        //paramCbox->insertItem (Auxil::searchSetToString
+        paramCbox->addItem (Auxil::searchSetToString (SetHookWords));
+        paramCbox->addItem (Auxil::searchSetToString (SetFrontHooks));
+        paramCbox->addItem (Auxil::searchSetToString (SetBackHooks));
+        paramCbox->addItem (Auxil::searchSetToString (SetTypeOneSevens));
+        //paramCbox->addItem (Auxil::searchSetToString (SetTypeTwoSevens));
+        //paramCbox->addItem (Auxil::searchSetToString (SetTypeThreeSevens));
+        paramCbox->addItem (Auxil::searchSetToString (SetTypeOneEights));
+        //paramCbox->addItem (Auxil::searchSetToString
         //                       (SetEightsFromSevenLetterStems));
         paramStack->setCurrentWidget (paramCboxFrame);
         break;
@@ -419,7 +431,7 @@ SearchConditionForm::typeChanged (const QString& string)
         break;
 
         default:
-        qWarning ("Unrecognized search condition: " + string);
+        //qWarning ("Unrecognized search condition: " + string);
         break;
     }
 
@@ -457,10 +469,10 @@ SearchConditionForm::reset()
 {
     paramLine->setText ("");
     paramSbox->setValue (0);
-    paramCbox->setCurrentItem (0);
+    paramCbox->setCurrentIndex (0);
     paramConsistSbox->setValue (0);
     paramConsistLine->setText ("");
-    typeCbox->setCurrentItem (0);
+    typeCbox->setCurrentIndex (0);
     typeChanged (typeCbox->currentText());
 }
 
@@ -474,7 +486,7 @@ void
 SearchConditionForm::setWordListString (const QString& string)
 {
     paramWordListString = string;
-    QStringList wordList = QStringList::split (" ", string);
+    QStringList wordList = string.split (QChar (' '));
     paramWordListLine->setText (QString::number (wordList.size()) + " words");
     paramWordListLine->home (false);
 }

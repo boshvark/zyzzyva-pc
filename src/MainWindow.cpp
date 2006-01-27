@@ -502,7 +502,7 @@ MainWindow::viewDefinition()
 {
     WordEntryDialog* entryDialog = new WordEntryDialog (this);
     Q_CHECK_PTR (entryDialog);
-    entryDialog->setCaption ("View Word Definition");
+    entryDialog->setWindowTitle ("View Word Definition");
     entryDialog->resize (entryDialog->minimumSizeHint().width() * 2,
                          entryDialog->minimumSizeHint().height());
     int code = entryDialog->exec();
@@ -511,9 +511,9 @@ MainWindow::viewDefinition()
     if ((code != QDialog::Accepted) || word.isEmpty())
         return;
 
-    DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
-                                                     Qt::WDestructiveClose);
+    DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this);
     Q_CHECK_PTR (dialog);
+    dialog->setAttribute (Qt::WA_DeleteOnClose);
     dialog->show();
 }
 
@@ -541,7 +541,7 @@ MainWindow::viewVariation (int variation)
 
     WordEntryDialog* entryDialog = new WordEntryDialog (this);
     Q_CHECK_PTR (entryDialog);
-    entryDialog->setCaption (caption);
+    entryDialog->setWindowTitle (caption);
     entryDialog->resize (entryDialog->minimumSizeHint().width() * 2,
                          entryDialog->minimumSizeHint().height());
     int code = entryDialog->exec();
@@ -552,9 +552,9 @@ MainWindow::viewVariation (int variation)
 
     WordVariationType type = static_cast<WordVariationType>(variation);
     WordVariationDialog* dialog = new WordVariationDialog (wordEngine, word,
-                                                           type, this,
-                                                           Qt::WDestructiveClose);
+                                                           type, this);
     Q_CHECK_PTR (dialog);
+    dialog->setAttribute (Qt::WA_DeleteOnClose);
     dialog->show();
 }
 
@@ -602,11 +602,11 @@ MainWindow::helpDialogError (const QString& message)
 void
 MainWindow::closeCurrentTab()
 {
-    QWidget* w = tabStack->currentPage();
+    QWidget* w = tabStack->currentWidget();
     if (!w)
         return;
 
-    tabStack->removePage (w);
+    tabStack->removeTab (tabStack->indexOf (w));
     delete w;
     if (tabStack->count() == 0) {
         messageLabel->setText (QString::null);
@@ -707,7 +707,7 @@ MainWindow::readSettings (bool useGeometry)
         qApp->setFont (mainFont);
     }
     else {
-        qWarning ("Cannot set font: " + fontStr);
+        //qWarning ("Cannot set font: " + fontStr);
         mainFontOk = false;
     }
 
@@ -718,8 +718,9 @@ MainWindow::readSettings (bool useGeometry)
         ; // do nothing
     else if (font.fromString (fontStr))
         qApp->setFont (font, "WordTableView");
-    else
-        qWarning ("Cannot set font: " + fontStr);
+    else {
+        //qWarning ("Cannot set font: " + fontStr);
+    }
 
     // Set word list headers back to main font
     if (mainFontOk)
@@ -734,8 +735,9 @@ MainWindow::readSettings (bool useGeometry)
     }
     else if (font.fromString (fontStr))
         qApp->setFont (font, "QuizQuestionLabel");
-    else
-        qWarning ("Cannot set font: " + fontStr);
+    else {
+        //qWarning ("Cannot set font: " + fontStr);
+    }
 
     // Word input font
     fontStr = MainSettings::getWordInputFont();
@@ -745,8 +747,9 @@ MainWindow::readSettings (bool useGeometry)
         qApp->setFont (font, "WordLineEdit");
         qApp->setFont (font, "WordTextEdit");
     }
-    else
-        qWarning ("Cannot set font: " + fontStr);
+    else {
+        //qWarning ("Cannot set font: " + fontStr);
+    }
 
     // Definition font
     fontStr = MainSettings::getDefinitionFont();
@@ -756,15 +759,16 @@ MainWindow::readSettings (bool useGeometry)
         qApp->setFont (font, "DefinitionBox");
         qApp->setFont (font, "DefinitionLabel");
     }
-    else
-        qWarning ("Cannot set font: " + fontStr);
+    else {
+        //qWarning ("Cannot set font: " + fontStr);
+    }
 
     // Set tile theme and background color for all quiz forms
     QString tileTheme = MainSettings::getTileTheme();
     QColor backgroundColor = MainSettings::getQuizBackgroundColor();
     int count = tabStack->count();
     for (int i = 0; i < count; ++i) {
-        ActionForm* form = static_cast<ActionForm*> (tabStack->page (i));
+        ActionForm* form = static_cast<ActionForm*> (tabStack->widget (i));
         ActionForm::ActionFormType type = form->getType();
         if (type == ActionForm::QuizFormType) {
             QuizForm* quizForm = static_cast<QuizForm*> (form);
@@ -801,7 +805,7 @@ void
 MainWindow::newTab (QWidget* widget, const QIcon& icon, const QString& title)
 {
     tabStack->addTab (widget, icon, title);
-    tabStack->showPage (widget);
+    tabStack->setCurrentWidget (widget);
     closeButton->show();
 }
 
@@ -818,7 +822,7 @@ int
 MainWindow::import (const QString& file, const QString& lexiconName)
 {
     QString err;
-    QApplication::setOverrideCursor (Qt::waitCursor);
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
     int imported = wordEngine->importFile (file, lexiconName, true, &err);
     QApplication::restoreOverrideCursor();
 
@@ -842,7 +846,7 @@ MainWindow::importStems()
     stemFiles << (Auxil::getWordsDir() + "/north-american/7-letter-stems.txt");
 
     QString err;
-    QApplication::setOverrideCursor (Qt::waitCursor);
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
     QStringList::iterator it;
     int totalImported = 0;
     for (it = stemFiles.begin(); it != stemFiles.end(); ++it) {

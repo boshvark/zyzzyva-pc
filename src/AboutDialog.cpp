@@ -45,12 +45,14 @@ using namespace Defs;
 AboutDialog::AboutDialog (QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    mainVlay->setMargin (MARGIN);
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
     QLabel* label = new QLabel;
     Q_CHECK_PTR (label);
-    label->setPaletteBackgroundColor (QColor (255, 255, 255));
+    label->setPalette (QPalette (QColor (255, 255, 255)));
     label->setFrameShape (QLabel::StyledPanel);
     label->setFrameShadow (QLabel::Sunken);
     label->setLineWidth (2);
@@ -61,7 +63,8 @@ AboutDialog::AboutDialog (QWidget* parent, Qt::WFlags f)
     label->setText (Auxil::getAboutString()); 
     mainVlay->addWidget (label);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
@@ -74,7 +77,7 @@ AboutDialog::AboutDialog (QWidget* parent, Qt::WFlags f)
     connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (closeButton);
 
-    setCaption (DIALOG_CAPTION);
+    setWindowTitle (DIALOG_CAPTION);
 }
 
 //---------------------------------------------------------------------------

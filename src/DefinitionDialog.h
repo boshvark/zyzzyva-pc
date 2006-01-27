@@ -34,7 +34,7 @@ class DefinitionDialog : public QDialog
     Q_OBJECT
     public:
     DefinitionDialog (WordEngine* e, const QString& word, QWidget* parent = 0,
-                      Qt::WFlags f = Qt::WType_TopLevel);
+                      Qt::WFlags f = 0);
     ~DefinitionDialog();
 
     private:

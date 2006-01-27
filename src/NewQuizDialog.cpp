@@ -67,12 +67,11 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     typeHlay->addWidget (typeLabel);
 
     typeCombo = new QComboBox;
-    typeCombo->insertItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
-    typeCombo->insertItem (Auxil::quizTypeToString
-                           (QuizSpec::QuizWordListRecall));
-    typeCombo->insertItem (Auxil::quizTypeToString (QuizSpec::QuizHooks));
-    typeCombo->setCurrentText (Auxil::quizTypeToString
-                               (QuizSpec::QuizAnagrams));
+    typeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
+    typeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizWordListRecall));
+    typeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizHooks));
+    typeCombo->setCurrentIndex (typeCombo->findText
+        (Auxil::quizTypeToString (QuizSpec::QuizAnagrams)));
     connect (typeCombo, SIGNAL (activated (const QString&)),
              SLOT (typeActivated (const QString&)));
     typeHlay->addWidget (typeCombo);
@@ -131,9 +130,9 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     timerWidgetHlay->addWidget (timerLabel);
 
     timerCombo = new QComboBox;
-    timerCombo->insertItem (TIMER_PER_QUESTION);
-    timerCombo->insertItem (TIMER_PER_RESPONSE);
-    timerCombo->setCurrentText (TIMER_PER_RESPONSE);
+    timerCombo->addItem (TIMER_PER_QUESTION);
+    timerCombo->addItem (TIMER_PER_RESPONSE);
+    timerCombo->setCurrentIndex (timerCombo->findText (TIMER_PER_RESPONSE));
     timerWidgetHlay->addWidget (timerCombo);
 
     // OK/Cancel buttons
@@ -166,7 +165,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
 
-    setCaption (DIALOG_CAPTION);
+    setWindowTitle (DIALOG_CAPTION);
 }
 
 //---------------------------------------------------------------------------
@@ -212,23 +211,26 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
 {
     quizSpec = spec;
 
-    typeCombo->setCurrentText (Auxil::quizTypeToString (spec.getType()));
+    typeCombo->setCurrentIndex (typeCombo->findText
+                                (Auxil::quizTypeToString (spec.getType())));
     typeActivated (typeCombo->currentText());
     specForm->setSearchSpec (spec.getSearchSpec());
     randomCbox->setChecked (spec.getRandomOrder());
     timerCbox->setChecked (false);
     timerSbox->setValue (0);
-    timerCombo->setCurrentText (TIMER_PER_RESPONSE);
+    timerCombo->setCurrentIndex (timerCombo->findText (TIMER_PER_RESPONSE));
     QuizTimerSpec timerSpec = spec.getTimerSpec();
     if (timerSpec.getType() != NoTimer) {
         timerCbox->setChecked (true);
         timerSbox->setValue (timerSpec.getDuration());
         switch (timerSpec.getType()) {
             case PerQuestion:
-            timerCombo->setCurrentText (TIMER_PER_QUESTION);
+            timerCombo->setCurrentIndex (timerCombo->findText
+                                         (TIMER_PER_QUESTION));
             break;
             case PerResponse:
-            timerCombo->setCurrentText (TIMER_PER_RESPONSE);
+            timerCombo->setCurrentIndex (timerCombo->findText
+                                         (TIMER_PER_RESPONSE));
             break;
             default: break;
         }
@@ -325,7 +327,7 @@ NewQuizDialog::loadQuiz()
     int errorLine = 0;
     int errorColumn = 0;
 
-    QApplication::setOverrideCursor (Qt::waitCursor);
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
     QDomDocument document;
     bool success = document.setContent (&file, false, &errorMsg, &errorLine,
                                         &errorColumn);
@@ -365,7 +367,7 @@ NewQuizDialog::saveQuiz()
         return;
 
     bool filenameEdited = false;
-    if (!filename.endsWith (".zzq", false)) {
+    if (!filename.endsWith (".zzq", Qt::CaseInsensitive)) {
         filename += ".zzq";
         filenameEdited = true;
     }

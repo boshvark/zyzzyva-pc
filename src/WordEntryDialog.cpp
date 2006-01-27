@@ -48,10 +48,13 @@ WordEntryDialog::WordEntryDialog (QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f),
     wordValidator (new WordValidator (this))
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    mainVlay->setMargin (MARGIN);
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    QHBoxLayout* lineHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* lineHlay = new QHBoxLayout;
+    lineHlay->setSpacing (SPACING);
     Q_CHECK_PTR (lineHlay);
     mainVlay->addLayout (lineHlay);
 
@@ -65,7 +68,8 @@ WordEntryDialog::WordEntryDialog (QWidget* parent, Qt::WFlags f)
     lineHlay->addWidget (wordLine);
 
     // OK/Cancel buttons
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
@@ -84,7 +88,7 @@ WordEntryDialog::WordEntryDialog (QWidget* parent, Qt::WFlags f)
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
 
-    setCaption (DIALOG_CAPTION);
+    setWindowTitle (DIALOG_CAPTION);
     //resize (minimumSizeHint().width(), 500);
 }
 

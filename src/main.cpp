@@ -43,7 +43,6 @@ int main (int argc, char** argv)
     splash->show();
 
     MainWindow* window = new MainWindow (0, splash);
-    app.setMainWidget (window);
     window->show();
 
     splash->finish (window);

@@ -49,7 +49,9 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
                                     QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f), engine (e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    mainVlay->setMargin (MARGIN);
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
     bool acceptable = engine->isAcceptable (word);
@@ -60,7 +62,8 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
     defBox->setTitle (wordAcceptable);
     mainVlay->addWidget (defBox);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
@@ -73,7 +76,7 @@ DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
     connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (closeButton);
 
-    setCaption (DIALOG_CAPTION_PREFIX + wordAcceptable);
+    setWindowTitle (DIALOG_CAPTION_PREFIX + wordAcceptable);
 
     QString definition = engine->getDefinition (word);
     if (definition.isEmpty()) {

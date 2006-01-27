@@ -228,11 +228,13 @@ WordGraph::search (const SearchSpec& spec) const
                 unmatched = unmatched.replace ('*', "");
 
             QRegExp re ("\\[[^\\]]*\\][A-Z]");
-            while (re.search (unmatched) >= 0) {
+            int pos = 0;
+            while ((pos = re.indexIn (unmatched, pos)) >= 0) {
                 unmatched = unmatched.left (re.pos()) +
                     unmatched.right (unmatched.length() -
                                     (re.pos() + re.matchedLength()) + 1) +
                     unmatched.mid (re.pos(), re.matchedLength() - 1);
+                pos += re.matchedLength();
             }
         }
 
@@ -260,7 +262,7 @@ WordGraph::search (const SearchSpec& spec) const
                             unmatched.right (unmatched.length() - 1)));
 
                     else if (match == "[") {
-                        closeIndex = unmatched.find (']', 0);
+                        closeIndex = unmatched.indexOf (']', 0);
                         match = unmatched.mid (1, closeIndex);
                     }
                 }
@@ -281,7 +283,7 @@ WordGraph::search (const SearchSpec& spec) const
                         bool matchLetter = match.contains (node->letter);
                         bool matchNegated = match.contains ("^");
                         QChar c = (match.contains ("]") || (match == "?"))
-                            ? node->letter.lower() : node->letter;
+                            ? node->letter.toLower() : node->letter;
 
                         if ((match == "*") || (match == "?") ||
                             (matchLetter ^ matchNegated))
@@ -305,7 +307,7 @@ WordGraph::search (const SearchSpec& spec) const
                         // If end of word and end of pattern, put the word in
                         // the list.  If we are searching the reverse list,
                         // reverse the word first.
-                        QString wordUpper = word.upper();
+                        QString wordUpper = word.toUpper();
                         if (reversePattern)
                             wordUpper = reverseString (wordUpper);
 
@@ -399,7 +401,7 @@ WordGraph::search (const SearchSpec& spec) const
                         //int index = unmatched.find (node->letter);
                         found = (matchStart >= 0);
                         if (!found) {
-                            matchStart = matchEnd = unmatched.find ("?");
+                            matchStart = matchEnd = unmatched.indexOf ("?");
                             found = (matchStart >= 0);
                             wildcardMatch = true;
                         }
@@ -409,7 +411,7 @@ WordGraph::search (const SearchSpec& spec) const
                         // word.
                         if (found || wildcard) {
                             word += (found && !wildcardMatch) ? node->letter
-                                : node->letter.lower();
+                                : node->letter.toLower();
 
                             if (found)
                                 unmatched.replace (matchStart,
@@ -424,7 +426,7 @@ WordGraph::search (const SearchSpec& spec) const
                                                              unmatched));
                             }
 
-                            QString wordUpper = word.upper();
+                            QString wordUpper = word.toUpper();
                             if (node->eow &&
                                 ((condition.type ==
                                   SearchCondition::SubanagramMatch) ||
@@ -574,7 +576,7 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
                 QString tmpWord = word;
                 int includeLen = condition.stringValue.length();
                 for (int i = 0; i < includeLen; ++i) {
-                    int index = tmpWord.find (condition.stringValue.at (i));
+                    int index = tmpWord.indexOf (condition.stringValue.at (i));
                     if (index < 0)
                         return false;
                     tmpWord.replace (index, 1, "");

@@ -50,10 +50,13 @@ using namespace Defs;
 SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     : ActionForm (SearchFormType, parent, f), wordEngine (e)
 {
-    QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING);
+    QHBoxLayout* mainHlay = new QHBoxLayout (this);
+    mainHlay->setMargin (MARGIN);
+    mainHlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainHlay);
 
-    QVBoxLayout* specVlay = new QVBoxLayout (SPACING);
+    QVBoxLayout* specVlay = new QVBoxLayout;
+    specVlay->setSpacing (SPACING);
     Q_CHECK_PTR (specVlay);
     mainHlay->addLayout (specVlay);
 
@@ -68,7 +71,8 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (lowerCaseCbox);
     specVlay->addWidget (lowerCaseCbox);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     specVlay->addLayout (buttonHlay);
 
@@ -123,7 +127,7 @@ SearchForm::search()
     if (spec.conditions.empty())
         return;
 
-    QApplication::setOverrideCursor (Qt::waitCursor);
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
     resultModel->removeRows (0, resultModel->rowCount());
 
     QStringList wordList = wordEngine->search (specForm->getSearchSpec(),

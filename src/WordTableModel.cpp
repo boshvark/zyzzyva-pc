@@ -50,7 +50,7 @@ bool
 lessThan (const WordTableModel::WordItem& a,
           const WordTableModel::WordItem& b)
 {
-    return (a.getWord().upper() < b.getWord().upper());
+    return (a.getWord().toUpper() < b.getWord().toUpper());
 }
 
 //---------------------------------------------------------------------------
@@ -223,7 +223,7 @@ WordTableModel::data (const QModelIndex& index, int role) const
         return QVariant();
 
     QString word = wordList.at (index.row()).getWord();
-    QString wordUpper = word.upper();
+    QString wordUpper = word.toUpper();
     switch (index.column()) {
         case FRONT_HOOK_COLUMN:
         return MainSettings::getWordListShowHooks() ?
@@ -453,7 +453,7 @@ WordTableModel::getFrontHookLetters (const QString& word) const
     set<QChar> letters;
     QStringList::iterator it;
     for (it = words.begin(); it != words.end(); ++it)
-        letters.insert ((*it).at (0).lower());
+        letters.insert ((*it).at (0).toLower());
 
     QString ret;
     set<QChar>::iterator sit;
@@ -485,7 +485,7 @@ WordTableModel::getBackHookLetters (const QString& word) const
     set<QChar> letters;
     QStringList::iterator it;
     for (it = words.begin(); it != words.end(); ++it)
-        letters.insert ((*it).at ((*it).length() - 1).lower());
+        letters.insert ((*it).at ((*it).length() - 1).toLower());
 
     QString ret;
     set<QChar>::iterator sit;

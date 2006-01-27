@@ -103,11 +103,13 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     generalPrefVlay->addWidget (autoImportGbox);
     generalPrefVlay->setStretchFactor (autoImportGbox, 1);
 
-    QVBoxLayout* autoImportVlay = new QVBoxLayout (autoImportGbox, MARGIN,
-                                                   SPACING);
+    QVBoxLayout* autoImportVlay = new QVBoxLayout (autoImportGbox);
     Q_CHECK_PTR (autoImportVlay);
+    autoImportVlay->setMargin (MARGIN);
+    autoImportVlay->setSpacing (SPACING);
 
-    QHBoxLayout* autoImportLexiconHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* autoImportLexiconHlay = new QHBoxLayout;
+    autoImportLexiconHlay->setSpacing (SPACING);
     Q_CHECK_PTR (autoImportLexiconHlay);
     autoImportVlay->addLayout (autoImportLexiconHlay);
 
@@ -135,8 +137,10 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     autoImportVlay->addWidget (autoImportCustomWidget);
 
     QHBoxLayout* autoImportCustomHlay = new QHBoxLayout
-        (autoImportCustomWidget, 0, SPACING);
+        (autoImportCustomWidget);
     Q_CHECK_PTR (autoImportCustomHlay);
+    autoImportCustomHlay->setMargin (0);
+    autoImportCustomHlay->setSpacing (SPACING);
 
     QLabel* autoImportCustomLabel = new QLabel ("Custom:");
     Q_CHECK_PTR (autoImportCustomLabel);
@@ -172,9 +176,10 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     quizPrefVlay->addWidget (quizQuestionGbox);
     quizPrefVlay->setStretchFactor (quizQuestionGbox, 1);
 
-    QVBoxLayout* quizQuestionVlay = new QVBoxLayout (quizQuestionGbox, MARGIN,
-                                                     SPACING);
+    QVBoxLayout* quizQuestionVlay = new QVBoxLayout (quizQuestionGbox);
     Q_CHECK_PTR (quizQuestionVlay);
+    quizQuestionVlay->setMargin (MARGIN);
+    quizQuestionVlay->setSpacing (SPACING);
 
     themeCbox = new QCheckBox ("Use tile images");
     Q_CHECK_PTR (themeCbox);
@@ -182,7 +187,8 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
              SLOT (themeCboxToggled (bool)));
     quizQuestionVlay->addWidget (themeCbox);
 
-    QHBoxLayout* themeHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* themeHlay = new QHBoxLayout;
+    themeHlay->setSpacing (SPACING);
     Q_CHECK_PTR (themeHlay);
     quizQuestionVlay->addLayout (themeHlay);
 
@@ -239,9 +245,10 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     quizPrefVlay->addWidget (quizHintsGbox);
     quizPrefVlay->setStretchFactor (quizHintsGbox, 1);
 
-    QVBoxLayout* quizHintsVlay = new QVBoxLayout (quizHintsGbox, MARGIN,
-                                                  SPACING);
+    QVBoxLayout* quizHintsVlay = new QVBoxLayout (quizHintsGbox);
     Q_CHECK_PTR (quizHintsVlay);
+    quizHintsVlay->setMargin (MARGIN);
+    quizHintsVlay->setSpacing (SPACING);
 
     quizShowNumResponsesCbox = new QCheckBox ("Show number of responses "
                                               "in status bar");
@@ -287,7 +294,9 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     fontPrefVlay->addWidget (fontGbox);
     fontPrefVlay->setStretchFactor (fontGbox, 1);
 
-    QGridLayout* fontGlay = new QGridLayout (fontGbox, 4, 3, MARGIN, SPACING);
+    QGridLayout* fontGlay = new QGridLayout (fontGbox);
+    fontGlay->setMargin (MARGIN);
+    fontGlay->setSpacing (SPACING);
     Q_CHECK_PTR (fontGlay);
 
     // Main font
@@ -414,9 +423,10 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     wordListPrefVlay->addWidget (wordListGbox);
     wordListPrefVlay->setStretchFactor (wordListGbox, 1);
 
-    QVBoxLayout* wordListVlay = new QVBoxLayout (wordListGbox, MARGIN,
-                                                 SPACING);
+    QVBoxLayout* wordListVlay = new QVBoxLayout (wordListGbox);
     Q_CHECK_PTR (wordListVlay);
+    wordListVlay->setMargin (MARGIN);
+    wordListVlay->setSpacing (SPACING);
 
     lengthSortCbox = new QCheckBox ("Sort by word length");
     Q_CHECK_PTR (lengthSortCbox);
@@ -437,7 +447,8 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     wordListPrefVlay->addStretch (2);
 
     // Button layout
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
@@ -463,7 +474,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     new QListWidgetItem (WORD_LIST_PREFS_ITEM, navList);
     navList->setCurrentRow (0);
 
-    setCaption (DIALOG_CAPTION);
+    setWindowTitle (DIALOG_CAPTION);
     readSettings();
 
     quizBackgroundColor = MainSettings::getQuizBackgroundColor();
@@ -509,9 +520,9 @@ SettingsDialog::readSettings()
         QString tileTheme = MainSettings::getTileTheme();
         QString themeStr;
         for (int i = 0; i < themeCombo->count(); ++i) {
-            themeStr = themeCombo->text (i);
+            themeStr = themeCombo->itemText (i);
             if (themeStr == tileTheme) {
-                themeCombo->setCurrentItem (i);
+                themeCombo->setCurrentIndex (i);
                 break;
             }
         }
@@ -765,13 +776,13 @@ SettingsDialog::fillThemeCombo()
     themeCombo->clear();
 
     QDir themeDir (Auxil::getTilesDir());
-    QStringList themes = themeDir.entryList (QDir::Dirs, QDir::Name).grep
-        (QRegExp ("^[^\\.]"));
+    QStringList themes = themeDir.entryList
+        (QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 
     bool enableThemes = (themes.count() > 0);
     themeCbox->setEnabled (enableThemes);
     if (enableThemes) {
-        themeCombo->insertStringList (themes);
+        themeCombo->addItems (themes);
     }
     else {
         themeLabel->setEnabled (false);

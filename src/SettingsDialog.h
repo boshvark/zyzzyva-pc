@@ -40,7 +40,7 @@ class SettingsDialog : public QDialog
 {
     Q_OBJECT
     public:
-    SettingsDialog (QWidget* parent = 0, Qt::WFlags f = Qt::WType_TopLevel);
+    SettingsDialog (QWidget* parent = 0, Qt::WFlags f = 0);
     ~SettingsDialog();
 
     void readSettings();

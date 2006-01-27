@@ -112,14 +112,18 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     // FIXME: This dialog should be nonmodal!
     analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this))
 {
-    QHBoxLayout* mainHlay = new QHBoxLayout (this, MARGIN, SPACING);
+    QHBoxLayout* mainHlay = new QHBoxLayout (this);
+    mainHlay->setMargin (MARGIN);
+    mainHlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainHlay);
 
-    QVBoxLayout* mainVlay = new QVBoxLayout (SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout;
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
     mainHlay->addLayout (mainVlay);
 
-    QHBoxLayout* topHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* topHlay = new QHBoxLayout;
+    topHlay->setSpacing (SPACING);
     Q_CHECK_PTR (topHlay);
     mainVlay->addLayout (topHlay);
 
@@ -133,7 +137,8 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (timerLabel);
     topHlay->addWidget (timerLabel);
 
-    QHBoxLayout* quizBoxHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* quizBoxHlay = new QHBoxLayout;
+    quizBoxHlay->setSpacing (SPACING);
     Q_CHECK_PTR (quizBoxHlay);
     mainVlay->addLayout (quizBoxHlay);
 
@@ -202,7 +207,8 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     responseView->setModel (responseModel);
 
     // Question status
-    QHBoxLayout* statusHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* statusHlay = new QHBoxLayout;
+    statusHlay->setSpacing (SPACING);
     Q_CHECK_PTR (statusHlay);
     mainVlay->addLayout (statusHlay);
 
@@ -225,13 +231,15 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     mainVlay->addWidget (inputLine);
 
     // Button layout
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
     buttonHlay->addStretch (1);
 
-    QGridLayout* buttonGlay = new QGridLayout (2, 3, SPACING);
+    QGridLayout* buttonGlay = new QGridLayout;
+    buttonGlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonGlay);
     buttonHlay->addLayout (buttonGlay);
 
@@ -406,7 +414,7 @@ QuizForm::newQuiz (const QuizSpec& spec)
     alphaOrderButton->setEnabled (enableLetterOrder);
     randomOrderButton->setEnabled (enableLetterOrder);
 
-    QApplication::setOverrideCursor (Qt::waitCursor);
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
     quizEngine->newQuiz (spec);
     QApplication::restoreOverrideCursor();
     quizTypeLabel->setText (Auxil::quizTypeToString
@@ -435,7 +443,7 @@ QuizForm::saveQuizClicked()
         return;
 
     bool filenameEdited = false;
-    if (!filename.endsWith (".zzq", false)) {
+    if (!filename.endsWith (".zzq", Qt::CaseInsensitive)) {
         filename += ".zzq";
         filenameEdited = true;
     }

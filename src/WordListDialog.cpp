@@ -49,7 +49,9 @@ using namespace Defs;
 WordListDialog::WordListDialog (QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    mainVlay->setMargin (MARGIN);
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
     numWordsLabel = new QLabel;
@@ -60,7 +62,8 @@ WordListDialog::WordListDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (wordList);
     mainVlay->addWidget (wordList);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
@@ -92,7 +95,7 @@ WordListDialog::WordListDialog (QWidget* parent, Qt::WFlags f)
     buttonHlay->addWidget (cancelButton);
 
     updateLabel();
-    setCaption (DIALOG_CAPTION);
+    setWindowTitle (DIALOG_CAPTION);
 }
 
 //---------------------------------------------------------------------------
@@ -116,7 +119,7 @@ void
 WordListDialog::setWords (const QString& string)
 {
     wordList->clear();
-    QStringList words = QStringList::split (" ", string);
+    QStringList words = string.split (QChar (' '));
     QStringListIterator it (words);
     while (it.hasNext())
         new QListWidgetItem (it.next(), wordList);
@@ -165,15 +168,15 @@ WordListDialog::openFileClicked()
         return;
     }
 
-    QApplication::setOverrideCursor (Qt::waitCursor);
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
     QString line;
     char* buffer = new char [MAX_INPUT_LINE_LEN];
     while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
-        line = line.simplifyWhiteSpace();
+        line = line.simplified();
         if (!line.length() || (line.at (0) == '#'))
             continue;
-        QString word = line.section (' ', 0, 0).upper();
+        QString word = line.section (' ', 0, 0).toUpper();
         new QListWidgetItem (word, wordList);
     }
     delete[] buffer;

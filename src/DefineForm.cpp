@@ -45,10 +45,13 @@ using namespace Defs;
 DefineForm::DefineForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     : ActionForm (DefineFormType, parent, f), engine (e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    mainVlay->setMargin (MARGIN);
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    QHBoxLayout* lookupHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* lookupHlay = new QHBoxLayout;
+    lookupHlay->setSpacing (SPACING);
     Q_CHECK_PTR (lookupHlay);
     mainVlay->addLayout (lookupHlay);
 
@@ -64,7 +67,8 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect (wordLine, SIGNAL (returnPressed()), SLOT (defineWord()));
     lookupHlay->addWidget (wordLine);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 

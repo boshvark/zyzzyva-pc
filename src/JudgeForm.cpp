@@ -31,6 +31,7 @@
 #include "Defs.h"
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+#include <QTextCursor>
 
 using namespace Defs;
 
@@ -45,7 +46,9 @@ using namespace Defs;
 JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     : ActionForm (JudgeFormType, parent, f), engine (e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    mainVlay->setMargin (MARGIN);
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
     wordArea = new WordTextEdit;
@@ -55,7 +58,8 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect (wordArea, SIGNAL (textChanged()), SLOT (textChanged()));
     mainVlay->addWidget (wordArea);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
@@ -81,7 +85,9 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (resultBox);
     mainVlay->addWidget (resultBox, 1);
 
-    QVBoxLayout* resultVlay = new QVBoxLayout (resultBox, MARGIN, SPACING);
+    QVBoxLayout* resultVlay = new QVBoxLayout (resultBox);
+    resultVlay->setMargin (MARGIN);
+    resultVlay->setSpacing (SPACING);
     Q_CHECK_PTR (resultVlay);
 
     resultLabel = new DefinitionLabel;
@@ -123,7 +129,7 @@ JudgeForm::textChanged()
     int deletedBeforeCursor = 0;
 
     wordArea->blockSignals (true);
-    QString text = wordArea->text().upper();
+    QString text = wordArea->toPlainText().toUpper();
     int lookIndex = 0;
     bool afterSpace = false;
     for (int i = 0; i < text.length(); ++i) {
@@ -146,15 +152,15 @@ JudgeForm::textChanged()
     }
     text.replace (QRegExp ("\\n+"), "\n");
 
-    wordArea->setText (text);
+    wordArea->setPlainText (text);
     cursor.setPosition (origCursorPosition - deletedBeforeCursor);
     wordArea->setTextCursor (cursor);
     wordArea->blockSignals (false);
 
-    text = wordArea->text();
-    bool empty = text.stripWhiteSpace().isEmpty();
+    text = wordArea->toPlainText();
+    bool empty = text.simplified().isEmpty();
     judgeButton->setEnabled (!empty);
-    clearButton->setEnabled (!empty || resultBox->isShown());
+    clearButton->setEnabled (!empty || resultBox->isVisible());
 }
 
 //---------------------------------------------------------------------------
@@ -184,8 +190,8 @@ JudgeForm::judgeWord()
 {
     bool acceptable = true;
 
-    QString text = wordArea->text().simplifyWhiteSpace();
-    QStringList words = QStringList::split (QChar(' '), text);
+    QString text = wordArea->toPlainText().simplified();
+    QStringList words = text.split (QChar (' '));
     QStringList::iterator it;
     QString wordStr;
     for (it = words.begin(); it != words.end(); ++it) {

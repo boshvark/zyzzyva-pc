@@ -90,9 +90,9 @@ WordTableView::viewDefinition()
     QModelIndex index = currentIndex();
     index = index.sibling (index.row(), WordTableModel::WORD_COLUMN);
     QString word = model()->data (index, Qt::EditRole).toString();
-    DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this,
-                                                     Qt::WDestructiveClose);
+    DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this);
     Q_CHECK_PTR (dialog);
+    dialog->setAttribute (Qt::WA_DeleteOnClose);
     dialog->show();
 }
 
@@ -111,7 +111,8 @@ WordTableView::viewVariation (int variation)
     QString word = model()->data (index, Qt::EditRole).toString();
     WordVariationType type = static_cast<WordVariationType>(variation);
     WordVariationDialog* dialog = new WordVariationDialog (wordEngine, word,
-        type, this, Qt::WDestructiveClose);
+                                                           type, this);
+    dialog->setAttribute (Qt::WA_DeleteOnClose);
     Q_CHECK_PTR (dialog);
     dialog->show();
 }
@@ -138,7 +139,7 @@ WordTableView::exportRequested()
     if (filename.isEmpty())
         return;
 
-    if (!filename.endsWith (".txt", false))
+    if (!filename.endsWith (".txt", Qt::CaseInsensitive))
         filename += ".txt";
 
     QString error;

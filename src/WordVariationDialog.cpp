@@ -55,10 +55,13 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
                                           QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f), wordEngine (we)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    mainVlay->setMargin (MARGIN);
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    QHBoxLayout* labelHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* labelHlay = new QHBoxLayout;
+    labelHlay->setSpacing (SPACING);
     Q_CHECK_PTR (labelHlay);
     mainVlay->addLayout (labelHlay);
 
@@ -103,7 +106,8 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
         rightView->setModel (rightModel);
     }
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
@@ -250,10 +254,10 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
     if (!wordEngine->isAcceptable (word))
         title += "*";
-    setCaption (title);
+    setWindowTitle (title);
     wordLabel->setText (title);
 
-    QApplication::setOverrideCursor (Qt::waitCursor);
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
 
     set<QString> wordSet;
     set<QString>::iterator sit;

@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QPalette>
+#include <QTextCursor>
 #include <QTimer>
 #include <QVBoxLayout>
 
@@ -57,7 +58,9 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     QFont formFont = qApp->font();
     formFont.setPixelSize (FORM_FONT_PIXEL_SIZE);
 
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, 0, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    mainVlay->setMargin (0);
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
     widgetStack = new QStackedWidget;
@@ -68,7 +71,9 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (inputWidget);
     widgetStack->addWidget (inputWidget);
 
-    QVBoxLayout* inputVlay = new QVBoxLayout (inputWidget, INPUT_MARGIN, 0);
+    QVBoxLayout* inputVlay = new QVBoxLayout (inputWidget);
+    inputVlay->setMargin (INPUT_MARGIN);
+    inputVlay->setSpacing (0);
     Q_CHECK_PTR (inputVlay);
 
     QHBoxLayout* titleHlay = new QHBoxLayout;
@@ -109,7 +114,9 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
                                  QSizePolicy::Expanding);
     widgetStack->addWidget (resultWidget);
 
-    QVBoxLayout* resultVlay = new QVBoxLayout (resultWidget, 0, 0);
+    QVBoxLayout* resultVlay = new QVBoxLayout (resultWidget);
+    resultVlay->setMargin (0);
+    resultVlay->setSpacing (0);
     Q_CHECK_PTR (resultVlay);
 
     resultLabel = new QLabel;
@@ -139,7 +146,7 @@ JudgeDialog::textChanged()
     int deletedBeforeCursor = 0;
 
     inputArea->blockSignals (true);
-    QString text = inputArea->text().upper();
+    QString text = inputArea->toPlainText().toUpper();
     int lookIndex = 0;
     bool afterSpace = false;
     bool doJudge = false;
@@ -165,7 +172,7 @@ JudgeDialog::textChanged()
     }
     text.replace (QRegExp ("\\n+"), "\n");
 
-    inputArea->setText (text);
+    inputArea->setPlainText (text);
     cursor.setPosition (origCursorPosition - deletedBeforeCursor);
     inputArea->setTextCursor (cursor);
     inputArea->blockSignals (false);
@@ -197,8 +204,8 @@ JudgeDialog::judgeWord()
 {
     bool acceptable = true;
 
-    QString text = inputArea->text().simplifyWhiteSpace();
-    QStringList words = QStringList::split (QChar(' '), text);
+    QString text = inputArea->toPlainText().simplified();
+    QStringList words = text.split (QChar (' '));
     QStringList::iterator it;
     QString wordStr;
     for (it = words.begin(); it != words.end(); ++it) {

@@ -62,7 +62,9 @@ DefinitionBox::DefinitionBox (const QString& title, QWidget* parent)
 void
 DefinitionBox::init()
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    mainVlay->setMargin (MARGIN);
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
     definitionLabel = new DefinitionLabel;

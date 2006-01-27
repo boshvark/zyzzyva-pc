@@ -51,8 +51,10 @@ const int MAX_CONDITIONS = 8;
 SearchSpecForm::SearchSpecForm (QWidget* parent, Qt::WFlags f)
     : QFrame (parent, f), visibleForms (0)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, 0, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
     Q_CHECK_PTR (mainVlay);
+    mainVlay->setMargin (0);
+    mainVlay->setSpacing (SPACING);
 
     //QButtonGroup* radioGroup = new QButtonGroup (this);
     //Q_CHECK_PTR (radioGroup);
@@ -77,18 +79,21 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, Qt::WFlags f)
     //radioGroup->insert (disjunctionRadio, 1);
     //radioHlay->addWidget (disjunctionRadio);
 
-    QHBoxLayout* conditionHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* conditionHlay = new QHBoxLayout;
+    conditionHlay->setSpacing (SPACING);
     Q_CHECK_PTR (conditionHlay);
     mainVlay->addLayout (conditionHlay);
     mainVlay->setStretchFactor (conditionHlay, 1);
 
-    conditionVlay = new QVBoxLayout (SPACING);
+    conditionVlay = new QVBoxLayout;
+    conditionVlay->setSpacing (SPACING);
     Q_CHECK_PTR (conditionVlay);
     conditionHlay->addLayout (conditionVlay);
 
     addConditionForms();
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
@@ -283,7 +288,7 @@ SearchSpecForm::loadSearch()
     int errorLine = 0;
     int errorColumn = 0;
 
-    QApplication::setOverrideCursor (Qt::waitCursor);
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
     QDomDocument document;
     bool success = document.setContent (&file, false, &errorMsg, &errorLine,
                                         &errorColumn);
@@ -324,7 +329,7 @@ SearchSpecForm::saveSearch()
         return;
 
     bool filenameEdited = false;
-    if (!filename.endsWith (".zzs", false)) {
+    if (!filename.endsWith (".zzs", Qt::CaseInsensitive)) {
         filename += ".zzs";
         filenameEdited = true;
     }

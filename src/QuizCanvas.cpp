@@ -78,9 +78,10 @@ QuizCanvas::setText (const QString& text)
         if (letter == "?")
             letter = "_";
         image = tileImages.find (letter);
-        if (image == tileImages.end())
-            qWarning ("Did not find letter '" + letter +
-                        "' in tiles map!");
+        if (image == tileImages.end()) {
+            //qWarning ("Did not find letter '" + letter +
+            //            "' in tiles map!");
+        }
         else {
             displayImages.append (*image);
         }

@@ -36,7 +36,7 @@
 QValidator::State
 WordValidator::validate (QString& input, int& pos) const
 {
-    input = input.upper();
+    input = input.toUpper();
     QString re = "[^A-Z";
     if (options & AllowQuestionMarks)
         re += "?";

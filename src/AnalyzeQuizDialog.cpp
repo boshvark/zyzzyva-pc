@@ -53,18 +53,22 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
                                       parent, Qt::WFlags f)
     : QDialog (parent, f), quizEngine (qe), wordEngine (we)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    mainVlay->setMargin (MARGIN);
+    mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
     questionLabel = new QLabel;
     Q_CHECK_PTR (questionLabel);
     mainVlay->addWidget (questionLabel);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* mainHlay = new QHBoxLayout;
+    mainHlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainHlay);
     mainVlay->addLayout (mainHlay);
 
-    QVBoxLayout* missedVlay = new QVBoxLayout (SPACING);
+    QVBoxLayout* missedVlay = new QVBoxLayout;
+    missedVlay->setSpacing (SPACING);
     Q_CHECK_PTR (missedVlay);
     mainHlay->addLayout (missedVlay, 1);
 
@@ -87,7 +91,8 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
              missedView, SLOT (resizeAllColumnsToContents()));
     missedView->setModel (missedModel);
 
-    QVBoxLayout* incorrectVlay = new QVBoxLayout (SPACING);
+    QVBoxLayout* incorrectVlay = new QVBoxLayout;
+    incorrectVlay->setSpacing (SPACING);
     Q_CHECK_PTR (incorrectVlay);
     mainHlay->addLayout (incorrectVlay, 1);
 
@@ -110,7 +115,8 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
              incorrectView, SLOT (resizeAllColumnsToContents()));
     incorrectView->setModel (incorrectModel);
 
-    QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
     mainVlay->addLayout (buttonHlay);
 
@@ -124,7 +130,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     buttonHlay->addWidget (closeButton);
 
     resize (minimumSizeHint().width() * 4, 500);
-    setCaption (DIALOG_CAPTION);
+    setWindowTitle (DIALOG_CAPTION);
     updateStats();
 
     closeButton->setFocus();
