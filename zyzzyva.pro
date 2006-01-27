@@ -42,7 +42,6 @@ SOURCES = \
     src/DefinitionBox.cpp \
     src/DefinitionDialog.cpp \
     src/HelpDialog.cpp \
-    src/ImageItem.cpp \
     src/JudgeForm.cpp \
     src/JudgeDialog.cpp \
     src/main.cpp \
