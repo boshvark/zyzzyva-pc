@@ -27,7 +27,8 @@
 
 #include "WordEngine.h"
 #include <QDialog>
-#include <Q3ListView>
+#include <QLabel>
+#include <QListWidget>
 
 class WordListDialog : public QDialog
 {
@@ -36,7 +37,7 @@ class WordListDialog : public QDialog
     WordListDialog (QWidget* parent = 0, Qt::WFlags f = Qt::WType_TopLevel);
     ~WordListDialog();
 
-    int numWords() const { return wordList->childCount(); }
+    int numWords() const { return wordList->count(); }
     void setWords (const QString& string);
     QString getWords() const;
 
@@ -45,10 +46,11 @@ class WordListDialog : public QDialog
     void clearClicked();
 
     private:
-    void updateListHeader();
+    void updateLabel();
 
     private:
-    Q3ListView* wordList;
+    QLabel* numWordsLabel;
+    QListWidget* wordList;
 };
 
 #endif // ZYZZYVA_WORD_LIST_DIALOG_H

@@ -52,11 +52,12 @@ WordListDialog::WordListDialog (QWidget* parent, Qt::WFlags f)
     QVBoxLayout* mainVlay = new QVBoxLayout (this, MARGIN, SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    wordList = new Q3ListView (this);
+    numWordsLabel = new QLabel;
+    Q_CHECK_PTR (numWordsLabel);
+    mainVlay->addWidget (numWordsLabel);
+
+    wordList = new QListWidget (this);
     Q_CHECK_PTR (wordList);
-    wordList->setResizeMode (Q3ListView::LastColumn);
-    wordList->addColumn ("");
-    updateListHeader();
     mainVlay->addWidget (wordList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout (SPACING);
@@ -90,6 +91,7 @@ WordListDialog::WordListDialog (QWidget* parent, Qt::WFlags f)
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
 
+    updateLabel();
     setCaption (DIALOG_CAPTION);
 }
 
@@ -115,10 +117,9 @@ WordListDialog::setWords (const QString& string)
 {
     wordList->clear();
     QStringList words = QStringList::split (" ", string);
-    QStringList::iterator it;
-    for (it = words.begin(); it != words.end(); ++it)
-        new Q3ListViewItem (wordList, *it);
-    updateListHeader();
+    QStringListIterator it (words);
+    while (it.hasNext())
+        new QListWidgetItem (it.next(), wordList);
 }
 
 //---------------------------------------------------------------------------
@@ -132,11 +133,12 @@ QString
 WordListDialog::getWords() const
 {
     QString str;
-    Q3ListViewItem* item = 0;
-    for (item = wordList->firstChild(); item; item = item->nextSibling()) {
+    QListWidgetItem* lookItem = 0;
+    for (int i = 0; i < wordList->count(); ++i) {
+        lookItem = wordList->item (i);
         if (!str.isEmpty())
             str += " ";
-        str += item->text (0);
+        str += lookItem->text();
     }
     return str;
 }
@@ -172,13 +174,13 @@ WordListDialog::openFileClicked()
         if (!line.length() || (line.at (0) == '#'))
             continue;
         QString word = line.section (' ', 0, 0).upper();
-        new Q3ListViewItem (wordList, word);
+        new QListWidgetItem (word, wordList);
     }
     delete[] buffer;
 
     QApplication::restoreOverrideCursor();
 
-    updateListHeader();
+    updateLabel();
 }
 
 //---------------------------------------------------------------------------
@@ -190,17 +192,17 @@ void
 WordListDialog::clearClicked()
 {
     wordList->clear();
-    updateListHeader();
+    updateLabel();
 }
 
 //---------------------------------------------------------------------------
-//  updateListHeader
+//  updateLabel
 //
-//! Update the list header with the current number of words.
+//! Update the label with the current number of words.
 //---------------------------------------------------------------------------
 void
-WordListDialog::updateListHeader()
+WordListDialog::updateLabel()
 {
-    wordList->setColumnText (0, LIST_HEADER_PREFIX + QString::number
-                             (wordList->childCount()) + " words");
+    numWordsLabel->setText (LIST_HEADER_PREFIX + QString::number
+                            (wordList->count()) + " words");
 }
