@@ -30,13 +30,13 @@
 #include <Q3Canvas>
 #include <QImage>
 #include <QLabel>
-#include <QMap>
 #include <QStackedWidget>
 #include <QString>
 #include <QTimerEvent>
 
 class AnalyzeQuizDialog;
 class DefinitionLabel;
+class QuizCanvas;
 class QuizEngine;
 class QuizQuestionLabel;
 class QuizSpec;
@@ -98,8 +98,7 @@ class QuizForm : public ActionForm
     QLabel*       quizTypeLabel;
     QLabel*       timerLabel;
     QStackedWidget* questionStack;
-    Q3CanvasView*  questionCanvasView;
-    Q3Canvas*      questionCanvas;
+    QuizCanvas*   questionCanvas;
     QuizQuestionLabel* questionLabel;
     QLabel*       questionSpecLabel;
     WordLineEdit* inputLine;
@@ -115,9 +114,6 @@ class QuizForm : public ActionForm
     ZPushButton*  pauseButton;
     ZPushButton*  analyzeButton;
 
-    QMap<QString,QImage> tileImages;
-    int maxTileWidth, maxTileHeight;
-    int numCanvasTiles, minCanvasTiles, minCanvasWidth;
     int timerId;
     int timerRemaining, timerPaused;
     QuizTimerSpec timerSpec;

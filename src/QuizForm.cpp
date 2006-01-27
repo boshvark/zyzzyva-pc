@@ -25,10 +25,10 @@
 #include "QuizForm.h"
 #include "AnalyzeQuizDialog.h"
 #include "DefinitionLabel.h"
-#include "ImageItem.h"
 #include "MainSettings.h"
 #include "NewQuizDialog.h"
 #include "Rand.h"
+#include "QuizCanvas.h"
 #include "QuizEngine.h"
 #include "QuizQuestionLabel.h"
 #include "WordEngine.h"
@@ -62,8 +62,8 @@ const QString UNPAUSE_BUTTON = "Un&pause";
 //! A character comparison function that sorts vowels before consonants as a
 //! primary key, and alphabetically as a secondary key.
 //
-//! @param a character
-//! @param another character
+//! @param a a character
+//! @param b another character
 //---------------------------------------------------------------------------
 bool
 vowelsFirstCmp (const QChar& a, const QChar& b)
@@ -108,7 +108,6 @@ consonantsFirstCmp (const QChar& a, const QChar& b)
 QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     : ActionForm (QuizFormType, parent, f), wordEngine (we),
     quizEngine (new QuizEngine (wordEngine)),
-    numCanvasTiles (0), minCanvasTiles (7), minCanvasWidth (300),
     timerId (0), timerPaused (0),
     // FIXME: This dialog should be nonmodal!
     analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this))
@@ -146,25 +145,19 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     quizBoxHlay->addWidget (questionStack);
 
     // Canvas for tile images - set default background color
-    questionCanvas = new Q3Canvas;
+    questionCanvas = new QuizCanvas;
     Q_CHECK_PTR (questionCanvas);
-    setBackgroundColor (QColor (MainSettings::getQuizBackgroundColor()));
-
-    questionCanvasView = new Q3CanvasView (questionCanvas);
-    Q_CHECK_PTR (questionCanvasView);
-    questionCanvasView->setVScrollBarMode (Q3ScrollView::AlwaysOff);
-    questionCanvasView->setHScrollBarMode (Q3ScrollView::AlwaysOff);
-    questionCanvasView->setResizePolicy (Q3ScrollView::AutoOneFit);
-    questionCanvasView->setSizePolicy (QSizePolicy::Fixed,
-                                       QSizePolicy::Fixed);
-    questionStack->addWidget (questionCanvasView);
-
-    quizBoxHlay->addStretch (1);
+    questionCanvas->setPalette
+        (QPalette (MainSettings::getQuizBackgroundColor()));
+    questionCanvas->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    questionStack->addWidget (questionCanvas);
 
     questionLabel = new QuizQuestionLabel;
     Q_CHECK_PTR (questionLabel);
     questionLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
     questionStack->addWidget (questionLabel);
+
+    quizBoxHlay->addStretch (1);
 
     questionSpecLabel = new QLabel;
     Q_CHECK_PTR (questionSpecLabel);
@@ -369,7 +362,7 @@ QuizForm::responseEntered()
     // If all correct answers have been provided, and the Quiz Auto Check
     // preference is set, act as if the Check Responses button has been
     // clicked
-    if (MainSettings::getQuizAutoCheck() && 
+    if (MainSettings::getQuizAutoCheck() &&
         (quizEngine->getQuestionCorrect() == quizEngine->getQuestionTotal()))
     {
         checkResponseClicked();
@@ -737,11 +730,7 @@ QuizForm::clearTimerDisplay()
 void
 QuizForm::clearCanvas()
 {
-    Q3CanvasItemList canvasItems = questionCanvas->allItems();
-    Q3CanvasItemList::iterator cItem;
-    for (cItem = canvasItems.begin(); cItem != canvasItems.end(); ++cItem)
-        delete *cItem;
-    canvasItems.clear();
+    questionCanvas->clear();
     minimizeCanvas();
 }
 
@@ -753,30 +742,8 @@ QuizForm::clearCanvas()
 void
 QuizForm::minimizeCanvas()
 {
-    if (tileImages.empty())
-        questionCanvas->resize (minCanvasWidth, (2 * QUIZ_TILE_MARGIN) +
-                                maxTileHeight);
-    else
-        setNumCanvasTiles (minCanvasTiles);
+    questionCanvas->setToMinimumSize();
     reflowLayout();
-}
-
-//---------------------------------------------------------------------------
-//  setNumCanvasTiles
-//
-//! Resize the canvas to be able to display a certain number of tiles.
-//! @param num the number of tiles
-//---------------------------------------------------------------------------
-void
-QuizForm::setNumCanvasTiles (int num)
-{
-    if (num < minCanvasTiles)
-        num = minCanvasTiles;
-    numCanvasTiles = num;
-    int width = (2 * QUIZ_TILE_MARGIN) + (num * maxTileWidth) +
-                ((num - 1) * QUIZ_TILE_SPACING);
-    int height = (2 * QUIZ_TILE_MARGIN) + maxTileHeight;
-    questionCanvas->resize (width, height);
 }
 
 //---------------------------------------------------------------------------
@@ -843,7 +810,7 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
 
     // Question is not an alphagram, or there are no tile images
     if (!MainSettings::getUseTileTheme() || displayQuestion.contains (" ")
-        || tileImages.empty())
+        || !questionCanvas->hasTileImages())
     {
         QLabel* label = (quizSpec.getType() == QuizSpec::QuizWordListRecall) ?
             questionSpecLabel : questionLabel;
@@ -852,32 +819,8 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
     }
 
     else {
-        setNumCanvasTiles (displayQuestion.length());
-
-        QMap<QString,QImage>::iterator image;
-        int x = QUIZ_TILE_MARGIN +
-            ((numCanvasTiles - displayQuestion.length()) *
-             (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
-
-        for (int i = 0; (i < numCanvasTiles) &&
-                        (i < int (displayQuestion.length())); ++i)
-        {
-            QString letter = QString (displayQuestion[i]);
-            if (letter == "?")
-                letter = "_";
-            image = tileImages.find (letter);
-            if (image == tileImages.end())
-                qWarning ("Did not find letter '" + letter +
-                          "' in tiles map!");
-            else {
-                ImageItem* item = new ImageItem (*image, questionCanvas);
-                item->move (x, QUIZ_TILE_MARGIN);
-                item->setZ (0);
-                item->show();
-            }
-            x += maxTileWidth + QUIZ_TILE_SPACING;
-        }
-        questionStack->setCurrentWidget (questionCanvasView);
+        questionCanvas->setText (displayQuestion);
+        questionStack->setCurrentWidget (questionCanvas);
     }
 
     reflowLayout();
@@ -920,7 +863,7 @@ QuizForm::updateStatusString()
 //---------------------------------------------------------------------------
 //  setStatusString
 //
-//! Set the status string, and 
+//! Set the status string.
 //---------------------------------------------------------------------------
 void
 QuizForm::setStatusString (const QString& status)
@@ -960,58 +903,6 @@ QuizForm::setTimerDisplay (int seconds)
 }
 
 //---------------------------------------------------------------------------
-//  clearTileTheme
-//
-//! Clear the current tile theme definition.
-//---------------------------------------------------------------------------
-void
-QuizForm::clearTileTheme()
-{
-    tileImages.clear();
-    maxTileWidth = 25;
-    maxTileHeight = 25;
-}
-
-//---------------------------------------------------------------------------
-//  setTileTheme
-//
-//! Load tile images according to a theme definition.  Find the tile images in
-//! a data subdirectory named after the theme.
-//
-//! @param theme the name of the theme
-//---------------------------------------------------------------------------
-void
-QuizForm::setTileTheme (const QString& theme)
-{
-    clearTileTheme();
-    if (!theme.isEmpty()) {
-        QString tilesDir = Auxil::getTilesDir();
-
-        QStringList tilesList;
-        for (char c = 'A'; c <= 'Z'; ++c)
-            tilesList << QString (QChar (c));
-        tilesList << "_";
-
-        QStringList::iterator it;
-        for (it = tilesList.begin(); it != tilesList.end(); ++it) {
-            QImage image (tilesDir + "/" + theme + "/" + *it + ".png");
-            tileImages.insert (*it, image);
-
-            if (image.width() > maxTileWidth)
-                maxTileWidth = image.width();
-            if (image.height() > maxTileHeight)
-                maxTileHeight = image.height();
-        }
-    }
-
-    QString question = quizEngine->getQuestion();
-    if (question.isEmpty())
-        minimizeCanvas();
-    else
-        setQuestionLabel (question);
-}
-
-//---------------------------------------------------------------------------
 //  setBackgroundColor
 //
 //! Set the background color of the quiz question area.
@@ -1021,7 +912,25 @@ QuizForm::setTileTheme (const QString& theme)
 void
 QuizForm::setBackgroundColor (const QColor& color)
 {
-    questionCanvas->setBackgroundColor (color);
+    questionCanvas->setPalette (QPalette (color));
+}
+
+//---------------------------------------------------------------------------
+//  setTileTheme
+//
+//! Set canvas tile images according to a theme definition.
+//
+//! @param theme the name of the theme
+//---------------------------------------------------------------------------
+void
+QuizForm::setTileTheme (const QString& theme)
+{
+    questionCanvas->setTileTheme (theme);
+    QString question = quizEngine->getQuestion();
+    if (question.isEmpty())
+        minimizeCanvas();
+    else
+        setQuestionLabel (question);
 }
 
 //---------------------------------------------------------------------------
@@ -1037,7 +946,6 @@ QuizForm::reflowLayout()
     QString text = questionStatusLabel->text();
     questionStatusLabel->setText ("foo blah blah");
     questionStatusLabel->setText (text);
-    questionCanvas->setAllChanged();
     questionCanvas->update();
 }
 

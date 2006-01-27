@@ -49,6 +49,7 @@ SOURCES = \
     src/MainSettings.cpp \
     src/MainWindow.cpp \
     src/NewQuizDialog.cpp \
+    src/QuizCanvas.cpp \
     src/QuizEngine.cpp \
     src/QuizForm.cpp \
     src/QuizProgress.cpp \
@@ -86,6 +87,7 @@ HEADERS = \
     src/JudgeDialog.h \
     src/MainWindow.h \
     src/NewQuizDialog.h \
+    src/QuizCanvas.h \
     src/QuizForm.h \
     src/QuizQuestionLabel.h \
     src/SearchForm.h \
