@@ -27,7 +27,6 @@
 
 #include "ActionForm.h"
 #include "QuizTimerSpec.h"
-#include <Q3Canvas>
 #include <QImage>
 #include <QLabel>
 #include <QStackedWidget>
