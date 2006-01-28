@@ -86,6 +86,7 @@ class WordTableModel : public QAbstractTableModel
                   Qt::EditRole);
     void sort (int column, Qt::SortOrder order = Qt::AscendingOrder);
     int getLastAddedIndex() const { return lastAddedIndex; }
+    void clearLastAddedIndex();
 
     signals:
     void wordsChanged();

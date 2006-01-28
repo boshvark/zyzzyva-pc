@@ -401,6 +401,23 @@ WordTableModel::sort (int, Qt::SortOrder)
 }
 
 //---------------------------------------------------------------------------
+//  clearLastAddedIndex
+//
+//! Remove the designation of whichever item was last added.
+//---------------------------------------------------------------------------
+void
+WordTableModel::clearLastAddedIndex()
+{
+    if (lastAddedIndex < 0)
+        return;
+
+    setData (index (lastAddedIndex, 0), WordNormal, Qt::UserRole);
+    emit dataChanged (index (lastAddedIndex, 0),
+                      index (lastAddedIndex, DEFINITION_COLUMN));
+    lastAddedIndex = -1;
+}
+
+//---------------------------------------------------------------------------
 //  isFrontHook
 //
 //! Determine whether a word is a front hook.  A word is a front hook if its

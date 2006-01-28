@@ -588,10 +588,15 @@ QuizForm::checkResponseClicked()
     analyzeDialog->updateStats();
 
     QStringList unanswered = quizEngine->getMissed();
-    QStringList::iterator it;
-    for (it = unanswered.begin(); it != unanswered.end(); ++it) {
-        responseModel->addWord (*it, WordTableModel::WordMissed, false);
-        analyzeDialog->addMissed (*it);
+    if (unanswered.empty()) {
+        responseModel->clearLastAddedIndex();
+    }
+    else {
+        QStringList::iterator it;
+        for (it = unanswered.begin(); it != unanswered.end(); ++it) {
+            responseModel->addWord (*it, WordTableModel::WordMissed, false);
+            analyzeDialog->addMissed (*it);
+        }
     }
 
     if ((quizEngine->numQuestions() > 0) && !quizEngine->onLastQuestion()) {
