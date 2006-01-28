@@ -45,7 +45,7 @@ using namespace Defs;
 //! @param f widget flags
 //---------------------------------------------------------------------------
 SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
-    : QFrame (parent, f),
+    : QWidget (parent, f),
     letterValidator (new WordValidator (this)),
     patternValidator (new WordValidator (this))
 
@@ -94,9 +94,9 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     mainHlay->addWidget (paramStack);
 
     // Frame containing just an input line
-    paramLineFrame = new QFrame;
-    Q_CHECK_PTR (paramLineFrame);
-    QHBoxLayout* paramLineHlay = new QHBoxLayout (paramLineFrame);
+    paramLineWidget = new QWidget;
+    Q_CHECK_PTR (paramLineWidget);
+    QHBoxLayout* paramLineHlay = new QHBoxLayout (paramLineWidget);
     Q_CHECK_PTR (paramLineHlay);
     paramLineHlay->setMargin (0);
     paramLineHlay->setSpacing (SPACING);
@@ -107,12 +107,12 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     connect (paramLine, SIGNAL (textChanged (const QString&)),
              SIGNAL (contentsChanged()));
     paramLineHlay->addWidget (paramLine);
-    paramStack->addWidget (paramLineFrame);
+    paramStack->addWidget (paramLineWidget);
 
     // Frame containing just a spin box
-    paramSboxFrame = new QFrame;
-    Q_CHECK_PTR (paramSboxFrame);
-    QHBoxLayout* paramSboxHlay = new QHBoxLayout (paramSboxFrame);
+    paramSboxWidget = new QWidget;
+    Q_CHECK_PTR (paramSboxWidget);
+    QHBoxLayout* paramSboxHlay = new QHBoxLayout (paramSboxWidget);
     Q_CHECK_PTR (paramSboxHlay);
     paramSboxHlay->setMargin (0);
     paramSboxHlay->setSpacing (SPACING);
@@ -122,12 +122,12 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     connect (paramSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
     paramSboxHlay->addWidget (paramSbox);
-    paramStack->addWidget (paramSboxFrame);
+    paramStack->addWidget (paramSboxWidget);
 
     // Frame containing just a combo box
-    paramCboxFrame = new QFrame;
-    Q_CHECK_PTR (paramCboxFrame);
-    QHBoxLayout* paramCboxHlay = new QHBoxLayout (paramCboxFrame);
+    paramCboxWidget = new QWidget;
+    Q_CHECK_PTR (paramCboxWidget);
+    QHBoxLayout* paramCboxHlay = new QHBoxLayout (paramCboxWidget);
     Q_CHECK_PTR (paramCboxHlay);
     paramCboxHlay->setMargin (0);
     paramCboxHlay->setSpacing (SPACING);
@@ -136,12 +136,12 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     connect (paramCbox, SIGNAL (activated (const QString&)),
              SIGNAL (contentsChanged()));
     paramCboxHlay->addWidget (paramCbox);
-    paramStack->addWidget (paramCboxFrame);
+    paramStack->addWidget (paramCboxWidget);
 
     // Frame containing spin box and input line
-    paramConsistFrame = new QFrame;
-    Q_CHECK_PTR (paramConsistFrame);
-    QHBoxLayout* paramConsistHlay = new QHBoxLayout (paramConsistFrame);
+    paramConsistWidget = new QWidget;
+    Q_CHECK_PTR (paramConsistWidget);
+    QHBoxLayout* paramConsistHlay = new QHBoxLayout (paramConsistWidget);
     Q_CHECK_PTR (paramConsistHlay);
     paramConsistHlay->setMargin (0);
     paramConsistHlay->setSpacing (SPACING);
@@ -163,13 +163,13 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     connect (paramConsistLine, SIGNAL (textChanged (const QString&)),
              SIGNAL (contentsChanged()));
     paramConsistHlay->addWidget (paramConsistLine);
-    paramStack->addWidget (paramConsistFrame);
+    paramStack->addWidget (paramConsistWidget);
 
     // Frame containing disabled input line and push button for getting word
     // lists
-    paramWordListFrame = new QFrame;
-    Q_CHECK_PTR (paramWordListFrame);
-    QHBoxLayout* paramWordListHlay = new QHBoxLayout (paramWordListFrame);
+    paramWordListWidget = new QWidget;
+    Q_CHECK_PTR (paramWordListWidget);
+    QHBoxLayout* paramWordListHlay = new QHBoxLayout (paramWordListWidget);
     Q_CHECK_PTR (paramWordListHlay);
     paramWordListHlay->setMargin (0);
     paramWordListHlay->setSpacing (SPACING);
@@ -187,7 +187,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     connect (paramWordListButton, SIGNAL (clicked()),
              SLOT (editListClicked()));
     paramWordListHlay->addWidget (paramWordListButton);
-    paramStack->addWidget (paramWordListFrame);
+    paramStack->addWidget (paramWordListWidget);
 }
 
 //---------------------------------------------------------------------------
@@ -373,7 +373,7 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::PatternMatch:
         case SearchCondition::AnagramMatch:
         case SearchCondition::SubanagramMatch:
-        paramStack->setCurrentWidget (paramLineFrame);
+        paramStack->setCurrentWidget (paramLineWidget);
         paramLine->setValidator (patternValidator);
         break;
 
@@ -383,7 +383,7 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::DoesNotTakeSuffix:
         case SearchCondition::MustInclude:
         case SearchCondition::MustExclude:
-        paramStack->setCurrentWidget (paramLineFrame);
+        paramStack->setCurrentWidget (paramLineWidget);
         paramLine->setValidator (letterValidator);
         break;
 
@@ -391,20 +391,20 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::MinLength:
         case SearchCondition::MaxLength:
         paramSbox->setMaximum (MAX_WORD_LEN);
-        paramStack->setCurrentWidget (paramSboxFrame);
+        paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
         case SearchCondition::ExactAnagrams:
         case SearchCondition::MinAnagrams:
         case SearchCondition::MaxAnagrams:
         paramSbox->setMaximum (100);
-        paramStack->setCurrentWidget (paramSboxFrame);
+        paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
         case SearchCondition::MinProbability:
         case SearchCondition::MaxProbability:
         paramSbox->setMaximum (100);
-        paramStack->setCurrentWidget (paramSboxFrame);
+        paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
         case SearchCondition::MustBelong:
@@ -418,16 +418,16 @@ SearchConditionForm::typeChanged (const QString& string)
         paramCbox->addItem (Auxil::searchSetToString (SetTypeOneEights));
         //paramCbox->addItem (Auxil::searchSetToString
         //                       (SetEightsFromSevenLetterStems));
-        paramStack->setCurrentWidget (paramCboxFrame);
+        paramStack->setCurrentWidget (paramCboxWidget);
         break;
 
         case SearchCondition::MustConsist:
-        paramStack->setCurrentWidget (paramConsistFrame);
+        paramStack->setCurrentWidget (paramConsistWidget);
         break;
 
         case SearchCondition::InWordList:
         case SearchCondition::NotInWordList:
-        paramStack->setCurrentWidget (paramWordListFrame);
+        paramStack->setCurrentWidget (paramWordListWidget);
         break;
 
         default:

@@ -27,7 +27,6 @@
 
 #include "SearchCondition.h"
 #include <QComboBox>
-#include <QFrame>
 #include <QSpinBox>
 #include <QStackedWidget>
 #include <set>
@@ -36,7 +35,7 @@ class SearchCondition;
 class WordLineEdit;
 class WordValidator;
 
-class SearchConditionForm : public QFrame
+class SearchConditionForm : public QWidget
 {
     Q_OBJECT
     public:
@@ -62,16 +61,16 @@ class SearchConditionForm : public QFrame
     private:
     QComboBox*      typeCbox;
     QStackedWidget* paramStack;
-    QFrame*         paramLineFrame;
+    QWidget*        paramLineWidget;
     WordLineEdit*   paramLine;
-    QFrame*         paramSboxFrame;
+    QWidget*        paramSboxWidget;
     QSpinBox*       paramSbox;
-    QFrame*         paramCboxFrame;
+    QWidget*        paramCboxWidget;
     QComboBox*      paramCbox;
-    QFrame*         paramConsistFrame;
+    QWidget*        paramConsistWidget;
     QSpinBox*       paramConsistSbox;
     WordLineEdit*   paramConsistLine;
-    QFrame*         paramWordListFrame;
+    QWidget*        paramWordListWidget;
     QLineEdit*      paramWordListLine;
     QString         paramWordListString;
     WordValidator*  letterValidator;
