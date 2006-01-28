@@ -81,6 +81,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   quizShowNumResponsesCbox;
     QCheckBox*   quizAutoCheckCbox;
     QCheckBox*   quizAutoAdvanceCbox;
+    QCheckBox*   quizAutoEndAfterIncorrectCbox;
     QLineEdit*   fontMainLine;
     QLineEdit*   fontWordListLine;
     QLineEdit*   fontQuizLabelLine;

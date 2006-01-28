@@ -380,6 +380,14 @@ QuizForm::responseEntered()
             nextQuestionClicked();
         }
     }
+
+    // End question immediately after an incorrect response if the Quiz Auto
+    // End After Incorrect preference is set
+    else if (MainSettings::getQuizAutoEndAfterIncorrect() &&
+             (status == QuizEngine::Incorrect))
+    {
+        checkResponseClicked();
+    }
 }
 
 

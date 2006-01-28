@@ -267,6 +267,11 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (quizAutoAdvanceCbox);
     quizHintsVlay->addWidget (quizAutoAdvanceCbox);
 
+    quizAutoEndAfterIncorrectCbox = new QCheckBox
+        ("End question after an incorrect response");
+    Q_CHECK_PTR (quizAutoEndAfterIncorrectCbox);
+    quizHintsVlay->addWidget (quizAutoEndAfterIncorrectCbox);
+
     quizPrefVlay->addStretch (2);
 
     // Signal mapper for the Choose Font buttons
@@ -549,6 +554,8 @@ SettingsDialog::readSettings()
     bool autoCheck = MainSettings::getQuizAutoCheck();
     quizAutoCheckCbox->setChecked (autoCheck);
     quizAutoAdvanceCbox->setChecked (MainSettings::getQuizAutoAdvance());
+    quizAutoEndAfterIncorrectCbox->setChecked
+        (MainSettings::getQuizAutoEndAfterIncorrect());
     autoCheckCboxToggled (autoCheck);
 
     // Main font
@@ -599,6 +606,8 @@ SettingsDialog::writeSettings()
         (quizShowNumResponsesCbox->isChecked());
     MainSettings::setQuizAutoCheck (quizAutoCheckCbox->isChecked());
     MainSettings::setQuizAutoAdvance (quizAutoAdvanceCbox->isChecked());
+    MainSettings::setQuizAutoEndAfterIncorrect
+        (quizAutoEndAfterIncorrectCbox->isChecked());
     MainSettings::setMainFont (fontMainLine->text());
     MainSettings::setWordListFont (fontWordListLine->text());
     MainSettings::setQuizLabelFont (fontQuizLabelLine->text());
