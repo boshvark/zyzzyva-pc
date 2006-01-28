@@ -188,8 +188,6 @@ QuizCanvas::hasTileImages()
 //  minimumSizeHint
 //
 //! Set the minimum size hint of the canvas.
-//
-//! @param text the question text
 //---------------------------------------------------------------------------
 QSize
 QuizCanvas::minimumSizeHint() const
@@ -201,8 +199,6 @@ QuizCanvas::minimumSizeHint() const
 //  sizeHint
 //
 //! Set the size hint of the canvas.
-//
-//! @param text the question text
 //---------------------------------------------------------------------------
 QSize
 QuizCanvas::sizeHint() const
