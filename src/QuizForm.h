@@ -42,7 +42,7 @@ class QuizSpec;
 class WordEngine;
 class WordLineEdit;
 class WordTableModel;
-class WordTableView;
+class WordTreeView;
 class ZPushButton;
 
 class QuizForm : public ActionForm
@@ -101,7 +101,7 @@ class QuizForm : public ActionForm
     QuizQuestionLabel* questionLabel;
     QLabel*       questionSpecLabel;
     WordLineEdit* inputLine;
-    WordTableView* responseView;
+    WordTreeView*  responseView;
     WordTableModel* responseModel;
     DefinitionLabel* responseStatusLabel;
     DefinitionLabel* questionStatusLabel;

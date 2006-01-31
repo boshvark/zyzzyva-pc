@@ -28,7 +28,7 @@
 #include "QuizSpec.h"
 #include "WordEngine.h"
 #include "WordTableModel.h"
-#include "WordTableView.h"
+#include "WordTreeView.h"
 #include "ZPushButton.h"
 #include <QHBoxLayout>
 #include <QHeaderView>
@@ -80,9 +80,8 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR (missedLabel);
     missedVlay->addWidget (missedLabel);
 
-    missedView = new WordTableView (wordEngine);
+    missedView = new WordTreeView (wordEngine);
     Q_CHECK_PTR (missedView);
-    missedView->verticalHeader()->hide();
     missedVlay->addWidget (missedView);
 
     missedModel = new WordTableModel (wordEngine, this);
@@ -104,9 +103,8 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR (incorrectLabel);
     incorrectVlay ->addWidget (incorrectLabel);
 
-    incorrectView = new WordTableView (wordEngine);
+    incorrectView = new WordTreeView (wordEngine);
     Q_CHECK_PTR (incorrectView);
-    incorrectView->verticalHeader()->hide();
     incorrectVlay->addWidget (incorrectView);
 
     incorrectModel = new WordTableModel (wordEngine, this);

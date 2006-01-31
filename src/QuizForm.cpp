@@ -35,7 +35,7 @@
 #include "WordValidator.h"
 #include "WordLineEdit.h"
 #include "WordTableModel.h"
-#include "WordTableView.h"
+#include "WordTreeView.h"
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -195,9 +195,8 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
 
     letterOrderHlay->addStretch (1);
 
-    responseView = new WordTableView (wordEngine);
+    responseView = new WordTreeView (wordEngine);
     Q_CHECK_PTR (responseView);
-    responseView->verticalHeader()->hide();
     mainVlay->addWidget (responseView);
 
     responseModel = new WordTableModel (wordEngine, this);
