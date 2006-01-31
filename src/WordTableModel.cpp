@@ -51,6 +51,11 @@ bool
 lessThan (const WordTableModel::WordItem& a,
           const WordTableModel::WordItem& b)
 {
+    if (a.getWildcard() < b.getWildcard())
+        return true;
+    else if (a.getWildcard() > b.getWildcard())
+        return false;
+
     return (a.getWord().toUpper() < b.getWord().toUpper());
 }
 
@@ -67,6 +72,11 @@ bool
 lengthLessThan (const WordTableModel::WordItem& a,
                 const WordTableModel::WordItem& b)
 {
+    if (a.getWildcard() < b.getWildcard())
+        return true;
+    else if (a.getWildcard() > b.getWildcard())
+        return false;
+
     if (a.getWord().length() < b.getWord().length()) {
         return true;
     }
