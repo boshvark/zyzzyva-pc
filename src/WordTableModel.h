@@ -60,6 +60,7 @@ class WordTableModel : public QAbstractTableModel
         private:
         QString word;
         WordType type;
+        QString wildcard;
     };
 
     Q_OBJECT
@@ -104,10 +105,11 @@ class WordTableModel : public QAbstractTableModel
 
     public:
     enum {
-        FRONT_HOOK_COLUMN = 0,
-        WORD_COLUMN = 1,
-        BACK_HOOK_COLUMN = 2,
-        DEFINITION_COLUMN = 3
+        WILDCARD_MATCH_COLUMN = 0,
+        FRONT_HOOK_COLUMN = 1,
+        WORD_COLUMN = 2,
+        BACK_HOOK_COLUMN = 3,
+        DEFINITION_COLUMN = 4
     };
 
     static const QChar PARENT_HOOK_CHAR;

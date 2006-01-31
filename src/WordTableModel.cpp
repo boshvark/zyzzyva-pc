@@ -29,13 +29,14 @@
 using namespace std;
 
 const QChar WordTableModel::PARENT_HOOK_CHAR = '-';
+const QString WILDCARD_MATCH_HEADER = "?";
 const QString FRONT_HOOK_HEADER = "Hooks";
 const QString WORD_HEADER = "Word";
 const QString BACK_HOOK_HEADER = "Hooks";
 const QString DEFINITION_HEADER = "Definition";
 const int ITEM_MARGIN = 5;
 const int DEFAULT_COLUMN_WIDTH = 100;
-const int NUM_COLUMNS = 4;
+const int NUM_COLUMNS = 5;
 
 //---------------------------------------------------------------------------
 //  lessThan
@@ -225,6 +226,9 @@ WordTableModel::data (const QModelIndex& index, int role) const
     QString word = wordList.at (index.row()).getWord();
     QString wordUpper = word.toUpper();
     switch (index.column()) {
+        case WILDCARD_MATCH_COLUMN:
+        return "ABC";
+
         case FRONT_HOOK_COLUMN:
         return MainSettings::getWordListShowHooks() ?
             getFrontHookLetters (wordUpper) : QString::null;
@@ -280,6 +284,9 @@ WordTableModel::headerData (int section, Qt::Orientation orientation, int
 
     if (role == Qt::DisplayRole) {
         switch (section) {
+            case WILDCARD_MATCH_COLUMN:
+            return WILDCARD_MATCH_HEADER;
+
             case FRONT_HOOK_COLUMN:
             return MainSettings::getWordListShowHooks() ?
                 FRONT_HOOK_HEADER : QString::null;
