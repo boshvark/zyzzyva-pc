@@ -44,11 +44,16 @@ class WordTableModel : public QAbstractTableModel
 
     class WordItem {
         public:
-        WordItem (const QString& w, WordType t) : word (w), type (t) { }
+        WordItem() : type (WordNormal) { }
+        WordItem (const QString& w, WordType t = WordNormal,
+                  const QString& wc = QString::null)
+            : word (w), type (t), wildcard (wc) { }
         QString getWord() const { return word; }
         WordType getType() const { return type; }
+        QString getWildcard() const { return wildcard; }
         void setWord (const QString& w) { word = w; }
         void setType (WordType t) { type = t; }
+        void setWildcard (const QString& w) { wildcard = w; }
 
         bool operator== (const WordItem& other) const {
             return ((word == other.word) && (type == other.type));
@@ -69,9 +74,8 @@ class WordTableModel : public QAbstractTableModel
     ~WordTableModel();
 
     bool clear();
-    bool addWord (const QString& word, WordType type = WordNormal, bool
-                  updateLastAdded = true);
-    bool addWords (const QStringList& words, WordType type = WordNormal);
+    bool addWord (const WordItem& word, bool updateLastAdded = true);
+    bool addWords (const QList<WordItem>& words);
 
     int rowCount (const QModelIndex& parent = QModelIndex()) const;
     int columnCount (const QModelIndex& parent = QModelIndex()) const;

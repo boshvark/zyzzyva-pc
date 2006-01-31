@@ -118,24 +118,24 @@ WordTableModel::clear()
 //
 //! Add a word to the model.
 //
-//! @param word the word to add
-//! @param type the type associated with the word
+//! @param word the word item to add
 //! @param updateLastAdded whether to update the last added index
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::addWord (const QString& word, WordType type, bool
-                         updateLastAdded)
+WordTableModel::addWord (const WordItem& word, bool updateLastAdded)
 {
     int row = rowCount();
     bool ok = insertRow (row);
     if (!ok)
         return false;
-    setData (index (row, 0), word, Qt::EditRole);
-    setData (index (row, 0), type, Qt::UserRole);
+    setData (index (row, WORD_COLUMN), word.getWord(), Qt::EditRole);
+    setData (index (row, WORD_COLUMN), word.getType(), Qt::UserRole);
+    // FIXME: implement this
+    setData (index (row, WILDCARD_MATCH_COLUMN), word.getWildcard(),
+                    Qt::EditRole);
     sort (WORD_COLUMN);
-    lastAddedIndex = updateLastAdded ? wordList.indexOf (WordItem (word, type))
-                                     : -1;
+    lastAddedIndex = updateLastAdded ? wordList.indexOf (word) : -1;
     emit wordsChanged();
     return true;
 }
@@ -145,21 +145,22 @@ WordTableModel::addWord (const QString& word, WordType type, bool
 //
 //! Add a list of words to the model.
 //
-//! @param words the words to add
-//! @param type the type associated with the words
+//! @param words the word items to add
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::addWords (const QStringList& words, WordType type)
+WordTableModel::addWords (const QList<WordItem>& words)
 {
     int row = rowCount();
     bool ok = insertRows (row, words.size());
     if (!ok)
         return false;
-    QString word;
+    WordItem word;
     foreach (word, words) {
-        setData (index (row, 0), word, Qt::EditRole);
-        setData (index (row, 0), type, Qt::UserRole);
+        setData (index (row, WORD_COLUMN), word.getWord(), Qt::EditRole);
+        setData (index (row, WORD_COLUMN), word.getType(), Qt::UserRole);
+        setData (index (row, WILDCARD_MATCH_COLUMN), word.getWildcard(),
+                        Qt::EditRole);
         ++row;
     }
     sort (WORD_COLUMN);
@@ -220,15 +221,15 @@ WordTableModel::data (const QModelIndex& index, int role) const
     if (role == Qt::UserRole)
         return wordList.at (index.row()).getType();
 
+    if (index.column() == WILDCARD_MATCH_COLUMN)
+        return wordList.at (index.row()).getWildcard();
+
     if ((role != Qt::DisplayRole) && (role != Qt::EditRole))
         return QVariant();
 
     QString word = wordList.at (index.row()).getWord();
     QString wordUpper = word.toUpper();
     switch (index.column()) {
-        case WILDCARD_MATCH_COLUMN:
-        return "ABC";
-
         case FRONT_HOOK_COLUMN:
         return MainSettings::getWordListShowHooks() ?
             getFrontHookLetters (wordUpper) : QString::null;
@@ -374,7 +375,12 @@ WordTableModel::setData (const QModelIndex& index, const QVariant& value, int
                          role)
 {
     if (index.isValid() && (role == Qt::EditRole)) {
-        wordList[index.row()].setWord (value.toString());
+        if (index.column() == WILDCARD_MATCH_COLUMN)
+            wordList[index.row()].setWildcard (value.toString());
+        else if (index.column() == WORD_COLUMN)
+            wordList[index.row()].setWord (value.toString());
+        else
+            return false;
         emit dataChanged (index, index);
         return true;
     }

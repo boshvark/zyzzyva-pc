@@ -203,7 +203,8 @@ AnalyzeQuizDialog::updateStats()
 void
 AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 {
-    missedModel->addWord (word, WordTableModel::WordMissed, false);
+    missedModel->addWord (WordTableModel::WordItem
+                          (word, WordTableModel::WordMissed), false);
     if (update)
         updateStats();
 }
@@ -219,7 +220,13 @@ AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 void
 AnalyzeQuizDialog::addMissed (const QStringList& words, bool update)
 {
-    missedModel->addWords (words, WordTableModel::WordMissed);
+    QList<WordTableModel::WordItem> wordItems;
+    QString word;
+    foreach (word, words) {
+        wordItems.append (WordTableModel::WordItem
+                          (word, WordTableModel::WordMissed));
+    }
+    missedModel->addWords (wordItems);
     if (update)
         updateStats();
 }
@@ -235,7 +242,8 @@ AnalyzeQuizDialog::addMissed (const QStringList& words, bool update)
 void
 AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
 {
-    incorrectModel->addWord (word, WordTableModel::WordIncorrect, false);
+    incorrectModel->addWord (WordTableModel::WordItem
+                             (word, WordTableModel::WordIncorrect), false);
     if (update)
         updateStats();
 }
@@ -251,7 +259,13 @@ AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
 void
 AnalyzeQuizDialog::addIncorrect (const QStringList& words, bool update)
 {
-    incorrectModel->addWords (words, WordTableModel::WordIncorrect);
+    QList<WordTableModel::WordItem> wordItems;
+    QString word;
+    foreach (word, words) {
+        wordItems.append (WordTableModel::WordItem
+                          (word, WordTableModel::WordIncorrect));
+    }
+    incorrectModel->addWords (wordItems);
     if (update)
         updateStats();
 }

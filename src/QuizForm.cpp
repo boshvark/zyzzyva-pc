@@ -337,7 +337,9 @@ QuizForm::responseEntered()
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
-        responseModel->addWord (response, WordTableModel::WordCorrect, true);
+        responseModel->addWord (WordTableModel::WordItem
+                                (response, WordTableModel::WordCorrect),
+                                true);
         responseView->scrollTo (responseModel->sibling
                                 (responseModel->getLastAddedIndex(), 0,
                                  QModelIndex()));
@@ -602,7 +604,8 @@ QuizForm::checkResponseClicked()
     else {
         QStringList::iterator it;
         for (it = unanswered.begin(); it != unanswered.end(); ++it) {
-            responseModel->addWord (*it, WordTableModel::WordMissed, false);
+            responseModel->addWord (WordTableModel::WordItem
+                                    (*it, WordTableModel::WordMissed), false);
             analyzeDialog->addMissed (*it);
         }
     }
@@ -660,7 +663,8 @@ QuizForm::startQuestion()
     std::set<QString> correct = quizEngine->getQuestionCorrectResponses();
     std::set<QString>::iterator it;
     for (it = correct.begin(); it != correct.end(); ++it) {
-        responseModel->addWord (*it, WordTableModel::WordCorrect, false);
+        responseModel->addWord (WordTableModel::WordItem
+                                (*it, WordTableModel::WordCorrect), false);
     }
 
     responseStatusLabel->setText ("");

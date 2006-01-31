@@ -269,10 +269,11 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         while (wit.hasNext())
             wordSet.insert (wit.next());
     }
-    wordList.clear();
+
+    QList<WordTableModel::WordItem> wordItems;
     for (sit = wordSet.begin(); sit != wordSet.end(); ++sit)
-        wordList.append (*sit);
-    leftModel->addWords (wordList);
+        wordItems.append (WordTableModel::WordItem (*sit));
+    leftModel->addWords (wordItems);
 
     int leftWords = wordSet.size();
     leftTitle += " : " + QString::number (leftWords) + " word";
@@ -289,10 +290,11 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             while (wit.hasNext())
                 wordSet.insert (wit.next());
         }
-        wordList.clear();
+
+        wordItems.clear();
         for (sit = wordSet.begin(); sit != wordSet.end(); ++sit)
-            wordList.append (*sit);
-        rightModel->addWords (wordList);
+            wordItems.append (WordTableModel::WordItem (*sit));
+        rightModel->addWords (wordItems);
 
         int rightWords = wordSet.size();
         rightTitle += " : " + QString::number (rightWords) + " word";

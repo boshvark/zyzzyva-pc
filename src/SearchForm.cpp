@@ -131,10 +131,37 @@ SearchForm::search()
     resultModel->removeRows (0, resultModel->rowCount());
 
     QStringList wordList = wordEngine->search (specForm->getSearchSpec(),
-                                               !lowerCaseCbox->isChecked());
+                                               false);
 
-    resultModel->addWords (wordList);
-    //resultView->sort();
+    // Create a list of WordItem objects from the words
+    QList<WordTableModel::WordItem> wordItems;
+    QString word;
+    foreach (word, wordList) {
+
+        // Get wildcard characters
+        QList<QChar> wildcardChars;
+        for (int i = 0; i < word.length(); ++i) {
+            QChar c = word[i];
+            if (c.isLower())
+                wildcardChars.append (c);
+        }
+        QString wildcard;
+        if (!wildcardChars.isEmpty()) {
+            qSort (wildcardChars);
+            QChar c;
+            foreach (c, wildcardChars)
+                wildcard.append (c.toUpper());
+        }
+
+        // Convert to all caps if necessary
+        if (!lowerCaseCbox->isChecked())
+            word = word.toUpper();
+
+        wordItems.append (WordTableModel::WordItem
+                          (word, WordTableModel::WordNormal, wildcard));
+    }
+
+    resultModel->addWords (wordItems);
 
     updateResultTotal (wordList.size());
     QApplication::restoreOverrideCursor();
