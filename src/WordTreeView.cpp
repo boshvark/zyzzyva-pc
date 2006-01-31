@@ -53,9 +53,10 @@ using namespace std;
 WordTreeView::WordTreeView (WordEngine* e, QWidget* parent)
     : QTreeView (parent), wordEngine (e)
 {
+    setRootIsDecorated (false);
     setSelectionBehavior (QAbstractItemView::SelectRows);
     setSelectionMode (QAbstractItemView::SingleSelection);
-    setRootIsDecorated (false);
+    setUniformRowHeights (true);
 
     WordTableDelegate* delegate = new WordTableDelegate (this);
     setItemDelegate (delegate);
