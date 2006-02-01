@@ -139,11 +139,9 @@ WordTableModel::addWord (const WordItem& word, bool updateLastAdded)
     bool ok = insertRow (row);
     if (!ok)
         return false;
-    setData (index (row, WORD_COLUMN), word.getWord(), Qt::EditRole);
-    setData (index (row, WORD_COLUMN), word.getType(), Qt::UserRole);
-    // FIXME: implement this
-    setData (index (row, WILDCARD_MATCH_COLUMN), word.getWildcard(),
-                    Qt::EditRole);
+
+    addWordPrivate (word, row);
+
     sort (WORD_COLUMN);
     lastAddedIndex = updateLastAdded ? wordList.indexOf (word) : -1;
     emit wordsChanged();
@@ -167,10 +165,7 @@ WordTableModel::addWords (const QList<WordItem>& words)
         return false;
     WordItem word;
     foreach (word, words) {
-        setData (index (row, WORD_COLUMN), word.getWord(), Qt::EditRole);
-        setData (index (row, WORD_COLUMN), word.getType(), Qt::UserRole);
-        setData (index (row, WILDCARD_MATCH_COLUMN), word.getWildcard(),
-                        Qt::EditRole);
+        addWordPrivate (word, row);
         ++row;
     }
     sort (WORD_COLUMN);
@@ -438,6 +433,23 @@ WordTableModel::clearLastAddedIndex()
     emit dataChanged (index (lastAddedIndex, 0),
                       index (lastAddedIndex, DEFINITION_COLUMN));
     lastAddedIndex = -1;
+}
+
+//---------------------------------------------------------------------------
+//  addWordPrivate
+//
+//! Add a word to the model.
+//
+//! @param word the word item to add
+//! @param row the row whose data to set to the word
+//---------------------------------------------------------------------------
+void
+WordTableModel::addWordPrivate (const WordItem& word, int row)
+{
+    setData (index (row, WORD_COLUMN), word.getWord(), Qt::EditRole);
+    setData (index (row, WORD_COLUMN), word.getType(), Qt::UserRole);
+    setData (index (row, WILDCARD_MATCH_COLUMN), word.getWildcard(),
+                    Qt::EditRole);
 }
 
 //---------------------------------------------------------------------------

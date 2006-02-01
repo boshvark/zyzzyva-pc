@@ -51,9 +51,17 @@ class WordTableModel : public QAbstractTableModel
         QString getWord() const { return word; }
         WordType getType() const { return type; }
         QString getWildcard() const { return wildcard; }
+        QString getFrontHooks() const { return frontHooks; }
+        QString getBackHooks() const { return backHooks; }
+        bool getFrontInnerHook() const { return frontInnerHook; }
+        bool getBackInnerHook() const { return backInnerHook; }
         void setWord (const QString& w) { word = w; }
         void setType (WordType t) { type = t; }
         void setWildcard (const QString& w) { wildcard = w; }
+        void setFrontHooks (const QString& s) { frontHooks = s; }
+        void setBackHooks (const QString& s) { backHooks = s; }
+        void setFrontInnerHook (bool b) { frontInnerHook = b; }
+        void setBackInnerHook (bool b) { backInnerHook = b; }
 
         bool operator== (const WordItem& other) const {
             return ((word == other.word) && (type == other.type));
@@ -66,6 +74,10 @@ class WordTableModel : public QAbstractTableModel
         QString word;
         WordType type;
         QString wildcard;
+        QString frontHooks;
+        QString backHooks;
+        bool frontInnerHook;
+        bool backInnerHook;
     };
 
     Q_OBJECT
@@ -97,6 +109,7 @@ class WordTableModel : public QAbstractTableModel
     void wordsChanged();
 
     private:
+    void addWordPrivate (const WordItem& word, int row);
     bool isFrontHook (const QString& word) const;
     bool isBackHook (const QString& word) const;
     QString getFrontHookLetters (const QString& word) const;
