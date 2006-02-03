@@ -36,15 +36,15 @@
 
 const int FORM_FONT_PIXEL_SIZE = 55;
 const int TITLE_FONT_PIXEL_SIZE = 40;
-const int INSTRUCTION_FONT_PIXEL_SIZE = 20;
+const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 20;
 const int CLEAR_RESULTS_DELAY = 10000;
 const int CLEAR_EXIT_DELAY = 5000;
 
-const QString INSTRUCTION_MESSAGE = "Press the SPACE BAR or ENTER key to "
-                                    "separate words.  Press the TAB key to "
-                                    "judge the play.";
+const QString INSTRUCTION_MESSAGE = "1. Enter words, separated by "
+                                    "SPACE or ENTER.\n"
+                                    "2. Press TAB to judge the play.";
 
 using namespace Defs;
 
@@ -266,8 +266,8 @@ JudgeDialog::judgeWord()
 void
 JudgeDialog::displayExit()
 {
-    instLabel->setText (INSTRUCTION_MESSAGE + "\nTo exit full screen Word "
-                        "Judge mode, press ALT-F4.");
+    instLabel->setText (INSTRUCTION_MESSAGE + "\nTo exit full screen mode, "
+                        "press ALT-F4.");
     exitTimer->start (CLEAR_EXIT_DELAY);
 }
 
