@@ -53,6 +53,8 @@
 
 MainWindow* MainWindow::instance = 0;
 
+const QString APPLICATION_TITLE = "Zyzzyva";
+
 const QString IMPORT_FAILURE_TITLE = "Load Failed";
 const QString IMPORT_COMPLETE_TITLE = "Load Complete";
 const QString DEFINE_TAB_TITLE = "Definition";
@@ -291,13 +293,13 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     readSettings (true);
 
+    setWindowTitle (APPLICATION_TITLE);
+    setWindowIcon (QIcon (":/zyzzyva-32x32"));
+
     tryAutoImport (splash);
 
     if (!instance)
         instance = this;
-
-    setWindowTitle ("Zyzzyva");
-    setWindowIcon (QIcon (":/zyzzyva-32x32"));
 
     connect (helpDialog, SIGNAL (error (const QString&)),
              SLOT (helpDialogError (const QString&)));
@@ -826,6 +828,7 @@ MainWindow::import (const QString& file, const QString& lexiconName)
     QApplication::restoreOverrideCursor();
 
     setNumWords (imported);
+    setWindowTitle (APPLICATION_TITLE + " - " + lexiconName);
     return imported;
 }
 
