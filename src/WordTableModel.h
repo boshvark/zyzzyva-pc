@@ -44,24 +44,26 @@ class WordTableModel : public QAbstractTableModel
 
     class WordItem {
         public:
-        WordItem() : type (WordNormal) { }
+        WordItem() : type (WordNormal) { init(); }
         WordItem (const QString& w, WordType t = WordNormal,
                   const QString& wc = QString::null)
-            : word (w), type (t), wildcard (wc) { }
+            : word (w), type (t), wildcard (wc) { init(); }
+        void init();
         QString getWord() const { return word; }
         WordType getType() const { return type; }
         QString getWildcard() const { return wildcard; }
         QString getFrontHooks() const { return frontHooks; }
         QString getBackHooks() const { return backHooks; }
-        bool getFrontInnerHook() const { return frontInnerHook; }
-        bool getBackInnerHook() const { return backInnerHook; }
+        bool getFrontParentHook() const { return frontParentHook; }
+        bool getBackParentHook() const { return backParentHook; }
         void setWord (const QString& w) { word = w; }
         void setType (WordType t) { type = t; }
         void setWildcard (const QString& w) { wildcard = w; }
-        void setFrontHooks (const QString& s) { frontHooks = s; }
-        void setBackHooks (const QString& s) { backHooks = s; }
-        void setFrontInnerHook (bool b) { frontInnerHook = b; }
-        void setBackInnerHook (bool b) { backInnerHook = b; }
+
+        void setHooks (const QString& front, const QString& back);
+        void setParentHooks (bool front, bool back);
+        bool hooksAreValid() const { return hooksValid; }
+        bool parentHooksAreValid() const { return parentHooksValid; }
 
         bool operator== (const WordItem& other) const {
             return ((word == other.word) && (type == other.type));
@@ -71,13 +73,15 @@ class WordTableModel : public QAbstractTableModel
         }
 
         private:
+        bool hooksValid;
+        bool parentHooksValid;
         QString word;
         WordType type;
         QString wildcard;
         QString frontHooks;
         QString backHooks;
-        bool frontInnerHook;
-        bool backInnerHook;
+        bool frontParentHook;
+        bool backParentHook;
     };
 
     Q_OBJECT
@@ -91,8 +95,7 @@ class WordTableModel : public QAbstractTableModel
 
     int rowCount (const QModelIndex& parent = QModelIndex()) const;
     int columnCount (const QModelIndex& parent = QModelIndex()) const;
-    QVariant data (const QModelIndex& index, int role = Qt::DisplayRole)
-        const;
+    QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
     QVariant headerData (int section, Qt::Orientation orientation, int role =
                          Qt::DisplayRole) const;
     bool insertRows (int row, int count, const QModelIndex& parent =
@@ -117,7 +120,7 @@ class WordTableModel : public QAbstractTableModel
 
     private:
     WordEngine* wordEngine;
-    QList<WordItem> wordList;
+    mutable QList<WordItem> wordList;
     int lastAddedIndex;
 
     public:

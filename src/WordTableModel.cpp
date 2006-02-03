@@ -232,26 +232,45 @@ WordTableModel::data (const QModelIndex& index, int role) const
     if ((role != Qt::DisplayRole) && (role != Qt::EditRole))
         return QVariant();
 
-    QString word = wordList.at (index.row()).getWord();
+    WordItem& wordItem = wordList[index.row()];
+    QString word = wordItem.getWord();
     QString wordUpper = word.toUpper();
     switch (index.column()) {
         case FRONT_HOOK_COLUMN:
-        return MainSettings::getWordListShowHooks() ?
-            getFrontHookLetters (wordUpper) : QString::null;
+        if (!MainSettings::getWordListShowHooks()) {
+            return QString();
+        }
+        else if (!wordItem.hooksAreValid()) {
+            wordItem.setHooks (getFrontHookLetters (wordUpper),
+                               getBackHookLetters (wordUpper));
+        }
+        return wordItem.getFrontHooks();
 
         case BACK_HOOK_COLUMN:
-        return MainSettings::getWordListShowHooks() ?
-            getBackHookLetters (wordUpper) : QString::null;
+        if (!MainSettings::getWordListShowHooks()) {
+            return QString();
+        }
+        else if (!wordItem.hooksAreValid()) {
+            wordItem.setHooks (getFrontHookLetters (wordUpper),
+                               getBackHookLetters (wordUpper));
+        }
+        return wordItem.getBackHooks();
 
         case WORD_COLUMN:
-        if (role == Qt::EditRole)
+        if (role == Qt::EditRole) {
             return wordUpper;
+        }
         else if (role == Qt::DisplayRole) {
             if (MainSettings::getWordListShowHookParents()) {
-                return
-                    (isFrontHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' '))
-                    + word +
-                    (isBackHook (wordUpper) ? PARENT_HOOK_CHAR : QChar (' '));
+                if (!wordItem.parentHooksAreValid()) {
+                    wordItem.setParentHooks (isFrontHook (wordUpper),
+                                             isBackHook (wordUpper));
+                }
+                return (wordItem.getFrontParentHook() ? PARENT_HOOK_CHAR
+                                                      : QChar (' '))
+                       + word
+                       + (wordItem.getBackParentHook() ? PARENT_HOOK_CHAR
+                                                       : QChar (' '));
             }
             else
                 return word;
@@ -380,12 +399,26 @@ WordTableModel::setData (const QModelIndex& index, const QVariant& value, int
                          role)
 {
     if (index.isValid() && (role == Qt::EditRole)) {
-        if (index.column() == WILDCARD_MATCH_COLUMN)
+        if (index.column() == WILDCARD_MATCH_COLUMN) {
             wordList[index.row()].setWildcard (value.toString());
-        else if (index.column() == WORD_COLUMN)
-            wordList[index.row()].setWord (value.toString());
-        else
+        }
+        else if (index.column() == WORD_COLUMN) {
+            WordItem& word = wordList[index.row()];
+            word.setWord (value.toString());
+            if (MainSettings::getWordListShowHooks()) {
+                word.setHooks
+                    (getFrontHookLetters (word.getWord().toUpper()),
+                     getBackHookLetters (word.getWord().toUpper()));
+            }
+            if (MainSettings::getWordListShowHookParents()) {
+                word.setParentHooks
+                    (isFrontHook (word.getWord().toUpper()),
+                     isBackHook (word.getWord().toUpper()));
+            }
+        }
+        else {
             return false;
+        }
         emit dataChanged (index, index);
         return true;
     }
@@ -544,4 +577,54 @@ WordTableModel::getBackHookLetters (const QString& word) const
     for (sit = letters.begin(); sit != letters.end(); ++sit)
         ret += *sit;
     return ret;
+}
+
+//---------------------------------------------------------------------------
+//  init
+//
+//! Initialize a word item.
+//---------------------------------------------------------------------------
+void
+WordTableModel::WordItem::init()
+{
+    hooksValid = false;
+    parentHooksValid = false;
+    frontParentHook = false;
+    backParentHook = false;
+}
+
+//---------------------------------------------------------------------------
+//  setHooks
+//
+//! Set front and back hooks of a word item.
+//
+//! @param front the front hooks
+//! @param back the back hooks
+//---------------------------------------------------------------------------
+void
+WordTableModel::WordItem::setHooks (const QString& front, const QString& back)
+{
+    if (hooksValid)
+        return;
+    frontHooks = front;
+    backHooks = back;
+    hooksValid = true;
+}
+
+//---------------------------------------------------------------------------
+//  setParentHooks
+//
+//! Set front and back parent hooks of a word item.
+//
+//! @param front the front parent hook
+//! @param back the back parent hook
+//---------------------------------------------------------------------------
+void
+WordTableModel::WordItem::setParentHooks (bool front, bool back)
+{
+    if (hooksValid)
+        return;
+    frontParentHook = front;
+    backParentHook = back;
+    parentHooksValid = true;
 }
