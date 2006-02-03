@@ -90,6 +90,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (instLabel);
     instLabel->setFont (instructionFont);
     instLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+    instLabel->setWordWrap (true);
     inputVlay->addWidget (instLabel);
 
     inputArea = new WordTextEdit;
