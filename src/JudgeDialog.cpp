@@ -42,8 +42,8 @@ const int RESULT_BORDER_WIDTH = 20;
 const int CLEAR_RESULTS_DELAY = 10000;
 const int CLEAR_EXIT_DELAY = 5000;
 
-const QString INSTRUCTION_MESSAGE = "Press the Space bar or Enter key to "
-                                    "separate words.  Press the Tab key to "
+const QString INSTRUCTION_MESSAGE = "Press the SPACE BAR or ENTER key to "
+                                    "separate words.  Press the TAB key to "
                                     "judge the play.";
 
 using namespace Defs;
