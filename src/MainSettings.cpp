@@ -53,7 +53,7 @@ const QString SETTINGS_QUIZ_AUTO_CHECK = "quiz_auto_check";
 const QString SETTINGS_QUIZ_AUTO_ADVANCE = "quiz_auto_advance";
 const QString SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT
     = "quiz_auto_end_after_incorrect";
-const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL";
+const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL2";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb (0, 0, 127);
@@ -77,7 +77,8 @@ MainSettings::readSettings()
 
     instance->useAutoImport = settings.value (SETTINGS_IMPORT, true).toBool();
     instance->autoImportLexicon
-        = settings.value (SETTINGS_IMPORT_LEXICON, "OWL").toString();
+        = settings.value (SETTINGS_IMPORT_LEXICON,
+                          DEFAULT_AUTO_IMPORT_LEXICON).toString();
 
     instance->autoImportFile
         = settings.value (SETTINGS_IMPORT_FILE).toString();

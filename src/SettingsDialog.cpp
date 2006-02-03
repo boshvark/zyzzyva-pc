@@ -127,7 +127,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     autoImportLexiconCombo->addItem ("ODS");
     autoImportLexiconCombo->addItem ("Custom");
     autoImportLexiconCombo->setCurrentIndex
-        (autoImportLexiconCombo->findText ("OWL"));
+        (autoImportLexiconCombo->findText ("OWL2"));
     connect (autoImportLexiconCombo, SIGNAL (activated (const QString&)),
              SLOT (autoImportLexiconActivated (const QString&)));
     autoImportLexiconHlay->addWidget (autoImportLexiconCombo);
