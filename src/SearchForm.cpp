@@ -131,7 +131,7 @@ SearchForm::search()
     statusString = "Searching...";
     resultLabel->setText (statusString);
     emit statusChanged (statusString);
-    repaint();
+    qApp->processEvents();
 
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
 

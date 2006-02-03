@@ -651,7 +651,7 @@ MainWindow::tabStatusChanged (const QString& status)
     int index = tabStack->indexOf (form);
     if (index == tabStack->currentIndex()) {
         messageLabel->setText (status);
-        messageLabel->repaint();
+        qApp->processEvents();
     }
 }
 
