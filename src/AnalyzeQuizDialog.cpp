@@ -124,7 +124,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
     buttonHlay->addWidget (closeButton);
 
-    resize (minimumSizeHint().width() * 4, 500);
+    resize (700, 500);
     setWindowTitle (DIALOG_CAPTION);
     updateStats();
 
