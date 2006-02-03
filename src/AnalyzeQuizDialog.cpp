@@ -62,27 +62,24 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR (questionLabel);
     mainVlay->addWidget (questionLabel);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout;
-    mainHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainHlay);
-    mainVlay->addLayout (mainHlay);
-
-    QVBoxLayout* missedVlay = new QVBoxLayout;
-    missedVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (missedVlay);
-    mainHlay->addLayout (missedVlay, 1);
-
-    recallLabel = new QLabel;
-    Q_CHECK_PTR (recallLabel);
-    missedVlay->addWidget (recallLabel);
+    QHBoxLayout* recallHlay = new QHBoxLayout;
+    Q_CHECK_PTR (recallHlay);
+    recallHlay->setSpacing (SPACING);
+    mainVlay->addLayout (recallHlay);
 
     missedLabel = new QLabel;
     Q_CHECK_PTR (missedLabel);
-    missedVlay->addWidget (missedLabel);
+    recallHlay->addWidget (missedLabel);
+
+    recallHlay->addStretch (1);
+
+    recallLabel = new QLabel;
+    Q_CHECK_PTR (recallLabel);
+    recallHlay->addWidget (recallLabel);
 
     missedView = new WordTreeView (wordEngine);
     Q_CHECK_PTR (missedView);
-    missedVlay->addWidget (missedView);
+    mainVlay->addWidget (missedView);
 
     missedModel = new WordTableModel (wordEngine, this);
     Q_CHECK_PTR (missedModel);
@@ -90,22 +87,22 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
              missedView, SLOT (resizeAllColumnsToContents()));
     missedView->setModel (missedModel);
 
-    QVBoxLayout* incorrectVlay = new QVBoxLayout;
-    incorrectVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (incorrectVlay);
-    mainHlay->addLayout (incorrectVlay, 1);
-
-    precisionLabel = new QLabel;
-    Q_CHECK_PTR (precisionLabel);
-    incorrectVlay->addWidget (precisionLabel);
+    QHBoxLayout* precisionHlay = new QHBoxLayout;
+    Q_CHECK_PTR (precisionHlay);
+    precisionHlay->setSpacing (SPACING);
+    mainVlay->addLayout (precisionHlay);
 
     incorrectLabel = new QLabel;
     Q_CHECK_PTR (incorrectLabel);
-    incorrectVlay ->addWidget (incorrectLabel);
+    precisionHlay ->addWidget (incorrectLabel);
+
+    precisionLabel = new QLabel;
+    Q_CHECK_PTR (precisionLabel);
+    precisionHlay->addWidget (precisionLabel);
 
     incorrectView = new WordTreeView (wordEngine);
     Q_CHECK_PTR (incorrectView);
-    incorrectVlay->addWidget (incorrectView);
+    mainVlay->addWidget (incorrectView);
 
     incorrectModel = new WordTableModel (wordEngine, this);
     Q_CHECK_PTR (incorrectModel);
