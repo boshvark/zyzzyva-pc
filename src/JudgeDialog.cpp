@@ -40,6 +40,11 @@ const int INSTRUCTION_FONT_PIXEL_SIZE = 20;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 20;
 const int CLEAR_RESULTS_DELAY = 10000;
+const int CLEAR_EXIT_DELAY = 5000;
+
+const QString INSTRUCTION_MESSAGE = "Press the Space bar or Enter key to "
+                                    "separate words.  Press the Tab key to "
+                                    "judge the play.";
 
 using namespace Defs;
 
@@ -81,9 +86,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     inputVlay->setSpacing (20);
     Q_CHECK_PTR (inputVlay);
 
-    QLabel* instLabel = new QLabel ("Press the Space bar or Enter key to "
-                                    "separate words.  Press the Tab key to "
-                                    "judge the play.");
+    instLabel = new QLabel (INSTRUCTION_MESSAGE);
     Q_CHECK_PTR (instLabel);
     instLabel->setFont (instructionFont);
     instLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
@@ -250,6 +253,30 @@ JudgeDialog::judgeWord()
 }
 
 //---------------------------------------------------------------------------
+//  displayExit
+//
+//! Display instructions for exiting full screen mode.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::displayExit()
+{
+    instLabel->setText (INSTRUCTION_MESSAGE + "\nTo exit full screen Word "
+                        "Judge mode, press ALT-F4.");
+    QTimer::singleShot (CLEAR_EXIT_DELAY, this, SLOT (clearExit()));
+}
+
+//---------------------------------------------------------------------------
+//  clearExit
+//
+//! Clear instructions for exiting full screen mode.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::clearExit()
+{
+    instLabel->setText (INSTRUCTION_MESSAGE);
+}
+
+//---------------------------------------------------------------------------
 //  keyPressEvent
 //
 //! Receive key press events for the widget.  Reimplemented from QWidget.
@@ -262,9 +289,16 @@ JudgeDialog::keyPressEvent (QKeyEvent* e)
     if (!e)
         return;
 
-    if (widgetStack->currentWidget() == resultWidget)
+    bool cleared = false;
+    if (widgetStack->currentWidget() == resultWidget) {
         clear();
+        cleared = true;
+    }
 
-    if (e->key() != Qt::Key_Escape)
+    if (e->key() == Qt::Key_Escape) {
+        if (!cleared)
+            displayExit();
+    }
+    else
         e->ignore();
 }
