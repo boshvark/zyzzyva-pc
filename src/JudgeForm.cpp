@@ -31,6 +31,7 @@
 #include "Defs.h"
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QMessageBox>
 #include <QVBoxLayout>
 #include <QTextCursor>
 
@@ -230,6 +231,20 @@ JudgeForm::judgeWord()
 void
 JudgeForm::doFullScreen()
 {
+    int code = QMessageBox::information (this,
+                                         "Entering Full Screen Word Judge",
+                                         "You are now entering the full "
+                                         "screen Word Judge mode.\n"
+                                         "To exit full screen mode, use "
+                                         "your window manager's key\n"
+                                         "combination for closing windows. "
+                                         "In most cases, this is ALT-F4.",
+                                         QMessageBox::Ok,
+                                         QMessageBox::Cancel);
+
+    if (code != QMessageBox::Ok)
+        return;
+
     QApplication::setOverrideCursor (Qt::BlankCursor);
     JudgeDialog* dialog = new JudgeDialog (engine, this);
     Q_CHECK_PTR (dialog);
