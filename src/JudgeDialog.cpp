@@ -39,6 +39,7 @@ const int TITLE_FONT_PIXEL_SIZE = 40;
 const int INSTRUCTION_FONT_PIXEL_SIZE = 20;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 20;
+const int CLEAR_RESULTS_DELAY = 10000;
 
 using namespace Defs;
 
@@ -245,7 +246,7 @@ JudgeDialog::judgeWord()
     resultLabel->setText (resultStr);
     widgetStack->setCurrentWidget (resultWidget);
 
-    timer->start (5000);
+    timer->start (CLEAR_RESULTS_DELAY);
 }
 
 //---------------------------------------------------------------------------
