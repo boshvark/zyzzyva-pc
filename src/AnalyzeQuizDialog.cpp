@@ -60,6 +60,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 
     questionLabel = new QLabel;
     Q_CHECK_PTR (questionLabel);
+    questionLabel->setAlignment (Qt::AlignHCenter);
     mainVlay->addWidget (questionLabel);
 
     QHBoxLayout* recallHlay = new QHBoxLayout;
