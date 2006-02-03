@@ -383,7 +383,7 @@ MainWindow::importInteractive()
 void
 MainWindow::newQuizFormInteractive()
 {
-    NewQuizDialog* dialog = new NewQuizDialog (this);
+    NewQuizDialog* dialog = new NewQuizDialog (wordEngine, this);
     Q_CHECK_PTR (dialog);
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
@@ -401,7 +401,7 @@ MainWindow::newQuizFormInteractive()
 void
 MainWindow::newQuizFormInteractive (const QuizSpec& quizSpec)
 {
-    NewQuizDialog* dialog = new NewQuizDialog (this);
+    NewQuizDialog* dialog = new NewQuizDialog (wordEngine, this);
     Q_CHECK_PTR (dialog);
     dialog->setQuizSpec (quizSpec);
     int code = dialog->exec();

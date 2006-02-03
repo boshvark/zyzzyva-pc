@@ -32,6 +32,7 @@ using namespace Defs;
 // SearchSpec.cpp and QuizProgress.cpp.  Define them in only one place!
 const QString XML_TOP_ELEMENT = "zyzzyva-quiz";
 const QString XML_TOP_TYPE_ATTR = "type";
+const QString XML_TOP_LEXICON_ATTR = "lexicon";
 const QString XML_QUESTION_SOURCE_ELEMENT = "question-source";
 const QString XML_QUESTION_SOURCE_TYPE_ATTR = "type";
 const QString XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR = "single-question";
@@ -72,6 +73,7 @@ QuizSpec::asDomElement() const
     QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
     topElement.setAttribute (XML_TOP_TYPE_ATTR, Auxil::quizTypeToString
                              (type));
+    topElement.setAttribute (XML_TOP_LEXICON_ATTR, lexicon);
 
     QDomElement sourceElement = doc.createElement
         (XML_QUESTION_SOURCE_ELEMENT);
@@ -122,6 +124,9 @@ QuizSpec::fromDomElement (const QDomElement& element)
             return false;
         tmpSpec.setType (type);
     }
+
+    if (element.hasAttribute (XML_TOP_LEXICON_ATTR))
+        tmpSpec.setLexicon (element.attribute (XML_TOP_LEXICON_ATTR));
 
     QDomElement elem = element.firstChild().toElement();
     if (elem.isNull())

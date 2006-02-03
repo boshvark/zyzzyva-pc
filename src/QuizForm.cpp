@@ -519,7 +519,7 @@ void
 QuizForm::newQuizClicked()
 {
     pauseTimer();
-    NewQuizDialog* dialog = new NewQuizDialog (this);
+    NewQuizDialog* dialog = new NewQuizDialog (wordEngine, this);
     Q_CHECK_PTR (dialog);
     QuizSpec spec = quizEngine->getQuizSpec();
     spec.setProgress (QuizProgress());

@@ -56,6 +56,7 @@ class QuizSpec
     QDomElement asDomElement() const;
     bool fromDomElement (const QDomElement& element);
 
+    void setLexicon (const QString& lex) { lexicon = lex; }
     void setType (QuizType t) { type = t; }
     void setSearchSpec (const SearchSpec& s) { searchSpec = s; }
     void setTimerSpec (const QuizTimerSpec& s) { timerSpec = s; }
@@ -68,6 +69,7 @@ class QuizSpec
     void addIncorrect (const QString& word) { progress.addIncorrect (word); }
     void addMissed (const QString& word) { progress.addMissed (word); }
 
+    QString getLexicon() const { return lexicon; }
     QuizType getType() const { return type; }
     SearchSpec getSearchSpec() const { return searchSpec; }
     QuizTimerSpec getTimerSpec() const { return timerSpec; }
@@ -78,6 +80,7 @@ class QuizSpec
     int getRandomAlgorithm() const { return randomAlgorithm; }
 
     private:
+    QString lexicon;
     QuizType type;
     SearchSpec searchSpec;
     QuizTimerSpec timerSpec;

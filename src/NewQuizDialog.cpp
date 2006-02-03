@@ -26,6 +26,7 @@
 #include "QuizSpec.h"
 #include "SearchSpec.h"
 #include "SearchSpecForm.h"
+#include "WordEngine.h"
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -49,11 +50,12 @@ using namespace Defs;
 //
 //! Constructor.
 //
+//! @param e a word engine
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
-    : QDialog (parent, f)
+NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
+    : QDialog (parent, f), wordEngine (e)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this);
     Q_CHECK_PTR (mainVlay);
@@ -178,6 +180,7 @@ NewQuizDialog::NewQuizDialog (QWidget* parent, Qt::WFlags f)
 QuizSpec
 NewQuizDialog::getQuizSpec()
 {
+    quizSpec.setLexicon (wordEngine->getLexiconName());
     quizSpec.setType (Auxil::stringToQuizType (typeCombo->currentText()));
     quizSpec.setSearchSpec (specForm->getSearchSpec());
     quizSpec.setRandomOrder (randomCbox->isChecked());
@@ -347,6 +350,30 @@ NewQuizDialog::loadQuiz()
         QMessageBox::warning (this, "Error in Quiz File",
                               "Error in quiz file.");
         return;
+    }
+
+
+    QString quizLexicon = spec.getLexicon();
+    QString currentLexicon = wordEngine->getLexiconName();
+
+    if (quizLexicon != currentLexicon) {
+        if (quizLexicon.isEmpty())
+            quizLexicon = "unspecified";
+
+        QString message = "The lexicon associated with the quiz is "
+                          + quizLexicon + ", but the current lexicon is "
+                          + currentLexicon + ".\n"
+                          "If a different lexicon is used, the quiz may "
+                          "encounter problems.\n"
+                          "Are you sure you want to proceed?";
+
+        int code = QMessageBox::warning (this, "Lexicon Mismatch", message,
+                                         QMessageBox::Yes, QMessageBox::No);
+
+        if (code != QMessageBox::Yes)
+            return;
+
+        spec.setLexicon (currentLexicon);
     }
 
     setQuizSpec (spec);

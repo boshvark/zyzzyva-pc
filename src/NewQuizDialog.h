@@ -36,13 +36,14 @@
 
 class SearchSpec;
 class SearchSpecForm;
+class WordEngine;
 class ZPushButton;
 
 class NewQuizDialog : public QDialog
 {
     Q_OBJECT
     public:
-    NewQuizDialog (QWidget* parent = 0, Qt::WFlags f = 0);
+    NewQuizDialog (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
     ~NewQuizDialog() { }
 
     QuizSpec getQuizSpec();
@@ -72,6 +73,7 @@ class NewQuizDialog : public QDialog
     QComboBox*      timerCombo;
 
     QuizSpec        quizSpec;
+    WordEngine*     wordEngine;
 };
 
 #endif // ZYZZYVA_NEW_QUIZ_DIALOG_H
