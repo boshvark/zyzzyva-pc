@@ -137,9 +137,13 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     lexiconLabel->setAlignment (Qt::AlignRight);
     titleHlay->addWidget (lexiconLabel);
 
-    timer = new QTimer (this);
-    Q_CHECK_PTR (timer);
-    connect (timer, SIGNAL (timeout()), SLOT (clear()));
+    resultTimer = new QTimer (this);
+    Q_CHECK_PTR (resultTimer);
+    connect (resultTimer, SIGNAL (timeout()), SLOT (clear()));
+
+    exitTimer = new QTimer (this);
+    Q_CHECK_PTR (exitTimer);
+    connect (exitTimer, SIGNAL (timeout()), SLOT (clearExit()));
 
     clear();
     showFullScreen();
@@ -202,7 +206,9 @@ JudgeDialog::textChanged()
 void
 JudgeDialog::clear()
 {
-    timer->stop();
+    resultTimer->stop();
+    exitTimer->stop();
+    clearExit();
     inputArea->clear();
     widgetStack->setCurrentWidget (inputWidget);
 }
@@ -249,7 +255,7 @@ JudgeDialog::judgeWord()
     resultLabel->setText (resultStr);
     widgetStack->setCurrentWidget (resultWidget);
 
-    timer->start (CLEAR_RESULTS_DELAY);
+    resultTimer->start (CLEAR_RESULTS_DELAY);
 }
 
 //---------------------------------------------------------------------------
@@ -262,7 +268,7 @@ JudgeDialog::displayExit()
 {
     instLabel->setText (INSTRUCTION_MESSAGE + "\nTo exit full screen Word "
                         "Judge mode, press ALT-F4.");
-    QTimer::singleShot (CLEAR_EXIT_DELAY, this, SLOT (clearExit()));
+    exitTimer->start (CLEAR_EXIT_DELAY);
 }
 
 //---------------------------------------------------------------------------

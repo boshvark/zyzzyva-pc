@@ -59,7 +59,8 @@ class JudgeDialog : public QDialog
     WordTextEdit*   inputArea;
     QWidget*        resultWidget;
     QLabel*         resultLabel;
-    QTimer*         timer;
+    QTimer*         resultTimer;
+    QTimer*         exitTimer;
 };
 
 #endif // ZYZZYVA_JUDGE_DIALOG_H
