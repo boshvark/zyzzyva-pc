@@ -34,8 +34,9 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-const int FORM_FONT_PIXEL_SIZE = 50;
+const int FORM_FONT_PIXEL_SIZE = 55;
 const int TITLE_FONT_PIXEL_SIZE = 30;
+const int INSTRUCTION_FONT_PIXEL_SIZE = 20;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 20;
 
@@ -52,11 +53,14 @@ using namespace Defs;
 JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f), engine (e)
 {
+    QFont formFont = qApp->font();
+    formFont.setPixelSize (FORM_FONT_PIXEL_SIZE);
+
     QFont titleFont = qApp->font();
     titleFont.setPixelSize (TITLE_FONT_PIXEL_SIZE);
 
-    QFont formFont = qApp->font();
-    formFont.setPixelSize (FORM_FONT_PIXEL_SIZE);
+    QFont instructionFont = qApp->font();
+    instructionFont.setPixelSize (INSTRUCTION_FONT_PIXEL_SIZE);
 
     QVBoxLayout* mainVlay = new QVBoxLayout (this);
     mainVlay->setMargin (0);
@@ -73,31 +77,14 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     QVBoxLayout* inputVlay = new QVBoxLayout (inputWidget);
     inputVlay->setMargin (INPUT_MARGIN);
-    inputVlay->setSpacing (0);
+    inputVlay->setSpacing (20);
     Q_CHECK_PTR (inputVlay);
 
-    QHBoxLayout* titleHlay = new QHBoxLayout;
-    Q_CHECK_PTR (titleHlay);
-    inputVlay->addLayout (titleHlay);
-
-    QLabel* programLabel = new QLabel ("Zyzzyva Word Judge");
-    Q_CHECK_PTR (programLabel);
-    programLabel->setFont (titleFont);
-    titleHlay->addWidget (programLabel);
-
-    titleHlay->addStretch (1);
-
-    QLabel* lexiconLabel = new QLabel ("Lexicon: " +
-                                       engine->getLexiconName());
-    Q_CHECK_PTR (lexiconLabel);
-    lexiconLabel->setFont (titleFont);
-    lexiconLabel->setAlignment (Qt::AlignRight);
-    titleHlay->addWidget (lexiconLabel);
-
-    QLabel* instLabel = new QLabel ("Hit the Space bar or Enter key to "
-                                    "separate words.  Hit the Tab key to "
+    QLabel* instLabel = new QLabel ("Press the Space bar or Enter key to "
+                                    "separate words.  Press the Tab key to "
                                     "judge the play.");
     Q_CHECK_PTR (instLabel);
+    instLabel->setFont (instructionFont);
     instLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
     inputVlay->addWidget (instLabel);
 
@@ -127,6 +114,24 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     resultLabel->setFrameStyle (QFrame::Box | QFrame::Plain);
     resultLabel->setLineWidth (RESULT_BORDER_WIDTH);
     resultVlay->addWidget (resultLabel);
+
+    QHBoxLayout* titleHlay = new QHBoxLayout;
+    Q_CHECK_PTR (titleHlay);
+    inputVlay->addLayout (titleHlay);
+
+    QLabel* programLabel = new QLabel ("Zyzzyva Word Judge");
+    Q_CHECK_PTR (programLabel);
+    programLabel->setFont (titleFont);
+    titleHlay->addWidget (programLabel);
+
+    titleHlay->addStretch (1);
+
+    QLabel* lexiconLabel = new QLabel ("Lexicon: " +
+                                       engine->getLexiconName());
+    Q_CHECK_PTR (lexiconLabel);
+    lexiconLabel->setFont (titleFont);
+    lexiconLabel->setAlignment (Qt::AlignRight);
+    titleHlay->addWidget (lexiconLabel);
 
     clear();
     showFullScreen();
