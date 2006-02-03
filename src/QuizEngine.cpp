@@ -29,6 +29,11 @@
 #include <cstdlib>
 #include <ctime>
 
+//---------------------------------------------------------------------------
+//  QuizEngine
+//
+//! Constructor.
+//---------------------------------------------------------------------------
 QuizEngine::QuizEngine (WordEngine* e)
     : wordEngine (e), quizTotal (0), quizCorrect (0), quizIncorrect (0),
     questionIndex (0)
