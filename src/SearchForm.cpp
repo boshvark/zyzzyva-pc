@@ -96,7 +96,6 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
              resultView, SLOT (resizeAllColumnsToContents()));
     resultView->setModel (resultModel);
 
-    updateResultTotal (0);
     specChanged();
 }
 
