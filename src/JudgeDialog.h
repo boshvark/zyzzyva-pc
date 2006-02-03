@@ -29,6 +29,7 @@
 #include <QDialog>
 #include <QLabel>
 #include <QStackedWidget>
+#include <QTimer>
 #include <QWidget>
 
 class WordEngine;
@@ -52,6 +53,7 @@ class JudgeDialog : public QDialog
     WordTextEdit*   inputArea;
     QWidget*        resultWidget;
     QLabel*         resultLabel;
+    QTimer*         timer;
 };
 
 #endif // ZYZZYVA_JUDGE_DIALOG_H

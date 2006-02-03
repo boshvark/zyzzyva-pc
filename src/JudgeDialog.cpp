@@ -31,7 +31,6 @@
 #include <QHBoxLayout>
 #include <QPalette>
 #include <QTextCursor>
-#include <QTimer>
 #include <QVBoxLayout>
 
 const int FORM_FONT_PIXEL_SIZE = 55;
@@ -132,6 +131,10 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     lexiconLabel->setFont (titleFont);
     lexiconLabel->setAlignment (Qt::AlignRight);
     titleHlay->addWidget (lexiconLabel);
+
+    timer = new QTimer (this);
+    Q_CHECK_PTR (timer);
+    connect (timer, SIGNAL (timeout()), SLOT (clear()));
 
     clear();
     showFullScreen();
@@ -240,5 +243,5 @@ JudgeDialog::judgeWord()
     resultLabel->setText (resultStr);
     widgetStack->setCurrentWidget (resultWidget);
 
-    QTimer::singleShot (5000, this, SLOT (clear()));
+    timer->start (5000);
 }
