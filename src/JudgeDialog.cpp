@@ -197,6 +197,7 @@ JudgeDialog::textChanged()
 void
 JudgeDialog::clear()
 {
+    timer->stop();
     inputArea->clear();
     widgetStack->setCurrentWidget (inputWidget);
 }
