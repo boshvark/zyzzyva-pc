@@ -125,8 +125,15 @@ SearchForm::search()
     if (spec.conditions.empty())
         return;
 
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+    searchButton->setEnabled (false);
     resultModel->removeRows (0, resultModel->rowCount());
+
+    statusString = "Searching...";
+    resultLabel->setText (statusString);
+    emit statusChanged (statusString);
+    repaint();
+
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
 
     QStringList wordList = wordEngine->search (specForm->getSearchSpec(),
                                                false);
@@ -162,6 +169,7 @@ SearchForm::search()
     resultModel->addWords (wordItems);
 
     updateResultTotal (wordList.size());
+    searchButton->setEnabled (true);
     QApplication::restoreOverrideCursor();
 }
 
