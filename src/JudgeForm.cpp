@@ -29,6 +29,7 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QTextCursor>
@@ -229,8 +230,10 @@ JudgeForm::judgeWord()
 void
 JudgeForm::doFullScreen()
 {
+    QApplication::setOverrideCursor (Qt::BlankCursor);
     JudgeDialog* dialog = new JudgeDialog (engine, this);
     Q_CHECK_PTR (dialog);
     dialog->exec();
     delete dialog;
+    QApplication::restoreOverrideCursor();
 }
