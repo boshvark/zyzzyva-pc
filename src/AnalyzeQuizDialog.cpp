@@ -94,7 +94,9 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 
     incorrectLabel = new QLabel;
     Q_CHECK_PTR (incorrectLabel);
-    precisionHlay ->addWidget (incorrectLabel);
+    precisionHlay->addWidget (incorrectLabel);
+
+    precisionHlay->addStretch (1);
 
     precisionLabel = new QLabel;
     Q_CHECK_PTR (precisionLabel);
