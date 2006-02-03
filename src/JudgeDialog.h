@@ -46,6 +46,9 @@ class JudgeDialog : public QDialog
     void clear();
     void judgeWord();
 
+    protected slots:
+    void keyPressEvent (QKeyEvent* e);
+
     private:
     WordEngine*     engine;
     QStackedWidget* widgetStack;

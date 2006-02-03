@@ -29,6 +29,7 @@
 #include "Defs.h"
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QKeyEvent>
 #include <QPalette>
 #include <QTextCursor>
 #include <QVBoxLayout>
@@ -245,4 +246,24 @@ JudgeDialog::judgeWord()
     widgetStack->setCurrentWidget (resultWidget);
 
     timer->start (5000);
+}
+
+//---------------------------------------------------------------------------
+//  keyPressEvent
+//
+//! Receive key press events for the widget.  Reimplemented from QWidget.
+//
+//! @param e the key press event
+//---------------------------------------------------------------------------
+void
+JudgeDialog::keyPressEvent (QKeyEvent* e)
+{
+    if (!e)
+        return;
+
+    if (widgetStack->currentWidget() == resultWidget)
+        clear();
+
+    if (e->key() != Qt::Key_Escape)
+        e->ignore();
 }
