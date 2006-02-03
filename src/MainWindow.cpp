@@ -676,9 +676,8 @@ MainWindow::closeEvent (QCloseEvent* event)
 void
 MainWindow::setNumWords (int num)
 {
-    lexiconLabel->setText (num ? QString::number (num) + " words in "
-                                 + wordEngine->getLexiconName()
-                                 + " lexicon"
+    lexiconLabel->setText (num ? wordEngine->getLexiconName() + " - "
+                                 + QString::number (num) + " words"
                                : "No words loaded");
 }
 
