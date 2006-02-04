@@ -32,7 +32,7 @@
 class SearchSpecForm;
 class WordEngine;
 class WordTableModel;
-class WordTreeView;
+class WordTableView;
 class ZPushButton;
 
 class SearchForm : public ActionForm
@@ -52,7 +52,7 @@ class SearchForm : public ActionForm
     SearchSpecForm* specForm;
     QCheckBox*      lowerCaseCbox;
     QLabel*         resultLabel;
-    WordTreeView*  resultView;
+    WordTableView*  resultView;
     WordTableModel* resultModel;
     ZPushButton*    searchButton;
     QString         statusString;

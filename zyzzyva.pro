@@ -67,7 +67,7 @@ SOURCES = \
     src/WordListDialog.cpp \
     src/WordTableDelegate.cpp \
     src/WordTableModel.cpp \
-    src/WordTreeView.cpp \
+    src/WordTableView.cpp \
     src/WordValidator.cpp \
     src/WordVariationDialog.cpp \
     src/ZPushButton.cpp
@@ -98,7 +98,7 @@ HEADERS = \
     src/WordListDialog.h \
     src/WordTableDelegate.h \
     src/WordTableModel.h \
-    src/WordTreeView.h \
+    src/WordTableView.h \
     src/WordTextEdit.h \
     src/WordValidator.h \
     src/WordVariationDialog.h \

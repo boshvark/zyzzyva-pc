@@ -26,7 +26,7 @@
 #include "SearchSpecForm.h"
 #include "WordEngine.h"
 #include "WordTableModel.h"
-#include "WordTreeView.h"
+#include "WordTableView.h"
 #include "ZPushButton.h"
 #include "Defs.h"
 #include <QApplication>
@@ -86,8 +86,9 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (resultLabel);
     specVlay->addWidget (resultLabel);
 
-    resultView = new WordTreeView (wordEngine);
+    resultView = new WordTableView (wordEngine);
     Q_CHECK_PTR (resultView);
+    resultView->verticalHeader()->hide();
     specVlay->addWidget (resultView, 1);
 
     resultModel = new WordTableModel (wordEngine, this);

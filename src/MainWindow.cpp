@@ -725,7 +725,7 @@ MainWindow::readSettings (bool useGeometry)
     if (fontStr.isEmpty())
         ; // do nothing
     else if (font.fromString (fontStr))
-        qApp->setFont (font, "WordTreeView");
+        qApp->setFont (font, "WordTableView");
     else {
         //qWarning ("Cannot set font: " + fontStr);
     }

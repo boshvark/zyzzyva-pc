@@ -27,7 +27,7 @@
 #include "DefinitionLabel.h"
 #include "WordEngine.h"
 #include "WordTableModel.h"
-#include "WordTreeView.h"
+#include "WordTableView.h"
 #include "ZPushButton.h"
 #include <QApplication>
 #include <QHBoxLayout>
@@ -77,12 +77,13 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
     Q_CHECK_PTR (leftLabel);
     mainVlay->addWidget (leftLabel);
 
-    leftView = new WordTreeView (wordEngine);
+    leftView = new WordTableView (wordEngine);
     Q_CHECK_PTR (leftView);
     mainVlay->addWidget (leftView);
 
     leftModel = new WordTableModel (wordEngine, this);
     Q_CHECK_PTR (leftModel);
+    leftView->verticalHeader()->hide();
     connect (leftModel, SIGNAL (wordsChanged()),
              leftView, SLOT (resizeAllColumnsToContents()));
     leftView->setModel (leftModel);
@@ -93,12 +94,13 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
         Q_CHECK_PTR (rightLabel);
         mainVlay->addWidget (rightLabel);
 
-        rightView = new WordTreeView (wordEngine);
+        rightView = new WordTableView (wordEngine);
         Q_CHECK_PTR (rightView);
         mainVlay->addWidget (rightView);
 
         rightModel = new WordTableModel (wordEngine, this);
         Q_CHECK_PTR (rightModel);
+        rightView->verticalHeader()->hide();
         connect (rightModel, SIGNAL (wordsChanged()),
                  rightView, SLOT (resizeAllColumnsToContents()));
         rightView->setModel (rightModel);

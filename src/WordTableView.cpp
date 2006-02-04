@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// WordTreeView.cpp
+// WordTableView.cpp
 //
-// A class derived from QTreeView, used to display word lists.
+// A class derived from QTableView, used to display word lists.
 //
 // Copyright 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
 //
@@ -22,7 +22,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include "WordTreeView.h"
+#include "WordTableView.h"
 #include "DefinitionDialog.h"
 #include "MainWindow.h"
 #include "QuizSpec.h"
@@ -44,19 +44,17 @@
 using namespace std;
 
 //---------------------------------------------------------------------------
-//  WordTreeView
+//  WordTableView
 //
 //! Constructor.
 //
 //! @param parent the parent object
 //---------------------------------------------------------------------------
-WordTreeView::WordTreeView (WordEngine* e, QWidget* parent)
-    : QTreeView (parent), wordEngine (e)
+WordTableView::WordTableView (WordEngine* e, QWidget* parent)
+    : QTableView (parent), wordEngine (e)
 {
-    setRootIsDecorated (false);
     setSelectionBehavior (QAbstractItemView::SelectRows);
     setSelectionMode (QAbstractItemView::SingleSelection);
-    setUniformRowHeights (true);
 
     WordTableDelegate* delegate = new WordTableDelegate (this);
     setItemDelegate (delegate);
@@ -75,7 +73,7 @@ WordTreeView::WordTreeView (WordEngine* e, QWidget* parent)
 //! Resize all columns to fit the model contents.
 //---------------------------------------------------------------------------
 void
-WordTreeView::resizeAllColumnsToContents()
+WordTableView::resizeAllColumnsToContents()
 {
     for (int i = 0; i < model()->columnCount(); ++i)
         resizeColumnToContents (i);
@@ -87,7 +85,7 @@ WordTreeView::resizeAllColumnsToContents()
 //! Display the definition of the currently selected word.
 //---------------------------------------------------------------------------
 void
-WordTreeView::viewDefinition()
+WordTableView::viewDefinition()
 {
     QModelIndex index = currentIndex();
     index = index.sibling (index.row(), WordTableModel::WORD_COLUMN);
@@ -106,7 +104,7 @@ WordTreeView::viewDefinition()
 //! @param variation the variation to display
 //---------------------------------------------------------------------------
 void
-WordTreeView::viewVariation (int variation)
+WordTableView::viewVariation (int variation)
 {
     QModelIndex index = currentIndex();
     index = index.sibling (index.row(), WordTableModel::WORD_COLUMN);
@@ -127,7 +125,7 @@ WordTreeView::viewVariation (int variation)
 //! actually do the export.
 //---------------------------------------------------------------------------
 void
-WordTreeView::exportRequested()
+WordTableView::exportRequested()
 {
     if (model()->rowCount() == 0) {
         QMessageBox::warning (this, "Cannot Save Word List",
@@ -159,7 +157,7 @@ WordTreeView::exportRequested()
 //! already filled in with the contents of the list.
 //---------------------------------------------------------------------------
 void
-WordTreeView::createQuizRequested()
+WordTableView::createQuizRequested()
 {
     int numWords = model()->rowCount();
     if (numWords == 0) {
@@ -196,7 +194,7 @@ WordTreeView::createQuizRequested()
 //! @return true if successful or if the user cancels, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTreeView::exportFile (const QString& filename, QString* err) const
+WordTableView::exportFile (const QString& filename, QString* err) const
 {
     if (model()->rowCount() == 0) {
         if (err)
@@ -234,13 +232,10 @@ WordTreeView::exportFile (const QString& filename, QString* err) const
 //! @return true if successful or if the user cancels, false otherwise
 //---------------------------------------------------------------------------
 void
-WordTreeView::contextMenuEvent (QContextMenuEvent* e)
+WordTableView::contextMenuEvent (QContextMenuEvent* e)
 {
-    QModelIndex index = indexAt (e->pos());
-    //int row = rowAt (e->y());
-    //int column = columnAt (e->x());
-    int row = index.row();
-    int column = index.column();
+    int row = rowAt (e->y());
+    int column = columnAt (e->x());
     bool wordOptions = ((row >= 0) && (column >= 0));
 
     QMenu* popupMenu = new QMenu;
@@ -351,7 +346,7 @@ WordTreeView::contextMenuEvent (QContextMenuEvent* e)
 //  sizeHintForColumn
 //
 //! Return the width size hint for a column.  Directly call the equivalent
-//! function from QAbstractItemView instead of allowing the QTreeView version
+//! function from QAbstractItemView instead of allowing the QTableView version
 //! to take precedence, because we want the content of all rows to be
 //! considered, not just the visible ones.
 //
@@ -359,7 +354,7 @@ WordTreeView::contextMenuEvent (QContextMenuEvent* e)
 //! @return the size hint for the column
 //---------------------------------------------------------------------------
 int
-WordTreeView::sizeHintForColumn (int column) const
+WordTableView::sizeHintForColumn (int column) const
 {
     return QAbstractItemView::sizeHintForColumn (column) +
         (2 * WordTableDelegate::ITEM_XPADDING);

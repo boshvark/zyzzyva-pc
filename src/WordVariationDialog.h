@@ -32,7 +32,7 @@
 class DefinitionLabel;
 class WordEngine;
 class WordTableModel;
-class WordTreeView;
+class WordTableView;
 class ZPushButton;
 
 class WordVariationDialog : public QDialog
@@ -53,9 +53,9 @@ class WordVariationDialog : public QDialog
     DefinitionLabel* wordLabel;
     QLabel*          leftLabel;
     QLabel*          rightLabel;
-    WordTreeView*    leftView;
+    WordTableView*   leftView;
     WordTableModel*  leftModel;
-    WordTreeView*    rightView;
+    WordTableView*   rightView;
     WordTableModel*  rightModel;
     ZPushButton*     closeButton;
 };

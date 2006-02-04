@@ -33,7 +33,7 @@ class QuizEngine;
 class QuizSpec;
 class WordEngine;
 class WordTableModel;
-class WordTreeView;
+class WordTableView;
 class ZPushButton;
 
 class AnalyzeQuizDialog : public QDialog
@@ -68,9 +68,9 @@ class AnalyzeQuizDialog : public QDialog
     QLabel*       precisionLabel;
     QLabel*       missedLabel;
     QLabel*       incorrectLabel;
-    WordTreeView*   missedView;
+    WordTableView*  missedView;
     WordTableModel* missedModel;
-    WordTreeView*   incorrectView;
+    WordTableView*  incorrectView;
     WordTableModel* incorrectModel;
     ZPushButton*  closeButton;
 };

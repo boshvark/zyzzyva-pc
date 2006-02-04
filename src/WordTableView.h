@@ -1,9 +1,9 @@
 //---------------------------------------------------------------------------
-// WordTreeView.h
+// WordTableView.h
 //
-// A class derived from QTreeView, used to display word lists.
+// A class derived from QTableView, used to display word lists.
 //
-// Copyright 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,20 +22,20 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_WORD_TREE_VIEW_H
-#define ZYZZYVA_WORD_TREE_VIEW_H
+#ifndef ZYZZYVA_WORD_TABLE_VIEW_H
+#define ZYZZYVA_WORD_TABLE_VIEW_H
 
 #include <QString>
-#include <QTreeView>
+#include <QTableView>
 
 class WordEngine;
 
-class WordTreeView : public QTreeView
+class WordTableView : public QTableView
 {
     Q_OBJECT
     public:
-    WordTreeView (WordEngine* e, QWidget* parent = 0);
-    virtual ~WordTreeView() { }
+    WordTableView (WordEngine* e, QWidget* parent = 0);
+    virtual ~WordTableView() { }
 
     public slots:
     virtual void resizeAllColumnsToContents();
@@ -58,4 +58,4 @@ class WordTreeView : public QTreeView
 
 };
 
-#endif // ZYZZYVA_WORD_TREE_VIEW_H
+#endif // ZYZZYVA_WORD_TABLE_VIEW_H
