@@ -425,7 +425,11 @@ MainWindow::newQuizForm (const QuizSpec& quizSpec)
     QuizForm* form = new QuizForm (wordEngine);
     Q_CHECK_PTR (form);
     form->setTileTheme (MainSettings::getTileTheme());
-    form->newQuiz (quizSpec);
+    bool ok = form->newQuiz (quizSpec);
+    if (!ok) {
+        delete form;
+        return;
+    }
     newTab (form, QIcon (":/quiz-icon"), QUIZ_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));

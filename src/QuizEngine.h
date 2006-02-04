@@ -47,7 +47,7 @@ class QuizEngine
     QuizEngine (WordEngine* e);
     ~QuizEngine() { }
 
-    void newQuiz (const QuizSpec& spec);
+    bool newQuiz (const QuizSpec& spec);
     bool nextQuestion();
     void completeQuestion();
 

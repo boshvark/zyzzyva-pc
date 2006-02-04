@@ -54,7 +54,7 @@ class QuizForm : public ActionForm
     QString getStatusString() const;
 
     public slots:
-    void newQuiz (const QuizSpec& spec);
+    bool newQuiz (const QuizSpec& spec);
     void responseEntered();
     void alphaOrderClicked();
     void randomOrderClicked();

@@ -46,30 +46,36 @@ QuizEngine::QuizEngine (WordEngine* e)
 //! Begin a new quiz.
 //
 //! @param input the group of symbols forming the basis of the quiz
+//! @return true if the quiz was started successfully, false otherwise;
 //---------------------------------------------------------------------------
-void
+bool
 QuizEngine::newQuiz (const QuizSpec& spec)
 {
-    quizSpec = spec;
-    quizQuestions.clear();
+    QuizSpec::QuizType type = spec.getType();
 
-    QuizSpec::QuizType type = quizSpec.getType();
+    QStringList questions;
 
     // Anagram Quiz: The search spec is used to select the list of words.
     // Their alphagrams are used as quiz questions, and their anagrams are
     // used as quiz answers.
     if (type == QuizSpec::QuizAnagrams) {
-        quizQuestions = wordEngine->search (quizSpec.getSearchSpec(), true);
-        quizQuestions = wordEngine->alphagrams (quizQuestions);
+        questions = wordEngine->search (spec.getSearchSpec(), true);
+        questions = wordEngine->alphagrams (questions);
     }
 
     else if (type == QuizSpec::QuizHooks) {
-        quizQuestions = wordEngine->search (quizSpec.getSearchSpec(), true);
+        questions = wordEngine->search (spec.getSearchSpec(), true);
     }
 
     else if (type == QuizSpec::QuizWordListRecall) {
-        quizQuestions << spec.getSearchSpec().asString();
+        questions << spec.getSearchSpec().asString();
     }
+
+    if (questions.isEmpty())
+        return false;
+
+    quizSpec = spec;
+    quizQuestions = questions;
 
     // Do a random shuffle
     if (quizSpec.getRandomOrder()) {
@@ -129,6 +135,8 @@ QuizEngine::newQuiz (const QuizSpec& spec)
     correctUserResponses = progress.getQuestionCorrect();
     if (!correctUserResponses.empty())
         quizTotal -= correctUserResponses.size();
+
+    return true;
 }
 
 //---------------------------------------------------------------------------

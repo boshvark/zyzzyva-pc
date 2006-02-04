@@ -26,6 +26,7 @@
 #include "AnalyzeQuizDialog.h"
 #include "DefinitionLabel.h"
 #include "MainSettings.h"
+#include "MainWindow.h"
 #include "NewQuizDialog.h"
 #include "Rand.h"
 #include "QuizCanvas.h"
@@ -398,8 +399,9 @@ QuizForm::responseEntered()
 //! Start a new quiz based on a quiz specification.
 //
 //! @param spec the quiz specification
+//! @return true if the quiz is successfully started, false otherwise
 //---------------------------------------------------------------------------
-void
+bool
 QuizForm::newQuiz (const QuizSpec& spec)
 {
     timerSpec = spec.getTimerSpec();
@@ -424,14 +426,23 @@ QuizForm::newQuiz (const QuizSpec& spec)
     randomOrderButton->setEnabled (enableLetterOrder);
 
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-    quizEngine->newQuiz (spec);
+    bool ok = quizEngine->newQuiz (spec);
     QApplication::restoreOverrideCursor();
+
+    if (!ok) {
+        QMessageBox::warning (MainWindow::getInstance(), "Cannot Start Quiz",
+                              "The quiz cannot be started because no "
+                              "questions were found.");
+        return false;
+    }
+
     quizTypeLabel->setText (Auxil::quizTypeToString
                             (quizEngine->getQuizSpec().getType()));
     startQuestion();
     analyzeDialog->newQuiz (spec);
     if (quizEngine->getQuestionComplete())
         checkResponseClicked();
+    return true;
 }
 
 //---------------------------------------------------------------------------
