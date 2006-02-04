@@ -209,9 +209,6 @@ WordTableModel::data (const QModelIndex& index, int role) const
     if (role == Qt::UserRole)
         return wordList.at (index.row()).getType();
 
-    if (index.column() == WILDCARD_MATCH_COLUMN)
-        return wordList.at (index.row()).getWildcard();
-
     if ((role != Qt::DisplayRole) && (role != Qt::EditRole))
         return QVariant();
 
@@ -222,6 +219,12 @@ WordTableModel::data (const QModelIndex& index, int role) const
 
     QString wordUpper = word.toUpper();
     switch (index.column()) {
+        case WILDCARD_MATCH_COLUMN:
+        if (!MainSettings::getWordListGroupByWildcards()) {
+            return QString();
+        }
+        return wordItem.getWildcard();
+
         case FRONT_HOOK_COLUMN:
         if (!MainSettings::getWordListShowHooks()) {
             return QString();
@@ -296,7 +299,8 @@ WordTableModel::headerData (int section, Qt::Orientation orientation, int
     if (role == Qt::DisplayRole) {
         switch (section) {
             case WILDCARD_MATCH_COLUMN:
-            return WILDCARD_MATCH_HEADER;
+            return MainSettings::getWordListGroupByWildcards() ?
+                WILDCARD_MATCH_HEADER : QString::null;
 
             case FRONT_HOOK_COLUMN:
             return MainSettings::getWordListShowHooks() ?
