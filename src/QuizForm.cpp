@@ -673,15 +673,21 @@ QuizForm::analyzeClicked()
 void
 QuizForm::startQuestion()
 {
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+
     clearStats();
     setQuestionLabel (quizEngine->getQuestion());
     responseModel->clear();
 
     std::set<QString> correct = quizEngine->getQuestionCorrectResponses();
-    std::set<QString>::iterator it;
-    for (it = correct.begin(); it != correct.end(); ++it) {
-        responseModel->addWord (WordTableModel::WordItem
-                                (*it, WordTableModel::WordCorrect), false);
+    if (!correct.empty()) {
+        std::set<QString>::iterator it;
+        QList<WordTableModel::WordItem> wordItems;
+        for (it = correct.begin(); it != correct.end(); ++it) {
+            wordItems.append (WordTableModel::WordItem
+                                (*it, WordTableModel::WordCorrect));
+        }
+        responseModel->addWords (wordItems);
     }
 
     responseStatusLabel->setText ("");
@@ -695,6 +701,8 @@ QuizForm::startQuestion()
         startNewTimer();
 
     updateStatusString();
+
+    QApplication::restoreOverrideCursor();
 }
 
 //---------------------------------------------------------------------------
