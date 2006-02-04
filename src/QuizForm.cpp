@@ -600,6 +600,8 @@ QuizForm::nextQuestionClicked()
 void
 QuizForm::checkResponseClicked()
 {
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+
     killActiveTimer();
     updateStats();
     inputLine->setText ("");
@@ -614,11 +616,13 @@ QuizForm::checkResponseClicked()
     }
     else {
         QStringList::iterator it;
+        QList<WordTableModel::WordItem> wordItems;
         for (it = unanswered.begin(); it != unanswered.end(); ++it) {
-            responseModel->addWord (WordTableModel::WordItem
-                                    (*it, WordTableModel::WordMissed), false);
-            analyzeDialog->addMissed (*it);
+            wordItems.append (WordTableModel::WordItem
+                              (*it, WordTableModel::WordMissed));
         }
+        responseModel->addWords (wordItems);
+        analyzeDialog->addMissed (unanswered);
     }
 
     if ((quizEngine->numQuestions() > 0) && !quizEngine->onLastQuestion()) {
@@ -629,6 +633,8 @@ QuizForm::checkResponseClicked()
         analyzeButton->setFocus();
 
     updateStatusString();
+
+    QApplication::restoreOverrideCursor();
 }
 
 //---------------------------------------------------------------------------
