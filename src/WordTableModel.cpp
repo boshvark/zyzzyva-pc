@@ -234,6 +234,9 @@ WordTableModel::data (const QModelIndex& index, int role) const
 
     WordItem& wordItem = wordList[index.row()];
     QString word = wordItem.getWord();
+    if (word.isEmpty())
+        return QString();
+
     QString wordUpper = word.toUpper();
     switch (index.column()) {
         case FRONT_HOOK_COLUMN:
@@ -622,7 +625,7 @@ WordTableModel::WordItem::setHooks (const QString& front, const QString& back)
 void
 WordTableModel::WordItem::setParentHooks (bool front, bool back)
 {
-    if (hooksValid)
+    if (parentHooksValid)
         return;
     frontParentHook = front;
     backParentHook = back;
