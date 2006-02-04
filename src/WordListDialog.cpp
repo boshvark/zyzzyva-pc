@@ -119,7 +119,7 @@ void
 WordListDialog::setWords (const QString& string)
 {
     wordList->clear();
-    QStringList words = string.split (QChar (' '));
+    QStringList words = string.split (QChar (' '), QString::SkipEmptyParts);
     QStringListIterator it (words);
     while (it.hasNext())
         new QListWidgetItem (it.next(), wordList);
