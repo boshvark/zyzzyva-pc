@@ -30,9 +30,9 @@ using namespace std;
 
 const QChar WordTableModel::PARENT_HOOK_CHAR = '-';
 const QString WILDCARD_MATCH_HEADER = "?";
-const QString FRONT_HOOK_HEADER = "Hooks";
+const QString FRONT_HOOK_HEADER = "H";
 const QString WORD_HEADER = "Word";
-const QString BACK_HOOK_HEADER = "Hooks";
+const QString BACK_HOOK_HEADER = "H";
 const QString DEFINITION_HEADER = "Definition";
 const int ITEM_MARGIN = 5;
 const int DEFAULT_COLUMN_WIDTH = 100;
