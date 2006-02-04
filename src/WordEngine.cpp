@@ -29,6 +29,8 @@
 #include <QRegExp>
 #include <set>
 
+#include <QtDebug>
+
 const int MAX_DEFINITION_LINKS = 3;
 
 using namespace Defs;
@@ -171,6 +173,35 @@ WordEngine::importStems (const QString& filename, QString* errString)
 }
 
 //---------------------------------------------------------------------------
+//  importNewInOwl2
+//
+//! Import new OWL2 words.  XXX: Right now this is hard-coded to load a
+//! certain file for a specific purpose.  This whole concept should be more
+//! flexible.
+//---------------------------------------------------------------------------
+void
+WordEngine::importNewInOwl2()
+{
+    QFile file (Auxil::getWordsDir() + "/north-american/owl2-new-words.txt");
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QStringList words;
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
+        line = line.simplified();
+        if (!line.length() || (line.at (0) == '#'))
+            continue;
+        QString word = line.section (' ', 0, 0);
+        words.append (word);
+    }
+    delete[] buffer;
+
+    newInOwl2String = words.join (" ");
+}
+
+//---------------------------------------------------------------------------
 //  isAcceptable
 //
 //! Determine whether a word is acceptable.
@@ -200,12 +231,15 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     optimizedSpec.optimize();
 
     // Big optimization if the only conditions are conditions that can be
-    // matched without searching the word graph
+    // matched without searching the word graph.  Also, replace Must Belong To
+    // New in OWL2 conditions with Must Be in Word List conditions.
     bool mustSearchGraph = false;
     bool wordListCondition = false;
-    QListIterator<SearchCondition> cit (spec.conditions);
+    int i = 0;
+    QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
-        switch (cit.next().type) {
+        SearchCondition condition = cit.next();
+        switch (condition.type) {
             case SearchCondition::InWordList:
             wordListCondition = true;
             break;
@@ -215,10 +249,26 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             case SearchCondition::MaxAnagrams:
             break;
 
+            case SearchCondition::MustBelong: {
+                SearchSet searchSet = Auxil::stringToSearchSet
+                    (condition.stringValue);
+                if (searchSet == SetNewInOwl2) {
+                    condition.type = SearchCondition::InWordList;
+                    condition.stringValue = newInOwl2String;
+                    optimizedSpec.conditions.replace (i, condition);
+                    wordListCondition = true;
+                }
+                else {
+                    mustSearchGraph = true;
+                }
+            }
+            break;
+
             default:
             mustSearchGraph = true;
             break;
         }
+        ++i;
     }
     if (wordListCondition && !mustSearchGraph)
         return nonGraphSearch (optimizedSpec);

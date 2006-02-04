@@ -353,6 +353,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     }
 
     importStems();
+    wordEngine->importNewInOwl2();
 }
 
 //---------------------------------------------------------------------------

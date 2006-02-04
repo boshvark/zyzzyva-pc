@@ -37,6 +37,7 @@ const QString SET_TYPE_THREE_SEVENS_STRING = "Type III Sevens";
 const QString SET_TYPE_ONE_EIGHTS_STRING = "Type I Eights";
 const QString SET_EIGHTS_FROM_SEVEN_STEMS_STRING =
               "Eights From Seven-Letter Stems";
+const QString SET_NEW_IN_OWL2_STRING = "New in OWL2";
 
 const QString SEARCH_TYPE_PATTERN_MATCH = "Pattern Match";
 const QString SEARCH_TYPE_ANAGRAM_MATCH = "Anagram Match";
@@ -252,6 +253,8 @@ Auxil::stringToSearchSet (const QString& string)
         return SetTypeOneEights;
     else if (string == SET_EIGHTS_FROM_SEVEN_STEMS_STRING)
         return SetEightsFromSevenLetterStems;
+    else if (string == SET_NEW_IN_OWL2_STRING)
+        return SetNewInOwl2;
     else
         return UnknownSearchSet;
 }
@@ -277,6 +280,7 @@ Auxil::searchSetToString (SearchSet ss)
         case SetTypeOneEights: return SET_TYPE_ONE_EIGHTS_STRING;
         case SetEightsFromSevenLetterStems:
             return SET_EIGHTS_FROM_SEVEN_STEMS_STRING;
+        case SetNewInOwl2: return SET_NEW_IN_OWL2_STRING;
         default: return SET_UNKNOWN_STRING;
     }
 }
