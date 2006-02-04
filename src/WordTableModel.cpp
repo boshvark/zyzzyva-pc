@@ -433,6 +433,11 @@ void
 WordTableModel::sort (int, Qt::SortOrder)
 {
     qSort (wordList.begin(), wordList.end(), lessThan);
+
+
+    if (MainSettings::getWordListGroupByWildcards())
+        markAlternates();
+
     emit dataChanged (index (0, 0),
                       index (wordList.size() - 1, DEFINITION_COLUMN));
 }
@@ -469,6 +474,29 @@ WordTableModel::addWordPrivate (const WordItem& word, int row)
     setData (index (row, WORD_COLUMN), word.getType(), Qt::UserRole);
     setData (index (row, WILDCARD_MATCH_COLUMN), word.getWildcard(),
                     Qt::EditRole);
+}
+
+//---------------------------------------------------------------------------
+//  markAlternates
+//
+//! Mark alternating groups of wildcard matching items as WordNormalAlternate
+//! instead of WordNormal.
+//---------------------------------------------------------------------------
+void
+WordTableModel::markAlternates()
+{
+    QString prevWildcard;
+    bool alternate = false;
+    for (int i = 0; i < wordList.size(); ++i) {
+        WordItem& item = wordList[i];
+        if (item.getWildcard() != prevWildcard) {
+            if (!prevWildcard.isEmpty())
+                alternate = !alternate;
+            prevWildcard = item.getWildcard();
+        }
+        if (alternate && (item.getType() == WordNormal))
+            item.setType (WordNormalAlternate);
+    }
 }
 
 //---------------------------------------------------------------------------

@@ -36,6 +36,7 @@ class WordTableModel : public QAbstractTableModel
     public:
     enum WordType {
         WordNormal = 0,
+        WordNormalAlternate,
         WordCorrect,
         WordMissed,
         WordIncorrect,
@@ -113,6 +114,7 @@ class WordTableModel : public QAbstractTableModel
 
     private:
     void addWordPrivate (const WordItem& word, int row);
+    void markAlternates();
     bool isFrontHook (const QString& word) const;
     bool isBackHook (const QString& word) const;
     QString getFrontHookLetters (const QString& word) const;

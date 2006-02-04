@@ -34,6 +34,8 @@ const int WordTableDelegate::ITEM_XPADDING = 2;
 
 const QColor VALID_NORMAL_WORD_FOREGROUND = Qt::black;
 const QColor VALID_NORMAL_WORD_BACKGROUND = Qt::white;
+const QColor VALID_NORMAL_ALTERNATE_FOREGROUND = Qt::black;
+const QColor VALID_NORMAL_ALTERNATE_BACKGROUND = Qt::lightGray;
 const QColor VALID_CORRECT_WORD_FOREGROUND = Qt::black;
 const QColor VALID_CORRECT_WORD_BACKGROUND = Qt::white;
 const QColor VALID_MISSED_WORD_FOREGROUND = Qt::black;
@@ -86,6 +88,9 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
         case WordTableModel::WordNormal:
         color = VALID_NORMAL_WORD_BACKGROUND;
         break;
+        case WordTableModel::WordNormalAlternate:
+        color = VALID_NORMAL_ALTERNATE_BACKGROUND;
+        break;
         case WordTableModel::WordCorrect:
         color = VALID_CORRECT_WORD_BACKGROUND;
         break;
@@ -107,6 +112,9 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
     switch (type) {
         case WordTableModel::WordNormal:
         color = VALID_NORMAL_WORD_FOREGROUND;
+        break;
+        case WordTableModel::WordNormalAlternate:
+        color = VALID_NORMAL_ALTERNATE_FOREGROUND;
         break;
         case WordTableModel::WordCorrect:
         color = VALID_CORRECT_WORD_FOREGROUND;
