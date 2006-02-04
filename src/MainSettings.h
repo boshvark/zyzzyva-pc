@@ -92,6 +92,10 @@ class MainSettings
         return instance->wordListSortByLength; }
     static void setWordListSortByLength (bool b) {
         instance->wordListSortByLength = b; }
+    static bool getWordListGroupByWildcards() {
+        return instance->wordListGroupByWildcards; }
+    static void setWordListGroupByWildcards (bool b) {
+        instance->wordListGroupByWildcards = b; }
     static bool getWordListShowHooks() {
         return instance->wordListShowHooks; }
     static void setWordListShowHooks (bool b) {
@@ -137,6 +141,7 @@ class MainSettings
     QString wordInputFont;
     QString definitionFont;
     bool wordListSortByLength;
+    bool wordListGroupByWildcards;
     bool wordListShowHooks;
     bool wordListShowHookParents;
     bool wordListShowDefinitions;
