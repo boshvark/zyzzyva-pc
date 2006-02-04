@@ -785,8 +785,8 @@ SettingsDialog::fillThemeCombo()
     themeCombo->clear();
 
     QDir themeDir (Auxil::getTilesDir());
-    QStringList themes = themeDir.entryList
-        (QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+    QStringList themes = themeDir.entryList (QDir::Dirs, QDir::Name).filter
+        (QRegExp ("^[^\\.]"));
 
     bool enableThemes = (themes.count() > 0);
     themeCbox->setEnabled (enableThemes);
