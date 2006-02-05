@@ -49,7 +49,7 @@ const int MAX_CONDITIONS = 8;
 //! @param f widget flags
 //---------------------------------------------------------------------------
 SearchSpecForm::SearchSpecForm (QWidget* parent, Qt::WFlags f)
-    : QFrame (parent, f), visibleForms (0)
+    : QFrame (parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this);
     Q_CHECK_PTR (mainVlay);
@@ -90,8 +90,6 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (conditionVlay);
     conditionHlay->addLayout (conditionVlay);
 
-    addConditionForms();
-
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
@@ -127,7 +125,7 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, Qt::WFlags f)
     fewerButton->setEnabled (false);
     saveButton->setEnabled (false);
 
-    setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Minimum);
+    addConditionForm();
 }
 
 //---------------------------------------------------------------------------
@@ -143,13 +141,11 @@ SearchSpecForm::getSearchSpec() const
     SearchSpec spec;
     spec.conjunction = true;
     //spec.conjunction = conjunctionRadio->isChecked();
-    int i = 0;
     QListIterator<SearchConditionForm*> it (conditionForms);
-    while (it.hasNext() && (i < visibleForms)) {
+    while (it.hasNext()) {
         const SearchConditionForm* form = it.next();
         if (form->isValid())
             spec.conditions.append (form->getSearchCondition());
-        ++i;
     }
     return spec;
 }
@@ -167,23 +163,18 @@ SearchSpecForm::setSearchSpec (const SearchSpec& spec)
     if (spec.conditions.empty())
         return;
 
-    visibleForms = 0;
+    while (!conditionForms.isEmpty())
+        removeConditionForm();
+
     //conjunctionRadio->setChecked (spec->conjunction);
     QListIterator<SearchCondition> cit (spec.conditions);
-    QMutableListIterator<SearchConditionForm*> fit (conditionForms);
-    while (fit.hasNext()) {
-        SearchConditionForm* form = fit.next();
-        if (!cit.hasNext())
-            form->hide();
-        else {
-            form->setSearchCondition (cit.next());
-            form->show();
-            ++visibleForms;
-        }
+    while (cit.hasNext()) {
+        addConditionForm();
+        conditionForms.last()->setSearchCondition (cit.next());
     }
 
-    fewerButton->setEnabled (visibleForms > 1);
-    moreButton->setEnabled (visibleForms < MAX_CONDITIONS);
+    fewerButton->setEnabled (conditionForms.size() > 1);
+    moreButton->setEnabled (conditionForms.size() < MAX_CONDITIONS);
 }
 
 //---------------------------------------------------------------------------
@@ -198,11 +189,9 @@ bool
 SearchSpecForm::isValid() const
 {
     QListIterator<SearchConditionForm*> it (conditionForms);
-    int i = 0;
-    while (it.hasNext() && (i < visibleForms)) {
+    while (it.hasNext()) {
         if (!(it.next()->isValid()))
             return false;
-        ++i;
     }
     return true;
 }
@@ -227,15 +216,18 @@ SearchSpecForm::contentsChangedSlot()
 void
 SearchSpecForm::addConditionForm()
 {
-    SearchConditionForm* form = conditionForms[visibleForms];
-    form->blockSignals (true);
-    form->reset();
-    form->show();
-    form->blockSignals (false);
-    ++visibleForms;
+    if (conditionForms.size() == MAX_CONDITIONS)
+        return;
 
-    fewerButton->setEnabled (visibleForms > 1);
-    if (visibleForms == MAX_CONDITIONS)
+    SearchConditionForm* form = new SearchConditionForm (this);
+    Q_CHECK_PTR (form);
+    connect (form, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
+    connect (form, SIGNAL (contentsChanged()), SIGNAL (contentsChanged()));
+    conditionVlay->addWidget (form);
+    conditionForms.append (form);
+
+    fewerButton->setEnabled (conditionForms.size() > 1);
+    if (conditionForms.size() == MAX_CONDITIONS)
         moreButton->setEnabled (false);
 
     contentsChanged();
@@ -249,14 +241,15 @@ SearchSpecForm::addConditionForm()
 void
 SearchSpecForm::removeConditionForm()
 {
-    if (visibleForms <= 1)
+    if (conditionForms.isEmpty())
         return;
 
-    conditionForms[visibleForms - 1]->hide();
-    --visibleForms;
+    SearchConditionForm* form = conditionForms.last();
+    delete form;
+    conditionForms.removeLast();
 
     moreButton->setEnabled (true);
-    if (visibleForms == 1)
+    if (conditionForms.size() == 1)
         fewerButton->setEnabled (false);
 
     contentsChanged();
@@ -363,27 +356,4 @@ SearchSpecForm::saveSearch()
     QTextStream stream (&file);
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
         << document.toString();
-}
-
-//---------------------------------------------------------------------------
-//  addConditionForms
-//
-//! Add condition forms to the layout and hide all but one.
-//---------------------------------------------------------------------------
-void
-SearchSpecForm::addConditionForms()
-{
-    for (int i = 0; i < MAX_CONDITIONS; ++i) {
-        SearchConditionForm* form = new SearchConditionForm;
-        Q_CHECK_PTR (form);
-        connect (form, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
-        connect (form, SIGNAL (contentsChanged()), SIGNAL (contentsChanged()));
-        conditionVlay->addWidget (form);
-        conditionForms << form;
-        if (i)
-            form->hide();
-        else
-            form->show();
-    }
-    visibleForms = 1;
 }

@@ -56,11 +56,7 @@ class SearchSpecForm : public QFrame
     void saveSearch();
 
     private:
-    void addConditionForms();
-
-    private:
     //QRadioButton* conjunctionRadio;
-    int visibleForms;
     ZPushButton* moreButton;
     ZPushButton* fewerButton;
     ZPushButton* loadButton;
