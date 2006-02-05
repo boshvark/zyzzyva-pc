@@ -336,10 +336,13 @@ QuizCanvas::mousePressEvent (QMouseEvent* event)
     drag->setPixmap (pixmap);
     drag->setHotSpot (event->pos() - child->pos());
 
+    QColor bgColor = palette().color (QPalette::Window);
+
     QPixmap tempPixmap = pixmap;
     QPainter painter;
     painter.begin (&tempPixmap);
-    painter.fillRect (pixmap.rect(), QColor(127, 127, 127, 127));
+    painter.fillRect (pixmap.rect(), QColor(bgColor.red(), bgColor.green(),
+                                            bgColor.blue(), 127));
     painter.end();
 
     child->setPixmap (tempPixmap);
