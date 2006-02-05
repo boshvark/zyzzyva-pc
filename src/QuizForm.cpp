@@ -728,11 +728,15 @@ QuizForm::flashcardStateChanged (int state)
         checkBringsJudgment = false;
         inputLine->clear();
         inputLine->hide();
+        responseStatusLabel->hide();
+        questionStatusLabel->hide();
         checkResponseButton->setFocus();
     }
     else if (state == Qt::Unchecked) {
         checkBringsJudgment = true;
         inputLine->show();
+        responseStatusLabel->show();
+        questionStatusLabel->show();
         inputLine->setFocus();
     }
 }
