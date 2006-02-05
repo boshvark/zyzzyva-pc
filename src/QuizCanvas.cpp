@@ -30,6 +30,8 @@
 
 using namespace Defs;
 
+const QString QUIZ_TILE_MIME_TYPE = "application/x-zyzzyva-quiz-tile";
+
 //---------------------------------------------------------------------------
 //  QuizCanvas
 //
@@ -41,11 +43,7 @@ QuizCanvas::QuizCanvas (QWidget* parent)
     : QWidget(parent), numCanvasTiles (0), minCanvasTiles (7),
       minCanvasWidth (300), widthHint (minCanvasWidth), heightHint (100)
 {
-    for (int i = 0; i < MAX_WORD_LEN; ++i) {
-        QLabel* label = new QLabel (this);
-        displayImages.append (label);
-        label->hide();
-    }
+    setAcceptDrops (true);
 }
 
 //---------------------------------------------------------------------------
@@ -71,9 +69,14 @@ QuizCanvas::setText (const QString& text)
 {
     question = text;
     setNumCanvasTiles (question.length());
-    for (int i = 0; i < MAX_WORD_LEN; ++i)
-        displayImages[i]->hide();
 
+    // Remove existing labels
+    QList<QLabel*> labels = findChildren<QLabel*>();
+    QListIterator<QLabel*> it (labels);
+    while (it.hasNext())
+        it.next()->close();
+
+    // Create new labels
     int x = QUIZ_TILE_MARGIN + ((numCanvasTiles - question.length()) *
             (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
 
@@ -90,9 +93,11 @@ QuizCanvas::setText (const QString& text)
             //            "' in tiles map!");
         }
         else {
-            displayImages[i]->setPixmap (*pixmap);
-            displayImages[i]->move (x, QUIZ_TILE_MARGIN);
-            displayImages[i]->show();
+            QLabel* label = new QLabel (this);
+            label->setPixmap (*pixmap);
+            label->move (x, QUIZ_TILE_MARGIN);
+            label->show();
+            label->setAttribute (Qt::WA_DeleteOnClose);
         }
         x += maxTileWidth + QUIZ_TILE_SPACING;
     }
@@ -215,4 +220,106 @@ QSize
 QuizCanvas::sizeHint() const
 {
     return QSize (widthHint, heightHint);
+}
+
+//---------------------------------------------------------------------------
+//  dragEnterEvent
+//
+//! The event handler that receives drag enter events.
+//
+//! @param event the drag enter event
+//---------------------------------------------------------------------------
+void
+QuizCanvas::dragEnterEvent (QDragEnterEvent* event)
+{
+    if (event->mimeData()->hasFormat (QUIZ_TILE_MIME_TYPE))
+    {
+        if (event->source() == this) {
+            event->setDropAction (Qt::MoveAction);
+            event->accept();
+        } else {
+            event->acceptProposedAction();
+        }
+    } else {
+        event->ignore();
+    }
+}
+
+//---------------------------------------------------------------------------
+//  dropEvent
+//
+//! The event handler that receives drop events.
+//
+//! @param event the drop event
+//---------------------------------------------------------------------------
+void
+QuizCanvas::dropEvent (QDropEvent* event)
+{
+    if (event->mimeData()->hasFormat (QUIZ_TILE_MIME_TYPE)) {
+        QByteArray itemData = event->mimeData()->data (QUIZ_TILE_MIME_TYPE);
+        QDataStream dataStream(&itemData, QIODevice::ReadOnly);
+
+        QPixmap pixmap;
+        QPoint offset;
+        dataStream >> pixmap >> offset;
+
+        QLabel* label = new QLabel (this);
+        label->setPixmap (pixmap);
+        label->move (event->pos() - offset);
+        label->show();
+        label->setAttribute (Qt::WA_DeleteOnClose);
+
+        if (event->source() == this) {
+            event->setDropAction (Qt::MoveAction);
+            event->accept();
+        } else {
+            event->acceptProposedAction();
+        }
+    } else {
+        event->ignore();
+    }
+}
+
+//---------------------------------------------------------------------------
+//  mousePressEvent
+//
+//! The event handler that receives mouse press events.
+//
+//! @param event the mouse press event
+//---------------------------------------------------------------------------
+void
+QuizCanvas::mousePressEvent (QMouseEvent* event)
+{
+    QLabel* child = static_cast<QLabel*>(childAt (event->pos()));
+    if (!child)
+        return;
+
+    QPixmap pixmap = *(child->pixmap());
+
+    QByteArray itemData;
+    QDataStream dataStream (&itemData, QIODevice::WriteOnly);
+    dataStream << pixmap << QPoint (event->pos() - child->pos());
+
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData (QUIZ_TILE_MIME_TYPE, itemData);
+
+    QDrag *drag = new QDrag (this);
+    drag->setMimeData (mimeData);
+    drag->setPixmap (pixmap);
+    drag->setHotSpot (event->pos() - child->pos());
+
+    QPixmap tempPixmap = pixmap;
+    QPainter painter;
+    painter.begin (&tempPixmap);
+    painter.fillRect (pixmap.rect(), QColor(127, 127, 127, 127));
+    painter.end();
+
+    child->setPixmap (tempPixmap);
+
+    if (drag->start (Qt::CopyAction | Qt::MoveAction) == Qt::MoveAction)
+        child->close();
+    else {
+        child->show();
+        child->setPixmap (pixmap);
+    }
 }

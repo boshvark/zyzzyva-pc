@@ -49,9 +49,13 @@ class QuizCanvas : public QWidget
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
+    protected:
+    void dragEnterEvent (QDragEnterEvent* event);
+    void dropEvent (QDropEvent* event);
+    void mousePressEvent (QMouseEvent* event);
+
     private:
     QMap<QString, QPixmap> tileImages;
-    QList<QLabel*> displayImages;
     QString question;
     int maxTileWidth, maxTileHeight;
     int numCanvasTiles, minCanvasTiles, minCanvasWidth;
