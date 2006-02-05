@@ -975,12 +975,15 @@ QuizForm::setBackgroundColor (const QColor& color)
 void
 QuizForm::setTileTheme (const QString& theme)
 {
+    if (theme == tileTheme)
+        return;
     questionCanvas->setTileTheme (theme);
     QString question = quizEngine->getQuestion();
     if (question.isEmpty())
         minimizeCanvas();
     else
         setQuestionLabel (question);
+    tileTheme = theme;
 }
 
 //---------------------------------------------------------------------------

@@ -117,6 +117,7 @@ class QuizForm : public ActionForm
     int timerRemaining, timerPaused;
     QuizTimerSpec timerSpec;
     QString statusString;
+    QString tileTheme;
 
     AnalyzeQuizDialog* analyzeDialog;
 };
