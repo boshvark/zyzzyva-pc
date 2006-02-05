@@ -27,6 +27,7 @@
 
 #include "ActionForm.h"
 #include "QuizTimerSpec.h"
+#include <QCheckBox>
 #include <QImage>
 #include <QLabel>
 #include <QStackedWidget>
@@ -65,6 +66,7 @@ class QuizForm : public ActionForm
     void markMissedClicked();
     void pauseClicked();
     void analyzeClicked();
+    void flashcardStateChanged (int state);
     void setTileTheme (const QString& theme);
     void setBackgroundColor (const QColor& color);
     void updateStatusString();
@@ -109,6 +111,7 @@ class QuizForm : public ActionForm
     QLabel*       letterOrderLabel;
     ZPushButton*  alphaOrderButton;
     ZPushButton*  randomOrderButton;
+    QCheckBox*    flashcardCbox;
     ZPushButton*  nextQuestionButton;
     ZPushButton*  checkResponseButton;
     ZPushButton*  markMissedButton;
@@ -120,6 +123,7 @@ class QuizForm : public ActionForm
     QuizTimerSpec timerSpec;
     QString statusString;
     QString tileTheme;
+    bool checkBringsJudgment;
 
     AnalyzeQuizDialog* analyzeDialog;
 };

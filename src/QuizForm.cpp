@@ -109,7 +109,7 @@ consonantsFirstCmp (const QChar& a, const QChar& b)
 QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     : ActionForm (QuizFormType, parent, f), wordEngine (we),
     quizEngine (new QuizEngine (wordEngine)),
-    timerId (0), timerPaused (0),
+    timerId (0), timerPaused (0), checkBringsJudgment (true),
     // FIXME: This dialog should be nonmodal!
     analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
                                           Qt::WindowMinMaxButtonsHint))
@@ -276,23 +276,29 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     pauseButton->setEnabled (false);
     buttonGlay->addWidget (pauseButton, 0, 3, Qt::AlignHCenter);
 
+    flashcardCbox = new QCheckBox ("Flashcard M&ode");
+    Q_CHECK_PTR (flashcardCbox);
+    connect (flashcardCbox, SIGNAL (stateChanged (int)),
+             SLOT (flashcardStateChanged (int)));
+    buttonGlay->addWidget (flashcardCbox, 1, 0, Qt::AlignHCenter);
+
     ZPushButton* newQuizButton = new ZPushButton ("New &Quiz...");
     Q_CHECK_PTR (newQuizButton);
     newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
-    buttonGlay->addWidget (newQuizButton, 1, 0, Qt::AlignHCenter);
+    buttonGlay->addWidget (newQuizButton, 1, 1, Qt::AlignHCenter);
 
     ZPushButton* saveQuizButton = new ZPushButton ("&Save Quiz...");
     Q_CHECK_PTR (saveQuizButton);
     saveQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuizClicked()));
-    buttonGlay->addWidget (saveQuizButton, 1, 1, Qt::AlignHCenter);
+    buttonGlay->addWidget (saveQuizButton, 1, 2, Qt::AlignHCenter);
 
     analyzeButton = new ZPushButton ("Analy&ze Quiz...");
     Q_CHECK_PTR (analyzeButton);
     analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));
-    buttonGlay->addWidget (analyzeButton, 1, 2, Qt::AlignHCenter);
+    buttonGlay->addWidget (analyzeButton, 1, 3, Qt::AlignHCenter);
 
     buttonHlay->addStretch (1);
 }
@@ -610,6 +616,20 @@ QuizForm::checkResponseClicked()
 {
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
 
+    // If checking responses does not bring judgment, then feed all correct
+    // responses to the quiz engine
+    if (!checkBringsJudgment) {
+        QStringList unanswered = quizEngine->getMissed();
+        QStringListIterator it (unanswered);
+        while (it.hasNext()) {
+            QString word = it.next();
+            quizEngine->respond (word);
+            responseModel->addWord (WordTableModel::WordItem
+                                    (word, WordTableModel::WordCorrect),
+                                    true);
+        }
+    }
+
     killActiveTimer();
     updateStats();
     inputLine->setText ("");
@@ -655,7 +675,10 @@ QuizForm::markMissedClicked()
 {
     quizEngine->markQuestionAsMissed();
     responseModel->clear();
+    bool old = checkBringsJudgment;
+    checkBringsJudgment = true;
     checkResponseClicked();
+    checkBringsJudgment = old;
 }
 
 //---------------------------------------------------------------------------
@@ -684,6 +707,29 @@ void
 QuizForm::analyzeClicked()
 {
     analyzeDialog->show();
+}
+
+//---------------------------------------------------------------------------
+//  flashcardStateChanged
+//
+//! Called when the state of the Flashcard Mode checkbox changes.
+//
+//! @param state the new checkbox state
+//---------------------------------------------------------------------------
+void
+QuizForm::flashcardStateChanged (int state)
+{
+    if (state == Qt::Checked) {
+        checkBringsJudgment = false;
+        inputLine->clear();
+        inputLine->hide();
+        checkResponseButton->setFocus();
+    }
+    else if (state == Qt::Unchecked) {
+        checkBringsJudgment = true;
+        inputLine->show();
+        inputLine->setFocus();
+    }
 }
 
 //---------------------------------------------------------------------------
