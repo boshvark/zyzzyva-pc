@@ -31,6 +31,7 @@
 using namespace Defs;
 
 const QString QUIZ_TILE_MIME_TYPE = "application/x-zyzzyva-quiz-tile";
+const QString LABEL_SHOW_STRING = "show";
 
 //---------------------------------------------------------------------------
 //  xLessThan
@@ -88,8 +89,11 @@ QuizCanvas::setText (const QString& text)
     // Remove existing labels
     QList<QLabel*> labels = findChildren<QLabel*>();
     QListIterator<QLabel*> it (labels);
-    while (it.hasNext())
-        it.next()->close();
+    while (it.hasNext()) {
+        QLabel* label = it.next();
+        label->setObjectName (QString::null);
+        label->close();
+    }
 
     QMap<QString, QPixmap>::iterator pixmap;
     for (int i = 0; (i < numCanvasTiles) &&
@@ -105,13 +109,14 @@ QuizCanvas::setText (const QString& text)
         }
         else {
             QLabel* label = new QLabel (this);
+            label->setObjectName (LABEL_SHOW_STRING);
             label->setPixmap (*pixmap);
             label->move (i, QUIZ_TILE_MARGIN);
             label->setAttribute (Qt::WA_DeleteOnClose);
         }
     }
 
-    QTimer::singleShot (0, this, SLOT (squeezeTileImages()));
+    squeezeTileImages();
 }
 
 //---------------------------------------------------------------------------
@@ -276,6 +281,7 @@ QuizCanvas::dropEvent (QDropEvent* event)
         dataStream >> pixmap >> sourcePos >> offset;
 
         QLabel* label = new QLabel (this);
+        label->setObjectName (LABEL_SHOW_STRING);
         label->setPixmap (pixmap);
         QPoint dropPos = event->pos() - offset;
 
@@ -298,7 +304,6 @@ QuizCanvas::dropEvent (QDropEvent* event)
     else {
         event->ignore();
     }
-    QTimer::singleShot (0, this, SLOT (squeezeTileImages()));
 }
 
 //---------------------------------------------------------------------------
@@ -338,12 +343,16 @@ QuizCanvas::mousePressEvent (QMouseEvent* event)
 
     child->setPixmap (tempPixmap);
 
-    if (drag->start (Qt::CopyAction | Qt::MoveAction) == Qt::MoveAction)
+    if (drag->start (Qt::CopyAction | Qt::MoveAction) == Qt::MoveAction) {
+        child->setObjectName (QString::null);
         child->close();
+    }
     else {
         child->show();
         child->setPixmap (pixmap);
     }
+
+    squeezeTileImages();
 }
 
 //---------------------------------------------------------------------------
@@ -354,7 +363,7 @@ QuizCanvas::mousePressEvent (QMouseEvent* event)
 void
 QuizCanvas::squeezeTileImages()
 {
-    QList<QLabel*> labels = findChildren<QLabel*>();
+    QList<QLabel*> labels = findChildren<QLabel*>(LABEL_SHOW_STRING);
     qSort (labels.begin(), labels.end(), xLessThan);
 
     int x = QUIZ_TILE_MARGIN + ((numCanvasTiles - labels.size()) *
