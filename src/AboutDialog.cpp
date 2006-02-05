@@ -57,8 +57,7 @@ AboutDialog::AboutDialog (QWidget* parent, Qt::WFlags f)
     label->setFrameShadow (QLabel::Sunken);
     label->setLineWidth (2);
     label->setMargin (2);
-    // FIXME Qt4: QLabel::WordBreak and QLabel::AlignCenter no longer exist!
-    //label->setAlignment (QLabel::WordBreak | QLabel::AlignCenter);
+    label->setAlignment (Qt::AlignHCenter);
     label->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
     label->setText (Auxil::getAboutString()); 
     mainVlay->addWidget (label);
