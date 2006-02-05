@@ -33,6 +33,21 @@ using namespace Defs;
 const QString QUIZ_TILE_MIME_TYPE = "application/x-zyzzyva-quiz-tile";
 
 //---------------------------------------------------------------------------
+//  xLessThan
+//
+//! A comparison function that compares QLabels by X position.
+//
+//! @param a the first label to compare
+//! @param b the second label to compare
+//! @return true if a is to the left of b
+//---------------------------------------------------------------------------
+bool
+xLessThan (const QLabel* a, const QLabel* b)
+{
+    return (a->x() < b->x());
+}
+
+//---------------------------------------------------------------------------
 //  QuizCanvas
 //
 //! Constructor.
@@ -76,10 +91,6 @@ QuizCanvas::setText (const QString& text)
     while (it.hasNext())
         it.next()->close();
 
-    // Create new labels
-    int x = QUIZ_TILE_MARGIN + ((numCanvasTiles - question.length()) *
-            (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
-
     QMap<QString, QPixmap>::iterator pixmap;
     for (int i = 0; (i < numCanvasTiles) &&
                     (i < int (question.length())); ++i)
@@ -95,12 +106,12 @@ QuizCanvas::setText (const QString& text)
         else {
             QLabel* label = new QLabel (this);
             label->setPixmap (*pixmap);
-            label->move (x, QUIZ_TILE_MARGIN);
-            label->show();
+            label->move (i, QUIZ_TILE_MARGIN);
             label->setAttribute (Qt::WA_DeleteOnClose);
         }
-        x += maxTileWidth + QUIZ_TILE_SPACING;
     }
+
+    QTimer::singleShot (0, this, SLOT (squeezeTileImages()));
 }
 
 //---------------------------------------------------------------------------
@@ -268,7 +279,6 @@ QuizCanvas::dropEvent (QDropEvent* event)
         QPoint dropPos = event->pos() - offset;
         dropPos.setY (QUIZ_TILE_MARGIN);
         label->move (dropPos);
-        label->show();
         label->setAttribute (Qt::WA_DeleteOnClose);
 
         if (event->source() == this) {
@@ -277,9 +287,11 @@ QuizCanvas::dropEvent (QDropEvent* event)
         } else {
             event->acceptProposedAction();
         }
-    } else {
+    }
+    else {
         event->ignore();
     }
+    QTimer::singleShot (0, this, SLOT (squeezeTileImages()));
 }
 
 //---------------------------------------------------------------------------
@@ -324,4 +336,32 @@ QuizCanvas::mousePressEvent (QMouseEvent* event)
         child->show();
         child->setPixmap (pixmap);
     }
+}
+
+//---------------------------------------------------------------------------
+//  squeezeTileImages
+//
+//! Squeeze and center tile images without reordering them.
+//---------------------------------------------------------------------------
+void
+QuizCanvas::squeezeTileImages()
+{
+    QList<QLabel*> labels = findChildren<QLabel*>();
+    qSort (labels.begin(), labels.end(), xLessThan);
+
+    int x = QUIZ_TILE_MARGIN + ((numCanvasTiles - labels.size()) *
+            (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
+
+    // Move the tiles
+    QListIterator<QLabel*> it (labels);
+    while (it.hasNext()) {
+        QLabel* label = it.next();
+        label->move (x, QUIZ_TILE_MARGIN);
+        x += maxTileWidth + QUIZ_TILE_SPACING;
+    }
+
+    // Show the tiles
+    it.toFront();
+    while (it.hasNext())
+        it.next()->show();
 }

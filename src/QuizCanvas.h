@@ -54,6 +54,9 @@ class QuizCanvas : public QWidget
     void dropEvent (QDropEvent* event);
     void mousePressEvent (QMouseEvent* event);
 
+    private slots:
+    void squeezeTileImages();
+
     private:
     QMap<QString, QPixmap> tileImages;
     QString question;
