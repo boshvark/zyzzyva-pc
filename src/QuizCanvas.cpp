@@ -22,12 +22,11 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include <QtGui>
-
 #include "QuizCanvas.h"
 #include "MainSettings.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <QtGui>
 
 using namespace Defs;
 
@@ -42,7 +41,11 @@ QuizCanvas::QuizCanvas (QWidget* parent)
     : QWidget(parent), numCanvasTiles (0), minCanvasTiles (7),
       minCanvasWidth (300), widthHint (minCanvasWidth), heightHint (100)
 {
-    setBackgroundRole (QPalette::Base);
+    for (int i = 0; i < MAX_WORD_LEN; ++i) {
+        QLabel* label = new QLabel (this);
+        displayImages.append (label);
+        label->hide();
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -68,23 +71,30 @@ QuizCanvas::setText (const QString& text)
 {
     question = text;
     setNumCanvasTiles (question.length());
-    displayImages.clear();
+    for (int i = 0; i < MAX_WORD_LEN; ++i)
+        displayImages[i]->hide();
 
-    QMap<QString,QImage>::iterator image;
+    int x = QUIZ_TILE_MARGIN + ((numCanvasTiles - question.length()) *
+            (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
+
+    QMap<QString, QPixmap>::iterator pixmap;
     for (int i = 0; (i < numCanvasTiles) &&
                     (i < int (question.length())); ++i)
     {
         QString letter = QString (question[i]);
         if (letter == "?")
             letter = "_";
-        image = tileImages.find (letter);
-        if (image == tileImages.end()) {
+        pixmap = tileImages.find (letter);
+        if (pixmap == tileImages.end()) {
             //qWarning ("Did not find letter '" + letter +
             //            "' in tiles map!");
         }
         else {
-            displayImages.append (*image);
+            displayImages[i]->setPixmap (*pixmap);
+            displayImages[i]->move (x, QUIZ_TILE_MARGIN);
+            displayImages[i]->show();
         }
+        x += maxTileWidth + QUIZ_TILE_SPACING;
     }
 }
 
@@ -126,12 +136,13 @@ QuizCanvas::setTileTheme (const QString& theme)
         QStringList::iterator it;
         for (it = tilesList.begin(); it != tilesList.end(); ++it) {
             QImage image (tilesDir + "/" + theme + "/" + *it + ".png");
-            tileImages.insert (*it, image);
+            QPixmap pixmap = QPixmap::fromImage (image);
+            tileImages.insert (*it, pixmap);
 
-            if (image.width() > maxTileWidth)
-                maxTileWidth = image.width();
-            if (image.height() > maxTileHeight)
-                maxTileHeight = image.height();
+            if (pixmap.width() > maxTileWidth)
+                maxTileWidth = pixmap.width();
+            if (pixmap.height() > maxTileHeight)
+                maxTileHeight = pixmap.height();
         }
     }
 }
@@ -204,32 +215,4 @@ QSize
 QuizCanvas::sizeHint() const
 {
     return QSize (widthHint, heightHint);
-}
-
-//---------------------------------------------------------------------------
-//  paintEvent
-//
-//! Called whenever a paint event is requested.
-//
-//! @param event the paint event
-//---------------------------------------------------------------------------
-void
-QuizCanvas::paintEvent (QPaintEvent*)
-{
-    QColor backgroundColor = MainSettings::getQuizBackgroundColor();
-
-    QPainter painter (this);
-    painter.setBrush (QBrush (backgroundColor));
-    painter.drawRect (QRect (0, 0, width(), height()));
-
-    int x = QUIZ_TILE_MARGIN + ((numCanvasTiles - question.length()) *
-            (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
-
-    QListIterator<QImage> it (displayImages);
-
-    while (it.hasNext()) {
-        QImage image = it.next();
-        painter.drawImage (x, QUIZ_TILE_MARGIN, image);
-        x += maxTileWidth + QUIZ_TILE_SPACING;
-    }
 }

@@ -26,6 +26,7 @@
 #define ZYZZYVA_QUIZ_CANVAS_H
 
 #include <QBrush>
+#include <QLabel>
 #include <QMap>
 #include <QPen>
 #include <QPixmap>
@@ -48,12 +49,9 @@ class QuizCanvas : public QWidget
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
-    protected:
-    void paintEvent (QPaintEvent *event);
-
     private:
-    QMap<QString, QImage> tileImages;
-    QList<QImage> displayImages;
+    QMap<QString, QPixmap> tileImages;
+    QList<QLabel*> displayImages;
     QString question;
     int maxTileWidth, maxTileHeight;
     int numCanvasTiles, minCanvasTiles, minCanvasWidth;
