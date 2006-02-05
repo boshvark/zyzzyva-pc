@@ -638,6 +638,10 @@ QuizForm::checkResponseClicked()
     quizEngine->completeQuestion();
     analyzeDialog->updateStats();
 
+    // Disable the Mark as Missed button if all responses were missed
+    if (quizEngine->getQuestionCorrect() == 0)
+        markMissedButton->setEnabled (false);
+
     QStringList unanswered = quizEngine->getMissed();
     if (unanswered.empty()) {
         responseModel->clearLastAddedIndex();
