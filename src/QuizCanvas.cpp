@@ -265,7 +265,9 @@ QuizCanvas::dropEvent (QDropEvent* event)
 
         QLabel* label = new QLabel (this);
         label->setPixmap (pixmap);
-        label->move (event->pos() - offset);
+        QPoint dropPos = event->pos() - offset;
+        dropPos.setY (QUIZ_TILE_MARGIN);
+        label->move (dropPos);
         label->show();
         label->setAttribute (Qt::WA_DeleteOnClose);
 
