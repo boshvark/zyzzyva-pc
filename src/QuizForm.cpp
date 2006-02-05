@@ -675,6 +675,7 @@ QuizForm::markMissedClicked()
 {
     quizEngine->markQuestionAsMissed();
     responseModel->clear();
+    markMissedButton->setEnabled (false);
     bool old = checkBringsJudgment;
     checkBringsJudgment = true;
     checkResponseClicked();
@@ -760,6 +761,7 @@ QuizForm::startQuestion()
     responseStatusLabel->setText ("");
     inputLine->setEnabled (true);
     checkResponseButton->setEnabled (true);
+    markMissedButton->setEnabled (true);
     nextQuestionButton->setEnabled (false);
     inputLine->setFocus();
     if (timerSpec.getType() == NoTimer)
