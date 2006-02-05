@@ -213,6 +213,26 @@ QuizEngine::respond (const QString& response)
 }
 
 //---------------------------------------------------------------------------
+//  markQuestionAsMissed
+//
+//! Mark the current question as missed.
+//---------------------------------------------------------------------------
+void
+QuizEngine::markQuestionAsMissed()
+{
+    // Remove any correct answers the user may have already had
+    int numCorrect = correctUserResponses.size();
+    quizCorrect -= numCorrect;
+
+    correctUserResponses.clear();
+
+    QuizProgress progress = quizSpec.getProgress();
+    progress.clearQuestionCorrect();
+    progress.setCorrect (progress.getNumCorrect() - numCorrect);
+    quizSpec.setProgress (progress);
+}
+
+//---------------------------------------------------------------------------
 //  getQuestion
 //
 //! Get the question string for the current question.

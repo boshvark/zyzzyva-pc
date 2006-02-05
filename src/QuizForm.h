@@ -62,6 +62,7 @@ class QuizForm : public ActionForm
     void saveQuizClicked();
     void nextQuestionClicked();
     void checkResponseClicked();
+    void markMissedClicked();
     void pauseClicked();
     void analyzeClicked();
     void setTileTheme (const QString& theme);
@@ -110,6 +111,7 @@ class QuizForm : public ActionForm
     ZPushButton*  randomOrderButton;
     ZPushButton*  nextQuestionButton;
     ZPushButton*  checkResponseButton;
+    ZPushButton*  markMissedButton;
     ZPushButton*  pauseButton;
     ZPushButton*  analyzeButton;
 

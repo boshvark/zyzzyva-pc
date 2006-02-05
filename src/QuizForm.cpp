@@ -262,12 +262,19 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     checkResponseButton->setEnabled (false);
     buttonGlay->addWidget (checkResponseButton, 0, 1, Qt::AlignHCenter);
 
+    markMissedButton = new ZPushButton ("Mark as &Missed");
+    Q_CHECK_PTR (markMissedButton);
+    markMissedButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (markMissedButton, SIGNAL (clicked()),
+             SLOT (markMissedClicked()));
+    buttonGlay->addWidget (markMissedButton, 0, 2, Qt::AlignHCenter);
+
     pauseButton = new ZPushButton (PAUSE_BUTTON);
     Q_CHECK_PTR (pauseButton);
     pauseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (pauseButton, SIGNAL (clicked()), SLOT (pauseClicked()));
     pauseButton->setEnabled (false);
-    buttonGlay->addWidget (pauseButton, 0, 2, Qt::AlignHCenter);
+    buttonGlay->addWidget (pauseButton, 0, 3, Qt::AlignHCenter);
 
     ZPushButton* newQuizButton = new ZPushButton ("New &Quiz...");
     Q_CHECK_PTR (newQuizButton);
@@ -636,6 +643,19 @@ QuizForm::checkResponseClicked()
     updateStatusString();
 
     QApplication::restoreOverrideCursor();
+}
+
+//---------------------------------------------------------------------------
+//  markMissedClicked
+//
+//! Called when the Mark as Missed button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::markMissedClicked()
+{
+    quizEngine->markQuestionAsMissed();
+    responseModel->clear();
+    checkResponseClicked();
 }
 
 //---------------------------------------------------------------------------

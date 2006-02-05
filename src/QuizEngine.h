@@ -4,7 +4,7 @@
 // The engine for generating quizzes and keeping track of the user's
 // performance on each quiz.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2004, 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -52,6 +52,7 @@ class QuizEngine
     void completeQuestion();
 
     ResponseStatus respond (const QString& response);
+    void markQuestionAsMissed();
     QString getQuestion() const;
     QStringList getMissed() const;
     QuizSpec getQuizSpec() const { return quizSpec; }
