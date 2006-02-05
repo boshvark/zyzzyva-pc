@@ -60,6 +60,7 @@ QuizCanvas::QuizCanvas (QWidget* parent)
       minCanvasWidth (300), widthHint (minCanvasWidth), heightHint (100)
 {
     setAcceptDrops (true);
+    setAutoFillBackground (true);
 }
 
 //---------------------------------------------------------------------------
