@@ -28,6 +28,7 @@
 #include "Defs.h"
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QTabWidget>
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "About Zyzzyva";
@@ -50,17 +51,33 @@ AboutDialog::AboutDialog (QWidget* parent, Qt::WFlags f)
     mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    QLabel* label = new QLabel;
-    Q_CHECK_PTR (label);
-    label->setPalette (QPalette (QColor (255, 255, 255)));
-    label->setFrameShape (QLabel::StyledPanel);
-    label->setFrameShadow (QLabel::Sunken);
-    label->setLineWidth (2);
-    label->setMargin (2);
-    label->setAlignment (Qt::AlignHCenter);
-    label->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
-    label->setText (Auxil::getAboutString()); 
-    mainVlay->addWidget (label);
+    QTabWidget* tabStack = new QTabWidget (this);
+    Q_CHECK_PTR (tabStack);
+    mainVlay->addWidget (tabStack);
+
+    QLabel* aboutLabel = new QLabel;
+    Q_CHECK_PTR (aboutLabel);
+    aboutLabel->setPalette (QPalette (QColor (255, 255, 255)));
+    aboutLabel->setFrameShape (QLabel::StyledPanel);
+    aboutLabel->setFrameShadow (QLabel::Sunken);
+    aboutLabel->setLineWidth (2);
+    aboutLabel->setMargin (2);
+    aboutLabel->setAlignment (Qt::AlignHCenter);
+    aboutLabel->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
+    aboutLabel->setText (Auxil::getAboutString());
+    tabStack->addTab (aboutLabel, "Zyzzyva");
+
+    QLabel* thanksLabel = new QLabel;
+    Q_CHECK_PTR (thanksLabel);
+    thanksLabel->setPalette (QPalette (QColor (255, 255, 255)));
+    thanksLabel->setFrameShape (QLabel::StyledPanel);
+    thanksLabel->setFrameShadow (QLabel::Sunken);
+    thanksLabel->setLineWidth (2);
+    thanksLabel->setMargin (2);
+    thanksLabel->setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
+    thanksLabel->setText (Auxil::getThanksString());
+    thanksLabel->setWordWrap (true);
+    tabStack->addTab (thanksLabel, "Thanks");
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing (SPACING);

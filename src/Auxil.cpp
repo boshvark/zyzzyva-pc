@@ -109,6 +109,30 @@ Auxil::getAboutString()
 }
 
 //---------------------------------------------------------------------------
+//  getThanksString
+//
+//! Return the Thanks string for the application.  Read it from a file
+//! initially, and store the read value in a static variable.
+//
+//! @return the Thanks string
+//---------------------------------------------------------------------------
+QString
+Auxil::getThanksString()
+{
+    static QString thanksString;
+    if (!thanksString.isEmpty())
+        return thanksString;
+
+    QString thanksFileName = getHelpDir() + "/thanks.html";
+    QFile thanksFile (thanksFileName);
+    if (!thanksFile.open (QIODevice::ReadOnly | QIODevice::Text))
+        return thanksString;
+
+    thanksString.append (thanksFile.readAll());
+    return thanksString;
+}
+
+//---------------------------------------------------------------------------
 //  getHelpDir
 //
 //! Return the top-level directory containing the help documentation.
