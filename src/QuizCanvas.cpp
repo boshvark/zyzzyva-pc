@@ -271,13 +271,20 @@ QuizCanvas::dropEvent (QDropEvent* event)
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
         QPixmap pixmap;
+        QPoint sourcePos;
         QPoint offset;
-        dataStream >> pixmap >> offset;
+        dataStream >> pixmap >> sourcePos >> offset;
 
         QLabel* label = new QLabel (this);
         label->setPixmap (pixmap);
         QPoint dropPos = event->pos() - offset;
-        dropPos.setY (QUIZ_TILE_MARGIN);
+
+        // Move the tile an extra half tile width in the direction of the
+        // move.  This allows the tile to assume a new spot if it is dragged
+        // more than halfway onto the spot.
+        int extraMove = (sourcePos.x() < dropPos.x() ? maxTileWidth / 2
+                                                     : -maxTileWidth / 2);
+        dropPos.setX (dropPos.x() + extraMove);
         label->move (dropPos);
         label->setAttribute (Qt::WA_DeleteOnClose);
 
@@ -312,7 +319,8 @@ QuizCanvas::mousePressEvent (QMouseEvent* event)
 
     QByteArray itemData;
     QDataStream dataStream (&itemData, QIODevice::WriteOnly);
-    dataStream << pixmap << QPoint (event->pos() - child->pos());
+    dataStream << pixmap << QPoint (event->pos())
+               << QPoint (event->pos() - child->pos());
 
     QMimeData *mimeData = new QMimeData;
     mimeData->setData (QUIZ_TILE_MIME_TYPE, itemData);
