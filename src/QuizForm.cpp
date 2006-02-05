@@ -111,7 +111,8 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     quizEngine (new QuizEngine (wordEngine)),
     timerId (0), timerPaused (0),
     // FIXME: This dialog should be nonmodal!
-    analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this))
+    analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
+                                          Qt::WindowMinMaxButtonsHint))
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this);
     mainHlay->setMargin (MARGIN);
