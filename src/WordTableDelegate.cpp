@@ -30,7 +30,7 @@
 
 using namespace std;
 
-const int WordTableDelegate::ITEM_XPADDING = 2;
+const int WordTableDelegate::ITEM_XPADDING = 5;
 
 const QColor VALID_NORMAL_WORD_FOREGROUND = Qt::black;
 const QColor VALID_NORMAL_WORD_BACKGROUND = Qt::white;
