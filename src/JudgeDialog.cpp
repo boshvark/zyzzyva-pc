@@ -34,6 +34,8 @@
 #include <QTextCursor>
 #include <QVBoxLayout>
 
+#include <QtDebug>
+
 const int FORM_FONT_PIXEL_SIZE = 55;
 const int TITLE_FONT_PIXEL_SIZE = 40;
 const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
@@ -71,9 +73,6 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     QFont instructionFont = qApp->font();
     instructionFont.setPixelSize (INSTRUCTION_FONT_PIXEL_SIZE);
 
-    QFont exitFont = qApp->font();
-    exitFont.setPixelSize (EXIT_FONT_PIXEL_SIZE);
-
     QVBoxLayout* mainVlay = new QVBoxLayout (this);
     mainVlay->setMargin (0);
     mainVlay->setSpacing (SPACING);
@@ -105,14 +104,6 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     inputArea->setFont (formFont);
     connect (inputArea, SIGNAL (textChanged()), SLOT (textChanged()));
     inputVlay->addWidget (inputArea);
-
-    exitLabel = new QLabel;
-    Q_CHECK_PTR (exitLabel);
-    exitLabel->setFont (exitFont);
-    exitLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
-    exitLabel->setWordWrap (true);
-    exitLabel->hide();
-    inputVlay->addWidget (exitLabel);
 
     resultWidget = new QWidget;
     Q_CHECK_PTR (resultWidget);
@@ -155,10 +146,6 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     resultTimer = new QTimer (this);
     Q_CHECK_PTR (resultTimer);
     connect (resultTimer, SIGNAL (timeout()), SLOT (clear()));
-
-    exitTimer = new QTimer (this);
-    Q_CHECK_PTR (exitTimer);
-    connect (exitTimer, SIGNAL (timeout()), SLOT (exitTimeout()));
 
     clear();
     showFullScreen();
@@ -222,8 +209,6 @@ void
 JudgeDialog::clear()
 {
     resultTimer->stop();
-    exitTimer->stop();
-    exitTimeout();
     inputArea->clear();
     widgetStack->setCurrentWidget (inputWidget);
 }
@@ -274,45 +259,16 @@ JudgeDialog::judgeWord()
 }
 
 //---------------------------------------------------------------------------
-//  displayExit
-//
-//! Display instructions for exiting full screen mode.
-//---------------------------------------------------------------------------
-void
-JudgeDialog::displayExit()
-{
-    exitLabel->setText ("Press ESC " + QString::number (exitKeyPressRemaining)
-                        + " more time"
-                        + (exitKeyPressRemaining != 1 ? QString ("s")
-                                                      : QString())
-                        + " to exit.");
-    exitLabel->show();
-}
-
-//---------------------------------------------------------------------------
-//  exitTimeout
-//
-//! Called when the exit timer times out.
-//---------------------------------------------------------------------------
-void
-JudgeDialog::exitTimeout()
-{
-    exitTimer->stop();
-    exitLabel->hide();
-    exitKeyPressRemaining = NUM_KEYPRESSES_TO_EXIT;
-}
-
-//---------------------------------------------------------------------------
 //  keyPressEvent
 //
 //! Receive key press events for the widget.  Reimplemented from QWidget.
 //
-//! @param e the key press event
+//! @param event the key press event
 //---------------------------------------------------------------------------
 void
-JudgeDialog::keyPressEvent (QKeyEvent* e)
+JudgeDialog::keyPressEvent (QKeyEvent* event)
 {
-    if (!e)
+    if (!event)
         return;
 
     bool cleared = false;
@@ -321,21 +277,12 @@ JudgeDialog::keyPressEvent (QKeyEvent* e)
         cleared = true;
     }
 
-    if (e->key() == Qt::Key_Escape) {
-        if (!cleared) {
-            --exitKeyPressRemaining;
-            if (!exitKeyPressRemaining)
-                accept();
+    if (event->key() == Qt::Key_Escape) {
 
-            if (exitKeyPressRemaining <=
-                (NUM_KEYPRESSES_TO_EXIT - NUM_KEYPRESSES_TO_DISPLAY))
-            {
-                displayExit();
-            }
-            if (!exitTimer->isActive())
-                exitTimer->start (EXIT_TIMEOUT);
-        }
+        Qt::KeyboardModifiers modifiers = event->modifiers();
+        if (modifiers & Qt::ShiftModifier)
+            accept();
     }
     else
-        e->ignore();
+        event->ignore();
 }
