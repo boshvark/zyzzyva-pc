@@ -1,5 +1,5 @@
 Version 0.10.0
-Released 2006-02-05, from /branches/0.10.x
+Released 2006-02-06, from /branches/0.10.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.10.0
 
  User-visible changes:
@@ -14,6 +14,7 @@ http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.10.0
  * A few last-minute OWL2 changes: add MUNCHABLES, remove WEAPONEERED,
    change GODAMNDEST to GODDAMNDEST
  * New search condition specifically for new OWL2 words
+ * New search condition to find 8s from top 7-letter stems
  * New option to end a quiz question as soon as an incorrect answer is entered
  * Fix a bug that caused extreme slowness in Word List Recall quizzes
 
