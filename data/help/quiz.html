@@ -15,7 +15,7 @@
 
   <p>A quiz creation window will appear when creating a new Quiz tab, clicking
   the <i>New Quiz</i> button on an existing Quiz tab, or right-clicking on a
-  word list and selecting <i>Quiz from list</i>.  The quiz creation window
+  word table and selecting <i>Quiz from list</i>.  The quiz creation window
   includes a search definition area that is exactly the same as the one on the
   Search tab.  Please see <a href="search.html">Searching for Words</a> for
   more details about creating a search.  The specified search will select a
@@ -81,8 +81,8 @@
 
   <p>Once all the response words have been entered, click the <i>Check
   Answers</i> button or press Enter in the empty input box.  This will submit
-  the current word list as the final response to the quiz question.  If any
-  valid responses were missed, they will appear in the word list with a green
+  the current word table as the final response to the quiz question.  If any
+  valid responses were missed, they will appear in the word table with a green
   background color.  The number of correct words entered and the total number
   of valid responses will also be displayed above the input box.  For example,
   if the quiz question is <tt>ACEIRST</tt> and the valid responses
@@ -94,11 +94,42 @@
   of your response, click the <i>Next</i> button to continue to the next quiz
   question.</p>
 
+  <p>If the response was completely correct, but you would like it to be
+  counted as incorrect, click the <i>Mark as Missed</i> button.  This may
+  happen if, for example, you guessed the correct answer but weren't sure of
+  it.  Marking the response as incorrect will allow it to be noted for later
+  review.</p>
+
+  <p>During an Anagram quiz, the letters of the quiz question can be
+  rearranged by clicking the <i>Alpha</i> or <i>Random</i> buttons.  The
+  <i>Alpha</i> button will arrange the letters in alphabetical order, and the
+  <i>Random</i> button will arrange the letters in random order.  If tile
+  images are being used, they can also be rearranged by dragging the tiles
+  with the mouse.</p>
+
   <p>If the quiz is using a timer, the timer can be paused at any time by
   clicking the <i>Pause</i> button.  Unpause the timer by clicking the
   <i>Unpause</i> button.  If the timer runs down to zero, the correct
   responses will be displayed automatically, as if the <i>Check Answers</i>
   button were clicked.</p>
+
+  <a name="flashcard-mode">
+  <h2>Flashcard Mode</h2>
+
+  <p>Flashcard Mode is a special quiz mode that is enabled when the
+  <tt>Flashcard Mode</tt> checkbox is activated.  In Flashcard Mode, responses
+  are not typed; in fact, the input line is not even present.  Instead,
+  hitting the <i>Check Answers</i> button reveals all answers as if they were
+  correctly entered.  Responses are never counted as incorrect unless the
+  <i>Mark as Missed</i> button is clicked.</p>
+
+  <p>Flashcard Mode is a very efficient way to review words, especially words
+  you may already be familiar with.  The normal course of studying with
+  Flashcard Mode only requires hitting Enter repeatedly, because the keyboard
+  focus will toggle between the <i>Check Answers</i> button and the
+  <i>Next</i> button.  Whenever you realize you wouldn't have been able to
+  answer a question correctly, just click the <i>Mark as Missed</i> button to
+  mark the question incorrect.</p>
 
   <a name="analyze-quiz">
   <h2>Analyzing Your Quiz Performance</h2>

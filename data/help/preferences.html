@@ -15,10 +15,12 @@
   <a name="auto-load-lexicon">
   <h3>Lexicon</h3>
 
-  <p>Zyzzyva can be configured to open a word list automatically each time it
-  starts.  To do so, select the <tt>Automatically open a word list on
-  startup</tt> option.  Click the <tt>Browse</tt> button to bring up a file
-  browser, from which you can choose the word list file to be loaded.</p>
+  <p>Zyzzyva can be configured to open a lexicon automatically each time it
+  starts.  To do so, select the <tt>Automatically open a lexicon</tt> option.
+  Choose the lexicon to load from the list of predefined lexicons, or choose
+  <tt>Custom</tt> to have a customized lexicon loaded.  If <tt>Custom</tt> is
+  chosen, click the <tt>Browse</tt> button to bring up a file browser, from
+  which you can choose the lexicon file to be loaded.</p>
 
   <a name="quiz">
   <h2>Quiz Preferences</h2>
@@ -50,12 +52,19 @@
   button next to the <tt>Background Color</tt> preference.  A window will
   appear that allows the color to be chosen.</p>
 
-  <a name="quiz-hints">
-  <h3>Hints</h3>
+  <a name="quiz-behavior">
+  <h3>Quiz Behavior</h3>
 
-  <p>Some hints and conveniences are available when taking a quiz.  They can
-  help quizzes to go more quickly, or to provide helpful information to guide
-  you to the correct answers.</p>
+  <p>Some aspects of quiz behavior can be customized, including certain hints
+  and conveniences that are available when taking a quiz.  They can help
+  quizzes to go more quickly, or to provide helpful information to guide you
+  to the correct answers.</p>
+
+  <p><b>Start in Flashcard Mode:</b> If this option is selected, all new
+  quizzes will be started in Flashcard Mode.  If this option is not selected,
+  all new quizzes will be started in normal quiz mode.  See
+  <a href="quiz.html#flashcard-mode">Flashcard Mode</a> for more details about
+  Flashcard Mode.</p>
 
   <p><b>Show number of responses in the status bar:</b> If this option is
   selected, the total number of correct responses for the current question
@@ -70,6 +79,21 @@
   have been entered.  The effect is exactly as if the <tt>Check Answers</tt>
   button were clicked immediately after the last correct response is
   entered.</p>
+
+  <p><b>Go to next question after all correct responses:</b> If this option is
+  selected, the quiz will proceed to the next question automatically after all
+  correct responses have been entered.  The effect is exactly as if the
+  <tt>Check Answers</tt> and <tt>Next</tt> buttons were clicked immediately
+  after the last correct response is entered.  This option can only be
+  selected if <i>End question after all correct responses</i> is also
+  selected.</p>
+
+  <p><b>End question after an incorrect response:</b> If this option is
+  selected, a quiz question will end automatically after any incorrect
+  response is entered.  The effect is exactly as if the <tt>Check Answers</tt>
+  button were clicked immediately after the incorrect response is entered.
+  This option is useful for forcing yourself to be careful not to enter any
+  incorrect responses.</p>
 
   <a name="fonts">
   <h2>Font Preferences</h2>
@@ -89,7 +113,7 @@
   input lines of the Search tab or the input area of the Judge tab.</li>
   <li><b>Definitions:</b> Areas where word definitions are displayed, e.g. the
   Define and Judge tabs.  Also, various other places where words are displayed
-  outside a word list.</li>
+  outside a word table.</li>
   </ul>
 
   <p>To configure the fonts used by Zyzzyva, click the <tt>Choose</tt> button
@@ -112,6 +136,18 @@
   words of equal length, the words will continue to be sorted
   alphabetically.</p>
 
+  <a name="group-by-wildcard-matches">
+  <h3>Group by wildcard matches</h3>
+
+  <p>When performing a search that includes wildcard characters, it can be
+  very convenient to see words that matched the same characters grouped
+  together.  For example, when searching for anagram matches of
+  <tt>?AEINST</tt>, it is useful to see <tt>ENTASIA</tt> and <tt>TAENIAS</tt>
+  together, even though they are far from each other in alphabetical order.
+  If the <tt>Group by wildcard matches</tt> option is selected, search results
+  will be grouped in such a way, with alternating white and gray backgrounds
+  for each group.</p>
+
   <a name="show-hooks">
   <h3>Show hooks</h3>
 
@@ -124,7 +160,7 @@
 
   <p>Having hooks automatically displayed can be extremely helpful for
   learning new words, since it requires no manual effort to display hooks.
-  With hooks automatically displayed, each item in a word list is capable of
+  With hooks automatically displayed, each item in a word table is capable of
   displaying many words simultaneously, instead of just a single word.  Be
   aware, however, that selecting this option can make searches run more slowly
   in the Search tab, especially if the search returns a large number of result
@@ -155,9 +191,9 @@
 
   <p>When you are done configuring your preferences, click the <tt>OK</tt>
   button to close the Preferences window.  Any changes to the font settings
-  will take effect immediately.  Most changes to word list settings will take
+  will take effect immediately.  Most changes to word table settings will take
   effect immediately, but the <tt>Sort by word length</tt> setting may not
-  take effect for a word list until the list's contents are changed.</p>
+  take effect for a word table until the list's contents are changed.</p>
 
   <p>Copyright &copy; 2005, 2006 Michael W Thelen.</p>
 </body>

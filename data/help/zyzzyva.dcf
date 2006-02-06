@@ -18,13 +18,15 @@
       <section ref="preferences.html#quiz" title="Quiz Preferences">
         <section ref="preferences.html#question-display"
                  title="Question Display" />
-        <section ref="preferences.html#quiz-hints" title="Hints" />
+        <section ref="preferences.html#quiz-behavior" title="Quiz Behavior" />
       </section>
       <section ref="preferences.html#fonts" title="Font Preferences" />
       <section ref="preferences.html#word-tables"
                title="Word Table Preferences">
         <section ref="preferences.html#sort-by-length"
                  title="Sort by word length" />
+        <section ref="preferences.html#group-by-wildcard-matches"
+                 title="Group by Wildcard Matches" />
         <section ref="preferences.html#show-hooks" title="Show hooks" />
         <section ref="preferences.html#show-inner-hooks"
                  title="Show inner hooks" />
@@ -36,6 +38,8 @@
     </section>
     <section ref="judge.html" title="Judging Words">
       <keyword ref="judge.html">judge</keyword>
+      <section ref="judge.html#full-screen-word-judge"
+               title="Full Screen Word Judge" />
     </section>
     <section ref="define.html" title="Defining Words">
       <keyword ref="define.html">define</keyword>
@@ -66,6 +70,7 @@
       <keyword ref="quiz.html">quiz</keyword>
       <section ref="quiz.html#create-quiz" title="Creating a Quiz" />
       <section ref="quiz.html#take-quiz" title="Taking a Quiz" />
+      <section ref="quiz.html#flashcard-mode" title="Flashcard Mode" />
       <section ref="quiz.html#analyze-quiz"
                title="Analyzing Your Quiz Performance" />
       <section ref="quiz.html#load-save-quiz"
