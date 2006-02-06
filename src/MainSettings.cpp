@@ -49,6 +49,7 @@ const QString SETTINGS_USE_TILE_THEME = "use_tile_theme";
 const QString SETTINGS_TILE_THEME = "tile_theme";
 const QString SETTINGS_QUIZ_LETTER_ORDER = "quiz_letter_order";
 const QString SETTINGS_QUIZ_BACKGROUND_COLOR = "quiz_background_color";
+const QString SETTINGS_QUIZ_USE_FLASHCARD_MODE = "quiz_use_flashcard_mode";
 const QString SETTINGS_QUIZ_SHOW_NUM_RESPONSES = "quiz_show_num_responses";
 const QString SETTINGS_QUIZ_AUTO_CHECK = "quiz_auto_check";
 const QString SETTINGS_QUIZ_AUTO_ADVANCE = "quiz_auto_advance";
@@ -98,6 +99,8 @@ MainSettings::readSettings()
                         QString::number (DEFAULT_QUIZ_BACKGROUND_COLOR)
                         ).toUInt());
 
+    instance->quizUseFlashcardMode
+        = settings.value (SETTINGS_QUIZ_USE_FLASHCARD_MODE, false).toBool();
     instance->quizShowNumResponses
         = settings.value (SETTINGS_QUIZ_SHOW_NUM_RESPONSES, true).toBool();
     instance->quizAutoCheck
@@ -155,6 +158,8 @@ MainSettings::writeSettings()
                        instance->quizLetterOrder);
     settings.setValue (SETTINGS_QUIZ_BACKGROUND_COLOR,
                        QString::number (instance->quizBackgroundColor.rgb()));
+    settings.setValue (SETTINGS_QUIZ_USE_FLASHCARD_MODE,
+                       instance->quizUseFlashcardMode);
     settings.setValue (SETTINGS_QUIZ_SHOW_NUM_RESPONSES,
                        instance->quizShowNumResponses);
     settings.setValue (SETTINGS_QUIZ_AUTO_CHECK, instance->quizAutoCheck);

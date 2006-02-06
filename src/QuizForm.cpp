@@ -457,6 +457,9 @@ QuizForm::newQuiz (const QuizSpec& spec)
     analyzeDialog->newQuiz (spec);
     if (quizEngine->getQuestionComplete())
         checkResponseClicked();
+
+    flashcardCbox->setChecked (MainSettings::getQuizUseFlashcardMode());
+
     return true;
 }
 

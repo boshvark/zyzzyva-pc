@@ -240,37 +240,41 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
              SLOT (chooseQuizBackgroundColorButtonClicked()));
     quizBackgroundColorHlay->addWidget (quizBackgroundColorButton);
 
-    QGroupBox* quizHintsGbox = new QGroupBox ("Hints");
-    Q_CHECK_PTR (quizHintsGbox);
-    quizPrefVlay->addWidget (quizHintsGbox);
-    quizPrefVlay->setStretchFactor (quizHintsGbox, 1);
+    QGroupBox* quizBehaviorGbox = new QGroupBox ("Quiz Behavior");
+    Q_CHECK_PTR (quizBehaviorGbox);
+    quizPrefVlay->addWidget (quizBehaviorGbox);
+    quizPrefVlay->setStretchFactor (quizBehaviorGbox, 1);
 
-    QVBoxLayout* quizHintsVlay = new QVBoxLayout (quizHintsGbox);
-    Q_CHECK_PTR (quizHintsVlay);
-    quizHintsVlay->setMargin (MARGIN);
-    quizHintsVlay->setSpacing (SPACING);
+    QVBoxLayout* quizBehaviorVlay = new QVBoxLayout (quizBehaviorGbox);
+    Q_CHECK_PTR (quizBehaviorVlay);
+    quizBehaviorVlay->setMargin (MARGIN);
+    quizBehaviorVlay->setSpacing (SPACING);
+
+    quizUseFlashcardModeCbox = new QCheckBox ("Start in Flashcard Mode");
+    Q_CHECK_PTR (quizUseFlashcardModeCbox);
+    quizBehaviorVlay->addWidget (quizUseFlashcardModeCbox);
 
     quizShowNumResponsesCbox = new QCheckBox ("Show number of responses "
                                               "in status bar");
     Q_CHECK_PTR (quizShowNumResponsesCbox);
-    quizHintsVlay->addWidget (quizShowNumResponsesCbox);
+    quizBehaviorVlay->addWidget (quizShowNumResponsesCbox);
 
     quizAutoCheckCbox = new QCheckBox
         ("End question after all correct responses");
     Q_CHECK_PTR (quizAutoCheckCbox);
     connect (quizAutoCheckCbox, SIGNAL (toggled (bool)),
              SLOT (autoCheckCboxToggled (bool)));
-    quizHintsVlay->addWidget (quizAutoCheckCbox);
+    quizBehaviorVlay->addWidget (quizAutoCheckCbox);
 
     quizAutoAdvanceCbox = new QCheckBox
         ("Go to next question after all correct responses");
     Q_CHECK_PTR (quizAutoAdvanceCbox);
-    quizHintsVlay->addWidget (quizAutoAdvanceCbox);
+    quizBehaviorVlay->addWidget (quizAutoAdvanceCbox);
 
     quizAutoEndAfterIncorrectCbox = new QCheckBox
         ("End question after an incorrect response");
     Q_CHECK_PTR (quizAutoEndAfterIncorrectCbox);
-    quizHintsVlay->addWidget (quizAutoEndAfterIncorrectCbox);
+    quizBehaviorVlay->addWidget (quizAutoEndAfterIncorrectCbox);
 
     quizPrefVlay->addStretch (2);
 
@@ -553,6 +557,8 @@ SettingsDialog::readSettings()
     QPalette quizBackgroundPalette (quizBackgroundColor);
     quizBackgroundColorLine->setPalette (quizBackgroundPalette);
 
+    quizUseFlashcardModeCbox->setChecked
+        (MainSettings::getQuizUseFlashcardMode());
     quizShowNumResponsesCbox->setChecked
         (MainSettings::getQuizShowNumResponses());
     bool autoCheck = MainSettings::getQuizAutoCheck();
@@ -608,6 +614,8 @@ SettingsDialog::writeSettings()
     MainSettings::setTileTheme (themeCombo->currentText());
     MainSettings::setQuizLetterOrder (letterOrderCombo->currentText());
     MainSettings::setQuizBackgroundColor (quizBackgroundColor);
+    MainSettings::setQuizUseFlashcardMode
+        (quizUseFlashcardModeCbox->isChecked());
     MainSettings::setQuizShowNumResponses
         (quizShowNumResponsesCbox->isChecked());
     MainSettings::setQuizAutoCheck (quizAutoCheckCbox->isChecked());

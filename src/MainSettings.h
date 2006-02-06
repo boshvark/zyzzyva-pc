@@ -62,6 +62,10 @@ class MainSettings
         return instance->quizBackgroundColor; }
     static void setQuizBackgroundColor (const QColor& color) {
         instance->quizBackgroundColor = color; }
+    static bool getQuizUseFlashcardMode() {
+        return instance->quizUseFlashcardMode; }
+    static void setQuizUseFlashcardMode (bool b) {
+        instance->quizUseFlashcardMode = b; }
     static bool getQuizShowNumResponses() {
         return instance->quizShowNumResponses; }
     static void setQuizShowNumResponses (bool b) {
@@ -131,6 +135,7 @@ class MainSettings
     QString tileTheme;
     QString quizLetterOrder;
     QColor quizBackgroundColor;
+    bool quizUseFlashcardMode;
     bool quizShowNumResponses;
     bool quizAutoCheck;
     bool quizAutoAdvance;

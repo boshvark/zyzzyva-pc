@@ -78,6 +78,7 @@ class SettingsDialog : public QDialog
     QComboBox*   themeCombo;
     QComboBox*   letterOrderCombo;
     QLineEdit*   quizBackgroundColorLine;
+    QCheckBox*   quizUseFlashcardModeCbox;
     QCheckBox*   quizShowNumResponsesCbox;
     QCheckBox*   quizAutoCheckCbox;
     QCheckBox*   quizAutoAdvanceCbox;
