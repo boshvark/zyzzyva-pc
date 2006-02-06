@@ -548,6 +548,28 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
             return false;
         }
 
+        case SetEightsFromSevenLetterStems: {
+            if (word.length() != 8)
+                return false;
+
+            std::map< int, set<QString> >::const_iterator it =
+                stemAlphagrams.find (word.length() - 1);
+            if (it == stemAlphagrams.end())
+                return false;
+
+            const set<QString>& alphaset = it->second;
+            QString agram = alphagram (word);
+            set<QString>::const_iterator ait;
+            for (int i = 0; i < int (agram.length()); ++i) {
+                ait = alphaset.find (agram.left (i) +
+                                     agram.right (agram.length() - i - 1));
+                if (ait != alphaset.end())
+                    return true;
+            }
+            return false;
+        }
+
+
         default: return false;
     }
 }
