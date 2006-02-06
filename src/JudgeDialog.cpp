@@ -40,7 +40,8 @@ const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 20;
 const int CLEAR_RESULTS_DELAY = 10000;
-const int CLEAR_EXIT_DELAY = 5000;
+const int EXIT_TIMEOUT = 5000;
+const int NUM_KEYPRESSES_TO_EXIT = 5;
 
 const QString INSTRUCTION_MESSAGE = "1. Enter words, separated by "
                                     "SPACE or ENTER.\n"
@@ -144,7 +145,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     exitTimer = new QTimer (this);
     Q_CHECK_PTR (exitTimer);
-    connect (exitTimer, SIGNAL (timeout()), SLOT (clearExit()));
+    connect (exitTimer, SIGNAL (timeout()), SLOT (exitTimeout()));
 
     clear();
     showFullScreen();
@@ -209,7 +210,7 @@ JudgeDialog::clear()
 {
     resultTimer->stop();
     exitTimer->stop();
-    clearExit();
+    exitTimeout();
     inputArea->clear();
     widgetStack->setCurrentWidget (inputWidget);
 }
@@ -267,20 +268,25 @@ JudgeDialog::judgeWord()
 void
 JudgeDialog::displayExit()
 {
-    instLabel->setText (INSTRUCTION_MESSAGE + "\nTo exit full screen mode, "
-                        "press ALT-F4.");
-    exitTimer->start (CLEAR_EXIT_DELAY);
+    instLabel->setText (INSTRUCTION_MESSAGE + "\nPress ESC "
+                        + QString::number (exitKeyPressRemaining)
+                        + " more time"
+                        + (exitKeyPressRemaining != 1 ? QString ("s")
+                                                      : QString())
+                        + " to exit.");
 }
 
 //---------------------------------------------------------------------------
-//  clearExit
+//  exitTimeout
 //
-//! Clear instructions for exiting full screen mode.
+//! Called when the exit timer times out.
 //---------------------------------------------------------------------------
 void
-JudgeDialog::clearExit()
+JudgeDialog::exitTimeout()
 {
+    exitTimer->stop();
     instLabel->setText (INSTRUCTION_MESSAGE);
+    exitKeyPressRemaining = NUM_KEYPRESSES_TO_EXIT;
 }
 
 //---------------------------------------------------------------------------
@@ -303,8 +309,15 @@ JudgeDialog::keyPressEvent (QKeyEvent* e)
     }
 
     if (e->key() == Qt::Key_Escape) {
-        if (!cleared)
+        if (!cleared) {
+            --exitKeyPressRemaining;
+            if (!exitKeyPressRemaining)
+                accept();
+
             displayExit();
+            if (!exitTimer->isActive())
+                exitTimer->start (EXIT_TIMEOUT);
+        }
     }
     else
         e->ignore();

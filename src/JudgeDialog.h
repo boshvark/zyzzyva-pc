@@ -46,7 +46,7 @@ class JudgeDialog : public QDialog
     void clear();
     void judgeWord();
     void displayExit();
-    void clearExit();
+    void exitTimeout();
 
     protected slots:
     void keyPressEvent (QKeyEvent* e);
@@ -61,6 +61,7 @@ class JudgeDialog : public QDialog
     QLabel*         resultLabel;
     QTimer*         resultTimer;
     QTimer*         exitTimer;
+    int             exitKeyPressRemaining;
 };
 
 #endif // ZYZZYVA_JUDGE_DIALOG_H
