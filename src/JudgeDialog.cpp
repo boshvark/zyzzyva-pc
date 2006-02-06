@@ -41,7 +41,8 @@ const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 20;
 const int CLEAR_RESULTS_DELAY = 10000;
 const int EXIT_TIMEOUT = 5000;
-const int NUM_KEYPRESSES_TO_EXIT = 5;
+const int NUM_KEYPRESSES_TO_EXIT = 10;
+const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 
 const QString INSTRUCTION_MESSAGE = "1. Enter words, separated by "
                                     "SPACE or ENTER.\n"
@@ -314,7 +315,11 @@ JudgeDialog::keyPressEvent (QKeyEvent* e)
             if (!exitKeyPressRemaining)
                 accept();
 
-            displayExit();
+            if (exitKeyPressRemaining <=
+                (NUM_KEYPRESSES_TO_EXIT - NUM_KEYPRESSES_TO_DISPLAY))
+            {
+                displayExit();
+            }
             if (!exitTimer->isActive())
                 exitTimer->start (EXIT_TIMEOUT);
         }

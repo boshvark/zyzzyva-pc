@@ -236,7 +236,7 @@ JudgeForm::doFullScreen()
                                          "You are now entering the full "
                                          "screen Word Judge mode.\n"
                                          "To exit full screen mode, press "
-                                         "the ESC key 5 times.",
+                                         "the ESC key 10 times.",
                                          QMessageBox::Ok,
                                          QMessageBox::Cancel);
 
