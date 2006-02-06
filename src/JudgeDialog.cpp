@@ -37,6 +37,7 @@
 const int FORM_FONT_PIXEL_SIZE = 55;
 const int TITLE_FONT_PIXEL_SIZE = 40;
 const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
+const int EXIT_FONT_PIXEL_SIZE = 30;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 20;
 const int CLEAR_RESULTS_DELAY = 10000;
@@ -70,6 +71,9 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     QFont instructionFont = qApp->font();
     instructionFont.setPixelSize (INSTRUCTION_FONT_PIXEL_SIZE);
 
+    QFont exitFont = qApp->font();
+    exitFont.setPixelSize (EXIT_FONT_PIXEL_SIZE);
+
     QVBoxLayout* mainVlay = new QVBoxLayout (this);
     mainVlay->setMargin (0);
     mainVlay->setSpacing (SPACING);
@@ -88,7 +92,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     inputVlay->setSpacing (20);
     Q_CHECK_PTR (inputVlay);
 
-    instLabel = new QLabel (INSTRUCTION_MESSAGE);
+    QLabel* instLabel = new QLabel (INSTRUCTION_MESSAGE);
     Q_CHECK_PTR (instLabel);
     instLabel->setFont (instructionFont);
     instLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
@@ -101,6 +105,14 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     inputArea->setFont (formFont);
     connect (inputArea, SIGNAL (textChanged()), SLOT (textChanged()));
     inputVlay->addWidget (inputArea);
+
+    exitLabel = new QLabel;
+    Q_CHECK_PTR (exitLabel);
+    exitLabel->setFont (exitFont);
+    exitLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+    exitLabel->setWordWrap (true);
+    exitLabel->hide();
+    inputVlay->addWidget (exitLabel);
 
     resultWidget = new QWidget;
     Q_CHECK_PTR (resultWidget);
@@ -269,12 +281,12 @@ JudgeDialog::judgeWord()
 void
 JudgeDialog::displayExit()
 {
-    instLabel->setText (INSTRUCTION_MESSAGE + "\nPress ESC "
-                        + QString::number (exitKeyPressRemaining)
+    exitLabel->setText ("Press ESC " + QString::number (exitKeyPressRemaining)
                         + " more time"
                         + (exitKeyPressRemaining != 1 ? QString ("s")
                                                       : QString())
                         + " to exit.");
+    exitLabel->show();
 }
 
 //---------------------------------------------------------------------------
@@ -286,7 +298,7 @@ void
 JudgeDialog::exitTimeout()
 {
     exitTimer->stop();
-    instLabel->setText (INSTRUCTION_MESSAGE);
+    exitLabel->hide();
     exitKeyPressRemaining = NUM_KEYPRESSES_TO_EXIT;
 }
 

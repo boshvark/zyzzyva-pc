@@ -55,8 +55,8 @@ class JudgeDialog : public QDialog
     WordEngine*     engine;
     QStackedWidget* widgetStack;
     QWidget*        inputWidget;
-    QLabel*         instLabel;
     WordTextEdit*   inputArea;
+    QLabel*         exitLabel;
     QWidget*        resultWidget;
     QLabel*         resultLabel;
     QTimer*         resultTimer;
