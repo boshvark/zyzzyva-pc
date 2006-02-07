@@ -776,10 +776,9 @@ QuizForm::startQuestion()
     checkResponseButton->setEnabled (true);
     markMissedButton->setEnabled (true);
     nextQuestionButton->setEnabled (false);
-    if (inputLine->isVisible()) {
-        inputLine->setEnabled (true);
+    inputLine->setEnabled (true);
+    if (inputLine->isVisible())
         inputLine->setFocus();
-    }
     if (timerSpec.getType() == NoTimer)
         clearTimerDisplay();
     else
