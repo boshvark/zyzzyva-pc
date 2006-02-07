@@ -24,7 +24,7 @@
 #-----------------------------------------------------------------------------
 
 QTDIR=/usr/local/Trolltech/Qt-4.1.0
-QTVER=4.1
+QTVER=4.0
 
 # Copy data directory into bundle
 echo "Copying data directory into bundle..."
