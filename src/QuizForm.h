@@ -70,6 +70,7 @@ class QuizForm : public ActionForm
     void setTileTheme (const QString& theme);
     void setBackgroundColor (const QColor& color);
     void updateStatusString();
+    void updateQuestionDisplay();
 
     private:
     void updateStats();

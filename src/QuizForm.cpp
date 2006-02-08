@@ -758,6 +758,7 @@ QuizForm::startQuestion()
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
 
     clearStats();
+    updateQuestionDisplay();
     setQuestionLabel (quizEngine->getQuestion());
     responseModel->clear();
 
@@ -890,8 +891,6 @@ QuizForm::minimizeCanvas()
 void
 QuizForm::setQuestionLabel (const QString& question, const QString& order)
 {
-    clearCanvas();
-
     QString displayQuestion (question);
     QuizSpec quizSpec = quizEngine->getQuizSpec();
     QuizSpec::QuizType type = quizSpec.getType();
@@ -942,19 +941,21 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
         }
     }
 
-    // Question is not an alphagram, or there are no tile images
-    if (!MainSettings::getUseTileTheme() || displayQuestion.contains (" ")
-        || !questionCanvas->hasTileImages())
-    {
-        QLabel* label = (quizSpec.getType() == QuizSpec::QuizWordListRecall) ?
-            questionSpecLabel : questionLabel;
-        label->setText (displayQuestion);
-        questionStack->setCurrentWidget (label);
-    }
-
-    else {
+    QWidget* currentWidget = questionStack->currentWidget();
+    if (currentWidget == questionCanvas) {
         questionCanvas->setText (displayQuestion);
-        questionStack->setCurrentWidget (questionCanvas);
+        questionLabel->setText ("");
+        questionSpecLabel->setText ("");
+    }
+    else if (currentWidget == questionLabel) {
+        questionLabel->setText (displayQuestion);
+        questionSpecLabel->setText ("");
+        clearCanvas();
+    }
+    else if (currentWidget == questionSpecLabel) {
+        questionSpecLabel->setText (displayQuestion);
+        questionLabel->setText ("");
+        clearCanvas();
     }
 
     reflowLayout();
@@ -992,6 +993,34 @@ QuizForm::updateStatusString()
             QString::number (quizEngine->getQuestionTotal());
     }
     setStatusString (status);
+}
+
+//---------------------------------------------------------------------------
+//  updateQuestionDisplay
+//
+//! Display the question using the appropriate widget.
+//---------------------------------------------------------------------------
+void
+QuizForm::updateQuestionDisplay()
+{
+    QWidget* currentWidget = questionStack->currentWidget();
+
+    bool wordListRecall = (quizEngine->getQuizSpec().getType()
+                           == QuizSpec::QuizWordListRecall);
+
+    QWidget* newWidget = questionCanvas;
+
+    if (!MainSettings::getUseTileTheme() || wordListRecall
+        || !questionCanvas->hasTileImages())
+    {
+        newWidget = (wordListRecall ? questionSpecLabel : questionLabel);
+    }
+
+    // Redisplay question if a different widget is displayed
+    if (currentWidget != newWidget) {
+        questionStack->setCurrentWidget (newWidget);
+        setQuestionLabel (quizEngine->getQuestion());
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -1059,14 +1088,12 @@ QuizForm::setBackgroundColor (const QColor& color)
 void
 QuizForm::setTileTheme (const QString& theme)
 {
-    if (theme == tileTheme)
-        return;
-    questionCanvas->setTileTheme (theme);
-    QString question = quizEngine->getQuestion();
-    if (question.isEmpty())
-        minimizeCanvas();
-    else
-        setQuestionLabel (question);
+    if ((questionStack->currentWidget() == questionCanvas)
+        && (theme != tileTheme))
+    {
+        questionCanvas->setTileTheme (theme);
+        updateQuestionDisplay();
+    }
     tileTheme = theme;
 }
 
