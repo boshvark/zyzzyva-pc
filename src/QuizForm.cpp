@@ -1041,6 +1041,7 @@ QuizForm::updateQuestionDisplay()
 void
 QuizForm::startDisplayingCorrectAnswers()
 {
+    questionCanvas->setDragDropEnabled (false);
     currentDisplayAnswer = -1;
     displayNextCorrectAnswer();
     if (responseModel->rowCount() > 1)
@@ -1057,6 +1058,7 @@ QuizForm::stopDisplayingCorrectAnswers()
 {
     if (displayAnswerTimer->isActive())
         displayAnswerTimer->stop();
+    questionCanvas->setDragDropEnabled (true);
 }
 
 //---------------------------------------------------------------------------
