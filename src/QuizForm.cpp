@@ -301,6 +301,11 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     buttonGlay->addWidget (analyzeButton, 1, 3, Qt::AlignHCenter);
 
     buttonHlay->addStretch (1);
+
+    displayAnswerTimer = new QTimer (this);
+    Q_CHECK_PTR (displayAnswerTimer);
+    connect (displayAnswerTimer, SIGNAL (timeout()),
+             SLOT (displayNextCorrectAnswer()));
 }
 
 //---------------------------------------------------------------------------
@@ -669,6 +674,13 @@ QuizForm::checkResponseClicked()
 
     updateStatusString();
 
+    // For Anagram quizzes, display the correct answer in the question area
+    if (MainSettings::getQuizCycleAnswers()
+        && (quizEngine->getQuizSpec().getType() == QuizSpec::QuizAnagrams))
+    {
+        startDisplayingCorrectAnswers();
+    }
+
     QApplication::restoreOverrideCursor();
 }
 
@@ -757,6 +769,7 @@ QuizForm::startQuestion()
 {
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
 
+    stopDisplayingCorrectAnswers();
     clearStats();
     updateQuestionDisplay();
     setQuestionLabel (quizEngine->getQuestion());
@@ -1021,6 +1034,54 @@ QuizForm::updateQuestionDisplay()
         questionStack->setCurrentWidget (newWidget);
         setQuestionLabel (quizEngine->getQuestion());
     }
+}
+
+//---------------------------------------------------------------------------
+//  startDisplayingCorrectAnswers
+//
+//! Start displaying correct answers in the quiz question display area.
+//---------------------------------------------------------------------------
+void
+QuizForm::startDisplayingCorrectAnswers()
+{
+    questionCanvas->setDragDropEnabled (false);
+    currentDisplayAnswer = -1;
+    displayNextCorrectAnswer();
+    if (responseModel->rowCount() > 1)
+        displayAnswerTimer->start (5000);
+}
+
+//---------------------------------------------------------------------------
+//  stopDisplayingCorrectAnswers
+//
+//! Stop displaying correct answers in the quiz question display area.
+//---------------------------------------------------------------------------
+void
+QuizForm::stopDisplayingCorrectAnswers()
+{
+    if (displayAnswerTimer->isActive())
+        displayAnswerTimer->stop();
+    questionCanvas->setDragDropEnabled (true);
+}
+
+//---------------------------------------------------------------------------
+//  displayNextCorrectAnswer
+//
+//! Display the next correct answer in the quiz question display area.
+//---------------------------------------------------------------------------
+void
+QuizForm::displayNextCorrectAnswer()
+{
+    ++currentDisplayAnswer;
+    if (currentDisplayAnswer >= responseModel->rowCount())
+        currentDisplayAnswer = 0;
+
+    QString answer = responseModel->data
+        (responseModel->index (currentDisplayAnswer,
+                               WordTableModel::WORD_COLUMN),
+         Qt::EditRole).toString();
+
+    setQuestionLabel (answer, "foo");
 }
 
 //---------------------------------------------------------------------------

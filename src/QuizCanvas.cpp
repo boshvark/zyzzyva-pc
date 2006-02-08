@@ -57,7 +57,8 @@ xLessThan (const QLabel* a, const QLabel* b)
 //---------------------------------------------------------------------------
 QuizCanvas::QuizCanvas (QWidget* parent)
     : QWidget(parent), numCanvasTiles (0), minCanvasTiles (7),
-      minCanvasWidth (300), widthHint (minCanvasWidth), heightHint (100)
+      minCanvasWidth (300), widthHint (minCanvasWidth), heightHint (100),
+      dragDropEnabled (true)
 {
     setAcceptDrops (true);
     setAutoFillBackground (true);
@@ -320,6 +321,9 @@ QuizCanvas::dropEvent (QDropEvent* event)
 void
 QuizCanvas::mousePressEvent (QMouseEvent* event)
 {
+    if (!dragDropEnabled)
+        return;
+
     QLabel* child = static_cast<QLabel*>(childAt (event->pos()));
     if (!child)
         return;

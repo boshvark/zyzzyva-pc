@@ -45,6 +45,7 @@ class QuizCanvas : public QWidget
     void setNumCanvasTiles (int num);
     void setToMinimumSize();
     bool hasTileImages();
+    void setDragDropEnabled (bool on) { dragDropEnabled = on; }
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
@@ -63,6 +64,7 @@ class QuizCanvas : public QWidget
     int maxTileWidth, maxTileHeight;
     int numCanvasTiles, minCanvasTiles, minCanvasWidth;
     int widthHint, heightHint;
+    bool dragDropEnabled;
 };
 
 #endif // ZYZZYVA_QUIZ_CANVAS_H

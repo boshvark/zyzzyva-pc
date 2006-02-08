@@ -32,6 +32,7 @@
 #include <QLabel>
 #include <QStackedWidget>
 #include <QString>
+#include <QTimer>
 #include <QTimerEvent>
 
 class AnalyzeQuizDialog;
@@ -71,6 +72,9 @@ class QuizForm : public ActionForm
     void setBackgroundColor (const QColor& color);
     void updateStatusString();
     void updateQuestionDisplay();
+    void startDisplayingCorrectAnswers();
+    void stopDisplayingCorrectAnswers();
+    void displayNextCorrectAnswer();
 
     private:
     void updateStats();
@@ -125,6 +129,9 @@ class QuizForm : public ActionForm
     QString statusString;
     QString tileTheme;
     bool checkBringsJudgment;
+
+    QTimer* displayAnswerTimer;
+    int currentDisplayAnswer;
 
     AnalyzeQuizDialog* analyzeDialog;
 };
