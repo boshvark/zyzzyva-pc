@@ -783,6 +783,7 @@ MainWindow::readSettings (bool useGeometry)
             quizForm->setTileTheme (tileTheme);
             quizForm->setBackgroundColor (backgroundColor);
             quizForm->updateStatusString();
+            quizForm->updateQuestionDisplay();
         }
     }
 }
