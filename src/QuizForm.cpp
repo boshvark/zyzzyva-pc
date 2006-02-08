@@ -675,8 +675,11 @@ QuizForm::checkResponseClicked()
     updateStatusString();
 
     // For Anagram quizzes, display the correct answer in the question area
-    if (quizEngine->getQuizSpec().getType() == QuizSpec::QuizAnagrams)
+    if (MainSettings::getQuizCycleAnswers()
+        && (quizEngine->getQuizSpec().getType() == QuizSpec::QuizAnagrams))
+    {
         startDisplayingCorrectAnswers();
+    }
 
     QApplication::restoreOverrideCursor();
 }

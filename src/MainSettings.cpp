@@ -55,6 +55,7 @@ const QString SETTINGS_QUIZ_AUTO_CHECK = "quiz_auto_check";
 const QString SETTINGS_QUIZ_AUTO_ADVANCE = "quiz_auto_advance";
 const QString SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT
     = "quiz_auto_end_after_incorrect";
+const QString SETTINGS_QUIZ_CYCLE_ANSWERS = "quiz_cycle_answers";
 const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL2";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
@@ -110,6 +111,8 @@ MainSettings::readSettings()
     instance->quizAutoEndAfterIncorrect
         = settings.value (SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT,
                           false).toBool();
+    instance->quizCycleAnswers
+        = settings.value (SETTINGS_QUIZ_CYCLE_ANSWERS, true).toBool();
 
     instance->mainFont
         = settings.value (SETTINGS_FONT_MAIN).toString();
@@ -167,6 +170,8 @@ MainSettings::writeSettings()
                        instance->quizAutoAdvance);
     settings.setValue (SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT,
                        instance->quizAutoEndAfterIncorrect);
+    settings.setValue (SETTINGS_QUIZ_CYCLE_ANSWERS,
+                       instance->quizCycleAnswers);
     settings.setValue (SETTINGS_FONT_MAIN, instance->mainFont);
     settings.setValue (SETTINGS_FONT_WORD_LISTS, instance->wordListFont);
     settings.setValue (SETTINGS_FONT_QUIZ_LABEL, instance->quizLabelFont);
