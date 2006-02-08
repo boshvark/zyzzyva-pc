@@ -1,3 +1,14 @@
+Version 0.10.1
+Released 2006-02-08, from /branches/0.10.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.10.1
+
+ User-visible changes:
+ * Answers displayed in the quiz question area after ending a question
+ * Default colors for Correct and Missed words have been swapped
+ * Bug fix for displaying quiz questions longer than 7 letters
+ * Several minor bug fixes
+
+
 Version 0.10.0
 Released 2006-02-06, from /branches/0.10.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.10.0
