@@ -37,7 +37,7 @@ namespace Defs {
     const int SPACING = 4;
     const int MARGIN = 4;
     const int QUIZ_TILE_SPACING = 10;
-    const int QUIZ_TILE_MARGIN = 10;
+    const int QUIZ_TILE_MARGIN = 15;
     const QString QUIZ_LETTERS_ALPHA = "Alphabetical";
     const QString QUIZ_LETTERS_RANDOM = "Random";
     const QString QUIZ_LETTERS_VOWELS_FIRST = "Vowels First";
