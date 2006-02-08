@@ -186,6 +186,7 @@ QuizCanvas::setNumCanvasTiles (int num)
                 ((num - 1) * QUIZ_TILE_SPACING);
     heightHint = (2 * QUIZ_TILE_MARGIN) + maxTileHeight;
     resize (widthHint, heightHint);
+    updateGeometry();
 }
 
 //---------------------------------------------------------------------------
@@ -198,8 +199,10 @@ QuizCanvas::setNumCanvasTiles (int num)
 void
 QuizCanvas::setToMinimumSize()
 {
-    if (tileImages.empty())
+    if (tileImages.empty()) {
         resize (minCanvasWidth, (2 * QUIZ_TILE_MARGIN) + maxTileHeight);
+        updateGeometry();
+    }
     else
         setNumCanvasTiles (minCanvasTiles);
 }
