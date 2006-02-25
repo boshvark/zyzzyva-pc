@@ -213,9 +213,9 @@ QuizEngine::respond (const QString& response)
             return Incorrect;
         }
 
-        QString frontHooks = sections.at (0);
+        QString frontHooks = wordEngine->alphagram (sections.at (0));
         word = sections.at (1);
-        QString backHooks = sections.at (2);
+        QString backHooks = wordEngine->alphagram (sections.at (2));
 
         if ((frontHooks.toLower() != wordEngine->getFrontHookLetters (word))
             || (backHooks.toLower() != wordEngine->getBackHookLetters (word)))
