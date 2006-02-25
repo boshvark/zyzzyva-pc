@@ -60,8 +60,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     mainHlay->setSpacing (SPACING);
 
     QStringList types;
-    types << Auxil::searchTypeToString (SearchCondition::PatternMatch)
-          << Auxil::searchTypeToString (SearchCondition::AnagramMatch)
+    types << Auxil::searchTypeToString (SearchCondition::AnagramMatch)
+          << Auxil::searchTypeToString (SearchCondition::PatternMatch)
           << Auxil::searchTypeToString (SearchCondition::SubanagramMatch)
           << Auxil::searchTypeToString (SearchCondition::ExactLength)
           << Auxil::searchTypeToString (SearchCondition::MinLength)
