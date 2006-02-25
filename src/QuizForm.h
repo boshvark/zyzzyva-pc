@@ -45,6 +45,7 @@ class WordEngine;
 class WordLineEdit;
 class WordTableModel;
 class WordTableView;
+class WordValidator;
 class ZPushButton;
 
 class QuizForm : public ActionForm
@@ -109,6 +110,7 @@ class QuizForm : public ActionForm
     QuizQuestionLabel* questionLabel;
     QLabel*       questionSpecLabel;
     WordLineEdit* inputLine;
+    WordValidator* inputValidator;
     WordTableView* responseView;
     WordTableModel* responseModel;
     DefinitionLabel* responseStatusLabel;

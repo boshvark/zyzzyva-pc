@@ -3,7 +3,7 @@
 //
 // A validator for ensuring words are well-formed.
 //
-// Copyright 2004, 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2004, 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -44,7 +44,8 @@ class WordValidator : public QValidator
         None = 0,
         AllowQuestionMarks = 1,
         AllowAsterisks = 2,
-        AllowCharacterClasses = 4
+        AllowCharacterClasses = 4,
+        AllowHooks = 8
     };
 
     private:

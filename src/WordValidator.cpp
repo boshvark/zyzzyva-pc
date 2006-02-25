@@ -44,7 +44,11 @@ WordValidator::validate (QString& input, int& pos) const
         re += "*";
     if (options & AllowCharacterClasses)
         re += "\\[\\]^";
+    if (options & AllowHooks)
+        re += "_";
     re += "]+";
+    if (options & AllowHooks)
+        replaceRegExp (QRegExp (" "), "_", input, pos);
     replaceRegExp(QRegExp(re), "", input, pos);
     return Acceptable;
 }

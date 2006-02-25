@@ -225,9 +225,9 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     // Input line
     inputLine = new WordLineEdit;
     Q_CHECK_PTR (inputLine);
-    WordValidator* validator = new WordValidator (inputLine);
-    Q_CHECK_PTR (validator);
-    inputLine->setValidator (validator);
+    inputValidator = new WordValidator (inputLine);
+    Q_CHECK_PTR (inputValidator);
+    inputLine->setValidator (inputValidator);
     inputLine->setEnabled (false);
     connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
     mainVlay->addWidget (inputLine);
@@ -357,6 +357,9 @@ QuizForm::responseEntered()
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
+        if (response.contains ("_"))
+            response = response.section ("_", 1, 1);
+
         responseModel->addWord (WordTableModel::WordItem
                                 (response, WordTableModel::WordCorrect),
                                 true);
@@ -430,6 +433,7 @@ QuizForm::newQuiz (const QuizSpec& spec)
     bool enableLetterOrder = false;
     switch (spec.getType()) {
         case QuizSpec::QuizAnagrams:
+        case QuizSpec::QuizAnagramsWithHooks:
         case QuizSpec::QuizSubanagrams:
         case QuizSpec::QuizAnagramJumble:
         case QuizSpec::QuizSubanagramJumble:
@@ -464,6 +468,11 @@ QuizForm::newQuiz (const QuizSpec& spec)
         checkResponseClicked();
 
     flashcardCbox->setChecked (MainSettings::getQuizUseFlashcardMode());
+
+    if (spec.getType() == QuizSpec::QuizAnagramsWithHooks)
+        inputValidator->setOptions (WordValidator::AllowHooks);
+    else
+        inputValidator->setOptions (WordValidator::None);
 
     return true;
 }

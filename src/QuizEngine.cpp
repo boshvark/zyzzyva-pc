@@ -29,8 +29,6 @@
 #include <cstdlib>
 #include <ctime>
 
-#include <QtDebug>
-
 //---------------------------------------------------------------------------
 //  QuizEngine
 //
@@ -204,15 +202,38 @@ QuizEngine::completeQuestion()
 QuizEngine::ResponseStatus
 QuizEngine::respond (const QString& response)
 {
-    if (correctResponses.find (response) == correctResponses.end()) {
+    bool statusDetermined = false;
+
+    QString word (response);
+
+    if (quizSpec.getType() == QuizSpec::QuizAnagramsWithHooks) {
+        QStringList sections = response.split ("_");
+        if (sections.size() != 3) {
+            addQuestionIncorrect (response);
+            return Incorrect;
+        }
+
+        QString frontHooks = sections.at (0);
+        word = sections.at (1);
+        QString backHooks = sections.at (2);
+
+        if ((frontHooks.toLower() != wordEngine->getFrontHookLetters (word))
+            || (backHooks.toLower() != wordEngine->getBackHookLetters (word)))
+        {
+            addQuestionIncorrect (response);
+            return Incorrect;
+        }
+    }
+
+    if (correctResponses.find (word) == correctResponses.end()) {
         addQuestionIncorrect (response);
         return Incorrect;
     }
 
-    if (correctUserResponses.find (response) != correctUserResponses.end())
+    if (correctUserResponses.find (word) != correctUserResponses.end())
         return Duplicate;
 
-    addQuestionCorrect (response);
+    addQuestionCorrect (word);
     return Correct;
 }
 
@@ -322,18 +343,6 @@ QuizEngine::prepareQuestion()
         SearchSpec spec;
         spec.conditions.append (condition);
         answers = wordEngine->search (spec, true);
-
-        if (type == QuizSpec::QuizAnagramsWithHooks) {
-            QStringList answersWithHooks;
-            QString answer;
-            foreach (answer, answers) {
-                answersWithHooks.append
-                    (wordEngine->getFrontHookLetters (answer).toUpper()
-                     + "/" + answer + "/"
-                     + wordEngine->getBackHookLetters (answer).toUpper());
-            }
-            answers = answersWithHooks;
-        }
     }
     else if (type == QuizSpec::QuizHooks) {
         SearchCondition condition;
@@ -352,7 +361,6 @@ QuizEngine::prepareQuestion()
     QStringList::iterator it;
     for (it = answers.begin(); it != answers.end(); ++it) {
         correctResponses.insert (*it);
-        qDebug() << "Adding correct response: " << *it;
     }
     quizTotal += correctResponses.size();
 }
