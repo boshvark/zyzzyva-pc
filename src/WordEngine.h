@@ -48,6 +48,8 @@ class WordEngine
     QString alphagram (const QString& word) const;
     QString getDefinition (const QString& word) const;
     QString getLexiconName() const { return lexiconName; }
+    QString getFrontHookLetters (const QString& word) const;
+    QString getBackHookLetters (const QString& word) const;
 
     private:
     bool matchesConditions (const QString& word, const QList<SearchCondition>&

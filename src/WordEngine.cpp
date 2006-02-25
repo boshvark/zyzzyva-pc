@@ -382,6 +382,70 @@ WordEngine::getDefinition (const QString& word) const
 }
 
 //---------------------------------------------------------------------------
+//  getFrontHookLetters
+//
+//! Get a string of letters that can be added to the front of a word to make
+//! other valid words.
+//
+//! @param word the word, assumed to be upper case
+//! @return a string containing lower case letters representing front hooks
+//---------------------------------------------------------------------------
+QString
+WordEngine::getFrontHookLetters (const QString& word) const
+{
+    SearchSpec spec;
+    SearchCondition condition;
+    condition.type = SearchCondition::PatternMatch;
+    condition.stringValue = "?" + word;
+    spec.conditions.append (condition);
+
+    // Put first letter of each word in a set, for alphabetical order
+    QStringList words = search (spec, true);
+    set<QChar> letters;
+    QStringList::iterator it;
+    for (it = words.begin(); it != words.end(); ++it)
+        letters.insert ((*it).at (0).toLower());
+
+    QString ret;
+    set<QChar>::iterator sit;
+    for (sit = letters.begin(); sit != letters.end(); ++sit)
+        ret += *sit;
+    return ret;
+}
+
+//---------------------------------------------------------------------------
+//  getBackHookLetters
+//
+//! Get a string of letters that can be added to the back of a word to make
+//! other valid words.
+//
+//! @param word the word, assumed to be upper case
+//! @return a string containing lower case letters representing back hooks
+//---------------------------------------------------------------------------
+QString
+WordEngine::getBackHookLetters (const QString& word) const
+{
+    SearchSpec spec;
+    SearchCondition condition;
+    condition.type = SearchCondition::PatternMatch;
+    condition.stringValue = word + "?";
+    spec.conditions.append (condition);
+
+    // Put first letter of each word in a set, for alphabetical order
+    QStringList words = search (spec, true);
+    set<QChar> letters;
+    QStringList::iterator it;
+    for (it = words.begin(); it != words.end(); ++it)
+        letters.insert ((*it).at ((*it).length() - 1).toLower());
+
+    QString ret;
+    set<QChar>::iterator sit;
+    for (sit = letters.begin(); sit != letters.end(); ++sit)
+        ret += *sit;
+    return ret;
+}
+
+//---------------------------------------------------------------------------
 //  matchesConditions
 //
 //! Test whether a word matches certain conditions.  Not all conditions in the

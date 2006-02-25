@@ -70,7 +70,10 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     typeCombo = new QComboBox;
     typeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
-    typeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizWordListRecall));
+    typeCombo->addItem (Auxil::quizTypeToString
+                        (QuizSpec::QuizAnagramsWithHooks));
+    typeCombo->addItem (Auxil::quizTypeToString
+                        (QuizSpec::QuizWordListRecall));
     typeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizHooks));
     typeCombo->setCurrentIndex (typeCombo->findText
         (Auxil::quizTypeToString (QuizSpec::QuizAnagrams)));

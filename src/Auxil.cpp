@@ -63,6 +63,7 @@ const QString SEARCH_TYPE_MAX_PROBABILITY = "Maximum Probability";
 
 const QString QUIZ_TYPE_PATTERNS = "Patterns";
 const QString QUIZ_TYPE_ANAGRAMS = "Anagrams";
+const QString QUIZ_TYPE_ANAGRAMS_WITH_HOOKS = "Anagrams with Hooks";
 const QString QUIZ_TYPE_SUBANAGRAMS = "Subanagrams";
 const QString QUIZ_TYPE_ANAGRAM_JUMBLE = "Anagram Jumble";
 const QString QUIZ_TYPE_SUBANAGRAM_JUMBLE = "Subanagram Jumble";
@@ -462,6 +463,9 @@ Auxil::quizTypeToString (QuizSpec::QuizType t)
         case QuizSpec::QuizAnagrams:
         return QUIZ_TYPE_ANAGRAMS;
 
+        case QuizSpec::QuizAnagramsWithHooks:
+        return QUIZ_TYPE_ANAGRAMS_WITH_HOOKS;
+
         case QuizSpec::QuizSubanagrams:
         return QUIZ_TYPE_SUBANAGRAMS;
 
@@ -502,6 +506,8 @@ Auxil::stringToQuizType (const QString& s)
         return QuizSpec::QuizPatterns;
     else if (s == QUIZ_TYPE_ANAGRAMS)
         return QuizSpec::QuizAnagrams;
+    else if (s == QUIZ_TYPE_ANAGRAMS_WITH_HOOKS)
+        return QuizSpec::QuizAnagramsWithHooks;
     else if (s == QUIZ_TYPE_SUBANAGRAMS)
         return QuizSpec::QuizSubanagrams;
     else if (s == QUIZ_TYPE_ANAGRAM_JUMBLE)

@@ -230,8 +230,8 @@ WordTableModel::data (const QModelIndex& index, int role) const
             return QString();
         }
         else if (!wordItem.hooksAreValid()) {
-            wordItem.setHooks (getFrontHookLetters (wordUpper),
-                               getBackHookLetters (wordUpper));
+            wordItem.setHooks (wordEngine->getFrontHookLetters (wordUpper),
+                               wordEngine->getBackHookLetters (wordUpper));
         }
         return wordItem.getFrontHooks();
 
@@ -240,8 +240,8 @@ WordTableModel::data (const QModelIndex& index, int role) const
             return QString();
         }
         else if (!wordItem.hooksAreValid()) {
-            wordItem.setHooks (getFrontHookLetters (wordUpper),
-                               getBackHookLetters (wordUpper));
+            wordItem.setHooks (wordEngine->getFrontHookLetters (wordUpper),
+                               wordEngine->getBackHookLetters (wordUpper));
         }
         return wordItem.getBackHooks();
 
@@ -397,8 +397,8 @@ WordTableModel::setData (const QModelIndex& index, const QVariant& value, int
             word.setWord (value.toString());
             if (MainSettings::getWordListShowHooks()) {
                 word.setHooks
-                    (getFrontHookLetters (word.getWord().toUpper()),
-                     getBackHookLetters (word.getWord().toUpper()));
+                    (wordEngine->getFrontHookLetters (word.getWord().toUpper()),
+                     wordEngine->getBackHookLetters (word.getWord().toUpper()));
             }
             if (MainSettings::getWordListShowHookParents()) {
                 word.setParentHooks
@@ -527,70 +527,6 @@ bool
 WordTableModel::isBackHook (const QString& word) const
 {
     return wordEngine->isAcceptable (word.left (word.length() - 1));
-}
-
-//---------------------------------------------------------------------------
-//  getFrontHookLetters
-//
-//! Get a string of letters that can be added to the front of a word to make
-//! other valid words.
-//
-//! @param word the word, assumed to be upper case
-//! @return a string containing lower case letters representing front hooks
-//---------------------------------------------------------------------------
-QString
-WordTableModel::getFrontHookLetters (const QString& word) const
-{
-    SearchSpec spec;
-    SearchCondition condition;
-    condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = "?" + word;
-    spec.conditions.append (condition);
-
-    // Put first letter of each word in a set, for alphabetical order
-    QStringList words = wordEngine->search (spec, true);
-    set<QChar> letters;
-    QStringList::iterator it;
-    for (it = words.begin(); it != words.end(); ++it)
-        letters.insert ((*it).at (0).toLower());
-
-    QString ret;
-    set<QChar>::iterator sit;
-    for (sit = letters.begin(); sit != letters.end(); ++sit)
-        ret += *sit;
-    return ret;
-}
-
-//---------------------------------------------------------------------------
-//  getBackHookLetters
-//
-//! Get a string of letters that can be added to the back of a word to make
-//! other valid words.
-//
-//! @param word the word, assumed to be upper case
-//! @return a string containing lower case letters representing back hooks
-//---------------------------------------------------------------------------
-QString
-WordTableModel::getBackHookLetters (const QString& word) const
-{
-    SearchSpec spec;
-    SearchCondition condition;
-    condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = word + "?";
-    spec.conditions.append (condition);
-
-    // Put first letter of each word in a set, for alphabetical order
-    QStringList words = wordEngine->search (spec, true);
-    set<QChar> letters;
-    QStringList::iterator it;
-    for (it = words.begin(); it != words.end(); ++it)
-        letters.insert ((*it).at ((*it).length() - 1).toLower());
-
-    QString ret;
-    set<QChar>::iterator sit;
-    for (sit = letters.begin(); sit != letters.end(); ++sit)
-        ret += *sit;
-    return ret;
 }
 
 //---------------------------------------------------------------------------

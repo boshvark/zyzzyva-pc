@@ -29,6 +29,8 @@
 #include <cstdlib>
 #include <ctime>
 
+#include <QtDebug>
+
 //---------------------------------------------------------------------------
 //  QuizEngine
 //
@@ -58,7 +60,9 @@ QuizEngine::newQuiz (const QuizSpec& spec)
     // Anagram Quiz: The search spec is used to select the list of words.
     // Their alphagrams are used as quiz questions, and their anagrams are
     // used as quiz answers.
-    if (type == QuizSpec::QuizAnagrams) {
+    if ((type == QuizSpec::QuizAnagrams) ||
+        (type == QuizSpec::QuizAnagramsWithHooks))
+    {
         questions = wordEngine->search (spec.getSearchSpec(), true);
         questions = wordEngine->alphagrams (questions);
     }
@@ -309,13 +313,27 @@ QuizEngine::prepareQuestion()
 
     if (type == QuizSpec::QuizWordListRecall)
         answers = wordEngine->search (quizSpec.getSearchSpec(), true);
-    else if (type == QuizSpec::QuizAnagrams) {
+    else if ((type == QuizSpec::QuizAnagrams) ||
+             (type == QuizSpec::QuizAnagramsWithHooks))
+    {
         SearchCondition condition;
         condition.type = SearchCondition::AnagramMatch;
         condition.stringValue = question;
         SearchSpec spec;
         spec.conditions.append (condition);
         answers = wordEngine->search (spec, true);
+
+        if (type == QuizSpec::QuizAnagramsWithHooks) {
+            QStringList answersWithHooks;
+            QString answer;
+            foreach (answer, answers) {
+                answersWithHooks.append
+                    (wordEngine->getFrontHookLetters (answer).toUpper()
+                     + "/" + answer + "/"
+                     + wordEngine->getBackHookLetters (answer).toUpper());
+            }
+            answers = answersWithHooks;
+        }
     }
     else if (type == QuizSpec::QuizHooks) {
         SearchCondition condition;
@@ -334,6 +352,7 @@ QuizEngine::prepareQuestion()
     QStringList::iterator it;
     for (it = answers.begin(); it != answers.end(); ++it) {
         correctResponses.insert (*it);
+        qDebug() << "Adding correct response: " << *it;
     }
     quizTotal += correctResponses.size();
 }

@@ -38,6 +38,7 @@ class QuizSpec
         UnknownQuizType = 0,
         QuizPatterns,
         QuizAnagrams,
+        QuizAnagramsWithHooks,
         QuizSubanagrams,
         QuizAnagramJumble,
         QuizSubanagramJumble,
