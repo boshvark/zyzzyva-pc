@@ -472,25 +472,6 @@ WordEngine::matchesConditions (const QString& word, const
             break;
 
             case SearchCondition::Suffix:
-
-
-
-
-            //if (!condition.negated && 
-            //    (!isAcceptable (wordUpper + condition.stringValue)))
-            //{
-            //    qDebug() << "Returning false A for " << wordUpper;
-            //    return false;
-            //}
-
-            //if (condition.negated &&
-            //    (isAcceptable (wordUpper + condition.stringValue)))
-            //{
-            //    qDebug() << "Returning false B for " << wordUpper;
-            //    return false;
-            //}
-            //break;
-
             if ((!isAcceptable (wordUpper + condition.stringValue))
                 ^ condition.negated)
                 return false;
