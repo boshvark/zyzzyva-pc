@@ -45,12 +45,24 @@ class SearchCondition
         BelongToGroup,
         InWordList,
         NumAnagrams,
-        Probability
+        Probability,
+
+        // Obsolete search condition types
+        OldExactLength,
+        OldMinLength,
+        OldMaxLength,
+        OldDoesNotTakePrefix,
+        OldDoesNotTakeSuffix,
+        OldMustExclude,
+        OldNotInWordList,
+        OldExactAnagrams,
+        OldMinAnagrams,
+        OldMaxAnagrams
     };
 
     public:
     SearchCondition() : type (UnknownSearchType), minValue (0),
-                        maxValue (0) { }
+                        maxValue (0), negated (false) { }
     QString asString() const;
     QDomElement asDomElement() const;
     bool fromDomElement (const QDomElement& element);

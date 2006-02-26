@@ -52,6 +52,22 @@ const QString SEARCH_TYPE_IN_WORD_LIST = "In Word List";
 const QString SEARCH_TYPE_NUM_ANAGRAMS = "Number of Anagrams";
 const QString SEARCH_TYPE_PROBABILITY = "Probability";
 
+// Obsolete search condition strings
+const QString SEARCH_TYPE_OLD_EXACT_LENGTH = "Exact Length";
+const QString SEARCH_TYPE_OLD_MIN_LENGTH = "Minimum Length";
+const QString SEARCH_TYPE_OLD_MAX_LENGTH = "Maximum Length";
+const QString SEARCH_TYPE_OLD_DOES_NOT_TAKE_PREFIX = "Does Not Take Prefix";
+const QString SEARCH_TYPE_OLD_DOES_NOT_TAKE_SUFFIX = "Does Not Take Suffix";
+const QString SEARCH_TYPE_OLD_MUST_INCLUDE = "Must Include";
+const QString SEARCH_TYPE_OLD_MUST_EXCLUDE = "Must Exclude";
+const QString SEARCH_TYPE_OLD_MUST_CONSIST = "Must Consist of";
+const QString SEARCH_TYPE_OLD_MUST_BELONG = "Must Belong to";
+const QString SEARCH_TYPE_OLD_IN_WORD_LIST = "Must Be in Word List";
+const QString SEARCH_TYPE_OLD_NOT_IN_WORD_LIST = "Must Not Be in Word List";
+const QString SEARCH_TYPE_OLD_EXACT_ANAGRAMS = "Exact Anagrams";
+const QString SEARCH_TYPE_OLD_MIN_ANAGRAMS = "Minimum Anagrams";
+const QString SEARCH_TYPE_OLD_MAX_ANAGRAMS = "Maximum Anagrams";
+
 const QString QUIZ_TYPE_PATTERNS = "Patterns";
 const QString QUIZ_TYPE_ANAGRAMS = "Anagrams";
 const QString QUIZ_TYPE_ANAGRAMS_WITH_HOOKS = "Anagrams with Hooks";
@@ -336,6 +352,37 @@ Auxil::stringToSearchType (const QString& string)
         return SearchCondition::NumAnagrams;
     else if (string == SEARCH_TYPE_PROBABILITY)
         return SearchCondition::Probability;
+
+    // Obsolete search condition strings
+    else if (string == SEARCH_TYPE_OLD_EXACT_LENGTH)
+        return SearchCondition::OldExactLength;
+    else if (string == SEARCH_TYPE_OLD_MIN_LENGTH)
+        return SearchCondition::OldMinLength;
+    else if (string == SEARCH_TYPE_OLD_MAX_LENGTH)
+        return SearchCondition::OldMaxLength;
+    else if (string == SEARCH_TYPE_OLD_DOES_NOT_TAKE_PREFIX)
+        return SearchCondition::OldDoesNotTakePrefix;
+    else if (string == SEARCH_TYPE_OLD_DOES_NOT_TAKE_SUFFIX)
+        return SearchCondition::OldDoesNotTakeSuffix;
+    else if (string == SEARCH_TYPE_OLD_MUST_INCLUDE)
+        return SearchCondition::IncludeLetters;
+    else if (string == SEARCH_TYPE_OLD_MUST_EXCLUDE)
+        return SearchCondition::OldMustExclude;
+    else if (string == SEARCH_TYPE_OLD_MUST_CONSIST)
+        return SearchCondition::ConsistOf;
+    else if (string == SEARCH_TYPE_OLD_MUST_BELONG)
+        return SearchCondition::BelongToGroup;
+    else if (string == SEARCH_TYPE_OLD_IN_WORD_LIST)
+        return SearchCondition::InWordList;
+    else if (string == SEARCH_TYPE_OLD_NOT_IN_WORD_LIST)
+        return SearchCondition::OldNotInWordList;
+    else if (string == SEARCH_TYPE_OLD_EXACT_ANAGRAMS)
+        return SearchCondition::OldExactAnagrams;
+    else if (string == SEARCH_TYPE_OLD_MIN_ANAGRAMS)
+        return SearchCondition::OldMinAnagrams;
+    else if (string == SEARCH_TYPE_OLD_MAX_ANAGRAMS)
+        return SearchCondition::OldMaxAnagrams;
+
     return SearchCondition::UnknownSearchType;
 }
 

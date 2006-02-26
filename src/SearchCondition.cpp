@@ -31,10 +31,10 @@ using namespace Defs;
 const QString XML_TOP_ELEMENT = "condition";
 const QString XML_TYPE_ATTR = "type";
 const QString XML_STRING_ATTR = "string";
-const QString XML_NUMBER_ATTR = "number";
 const QString XML_MIN_ATTR = "min";
-const QString XML_MAX_ATTR = "min";
-const QString XML_PERCENT_ATTR = "percent";
+const QString XML_MAX_ATTR = "max";
+const QString XML_OLD_NUMBER_ATTR = "number";
+const QString XML_OLD_PERCENT_ATTR = "percent";
 
 //---------------------------------------------------------------------------
 //  asString
@@ -168,9 +168,6 @@ SearchCondition::asDomElement() const
 bool
 SearchCondition::fromDomElement (const QDomElement& element)
 {
-    // XXX: Worry about this in a bit - and maintain backward compatibility
-
-    /*
     if ((element.tagName() != XML_TOP_ELEMENT) ||
         (!element.hasAttribute (XML_TYPE_ATTR)))
     {
@@ -189,63 +186,149 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case PatternMatch:
         case AnagramMatch:
         case SubanagramMatch:
-        case TakesPrefix:
-        case DoesNotTakePrefix:
-        case TakesSuffix:
-        case DoesNotTakeSuffix:
-        case MustInclude:
-        case MustExclude:
-        case MustBelong:
+        case Prefix:
+        case Suffix:
+        case IncludeLetters:
+        case BelongToGroup:
         case InWordList:
-        case NotInWordList:
+        case OldDoesNotTakePrefix:
+        case OldDoesNotTakeSuffix:
+        case OldMustExclude:
+        case OldNotInWordList:
         if (!element.hasAttribute (XML_STRING_ATTR))
             return false;
         tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
+
+        if (tmpCondition.type == OldDoesNotTakePrefix) {
+            tmpCondition.type = Prefix;
+            tmpCondition.negated = true;
+        }
+        else if (tmpCondition.type == OldDoesNotTakeSuffix) {
+            tmpCondition.type = Suffix;
+            tmpCondition.negated = true;
+        }
+        else if (tmpCondition.type == OldMustExclude) {
+            tmpCondition.type = IncludeLetters;
+            tmpCondition.negated = true;
+        }
+        else if (tmpCondition.type == OldNotInWordList) {
+            tmpCondition.type = InWordList;
+            tmpCondition.negated = true;
+        }
         break;
 
-        case ExactLength:
-        case MinLength:
-        case MaxLength:
-        case ExactAnagrams:
-        case MinAnagrams:
-        case MaxAnagrams:
-        if (!element.hasAttribute (XML_NUMBER_ATTR))
+        case Length:
+        case NumAnagrams:
+        if (!element.hasAttribute (XML_MIN_ATTR) ||
+            !element.hasAttribute (XML_MAX_ATTR))
             return false;
-        tmpCondition.intValue =
-            element.attribute (XML_NUMBER_ATTR).toInt (&ok);
+        tmpCondition.minValue =
+            element.attribute (XML_MIN_ATTR).toInt (&ok);
+        if (!ok)
+            return false;
+        tmpCondition.maxValue =
+            element.attribute (XML_MAX_ATTR).toInt (&ok);
         if (!ok)
             return false;
         break;
 
-        case MinProbability:
-        case MaxProbability:
-        if (!element.hasAttribute (XML_NUMBER_ATTR))
+        // Obsolete condition types
+        case OldExactLength:
+        case OldMinLength:
+        case OldMaxLength:
+        case OldExactAnagrams:
+        case OldMinAnagrams:
+        case OldMaxAnagrams: {
+            if (!element.hasAttribute (XML_OLD_NUMBER_ATTR))
+                return false;
+            int intValue = element.attribute (XML_OLD_NUMBER_ATTR).toInt (&ok);
+            if (!ok)
+                return false;
+            if (tmpCondition.type == OldExactLength) {
+                tmpCondition.type = Length;
+                tmpCondition.minValue = intValue;
+                tmpCondition.maxValue = intValue;
+            }
+            else if (tmpCondition.type == OldMinLength) {
+                tmpCondition.type = Length;
+                tmpCondition.minValue = intValue;
+                tmpCondition.maxValue = MAX_WORD_LEN;
+            }
+            else if (tmpCondition.type == OldMaxLength) {
+                tmpCondition.type = Length;
+                tmpCondition.minValue = 0;
+                tmpCondition.maxValue = intValue;
+            }
+            if (tmpCondition.type == OldExactAnagrams) {
+                tmpCondition.type = NumAnagrams;
+                tmpCondition.minValue = intValue;
+                tmpCondition.maxValue = intValue;
+            }
+            else if (tmpCondition.type == OldMinAnagrams) {
+                tmpCondition.type = NumAnagrams;
+                tmpCondition.minValue = intValue;
+                tmpCondition.maxValue = 99999;
+            }
+            else if (tmpCondition.type == OldMaxAnagrams) {
+                tmpCondition.type = NumAnagrams;
+                tmpCondition.minValue = 0;
+                tmpCondition.maxValue = intValue;
+            }
+        }
+        break;
+
+        case Probability:
+        if (!element.hasAttribute (XML_MIN_ATTR) ||
+            !element.hasAttribute (XML_MAX_ATTR))
             return false;
-        tmpCondition.intValue =
-            element.attribute (XML_NUMBER_ATTR).toInt (&ok);
+        tmpCondition.minValue =
+            element.attribute (XML_MIN_ATTR).toInt (&ok);
         if (!ok)
             return false;
         // XXX: Divide by the correct factor here!
-        tmpCondition.intValue /= 1;
-        break;
-
-        case MustConsist:
-        if (!element.hasAttribute (XML_PERCENT_ATTR) ||
-            !element.hasAttribute (XML_STRING_ATTR))
-        {
-            return false;
-        }
-        tmpCondition.intValue =
-            element.attribute (XML_PERCENT_ATTR).toInt (&ok);
+        tmpCondition.minValue /= 1;
+        tmpCondition.maxValue =
+            element.attribute (XML_MAX_ATTR).toInt (&ok);
         if (!ok)
             return false;
-        tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
+        // XXX: Divide by the correct factor here!
+        tmpCondition.maxValue /= 1;
+        break;
+
+        case ConsistOf: {
+            if (!element.hasAttribute (XML_STRING_ATTR))
+                return false;
+
+            if (!element.hasAttribute (XML_OLD_PERCENT_ATTR) &&
+                (!element.hasAttribute (XML_MIN_ATTR) ||
+                !element.hasAttribute (XML_MAX_ATTR)))
+            {
+                return false;
+            }
+            int intValue =
+                element.attribute (XML_OLD_PERCENT_ATTR).toInt (&ok);
+            // Old style Consist condition
+            if (ok) {
+                tmpCondition.minValue = intValue;
+                tmpCondition.maxValue = 100;
+            }
+            else {
+                tmpCondition.minValue =
+                    element.attribute (XML_MIN_ATTR).toInt (&ok);
+                if (!ok)
+                    return false;
+                tmpCondition.maxValue =
+                    element.attribute (XML_MAX_ATTR).toInt (&ok);
+                if (!ok)
+                    return false;
+            }
+            tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
+        }
         break;
 
         default: break;
     }
 
     *this = tmpCondition;
-    */
     return true;
 }
