@@ -32,6 +32,8 @@ const QString XML_TOP_ELEMENT = "condition";
 const QString XML_TYPE_ATTR = "type";
 const QString XML_STRING_ATTR = "string";
 const QString XML_NUMBER_ATTR = "number";
+const QString XML_MIN_ATTR = "min";
+const QString XML_MAX_ATTR = "min";
 const QString XML_PERCENT_ATTR = "percent";
 
 //---------------------------------------------------------------------------
@@ -47,44 +49,42 @@ SearchCondition::asString() const
     if (type == UnknownSearchType)
         return QString::null;
 
-    QString str = Auxil::searchTypeToString (type) + ": ";
+    QString str;
+    if (negated)
+        str = "NOT ";
+
+    str += Auxil::searchTypeToString (type) + ": ";
 
     switch (type) {
         case PatternMatch:
         case AnagramMatch:
         case SubanagramMatch:
-        case TakesPrefix:
-        case DoesNotTakePrefix:
-        case TakesSuffix:
-        case DoesNotTakeSuffix:
-        case MustInclude:
-        case MustExclude:
-        case MustBelong:
+        case Prefix:
+        case Suffix:
+        case IncludeLetters:
+        case BelongToGroup:
         str += stringValue;
         break;
 
         case InWordList:
-        case NotInWordList:
         str += "...";
         break;
 
-        case ExactLength:
-        case MinLength:
-        case MaxLength:
-        case ExactAnagrams:
-        case MinAnagrams:
-        case MaxAnagrams:
-        str += QString::number (intValue);
+        case Length:
+        case NumAnagrams:
+        str += "Min " + QString::number (minValue) + ", Max "
+            + QString::number (maxValue);
         break;
 
-        case MinProbability:
-        case MaxProbability:
+        case Probability:
         // XXX: Multiply by the correct factor here!
-        str += QString::number (intValue * 1);
+        str += "Min " + QString::number (minValue * 1) + ", Max "
+            + QString::number (maxValue * 1);
         break;
 
-        case MustConsist:
-        str += QString::number (intValue) + "% " + stringValue;
+        case ConsistOf:
+        str += "Min " + QString::number (minValue * 1) + "%, Max "
+            + QString::number (maxValue * 1) + "% " + stringValue;
         break;
 
         default: break;
@@ -103,9 +103,12 @@ SearchCondition::asString() const
 QDomElement
 SearchCondition::asDomElement() const
 {
+    // XXX: Worry about this in a bit - and maintain backward compatibility
+
     QDomDocument doc;
     QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
 
+    /*
     if (type == UnknownSearchType)
         return topElement;
 
@@ -149,6 +152,7 @@ SearchCondition::asDomElement() const
 
         default: break;
     }
+    */
 
     return topElement;
 }
@@ -164,6 +168,9 @@ SearchCondition::asDomElement() const
 bool
 SearchCondition::fromDomElement (const QDomElement& element)
 {
+    // XXX: Worry about this in a bit - and maintain backward compatibility
+
+    /*
     if ((element.tagName() != XML_TOP_ELEMENT) ||
         (!element.hasAttribute (XML_TYPE_ATTR)))
     {
@@ -239,5 +246,6 @@ SearchCondition::fromDomElement (const QDomElement& element)
     }
 
     *this = tmpCondition;
+    */
     return true;
 }

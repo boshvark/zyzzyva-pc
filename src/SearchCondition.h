@@ -37,35 +37,29 @@ class SearchCondition
         PatternMatch,
         AnagramMatch,
         SubanagramMatch,
-        ExactLength,
-        MinLength,
-        MaxLength,
-        TakesPrefix,
-        DoesNotTakePrefix,
-        TakesSuffix,
-        DoesNotTakeSuffix,
-        MustInclude,
-        MustExclude,
-        MustConsist,
-        MustBelong,
+        Length,
+        Prefix,
+        Suffix,
+        IncludeLetters,
+        ConsistOf,
+        BelongToGroup,
         InWordList,
-        NotInWordList,
-        ExactAnagrams,
-        MinAnagrams,
-        MaxAnagrams,
-        MinProbability,
-        MaxProbability
+        NumAnagrams,
+        Probability
     };
 
     public:
-    SearchCondition() : type (UnknownSearchType), intValue (0) { }
+    SearchCondition() : type (UnknownSearchType), minValue (0),
+                        maxValue (0) { }
     QString asString() const;
     QDomElement asDomElement() const;
     bool fromDomElement (const QDomElement& element);
 
     SearchType type;
     QString stringValue;
-    int intValue;
+    int minValue;
+    int maxValue;
+    bool negated;
 };
 
 #endif // ZYZZYVA_SEARCH_CONDITION_H

@@ -42,24 +42,15 @@ const QString SET_NEW_IN_OWL2_STRING = "New in OWL2";
 const QString SEARCH_TYPE_PATTERN_MATCH = "Pattern Match";
 const QString SEARCH_TYPE_ANAGRAM_MATCH = "Anagram Match";
 const QString SEARCH_TYPE_SUBANAGRAM_MATCH = "Subanagram Match";
-const QString SEARCH_TYPE_EXACT_LENGTH = "Exact Length";
-const QString SEARCH_TYPE_MIN_LENGTH = "Minimum Length";
-const QString SEARCH_TYPE_MAX_LENGTH = "Maximum Length";
-const QString SEARCH_TYPE_TAKES_PREFIX = "Takes Prefix";
-const QString SEARCH_TYPE_DOES_NOT_TAKE_PREFIX = "Does Not Take Prefix";
-const QString SEARCH_TYPE_TAKES_SUFFIX = "Takes Suffix";
-const QString SEARCH_TYPE_DOES_NOT_TAKE_SUFFIX = "Does Not Take Suffix";
-const QString SEARCH_TYPE_MUST_INCLUDE = "Must Include";
-const QString SEARCH_TYPE_MUST_EXCLUDE = "Must Exclude";
-const QString SEARCH_TYPE_MUST_CONSIST = "Must Consist of";
-const QString SEARCH_TYPE_MUST_BELONG = "Must Belong to";
-const QString SEARCH_TYPE_IN_WORD_LIST = "Must Be in Word List";
-const QString SEARCH_TYPE_NOT_IN_WORD_LIST = "Must Not Be in Word List";
-const QString SEARCH_TYPE_EXACT_ANAGRAMS = "Exact Anagrams";
-const QString SEARCH_TYPE_MIN_ANAGRAMS = "Minimum Anagrams";
-const QString SEARCH_TYPE_MAX_ANAGRAMS = "Maximum Anagrams";
-const QString SEARCH_TYPE_MIN_PROBABILITY = "Minimum Probability";
-const QString SEARCH_TYPE_MAX_PROBABILITY = "Maximum Probability";
+const QString SEARCH_TYPE_LENGTH = "Length";
+const QString SEARCH_TYPE_PREFIX = "Takes Prefix";
+const QString SEARCH_TYPE_SUFFIX = "Takes Suffix";
+const QString SEARCH_TYPE_INCLUDE_LETTERS = "Includes Letters";
+const QString SEARCH_TYPE_CONSIST_OF = "Consists of";
+const QString SEARCH_TYPE_BELONG_TO_GROUP = "Belongs to Group";
+const QString SEARCH_TYPE_IN_WORD_LIST = "In Word List";
+const QString SEARCH_TYPE_NUM_ANAGRAMS = "Number of Anagrams";
+const QString SEARCH_TYPE_PROBABILITY = "Probability";
 
 const QString QUIZ_TYPE_PATTERNS = "Patterns";
 const QString QUIZ_TYPE_ANAGRAMS = "Anagrams";
@@ -327,42 +318,24 @@ Auxil::stringToSearchType (const QString& string)
         return SearchCondition::AnagramMatch;
     else if (string == SEARCH_TYPE_SUBANAGRAM_MATCH)
         return SearchCondition::SubanagramMatch;
-    else if (string == SEARCH_TYPE_EXACT_LENGTH)
-        return SearchCondition::ExactLength;
-    else if (string == SEARCH_TYPE_MIN_LENGTH)
-        return SearchCondition::MinLength;
-    else if (string == SEARCH_TYPE_MAX_LENGTH)
-        return SearchCondition::MaxLength;
-    else if (string == SEARCH_TYPE_TAKES_PREFIX)
-        return SearchCondition::TakesPrefix;
-    else if (string == SEARCH_TYPE_DOES_NOT_TAKE_PREFIX)
-        return SearchCondition::DoesNotTakePrefix;
-    else if (string == SEARCH_TYPE_TAKES_SUFFIX)
-        return SearchCondition::TakesSuffix;
-    else if (string == SEARCH_TYPE_DOES_NOT_TAKE_SUFFIX)
-        return SearchCondition::DoesNotTakeSuffix;
-    else if (string == SEARCH_TYPE_MUST_INCLUDE)
-        return SearchCondition::MustInclude;
-    else if (string == SEARCH_TYPE_MUST_EXCLUDE)
-        return SearchCondition::MustExclude;
-    else if (string == SEARCH_TYPE_MUST_CONSIST)
-        return SearchCondition::MustConsist;
-    else if (string == SEARCH_TYPE_MUST_BELONG)
-        return SearchCondition::MustBelong;
+    else if (string == SEARCH_TYPE_LENGTH)
+        return SearchCondition::Length;
+    else if (string == SEARCH_TYPE_PREFIX)
+        return SearchCondition::Prefix;
+    else if (string == SEARCH_TYPE_SUFFIX)
+        return SearchCondition::Suffix;
+    else if (string == SEARCH_TYPE_INCLUDE_LETTERS)
+        return SearchCondition::IncludeLetters;
+    else if (string == SEARCH_TYPE_CONSIST_OF)
+        return SearchCondition::ConsistOf;
+    else if (string == SEARCH_TYPE_BELONG_TO_GROUP)
+        return SearchCondition::BelongToGroup;
     else if (string == SEARCH_TYPE_IN_WORD_LIST)
         return SearchCondition::InWordList;
-    else if (string == SEARCH_TYPE_NOT_IN_WORD_LIST)
-        return SearchCondition::NotInWordList;
-    else if (string == SEARCH_TYPE_EXACT_ANAGRAMS)
-        return SearchCondition::ExactAnagrams;
-    else if (string == SEARCH_TYPE_MIN_ANAGRAMS)
-        return SearchCondition::MinAnagrams;
-    else if (string == SEARCH_TYPE_MAX_ANAGRAMS)
-        return SearchCondition::MaxAnagrams;
-    else if (string == SEARCH_TYPE_MIN_PROBABILITY)
-        return SearchCondition::MinProbability;
-    else if (string == SEARCH_TYPE_MAX_PROBABILITY)
-        return SearchCondition::MaxProbability;
+    else if (string == SEARCH_TYPE_NUM_ANAGRAMS)
+        return SearchCondition::NumAnagrams;
+    else if (string == SEARCH_TYPE_PROBABILITY)
+        return SearchCondition::Probability;
     return SearchCondition::UnknownSearchType;
 }
 
@@ -387,59 +360,32 @@ Auxil::searchTypeToString (SearchCondition::SearchType type)
         case SearchCondition::SubanagramMatch:
         return SEARCH_TYPE_SUBANAGRAM_MATCH;
 
-        case SearchCondition::ExactLength:
-        return SEARCH_TYPE_EXACT_LENGTH;
+        case SearchCondition::Length:
+        return SEARCH_TYPE_LENGTH;
 
-        case SearchCondition::MinLength:
-        return SEARCH_TYPE_MIN_LENGTH;
+        case SearchCondition::Prefix:
+        return SEARCH_TYPE_PREFIX;
 
-        case SearchCondition::MaxLength:
-        return SEARCH_TYPE_MAX_LENGTH;
+        case SearchCondition::Suffix:
+        return SEARCH_TYPE_SUFFIX;
 
-        case SearchCondition::TakesPrefix:
-        return SEARCH_TYPE_TAKES_PREFIX;
+        case SearchCondition::IncludeLetters:
+        return SEARCH_TYPE_INCLUDE_LETTERS;
 
-        case SearchCondition::DoesNotTakePrefix:
-        return SEARCH_TYPE_DOES_NOT_TAKE_PREFIX;
+        case SearchCondition::ConsistOf:
+        return SEARCH_TYPE_CONSIST_OF;
 
-        case SearchCondition::TakesSuffix:
-        return SEARCH_TYPE_TAKES_SUFFIX;
-
-        case SearchCondition::DoesNotTakeSuffix:
-        return SEARCH_TYPE_DOES_NOT_TAKE_SUFFIX;
-
-        case SearchCondition::MustInclude:
-        return SEARCH_TYPE_MUST_INCLUDE;
-
-        case SearchCondition::MustExclude:
-        return SEARCH_TYPE_MUST_EXCLUDE;
-
-        case SearchCondition::MustConsist:
-        return SEARCH_TYPE_MUST_CONSIST;
-
-        case SearchCondition::MustBelong:
-        return SEARCH_TYPE_MUST_BELONG;
+        case SearchCondition::BelongToGroup:
+        return SEARCH_TYPE_BELONG_TO_GROUP;
 
         case SearchCondition::InWordList:
         return SEARCH_TYPE_IN_WORD_LIST;
 
-        case SearchCondition::NotInWordList:
-        return SEARCH_TYPE_NOT_IN_WORD_LIST;
+        case SearchCondition::NumAnagrams:
+        return SEARCH_TYPE_NUM_ANAGRAMS;
 
-        case SearchCondition::ExactAnagrams:
-        return SEARCH_TYPE_EXACT_ANAGRAMS;
-
-        case SearchCondition::MinAnagrams:
-        return SEARCH_TYPE_MIN_ANAGRAMS;
-
-        case SearchCondition::MaxAnagrams:
-        return SEARCH_TYPE_MAX_ANAGRAMS;
-
-        case SearchCondition::MinProbability:
-        return SEARCH_TYPE_MIN_PROBABILITY;
-
-        case SearchCondition::MaxProbability:
-        return SEARCH_TYPE_MAX_PROBABILITY;
+        case SearchCondition::Probability:
+        return SEARCH_TYPE_PROBABILITY;
 
         default: return QString::null;
     }

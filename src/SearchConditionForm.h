@@ -26,6 +26,7 @@
 #define ZYZZYVA_SEARCH_CONDITION_FORM_H
 
 #include "SearchCondition.h"
+#include <QCheckBox>
 #include <QComboBox>
 #include <QSpinBox>
 #include <QStackedWidget>
@@ -59,16 +60,19 @@ class SearchConditionForm : public QWidget
     bool matchStringIsValid (const QString& string) const;
 
     private:
+    QCheckBox*      negationCbox;
     QComboBox*      typeCbox;
     QStackedWidget* paramStack;
     QWidget*        paramLineWidget;
     WordLineEdit*   paramLine;
     QWidget*        paramSboxWidget;
-    QSpinBox*       paramSbox;
+    QSpinBox*       paramMinSbox;
+    QSpinBox*       paramMaxSbox;
     QWidget*        paramCboxWidget;
     QComboBox*      paramCbox;
     QWidget*        paramConsistWidget;
-    QSpinBox*       paramConsistSbox;
+    QSpinBox*       paramConsistMinSbox;
+    QSpinBox*       paramConsistMaxSbox;
     WordLineEdit*   paramConsistLine;
     QWidget*        paramWordListWidget;
     QLineEdit*      paramWordListLine;

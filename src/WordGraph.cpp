@@ -143,23 +143,20 @@ WordGraph::search (const SearchSpec& spec) const
             case SearchCondition::PatternMatch:
             case SearchCondition::AnagramMatch:
             case SearchCondition::SubanagramMatch:
-            matchConditions << condition; 
+            matchConditions.append (condition); 
             if (condition.stringValue.contains ("?") ||
                 condition.stringValue.contains ("["))
                 ++numWildcardConditions;
             break;
 
-            case SearchCondition::ExactLength:
-            maxLength = condition.intValue;
+            case SearchCondition::Length:
+            if (condition.maxValue < maxLength)
+                maxLength = condition.maxValue;
             break;
 
-            case SearchCondition::MaxLength:
-            if (condition.intValue < maxLength)
-                maxLength = condition.intValue;
-            break;
-
-            case SearchCondition::MustExclude:
-            excludeLetters += condition.stringValue;
+            case SearchCondition::IncludeLetters:
+            if (condition.negated)
+                excludeLetters += condition.stringValue;
             break;
 
             default: break;
@@ -562,47 +559,42 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
         const SearchCondition& condition = it.next();
 
         switch (condition.type) {
-            case SearchCondition::ExactLength:
-            if (int (word.length()) != condition.intValue)
+            case SearchCondition::Length:
+            if ((int (word.length()) < condition.minValue) ||
+                (int (word.length()) > condition.maxValue))
                 return false;
             break;
 
-            case SearchCondition::MinLength:
-            if (int (word.length()) < condition.intValue)
-                return false;
-            break;
-
-            case SearchCondition::MustInclude: {
+            case SearchCondition::IncludeLetters: {
                 QString tmpWord = word;
                 int includeLen = condition.stringValue.length();
                 for (int i = 0; i < includeLen; ++i) {
                     int index = tmpWord.indexOf (condition.stringValue.at (i));
-                    if (index < 0)
+                    if ((index < 0) ^ condition.negated)
                         return false;
                     tmpWord.replace (index, 1, "");
                 }
             }
             break;
 
-            case SearchCondition::MustConsist:
-            if (condition.intValue > 0) {
+            case SearchCondition::ConsistOf:
+            if ((condition.minValue > 0) || (condition.maxValue < 100)) {
                 int wordLen = word.length();
                 int consist = 0;
                 for (int i = 0; i < wordLen; ++i) {
                     if (condition.stringValue.contains (word.at (i)))
                         ++consist;
                 }
-                if (((consist * 100) / wordLen) < condition.intValue)
+                int consistPct = (consist * 100) / wordLen;
+                if ((consistPct < condition.minValue) ||
+                    (consistPct > condition.maxValue))
                     return false;
             }
             break;
 
             // XXX: Implement these!
-            //case SearchCondition::ExactAnagrams:
-            //case SearchCondition::MinAnagrams:
-            //case SearchCondition::MaxAnagrams:
-            //case SearchCondition::MinProbability:
-            //case SearchCondition::MaxProbability:
+            //case SearchCondition::NumAnagrams:
+            //case SearchCondition::Probability:
 
             default: break;
         }

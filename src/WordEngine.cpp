@@ -244,12 +244,10 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             wordListCondition = true;
             break;
 
-            case SearchCondition::ExactAnagrams:
-            case SearchCondition::MinAnagrams:
-            case SearchCondition::MaxAnagrams:
+            case SearchCondition::NumAnagrams:
             break;
 
-            case SearchCondition::MustBelong: {
+            case SearchCondition::BelongToGroup: {
                 SearchSet searchSet = Auxil::stringToSearchSet
                     (condition.stringValue);
                 if (searchSet == SetNewInOwl2) {
@@ -467,27 +465,38 @@ WordEngine::matchesConditions (const QString& word, const
 
         switch (condition.type) {
 
-            case SearchCondition::TakesPrefix:
-            if (!isAcceptable (condition.stringValue + wordUpper))
+            case SearchCondition::Prefix:
+            if ((!isAcceptable (condition.stringValue + wordUpper))
+                ^ condition.negated)
                 return false;
             break;
 
-            case SearchCondition::DoesNotTakePrefix:
-            if (isAcceptable (condition.stringValue + wordUpper))
+            case SearchCondition::Suffix:
+
+
+
+
+            //if (!condition.negated && 
+            //    (!isAcceptable (wordUpper + condition.stringValue)))
+            //{
+            //    qDebug() << "Returning false A for " << wordUpper;
+            //    return false;
+            //}
+
+            //if (condition.negated &&
+            //    (isAcceptable (wordUpper + condition.stringValue)))
+            //{
+            //    qDebug() << "Returning false B for " << wordUpper;
+            //    return false;
+            //}
+            //break;
+
+            if ((!isAcceptable (wordUpper + condition.stringValue))
+                ^ condition.negated)
                 return false;
             break;
 
-            case SearchCondition::TakesSuffix:
-            if (!isAcceptable (wordUpper + condition.stringValue))
-                return false;
-            break;
-
-            case SearchCondition::DoesNotTakeSuffix:
-            if (isAcceptable (wordUpper + condition.stringValue))
-                return false;
-            break;
-
-            case SearchCondition::MustBelong: {
+            case SearchCondition::BelongToGroup: {
                 SearchSet searchSet = Auxil::stringToSearchSet
                     (condition.stringValue);
                 if (searchSet == UnknownSearchSet)
@@ -498,30 +507,17 @@ WordEngine::matchesConditions (const QString& word, const
             break;
 
             case SearchCondition::InWordList:
-            if (!condition.stringValue.contains
+            if ((!condition.stringValue.contains
                 (QRegExp ("\\b" + wordUpper + "\\b")))
+                ^ condition.negated)
                 return false;
             break;
 
-            case SearchCondition::NotInWordList:
-            if (condition.stringValue.contains
-                (QRegExp ("\\b" + wordUpper + "\\b")))
-                return false;
-            break;
-
-            case SearchCondition::ExactAnagrams:
-            if (numAnagrams (wordUpper) != condition.intValue)
-                return false;
-            break;
-
-            case SearchCondition::MinAnagrams:
-            if (numAnagrams (wordUpper) < condition.intValue)
-                return false;
-            break;
-
-            case SearchCondition::MaxAnagrams:
-            if (numAnagrams (wordUpper) > condition.intValue)
-                return false;
+            case SearchCondition::NumAnagrams: {
+                int num = numAnagrams (wordUpper); 
+                if ((num < condition.minValue) || (num > condition.maxValue))
+                    return false;
+            }
             break;
 
             default: break;
@@ -683,22 +679,12 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
 
         // Note the minimum and maximum number of anagrams from any Number of
         // Anagrams conditions
-        if (condition.type == SearchCondition::ExactAnagrams) {
-            if ((condition.intValue < minAnagrams) ||
-                (condition.intValue > maxAnagrams))
+        if (condition.type == SearchCondition::NumAnagrams) {
+            if ((condition.minValue > maxAnagrams) ||
+                (condition.maxValue < minAnagrams))
                 return wordList;
-            minAnagrams = condition.intValue;
-            maxAnagrams = condition.intValue;
-        }
-        else if (condition.type == SearchCondition::MinAnagrams) {
-            if (condition.intValue > maxAnagrams)
-                return wordList;
-            minAnagrams = condition.intValue;
-        }
-        else if (condition.type == SearchCondition::MaxAnagrams) {
-            if (condition.intValue < minAnagrams)
-                return wordList;
-            maxAnagrams = condition.intValue;
+            minAnagrams = condition.minValue;
+            maxAnagrams = condition.maxValue;
         }
 
         // Only InWordList conditions allowed beyond this point - look up

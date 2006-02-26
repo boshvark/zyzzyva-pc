@@ -59,28 +59,24 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     mainHlay->setMargin (0);
     mainHlay->setSpacing (SPACING);
 
+    negationCbox = new QCheckBox ("Not");
+    Q_CHECK_PTR (negationCbox);
+    negationCbox->setEnabled (false);
+    mainHlay->addWidget (negationCbox);
+
     QStringList types;
     types << Auxil::searchTypeToString (SearchCondition::AnagramMatch)
           << Auxil::searchTypeToString (SearchCondition::PatternMatch)
           << Auxil::searchTypeToString (SearchCondition::SubanagramMatch)
-          << Auxil::searchTypeToString (SearchCondition::ExactLength)
-          << Auxil::searchTypeToString (SearchCondition::MinLength)
-          << Auxil::searchTypeToString (SearchCondition::MaxLength)
-          << Auxil::searchTypeToString (SearchCondition::TakesPrefix)
-          << Auxil::searchTypeToString (SearchCondition::DoesNotTakePrefix)
-          << Auxil::searchTypeToString (SearchCondition::TakesSuffix)
-          << Auxil::searchTypeToString (SearchCondition::DoesNotTakeSuffix)
-          << Auxil::searchTypeToString (SearchCondition::MustInclude)
-          << Auxil::searchTypeToString (SearchCondition::MustExclude)
-          << Auxil::searchTypeToString (SearchCondition::MustConsist)
-          << Auxil::searchTypeToString (SearchCondition::MustBelong)
+          << Auxil::searchTypeToString (SearchCondition::Length)
+          << Auxil::searchTypeToString (SearchCondition::Prefix)
+          << Auxil::searchTypeToString (SearchCondition::Suffix)
+          << Auxil::searchTypeToString (SearchCondition::IncludeLetters)
+          << Auxil::searchTypeToString (SearchCondition::ConsistOf)
+          << Auxil::searchTypeToString (SearchCondition::BelongToGroup)
           << Auxil::searchTypeToString (SearchCondition::InWordList)
-          << Auxil::searchTypeToString (SearchCondition::NotInWordList)
-          << Auxil::searchTypeToString (SearchCondition::ExactAnagrams)
-          << Auxil::searchTypeToString (SearchCondition::MinAnagrams)
-          << Auxil::searchTypeToString (SearchCondition::MaxAnagrams);
-          //<< Auxil::searchTypeToString (SearchCondition::MinProbability)
-          //<< Auxil::searchTypeToString (SearchCondition::MaxProbability);
+          << Auxil::searchTypeToString (SearchCondition::NumAnagrams);
+          //<< Auxil::searchTypeToString (SearchCondition::Probability);
 
     typeCbox = new QComboBox;
     Q_CHECK_PTR (typeCbox);
@@ -109,19 +105,36 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     paramLineHlay->addWidget (paramLine);
     paramStack->addWidget (paramLineWidget);
 
-    // Frame containing just a spin box
+    // Frame containing just spin boxes
     paramSboxWidget = new QWidget;
     Q_CHECK_PTR (paramSboxWidget);
     QHBoxLayout* paramSboxHlay = new QHBoxLayout (paramSboxWidget);
     Q_CHECK_PTR (paramSboxHlay);
     paramSboxHlay->setMargin (0);
     paramSboxHlay->setSpacing (SPACING);
-    paramSbox = new QSpinBox;
-    Q_CHECK_PTR (paramSbox);
-    paramSbox->setMinimum (0);
-    connect (paramSbox, SIGNAL (valueChanged (int)),
+
+    QLabel* paramMinLabel = new QLabel ("Min:");
+    Q_CHECK_PTR (paramMinLabel);
+    paramSboxHlay->addWidget (paramMinLabel);
+
+    paramMinSbox = new QSpinBox;
+    Q_CHECK_PTR (paramMinSbox);
+    paramMinSbox->setMinimum (0);
+    connect (paramMinSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
-    paramSboxHlay->addWidget (paramSbox);
+    paramSboxHlay->addWidget (paramMinSbox);
+
+    QLabel* paramMaxLabel = new QLabel ("Max:");
+    Q_CHECK_PTR (paramMaxLabel);
+    paramSboxHlay->addWidget (paramMaxLabel);
+
+    paramMaxSbox = new QSpinBox;
+    Q_CHECK_PTR (paramMaxSbox);
+    paramMaxSbox->setMinimum (0);
+    connect (paramMaxSbox, SIGNAL (valueChanged (int)),
+             SIGNAL (contentsChanged()));
+    paramSboxHlay->addWidget (paramMaxSbox);
+
     paramStack->addWidget (paramSboxWidget);
 
     // Frame containing just a combo box
@@ -145,16 +158,39 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (paramConsistHlay);
     paramConsistHlay->setMargin (0);
     paramConsistHlay->setSpacing (SPACING);
-    paramConsistSbox = new QSpinBox;
-    Q_CHECK_PTR (paramConsistSbox);
-    paramConsistSbox->setMinimum (0);
-    paramConsistSbox->setMaximum (100);
-    connect (paramConsistSbox, SIGNAL (valueChanged (int)),
+
+    QLabel* paramConsistMinLabel = new QLabel ("Min:");
+    Q_CHECK_PTR (paramConsistMinLabel);
+    paramConsistHlay->addWidget (paramConsistMinLabel);
+
+    paramConsistMinSbox = new QSpinBox;
+    Q_CHECK_PTR (paramConsistMinSbox);
+    paramConsistMinSbox->setMinimum (0);
+    paramConsistMinSbox->setMaximum (100);
+    connect (paramConsistMinSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
-    paramConsistHlay->addWidget (paramConsistSbox);
-    QLabel* pctLabel = new QLabel ("%");
-    Q_CHECK_PTR (pctLabel);
-    paramConsistHlay->addWidget (pctLabel);
+    paramConsistHlay->addWidget (paramConsistMinSbox);
+
+    QLabel* minPctLabel = new QLabel ("%");
+    Q_CHECK_PTR (minPctLabel);
+    paramConsistHlay->addWidget (minPctLabel);
+
+    QLabel* paramConsistMaxLabel = new QLabel ("Max:");
+    Q_CHECK_PTR (paramConsistMaxLabel);
+    paramConsistHlay->addWidget (paramConsistMaxLabel);
+
+    paramConsistMaxSbox = new QSpinBox;
+    Q_CHECK_PTR (paramConsistMaxSbox);
+    paramConsistMaxSbox->setMinimum (0);
+    paramConsistMaxSbox->setMaximum (100);
+    connect (paramConsistMaxSbox, SIGNAL (valueChanged (int)),
+             SIGNAL (contentsChanged()));
+    paramConsistHlay->addWidget (paramConsistMaxSbox);
+
+    QLabel* maxPctLabel = new QLabel ("%");
+    Q_CHECK_PTR (maxPctLabel);
+    paramConsistHlay->addWidget (maxPctLabel);
+
     paramConsistLine = new WordLineEdit;
     Q_CHECK_PTR (paramConsistLine);
     paramConsistLine->setValidator (letterValidator);
@@ -163,6 +199,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     connect (paramConsistLine, SIGNAL (textChanged (const QString&)),
              SIGNAL (contentsChanged()));
     paramConsistHlay->addWidget (paramConsistLine);
+
     paramStack->addWidget (paramConsistWidget);
 
     // Frame containing disabled input line and push button for getting word
@@ -203,42 +240,36 @@ SearchConditionForm::getSearchCondition() const
     SearchCondition condition;
     QString typeStr = typeCbox->currentText();
     condition.type = Auxil::stringToSearchType (typeStr);
+    condition.negated = (negationCbox->checkState() == Qt::Checked);
 
     switch (condition.type) {
         case SearchCondition::PatternMatch:
         case SearchCondition::AnagramMatch:
         case SearchCondition::SubanagramMatch:
-        case SearchCondition::TakesPrefix:
-        case SearchCondition::DoesNotTakePrefix:
-        case SearchCondition::TakesSuffix:
-        case SearchCondition::DoesNotTakeSuffix:
-        case SearchCondition::MustInclude:
-        case SearchCondition::MustExclude:
+        case SearchCondition::Prefix:
+        case SearchCondition::Suffix:
+        case SearchCondition::IncludeLetters:
         condition.stringValue = paramLine->text();
         break;
 
-        case SearchCondition::ExactLength:
-        case SearchCondition::MinLength:
-        case SearchCondition::MaxLength:
-        case SearchCondition::ExactAnagrams:
-        case SearchCondition::MinAnagrams:
-        case SearchCondition::MaxAnagrams:
-        case SearchCondition::MinProbability:
-        case SearchCondition::MaxProbability:
-        condition.intValue = paramSbox->value();
+        case SearchCondition::Length:
+        case SearchCondition::NumAnagrams:
+        case SearchCondition::Probability:
+        condition.minValue = paramMinSbox->value();
+        condition.maxValue = paramMaxSbox->value();
         break;
 
-        case SearchCondition::MustConsist:
+        case SearchCondition::ConsistOf:
         condition.stringValue = paramConsistLine->text();
-        condition.intValue = paramConsistSbox->value();
+        condition.minValue = paramConsistMinSbox->value();
+        condition.maxValue = paramConsistMaxSbox->value();
         break;
 
-        case SearchCondition::MustBelong:
+        case SearchCondition::BelongToGroup:
         condition.stringValue = paramCbox->currentText();
         break;
 
         case SearchCondition::InWordList:
-        case SearchCondition::NotInWordList:
         condition.stringValue = paramWordListString;
         break;
 
@@ -270,36 +301,30 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
         case SearchCondition::PatternMatch:
         case SearchCondition::AnagramMatch:
         case SearchCondition::SubanagramMatch:
-        case SearchCondition::TakesPrefix:
-        case SearchCondition::DoesNotTakePrefix:
-        case SearchCondition::TakesSuffix:
-        case SearchCondition::DoesNotTakeSuffix:
-        case SearchCondition::MustInclude:
-        case SearchCondition::MustExclude:
+        case SearchCondition::Prefix:
+        case SearchCondition::Suffix:
+        case SearchCondition::IncludeLetters:
         paramLine->setText (condition.stringValue);
         break;
 
-        case SearchCondition::ExactLength:
-        case SearchCondition::MinLength:
-        case SearchCondition::MaxLength:
-        case SearchCondition::ExactAnagrams:
-        case SearchCondition::MinAnagrams:
-        case SearchCondition::MaxAnagrams:
-        paramSbox->setValue (condition.intValue);
+        case SearchCondition::Length:
+        case SearchCondition::NumAnagrams:
+        paramMinSbox->setValue (condition.minValue);
+        paramMinSbox->setValue (condition.maxValue);
         break;
 
-        case SearchCondition::MustConsist:
-        paramConsistSbox->setValue (condition.intValue);
+        case SearchCondition::ConsistOf:
+        paramConsistMinSbox->setValue (condition.minValue);
+        paramConsistMaxSbox->setValue (condition.maxValue);
         paramConsistLine->setText (condition.stringValue);
         break;
 
-        case SearchCondition::MustBelong:
+        case SearchCondition::BelongToGroup:
         paramCbox->setCurrentIndex (paramCbox->findText
                                     (condition.stringValue));
         break;
 
         case SearchCondition::InWordList:
-        case SearchCondition::NotInWordList:
         setWordListString (condition.stringValue);
         break;
 
@@ -324,30 +349,23 @@ SearchConditionForm::isValid() const
         case SearchCondition::PatternMatch:
         case SearchCondition::AnagramMatch:
         case SearchCondition::SubanagramMatch:
-        case SearchCondition::MustInclude:
-        case SearchCondition::MustExclude:
+        case SearchCondition::IncludeLetters:
         return matchStringIsValid (paramLine->text());
 
-        case SearchCondition::TakesPrefix:
-        case SearchCondition::DoesNotTakePrefix:
-        case SearchCondition::TakesSuffix:
-        case SearchCondition::DoesNotTakeSuffix:
+        case SearchCondition::Prefix:
+        case SearchCondition::Suffix:
         return !paramLine->text().isEmpty();
 
-        case SearchCondition::ExactLength:
-        case SearchCondition::MinLength:
-        case SearchCondition::MaxLength:
-        case SearchCondition::ExactAnagrams:
-        case SearchCondition::MinAnagrams:
-        case SearchCondition::MaxAnagrams:
-        return paramSbox->value() > 0;
+        case SearchCondition::Length:
+        case SearchCondition::NumAnagrams:
+        return (paramMinSbox->value() > 0) && (paramMaxSbox->value() > 0) &&
+               (paramMinSbox->value() <= paramMaxSbox->value());
 
-        case SearchCondition::MustConsist:
-        return (paramConsistSbox->value() > 0) &&
-               !paramConsistLine->text().isEmpty();
+        case SearchCondition::ConsistOf:
+        return (paramConsistMinSbox->value() <= paramConsistMaxSbox->value())
+            && !paramConsistLine->text().isEmpty();
 
         case SearchCondition::InWordList:
-        case SearchCondition::NotInWordList:
         return !paramWordListString.isEmpty();
 
         case SearchCondition::UnknownSearchType:
@@ -373,41 +391,46 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::PatternMatch:
         case SearchCondition::AnagramMatch:
         case SearchCondition::SubanagramMatch:
+        negationCbox->setCheckState (Qt::Unchecked);
+        negationCbox->setEnabled (false);
         paramStack->setCurrentWidget (paramLineWidget);
         paramLine->setValidator (patternValidator);
         break;
 
-        case SearchCondition::TakesPrefix:
-        case SearchCondition::DoesNotTakePrefix:
-        case SearchCondition::TakesSuffix:
-        case SearchCondition::DoesNotTakeSuffix:
-        case SearchCondition::MustInclude:
-        case SearchCondition::MustExclude:
+        case SearchCondition::Prefix:
+        case SearchCondition::Suffix:
+        case SearchCondition::IncludeLetters:
+        negationCbox->setEnabled (true);
         paramStack->setCurrentWidget (paramLineWidget);
         paramLine->setValidator (letterValidator);
         break;
 
-        case SearchCondition::ExactLength:
-        case SearchCondition::MinLength:
-        case SearchCondition::MaxLength:
-        paramSbox->setMaximum (MAX_WORD_LEN);
+        case SearchCondition::Length:
+        negationCbox->setCheckState (Qt::Unchecked);
+        negationCbox->setEnabled (false);
+        paramMinSbox->setMaximum (MAX_WORD_LEN);
+        paramMaxSbox->setMaximum (MAX_WORD_LEN);
         paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
-        case SearchCondition::ExactAnagrams:
-        case SearchCondition::MinAnagrams:
-        case SearchCondition::MaxAnagrams:
-        paramSbox->setMaximum (100);
+        case SearchCondition::NumAnagrams:
+        negationCbox->setCheckState (Qt::Unchecked);
+        negationCbox->setEnabled (false);
+        paramMinSbox->setMaximum (100);
+        paramMaxSbox->setMaximum (100);
         paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
-        case SearchCondition::MinProbability:
-        case SearchCondition::MaxProbability:
-        paramSbox->setMaximum (100);
+        case SearchCondition::Probability:
+        negationCbox->setCheckState (Qt::Unchecked);
+        negationCbox->setEnabled (false);
+        paramMinSbox->setMaximum (100);
+        paramMaxSbox->setMaximum (100);
         paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
-        case SearchCondition::MustBelong:
+        case SearchCondition::BelongToGroup:
+        negationCbox->setEnabled (true);
         paramCbox->clear();
         paramCbox->addItem (Auxil::searchSetToString (SetHookWords));
         paramCbox->addItem (Auxil::searchSetToString (SetFrontHooks));
@@ -417,17 +440,19 @@ SearchConditionForm::typeChanged (const QString& string)
         //paramCbox->addItem (Auxil::searchSetToString (SetTypeThreeSevens));
         paramCbox->addItem (Auxil::searchSetToString (SetTypeOneEights));
         paramCbox->addItem (Auxil::searchSetToString
-                               (SetEightsFromSevenLetterStems));
+                            (SetEightsFromSevenLetterStems));
         paramCbox->addItem (Auxil::searchSetToString (SetNewInOwl2));
         paramStack->setCurrentWidget (paramCboxWidget);
         break;
 
-        case SearchCondition::MustConsist:
+        case SearchCondition::ConsistOf:
+        negationCbox->setCheckState (Qt::Unchecked);
+        negationCbox->setEnabled (false);
         paramStack->setCurrentWidget (paramConsistWidget);
         break;
 
         case SearchCondition::InWordList:
-        case SearchCondition::NotInWordList:
+        negationCbox->setEnabled (true);
         paramStack->setCurrentWidget (paramWordListWidget);
         break;
 
@@ -469,9 +494,11 @@ void
 SearchConditionForm::reset()
 {
     paramLine->setText ("");
-    paramSbox->setValue (0);
+    paramMinSbox->setValue (0);
+    paramMaxSbox->setValue (99999);
     paramCbox->setCurrentIndex (0);
-    paramConsistSbox->setValue (0);
+    paramConsistMinSbox->setValue (0);
+    paramConsistMaxSbox->setValue (100);
     paramConsistLine->setText ("");
     typeCbox->setCurrentIndex (0);
     typeChanged (typeCbox->currentText());

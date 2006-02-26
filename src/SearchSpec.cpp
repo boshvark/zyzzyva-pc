@@ -156,7 +156,8 @@ SearchSpec::optimize()
     while (it.hasNext()) {
 
         const SearchCondition& condition = it.next();
-        int intValue = condition.intValue;
+        int minValue = condition.minValue;
+        int maxValue = condition.maxValue;
         QString stringValue = condition.stringValue;
         switch (condition.type) {
 
@@ -214,59 +215,47 @@ SearchSpec::optimize()
             }
             break;
 
-            case SearchCondition::ExactLength:
-            if ((intValue < minLength) || (intValue > maxLength)) {
-                conditions.clear();
-                return;
-            }
-            minLength = maxLength = intValue;
-            break;
-
-            case SearchCondition::MinLength:
-            if (intValue > minLength)
-                minLength = intValue;
-            if ((minLength > MAX_WORD_LEN) || (minLength > maxLength)) {
+            case SearchCondition::Length:
+            if (minValue > minLength)
+                minLength = minValue;
+            if (maxValue < maxLength)
+                maxLength = maxValue;
+            if ((minLength > MAX_WORD_LEN) || (maxLength <= 0) ||
+                (minLength > maxLength))
+            {
                 conditions.clear();
                 return;
             }
             break;
 
-            case SearchCondition::MaxLength:
-            if (intValue < maxLength)
-                maxLength = intValue;
-            if ((maxLength <= 0) || (maxLength < minLength)) {
-                conditions.clear();
-                return;
-            }
-            break;
-
-            case SearchCondition::MustInclude:
-            if (!mustExclude.isEmpty()) {
-                for (int i = 0; i < int (stringValue.length()); ++i) {
-                    if (mustExclude.contains (stringValue.at (i))) {
-                        conditions.clear();
-                        return;
+            case SearchCondition::IncludeLetters:
+            if (condition.negated) {
+                if (!mustInclude.isEmpty()) {
+                    for (int i = 0; i < int (stringValue.length()); ++i) {
+                        if (mustInclude.contains (stringValue.at (i))) {
+                            conditions.clear();
+                            return;
+                        }
                     }
                 }
+                mustExclude += stringValue;
+                newConditions.append (condition);
             }
-            mustInclude += stringValue;
-            newConditions.append (condition);
-            break;
-
-            case SearchCondition::MustExclude:
-            if (!mustInclude.isEmpty()) {
-                for (int i = 0; i < int (stringValue.length()); ++i) {
-                    if (mustInclude.contains (stringValue.at (i))) {
-                        conditions.clear();
-                        return;
+            else {
+                if (!mustExclude.isEmpty()) {
+                    for (int i = 0; i < int (stringValue.length()); ++i) {
+                        if (mustExclude.contains (stringValue.at (i))) {
+                            conditions.clear();
+                            return;
+                        }
                     }
                 }
+                mustInclude += stringValue;
+                newConditions.append (condition);
             }
-            mustExclude += stringValue;
-            newConditions.append (condition);
             break;
 
-            case SearchCondition::MustBelong: {
+            case SearchCondition::BelongToGroup: {
                 SearchSet ss = Auxil::stringToSearchSet (stringValue);
                 if (ss == UnknownSearchSet)
                     break;
@@ -275,14 +264,16 @@ SearchSpec::optimize()
                     case SetTypeOneSevens:
                     case SetTypeTwoSevens:
                     case SetTypeThreeSevens:
-                    addCondition.type = SearchCondition::ExactLength;
-                    addCondition.intValue = 7;
+                    addCondition.type = SearchCondition::Length;
+                    addCondition.minValue = 7;
+                    addCondition.maxValue = 7;
                     break;
 
                     case SetTypeOneEights:
                     case SetEightsFromSevenLetterStems:
-                    addCondition.type = SearchCondition::ExactLength;
-                    addCondition.intValue = 8;
+                    addCondition.type = SearchCondition::Length;
+                    addCondition.minValue = 8;
+                    addCondition.maxValue = 8;
                     break;
 
                     default: break;
@@ -293,27 +284,14 @@ SearchSpec::optimize()
             newConditions.append (condition);
             break;
 
-            case SearchCondition::ExactAnagrams:
-            if ((intValue < minAnagrams) || (intValue > maxAnagrams)) {
-                conditions.clear();
-                return;
-            }
-            minAnagrams = maxAnagrams = intValue;
-            break;
-
-            case SearchCondition::MinAnagrams:
-            if (intValue > minAnagrams)
-                minAnagrams = intValue;
-            if (minAnagrams > maxAnagrams) {
-                conditions.clear();
-                return;
-            }
-            break;
-
-            case SearchCondition::MaxAnagrams:
-            if (intValue < maxAnagrams)
-                maxAnagrams = intValue;
-            if ((maxAnagrams <= 0) || (maxAnagrams < minAnagrams)) {
+            case SearchCondition::NumAnagrams:
+            if (minValue > minAnagrams)
+                minAnagrams = minValue;
+            if (maxValue < maxAnagrams)
+                maxAnagrams = maxValue;
+            if ((minAnagrams > MAX_ANAGRAMS) || (maxAnagrams <= 0) ||
+                (minAnagrams > maxAnagrams))
+            {
                 conditions.clear();
                 return;
             }
@@ -327,42 +305,20 @@ SearchSpec::optimize()
 
     SearchCondition condition;
 
-    // Add minimum number of anagram conditions
-    if ((minAnagrams > 0) && (minAnagrams == maxAnagrams)) {
-        condition.type = SearchCondition::ExactAnagrams;
-        condition.intValue = minAnagrams;
+    // Add Number of Anagram conditions
+    if ((minAnagrams > 0) || (maxAnagrams < MAX_ANAGRAMS)) {
+        condition.type = SearchCondition::NumAnagrams;
+        condition.minValue = minAnagrams;
+        condition.maxValue = maxAnagrams;
         newConditions.push_front (condition);
-    }
-    else {
-        if (minAnagrams > 0) {
-            condition.type = SearchCondition::MinAnagrams;
-            condition.intValue = minAnagrams;
-            newConditions.push_front (condition);
-        }
-        if (maxAnagrams < MAX_ANAGRAMS) {
-            condition.type = SearchCondition::MaxAnagrams;
-            condition.intValue = maxAnagrams;
-            newConditions.push_front (condition);
-        }
     }
 
-    // Add minimum number of length newConditions
-    if ((minLength > 0) && (minLength == maxLength)) {
-        condition.type = SearchCondition::ExactLength;
-        condition.intValue = minLength;
+    // Add Length conditions
+    if ((minLength > 0) || (maxLength < MAX_WORD_LEN + 1)) {
+        condition.type = SearchCondition::Length;
+        condition.minValue = minLength;
+        condition.maxValue = maxLength;
         newConditions.push_front (condition);
-    }
-    else {
-        if (minLength > 0) {
-            condition.type = SearchCondition::MinLength;
-            condition.intValue = minLength;
-            newConditions.push_front (condition);
-        }
-        if (maxLength < MAX_WORD_LEN + 1) {
-            condition.type = SearchCondition::MaxLength;
-            condition.intValue = maxLength;
-            newConditions.push_front (condition);
-        }
     }
 
     conditions = wildcardConditions + newConditions;
