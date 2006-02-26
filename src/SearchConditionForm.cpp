@@ -320,7 +320,7 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
         case SearchCondition::Length:
         case SearchCondition::NumAnagrams:
         paramMinSbox->setValue (condition.minValue);
-        paramMinSbox->setValue (condition.maxValue);
+        paramMaxSbox->setValue (condition.maxValue);
         break;
 
         case SearchCondition::ConsistOf:
