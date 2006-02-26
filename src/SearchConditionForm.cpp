@@ -306,6 +306,8 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
     typeCbox->setCurrentIndex (typeCbox->findText (Auxil::searchTypeToString
                                                    (condition.type)));
     typeChanged (typeCbox->currentText());
+    negationCbox->setCheckState (condition.negated ? Qt::Checked
+                                                   : Qt::Unchecked);
 
     switch (condition.type) {
         case SearchCondition::PatternMatch:
@@ -367,8 +369,13 @@ SearchConditionForm::isValid() const
         return !paramLine->text().isEmpty();
 
         case SearchCondition::Length:
+        return ((paramMinSbox->value() > 0) ||
+                (paramMaxSbox->value() < MAX_WORD_LEN)) &&
+               (paramMinSbox->value() <= paramMaxSbox->value());
+
         case SearchCondition::NumAnagrams:
-        return (paramMinSbox->value() > 0) && (paramMaxSbox->value() > 0) &&
+        return ((paramMinSbox->value() > 0) ||
+                (paramMaxSbox->value() < MAX_MAX_INT_VALUE)) &&
                (paramMinSbox->value() <= paramMaxSbox->value());
 
         case SearchCondition::ConsistOf:
