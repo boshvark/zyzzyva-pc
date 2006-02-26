@@ -202,8 +202,6 @@ QuizEngine::completeQuestion()
 QuizEngine::ResponseStatus
 QuizEngine::respond (const QString& response)
 {
-    bool statusDetermined = false;
-
     QString word (response);
 
     if (quizSpec.getType() == QuizSpec::QuizAnagramsWithHooks) {
