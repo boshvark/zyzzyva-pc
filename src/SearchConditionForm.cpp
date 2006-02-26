@@ -33,6 +33,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
+const int MAX_MAX_INT_VALUE = 99999;
+
 using namespace Defs;
 
 //---------------------------------------------------------------------------
@@ -122,7 +124,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     paramMinSbox->setMinimum (0);
     connect (paramMinSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
-    paramSboxHlay->addWidget (paramMinSbox);
+    paramSboxHlay->addWidget (paramMinSbox, 1);
 
     QLabel* paramMaxLabel = new QLabel ("Max:");
     Q_CHECK_PTR (paramMaxLabel);
@@ -133,7 +135,7 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     paramMaxSbox->setMinimum (0);
     connect (paramMaxSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
-    paramSboxHlay->addWidget (paramMaxSbox);
+    paramSboxHlay->addWidget (paramMaxSbox, 1);
 
     paramStack->addWidget (paramSboxWidget);
 
@@ -393,31 +395,37 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::SubanagramMatch:
         negationCbox->setCheckState (Qt::Unchecked);
         negationCbox->setEnabled (false);
-        paramStack->setCurrentWidget (paramLineWidget);
         paramLine->setValidator (patternValidator);
+        paramLine->setText ("");
+        paramStack->setCurrentWidget (paramLineWidget);
         break;
 
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
         case SearchCondition::IncludeLetters:
         negationCbox->setEnabled (true);
-        paramStack->setCurrentWidget (paramLineWidget);
         paramLine->setValidator (letterValidator);
+        paramLine->setText ("");
+        paramStack->setCurrentWidget (paramLineWidget);
         break;
 
         case SearchCondition::Length:
         negationCbox->setCheckState (Qt::Unchecked);
         negationCbox->setEnabled (false);
         paramMinSbox->setMaximum (MAX_WORD_LEN);
+        paramMinSbox->setValue (0);
         paramMaxSbox->setMaximum (MAX_WORD_LEN);
+        paramMaxSbox->setValue (MAX_WORD_LEN);
         paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
         case SearchCondition::NumAnagrams:
         negationCbox->setCheckState (Qt::Unchecked);
         negationCbox->setEnabled (false);
-        paramMinSbox->setMaximum (100);
-        paramMaxSbox->setMaximum (100);
+        paramMinSbox->setMaximum (MAX_MAX_INT_VALUE);
+        paramMinSbox->setValue (0);
+        paramMaxSbox->setMaximum (MAX_MAX_INT_VALUE);
+        paramMaxSbox->setValue (MAX_MAX_INT_VALUE);
         paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
@@ -425,7 +433,9 @@ SearchConditionForm::typeChanged (const QString& string)
         negationCbox->setCheckState (Qt::Unchecked);
         negationCbox->setEnabled (false);
         paramMinSbox->setMaximum (100);
+        paramMinSbox->setValue (0);
         paramMaxSbox->setMaximum (100);
+        paramMaxSbox->setValue (100);
         paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
@@ -448,11 +458,14 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::ConsistOf:
         negationCbox->setCheckState (Qt::Unchecked);
         negationCbox->setEnabled (false);
+        paramConsistMinSbox->setValue (0);
+        paramConsistMaxSbox->setValue (100);
         paramStack->setCurrentWidget (paramConsistWidget);
         break;
 
         case SearchCondition::InWordList:
         negationCbox->setEnabled (true);
+        setWordListString ("");
         paramStack->setCurrentWidget (paramWordListWidget);
         break;
 
@@ -495,7 +508,7 @@ SearchConditionForm::reset()
 {
     paramLine->setText ("");
     paramMinSbox->setValue (0);
-    paramMaxSbox->setValue (99999);
+    paramMaxSbox->setValue (MAX_MAX_INT_VALUE);
     paramCbox->setCurrentIndex (0);
     paramConsistMinSbox->setValue (0);
     paramConsistMaxSbox->setValue (100);
