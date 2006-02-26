@@ -33,6 +33,7 @@ const QString XML_TYPE_ATTR = "type";
 const QString XML_STRING_ATTR = "string";
 const QString XML_MIN_ATTR = "min";
 const QString XML_MAX_ATTR = "max";
+const QString XML_NEGATED_ATTR = "negated";
 const QString XML_OLD_NUMBER_ATTR = "number";
 const QString XML_OLD_PERCENT_ATTR = "percent";
 
@@ -103,12 +104,9 @@ SearchCondition::asString() const
 QDomElement
 SearchCondition::asDomElement() const
 {
-    // XXX: Worry about this in a bit - and maintain backward compatibility
-
     QDomDocument doc;
     QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
 
-    /*
     if (type == UnknownSearchType)
         return topElement;
 
@@ -118,41 +116,38 @@ SearchCondition::asDomElement() const
         case PatternMatch:
         case AnagramMatch:
         case SubanagramMatch:
-        case TakesPrefix:
-        case DoesNotTakePrefix:
-        case TakesSuffix:
-        case DoesNotTakeSuffix:
-        case MustInclude:
-        case MustExclude:
-        case MustBelong:
-        case InWordList:
-        case NotInWordList:
         topElement.setAttribute (XML_STRING_ATTR, stringValue);
         break;
 
-        case ExactLength:
-        case MinLength:
-        case MaxLength:
-        case ExactAnagrams:
-        case MinAnagrams:
-        case MaxAnagrams:
-        topElement.setAttribute (XML_NUMBER_ATTR, intValue);
+        case Prefix:
+        case Suffix:
+        case IncludeLetters:
+        case BelongToGroup:
+        case InWordList:
+        topElement.setAttribute (XML_STRING_ATTR, stringValue);
+        topElement.setAttribute (XML_NEGATED_ATTR, negated);
         break;
 
-        case MinProbability:
-        case MaxProbability:
+        case Length:
+        case NumAnagrams:
+        topElement.setAttribute (XML_MIN_ATTR, minValue);
+        topElement.setAttribute (XML_MAX_ATTR, maxValue);
+        break;
+
+        case Probability:
         // XXX: Multiply by the correct factor here!
-        topElement.setAttribute (XML_NUMBER_ATTR, (intValue * 1));
+        topElement.setAttribute (XML_MIN_ATTR, (minValue * 1));
+        topElement.setAttribute (XML_MAX_ATTR, (maxValue * 1));
         break;
 
-        case MustConsist:
-        topElement.setAttribute (XML_PERCENT_ATTR, intValue);
+        case ConsistOf:
+        topElement.setAttribute (XML_MIN_ATTR, minValue);
+        topElement.setAttribute (XML_MAX_ATTR, maxValue);
         topElement.setAttribute (XML_STRING_ATTR, stringValue);
         break;
 
         default: break;
     }
-    */
 
     return topElement;
 }
@@ -186,34 +181,23 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case PatternMatch:
         case AnagramMatch:
         case SubanagramMatch:
+        if (!element.hasAttribute (XML_STRING_ATTR))
+            return false;
+        tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
+        break;
+
         case Prefix:
         case Suffix:
         case IncludeLetters:
         case BelongToGroup:
         case InWordList:
-        case OldDoesNotTakePrefix:
-        case OldDoesNotTakeSuffix:
-        case OldMustExclude:
-        case OldNotInWordList:
         if (!element.hasAttribute (XML_STRING_ATTR))
             return false;
         tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
-
-        if (tmpCondition.type == OldDoesNotTakePrefix) {
-            tmpCondition.type = Prefix;
-            tmpCondition.negated = true;
-        }
-        else if (tmpCondition.type == OldDoesNotTakeSuffix) {
-            tmpCondition.type = Suffix;
-            tmpCondition.negated = true;
-        }
-        else if (tmpCondition.type == OldMustExclude) {
-            tmpCondition.type = IncludeLetters;
-            tmpCondition.negated = true;
-        }
-        else if (tmpCondition.type == OldNotInWordList) {
-            tmpCondition.type = InWordList;
-            tmpCondition.negated = true;
+        if (element.hasAttribute (XML_NEGATED_ATTR)) {
+            int n = element.attribute (XML_NEGATED_ATTR).toInt (&ok);
+            if (ok)
+                tmpCondition.negated = n ? true : false;
         }
         break;
 
@@ -230,51 +214,6 @@ SearchCondition::fromDomElement (const QDomElement& element)
             element.attribute (XML_MAX_ATTR).toInt (&ok);
         if (!ok)
             return false;
-        break;
-
-        // Obsolete condition types
-        case OldExactLength:
-        case OldMinLength:
-        case OldMaxLength:
-        case OldExactAnagrams:
-        case OldMinAnagrams:
-        case OldMaxAnagrams: {
-            if (!element.hasAttribute (XML_OLD_NUMBER_ATTR))
-                return false;
-            int intValue = element.attribute (XML_OLD_NUMBER_ATTR).toInt (&ok);
-            if (!ok)
-                return false;
-            if (tmpCondition.type == OldExactLength) {
-                tmpCondition.type = Length;
-                tmpCondition.minValue = intValue;
-                tmpCondition.maxValue = intValue;
-            }
-            else if (tmpCondition.type == OldMinLength) {
-                tmpCondition.type = Length;
-                tmpCondition.minValue = intValue;
-                tmpCondition.maxValue = MAX_WORD_LEN;
-            }
-            else if (tmpCondition.type == OldMaxLength) {
-                tmpCondition.type = Length;
-                tmpCondition.minValue = 0;
-                tmpCondition.maxValue = intValue;
-            }
-            if (tmpCondition.type == OldExactAnagrams) {
-                tmpCondition.type = NumAnagrams;
-                tmpCondition.minValue = intValue;
-                tmpCondition.maxValue = intValue;
-            }
-            else if (tmpCondition.type == OldMinAnagrams) {
-                tmpCondition.type = NumAnagrams;
-                tmpCondition.minValue = intValue;
-                tmpCondition.maxValue = 99999;
-            }
-            else if (tmpCondition.type == OldMaxAnagrams) {
-                tmpCondition.type = NumAnagrams;
-                tmpCondition.minValue = 0;
-                tmpCondition.maxValue = intValue;
-            }
-        }
         break;
 
         case Probability:
@@ -323,6 +262,77 @@ SearchCondition::fromDomElement (const QDomElement& element)
                     return false;
             }
             tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
+        }
+        break;
+
+        // Obsolete condition types
+        case OldDoesNotTakePrefix:
+        case OldDoesNotTakeSuffix:
+        case OldMustExclude:
+        case OldNotInWordList:
+        if (!element.hasAttribute (XML_STRING_ATTR))
+            return false;
+        tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
+        if (tmpCondition.type == OldDoesNotTakePrefix) {
+            tmpCondition.type = Prefix;
+            tmpCondition.negated = true;
+        }
+        else if (tmpCondition.type == OldDoesNotTakeSuffix) {
+            tmpCondition.type = Suffix;
+            tmpCondition.negated = true;
+        }
+        else if (tmpCondition.type == OldMustExclude) {
+            tmpCondition.type = IncludeLetters;
+            tmpCondition.negated = true;
+        }
+        else if (tmpCondition.type == OldNotInWordList) {
+            tmpCondition.type = InWordList;
+            tmpCondition.negated = true;
+        }
+        break;
+
+        // Obsolete condition types
+        case OldExactLength:
+        case OldMinLength:
+        case OldMaxLength:
+        case OldExactAnagrams:
+        case OldMinAnagrams:
+        case OldMaxAnagrams: {
+            if (!element.hasAttribute (XML_OLD_NUMBER_ATTR))
+                return false;
+            int intValue = element.attribute (XML_OLD_NUMBER_ATTR).toInt (&ok);
+            if (!ok)
+                return false;
+            if (tmpCondition.type == OldExactLength) {
+                tmpCondition.type = Length;
+                tmpCondition.minValue = intValue;
+                tmpCondition.maxValue = intValue;
+            }
+            else if (tmpCondition.type == OldMinLength) {
+                tmpCondition.type = Length;
+                tmpCondition.minValue = intValue;
+                tmpCondition.maxValue = MAX_WORD_LEN;
+            }
+            else if (tmpCondition.type == OldMaxLength) {
+                tmpCondition.type = Length;
+                tmpCondition.minValue = 0;
+                tmpCondition.maxValue = intValue;
+            }
+            if (tmpCondition.type == OldExactAnagrams) {
+                tmpCondition.type = NumAnagrams;
+                tmpCondition.minValue = intValue;
+                tmpCondition.maxValue = intValue;
+            }
+            else if (tmpCondition.type == OldMinAnagrams) {
+                tmpCondition.type = NumAnagrams;
+                tmpCondition.minValue = intValue;
+                tmpCondition.maxValue = 99999;
+            }
+            else if (tmpCondition.type == OldMaxAnagrams) {
+                tmpCondition.type = NumAnagrams;
+                tmpCondition.minValue = 0;
+                tmpCondition.maxValue = intValue;
+            }
         }
         break;
 
