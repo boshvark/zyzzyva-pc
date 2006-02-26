@@ -123,6 +123,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (paramMinSbox);
     paramMinSbox->setMinimum (0);
     connect (paramMinSbox, SIGNAL (valueChanged (int)),
+             SLOT (paramMinChanged (int)));
+    connect (paramMinSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
     paramSboxHlay->addWidget (paramMinSbox, 1);
 
@@ -133,6 +135,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     paramMaxSbox = new QSpinBox;
     Q_CHECK_PTR (paramMaxSbox);
     paramMaxSbox->setMinimum (0);
+    connect (paramMaxSbox, SIGNAL (valueChanged (int)),
+             SLOT (paramMaxChanged (int)));
     connect (paramMaxSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
     paramSboxHlay->addWidget (paramMaxSbox, 1);
@@ -170,6 +174,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     paramConsistMinSbox->setMinimum (0);
     paramConsistMinSbox->setMaximum (100);
     connect (paramConsistMinSbox, SIGNAL (valueChanged (int)),
+             SLOT (paramConsistMinChanged (int)));
+    connect (paramConsistMinSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
     paramConsistHlay->addWidget (paramConsistMinSbox);
 
@@ -185,6 +191,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (paramConsistMaxSbox);
     paramConsistMaxSbox->setMinimum (0);
     paramConsistMaxSbox->setMaximum (100);
+    connect (paramConsistMaxSbox, SIGNAL (valueChanged (int)),
+             SLOT (paramConsistMaxChanged (int)));
     connect (paramConsistMaxSbox, SIGNAL (valueChanged (int)),
              SIGNAL (contentsChanged()));
     paramConsistHlay->addWidget (paramConsistMaxSbox);
@@ -515,6 +523,58 @@ SearchConditionForm::reset()
     paramConsistLine->setText ("");
     typeCbox->setCurrentIndex (0);
     typeChanged (typeCbox->currentText());
+}
+
+//---------------------------------------------------------------------------
+//  paramMinChanged
+//
+//! Called when the value of the min value spinbox changes.  Ensure that the
+//! value in the max value spinbox is updated if necessary.
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::paramMinChanged (int i)
+{
+    if (i > paramMaxSbox->value())
+        paramMaxSbox->setValue (i);
+}
+
+//---------------------------------------------------------------------------
+//  paramMaxChanged
+//
+//! Called when the value of the max value spinbox changes.  Ensure that the
+//! value in the min value spinbox is updated if necessary.
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::paramMaxChanged (int i)
+{
+    if (i < paramMinSbox->value())
+        paramMinSbox->setValue (i);
+}
+
+//---------------------------------------------------------------------------
+//  paramConsistMinChanged
+//
+//! Called when the value of the Consist min value spinbox changes.  Ensure
+//! that the value in the Consist max value spinbox is updated if necessary.
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::paramConsistMinChanged (int i)
+{
+    if (i > paramConsistMaxSbox->value())
+        paramConsistMaxSbox->setValue (i);
+}
+
+//---------------------------------------------------------------------------
+//  paramConsistMaxChanged
+//
+//! Called when the value of the Consist max value spinbox changes.  Ensure
+//! that the value in the Consist min value spinbox is updated if necessary.
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::paramConsistMaxChanged (int i)
+{
+    if (i < paramConsistMinSbox->value())
+        paramConsistMinSbox->setValue (i);
 }
 
 //---------------------------------------------------------------------------
