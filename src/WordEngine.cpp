@@ -29,8 +29,6 @@
 #include <QRegExp>
 #include <set>
 
-#include <QtDebug>
-
 const int MAX_DEFINITION_LINKS = 3;
 
 using namespace Defs;
