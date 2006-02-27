@@ -54,6 +54,7 @@ class SearchSpecForm : public QFrame
     void removeConditionForm();
     void loadSearch();
     void saveSearch();
+    void selectInputArea();
 
     private:
     //QRadioButton* conjunctionRadio;

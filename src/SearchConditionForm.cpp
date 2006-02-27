@@ -527,6 +527,31 @@ SearchConditionForm::reset()
 }
 
 //---------------------------------------------------------------------------
+//  selectInputArea
+//
+//! Give focus to the currently showing input area.
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::selectInputArea()
+{
+    QWidget* currentWidget = paramStack->currentWidget();
+    if (currentWidget == paramLineWidget) {
+        paramLine->setFocus();
+        paramLine->setSelection (0, paramLine->text().length());
+    }
+    else if (currentWidget == paramSboxWidget) {
+        paramMinSbox->setFocus();
+    }
+    else if (currentWidget == paramCboxWidget) {
+        paramCbox->setFocus();
+    }
+    else if (currentWidget == paramConsistWidget) {
+        paramConsistLine->setFocus();
+        paramConsistLine->setSelection (0, paramConsistLine->text().length());
+    }
+}
+
+//---------------------------------------------------------------------------
 //  setWordListString
 //
 //! Set the value of the word list string, and update the word list line to

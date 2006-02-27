@@ -54,6 +54,7 @@ class SearchConditionForm : public QWidget
     void typeChanged (const QString&);
     void editListClicked();
     void reset();
+    void selectInputArea();
 
     private:
     void setWordListString (const QString& string);

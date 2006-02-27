@@ -170,6 +170,7 @@ SearchForm::search()
     resultModel->addWords (wordItems);
 
     updateResultTotal (wordList.size());
+    specForm->selectInputArea();
     searchButton->setEnabled (true);
     QApplication::restoreOverrideCursor();
 }

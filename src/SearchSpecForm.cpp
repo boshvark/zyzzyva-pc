@@ -357,3 +357,39 @@ SearchSpecForm::saveSearch()
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
         << document.toString();
 }
+
+//---------------------------------------------------------------------------
+//  selectInputArea
+//
+//! Give focus to a text input area if possible.  Otherwise gives focus to the
+//! first input area in the form.
+//---------------------------------------------------------------------------
+void
+SearchSpecForm::selectInputArea()
+{
+    // Look
+    bool focusSet = false;
+    QListIterator<SearchConditionForm*> it (conditionForms);
+    while (!focusSet && it.hasNext()) {
+        SearchConditionForm* form = it.next();
+        SearchCondition condition = form->getSearchCondition();
+        switch (condition.type) {
+            case SearchCondition::PatternMatch:
+            case SearchCondition::AnagramMatch:
+            case SearchCondition::SubanagramMatch:
+            case SearchCondition::Prefix:
+            case SearchCondition::Suffix:
+            case SearchCondition::IncludeLetters:
+            case SearchCondition::ConsistOf:
+            form->selectInputArea();
+            focusSet = true;
+            break;
+
+            default: break;
+        }
+    }
+
+    // If no text input area was found, give focus to the first input area
+    if (!focusSet)
+        conditionForms[0]->selectInputArea();
+}
