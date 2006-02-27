@@ -33,7 +33,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-const int MAX_MAX_INT_VALUE = 99999;
+const int MAX_MAX_INT_VALUE = 999999;
 
 using namespace Defs;
 
@@ -77,8 +77,8 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
           << Auxil::searchTypeToString (SearchCondition::ConsistOf)
           << Auxil::searchTypeToString (SearchCondition::BelongToGroup)
           << Auxil::searchTypeToString (SearchCondition::InWordList)
-          << Auxil::searchTypeToString (SearchCondition::NumAnagrams);
-          //<< Auxil::searchTypeToString (SearchCondition::Probability);
+          << Auxil::searchTypeToString (SearchCondition::NumAnagrams)
+          << Auxil::searchTypeToString (SearchCondition::ProbabilityOrder);
 
     typeCbox = new QComboBox;
     Q_CHECK_PTR (typeCbox);
@@ -265,6 +265,7 @@ SearchConditionForm::getSearchCondition() const
         case SearchCondition::Length:
         case SearchCondition::NumAnagrams:
         case SearchCondition::Probability:
+        case SearchCondition::ProbabilityOrder:
         condition.minValue = paramMinSbox->value();
         condition.maxValue = paramMaxSbox->value();
         break;
@@ -435,6 +436,7 @@ SearchConditionForm::typeChanged (const QString& string)
         break;
 
         case SearchCondition::NumAnagrams:
+        case SearchCondition::ProbabilityOrder:
         negationCbox->setCheckState (Qt::Unchecked);
         negationCbox->setEnabled (false);
         paramMinSbox->setMaximum (MAX_MAX_INT_VALUE);

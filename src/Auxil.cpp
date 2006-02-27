@@ -51,6 +51,7 @@ const QString SEARCH_TYPE_BELONG_TO_GROUP = "Belongs to Group";
 const QString SEARCH_TYPE_IN_WORD_LIST = "In Word List";
 const QString SEARCH_TYPE_NUM_ANAGRAMS = "Number of Anagrams";
 const QString SEARCH_TYPE_PROBABILITY = "Probability";
+const QString SEARCH_TYPE_PROBABILITY_ORDER = "Probability Order";
 
 // Obsolete search condition strings
 const QString SEARCH_TYPE_OLD_EXACT_LENGTH = "Exact Length";
@@ -352,6 +353,8 @@ Auxil::stringToSearchType (const QString& string)
         return SearchCondition::NumAnagrams;
     else if (string == SEARCH_TYPE_PROBABILITY)
         return SearchCondition::Probability;
+    else if (string == SEARCH_TYPE_PROBABILITY_ORDER)
+        return SearchCondition::ProbabilityOrder;
 
     // Obsolete search condition strings
     else if (string == SEARCH_TYPE_OLD_EXACT_LENGTH)
@@ -433,6 +436,9 @@ Auxil::searchTypeToString (SearchCondition::SearchType type)
 
         case SearchCondition::Probability:
         return SEARCH_TYPE_PROBABILITY;
+
+        case SearchCondition::ProbabilityOrder:
+        return SEARCH_TYPE_PROBABILITY_ORDER;
 
         default: return QString::null;
     }

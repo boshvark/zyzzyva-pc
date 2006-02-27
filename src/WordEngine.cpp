@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "WordEngine.h"
+#include "LetterBag.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QFile>
@@ -233,6 +234,8 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     // New in OWL2 conditions with Must Be in Word List conditions.
     bool mustSearchGraph = false;
     bool wordListCondition = false;
+    int probRangeMin = 0;
+    int probRangeMax = 0;
     int i = 0;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
@@ -260,6 +263,11 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             }
             break;
 
+            case SearchCondition::ProbabilityOrder:
+            probRangeMin = condition.minValue;
+            probRangeMax = condition.maxValue;
+            break;
+
             default:
             mustSearchGraph = true;
             break;
@@ -280,12 +288,40 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             wit = wordList.erase (wit);
     }
 
+    // Keep only words in the probability order range
+    if (probRangeMax > 0) {
+
+        if (probRangeMin > wordList.size()) {
+            wordList.clear();
+            return wordList;
+        }
+
+        if (probRangeMin <= 0)
+            probRangeMin = 1;
+
+        LetterBag bag;
+        QMap<QString, QString> probMap;
+
+        QString word;
+        foreach (word, wordList) {
+            QString radix;
+            radix.sprintf ("%09.0f",
+                1e9 - 1 - bag.getNumCombinations (word.toUpper()));
+            radix += word.toUpper();
+            probMap.insert (radix, word);
+        }
+
+        wordList = probMap.values().mid (probRangeMin - 1,
+                                         probRangeMax - probRangeMin + 1);
+    }
+
     // Convert to all caps if necessary
     if (allCaps) {
         QStringList::iterator it;
         for (it = wordList.begin(); it != wordList.end(); ++it)
             *it = (*it).toUpper();
     }
+
     return wordList;
 }
 

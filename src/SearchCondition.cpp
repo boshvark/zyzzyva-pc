@@ -73,6 +73,7 @@ SearchCondition::asString() const
 
         case Length:
         case NumAnagrams:
+        case ProbabilityOrder:
         str += "Min " + QString::number (minValue) + ", Max "
             + QString::number (maxValue);
         break;
@@ -130,6 +131,7 @@ SearchCondition::asDomElement() const
 
         case Length:
         case NumAnagrams:
+        case ProbabilityOrder:
         topElement.setAttribute (XML_MIN_ATTR, minValue);
         topElement.setAttribute (XML_MAX_ATTR, maxValue);
         break;
@@ -203,6 +205,7 @@ SearchCondition::fromDomElement (const QDomElement& element)
 
         case Length:
         case NumAnagrams:
+        case ProbabilityOrder:
         if (!element.hasAttribute (XML_MIN_ATTR) ||
             !element.hasAttribute (XML_MAX_ATTR))
             return false;
@@ -326,7 +329,7 @@ SearchCondition::fromDomElement (const QDomElement& element)
             else if (tmpCondition.type == OldMinAnagrams) {
                 tmpCondition.type = NumAnagrams;
                 tmpCondition.minValue = intValue;
-                tmpCondition.maxValue = 99999;
+                tmpCondition.maxValue = 999999;
             }
             else if (tmpCondition.type == OldMaxAnagrams) {
                 tmpCondition.type = NumAnagrams;

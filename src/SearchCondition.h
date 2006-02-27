@@ -46,6 +46,7 @@ class SearchCondition
         InWordList,
         NumAnagrams,
         Probability,
+        ProbabilityOrder,
 
         // Obsolete search condition types
         OldExactLength,
