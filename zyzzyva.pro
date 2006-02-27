@@ -44,6 +44,7 @@ SOURCES = \
     src/HelpDialog.cpp \
     src/JudgeForm.cpp \
     src/JudgeDialog.cpp \
+    src/LetterBag.cpp \
     src/main.cpp \
     src/MainSettings.cpp \
     src/MainWindow.cpp \
