@@ -56,10 +56,14 @@ const QString SETTINGS_QUIZ_AUTO_ADVANCE = "quiz_auto_advance";
 const QString SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT
     = "quiz_auto_end_after_incorrect";
 const QString SETTINGS_QUIZ_CYCLE_ANSWERS = "quiz_cycle_answers";
+const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
 const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL2";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb (0, 0, 127);
+const QString DEFAULT_LETTER_DISTRIBUTION = "A:9 B:2 C:2 D:4 E:12 F:2 G:3 "
+    "H:2 I:9 J:1 K:1 L:4 M:2 N:6 O:8 P:2 Q:1 R:6 S:4 T:6 U:4 V:2 W:2 X:1 "
+    "Y:2 Z:1 _:2";
 
 //---------------------------------------------------------------------------
 //  readSettings
@@ -136,6 +140,10 @@ MainSettings::readSettings()
         = settings.value (SETTINGS_SHOW_HOOK_PARENTS, true).toBool();
     instance->wordListShowDefinitions
         = settings.value (SETTINGS_SHOW_DEFINITIONS, true).toBool();
+
+    instance->letterDistribution
+        = settings.value (SETTINGS_LETTER_DISTRIBUTION,
+                          DEFAULT_LETTER_DISTRIBUTION).toString();
     settings.endGroup();
 }
 
@@ -186,5 +194,7 @@ MainSettings::writeSettings()
                        instance->wordListShowHookParents);
     settings.setValue (SETTINGS_SHOW_DEFINITIONS,
                        instance->wordListShowDefinitions);
+    settings.setValue (SETTINGS_LETTER_DISTRIBUTION,
+                       instance->letterDistribution);
     settings.endGroup();
 }

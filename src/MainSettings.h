@@ -116,6 +116,10 @@ class MainSettings
         return instance->wordListShowDefinitions; }
     static void setWordListShowDefinitions (bool b) {
         instance->wordListShowDefinitions = b; }
+    static QString getLetterDistribution() {
+        return instance->letterDistribution; }
+    static void setLetterDistribution (const QString& str) {
+        instance->letterDistribution = str; }
 
     private:
     MainSettings() : useAutoImport (false), useTileTheme (false),
@@ -155,6 +159,7 @@ class MainSettings
     bool wordListShowHooks;
     bool wordListShowHookParents;
     bool wordListShowDefinitions;
+    QString letterDistribution;
 };
 
 #endif // ZYZZYVA_MAIN_SETTINGS_H
