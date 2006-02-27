@@ -54,10 +54,6 @@ class SearchConditionForm : public QWidget
     void typeChanged (const QString&);
     void editListClicked();
     void reset();
-    void paramMinChanged (int i);
-    void paramMaxChanged (int i);
-    void paramConsistMinChanged (int i);
-    void paramConsistMaxChanged (int i);
 
     private:
     void setWordListString (const QString& string);
