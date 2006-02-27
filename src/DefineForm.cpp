@@ -142,5 +142,6 @@ DefineForm::defineWord()
     resultBox->setText (resultStr);
     resultBox->setTitle (word);
     resultBox->show();
-    wordLine->clear();
+    wordLine->setFocus();
+    wordLine->setSelection (0, wordLine->text().length());
 }
