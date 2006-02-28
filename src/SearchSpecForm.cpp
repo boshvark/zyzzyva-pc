@@ -361,7 +361,7 @@ SearchSpecForm::saveSearch()
 //---------------------------------------------------------------------------
 //  selectInputArea
 //
-//! Give focus to a text input area if possible.  Otherwise gives focus to the
+//! Give focus to a text input area if possible.  Otherwise give focus to the
 //! first input area in the form.
 //---------------------------------------------------------------------------
 void
