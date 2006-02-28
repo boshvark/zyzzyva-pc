@@ -142,6 +142,17 @@ DefineForm::defineWord()
     resultBox->setText (resultStr);
     resultBox->setTitle (word);
     resultBox->show();
+    selectInputArea();
+}
+
+//---------------------------------------------------------------------------
+//  selectInputArea
+//
+//! Give focus to the input area and select its contents.
+//---------------------------------------------------------------------------
+void
+DefineForm::selectInputArea()
+{
     wordLine->setFocus();
     wordLine->setSelection (0, wordLine->text().length());
 }

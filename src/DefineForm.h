@@ -42,6 +42,7 @@ class DefineForm : public ActionForm
     public slots:
     void wordChanged (const QString& word);
     void defineWord();
+    void selectInputArea();
 
     private:
     WordEngine*    engine;

@@ -634,6 +634,11 @@ MainWindow::currentTabChanged (int)
     QString status;
     if (w) {
         ActionForm* form = static_cast<ActionForm*>(w);
+        ActionForm::ActionFormType type = form->getType();
+        if (type == ActionForm::DefineFormType) {
+            DefineForm* defineForm = static_cast<DefineForm*>(form);
+            defineForm->selectInputArea();
+        }
         status = form->getStatusString();
     }
     messageLabel->setText (status);
