@@ -780,10 +780,9 @@ MainWindow::readSettings (bool useGeometry)
         ActionForm::ActionFormType type = form->getType();
         if (type == ActionForm::QuizFormType) {
             QuizForm* quizForm = static_cast<QuizForm*> (form);
-            quizForm->setTileTheme (tileTheme);
             quizForm->setBackgroundColor (backgroundColor);
             quizForm->updateStatusString();
-            quizForm->updateQuestionDisplay();
+            quizForm->setTileTheme (tileTheme);
         }
     }
 }

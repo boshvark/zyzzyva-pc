@@ -1027,8 +1027,6 @@ QuizForm::updateStatusString()
 void
 QuizForm::updateQuestionDisplay()
 {
-    QWidget* currentWidget = questionStack->currentWidget();
-
     bool wordListRecall = (quizEngine->getQuizSpec().getType()
                            == QuizSpec::QuizWordListRecall);
 
@@ -1040,11 +1038,8 @@ QuizForm::updateQuestionDisplay()
         newWidget = (wordListRecall ? questionSpecLabel : questionLabel);
     }
 
-    // Redisplay question if a different widget is displayed
-    if (currentWidget != newWidget) {
-        questionStack->setCurrentWidget (newWidget);
-        setQuestionLabel (quizEngine->getQuestion());
-    }
+    questionStack->setCurrentWidget (newWidget);
+    setQuestionLabel (quizEngine->getQuestion());
 }
 
 //---------------------------------------------------------------------------
