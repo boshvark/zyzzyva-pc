@@ -264,15 +264,31 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     QStringList wordList;
     QListIterator<SearchSpec> lit (leftSpecs);
     while (lit.hasNext()) {
-        wordList = wordEngine->search (lit.next(), true);
+        wordList = wordEngine->search (lit.next(), false);
         QStringListIterator wit (wordList);
         while (wit.hasNext())
             wordSet.insert (wit.next());
     }
 
     QList<WordTableModel::WordItem> wordItems;
-    for (sit = wordSet.begin(); sit != wordSet.end(); ++sit)
-        wordItems.append (WordTableModel::WordItem (*sit));
+    for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
+        QList<QChar> wildcardChars;
+        for (int i = 0; i < sit->length(); ++i) {
+            QChar c = (*sit)[i];
+            if (c.isLower())
+                wildcardChars.append (c);
+        }
+        QString wildcard;
+        if (!wildcardChars.isEmpty()) {
+            qSort (wildcardChars);
+            QChar c;
+            foreach (c, wildcardChars)
+                wildcard.append (c.toUpper());
+        }
+        wordItems.append (WordTableModel::WordItem
+                          (sit->toUpper(), WordTableModel::WordNormal,
+                           wildcard));
+    }
     leftModel->addWords (wordItems);
 
     int leftWords = wordSet.size();
@@ -285,15 +301,31 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         wordSet.clear();
         QListIterator<SearchSpec> rit (rightSpecs);
         while (rit.hasNext()) {
-            wordList = wordEngine->search (rit.next(), true);
+            wordList = wordEngine->search (rit.next(), false);
             QStringListIterator wit (wordList);
             while (wit.hasNext())
                 wordSet.insert (wit.next());
         }
 
         wordItems.clear();
-        for (sit = wordSet.begin(); sit != wordSet.end(); ++sit)
-            wordItems.append (WordTableModel::WordItem (*sit));
+        for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
+            QList<QChar> wildcardChars;
+            for (int i = 0; i < sit->length(); ++i) {
+                QChar c = (*sit)[i];
+                if (c.isLower())
+                    wildcardChars.append (c);
+            }
+            QString wildcard;
+            if (!wildcardChars.isEmpty()) {
+                qSort (wildcardChars);
+                QChar c;
+                foreach (c, wildcardChars)
+                    wildcard.append (c.toUpper());
+            }
+            wordItems.append (WordTableModel::WordItem
+                              (sit->toUpper(), WordTableModel::WordNormal,
+                               wildcard));
+        }
         rightModel->addWords (wordItems);
 
         int rightWords = wordSet.size();
