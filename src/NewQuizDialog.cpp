@@ -171,6 +171,7 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     buttonHlay->addWidget (cancelButton);
 
     setWindowTitle (DIALOG_CAPTION);
+    specForm->selectInputArea();
 }
 
 //---------------------------------------------------------------------------
