@@ -367,7 +367,7 @@ SearchSpecForm::saveSearch()
 void
 SearchSpecForm::selectInputArea()
 {
-    // Look
+    // Look for an input area to select
     bool focusSet = false;
     QListIterator<SearchConditionForm*> it (conditionForms);
     while (!focusSet && it.hasNext()) {
