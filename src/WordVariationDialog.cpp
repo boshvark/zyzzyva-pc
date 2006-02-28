@@ -36,10 +36,8 @@
 #include <QLabel>
 #include <QList>
 #include <QVBoxLayout>
-#include <set>
 
 using namespace Defs;
-using std::set;
 
 //---------------------------------------------------------------------------
 //  WordVariationDialog
@@ -266,8 +264,8 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
 
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
 
-    set<QString> wordSet;
-    set<QString>::iterator sit;
+
+    QMap<QString, QString> wordMap;
     QStringList wordList;
     QListIterator<SearchSpec> lit (leftSpecs);
     while (lit.hasNext()) {
@@ -277,15 +275,18 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             QString str = wit.next();
             if ((str == word) && (variation == VariationExtensions))
                 continue;
-            wordSet.insert (str);
+            wordMap.insert (str.toUpper(), str);
         }
     }
 
     QList<WordTableModel::WordItem> wordItems;
-    for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
+    QMapIterator<QString, QString> mit (wordMap);
+    while (mit.hasNext()) {
+        mit.next();
+        QString value = mit.value();
         QList<QChar> wildcardChars;
-        for (int i = 0; i < sit->length(); ++i) {
-            QChar c = (*sit)[i];
+        for (int i = 0; i < value.length(); ++i) {
+            QChar c = value[i];
             if (c.isLower())
                 wildcardChars.append (c);
         }
@@ -297,8 +298,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                 wildcard.append (c.toUpper());
         }
         wordItems.append (WordTableModel::WordItem
-                          (sit->toUpper(), WordTableModel::WordNormal,
-                           wildcard));
+                          (mit.key(), WordTableModel::WordNormal, wildcard));
     }
 
     // FIXME: Probably not the right way to get alphabetical sorting instead
@@ -309,14 +309,14 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     if (forceAlphabetSort)
         MainSettings::setWordListGroupByAlphagrams (origGroupByAlphagrams);
 
-    int leftWords = wordSet.size();
+    int leftWords = wordMap.size();
     leftTitle += " : " + QString::number (leftWords) + " word";
     if (leftWords != 1)
         leftTitle += "s";
     leftLabel->setText (leftTitle);
 
     if (!rightSpecs.empty()) {
-        wordSet.clear();
+        wordMap.clear();
         QListIterator<SearchSpec> rit (rightSpecs);
         while (rit.hasNext()) {
             wordList = wordEngine->search (rit.next(), false);
@@ -325,15 +325,19 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                 QString str = wit.next();
                 if ((str == word) && (variation == VariationExtensions))
                     continue;
-                wordSet.insert (str);
+                wordMap.insert (str.toUpper(), str);
             }
         }
 
         wordItems.clear();
-        for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
+        QList<WordTableModel::WordItem> wordItems;
+        QMapIterator<QString, QString> mit (wordMap);
+        while (mit.hasNext()) {
+            mit.next();
+            QString value = mit.value();
             QList<QChar> wildcardChars;
-            for (int i = 0; i < sit->length(); ++i) {
-                QChar c = (*sit)[i];
+            for (int i = 0; i < value.length(); ++i) {
+                QChar c = value[i];
                 if (c.isLower())
                     wildcardChars.append (c);
             }
@@ -345,7 +349,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                     wildcard.append (c.toUpper());
             }
             wordItems.append (WordTableModel::WordItem
-                              (sit->toUpper(), WordTableModel::WordNormal,
+                              (mit.key(), WordTableModel::WordNormal,
                                wildcard));
         }
 
@@ -357,7 +361,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         if (forceAlphabetSort)
             MainSettings::setWordListGroupByAlphagrams (origGroupByAlphagrams);
 
-        int rightWords = wordSet.size();
+        int rightWords = wordMap.size();
         rightTitle += " : " + QString::number (rightWords) + " word";
         if (rightWords != 1)
             rightTitle += "s";
