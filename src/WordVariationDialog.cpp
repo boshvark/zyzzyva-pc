@@ -25,6 +25,7 @@
 #include "WordVariationDialog.h"
 #include "Defs.h"
 #include "DefinitionLabel.h"
+#include "MainSettings.h"
 #include "WordEngine.h"
 #include "WordTableModel.h"
 #include "WordTableView.h"
@@ -147,6 +148,8 @@ void
 WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                                        variation)
 {
+    bool forceAlphabetSort = false;
+    bool origGroupByAlphagrams = MainSettings::getWordListGroupByAlphagrams();
     QString title, leftTitle, rightTitle;
     SearchSpec spec;
     SearchCondition condition;
@@ -170,6 +173,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         spec.conditions.append (condition);
         leftSpecs.append (spec);
         leftTitle = "Subanagrams";
+        forceAlphabetSort = true;
         break;
 
         case VariationHooks:
@@ -184,6 +188,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         rightSpecs.append (spec);
         leftTitle = "Front Hooks";
         rightTitle = "Back Hooks";
+        forceAlphabetSort = true;
         break;
 
         case VariationAnagramHooks:
@@ -219,6 +224,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
             leftSpecs.append (spec);
         }
         leftTitle = "Blank Matches";
+        forceAlphabetSort = true;
         break;
 
         case VariationExtensions:
@@ -233,6 +239,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         rightSpecs.append (spec);
         leftTitle = "Front Extensions";
         rightTitle = "Back Extensions";
+        forceAlphabetSort = true;
         break;
 
         case VariationTranspositions:
@@ -293,7 +300,14 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                           (sit->toUpper(), WordTableModel::WordNormal,
                            wildcard));
     }
+
+    // FIXME: Probably not the right way to get alphabetical sorting instead
+    // of alphagram sorting
+    if (forceAlphabetSort)
+        MainSettings::setWordListGroupByAlphagrams (false);
     leftModel->addWords (wordItems);
+    if (forceAlphabetSort)
+        MainSettings::setWordListGroupByAlphagrams (origGroupByAlphagrams);
 
     int leftWords = wordSet.size();
     leftTitle += " : " + QString::number (leftWords) + " word";
@@ -334,7 +348,14 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                               (sit->toUpper(), WordTableModel::WordNormal,
                                wildcard));
         }
+
+        // FIXME: Probably not the right way to get alphabetical sorting
+        // instead of alphagram sorting
+        if (forceAlphabetSort)
+            MainSettings::setWordListGroupByAlphagrams (false);
         rightModel->addWords (wordItems);
+        if (forceAlphabetSort)
+            MainSettings::setWordListGroupByAlphagrams (origGroupByAlphagrams);
 
         int rightWords = wordSet.size();
         rightTitle += " : " + QString::number (rightWords) + " word";
