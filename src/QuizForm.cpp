@@ -474,6 +474,8 @@ QuizForm::newQuiz (const QuizSpec& spec)
     else
         inputValidator->setOptions (WordValidator::None);
 
+    QTimer::singleShot (0, this, SLOT (selectInputArea()));
+
     return true;
 }
 
@@ -1091,6 +1093,24 @@ QuizForm::displayNextCorrectAnswer()
          Qt::EditRole).toString();
 
     setQuestionLabel (answer, "foo");
+}
+
+//---------------------------------------------------------------------------
+//  selectInputArea
+//
+//! Give focus to a text input area if possible.  Otherwise give focus to
+//! Check Answers button.
+//---------------------------------------------------------------------------
+void
+QuizForm::selectInputArea()
+{
+    if (inputLine->isVisible()) {
+        inputLine->setFocus();
+        inputLine->setSelection (0, inputLine->text().length());
+    }
+    else {
+        checkResponseButton->setFocus();
+    }
 }
 
 //---------------------------------------------------------------------------

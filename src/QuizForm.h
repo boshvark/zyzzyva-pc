@@ -76,6 +76,7 @@ class QuizForm : public ActionForm
     void startDisplayingCorrectAnswers();
     void stopDisplayingCorrectAnswers();
     void displayNextCorrectAnswer();
+    void selectInputArea();
 
     private:
     void updateStats();
