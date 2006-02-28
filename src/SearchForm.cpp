@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "SearchForm.h"
+#include "MainSettings.h"
 #include "SearchSpecForm.h"
 #include "WordEngine.h"
 #include "WordTableModel.h"
@@ -141,24 +142,40 @@ SearchForm::search()
     QStringList wordList = wordEngine->search (specForm->getSearchSpec(),
                                                false);
 
+    // Check for Anagram or Subanagram conditions, and only group by
+    // alphagrams if one of them is present
+    bool hasAnagramCondition = false;
+    QListIterator<SearchCondition> it (spec.conditions);
+    while (it.hasNext()) {
+        SearchCondition::SearchType type = it.next().type;
+        if ((type == SearchCondition::AnagramMatch) ||
+            (type == SearchCondition::SubanagramMatch))
+        {
+            hasAnagramCondition = true;
+            break;
+        }
+    }
+
     // Create a list of WordItem objects from the words
     QList<WordTableModel::WordItem> wordItems;
     QString word;
     foreach (word, wordList) {
 
-        // Get wildcard characters
-        QList<QChar> wildcardChars;
-        for (int i = 0; i < word.length(); ++i) {
-            QChar c = word[i];
-            if (c.isLower())
-                wildcardChars.append (c);
-        }
         QString wildcard;
-        if (!wildcardChars.isEmpty()) {
-            qSort (wildcardChars);
-            QChar c;
-            foreach (c, wildcardChars)
-                wildcard.append (c.toUpper());
+        if (hasAnagramCondition) {
+            // Get wildcard characters
+            QList<QChar> wildcardChars;
+            for (int i = 0; i < word.length(); ++i) {
+                QChar c = word[i];
+                if (c.isLower())
+                    wildcardChars.append (c);
+            }
+            if (!wildcardChars.isEmpty()) {
+                qSort (wildcardChars);
+                QChar c;
+                foreach (c, wildcardChars)
+                    wildcard.append (c.toUpper());
+            }
         }
 
         // Convert to all caps if necessary
@@ -169,7 +186,14 @@ SearchForm::search()
                           (word, WordTableModel::WordNormal, wildcard));
     }
 
+    // FIXME: Probably not the right way to get alphabetical sorting instead
+    // of alphagram sorting
+    bool origGroupByAlphagrams = MainSettings::getWordListGroupByAlphagrams();
+    if (!hasAnagramCondition)
+        MainSettings::setWordListGroupByAlphagrams (false);
     resultModel->addWords (wordItems);
+    if (!hasAnagramCondition)
+        MainSettings::setWordListGroupByAlphagrams (origGroupByAlphagrams);
 
     updateResultTotal (wordList.size());
     specForm->selectInputArea();
