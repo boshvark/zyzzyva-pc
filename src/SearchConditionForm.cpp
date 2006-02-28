@@ -404,7 +404,6 @@ SearchConditionForm::typeChanged (const QString& string)
         negationCbox->setCheckState (Qt::Unchecked);
         negationCbox->setEnabled (false);
         paramLine->setValidator (patternValidator);
-        paramLine->setText ("");
         paramStack->setCurrentWidget (paramLineWidget);
         break;
 
@@ -413,7 +412,6 @@ SearchConditionForm::typeChanged (const QString& string)
         case SearchCondition::IncludeLetters:
         negationCbox->setEnabled (true);
         paramLine->setValidator (letterValidator);
-        paramLine->setText ("");
         paramStack->setCurrentWidget (paramLineWidget);
         break;
 
