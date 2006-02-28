@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "Auxil.h"
+#include "Defs.h"
 #include <QApplication>
 #include <QFile>
 #include <unistd.h>
@@ -79,6 +80,8 @@ const QString QUIZ_TYPE_HOOKS = "Hooks";
 const QString QUIZ_TYPE_ANAGRAM_HOOKS = "Anagram Hooks";
 const QString QUIZ_TYPE_ANAGRAM_HOOK_MNEMONICS = "Anagram Hook Mnemonics";
 const QString QUIZ_TYPE_WORD_LIST_RECALL = "Word List Recall";
+
+using namespace Defs;
 
 //---------------------------------------------------------------------------
 //  getPid
@@ -257,6 +260,38 @@ Auxil::isVowel (QChar c)
 {
     return ((c == 'A') || (c == 'E') || (c == 'I') ||
             (c == 'O') || (c == 'U'));
+}
+
+//---------------------------------------------------------------------------
+//  getAlphagram
+//
+//! Transform a string into its alphagram.
+//
+//! @param word the word
+//! @return the alphagram
+//---------------------------------------------------------------------------
+QString
+Auxil::getAlphagram (const QString& word)
+{
+    QList<QChar> qchars;
+
+    char chars[MAX_WORD_LEN + 1];
+    int wordLength = word.length();
+    for (int i = 0; (i < wordLength) && (i < MAX_WORD_LEN); ++i) {
+        qchars.append (word.at (i));
+    }
+
+    qSort (qchars);
+
+    int i = 0;
+    QListIterator<QChar> it (qchars);
+    while (it.hasNext()) {
+        chars[i] = it.next().toAscii();
+        ++i;
+    }
+    chars[i] = 0;
+
+    return QString (chars);
 }
 
 //---------------------------------------------------------------------------

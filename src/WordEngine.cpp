@@ -74,7 +74,7 @@ WordEngine::importFile (const QString& filename, const QString& lexName,
         QString word = line.section (' ', 0, 0).toUpper();
 
         if (!graph.containsWord (word)) {
-            QString alpha = alphagram (word);
+            QString alpha = Auxil::getAlphagram (word);
             ++numAnagramsMap[alpha];
         }
 
@@ -148,7 +148,7 @@ WordEngine::importStems (const QString& filename, QString* errString)
             continue;
 
         words << word;
-        alphagrams.insert (alphagram (word));
+        alphagrams.insert (Auxil::getAlphagram (word));
         ++imported;
     }
     delete[] buffer;
@@ -343,7 +343,7 @@ WordEngine::alphagrams (const QStringList& list) const
     // Insert into a set first, to remove duplicates
     set<QString> seen;
     for (it = list.begin(); it != list.end(); ++it) {
-        seen.insert (alphagram (*it));
+        seen.insert (Auxil::getAlphagram (*it));
     }
 
     set<QString>::iterator sit;
@@ -351,38 +351,6 @@ WordEngine::alphagrams (const QStringList& list) const
         alphagrams << *sit;
     }
     return alphagrams;
-}
-
-//---------------------------------------------------------------------------
-//  alphagram
-//
-//! Transform a string into its alphagram.
-//
-//! @param list the list of strings
-//! @return a list of alphagrams
-//---------------------------------------------------------------------------
-QString
-WordEngine::alphagram (const QString& word) const
-{
-    QList<QChar> qchars;
-
-    char chars[MAX_WORD_LEN + 1];
-    int wordLength = word.length();
-    for (int i = 0; (i < wordLength) && (i < MAX_WORD_LEN); ++i) {
-        qchars.append (word.at (i));
-    }
-
-    qSort (qchars);
-
-    int i = 0;
-    QListIterator<QChar> it (qchars);
-    while (it.hasNext()) {
-        chars[i] = it.next().toAscii();
-        ++i;
-    }
-    chars[i] = 0;
-
-    return QString (chars);
 }
 
 //---------------------------------------------------------------------------
@@ -576,7 +544,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                 return false;
 
             const set<QString>& alphaset = it->second;
-            QString agram = alphagram (word);
+            QString agram = Auxil::getAlphagram (word);
             set<QString>::const_iterator ait;
             for (int i = 0; i < int (agram.length()); ++i) {
                 ait = alphaset.find (agram.left (i) +
@@ -596,7 +564,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
             if (it == stemAlphagrams.end())
                 return false;
 
-            QString agram = alphagram (word);
+            QString agram = Auxil::getAlphagram (word);
 
             // Compare the letters of the word with the letters of each
             // alphagram, ensuring that no more than two letters in the word
@@ -633,7 +601,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                 return false;
 
             const set<QString>& alphaset = it->second;
-            QString agram = alphagram (word);
+            QString agram = Auxil::getAlphagram (word);
             set<QString>::const_iterator ait;
             for (int i = 0; i < int (agram.length()); ++i) {
                 ait = alphaset.find (agram.left (i) +
@@ -660,7 +628,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 int
 WordEngine::numAnagrams (const QString& word) const
 {
-    QString alpha = alphagram (word);
+    QString alpha = Auxil::getAlphagram (word);
     return numAnagramsMap.contains (alpha) ? numAnagramsMap[alpha] : 0;
 }
 
@@ -751,7 +719,7 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
         for (sit = finalWordSet.begin(); sit != finalWordSet.end();
                 ++sit)
         {
-            int numAnagrams = numAnagramsMap[ alphagram (*sit) ];
+            int numAnagrams = numAnagramsMap[ Auxil::getAlphagram (*sit) ];
             if ((numAnagrams >= minAnagrams) &&
                 (numAnagrams <= maxAnagrams))
             {

@@ -41,6 +41,7 @@ namespace Auxil {
     QString getWordsDir();
     QString wordWrap (const QString& str, int wrapLength);
     bool isVowel (QChar c);
+    QString getAlphagram (const QString& word);
     QString searchSetToString (SearchSet set);
     SearchSet stringToSearchSet (const QString& string);
     QString searchTypeToString (SearchCondition::SearchType type);

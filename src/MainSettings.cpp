@@ -41,7 +41,7 @@ const QString SETTINGS_FONT_QUIZ_LABEL = "font_quiz_label";
 const QString SETTINGS_FONT_DEFINITIONS = "font_definitions";
 const QString SETTINGS_FONT_WORD_INPUT = "font_word_input";
 const QString SETTINGS_SORT_BY_LENGTH = "wordlist_sort_by_length";
-const QString SETTINGS_GROUP_BY_WILDCARDS = "wordlist_group_by_wildcards";
+const QString SETTINGS_GROUP_BY_ALPHAGRAMS = "wordlist_group_by_alphagrams";
 const QString SETTINGS_SHOW_HOOKS = "wordlist_show_hooks";
 const QString SETTINGS_SHOW_HOOK_PARENTS = "wordlist_show_hook_parents";
 const QString SETTINGS_SHOW_DEFINITIONS = "wordlist_show_definitions";
@@ -132,8 +132,8 @@ MainSettings::readSettings()
 
     instance->wordListSortByLength
         = settings.value (SETTINGS_SORT_BY_LENGTH, false).toBool();
-    instance->wordListGroupByWildcards
-        = settings.value (SETTINGS_GROUP_BY_WILDCARDS, true).toBool();
+    instance->wordListGroupByAlphagrams
+        = settings.value (SETTINGS_GROUP_BY_ALPHAGRAMS, true).toBool();
     instance->wordListShowHooks
         = settings.value (SETTINGS_SHOW_HOOKS, true).toBool();
     instance->wordListShowHookParents
@@ -187,8 +187,8 @@ MainSettings::writeSettings()
     settings.setValue (SETTINGS_FONT_DEFINITIONS, instance->definitionFont);
     settings.setValue (SETTINGS_SORT_BY_LENGTH,
                        instance->wordListSortByLength);
-    settings.setValue (SETTINGS_GROUP_BY_WILDCARDS,
-                       instance->wordListGroupByWildcards);
+    settings.setValue (SETTINGS_GROUP_BY_ALPHAGRAMS,
+                       instance->wordListGroupByAlphagrams);
     settings.setValue (SETTINGS_SHOW_HOOKS, instance->wordListShowHooks);
     settings.setValue (SETTINGS_SHOW_HOOK_PARENTS,
                        instance->wordListShowHookParents);

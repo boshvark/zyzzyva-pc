@@ -25,6 +25,7 @@
 #include "WordTableModel.h"
 #include "WordEngine.h"
 #include "MainSettings.h"
+#include "Auxil.h"
 
 using namespace std;
 
@@ -51,13 +52,6 @@ bool
 lessThan (const WordTableModel::WordItem& a,
           const WordTableModel::WordItem& b)
 {
-    if (MainSettings::getWordListGroupByWildcards()) {
-        if (a.getWildcard() < b.getWildcard())
-            return true;
-        else if (a.getWildcard() > b.getWildcard())
-            return false;
-    }
-
     if (MainSettings::getWordListSortByLength()) {
         if (a.getWord().length() < b.getWord().length()) {
             return true;
@@ -65,6 +59,15 @@ lessThan (const WordTableModel::WordItem& a,
         else if (a.getWord().length() > b.getWord().length()) {
             return false;
         }
+    }
+
+    if (MainSettings::getWordListGroupByAlphagrams()) {
+        QString aa = Auxil::getAlphagram (a.getWord().toUpper());
+        QString ab = Auxil::getAlphagram (b.getWord().toUpper());
+        if (aa < ab)
+            return true;
+        else if (ab < aa)
+            return false;
     }
 
     return (a.getWord().toUpper() < b.getWord().toUpper());
@@ -220,9 +223,6 @@ WordTableModel::data (const QModelIndex& index, int role) const
     QString wordUpper = word.toUpper();
     switch (index.column()) {
         case WILDCARD_MATCH_COLUMN:
-        if (!MainSettings::getWordListGroupByWildcards()) {
-            return QString();
-        }
         return wordItem.getWildcard();
 
         case FRONT_HOOK_COLUMN:
@@ -299,7 +299,7 @@ WordTableModel::headerData (int section, Qt::Orientation orientation, int
     if (role == Qt::DisplayRole) {
         switch (section) {
             case WILDCARD_MATCH_COLUMN:
-            return MainSettings::getWordListGroupByWildcards() ?
+            return MainSettings::getWordListGroupByAlphagrams() ?
                 WILDCARD_MATCH_HEADER : QString::null;
 
             case FRONT_HOOK_COLUMN:
@@ -434,8 +434,7 @@ WordTableModel::sort (int, Qt::SortOrder)
 {
     qSort (wordList.begin(), wordList.end(), lessThan);
 
-
-    if (MainSettings::getWordListGroupByWildcards())
+    if (MainSettings::getWordListGroupByAlphagrams())
         markAlternates();
 
     emit dataChanged (index (0, 0),
@@ -479,20 +478,21 @@ WordTableModel::addWordPrivate (const WordItem& word, int row)
 //---------------------------------------------------------------------------
 //  markAlternates
 //
-//! Mark alternating groups of wildcard matching items as WordNormalAlternate
+//! Mark alternating groups of alphagram matching items as WordNormalAlternate
 //! instead of WordNormal.
 //---------------------------------------------------------------------------
 void
 WordTableModel::markAlternates()
 {
-    QString prevWildcard;
+    QString prevAlphagram;
     bool alternate = false;
     for (int i = 0; i < wordList.size(); ++i) {
         WordItem& item = wordList[i];
-        if (item.getWildcard() != prevWildcard) {
-            if (!prevWildcard.isEmpty())
+        QString alphagram = Auxil::getAlphagram (item.getWord().toUpper());
+        if (alphagram != prevAlphagram) {
+            if (!prevAlphagram.isEmpty())
                 alternate = !alternate;
-            prevWildcard = item.getWildcard();
+            prevAlphagram = alphagram;
         }
         if (alternate && (item.getType() == WordNormal))
             item.setType (WordNormalAlternate);

@@ -1221,8 +1221,8 @@ QuizForm::responseMatchesQuestion (const QString& response) const
     switch (spec.getType()) {
         case QuizSpec::QuizAnagrams:
         return ((response.length() == question.length()) &&
-            (wordEngine->alphagram (response) ==
-             wordEngine->alphagram (question)));
+            (Auxil::getAlphagram (response) ==
+             Auxil::getAlphagram (question)));
 
         case QuizSpec::QuizHooks:
         return ((response.length() == (question.length() + 1)) &&
