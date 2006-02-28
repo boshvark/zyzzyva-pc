@@ -224,10 +224,10 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         case VariationExtensions:
         title = "Extensions for: " + word;
         condition.type = SearchCondition::PatternMatch;
-        condition.stringValue = "*?" + word;
+        condition.stringValue = "*" + word;
         spec.conditions.append (condition);
         leftSpecs.append (spec);
-        condition.stringValue = word + "?*";
+        condition.stringValue = word + "*";
         spec.conditions.clear();
         spec.conditions.append (condition);
         rightSpecs.append (spec);
@@ -266,8 +266,12 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     while (lit.hasNext()) {
         wordList = wordEngine->search (lit.next(), false);
         QStringListIterator wit (wordList);
-        while (wit.hasNext())
-            wordSet.insert (wit.next());
+        while (wit.hasNext()) {
+            QString str = wit.next();
+            if ((str == word) && (variation == VariationExtensions))
+                continue;
+            wordSet.insert (str);
+        }
     }
 
     QList<WordTableModel::WordItem> wordItems;
@@ -303,8 +307,12 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         while (rit.hasNext()) {
             wordList = wordEngine->search (rit.next(), false);
             QStringListIterator wit (wordList);
-            while (wit.hasNext())
-                wordSet.insert (wit.next());
+            while (wit.hasNext()) {
+                QString str = wit.next();
+                if ((str == word) && (variation == VariationExtensions))
+                    continue;
+                wordSet.insert (str);
+            }
         }
 
         wordItems.clear();
