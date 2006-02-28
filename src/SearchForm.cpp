@@ -35,6 +35,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSplitter>
+#include <QTimer>
 
 using namespace Defs;
 
@@ -98,6 +99,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     resultView->setModel (resultModel);
 
     specChanged();
+    QTimer::singleShot (0, specForm, SLOT (selectInputArea()));
 }
 
 //---------------------------------------------------------------------------
