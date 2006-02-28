@@ -208,7 +208,6 @@ SearchForm::search()
         specForm->selectInputArea();
     }
 
-
     searchButton->setEnabled (true);
     QApplication::restoreOverrideCursor();
 }
