@@ -33,6 +33,7 @@
 #include <QApplication>
 #include <QHeaderView>
 #include <QLabel>
+#include <QLineEdit>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QSplitter>
@@ -197,7 +198,17 @@ SearchForm::search()
         MainSettings::setWordListGroupByAlphagrams (origGroupByAlphagrams);
 
     updateResultTotal (wordList.size());
-    specForm->selectInputArea();
+
+    QWidget* focusWidget = QApplication::focusWidget();
+    QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(focusWidget);
+    if (lineEdit) {
+        lineEdit->setSelection (0, lineEdit->text().length());
+    }
+    else {
+        specForm->selectInputArea();
+    }
+
+
     searchButton->setEnabled (true);
     QApplication::restoreOverrideCursor();
 }
