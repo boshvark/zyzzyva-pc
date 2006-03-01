@@ -24,6 +24,7 @@
 
 #include "AnalyzeQuizDialog.h"
 #include "Defs.h"
+#include "MainSettings.h"
 #include "QuizEngine.h"
 #include "QuizSpec.h"
 #include "WordEngine.h"
@@ -203,8 +204,14 @@ AnalyzeQuizDialog::updateStats()
 void
 AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 {
+    // FIXME: Probably not the right way to get alphabetical sorting
+    // instead of alphagram sorting
+    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
+    MainSettings::setWordListGroupByAnagrams (false);
     missedModel->addWord (WordTableModel::WordItem
                           (word, WordTableModel::WordMissed), false);
+    MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+
     if (update)
         updateStats();
 }
@@ -226,7 +233,14 @@ AnalyzeQuizDialog::addMissed (const QStringList& words, bool update)
         wordItems.append (WordTableModel::WordItem
                           (word, WordTableModel::WordMissed));
     }
+
+    // FIXME: Probably not the right way to get alphabetical sorting
+    // instead of alphagram sorting
+    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
+    MainSettings::setWordListGroupByAnagrams (false);
     missedModel->addWords (wordItems);
+    MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+
     if (update)
         updateStats();
 }
@@ -242,8 +256,14 @@ AnalyzeQuizDialog::addMissed (const QStringList& words, bool update)
 void
 AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
 {
+    // FIXME: Probably not the right way to get alphabetical sorting
+    // instead of alphagram sorting
+    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
+    MainSettings::setWordListGroupByAnagrams (false);
     incorrectModel->addWord (WordTableModel::WordItem
                              (word, WordTableModel::WordIncorrect), false);
+    MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+
     if (update)
         updateStats();
 }
@@ -265,7 +285,13 @@ AnalyzeQuizDialog::addIncorrect (const QStringList& words, bool update)
         wordItems.append (WordTableModel::WordItem
                           (word, WordTableModel::WordIncorrect));
     }
+    // FIXME: Probably not the right way to get alphabetical sorting
+    // instead of alphagram sorting
+    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
+    MainSettings::setWordListGroupByAnagrams (false);
     incorrectModel->addWords (wordItems);
+    MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+
     if (update)
         updateStats();
 }
