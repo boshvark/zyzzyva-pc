@@ -368,16 +368,18 @@ QuizForm::responseEntered()
                                  QModelIndex()));
         statusStr = "<font color=\"blue\">Correct</font>";
         analyzeDialog->updateStats();
+        inputLine->clear();
     }
     else if (status == QuizEngine::Incorrect) {
         displayResponse += "*";
         statusStr = "<font color=\"red\">Incorrect</font>";
         analyzeDialog->addIncorrect (response);
+        selectInputArea();
     }
     else if (status == QuizEngine::Duplicate) {
         statusStr = "<font color=\"purple\">Duplicate</font>";
+        inputLine->clear();
     }
-    inputLine->clear();
 
     // Update the stats if the stats are already shown
     if (!questionStatusLabel->text().isEmpty())
