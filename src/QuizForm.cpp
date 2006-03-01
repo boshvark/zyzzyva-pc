@@ -802,8 +802,7 @@ QuizForm::startQuestion()
     markMissedButton->setEnabled (true);
     nextQuestionButton->setEnabled (false);
     inputLine->setEnabled (true);
-    if (inputLine->isVisible())
-        inputLine->setFocus();
+    selectInputArea();
     if (timerSpec.getType() == NoTimer)
         clearTimerDisplay();
     else
