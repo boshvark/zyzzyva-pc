@@ -1,3 +1,20 @@
+Version 0.11.0
+Released 2006-03-01, from /branches/0.11.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.11.0
+
+ User-visible changes:
+ * Anagrams With Hooks quiz to quiz anagrams and hooks simultaneously
+ * New Probability Order search condition
+ * Conflate many similar search conditions to eliminate complexity
+ * Extend all numeric search conditions ranges with Min and Max values
+ * Change default search condition from Pattern Match to Anagram Match
+ * Update OWL2 with errata: change CRABABBLE/CRABABBLES to
+   CRABAPPLE/CRABAPPLES, add DEVELOPPES and VIREONINES.
+ * Change the Group By Wildcard preference to Group By Alphagram
+ * Automatically select input area after performing a search or definition
+ * Fix a quiz question display bug when changing the Tile Theme
+
+
 Version 0.10.1
 Released 2006-02-08, from /branches/0.10.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.10.1
