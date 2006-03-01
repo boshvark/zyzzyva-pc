@@ -637,6 +637,8 @@ QuizForm::checkResponseClicked()
 {
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
 
+    QuizSpec::QuizType quizType = quizEngine->getQuizSpec().getType();
+
     // If checking responses does not bring judgment, then feed all correct
     // responses to the quiz engine
     if (!checkBringsJudgment) {
@@ -644,7 +646,15 @@ QuizForm::checkResponseClicked()
         QStringListIterator it (unanswered);
         while (it.hasNext()) {
             QString word = it.next();
-            quizEngine->respond (word);
+            QString response = word;
+
+            if (quizType == QuizSpec::QuizAnagramsWithHooks) {
+                response = wordEngine->getFrontHookLetters (word).toUpper()
+                    + ":" + word + ":"
+                    + wordEngine->getBackHookLetters (word).toUpper();
+            }
+
+            quizEngine->respond (response);
             responseModel->addWord (WordTableModel::WordItem
                                     (word, WordTableModel::WordCorrect),
                                     true);
@@ -688,8 +698,9 @@ QuizForm::checkResponseClicked()
     updateStatusString();
 
     // For Anagram quizzes, display the correct answer in the question area
-    if (MainSettings::getQuizCycleAnswers()
-        && (quizEngine->getQuizSpec().getType() == QuizSpec::QuizAnagrams))
+    if (MainSettings::getQuizCycleAnswers() &&
+        ((quizType == QuizSpec::QuizAnagrams) ||
+         (quizType == QuizSpec::QuizAnagramsWithHooks)))
     {
         startDisplayingCorrectAnswers();
     }
