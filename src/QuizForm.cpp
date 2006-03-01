@@ -1244,6 +1244,15 @@ QuizForm::responseMatchesQuestion (const QString& response) const
             (Auxil::getAlphagram (response) ==
              Auxil::getAlphagram (question)));
 
+        case QuizSpec::QuizAnagramsWithHooks: {
+            if (response.count (QChar (':')) != 2)
+                return false;
+            QString word = response.section (":", 1, 1);
+            return ((word.length() == question.length()) &&
+                (Auxil::getAlphagram (word) ==
+                 Auxil::getAlphagram (question)));
+        }
+
         case QuizSpec::QuizHooks:
         return ((response.length() == (question.length() + 1)) &&
                 ((question == response.right (question.length())) ||
