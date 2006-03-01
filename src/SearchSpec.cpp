@@ -279,7 +279,8 @@ SearchSpec::optimize()
                     default: break;
                 }
 
-                newConditions.append (addCondition);
+                if (addCondition.type != SearchCondition::UnknownSearchType)
+                    newConditions.append (addCondition);
             }
             newConditions.append (condition);
             break;
