@@ -446,9 +446,9 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (lengthSortCbox);
     wordListVlay->addWidget (lengthSortCbox);
 
-    alphagramGroupCbox = new QCheckBox ("Group by alphagrams");
-    Q_CHECK_PTR (alphagramGroupCbox);
-    wordListVlay->addWidget (alphagramGroupCbox);
+    anagramGroupCbox = new QCheckBox ("Group by anagrams");
+    Q_CHECK_PTR (anagramGroupCbox);
+    wordListVlay->addWidget (anagramGroupCbox);
 
     showHooksCbox = new QCheckBox ("Show hooks");
     Q_CHECK_PTR (showHooksCbox);
@@ -595,8 +595,8 @@ SettingsDialog::readSettings()
     fontDefinitionLine->home (false);
 
     lengthSortCbox->setChecked (MainSettings::getWordListSortByLength());
-    alphagramGroupCbox->setChecked
-        (MainSettings::getWordListGroupByAlphagrams());
+    anagramGroupCbox->setChecked
+        (MainSettings::getWordListGroupByAnagrams());
     showHooksCbox->setChecked (MainSettings::getWordListShowHooks());
     showHookParentsCbox->setChecked
         (MainSettings::getWordListShowHookParents());
@@ -635,8 +635,8 @@ SettingsDialog::writeSettings()
     MainSettings::setWordInputFont (fontWordInputLine->text());
     MainSettings::setDefinitionFont (fontDefinitionLine->text());
     MainSettings::setWordListSortByLength (lengthSortCbox->isChecked());
-    MainSettings::setWordListGroupByAlphagrams
-        (alphagramGroupCbox->isChecked());
+    MainSettings::setWordListGroupByAnagrams
+        (anagramGroupCbox->isChecked());
     MainSettings::setWordListShowHooks (showHooksCbox->isChecked());
     MainSettings::setWordListShowHookParents
         (showHookParentsCbox->isChecked());

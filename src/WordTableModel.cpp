@@ -61,7 +61,7 @@ lessThan (const WordTableModel::WordItem& a,
         }
     }
 
-    if (MainSettings::getWordListGroupByAlphagrams()) {
+    if (MainSettings::getWordListGroupByAnagrams()) {
         QString aa = Auxil::getAlphagram (a.getWord().toUpper());
         QString ab = Auxil::getAlphagram (b.getWord().toUpper());
         if (aa < ab)
@@ -299,7 +299,7 @@ WordTableModel::headerData (int section, Qt::Orientation orientation, int
     if (role == Qt::DisplayRole) {
         switch (section) {
             case WILDCARD_MATCH_COLUMN:
-            return MainSettings::getWordListGroupByAlphagrams() ?
+            return MainSettings::getWordListGroupByAnagrams() ?
                 WILDCARD_MATCH_HEADER : QString::null;
 
             case FRONT_HOOK_COLUMN:
@@ -434,7 +434,7 @@ WordTableModel::sort (int, Qt::SortOrder)
 {
     qSort (wordList.begin(), wordList.end(), lessThan);
 
-    if (MainSettings::getWordListGroupByAlphagrams())
+    if (MainSettings::getWordListGroupByAnagrams())
         markAlternates();
 
     emit dataChanged (index (0, 0),

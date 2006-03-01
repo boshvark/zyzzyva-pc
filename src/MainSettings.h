@@ -100,10 +100,10 @@ class MainSettings
         return instance->wordListSortByLength; }
     static void setWordListSortByLength (bool b) {
         instance->wordListSortByLength = b; }
-    static bool getWordListGroupByAlphagrams() {
-        return instance->wordListGroupByAlphagrams; }
-    static void setWordListGroupByAlphagrams (bool b) {
-        instance->wordListGroupByAlphagrams = b; }
+    static bool getWordListGroupByAnagrams() {
+        return instance->wordListGroupByAnagrams; }
+    static void setWordListGroupByAnagrams (bool b) {
+        instance->wordListGroupByAnagrams = b; }
     static bool getWordListShowHooks() {
         return instance->wordListShowHooks; }
     static void setWordListShowHooks (bool b) {
@@ -155,7 +155,7 @@ class MainSettings
     QString wordInputFont;
     QString definitionFont;
     bool wordListSortByLength;
-    bool wordListGroupByAlphagrams;
+    bool wordListGroupByAnagrams;
     bool wordListShowHooks;
     bool wordListShowHookParents;
     bool wordListShowDefinitions;

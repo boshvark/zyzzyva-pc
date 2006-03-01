@@ -132,7 +132,7 @@ MainSettings::readSettings()
 
     instance->wordListSortByLength
         = settings.value (SETTINGS_SORT_BY_LENGTH, false).toBool();
-    instance->wordListGroupByAlphagrams
+    instance->wordListGroupByAnagrams
         = settings.value (SETTINGS_GROUP_BY_ALPHAGRAMS, true).toBool();
     instance->wordListShowHooks
         = settings.value (SETTINGS_SHOW_HOOKS, true).toBool();
@@ -188,7 +188,7 @@ MainSettings::writeSettings()
     settings.setValue (SETTINGS_SORT_BY_LENGTH,
                        instance->wordListSortByLength);
     settings.setValue (SETTINGS_GROUP_BY_ALPHAGRAMS,
-                       instance->wordListGroupByAlphagrams);
+                       instance->wordListGroupByAnagrams);
     settings.setValue (SETTINGS_SHOW_HOOKS, instance->wordListShowHooks);
     settings.setValue (SETTINGS_SHOW_HOOK_PARENTS,
                        instance->wordListShowHookParents);
