@@ -6,7 +6,7 @@ http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.11.0
  * Anagrams With Hooks quiz to quiz anagrams and hooks simultaneously
  * New Probability Order search condition
  * Conflate many similar search conditions to eliminate complexity
- * Extend all numeric search conditions ranges with Min and Max values
+ * Extend all numeric search conditions to ranges with Min and Max values
  * Change default search condition from Pattern Match to Anagram Match
  * Update OWL2 with errata: change CRABABBLE/CRABABBLES to
    CRABAPPLE/CRABAPPLES, add DEVELOPPES and VIREONINES.
