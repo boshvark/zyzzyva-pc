@@ -29,6 +29,7 @@
 #include "QuizTimerSpec.h"
 #include <QCheckBox>
 #include <QImage>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QStackedWidget>
 #include <QString>
@@ -78,6 +79,9 @@ class QuizForm : public ActionForm
     void displayNextCorrectAnswer();
     void selectInputArea();
 
+    protected:
+    void keyPressEvent (QKeyEvent* event);
+
     private:
     void updateStats();
     void clearStats();
@@ -124,6 +128,8 @@ class QuizForm : public ActionForm
     ZPushButton*  checkResponseButton;
     ZPushButton*  markMissedButton;
     ZPushButton*  pauseButton;
+    ZPushButton*  newQuizButton;
+    ZPushButton*  saveQuizButton;
     ZPushButton*  analyzeButton;
 
     int timerId;

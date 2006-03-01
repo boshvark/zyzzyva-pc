@@ -282,13 +282,13 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
              SLOT (flashcardStateChanged (int)));
     buttonGlay->addWidget (flashcardCbox, 1, 0, Qt::AlignHCenter);
 
-    ZPushButton* newQuizButton = new ZPushButton ("New &Quiz...");
+    newQuizButton = new ZPushButton ("New &Quiz...");
     Q_CHECK_PTR (newQuizButton);
     newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
     buttonGlay->addWidget (newQuizButton, 1, 1, Qt::AlignHCenter);
 
-    ZPushButton* saveQuizButton = new ZPushButton ("&Save Quiz...");
+    saveQuizButton = new ZPushButton ("&Save Quiz...");
     Q_CHECK_PTR (saveQuizButton);
     saveQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuizClicked()));
@@ -1106,6 +1106,30 @@ QuizForm::selectInputArea()
     else {
         checkResponseButton->setFocus();
     }
+}
+
+//---------------------------------------------------------------------------
+//  keyPressEvent
+//
+//! Called when the quiz form receives a key press event.
+//---------------------------------------------------------------------------
+void
+QuizForm::keyPressEvent (QKeyEvent* event)
+{
+    if (event->modifiers() == Qt::NoModifier) {
+        switch (event->key()) {
+            case Qt::Key_N: nextQuestionButton->animateClick(); return;
+            case Qt::Key_C: checkResponseButton->animateClick(); return;
+            case Qt::Key_M: markMissedButton->animateClick(); return;
+            case Qt::Key_P: pauseButton->animateClick(); return;
+            case Qt::Key_Q: newQuizButton->animateClick(); return;
+            case Qt::Key_S: saveQuizButton->animateClick(); return;
+            case Qt::Key_Z: analyzeButton->animateClick(); return;
+            case Qt::Key_O: flashcardCbox->toggle(); return;
+            default: break;
+        }
+    }
+    event->ignore();
 }
 
 //---------------------------------------------------------------------------
