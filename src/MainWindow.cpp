@@ -85,6 +85,12 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
       aboutDialog (new AboutDialog (this)),
       helpDialog (new HelpDialog (QString::null, this))
 {
+    if (splash) {
+        splash->showMessage ("Creating interface...",
+                             Qt::AlignHCenter | Qt::AlignBottom);
+        qApp->processEvents();
+    }
+
     // File Menu
     QMenu* fileMenu = menuBar()->addMenu ("&File");
     Q_CHECK_PTR (fileMenu);
@@ -344,12 +350,14 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     if (splash) {
         splash->showMessage (splashMessage,
                              Qt::AlignHCenter | Qt::AlignBottom);
+        qApp->processEvents();
     }
     import (importFile, lexicon);
 
     if (splash) {
         splash->showMessage ("Loading stems...",
                              Qt::AlignHCenter | Qt::AlignBottom);
+        qApp->processEvents();
     }
 
     importStems();
