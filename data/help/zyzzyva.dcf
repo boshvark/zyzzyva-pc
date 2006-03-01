@@ -25,8 +25,8 @@
                title="Word Table Preferences">
         <section ref="preferences.html#sort-by-length"
                  title="Sort by word length" />
-        <section ref="preferences.html#group-by-wildcard-matches"
-                 title="Group by Wildcard Matches" />
+        <section ref="preferences.html#group-by-anagrams"
+                 title="Group by anagrams" />
         <section ref="preferences.html#show-hooks" title="Show hooks" />
         <section ref="preferences.html#show-inner-hooks"
                  title="Show inner hooks" />
@@ -48,18 +48,19 @@
       <keyword ref="search.html">search</keyword>
       <section ref="search.html#search-conditions"
                title="Search Conditions">
-        <section ref="search.html#pattern-match" title="Pattern Match" />
         <section ref="search.html#anagram-match" title="Anagram Match" />
+        <section ref="search.html#pattern-match" title="Pattern Match" />
         <section ref="search.html#subanagram-match"
                  title="Subanagram Match" />
         <section ref="search.html#word-length" title="Word Length" />
         <section ref="search.html#prefixes-suffixes"
                  title="Prefixes and Suffixes" />
-        <section ref="search.html#must-include" title="Must Include" />
-        <section ref="search.html#must-exclude" title="Must Exclude" />
-        <section ref="search.html#must-consist" title="Must Consist Of" />
-        <section ref="search.html#must-belong" title="Must Belong To" />
-        <section ref="search.html#in-word-list" title="Must Be In Word List" />
+        <section ref="search.html#includes-letters"
+                 title="Includes Letters" />
+        <section ref="search.html#consists-of" title="Consists of" />
+        <section ref="search.html#belongs-to-group"
+                 title="Belongs to Group" />
+        <section ref="search.html#in-word-list" title="In Word List" />
         <section ref="search.html#num-anagrams" title="Number of Anagrams" />
       </section>
       <section ref="search.html#other-options" title="Other Options" />

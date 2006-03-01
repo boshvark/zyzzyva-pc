@@ -21,44 +21,19 @@
   <p>The available search conditions are described below.  Any number of each
   type of condition can be specified in a single search.</p>
 
-  <a name="pattern-match">
-  <h3>Pattern Match</h3>
-
-  <p>The <i>Pattern Match</i> condition means that the search pattern must be
-  matched exactly, in the same order the letters are specified.  Special
-  wildcard characters can be used to match any letters: the <tt>?</tt>
-  character means "match any single letter" and the <tt>*</tt> character means
-  "match any number of letters".  The <tt>*</tt> character also matches
-  nothingness.  Multiple wildcard characters can be used in a single pattern.
-  The <tt>[</tt> and <tt>]</tt> characters can also be used to specify a set
-  of letters that can be matched.  Here are some examples of <i>Pattern
-  Match</i> conditions:</p>
-
-  <table width="100%">
-  <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
-  <tr><td><tt>ATE</tt></td><td><tt>ATE</tt></td></tr>
-  <tr><td><tt>AT?</tt></td><td><tt>ATE, ATT</tt></td></tr>
-  <tr><td><tt>AT??</tt></td><td><tt>ATAP, ATES, ATMA, ATOM,
-  ATOP</tt></td></tr>
-  <tr><td><tt>T?P</tt></td><td><tt>TAP, TIP, TOP, TUP</tt></td></tr>
-  <tr><td><tt>A[JQXZ]?</tt></td><td><tt>AXE, AZO</tt></td></tr>
-  <tr><td><tt>[AEIOU]D[AEIOU]</tt></td><td><tt>ADO, ODE, UDO</tt></td></tr>
-  <tr><td><tt>TO*P</tt></td><td><tt>TOP, TOECAP, TOSSUP, TOUCHUP, TOYSHOP,
-  TOWNSHIP</tt></td></tr>
-  <tr><td><tt>*WM</tt></td><td><tt>CWM, SHAWM</tt></td></tr>
-  <tr><td><tt>?W*M?S</tt></td><td><tt>SWAMIS, SWAMPS, TWASOMES, TWOSOMES,
-  TWELVEMOS</tt></td></tr>
-  </table>
-
   <a name="anagram-match">
   <h3>Anagram Match</h3>
 
   <p>The <i>Anagram Match</i> condition means that the letters in the search
   pattern can be matched in any order.  All the letters must be matched
-  exactly the number of times they appear in the match pattern.  The same
-  special wildcard characters can be used as described in the <a
-  href="#pattern-match">Pattern Match</a> section.  Here are some examples of
-  <i>Anagram Match</i> conditions:</p>
+  exactly the number of times they appear in the match pattern.  Special
+  wildcard characters can be used to match any letters: the <tt>?</tt>
+  character means "match any single letter" and the <tt>*</tt> character means
+  "match any number of letters".  The <tt>*</tt> character also matches
+  nothingness.  Multiple wildcard characters can be used in a single pattern.
+  The <tt>[</tt> and <tt>]</tt> characters can also be used to specify a set
+  of letters that can be matched.  Here are some examples of <i>Anagram
+  Match</i> conditions:</p>
 
   <table width="100%">
   <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
@@ -76,6 +51,31 @@
 
   <p>Note that with an <i>Anagram Match</i> condition, using more than one
   <tt>*</tt> character has the same effect as using just one.</p>
+
+  <a name="pattern-match">
+  <h3>Pattern Match</h3>
+
+  <p>The <i>Pattern Match</i> condition means that the search pattern must be
+  matched exactly, in the same order the letters are specified.  The same
+  special wildcard characters can be used as described in the <a
+  href="#anagram-match">Anagram Match</a> section.  Here are some examples of
+  <i>Pattern Match</i> conditions:</p>
+
+  <table width="100%">
+  <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
+  <tr><td><tt>ATE</tt></td><td><tt>ATE</tt></td></tr>
+  <tr><td><tt>AT?</tt></td><td><tt>ATE, ATT</tt></td></tr>
+  <tr><td><tt>AT??</tt></td><td><tt>ATAP, ATES, ATMA, ATOM,
+  ATOP</tt></td></tr>
+  <tr><td><tt>T?P</tt></td><td><tt>TAP, TIP, TOP, TUP</tt></td></tr>
+  <tr><td><tt>A[JQXZ]?</tt></td><td><tt>AXE, AZO</tt></td></tr>
+  <tr><td><tt>[AEIOU]D[AEIOU]</tt></td><td><tt>ADO, ODE, UDO</tt></td></tr>
+  <tr><td><tt>TO*P</tt></td><td><tt>TOP, TOECAP, TOSSUP, TOUCHUP, TOYSHOP,
+  TOWNSHIP</tt></td></tr>
+  <tr><td><tt>*WM</tt></td><td><tt>CWM, SHAWM</tt></td></tr>
+  <tr><td><tt>?W*M?S</tt></td><td><tt>SWAMIS, SWAMPS, TWASOMES, TWOSOMES,
+  TWELVEMOS</tt></td></tr>
+  </table>
 
   <a name="subanagram-match">
   <h3>Subanagram Match</h3>
@@ -104,15 +104,15 @@
   <p>A minimum and maximum length can be specified for the results of a
   search.  For example, if the minimum length is 4 and the maximum length is
   6, then the search will only return results that are between four and six
-  letters long.  To specify minimum or maximum length, choose the <i>Minimum
-  Length</i> or <i>Maximum Length</i> conditions, respectively.  An exact
-  length can also be specified by choosing the <i>Exact Length</i>
-  condition.</p>
+  letters long.  To specify minimum or maximum length, choose the
+  <i>Length</i> condition and set the <i>Min</i> and <i>Max</i> values
+  appropriately.  An exact length can also be specified by making the
+  <i>Min</i> and <i>Max</i> values equal to each other.</p>
 
   <a name="prefixes-suffixes">
   <h3>Prefixes and Suffixes</h3>
 
-  <p>There are four conditions for specifying that search results must take or
+  <p>There are two conditions for specifying that search results must take or
   not take certain prefixes or suffixes.</p>
 
   <p>The <i>Takes Prefix</i> condition specifies that every search result must
@@ -122,9 +122,9 @@
   will be found because PREVALENCE is also valid.  However, the word VALID
   will not be found because PREVALID* is not a valid word.</p>
 
-  <p>The <i>Does Not Take Prefix</i> condition is exactly the opposite of the
-  <i>Takes Prefix</i> condition.  In the previous example, the word VALID
-  would appear in the search results because it does <i>not</i> take
+  <p>If the <i>Not</i> checkbox is activated, the meaning of the <i>Takes
+  Prefix</i> condition is exactly reversed.  In the previous example, the word
+  VALID would appear in the search results because it does <i>not</i> take
   <tt>PRE</tt> as a prefix, and VALENCE would not appear, because it
   <i>does</i> take <tt>PRE</tt> as a prefix.</p>
 
@@ -135,17 +135,17 @@
   will be found because MOLDINGS is also valid.  However, the word KICKING
   will not be found because KICKINGS* is not a valid word.</p>
 
-  <p>The <i>Does Not Take Suffix</i> condition is exactly the opposite of the
-  <i>Takes Suffix</i> condition.  In the previous example, the word KICKING
-  would appear in the search results because it does <i>not</i> take
+  <p>If the <i>Not</i> checkbox is activated, the meaning of the <i>Takes
+  Suffix</i> condition is exactly reversed.  In the previous example, the word
+  KICKING would appear in the search results because it does <i>not</i> take
   <tt>S</tt> as a suffix, and MOLDING would not appear, because it <i>does</i>
   take <tt>S</tt> as a suffix.</p>
 
-  <a name="must-include">
-  <h3>Must Include</h3>
+  <a name="includes-letters">
+  <h3>Includes Letters</h3>
 
-  <p>The <i>Must Include</i> condition specifies letters that must
-  be included in each word in the search results.  This is most useful if you
+  <p>The <i>Includes Letters</i> condition specifies letters that must be
+  included in each word in the search results.  This is most useful if you
   want to specify a <i>Pattern Match</i> condition with wildcard characters,
   and want the wildcards to match certain letters in an unspecified order.</p>
 
@@ -153,38 +153,37 @@
   <tt>OVER</tt> and containing the letters <tt>A</tt>, <tt>L</tt>, and
   <tt>T</tt> in any order, do the following.  Specify a <i>Pattern Match</i>
   condition of <tt>OVER*</tt>, a <i>Minimum Length</i> condition of 7, a
-  <i>Maximum Length</i> condition of 8, and a <i>Must Include</i> condition of
-  <tt>ALT</tt>.  This search will find the words <tt>OVERLATE</tt>,
-  <tt>OVERSALT</tt>, and <tt>OVERTALK</tt>.</p>
+  <i>Maximum Length</i> condition of 8, and a <i>Includes Letters</i>
+  condition of <tt>ALT</tt>.  This search will find the words
+  <tt>OVERLATE</tt>, <tt>OVERSALT</tt>, and <tt>OVERTALK</tt>.</p>
 
-  <p>If a letter appears multiple times in a <i>Must Include</i> condition,
-  the letter must appear at least that many times in each word in the search
-  results.</p>
+  <p>If a letter appears multiple times in a <i>Includes Letters</i>
+  condition, the letter must appear at least that many times in each word in
+  the search results.</p>
 
-  <a name="must-exclude">
-  <h3>Must Exclude</h3>
+  <p>If the <i>Not</i> checkbox is activated, then the <i>Includes Letters</i>
+  condition specifies letters that must not be included in the search results.
+  This is most useful for generating special word lists, such as the list of
+  words containing the letter Q but not the letter U.  To find such words,
+  specify a <i>Includes Letters</i> condition of <tt>Q</tt> and a negated
+  <i>Includes Letters</i> condition of <tt>U</tt>.  This search will find all
+  the words containing Q but not U.</p>
 
-  <p>The <i>Must Exclude</i> condition specifies letters that must not be
-  included in the search results.  This is most useful for generating special
-  word lists, such as the list of words containing the letter Q but not the
-  letter U.  To find such words, specify a <i>Must Include</i> condition of
-  <tt>Q</tt> and a <i>Must Exclude</i> condition of <tt>U</tt>.  This search
-  will find all the words containing Q but not U.</p>
+  <a name="consists-of">
+  <h3>Consists of</h3>
 
-  <a name="must-consist">
-  <h3>Must Consist Of</h3>
+  <p>The <i>Consists of</i> condition specifies letters that must occur with a
+  certain frequency.  This is useful for generating special word lists, such
+  as the list of words containing at least 70% vowels.  To find such words,
+  specify a <i>Consists of</i> condition, putting <tt>70</tt> in the
+  <i>Min</i> numeric area, <tt>100</tt> in the <i>Max</i> numeric area, and
+  <tt>AEIOU</tt> in the input box.</p>
 
-  <p>The <i>Must Consist Of</i> condition specifies letters that must occur
-  with a certain minimum frequency.  This is useful for generating special
-  word lists, such as the list of words containing at least 70% vowels.  To
-  find such words, specify a <i>Must Consist Of</i> condition, putting
-  <tt>70</tt> in the numeric area and <tt>AEIOU</tt> in the input box.</p>
+  <a name="belongs-to-group">
+  <h3>Belongs to Group</h3>
 
-  <a name="must-belong">
-  <h3>Must Belong To</h3>
-
-  <p>The <i>Must Belong To</i> condition specifies special sets that each word
-  must belong to.  Currently there are a few sets provided:</p>
+  <p>The <i>Belongs to Group</i> condition specifies special sets that each
+  word must belong to.  Currently there are a few sets provided:</p>
 
   <p><b>Hook words.</b> The <i>Hook Words</i> set consists of all words that
   can form another valid word by removing the first or last letter.  For
@@ -223,12 +222,13 @@
   OWL.</p>
 
   <a name="in-word-list">
-  <h3>Must Be In Word List</h3>
+  <h3>In Word List</h3>
 
-  <p>The <i>Must Be In Word List</i> and <i>Must Not Be In Word List</i>
-  conditions specify a list that each word must belong to or not belong to,
-  respectively.  Only words in the word list (or not in the word list) will
-  appear in the search results.</p>
+  <p>The <i>In Word List</i> and <i>Must Not Be In Word List</i> condition
+  specifies a list that each word must belong to.  Only words in the word list
+  will appear in the search results.  If the <i>Not</i> checkbox is activated,
+  only words <i>not</i> in the word list will appear in the search
+  results.</p>
 
   <p>To create a word list, click the <i>Edit List</i> button.  A window will
   appear, allowing a word list to be read from a file.  To read a word list
@@ -250,10 +250,10 @@
   anagrams.  A word is considered to be an anagram of itself, so every valid
   word has at least one anagram.</p>
 
-  <p>To specify a minimum or maximum number of anagrams, choose the <i>Minimum
-  Anagrams</i> or <i>Maximum Anagrams</i> conditions, respectively.  An exact
-  number of anagrams can also be specified with the <i>Exact Anagrams</i>
-  condition.</p>
+  <p>To specify minimum or maximum number of anagrams, choose the <i>Number of
+  Anagrams</i> condition and set the <i>Min</i> and <i>Max</i> values
+  appropriately.  An exact length can also be specified by making the
+  <i>Min</i> and <i>Max</i> values equal to each other.</p>
 
   <a name="other-options">
   <h3>Other Options</h3>
