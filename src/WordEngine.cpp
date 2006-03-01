@@ -172,18 +172,18 @@ WordEngine::importStems (const QString& filename, QString* errString)
 }
 
 //---------------------------------------------------------------------------
-//  importNewInOwl2
+//  getNewInOwl2String
 //
-//! Import new OWL2 words.  XXX: Right now this is hard-coded to load a
-//! certain file for a specific purpose.  This whole concept should be more
-//! flexible.
+//! Read all new OWL2 words into a string, separated by spaces.  XXX: Right
+//! now this is hard-coded to load a certain file for a specific purpose.
+//! This whole concept should be more flexible.
 //---------------------------------------------------------------------------
-void
-WordEngine::importNewInOwl2()
+QString
+WordEngine::getNewInOwl2String() const
 {
     QFile file (Auxil::getWordsDir() + "/north-american/owl2-new-words.txt");
     if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
-        return;
+        return QString::null;
 
     QStringList words;
     char* buffer = new char [MAX_INPUT_LINE_LEN];
@@ -197,7 +197,7 @@ WordEngine::importNewInOwl2()
     }
     delete[] buffer;
 
-    newInOwl2String = words.join (" ");
+    return words.join (" ");
 }
 
 //---------------------------------------------------------------------------
@@ -255,7 +255,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
                     (condition.stringValue);
                 if (searchSet == SetNewInOwl2) {
                     condition.type = SearchCondition::InWordList;
-                    condition.stringValue = newInOwl2String;
+                    condition.stringValue = getNewInOwl2String();
                     optimizedSpec.conditions.replace (i, condition);
                     wordListCondition = true;
                 }

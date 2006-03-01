@@ -41,7 +41,6 @@ class WordEngine
     int importFile (const QString& filename, const QString& lexName,
                     bool loadDefinitions = true, QString* errString = 0);
     int importStems (const QString& filename, QString* errString = 0);
-    void importNewInOwl2();
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;
     QStringList alphagrams (const QStringList& list) const;
@@ -59,6 +58,7 @@ class WordEngine
     QString replaceDefinitionLinks (const QString& definition, int maxDepth,
                                     bool useFollow = false) const;
     QString getSubDefinition (const QString& word, const QString& pos) const;
+    QString getNewInOwl2String() const;
 
     QString lexiconName;
     WordGraph graph;
@@ -66,8 +66,6 @@ class WordEngine
     std::map<int, QStringList> stems;
     QMap<QString, int> numAnagramsMap;
     std::map< int, std::set<QString> > stemAlphagrams;
-    // XXX: This should really be more generic
-    QString newInOwl2String;
 };
 
 #endif // ZYZZYVA_WORD_ENGINE_H
