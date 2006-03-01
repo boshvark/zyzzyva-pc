@@ -559,8 +559,13 @@ void
 SearchConditionForm::setWordListString (const QString& string)
 {
     paramWordListString = string;
-    QStringList wordList = string.split (QChar (' '));
-    paramWordListLine->setText (QString::number (wordList.size()) + " words");
+    int numWords = 0;
+    if (!string.isEmpty()) {
+        QStringList wordList = string.split (QChar (' '));
+        numWords = wordList.size();
+    }
+    paramWordListLine->setText (QString::number (numWords) + " word" +
+                                (numWords == 1 ? QString() : QString ("s")));
     paramWordListLine->home (false);
 }
 
