@@ -360,9 +360,15 @@ QuizForm::responseEntered()
         if (response.contains (":"))
             response = response.section (":", 1, 1);
 
+        // FIXME: Probably not the right way to get alphabetical sorting
+        // instead of alphagram sorting
+        bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
+        MainSettings::setWordListGroupByAnagrams (false);
         responseModel->addWord (WordTableModel::WordItem
                                 (response, WordTableModel::WordCorrect),
                                 true);
+        MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+
         responseView->scrollTo (responseModel->sibling
                                 (responseModel->getLastAddedIndex(), 0,
                                  QModelIndex()));
@@ -637,6 +643,8 @@ QuizForm::checkResponseClicked()
 {
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
 
+    QuizSpec::QuizType quizType = quizEngine->getQuizSpec().getType();
+
     // If checking responses does not bring judgment, then feed all correct
     // responses to the quiz engine
     if (!checkBringsJudgment) {
@@ -644,10 +652,25 @@ QuizForm::checkResponseClicked()
         QStringListIterator it (unanswered);
         while (it.hasNext()) {
             QString word = it.next();
-            quizEngine->respond (word);
+            QString response = word;
+
+            if (quizType == QuizSpec::QuizAnagramsWithHooks) {
+                response = wordEngine->getFrontHookLetters (word).toUpper()
+                    + ":" + word + ":"
+                    + wordEngine->getBackHookLetters (word).toUpper();
+            }
+
+            quizEngine->respond (response);
+
+            // FIXME: Probably not the right way to get alphabetical sorting
+            // instead of alphagram sorting
+            bool origGroupByAnagrams
+                = MainSettings::getWordListGroupByAnagrams();
+            MainSettings::setWordListGroupByAnagrams (false);
             responseModel->addWord (WordTableModel::WordItem
                                     (word, WordTableModel::WordCorrect),
                                     true);
+            MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
         }
     }
 
@@ -674,7 +697,13 @@ QuizForm::checkResponseClicked()
             wordItems.append (WordTableModel::WordItem
                               (*it, WordTableModel::WordMissed));
         }
+        // FIXME: Probably not the right way to get alphabetical sorting
+        // instead of alphagram sorting
+        bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
+        MainSettings::setWordListGroupByAnagrams (false);
         responseModel->addWords (wordItems);
+        MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+
         analyzeDialog->addMissed (unanswered);
     }
 
@@ -688,8 +717,9 @@ QuizForm::checkResponseClicked()
     updateStatusString();
 
     // For Anagram quizzes, display the correct answer in the question area
-    if (MainSettings::getQuizCycleAnswers()
-        && (quizEngine->getQuizSpec().getType() == QuizSpec::QuizAnagrams))
+    if (MainSettings::getQuizCycleAnswers() &&
+        ((quizType == QuizSpec::QuizAnagrams) ||
+         (quizType == QuizSpec::QuizAnagramsWithHooks)))
     {
         startDisplayingCorrectAnswers();
     }
@@ -796,7 +826,13 @@ QuizForm::startQuestion()
             wordItems.append (WordTableModel::WordItem
                                 (*it, WordTableModel::WordCorrect));
         }
+
+        // FIXME: Probably not the right way to get alphabetical sorting
+        // instead of alphagram sorting
+        bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
+        MainSettings::setWordListGroupByAnagrams (false);
         responseModel->addWords (wordItems);
+        MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
     }
 
     responseStatusLabel->setText ("");
