@@ -147,7 +147,7 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
                                        variation)
 {
     bool forceAlphabetSort = false;
-    bool origGroupByAlphagrams = MainSettings::getWordListGroupByAlphagrams();
+    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
     QString title, leftTitle, rightTitle;
     SearchSpec spec;
     SearchCondition condition;
@@ -304,10 +304,10 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
     // FIXME: Probably not the right way to get alphabetical sorting instead
     // of alphagram sorting
     if (forceAlphabetSort)
-        MainSettings::setWordListGroupByAlphagrams (false);
+        MainSettings::setWordListGroupByAnagrams (false);
     leftModel->addWords (wordItems);
     if (forceAlphabetSort)
-        MainSettings::setWordListGroupByAlphagrams (origGroupByAlphagrams);
+        MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
 
     int leftWords = wordMap.size();
     leftTitle += " : " + QString::number (leftWords) + " word";
@@ -356,10 +356,10 @@ WordVariationDialog::setWordVariation (const QString& word, WordVariationType
         // FIXME: Probably not the right way to get alphabetical sorting
         // instead of alphagram sorting
         if (forceAlphabetSort)
-            MainSettings::setWordListGroupByAlphagrams (false);
+            MainSettings::setWordListGroupByAnagrams (false);
         rightModel->addWords (wordItems);
         if (forceAlphabetSort)
-            MainSettings::setWordListGroupByAlphagrams (origGroupByAlphagrams);
+            MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
 
         int rightWords = wordMap.size();
         rightTitle += " : " + QString::number (rightWords) + " word";

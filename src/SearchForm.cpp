@@ -190,12 +190,12 @@ SearchForm::search()
 
     // FIXME: Probably not the right way to get alphabetical sorting instead
     // of alphagram sorting
-    bool origGroupByAlphagrams = MainSettings::getWordListGroupByAlphagrams();
+    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
     if (!hasAnagramCondition)
-        MainSettings::setWordListGroupByAlphagrams (false);
+        MainSettings::setWordListGroupByAnagrams (false);
     resultModel->addWords (wordItems);
     if (!hasAnagramCondition)
-        MainSettings::setWordListGroupByAlphagrams (origGroupByAlphagrams);
+        MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
 
     updateResultTotal (wordList.size());
 
