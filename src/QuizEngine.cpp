@@ -205,7 +205,7 @@ QuizEngine::respond (const QString& response)
     QString word (response);
 
     if (quizSpec.getType() == QuizSpec::QuizAnagramsWithHooks) {
-        QStringList sections = response.split ("_");
+        QStringList sections = response.split (":");
         if (sections.size() != 3) {
             addQuestionIncorrect (response);
             return Incorrect;

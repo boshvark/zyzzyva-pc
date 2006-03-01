@@ -357,8 +357,8 @@ QuizForm::responseEntered()
     QString statusStr = "";
 
     if (status == QuizEngine::Correct) {
-        if (response.contains ("_"))
-            response = response.section ("_", 1, 1);
+        if (response.contains (":"))
+            response = response.section (":", 1, 1);
 
         responseModel->addWord (WordTableModel::WordItem
                                 (response, WordTableModel::WordCorrect),
