@@ -12,6 +12,7 @@ http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.11.0
    CRABAPPLE/CRABAPPLES, add DEVELOPPES and VIREONINES.
  * Change the Group By Wildcard preference to Group By Alphagram
  * Automatically select input area after performing a search or definition
+ * Fix a keyboard focus bug in Flashcard Quiz Mode on Mac OS X
  * Fix a quiz question display bug when changing the Tile Theme
 
 
