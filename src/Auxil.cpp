@@ -273,23 +273,21 @@ Auxil::isVowel (QChar c)
 QString
 Auxil::getAlphagram (const QString& word)
 {
-    QList<QChar> qchars;
-
     char chars[MAX_WORD_LEN + 1];
+    int charsPlaced = 0;
+
     int wordLength = word.length();
     for (int i = 0; (i < wordLength) && (i < MAX_WORD_LEN); ++i) {
-        qchars.append (word.at (i));
+        char c = word.at (i).toAscii();
+        int j = 0;
+        while ((j < charsPlaced) && (c >= chars[j]))
+            ++j;
+        for (int k = charsPlaced; k > j; --k)
+            chars[k] = chars[k - 1];
+        chars[j] = c;
+        ++charsPlaced;
     }
-
-    qSort (qchars);
-
-    int i = 0;
-    QListIterator<QChar> it (qchars);
-    while (it.hasNext()) {
-        chars[i] = it.next().toAscii();
-        ++i;
-    }
-    chars[i] = 0;
+    chars[charsPlaced] = 0;
 
     return QString (chars);
 }
