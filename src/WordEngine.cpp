@@ -243,6 +243,8 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
         switch (condition.type) {
             case SearchCondition::InWordList:
             wordListCondition = true;
+            if (condition.negated)
+                mustSearchGraph = true;
             break;
 
             case SearchCondition::NumAnagrams:
