@@ -314,6 +314,8 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
 
         case SearchCondition::Length:
         case SearchCondition::NumAnagrams:
+        case SearchCondition::Probability:
+        case SearchCondition::ProbabilityOrder:
         paramMinSbox->setValue (condition.minValue);
         paramMaxSbox->setValue (condition.maxValue);
         break;
