@@ -1,3 +1,11 @@
+Version 0.11.1
+Released 2006-03-02, from /branches/0.11.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.11.1
+
+ User-visible changes:
+ * Fix a bug in loading searches with Probability Order conditions
+
+
 Version 0.11.0
 Released 2006-03-01, from /branches/0.11.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.11.0
