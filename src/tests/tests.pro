@@ -24,7 +24,7 @@
 
 TEMPLATE = app
 TARGET = test_zyzzyva
-CONFIG += qt debug thread warn_on assistant qtestlib
+CONFIG += qt release thread warn_on qtestlib
 QT += xml
 
 ROOT = ../..
