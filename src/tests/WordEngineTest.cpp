@@ -143,7 +143,6 @@ WordEngineTest::testSearch()
     }
 
     QStringList expectedResults;
-    QString expectedResults;
     while (!resultFile.atEnd()) {
         expectedResults.append (resultFile.readLine().trimmed());
     }
