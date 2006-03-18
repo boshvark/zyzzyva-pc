@@ -28,7 +28,7 @@ CONFIG += qt release thread warn_on assistant
 QT += xml
 
 ROOT = ../..
-DESTDIR = $$ROOT/lib
+DESTDIR = $$ROOT/bin
 MOC_DIR = build/moc
 OBJECTS_DIR = build/obj
 INCLUDEPATH += build/moc
