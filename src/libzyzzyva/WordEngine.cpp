@@ -486,7 +486,7 @@ WordEngine::matchesConditions (const QString& word, const
                     (condition.stringValue);
                 if (searchSet == UnknownSearchSet)
                     continue;
-                if (!isSetMember (wordUpper, searchSet))
+                if (!isSetMember (wordUpper, searchSet) ^ condition.negated)
                     return false;
             }
             break;

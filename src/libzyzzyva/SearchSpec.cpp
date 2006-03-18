@@ -159,6 +159,7 @@ SearchSpec::optimize()
         int minValue = condition.minValue;
         int maxValue = condition.maxValue;
         QString stringValue = condition.stringValue;
+        bool negated = condition.negated;
         switch (condition.type) {
 
             case SearchCondition::PatternMatch:
@@ -229,7 +230,7 @@ SearchSpec::optimize()
             break;
 
             case SearchCondition::IncludeLetters:
-            if (condition.negated) {
+            if (negated) {
                 if (!mustInclude.isEmpty()) {
                     for (int i = 0; i < int (stringValue.length()); ++i) {
                         if (mustInclude.contains (stringValue.at (i))) {
@@ -259,28 +260,34 @@ SearchSpec::optimize()
                 SearchSet ss = Auxil::stringToSearchSet (stringValue);
                 if (ss == UnknownSearchSet)
                     break;
-                SearchCondition addCondition;
-                switch (ss) {
-                    case SetTypeOneSevens:
-                    case SetTypeTwoSevens:
-                    case SetTypeThreeSevens:
-                    addCondition.type = SearchCondition::Length;
-                    addCondition.minValue = 7;
-                    addCondition.maxValue = 7;
-                    break;
 
-                    case SetTypeOneEights:
-                    case SetEightsFromSevenLetterStems:
-                    addCondition.type = SearchCondition::Length;
-                    addCondition.minValue = 8;
-                    addCondition.maxValue = 8;
-                    break;
+                if (!negated) {
+                    SearchCondition addCondition;
+                    switch (ss) {
+                        case SetTypeOneSevens:
+                        case SetTypeTwoSevens:
+                        case SetTypeThreeSevens:
+                        addCondition.type = SearchCondition::Length;
+                        addCondition.minValue = 7;
+                        addCondition.maxValue = 7;
+                        break;
 
-                    default: break;
+                        case SetTypeOneEights:
+                        case SetEightsFromSevenLetterStems:
+                        addCondition.type = SearchCondition::Length;
+                        addCondition.minValue = 8;
+                        addCondition.maxValue = 8;
+                        break;
+
+                        default: break;
+                    }
+
+                    if (addCondition.type !=
+                        SearchCondition::UnknownSearchType)
+                    {
+                        newConditions.append (addCondition);
+                    }
                 }
-
-                if (addCondition.type != SearchCondition::UnknownSearchType)
-                    newConditions.append (addCondition);
             }
             newConditions.append (condition);
             break;
