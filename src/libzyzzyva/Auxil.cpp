@@ -145,6 +145,19 @@ Auxil::getThanksString()
 }
 
 //---------------------------------------------------------------------------
+//  getRootDir
+//
+//! Return the top-level directory containing everything Zyzzyva needs.
+//
+//! @return the directory name
+//---------------------------------------------------------------------------
+QString
+Auxil::getRootDir()
+{
+    return qApp->applicationDirPath();
+}
+
+//---------------------------------------------------------------------------
 //  getHelpDir
 //
 //! Return the top-level directory containing the help documentation.
@@ -154,7 +167,7 @@ Auxil::getThanksString()
 QString
 Auxil::getHelpDir()
 {
-    return qApp->applicationDirPath() + "/data/help";
+    return getRootDir() + "/data/help";
 }
 
 //---------------------------------------------------------------------------
@@ -168,7 +181,7 @@ Auxil::getHelpDir()
 QString
 Auxil::getQuizDir()
 {
-    return qApp->applicationDirPath() + "/data/quiz";
+    return getRootDir() + "/data/quiz";
 }
 
 //---------------------------------------------------------------------------
@@ -182,7 +195,7 @@ Auxil::getQuizDir()
 QString
 Auxil::getSearchDir()
 {
-    return qApp->applicationDirPath() + "/data/search";
+    return getRootDir() + "/data/search";
 }
 
 //---------------------------------------------------------------------------
@@ -196,7 +209,7 @@ Auxil::getSearchDir()
 QString
 Auxil::getTilesDir()
 {
-    return qApp->applicationDirPath() + "/data/tiles";
+    return getRootDir() + "/data/tiles";
 }
 
 //---------------------------------------------------------------------------
@@ -209,7 +222,7 @@ Auxil::getTilesDir()
 QString
 Auxil::getWordsDir()
 {
-    return qApp->applicationDirPath() + "/data/words";
+    return getRootDir() + "/data/words";
 }
 
 //---------------------------------------------------------------------------
