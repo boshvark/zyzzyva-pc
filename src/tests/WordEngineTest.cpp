@@ -25,28 +25,123 @@
 #include <QtTest/QtTest>
 
 #include "WordEngine.h"
+#include "Auxil.h"
 
 class WordEngineTest : public QObject
 {
     Q_OBJECT
+    public:
+    WordEngineTest() : prepared (false) { }
 
     private slots:
-    void testBasic();
+    void testSearch_data();
+    void testSearch();
+
+    private:
+    void tryImport();
+
+    private:
+    WordEngine engine;
+    bool prepared;
 
 };
 
+//---------------------------------------------------------------------------
+//  tryImport
+//
+//! Try to import OWL2 lexicon into the WordEngine.
+//---------------------------------------------------------------------------
 void
-WordEngineTest::testBasic()
+WordEngineTest::tryImport()
 {
-    WordEngine engine;
-    engine.importFile ("/home/mthelen/dev/zyzzyva/data/words"
-                       "/north-american/owl2-new-words.txt", "Custom");
+    if (prepared)
+        return;
+    int numWords = engine.importFile (Auxil::getRootDir() + "/data/words/"
+                                      "/north-american/owl2.txt", "Custom");
+    if (numWords)
+        prepared = true;
+}
 
-    QVERIFY (engine.isAcceptable ("FEEB"));
-    QVERIFY (!engine.isAcceptable ("NEW"));
+//---------------------------------------------------------------------------
+//  testSearch_data
+//
+//! Set up data files for search tests.
+//---------------------------------------------------------------------------
+void
+WordEngineTest::testSearch_data()
+{
+    QTest::addColumn<QString>("testFilename");
+    QTest::addColumn<QString>("resultFilename");
+
+    QTest::newRow ("3s") << "3s.zzs" << "3s.txt";
 
 }
 
+//---------------------------------------------------------------------------
+//  testSearch
+//
+//! Test search results.
+//---------------------------------------------------------------------------
+void
+WordEngineTest::testSearch()
+{
+    tryImport();
 
+    QFETCH (QString, testFilename);
+    QFETCH (QString, resultFilename);
+
+    // Create a SearchSpec from a test file
+    QFile testFile (Auxil::getRootDir() + "/src/tests/data/" + testFilename);
+    if (!testFile.open (QIODevice::ReadOnly | QIODevice::Text)) {
+        QFAIL ("Cannot open test file");
+        //QFAIL ("Cannot open test file '" + testFilename + "': " +
+        //       testFile.errorString());
+    }
+
+    QString errorMsg;
+    int errorLine = 0;
+    int errorColumn = 0;
+
+    QDomDocument document;
+    bool success = document.setContent (&testFile, false, &errorMsg,
+                                        &errorLine, &errorColumn);
+
+    if (!success) {
+        QFAIL ("Error in test file XML");
+        //QFAIL ("Error in test file '" + testFilename + "', line" +
+        //       QString::number (errorLine) + ", column " +
+        //       QString::number (errorColumn) + ": " + errorMsg);
+    }
+
+    SearchSpec spec;
+    if (!spec.fromDomElement (document.documentElement())) {
+        QFAIL ("Error in test file");
+        //QFAIL ("Error in test file '" + testFilename + "', cannot set "
+        //       "search spec.");
+    }
+
+    // Get a list of expected results
+    QFile resultFile (Auxil::getRootDir() + "/src/tests/data/" +
+                      resultFilename);
+    if (!resultFile.open (QIODevice::ReadOnly | QIODevice::Text)) {
+        QFAIL ("Cannot open result file");
+        //QFAIL ("Cannot open result file '" + resultFilename + "': " +
+        //       resultFile.errorString());
+    }
+
+    QString expectedResults;
+    while (!resultFile.atEnd()) {
+        QString line = resultFile.readLine();
+        expectedResults += line;
+    }
+
+    // Do the search and test the results
+    QStringList foundResultList = engine.search (spec, true);
+    QString foundResults = foundResultList.join ("\n") + "\n";
+
+    QCOMPARE (foundResults, expectedResults);
+}
+
+// Create a main function for a standalone executable
 QTEST_MAIN (WordEngineTest);
 #include "WordEngineTest.moc"
