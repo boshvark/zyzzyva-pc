@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE zyzzyva-search SYSTEM 'http://pietdepsi.com/dtd/zyzzyva-search.dtd'>
+<zyzzyva-search>
+ <conditions>
+  <and>
+   <condition type="Probability Order" min="1001" max="2000" />
+   <condition type="Length" min="8" max="8" />
+  </and>
+ </conditions>
+</zyzzyva-search>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE zyzzyva-search SYSTEM 'http://pietdepsi.com/dtd/zyzzyva-search.dtd'>
+<zyzzyva-search>
+ <conditions>
+  <and>
+   <condition type="Number of Anagrams" min="7" max="7" />
+   <condition type="Length" min="8" max="8" />
+  </and>
+ </conditions>
+</zyzzyva-search>

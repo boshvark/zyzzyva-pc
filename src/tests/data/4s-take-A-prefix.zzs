@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE zyzzyva-search SYSTEM 'http://pietdepsi.com/dtd/zyzzyva-search.dtd'>
+<zyzzyva-search>
+ <conditions>
+  <and>
+   <condition string="A" negated="0" type="Takes Prefix" />
+   <condition type="Length" min="4" max="4" />
+  </and>
+ </conditions>
+</zyzzyva-search>
