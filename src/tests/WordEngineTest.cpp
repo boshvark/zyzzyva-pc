@@ -56,10 +56,17 @@ WordEngineTest::tryImport()
 {
     if (prepared)
         return;
-    int numWords = engine.importFile (Auxil::getRootDir() + "/data/words/"
+    int numWords = engine.importFile (Auxil::getWordsDir() +
                                       "/north-american/owl2.txt", "Custom");
-    if (numWords)
-        prepared = true;
+    if (!numWords)
+        return;
+
+    engine.importStems (Auxil::getWordsDir() +
+                        "/north-american/6-letter-stems.txt");
+    engine.importStems (Auxil::getWordsDir() +
+                        "/north-american/7-letter-stems.txt");
+
+    prepared = true;
 }
 
 //---------------------------------------------------------------------------
@@ -70,10 +77,15 @@ WordEngineTest::tryImport()
 void
 WordEngineTest::testSearch_data()
 {
-    QTest::addColumn<QString>("testFilename");
-    QTest::addColumn<QString>("resultFilename");
+    QTest::addColumn<QString>("testName");
+    //QTest::addColumn<QString>("resultFilename");
 
-    QTest::newRow ("3s") << "3s.zzs" << "3s.txt";
+    QTest::newRow ("3s") << "3s";
+    QTest::newRow ("7s-type1") << "7s-type1";
+    QTest::newRow ("anagram-_aeinst") << "anagram-_aeinst";
+    QTest::newRow ("anagram-__aerstw") << "anagram-__aerstw";
+    QTest::newRow ("pattern-p_r_s") << "pattern-p_r_s";
+    QTest::newRow ("subanagram-aeiprs") << "subanagram-aeiprs";
 
 }
 
@@ -87,8 +99,9 @@ WordEngineTest::testSearch()
 {
     tryImport();
 
-    QFETCH (QString, testFilename);
-    QFETCH (QString, resultFilename);
+    QFETCH (QString, testName);
+    QString testFilename = testName + ".zzs";
+    QString resultFilename = testName + ".txt";
 
     // Create a SearchSpec from a test file
     QFile testFile (Auxil::getRootDir() + "/src/tests/data/" + testFilename);
@@ -129,15 +142,16 @@ WordEngineTest::testSearch()
         //       resultFile.errorString());
     }
 
+    QStringList expectedResults;
     QString expectedResults;
     while (!resultFile.atEnd()) {
-        QString line = resultFile.readLine();
-        expectedResults += line;
+        expectedResults.append (resultFile.readLine().trimmed());
     }
+    qSort (expectedResults);
 
     // Do the search and test the results
-    QStringList foundResultList = engine.search (spec, true);
-    QString foundResults = foundResultList.join ("\n") + "\n";
+    QStringList foundResults = engine.search (spec, true);
+    qSort (foundResults);
 
     QCOMPARE (foundResults, expectedResults);
 }

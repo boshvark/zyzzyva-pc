@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE zyzzyva-search SYSTEM 'http://pietdepsi.com/dtd/zyzzyva-search.dtd'>
+<zyzzyva-search>
+ <conditions>
+  <and>
+   <condition string="Type I Sevens" negated="0" type="Belongs to Group" />
+  </and>
+ </conditions>
+</zyzzyva-search>
