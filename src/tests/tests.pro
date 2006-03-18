@@ -27,7 +27,7 @@ TARGET = test_zyzzyva
 CONFIG += qt release thread warn_on assistant qtestlib
 QT += xml
 
-ROOT = ..
+ROOT = ../..
 DESTDIR = $$ROOT/bin
 MOC_DIR = build/moc
 OBJECTS_DIR = build/obj

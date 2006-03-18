@@ -23,4 +23,4 @@
 #---------------------------------------------------------------------------
 
 TEMPLATE = subdirs
-SUBDIRS = libzyzzyva zyzzyva
+SUBDIRS = libzyzzyva zyzzyva tests
