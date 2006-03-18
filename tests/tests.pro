@@ -28,10 +28,11 @@ CONFIG += qt release thread warn_on assistant qtestlib
 QT += xml
 
 ROOT = ..
-MOC_DIR = $$ROOT/build/moc
-OBJECTS_DIR = $$ROOT/build/obj
-INCLUDEPATH += $$ROOT/build/moc $$ROOT/src
-DEPENDPATH += $$ROOT/build/moc
+DESTDIR = $$ROOT/bin
+MOC_DIR = build/moc
+OBJECTS_DIR = build/obj
+INCLUDEPATH += build/moc $$ROOT/src/libzyzzyva
+DEPENDPATH += build/moc
 
 LIBS = -lzyzzyva -L$$ROOT/lib
 
