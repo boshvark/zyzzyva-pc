@@ -35,7 +35,7 @@ INCLUDEPATH += build/moc $$ROOT/src/libzyzzyva
 DEPENDPATH += build/moc
 RESOURCES = $$ROOT/zyzzyva.qrc
 
-LIBS = -lzyzzyva -L$$ROOT/lib
+LIBS = -lzyzzyva -L$$ROOT/bin
 
 # Source files
 SOURCES = \
