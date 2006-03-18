@@ -25,6 +25,7 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include <QApplication>
+#include <QDir>
 #include <QFile>
 #include <unistd.h>
 
@@ -154,7 +155,26 @@ Auxil::getThanksString()
 QString
 Auxil::getRootDir()
 {
-    return qApp->applicationDirPath();
+    static QString rootDir;
+
+    if (!rootDir.isEmpty())
+        return rootDir;
+
+    rootDir = qApp->applicationDirPath();
+    QDir dir (rootDir);
+
+    // Search in the application dir path first, then up directories until a
+    // directory is found that contains a zyzzyva.top file.
+    while (true) {
+        if (dir.exists ("zyzzyva.top")) {
+            rootDir = dir.absolutePath();
+            return rootDir;
+        }
+        if (!dir.cdUp())
+            break;
+    }
+
+    return rootDir;
 }
 
 //---------------------------------------------------------------------------
