@@ -1,9 +1,9 @@
 #---------------------------------------------------------------------------
-# zyzzyva.pro
+# testts.pro
 #
-# Build configuration file for Zyzzyva using qmake.
+# Build configuration file for Zyzzyva tests using qmake.
 #
-# Copyright 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
+# Copyright 2006 Michael W Thelen <mike@pietdepsi.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -22,5 +22,19 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #---------------------------------------------------------------------------
 
-TEMPLATE = subdirs
-SUBDIRS = src tests
+TEMPLATE = app
+TARGET = test_zyzzyva
+CONFIG += qt release thread warn_on assistant qtestlib
+QT += xml
+
+ROOT = ..
+MOC_DIR = $$ROOT/build/moc
+OBJECTS_DIR = $$ROOT/build/obj
+INCLUDEPATH += $$ROOT/build/moc $$ROOT/src
+DEPENDPATH += $$ROOT/build/moc
+
+LIBS = -lzyzzyva -L$$ROOT/lib
+
+# Source files
+SOURCES = \
+    WordEngineTest.cpp
