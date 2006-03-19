@@ -164,13 +164,12 @@ WordGraph::containsWord (const QString& w) const
 
     long node = ROOT_NODE;
     bool eow = false;
-    QString word = reverseString (w);
 
-    for (int i = 0; i < word.length(); ++i) {
+    for (int i = 0; i < w.length(); ++i) {
         if (!node)
             return false;
 
-        QChar letter = word.at (i);
+        QChar letter = w.at (i);
         for (long* edge = &dawg[node]; ; ++edge) {
             long lc = *edge;
             lc = lc >> V_LETTER;
