@@ -327,19 +327,30 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     // mapping lexicons to actual files) should be handled by someone else.
     QString lexicon = MainSettings::getAutoImportLexicon();
     QString importFile;
+    QString definitionFile;
+    bool dawg = true;
     if (lexicon == "Custom") {
         importFile = MainSettings::getAutoImportFile();
+        dawg = false;
     }
     else {
         QMap<QString, QString> lexiconMap;
-        lexiconMap["OWL"] = "/north-american/owl.txt";
+        lexiconMap["OWL"] = "/north-american/owl.dwg";
         lexiconMap["OWL2"] = "/north-american/owl2.dwg";
-        lexiconMap["SOWPODS"] = "/british/sowpods.txt";
-        lexiconMap["ODS"] = "/french/ods4.txt";
+        lexiconMap["SOWPODS"] = "/british/sowpods.dwg";
+        lexiconMap["ODS"] = "/french/ods4.dwg";
+
+        QMap<QString, QString> definitionMap;
+        definitionMap["OWL"] = "/north-american/owl.txt";
+        definitionMap["OWL2"] = "/north-american/owl2.txt";
+        definitionMap["SOWPODS"] = "/british/sowpods.txt";
+        definitionMap["ODS"] = "/french/ods4.txt";
 
         if (lexiconMap.contains (lexicon)) {
             importFile = Auxil::getWordsDir()
                 + lexiconMap.value (lexicon);
+            definitionFile = Auxil::getWordsDir()
+                + definitionMap.value (lexicon);
         }
     }
 
@@ -352,7 +363,11 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
                              Qt::AlignHCenter | Qt::AlignBottom);
         qApp->processEvents();
     }
-    import (importFile, lexicon);
+
+    if (dawg)
+        importDawg (importFile, lexicon, definitionFile);
+    else
+        importText (importFile, lexicon);
 
     if (splash) {
         splash->showMessage ("Loading stems...",
@@ -375,7 +390,7 @@ MainWindow::importInteractive()
         QDir::current().path(), "All Files (*.*)");
 
     if (file.isNull()) return;
-    int imported = import (file, "Custom");
+    int imported = importText (file, "Custom");
     if (imported < 0) return;
     QMessageBox::information (this, IMPORT_COMPLETE_TITLE,
                               "Loaded " + QString::number (imported)
@@ -830,27 +845,44 @@ MainWindow::newTab (QWidget* widget, const QIcon& icon, const QString& title)
 }
 
 //---------------------------------------------------------------------------
-//  import
+//  importDawg
 //
-//! Import words from a file.
+//! Import words from a DAWG file.
+//
+//! @param file the file to import words from
+//! @param lexiconName the name of the lexicon
+//! @param definitionFile the text file with definitions
+//! @return the number of imported words
+//---------------------------------------------------------------------------
+int
+MainWindow::importDawg (const QString& file, const QString& lexiconName, const
+                        QString& definitionFile)
+{
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+    int imported = wordEngine->importDawgFile (file, lexiconName,
+                                               definitionFile);
+    QApplication::restoreOverrideCursor();
+
+    setNumWords (imported);
+    setWindowTitle (APPLICATION_TITLE + " - " + lexiconName);
+    return imported;
+}
+
+//---------------------------------------------------------------------------
+//  importText
+//
+//! Import words from a text file.
 //
 //! @param file the file to import words from
 //! @param lexiconName the name of the lexicon
 //! @return the number of imported words
 //---------------------------------------------------------------------------
 int
-MainWindow::import (const QString& file, const QString& lexiconName)
+MainWindow::importText (const QString& file, const QString& lexiconName)
 {
     QString err;
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-
-    int imported = 0;
-
-    if (file.endsWith (".dwg"))
-        imported = wordEngine->importDawgFile (file, lexiconName);
-    else
-        imported = wordEngine->importTextFile (file, lexiconName, true, &err);
-
+    int imported = wordEngine->importTextFile (file, lexiconName, true);
     QApplication::restoreOverrideCursor();
 
     setNumWords (imported);

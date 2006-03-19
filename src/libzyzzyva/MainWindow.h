@@ -74,7 +74,9 @@ class MainWindow : public QMainWindow
     virtual void closeEvent (QCloseEvent* event);
 
     private:
-    int  import (const QString& file, const QString& lexiconName);
+    int  importText (const QString& file, const QString& lexiconName);
+    int  importDawg (const QString& file, const QString& lexiconName,
+                     const QString& definitionFile = QString::null);
     int  importStems();
     void setNumWords (int num);
     void readSettings (bool useGeometry);

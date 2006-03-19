@@ -117,7 +117,8 @@ WordEngine::importTextFile (const QString& filename, const QString& lexName,
 //---------------------------------------------------------------------------
 int
 WordEngine::importDawgFile (const QString& filename, const QString& lexName,
-                            QString* errString)
+                            const QString& definitionFilename, QString*
+                            errString)
 {
     bool ok = graph.importDawgFile (filename, errString);
 
@@ -137,6 +138,43 @@ WordEngine::importDawgFile (const QString& filename, const QString& lexName,
     foreach (word, allWords) {
         QString alpha = Auxil::getAlphagram (word);
         ++numAnagramsMap[alpha];
+    }
+
+    if (!definitionFilename.isEmpty()) {
+
+        QFile file (definitionFilename);
+        if (file.open (QIODevice::ReadOnly | QIODevice::Text)) {
+            QRegExp posRegex (QString ("\\[(\\w+)"));
+
+            char* buffer = new char [MAX_INPUT_LINE_LEN];
+            while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+                QString line (buffer);
+                line = line.simplified();
+                if (!line.length() || (line.at (0) == '#'))
+                    continue;
+
+                QString word = line.section (' ', 0, 0).toUpper();
+                QString definition = line.section (' ', 1);
+                if (!definition.isEmpty()) {
+                    multimap<QString, QString> defMap;
+                    QStringList defs = definition.split (" / ");
+                    QString def;
+                    foreach (def, defs) {
+                        QString pos;
+                        if (posRegex.indexIn (def, 0) >= 0) {
+                            pos = posRegex.cap (1);
+                        }
+                        defMap.insert (make_pair (pos, def));
+                    }
+                    definitions.insert (make_pair (word, defMap));
+                }
+            }
+        }
+        else {
+            if (errString)
+                *errString = "Can't open file '" + definitionFilename + "': "
+                    + file.errorString();
+        }
     }
 
     lexiconName = lexName;
