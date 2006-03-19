@@ -36,12 +36,10 @@ class WordGraph
     ~WordGraph();
 
     void clear();
+    bool importDawgFile (const QString& filename, QString* errString);
     void addWord (const QString& w);
     bool containsWord (const QString& w) const;
     QStringList search (const SearchSpec& spec) const;
-    void compress();
-    void print() const;
-    int getNumNodes() { return numNodes; }
 
     private:
     class Node {
@@ -57,7 +55,16 @@ class WordGraph
 
     class TraversalState {
       public:
-        TraversalState (Node* n, const QString& w, const QString& u)
+        TraversalState (long n, const QString& w, const QString& u)
+            : node (n), word (w), unmatched (u) { }
+        long node;
+        QString word;
+        QString unmatched;
+    };
+
+    class TraversalStateOld {
+      public:
+        TraversalStateOld (Node* n, const QString& w, const QString& u)
             : node (n), word (w), unmatched (u) { }
         Node* node;
         QString word;
@@ -66,12 +73,17 @@ class WordGraph
 
     private:
     bool matchesSpec (QString word, const SearchSpec& spec) const;
-    void addWord (const QString& w, bool reverse);
     QString reverseString (const QString& s) const;
 
+    void addWordOld (const QString& w, bool reverse);
+    bool containsWordOld (const QString& w) const;
+    QStringList searchOld (const SearchSpec& spec) const;
+
+    long* dawg;
+
+    // OLD dawg structures - only used where new DAWG is unavailable
     Node* top;
     Node* rtop;
-    int numNodes;
 };
 
 #endif // ZYZZYVA_WORD_GRAPH_H

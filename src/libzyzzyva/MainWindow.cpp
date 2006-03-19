@@ -333,7 +333,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     else {
         QMap<QString, QString> lexiconMap;
         lexiconMap["OWL"] = "/north-american/owl.txt";
-        lexiconMap["OWL2"] = "/north-american/owl2.txt";
+        lexiconMap["OWL2"] = "/north-american/owl2.dwg";
         lexiconMap["SOWPODS"] = "/british/sowpods.txt";
         lexiconMap["ODS"] = "/french/ods4.txt";
 
@@ -843,7 +843,14 @@ MainWindow::import (const QString& file, const QString& lexiconName)
 {
     QString err;
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-    int imported = wordEngine->importFile (file, lexiconName, true, &err);
+
+    int imported = 0;
+
+    if (file.endsWith (".dwg"))
+        imported = wordEngine->importDawgFile (file, lexiconName);
+    else
+        imported = wordEngine->importTextFile (file, lexiconName, true, &err);
+
     QApplication::restoreOverrideCursor();
 
     setNumWords (imported);

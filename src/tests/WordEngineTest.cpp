@@ -57,8 +57,9 @@ WordEngineTest::tryImport()
 {
     if (prepared)
         return;
-    int numWords = engine.importFile (Auxil::getWordsDir() +
-                                      "/north-american/owl2.txt", "Custom");
+    int numWords = engine.importDawgFile (Auxil::getWordsDir() +
+                                          "/north-american/owl2.dwg",
+                                          "Custom");
     if (!numWords)
         return;
 
