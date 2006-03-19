@@ -99,7 +99,7 @@ WordGraph::importDawgFile (const QString& filename, QString* errString)
         if (errString)
             *errString = "Can't open file '" + filename + "': "
             + file.errorString();
-        return 0;
+        return false;
     }
 
     long numEdges;

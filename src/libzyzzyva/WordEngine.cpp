@@ -113,9 +113,9 @@ WordEngine::importTextFile (const QString& filename, const QString& lexName,
 //! @param filename the name of the DAWG file to import
 //! @param lexName the name of the lexicon
 //! @param errString returns the error string in case of error
-//! @return true if successful, false otherwise
+//! @return the number of words imported
 //---------------------------------------------------------------------------
-bool
+int
 WordEngine::importDawgFile (const QString& filename, const QString& lexName,
                             QString* errString)
 {
@@ -124,8 +124,23 @@ WordEngine::importDawgFile (const QString& filename, const QString& lexName,
     if (!ok)
         return false;
 
+    SearchSpec spec;
+    SearchCondition condition;
+    condition.type = SearchCondition::Length;
+    condition.minValue = 1;
+    condition.maxValue = MAX_WORD_LEN;
+    spec.conditions.append (condition);
+
+    QStringList allWords = graph.search (spec);
+    QString word;
+
+    foreach (word, allWords) {
+        QString alpha = Auxil::getAlphagram (word);
+        ++numAnagramsMap[alpha];
+    }
+
     lexiconName = lexName;
-    return true;
+    return allWords.size();
 }
 
 //---------------------------------------------------------------------------
