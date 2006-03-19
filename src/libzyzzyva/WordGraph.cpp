@@ -55,7 +55,7 @@ using namespace Defs;
 //! Constructor.
 //---------------------------------------------------------------------------
 WordGraph::WordGraph()
-    : dawg (0)
+    : dawg (0), rdawg (0)
 {
 }
 
@@ -66,9 +66,7 @@ WordGraph::WordGraph()
 //---------------------------------------------------------------------------
 WordGraph::~WordGraph()
 {
-    if (dawg)
-        delete[] dawg;
-    dawg = 0;
+    clear();
 }
 
 //---------------------------------------------------------------------------
@@ -79,6 +77,12 @@ WordGraph::~WordGraph()
 void
 WordGraph::clear()
 {
+    if (dawg)
+        delete[] dawg;
+    if (rdawg)
+        delete[] rdawg;
+    dawg = 0;
+    rdawg = 0;
 }
 
 //---------------------------------------------------------------------------
@@ -88,11 +92,13 @@ WordGraph::clear()
 //! programs: http://www.gtoal.com/wordgames/dawgutils/
 //
 //! @param filename the name of the DAWG file to import
+//! @param reverse whether the DAWG contains reversed words
 //! @param errString returns the error string in case of error
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordGraph::importDawgFile (const QString& filename, QString* errString)
+WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
+                           errString)
 {
     QFile file (filename);
     if (!file.open (QIODevice::ReadOnly)) {
@@ -106,10 +112,18 @@ WordGraph::importDawgFile (const QString& filename, QString* errString)
     char* p = (char*) &numEdges;
     file.read (p, 4);
 
-    dawg = new long[numEdges + 1];
-    dawg[0] = 0;
-    p = (char*) &dawg[1];
-    file.read (p, 4 * numEdges);
+    if (reverse) {
+        rdawg = new long[numEdges + 1];
+        rdawg[0] = 0;
+        p = (char*) &rdawg[1];
+        file.read (p, 4 * numEdges);
+    }
+    else {
+        dawg = new long[numEdges + 1];
+        dawg[0] = 0;
+        p = (char*) &dawg[1];
+        file.read (p, 4 * numEdges);
+    }
 
     return true;
 }
@@ -150,12 +164,13 @@ WordGraph::containsWord (const QString& w) const
 
     long node = ROOT_NODE;
     bool eow = false;
+    QString word = reverseString (w);
 
-    for (int i = 0; i < w.length(); ++i) {
+    for (int i = 0; i < word.length(); ++i) {
         if (!node)
             return false;
 
-        QChar letter = w.at (i);
+        QChar letter = word.at (i);
         for (long* edge = &dawg[node]; ; ++edge) {
             long lc = *edge;
             lc = lc >> V_LETTER;
@@ -271,11 +286,10 @@ WordGraph::search (const SearchSpec& spec) const
             else
                 unmatched.replace (QRegExp ("\\*+"), "*");
 
-            // XXX: Put this back in after things are working!
-            //if ((unmatched.left (1) == "*") && (unmatched.right (1) != "*")) {
-            //    unmatched = reverseString (unmatched);
-            //    reversePattern = true;
-            //}
+            if ((unmatched.left (1) == "*") && (unmatched.right (1) != "*")) {
+                unmatched = reverseString (unmatched);
+                reversePattern = true;
+            }
         }
 
         // If Anagram or Subanagram match contains a wildcard, note it and remove
@@ -300,7 +314,6 @@ WordGraph::search (const SearchSpec& spec) const
             }
         }
 
-        //Node* node = (reversePattern ? rtop : top);
         long node = ROOT_NODE;
 
         // Traverse the tree looking for matches
@@ -330,11 +343,10 @@ WordGraph::search (const SearchSpec& spec) const
                     }
                 }
 
-                long* edge;
+                long* edge = reversePattern ? &rdawg[node] : &dawg[node];
 
                 // Traverse next nodes, looking for matches
-                for (edge = (long*) &dawg[node]; ; ++edge, ++node)
-                {
+                for (; ; ++edge, ++node) {
                     long longLetter = *edge;
                     longLetter = longLetter >> V_LETTER;
                     longLetter = longLetter & M_LETTER;

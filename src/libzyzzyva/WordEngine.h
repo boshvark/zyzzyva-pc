@@ -41,6 +41,7 @@ class WordEngine
     int importTextFile (const QString& filename, const QString& lexName, bool
                         loadDefinitions = true, QString* errString = 0);
     int importDawgFile (const QString& filename, const QString& lexName,
+                        bool reverse = false,
                         const QString& definitionFilename = QString::null,
                         QString* errString = 0);
     int importStems (const QString& filename, QString* errString = 0);

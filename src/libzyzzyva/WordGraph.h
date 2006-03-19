@@ -36,7 +36,8 @@ class WordGraph
     ~WordGraph();
 
     void clear();
-    bool importDawgFile (const QString& filename, QString* errString);
+    bool importDawgFile (const QString& filename, bool reverse, QString*
+                         errString);
     void addWord (const QString& w);
     bool containsWord (const QString& w) const;
     QStringList search (const SearchSpec& spec) const;
@@ -80,6 +81,7 @@ class WordGraph
     QStringList searchOld (const SearchSpec& spec) const;
 
     long* dawg;
+    long* rdawg;
 
     // OLD dawg structures - only used where new DAWG is unavailable
     Node* top;

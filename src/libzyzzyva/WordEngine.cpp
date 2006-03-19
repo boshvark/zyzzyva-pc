@@ -112,18 +112,22 @@ WordEngine::importTextFile (const QString& filename, const QString& lexName,
 //
 //! @param filename the name of the DAWG file to import
 //! @param lexName the name of the lexicon
+//! @param reverse whether the DAWG contains reversed words
 //! @param errString returns the error string in case of error
 //! @return the number of words imported
 //---------------------------------------------------------------------------
 int
 WordEngine::importDawgFile (const QString& filename, const QString& lexName,
-                            const QString& definitionFilename, QString*
-                            errString)
+                            bool reverse, const QString& definitionFilename,
+                            QString* errString)
 {
-    bool ok = graph.importDawgFile (filename, errString);
+    bool ok = graph.importDawgFile (filename, reverse, errString);
 
     if (!ok)
-        return false;
+        return 0;
+
+    if (reverse)
+        return 0;
 
     SearchSpec spec;
     SearchCondition condition;

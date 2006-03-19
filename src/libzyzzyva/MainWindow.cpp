@@ -327,6 +327,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     // mapping lexicons to actual files) should be handled by someone else.
     QString lexicon = MainSettings::getAutoImportLexicon();
     QString importFile;
+    QString reverseImportFile;
     QString definitionFile;
     bool dawg = true;
     if (lexicon == "Custom") {
@@ -340,6 +341,12 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
         lexiconMap["SOWPODS"] = "/british/sowpods.dwg";
         lexiconMap["ODS"] = "/french/ods4.dwg";
 
+        QMap<QString, QString> reverseLexiconMap;
+        reverseLexiconMap["OWL"] = "/north-american/owl-r.dwg";
+        reverseLexiconMap["OWL2"] = "/north-american/owl2-r.dwg";
+        reverseLexiconMap["SOWPODS"] = "/british/sowpods-r.dwg";
+        reverseLexiconMap["ODS"] = "/french/ods4-r.dwg";
+
         QMap<QString, QString> definitionMap;
         definitionMap["OWL"] = "/north-american/owl.txt";
         definitionMap["OWL2"] = "/north-american/owl2.txt";
@@ -349,6 +356,8 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
         if (lexiconMap.contains (lexicon)) {
             importFile = Auxil::getWordsDir()
                 + lexiconMap.value (lexicon);
+            reverseImportFile = Auxil::getWordsDir()
+                + reverseLexiconMap.value (lexicon);
             definitionFile = Auxil::getWordsDir()
                 + definitionMap.value (lexicon);
         }
@@ -364,8 +373,10 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
         qApp->processEvents();
     }
 
-    if (dawg)
-        importDawg (importFile, lexicon, definitionFile);
+    if (dawg) {
+        importDawg (importFile, lexicon, false, definitionFile);
+        importDawg (reverseImportFile, lexicon, true);
+    }
     else
         importText (importFile, lexicon);
 
@@ -851,20 +862,23 @@ MainWindow::newTab (QWidget* widget, const QIcon& icon, const QString& title)
 //
 //! @param file the file to import words from
 //! @param lexiconName the name of the lexicon
+//! @param reverse whether the DAWG contains reversed words
 //! @param definitionFile the text file with definitions
 //! @return the number of imported words
 //---------------------------------------------------------------------------
 int
-MainWindow::importDawg (const QString& file, const QString& lexiconName, const
-                        QString& definitionFile)
+MainWindow::importDawg (const QString& file, const QString& lexiconName, bool
+                        reverse, const QString& definitionFile)
 {
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-    int imported = wordEngine->importDawgFile (file, lexiconName,
+    int imported = wordEngine->importDawgFile (file, lexiconName, reverse,
                                                definitionFile);
     QApplication::restoreOverrideCursor();
 
-    setNumWords (imported);
-    setWindowTitle (APPLICATION_TITLE + " - " + lexiconName);
+    if (!reverse) {
+        setNumWords (imported);
+        setWindowTitle (APPLICATION_TITLE + " - " + lexiconName);
+    }
     return imported;
 }
 
