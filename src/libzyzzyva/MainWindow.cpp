@@ -329,6 +329,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     QString importFile;
     QString reverseImportFile;
     QString definitionFile;
+    QString numAnagramsFile;
     bool dawg = true;
     if (lexicon == "Custom") {
         importFile = MainSettings::getAutoImportFile();
@@ -353,6 +354,12 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
         definitionMap["SOWPODS"] = "/british/sowpods.txt";
         definitionMap["ODS"] = "/french/ods4.txt";
 
+        QMap<QString, QString> numAnagramsMap;
+        numAnagramsMap["OWL"] = "/north-american/owl-num-anagrams.txt";
+        numAnagramsMap["OWL2"] = "/north-american/owl2-num-anagrams.txt";
+        numAnagramsMap["SOWPODS"] = "/british/sowpods-num-anagrams.txt";
+        numAnagramsMap["ODS"] = "/french/ods4-num-anagrams.txt";
+
         if (lexiconMap.contains (lexicon)) {
             importFile = Auxil::getWordsDir()
                 + lexiconMap.value (lexicon);
@@ -360,6 +367,8 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
                 + reverseLexiconMap.value (lexicon);
             definitionFile = Auxil::getWordsDir()
                 + definitionMap.value (lexicon);
+            numAnagramsFile = Auxil::getWordsDir()
+                + numAnagramsMap.value (lexicon);
         }
     }
 
@@ -376,8 +385,9 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     if (dawg) {
         importDawg (importFile, lexicon, false);
         importDawg (reverseImportFile, lexicon, true);
-        importDefinitions (definitionFile);
-
+        int numWords = wordEngine->importNumAnagrams (numAnagramsFile);
+        setNumWords (numWords);
+        wordEngine->importDefinitions (definitionFile);
     }
     else
         importText (importFile, lexicon);
@@ -880,19 +890,6 @@ MainWindow::importDawg (const QString& file, const QString& lexiconName, bool
         setWindowTitle (APPLICATION_TITLE + " - " + lexiconName);
     }
     return imported;
-}
-
-//---------------------------------------------------------------------------
-//  importDefinitions
-//
-//! Import definitions from a text file.
-//
-//! @param file the file to import definitions from
-//---------------------------------------------------------------------------
-void
-MainWindow::importDefinitions (const QString& file)
-{
-    wordEngine->importDefinitions (file);
 }
 
 //---------------------------------------------------------------------------

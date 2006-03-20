@@ -30,6 +30,8 @@
 #include <QRegExp>
 #include <set>
 
+#include <QtDebug>
+
 const int MAX_DEFINITION_LINKS = 3;
 
 using namespace Defs;
@@ -100,37 +102,22 @@ WordEngine::importTextFile (const QString& filename, const QString& lexName,
 //! @param lexName the name of the lexicon
 //! @param reverse whether the DAWG contains reversed words
 //! @param errString returns the error string in case of error
-//! @return the number of words imported
+//! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
-int
+bool
 WordEngine::importDawgFile (const QString& filename, const QString& lexName,
                             bool reverse, QString* errString)
 {
     bool ok = graph.importDawgFile (filename, reverse, errString);
 
     if (!ok)
-        return 0;
+        return false;
 
     if (reverse)
-        return 0;
-
-    SearchSpec spec;
-    SearchCondition condition;
-    condition.type = SearchCondition::Length;
-    condition.minValue = 1;
-    condition.maxValue = MAX_WORD_LEN;
-    spec.conditions.append (condition);
-
-    QStringList allWords = graph.search (spec);
-    QString word;
-
-    foreach (word, allWords) {
-        QString alpha = Auxil::getAlphagram (word);
-        ++numAnagramsMap[alpha];
-    }
+        return true;
 
     lexiconName = lexName;
-    return allWords.size();
+    return true;
 }
 
 //---------------------------------------------------------------------------
@@ -158,6 +145,37 @@ WordEngine::importDefinitions (const QString& filename)
         QString definition = line.section (' ', 1);
         addDefinition (word, definition);
     }
+}
+
+//---------------------------------------------------------------------------
+//  importDefinitions
+//
+//! Import definitions from a text file.
+//
+//! @param filename the file to import definitions from
+//---------------------------------------------------------------------------
+int
+WordEngine::importNumAnagrams (const QString& filename)
+{
+    QFile file (filename);
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+        return 0;
+
+    int total = 0;
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
+        line = line.simplified();
+        if (!line.length() || (line.at (0) == '#'))
+            continue;
+
+        QString alphagram = line.section (' ', 0, 0).toUpper();
+        int count = line.section (' ', 1).toInt();
+        numAnagramsMap[alphagram] = count;
+        total += count;
+    }
+
+    return total;
 }
 
 //---------------------------------------------------------------------------
