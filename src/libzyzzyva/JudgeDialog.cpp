@@ -49,7 +49,7 @@ const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 const QString INSTRUCTION_MESSAGE = "1. Enter words, separated by "
                                     "SPACE or ENTER.\n"
                                     "2. Press TAB to judge the play.\n"
-                                    "3. Press any key to clear results.";
+                                    "3. Press any key to clear the results.";
 
 using namespace Defs;
 
