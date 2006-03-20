@@ -26,16 +26,20 @@
 #define ZYZZYVA_WORD_ENGINE_H
 
 #include "WordGraph.h"
+#include "LoadDefinitionsThread.h"
 #include <QMap>
 #include <QString>
 #include <QStringList>
 #include <map>
 #include <set>
 
-class WordEngine
+class WordEngine : public QObject
 {
+    Q_OBJECT
     public:
-    WordEngine() { }
+    WordEngine (QObject* parent = 0)
+        : QObject (parent),
+          definitionsThread (new LoadDefinitionsThread(this)) { }
     ~WordEngine() { }
 
     int importTextFile (const QString& filename, const QString& lexName, bool
@@ -53,6 +57,10 @@ class WordEngine
     QString getLexiconName() const { return lexiconName; }
     QString getFrontHookLetters (const QString& word) const;
     QString getBackHookLetters (const QString& word) const;
+
+    public slots:
+    void definitionsLoaded();
+    void anagramsLoaded();
 
     private:
     bool matchesConditions (const QString& word, const QList<SearchCondition>&
@@ -72,6 +80,8 @@ class WordEngine
     std::map<int, QStringList> stems;
     QMap<QString, int> numAnagramsMap;
     std::map< int, std::set<QString> > stemAlphagrams;
+
+    LoadDefinitionsThread* definitionsThread;
 };
 
 #endif // ZYZZYVA_WORD_ENGINE_H

@@ -366,26 +366,10 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     if (dawg) {
         importDawg (importFile, lexicon, false);
         importDawg (reverseImportFile, lexicon, true);
-
-        // Load num words
         int numWords = wordEngine->importNumWords (numWordsFile);
         setNumWords (numWords);
-
-        //// Load anagrams
-        //if (splash) {
-        //    splash->showMessage ("Loading " + lexicon + " anagrams...",
-        //                        Qt::AlignHCenter | Qt::AlignBottom);
-        //    qApp->processEvents();
-        //}
-        //wordEngine->importNumAnagrams (numAnagramsFile);
-
-        //// Load definitions
-        //if (splash) {
-        //    splash->showMessage ("Loading " + lexicon + " definitions...",
-        //                        Qt::AlignHCenter | Qt::AlignBottom);
-        //    qApp->processEvents();
-        //}
-        //wordEngine->importDefinitions (definitionFile);
+        wordEngine->importNumAnagrams (numAnagramsFile);
+        wordEngine->importDefinitions (definitionFile);
     }
     else
         importText (importFile, lexicon);

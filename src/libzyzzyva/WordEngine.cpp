@@ -24,13 +24,12 @@
 
 #include "WordEngine.h"
 #include "LetterBag.h"
+#include "LoadDefinitionsThread.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QFile>
 #include <QRegExp>
 #include <set>
-
-#include <QtDebug>
 
 const int MAX_DEFINITION_LINKS = 3;
 
@@ -39,6 +38,7 @@ using std::set;
 using std::map;
 using std::make_pair;
 using std::multimap;
+
 
 //---------------------------------------------------------------------------
 //  importTextFile
@@ -130,21 +130,10 @@ WordEngine::importDawgFile (const QString& filename, const QString& lexName,
 void
 WordEngine::importDefinitions (const QString& filename)
 {
-    QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
-        return;
-
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
-    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
-        QString line (buffer);
-        line = line.simplified();
-        if (!line.length() || (line.at (0) == '#'))
-            continue;
-
-        QString word = line.section (' ', 0, 0).toUpper();
-        QString definition = line.section (' ', 1);
-        addDefinition (word, definition);
-    }
+    definitionsThread->setFilename (filename);
+    connect (definitionsThread, SIGNAL (loaded()),
+             SLOT (definitionsLoaded()));
+    definitionsThread->start();
 }
 
 //---------------------------------------------------------------------------
@@ -538,6 +527,30 @@ WordEngine::getBackHookLetters (const QString& word) const
     for (sit = letters.begin(); sit != letters.end(); ++sit)
         ret += *sit;
     return ret;
+}
+
+//---------------------------------------------------------------------------
+//  definitionsLoaded
+//
+//! Called when the definition-loading thread is complete.
+//---------------------------------------------------------------------------
+void
+WordEngine::definitionsLoaded()
+{
+    definitions = definitionsThread->getDefinitions();
+    definitionsThread->quit();
+    definitionsThread->disconnect();
+}
+
+//---------------------------------------------------------------------------
+//  anagramsLoaded
+//
+//! Called when the anagram-loading thread is complete.
+//---------------------------------------------------------------------------
+void
+WordEngine::anagramsLoaded()
+{
+    //numAnagramsMap = a;
 }
 
 //---------------------------------------------------------------------------
