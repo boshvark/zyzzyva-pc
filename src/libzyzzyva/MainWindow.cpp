@@ -385,8 +385,22 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     if (dawg) {
         importDawg (importFile, lexicon, false);
         importDawg (reverseImportFile, lexicon, true);
+
+        // Load anagrams
+        if (splash) {
+            splash->showMessage ("Loading " + lexicon + " anagrams...",
+                                Qt::AlignHCenter | Qt::AlignBottom);
+            qApp->processEvents();
+        }
         int numWords = wordEngine->importNumAnagrams (numAnagramsFile);
         setNumWords (numWords);
+
+        // Load definitions
+        if (splash) {
+            splash->showMessage ("Loading " + lexicon + " definitions...",
+                                Qt::AlignHCenter | Qt::AlignBottom);
+            qApp->processEvents();
+        }
         wordEngine->importDefinitions (definitionFile);
     }
     else
