@@ -76,8 +76,8 @@ class MainWindow : public QMainWindow
     private:
     int  importText (const QString& file, const QString& lexiconName);
     int  importDawg (const QString& file, const QString& lexiconName,
-                     bool reverse = false,
-                     const QString& definitionFile = QString::null);
+                     bool reverse = false);
+    void importDefinitions (const QString& file);
     int  importStems();
     void setNumWords (int num);
     void readSettings (bool useGeometry);

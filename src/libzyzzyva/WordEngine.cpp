@@ -62,8 +62,6 @@ WordEngine::importTextFile (const QString& filename, const QString& lexName,
         return 0;
     }
 
-    QRegExp posRegex (QString ("\\[(\\w+)"));
-
     int imported = 0;
     char* buffer = new char [MAX_INPUT_LINE_LEN];
     while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
@@ -81,19 +79,7 @@ WordEngine::importTextFile (const QString& filename, const QString& lexName,
         graph.addWord (word);
         if (loadDefinitions) {
             QString definition = line.section (' ', 1);
-            if (!definition.isEmpty()) {
-                multimap<QString, QString> defMap;
-                QStringList defs = definition.split (" / ");
-                QString def;
-                foreach (def, defs) {
-                    QString pos;
-                    if (posRegex.indexIn (def, 0) >= 0) {
-                        pos = posRegex.cap (1);
-                    }
-                    defMap.insert (make_pair (pos, def));
-                }
-                definitions.insert (make_pair (word, defMap));
-            }
+            addDefinition (word, definition);
         }
         ++imported;
     }
@@ -118,8 +104,7 @@ WordEngine::importTextFile (const QString& filename, const QString& lexName,
 //---------------------------------------------------------------------------
 int
 WordEngine::importDawgFile (const QString& filename, const QString& lexName,
-                            bool reverse, const QString& definitionFilename,
-                            QString* errString)
+                            bool reverse, QString* errString)
 {
     bool ok = graph.importDawgFile (filename, reverse, errString);
 
@@ -144,45 +129,35 @@ WordEngine::importDawgFile (const QString& filename, const QString& lexName,
         ++numAnagramsMap[alpha];
     }
 
-    if (!definitionFilename.isEmpty()) {
-
-        QFile file (definitionFilename);
-        if (file.open (QIODevice::ReadOnly | QIODevice::Text)) {
-            QRegExp posRegex (QString ("\\[(\\w+)"));
-
-            char* buffer = new char [MAX_INPUT_LINE_LEN];
-            while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
-                QString line (buffer);
-                line = line.simplified();
-                if (!line.length() || (line.at (0) == '#'))
-                    continue;
-
-                QString word = line.section (' ', 0, 0).toUpper();
-                QString definition = line.section (' ', 1);
-                if (!definition.isEmpty()) {
-                    multimap<QString, QString> defMap;
-                    QStringList defs = definition.split (" / ");
-                    QString def;
-                    foreach (def, defs) {
-                        QString pos;
-                        if (posRegex.indexIn (def, 0) >= 0) {
-                            pos = posRegex.cap (1);
-                        }
-                        defMap.insert (make_pair (pos, def));
-                    }
-                    definitions.insert (make_pair (word, defMap));
-                }
-            }
-        }
-        else {
-            if (errString)
-                *errString = "Can't open file '" + definitionFilename + "': "
-                    + file.errorString();
-        }
-    }
-
     lexiconName = lexName;
     return allWords.size();
+}
+
+//---------------------------------------------------------------------------
+//  importDefinitions
+//
+//! Import definitions from a text file.
+//
+//! @param filename the file to import definitions from
+//---------------------------------------------------------------------------
+void
+WordEngine::importDefinitions (const QString& filename)
+{
+    QFile file (filename);
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
+        line = line.simplified();
+        if (!line.length() || (line.at (0) == '#'))
+            continue;
+
+        QString word = line.section (' ', 0, 0).toUpper();
+        QString definition = line.section (' ', 1);
+        addDefinition (word, definition);
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -818,6 +793,35 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
     }
 
     return wordList;
+}
+
+//---------------------------------------------------------------------------
+//  addDefinition
+//
+//! Add a word with its definition.  Parse the definition and separate its
+//! parts of speech.
+//
+//! @param word the word
+//! @param definition the definition
+//---------------------------------------------------------------------------
+void
+WordEngine::addDefinition (const QString& word, const QString& definition)
+{
+    if (word.isEmpty() || definition.isEmpty())
+        return;
+
+    QRegExp posRegex (QString ("\\[(\\w+)"));
+    multimap<QString, QString> defMap;
+    QStringList defs = definition.split (" / ");
+    QString def;
+    foreach (def, defs) {
+        QString pos;
+        if (posRegex.indexIn (def, 0) >= 0) {
+            pos = posRegex.cap (1);
+        }
+        defMap.insert (make_pair (pos, def));
+    }
+    definitions.insert (make_pair (word, defMap));
 }
 
 //---------------------------------------------------------------------------

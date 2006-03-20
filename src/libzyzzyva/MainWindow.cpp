@@ -374,8 +374,10 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     }
 
     if (dawg) {
-        importDawg (importFile, lexicon, false, definitionFile);
+        importDawg (importFile, lexicon, false);
         importDawg (reverseImportFile, lexicon, true);
+        importDefinitions (definitionFile);
+
     }
     else
         importText (importFile, lexicon);
@@ -863,16 +865,14 @@ MainWindow::newTab (QWidget* widget, const QIcon& icon, const QString& title)
 //! @param file the file to import words from
 //! @param lexiconName the name of the lexicon
 //! @param reverse whether the DAWG contains reversed words
-//! @param definitionFile the text file with definitions
 //! @return the number of imported words
 //---------------------------------------------------------------------------
 int
 MainWindow::importDawg (const QString& file, const QString& lexiconName, bool
-                        reverse, const QString& definitionFile)
+                        reverse)
 {
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-    int imported = wordEngine->importDawgFile (file, lexiconName, reverse,
-                                               definitionFile);
+    int imported = wordEngine->importDawgFile (file, lexiconName, reverse);
     QApplication::restoreOverrideCursor();
 
     if (!reverse) {
@@ -880,6 +880,19 @@ MainWindow::importDawg (const QString& file, const QString& lexiconName, bool
         setWindowTitle (APPLICATION_TITLE + " - " + lexiconName);
     }
     return imported;
+}
+
+//---------------------------------------------------------------------------
+//  importDefinitions
+//
+//! Import definitions from a text file.
+//
+//! @param file the file to import definitions from
+//---------------------------------------------------------------------------
+void
+MainWindow::importDefinitions (const QString& file)
+{
+    wordEngine->importDefinitions (file);
 }
 
 //---------------------------------------------------------------------------

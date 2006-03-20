@@ -41,9 +41,8 @@ class WordEngine
     int importTextFile (const QString& filename, const QString& lexName, bool
                         loadDefinitions = true, QString* errString = 0);
     int importDawgFile (const QString& filename, const QString& lexName,
-                        bool reverse = false,
-                        const QString& definitionFilename = QString::null,
-                        QString* errString = 0);
+                        bool reverse = false, QString* errString = 0);
+    void importDefinitions (const QString& filename);
     int importStems (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;
@@ -59,6 +58,7 @@ class WordEngine
     bool isSetMember (const QString& word, SearchSet ss) const;
     int numAnagrams (const QString& word) const;
     QStringList nonGraphSearch (const SearchSpec& spec) const;
+    void addDefinition (const QString& word, const QString& definition);
     QString replaceDefinitionLinks (const QString& definition, int maxDepth,
                                     bool useFollow = false) const;
     QString getSubDefinition (const QString& word, const QString& pos) const;
