@@ -41,6 +41,7 @@ const int EXIT_FONT_PIXEL_SIZE = 30;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 20;
 const int CLEAR_RESULTS_DELAY = 10000;
+const int CLEAR_RESULTS_MIN_DELAY = 500;
 const int EXIT_TIMEOUT = 5000;
 const int NUM_KEYPRESSES_TO_EXIT = 10;
 const int NUM_KEYPRESSES_TO_DISPLAY = 5;
@@ -60,7 +61,7 @@ using namespace Defs;
 //! @param f widget flags
 //---------------------------------------------------------------------------
 JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : QDialog (parent, f), engine (e)
+    : QDialog (parent, f), engine (e), clearResultsHold (0)
 {
     QFont formFont = qApp->font();
     formFont.setPixelSize (FORM_FONT_PIXEL_SIZE);
@@ -250,10 +251,26 @@ JudgeDialog::judgeWord()
     pal.setColor (QPalette::Foreground, resultColor);
     resultLabel->setPalette (pal);
 
+    ++clearResultsHold;
+
     resultLabel->setText (resultStr);
     widgetStack->setCurrentWidget (resultWidget);
 
+    QTimer::singleShot (CLEAR_RESULTS_MIN_DELAY, this,
+                        SLOT (clearResultsReleaseHold()));
+
     resultTimer->start (CLEAR_RESULTS_DELAY);
+}
+
+//---------------------------------------------------------------------------
+//  clearResultsReleaseHold
+//
+//! Release a hold on clearing the results display.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::clearResultsReleaseHold()
+{
+    --clearResultsHold;
 }
 
 //---------------------------------------------------------------------------
@@ -270,7 +287,7 @@ JudgeDialog::keyPressEvent (QKeyEvent* event)
         return;
 
     bool cleared = false;
-    if (widgetStack->currentWidget() == resultWidget) {
+    if ((widgetStack->currentWidget() == resultWidget) && !clearResultsHold) {
         clear();
         cleared = true;
     }
