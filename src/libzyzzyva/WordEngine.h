@@ -43,7 +43,8 @@ class WordEngine
     bool importDawgFile (const QString& filename, const QString& lexName, bool
                          reverse = false, QString* errString = 0);
     void importDefinitions (const QString& filename);
-    int importNumAnagrams (const QString& filename);
+    int importNumWords (const QString& filename);
+    void importNumAnagrams (const QString& filename);
     int importStems (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;

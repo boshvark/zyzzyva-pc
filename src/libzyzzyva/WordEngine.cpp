@@ -148,20 +148,42 @@ WordEngine::importDefinitions (const QString& filename)
 }
 
 //---------------------------------------------------------------------------
-//  importDefinitions
+//  importNumWords
 //
-//! Import definitions from a text file.
+//! Import a word count from a text file.
 //
-//! @param filename the file to import definitions from
+//! @param filename the file to import the word count from
+//! @return the word count
 //---------------------------------------------------------------------------
 int
-WordEngine::importNumAnagrams (const QString& filename)
+WordEngine::importNumWords (const QString& filename)
 {
     QFile file (filename);
     if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
         return 0;
 
-    int total = 0;
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    if (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
+        return line.simplified().section (' ', 0, 0).toInt();
+    }
+    return 0;
+}
+
+//---------------------------------------------------------------------------
+//  importNumAnagrams
+//
+//! Import anagram counts from a text file.
+//
+//! @param filename the file to import anagram counts definitions from
+//---------------------------------------------------------------------------
+void
+WordEngine::importNumAnagrams (const QString& filename)
+{
+    QFile file (filename);
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
     char* buffer = new char [MAX_INPUT_LINE_LEN];
     while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
@@ -172,10 +194,7 @@ WordEngine::importNumAnagrams (const QString& filename)
         QString alphagram = line.section (' ', 0, 0).toUpper();
         int count = line.section (' ', 1).toInt();
         numAnagramsMap[alphagram] = count;
-        total += count;
     }
-
-    return total;
 }
 
 //---------------------------------------------------------------------------

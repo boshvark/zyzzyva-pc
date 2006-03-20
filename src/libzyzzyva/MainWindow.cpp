@@ -329,6 +329,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     QString importFile;
     QString reverseImportFile;
     QString definitionFile;
+    QString numWordsFile;
     QString numAnagramsFile;
     bool dawg = true;
     if (lexicon == "Custom") {
@@ -336,39 +337,19 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
         dawg = false;
     }
     else {
-        QMap<QString, QString> lexiconMap;
-        lexiconMap["OWL"] = "/north-american/owl.dwg";
-        lexiconMap["OWL2"] = "/north-american/owl2.dwg";
-        lexiconMap["SOWPODS"] = "/british/sowpods.dwg";
-        lexiconMap["ODS"] = "/french/ods4.dwg";
+        QMap<QString, QString> prefixMap;
+        prefixMap["OWL"] = "/north-american/owl";
+        prefixMap["OWL2"] = "/north-american/owl2";
+        prefixMap["SOWPODS"] = "/british/sowpods";
+        prefixMap["ODS"] = "/french/ods4";
 
-        QMap<QString, QString> reverseLexiconMap;
-        reverseLexiconMap["OWL"] = "/north-american/owl-r.dwg";
-        reverseLexiconMap["OWL2"] = "/north-american/owl2-r.dwg";
-        reverseLexiconMap["SOWPODS"] = "/british/sowpods-r.dwg";
-        reverseLexiconMap["ODS"] = "/french/ods4-r.dwg";
-
-        QMap<QString, QString> definitionMap;
-        definitionMap["OWL"] = "/north-american/owl.txt";
-        definitionMap["OWL2"] = "/north-american/owl2.txt";
-        definitionMap["SOWPODS"] = "/british/sowpods.txt";
-        definitionMap["ODS"] = "/french/ods4.txt";
-
-        QMap<QString, QString> numAnagramsMap;
-        numAnagramsMap["OWL"] = "/north-american/owl-num-anagrams.txt";
-        numAnagramsMap["OWL2"] = "/north-american/owl2-num-anagrams.txt";
-        numAnagramsMap["SOWPODS"] = "/british/sowpods-num-anagrams.txt";
-        numAnagramsMap["ODS"] = "/french/ods4-num-anagrams.txt";
-
-        if (lexiconMap.contains (lexicon)) {
-            importFile = Auxil::getWordsDir()
-                + lexiconMap.value (lexicon);
-            reverseImportFile = Auxil::getWordsDir()
-                + reverseLexiconMap.value (lexicon);
-            definitionFile = Auxil::getWordsDir()
-                + definitionMap.value (lexicon);
-            numAnagramsFile = Auxil::getWordsDir()
-                + numAnagramsMap.value (lexicon);
+        if (prefixMap.contains (lexicon)) {
+            QString prefix = Auxil::getWordsDir() + prefixMap.value (lexicon);
+            importFile =        prefix + ".dwg";
+            reverseImportFile = prefix + "-r.dwg";
+            definitionFile =    prefix + ".txt";
+            numAnagramsFile =   prefix + "-num-anagrams.txt";
+            numWordsFile =      prefix + "-num-words.txt";
         }
     }
 
@@ -386,22 +367,25 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
         importDawg (importFile, lexicon, false);
         importDawg (reverseImportFile, lexicon, true);
 
-        // Load anagrams
-        if (splash) {
-            splash->showMessage ("Loading " + lexicon + " anagrams...",
-                                Qt::AlignHCenter | Qt::AlignBottom);
-            qApp->processEvents();
-        }
-        int numWords = wordEngine->importNumAnagrams (numAnagramsFile);
+        // Load num words
+        int numWords = wordEngine->importNumWords (numWordsFile);
         setNumWords (numWords);
 
-        // Load definitions
-        if (splash) {
-            splash->showMessage ("Loading " + lexicon + " definitions...",
-                                Qt::AlignHCenter | Qt::AlignBottom);
-            qApp->processEvents();
-        }
-        wordEngine->importDefinitions (definitionFile);
+        //// Load anagrams
+        //if (splash) {
+        //    splash->showMessage ("Loading " + lexicon + " anagrams...",
+        //                        Qt::AlignHCenter | Qt::AlignBottom);
+        //    qApp->processEvents();
+        //}
+        //wordEngine->importNumAnagrams (numAnagramsFile);
+
+        //// Load definitions
+        //if (splash) {
+        //    splash->showMessage ("Loading " + lexicon + " definitions...",
+        //                        Qt::AlignHCenter | Qt::AlignBottom);
+        //    qApp->processEvents();
+        //}
+        //wordEngine->importDefinitions (definitionFile);
     }
     else
         importText (importFile, lexicon);
