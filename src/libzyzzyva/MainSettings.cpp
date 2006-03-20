@@ -57,6 +57,8 @@ const QString SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT
     = "quiz_auto_end_after_incorrect";
 const QString SETTINGS_QUIZ_CYCLE_ANSWERS = "quiz_cycle_answers";
 const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
+const QString SETTINGS_JUDGE_SAVE_LOG = "judge_save_log";
+const QString SETTINGS_JUDGE_LOG_DIR = "judge_log_dir";
 const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL2";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
@@ -144,6 +146,13 @@ MainSettings::readSettings()
     instance->letterDistribution
         = settings.value (SETTINGS_LETTER_DISTRIBUTION,
                           DEFAULT_LETTER_DISTRIBUTION).toString();
+
+    instance->judgeSaveLog
+        = settings.value (SETTINGS_JUDGE_SAVE_LOG, true).toBool();
+    instance->judgeLogDir
+        = settings.value (SETTINGS_JUDGE_LOG_DIR,
+                          Auxil::getRootDir() +
+                          "/data/judge/saved").toString();
     settings.endGroup();
 }
 
@@ -196,5 +205,7 @@ MainSettings::writeSettings()
                        instance->wordListShowDefinitions);
     settings.setValue (SETTINGS_LETTER_DISTRIBUTION,
                        instance->letterDistribution);
+    settings.setValue (SETTINGS_JUDGE_SAVE_LOG, instance->judgeSaveLog);
+    settings.setValue (SETTINGS_JUDGE_LOG_DIR, instance->judgeLogDir);
     settings.endGroup();
 }

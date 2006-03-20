@@ -34,8 +34,6 @@
 #include <QSettings>
 #include <QStackedWidget>
 
-class ZPushButton;
-
 class SettingsDialog : public QDialog
 {
     Q_OBJECT
@@ -48,11 +46,13 @@ class SettingsDialog : public QDialog
 
     public slots:
     void navTextChanged (const QString& text);
-    void browseButtonClicked();
+    void autoImportBrowseButtonClicked();
     void autoImportCboxToggled (bool on);
     void autoImportLexiconActivated (const QString& text);
     void themeCboxToggled (bool on);
     void autoCheckCboxToggled (bool on);
+    void judgeLogBrowseButtonClicked();
+    void judgeSaveLogCboxToggled (bool on);
     void chooseFontButtonClicked (int button);
     void chooseQuizBackgroundColorButtonClicked();
 
@@ -65,6 +65,7 @@ class SettingsDialog : public QDialog
 
     QWidget*     generalPrefWidget;
     QWidget*     quizPrefWidget;
+    QWidget*     judgePrefWidget;
     QWidget*     fontPrefWidget;
     QWidget*     wordListPrefWidget;
 
@@ -72,7 +73,6 @@ class SettingsDialog : public QDialog
     QComboBox*   autoImportLexiconCombo;
     QWidget*     autoImportCustomWidget;
     QLineEdit*   autoImportCustomLine;
-    ZPushButton* browseButton;
     QCheckBox*   themeCbox;
     QLabel*      themeLabel;
     QComboBox*   themeCombo;
@@ -84,6 +84,9 @@ class SettingsDialog : public QDialog
     QCheckBox*   quizAutoAdvanceCbox;
     QCheckBox*   quizAutoEndAfterIncorrectCbox;
     QCheckBox*   quizCycleAnswersCbox;
+    QCheckBox*   judgeSaveLogCbox;
+    QWidget*     judgeLogDirWidget;
+    QLineEdit*   judgeLogDirLine;
     QLineEdit*   fontMainLine;
     QLineEdit*   fontWordListLine;
     QLineEdit*   fontQuizLabelLine;

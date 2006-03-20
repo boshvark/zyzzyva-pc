@@ -23,15 +23,20 @@
 
 #include "JudgeDialog.h"
 #include "DefinitionBox.h"
+#include "MainSettings.h"
 #include "WordEngine.h"
 #include "WordTextEdit.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QApplication>
+#include <QDate>
+#include <QDir>
+#include <QFile>
 #include <QHBoxLayout>
 #include <QKeyEvent>
 #include <QPalette>
 #include <QTextCursor>
+#include <QTextStream>
 #include <QVBoxLayout>
 
 const int FORM_FONT_PIXEL_SIZE = 55;
@@ -226,10 +231,19 @@ JudgeDialog::judgeWord()
 
     QString text = inputArea->toPlainText().simplified();
     QStringList words = text.split (QChar (' '));
+    QStringList acceptableWords;
+    QStringList unacceptableWords;
     QStringList::iterator it;
     QString wordStr;
     for (it = words.begin(); it != words.end(); ++it) {
-        if (acceptable && !engine->isAcceptable (*it))
+        bool wordAcceptable = engine->isAcceptable (*it);
+
+        if (wordAcceptable)
+            acceptableWords.append (*it);
+        else
+            unacceptableWords.append (*it);
+
+        if (!wordAcceptable)
             acceptable = false;
         if (!wordStr.isEmpty())
             wordStr += ", ";
@@ -261,6 +275,50 @@ JudgeDialog::judgeWord()
                         SLOT (clearResultsReleaseHold()));
 
     resultTimer->start (CLEAR_RESULTS_DELAY);
+
+    if (!MainSettings::getJudgeSaveLog())
+        return;
+
+    QString logDirName = MainSettings::getJudgeLogDir() + "/" +
+        engine->getLexiconName();
+    QDir logDir (logDirName);
+
+    if (!logDir.exists() && !logDir.mkdir (logDirName)) {
+        qWarning ("Cannot create judge log directory\n");
+        return;
+    }
+
+    // Log challenge results to files
+    QString word;
+    if (!acceptableWords.empty()) {
+        QFile file (logDirName + "/acceptable.txt");
+        file.open (QIODevice::Append);
+        QTextStream stream (&file);
+        foreach (word, acceptableWords) {
+            stream << word;
+            endl (stream);
+        }
+    }
+
+    if (!unacceptableWords.empty()) {
+        QFile file (logDirName + "/unacceptable.txt");
+        file.open (QIODevice::Append);
+        QTextStream stream (&file);
+        foreach (word, unacceptableWords) {
+            stream << word;
+            endl (stream);
+        }
+    }
+
+    QFile file (logDirName + "/challenge.txt");
+    file.open (QIODevice::Append);
+    QTextStream stream (&file);
+    stream << QDateTime::currentDateTime().toString("[yyyy-MM-dd hh:mm:ss] ")
+        << (acceptable ? "acceptable   +++" : "unacceptable ---");
+    foreach (word, words) {
+        stream << " " << word;
+    }
+    endl (stream);
 }
 
 //---------------------------------------------------------------------------

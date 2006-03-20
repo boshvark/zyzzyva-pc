@@ -40,9 +40,11 @@
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Preferences";
+const QString JUDGE_LOG_CHOOSER_TITLE = "Choose a Log Directory";
 
 const QString GENERAL_PREFS_ITEM = "General";
 const QString QUIZ_PREFS_ITEM = "Quiz";
+const QString JUDGE_PREFS_ITEM = "Word Judge";
 const QString FONT_PREFS_ITEM = "Fonts";
 const QString WORD_LIST_PREFS_ITEM = "Word Tables";
 
@@ -150,10 +152,11 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (autoImportCustomLine);
     autoImportCustomHlay->addWidget (autoImportCustomLine);
 
-    browseButton = new ZPushButton ("Browse...");
-    Q_CHECK_PTR (browseButton);
-    connect (browseButton, SIGNAL (clicked()), SLOT (browseButtonClicked()));
-    autoImportCustomHlay->addWidget (browseButton);
+    ZPushButton* autoImportBrowseButton = new ZPushButton ("Browse...");
+    Q_CHECK_PTR (autoImportBrowseButton);
+    connect (autoImportBrowseButton, SIGNAL (clicked()),
+             SLOT (autoImportBrowseButtonClicked()));
+    autoImportCustomHlay->addWidget (autoImportBrowseButton);
 
     generalPrefVlay->addStretch (2);
 
@@ -282,6 +285,61 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     quizBehaviorVlay->addWidget (quizCycleAnswersCbox);
 
     quizPrefVlay->addStretch (2);
+
+    // Word Judge Prefs
+    judgePrefWidget = new QWidget;
+    Q_CHECK_PTR (judgePrefWidget);
+    navStack->addWidget (judgePrefWidget);
+
+    QVBoxLayout* judgePrefVlay = new QVBoxLayout (judgePrefWidget);
+    Q_CHECK_PTR (judgePrefVlay);
+    judgePrefVlay->setMargin (0);
+
+    QLabel* judgePrefLabel = new QLabel (WORD_LIST_PREFS_ITEM);
+    Q_CHECK_PTR (judgePrefLabel);
+    judgePrefLabel->setFrameShape (QFrame::StyledPanel);
+    judgePrefVlay->addWidget (judgePrefLabel);
+
+    QGroupBox* judgeGbox = new QGroupBox;
+    Q_CHECK_PTR (judgeGbox);
+    judgePrefVlay->addWidget (judgeGbox);
+    judgePrefVlay->setStretchFactor (judgeGbox, 1);
+
+    QVBoxLayout* judgeVlay = new QVBoxLayout (judgeGbox);
+    Q_CHECK_PTR (judgeVlay);
+    judgeVlay->setMargin (MARGIN);
+    judgeVlay->setSpacing (SPACING);
+
+    judgeSaveLogCbox = new QCheckBox ("Save judge results to log files");
+    Q_CHECK_PTR (judgeSaveLogCbox);
+    connect (judgeSaveLogCbox, SIGNAL (toggled (bool)),
+             SLOT (judgeSaveLogCboxToggled (bool)));
+    judgeVlay->addWidget (judgeSaveLogCbox);
+
+    judgeLogDirWidget = new QWidget;
+    Q_CHECK_PTR (judgeLogDirWidget);
+    judgeVlay->addWidget (judgeLogDirWidget);
+
+    QHBoxLayout* judgeLogDirHlay = new QHBoxLayout (judgeLogDirWidget);
+    Q_CHECK_PTR (judgeLogDirHlay);
+    judgeLogDirHlay->setMargin (0);
+    judgeLogDirHlay->setSpacing (SPACING);
+
+    QLabel* judgeLogDirLabel = new QLabel ("Log directory:");
+    Q_CHECK_PTR (judgeLogDirLabel);
+    judgeLogDirHlay->addWidget (judgeLogDirLabel);
+
+    judgeLogDirLine = new QLineEdit;
+    Q_CHECK_PTR (judgeLogDirLine);
+    judgeLogDirHlay->addWidget (judgeLogDirLine);
+
+    ZPushButton* judgeLogBrowseButton = new ZPushButton ("Browse...");
+    Q_CHECK_PTR (judgeLogBrowseButton);
+    connect (judgeLogBrowseButton, SIGNAL (clicked()),
+             SLOT (judgeLogBrowseButtonClicked()));
+    judgeLogDirHlay->addWidget (judgeLogBrowseButton);
+
+    judgePrefVlay->addStretch (2);
 
     // Signal mapper for the Choose Font buttons
     QSignalMapper* signalMapper = new QSignalMapper (this);
@@ -488,6 +546,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     // Add nav list items
     new QListWidgetItem (GENERAL_PREFS_ITEM, navList);
     new QListWidgetItem (QUIZ_PREFS_ITEM, navList);
+    new QListWidgetItem (JUDGE_PREFS_ITEM, navList);
     new QListWidgetItem (FONT_PREFS_ITEM, navList);
     new QListWidgetItem (WORD_LIST_PREFS_ITEM, navList);
     navList->setCurrentRow (0);
@@ -574,6 +633,9 @@ SettingsDialog::readSettings()
     quizCycleAnswersCbox->setChecked (MainSettings::getQuizCycleAnswers());
     autoCheckCboxToggled (autoCheck);
 
+    judgeSaveLogCbox->setChecked (MainSettings::getJudgeSaveLog());
+    judgeLogDirLine->setText (MainSettings::getJudgeLogDir());
+
     // Main font
     fontMainLine->setText (MainSettings::getMainFont());
     fontMainLine->home (false);
@@ -629,6 +691,8 @@ SettingsDialog::writeSettings()
     MainSettings::setQuizAutoEndAfterIncorrect
         (quizAutoEndAfterIncorrectCbox->isChecked());
     MainSettings::setQuizCycleAnswers (quizCycleAnswersCbox->isChecked());
+    MainSettings::setJudgeSaveLog (judgeSaveLogCbox->isChecked());
+    MainSettings::setJudgeLogDir (judgeLogDirLine->text());
     MainSettings::setMainFont (fontMainLine->text());
     MainSettings::setWordListFont (fontWordListLine->text());
     MainSettings::setQuizLabelFont (fontQuizLabelLine->text());
@@ -660,6 +724,8 @@ SettingsDialog::navTextChanged (const QString& text)
         navStack->setCurrentWidget (generalPrefWidget);
     else if (text == QUIZ_PREFS_ITEM)
         navStack->setCurrentWidget (quizPrefWidget);
+    else if (text == JUDGE_PREFS_ITEM)
+        navStack->setCurrentWidget (judgePrefWidget);
     else if (text == FONT_PREFS_ITEM)
         navStack->setCurrentWidget (fontPrefWidget);
     else if (text == WORD_LIST_PREFS_ITEM)
@@ -667,14 +733,14 @@ SettingsDialog::navTextChanged (const QString& text)
 }
 
 //---------------------------------------------------------------------------
-//  browseButtonClicked
+//  autoImportBrowseButtonClicked
 //
-//! Slot called when the Browse button is clicked.  Create a file chooser
-//! dialog and place the name of the chosen file in the auto-import line
-//! edit.
+//! Slot called when the Auto Import Browse button is clicked.  Create a file
+//! chooser dialog and place the name of the chosen file in the auto-import
+//! line edit.
 //---------------------------------------------------------------------------
 void
-SettingsDialog::browseButtonClicked()
+SettingsDialog::autoImportBrowseButtonClicked()
 {
     QString file = QFileDialog::getOpenFileName (this, IMPORT_CHOOSER_TITLE,
         Auxil::getWordsDir(), "All Files (*.*)");
@@ -743,6 +809,40 @@ SettingsDialog::themeCboxToggled (bool on)
 {
     themeLabel->setEnabled (on);
     themeCombo->setEnabled (on);
+}
+
+//---------------------------------------------------------------------------
+//  judgeLogBrowseButtonClicked
+//
+//! Slot called when the Judge Log Browse button is clicked.  Create a
+//! directory chooser dialog and place the name of the chosen directory in the
+//! judge log line edit.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::judgeLogBrowseButtonClicked()
+{
+    QString dir = QFileDialog::getExistingDirectory (this,
+                                                     JUDGE_LOG_CHOOSER_TITLE,
+                                                     Auxil::getRootDir() +
+                                                     "/data/judge");
+    if (!dir.isEmpty()) {
+        dir = dir.replace (QRegExp ("/+$"), "");
+        judgeLogDirLine->setText (dir);
+    }
+}
+
+//---------------------------------------------------------------------------
+//  judgeSaveLogCboxToggled
+//
+//! Slot called when the Save Judge Log check box is toggled.  Enable or
+//! disable the judge log directory line edit.
+//
+//! @param on true if the check box is on, false if it is off
+//---------------------------------------------------------------------------
+void
+SettingsDialog::judgeSaveLogCboxToggled (bool on)
+{
+    judgeLogDirWidget->setEnabled (on);
 }
 
 //---------------------------------------------------------------------------

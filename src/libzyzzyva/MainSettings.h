@@ -120,13 +120,19 @@ class MainSettings
         return instance->letterDistribution; }
     static void setLetterDistribution (const QString& str) {
         instance->letterDistribution = str; }
+    static bool getJudgeSaveLog() { return instance->judgeSaveLog; }
+    static void setJudgeSaveLog (bool b) { instance->judgeSaveLog = b; }
+    static QString getJudgeLogDir() {
+        return instance->judgeLogDir; }
+    static void setJudgeLogDir (const QString& str) {
+        instance->judgeLogDir = str; }
 
     private:
     MainSettings() : useAutoImport (false), useTileTheme (false),
                      wordListSortByLength (false), wordListShowHooks (false),
                      wordListShowHookParents (false),
-                     wordListShowDefinitions (false) { };
-    ~MainSettings() { };
+                     wordListShowDefinitions (false), judgeSaveLog (true) { }
+    ~MainSettings() { }
 
     // private and undefined
     MainSettings (const MainSettings&);
@@ -160,6 +166,8 @@ class MainSettings
     bool wordListShowHookParents;
     bool wordListShowDefinitions;
     QString letterDistribution;
+    bool judgeSaveLog;
+    QString judgeLogDir;
 };
 
 #endif // ZYZZYVA_MAIN_SETTINGS_H
