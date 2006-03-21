@@ -14,6 +14,8 @@
         <keyword ref="preferences.html#auto-load-lexicon">lexicon</keyword>
         <section ref="preferences.html#auto-load-lexicon"
                  title="Lexicon" />
+        <section ref="preferences.html#welcome-display"
+                 title="Welcome Display" />
       </section>
       <section ref="preferences.html#quiz" title="Quiz Preferences">
         <section ref="preferences.html#question-display"
