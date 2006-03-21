@@ -26,6 +26,7 @@
 #define ZYZZYVA_WORD_GRAPH_H
 
 #include "SearchSpec.h"
+#include <QFile>
 #include <QString>
 #include <QStringList>
 
@@ -75,6 +76,7 @@ class WordGraph
     private:
     bool matchesSpec (QString word, const SearchSpec& spec) const;
     QString reverseString (const QString& s) const;
+    long readData (long* data, long count, QFile& file);
 
     void addWordOld (const QString& w, bool reverse);
     bool containsWordOld (const QString& w) const;

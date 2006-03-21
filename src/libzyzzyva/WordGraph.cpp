@@ -109,20 +109,20 @@ WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
     }
 
     long numEdges;
-    char* p = (char*) &numEdges;
-    file.read (p, 4);
+    long* p = &numEdges;
+    readData (p, 1, file);
 
     if (reverse) {
         rdawg = new long[numEdges + 1];
         rdawg[0] = 0;
-        p = (char*) &rdawg[1];
-        file.read (p, 4 * numEdges);
+        p = &rdawg[1];
+        readData (p, numEdges, file);
     }
     else {
         dawg = new long[numEdges + 1];
         dawg[0] = 0;
-        p = (char*) &dawg[1];
-        file.read (p, 4 * numEdges);
+        p = &dawg[1];
+        readData (p, numEdges, file);
     }
 
     return true;
@@ -646,6 +646,41 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
     }
 
     return true;
+}
+
+//---------------------------------------------------------------------------
+//  readData
+//
+//! Read binary data from an input file, converting from big-endian to
+//! little-endian representation if necessary.
+//
+//! @param data an array to read the data into
+//! @param count the number of 32-bit words to read
+//! @param file the input file to read from
+//! @return the number of words read
+//---------------------------------------------------------------------------
+long
+WordGraph::readData (long* data, long count, QFile& file)
+{
+    char* p = (char*) data;
+    file.read (p, count * sizeof (long));
+
+#ifdef Q_WS_MAC
+    // Convert from little-endian to big-endian if necessary
+    char c;
+    for (int i = 0; i < count; ++i) {
+        p = (char*) data;
+        c = p[0];
+        p[0] = p[3];
+        p[3] = c;
+        c = p[1];
+        p[1] = p[2];
+        p[2] = c;
+        ++data;
+    }
+#endif // Q_WS_MAC
+
+    return count;
 }
 
 //---------------------------------------------------------------------------
