@@ -27,6 +27,7 @@
 #include "DefinitionDialog.h"
 #include "DefineForm.h"
 #include "HelpDialog.h"
+#include "IntroForm.h"
 #include "JudgeForm.h"
 #include "MainSettings.h"
 #include "NewQuizDialog.h"
@@ -58,6 +59,7 @@ const QString APPLICATION_TITLE = "Zyzzyva";
 const QString IMPORT_FAILURE_TITLE = "Load Failed";
 const QString IMPORT_COMPLETE_TITLE = "Load Complete";
 const QString DEFINE_TAB_TITLE = "Definition";
+const QString INTRO_TAB_TITLE = "Introduction";
 const QString JUDGE_TAB_TITLE = "Word Judge";
 const QString QUIZ_TAB_TITLE = "Quiz";
 const QString SEARCH_TAB_TITLE = "Search";
@@ -94,6 +96,13 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     // File Menu
     QMenu* fileMenu = menuBar()->addMenu ("&File");
     Q_CHECK_PTR (fileMenu);
+
+    // New Introduction
+    QAction* newIntroAction = new QAction ("&Introduction...", this);
+    Q_CHECK_PTR (newIntroAction);
+    newIntroAction->setIcon (QIcon (":/help-icon"));
+    connect (newIntroAction, SIGNAL (triggered()), SLOT (newIntroForm()));
+    fileMenu->addAction (newIntroAction);
 
     // New Quiz
     QAction* newQuizAction = new QAction ("Qui&z...", this);
@@ -307,6 +316,10 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     if (!instance)
         instance = this;
 
+    // FIXME: Make this depend on the user's preferences
+    if (true)
+        newIntroForm();
+
     connect (helpDialog, SIGNAL (error (const QString&)),
              SLOT (helpDialogError (const QString&)));
 }
@@ -504,6 +517,21 @@ MainWindow::newJudgeForm()
     JudgeForm* form = new JudgeForm (wordEngine);
     Q_CHECK_PTR (form);
     newTab (form, QIcon (":/judge-icon"), JUDGE_TAB_TITLE);
+    connect (form, SIGNAL (statusChanged (const QString&)),
+             SLOT (tabStatusChanged (const QString&)));
+}
+
+//---------------------------------------------------------------------------
+//  newIntroForm
+//
+//! Create a new introduction form.
+//---------------------------------------------------------------------------
+void
+MainWindow::newIntroForm()
+{
+    IntroForm* form = new IntroForm;
+    Q_CHECK_PTR (form);
+    newTab (form, QIcon (":/help-icon"), INTRO_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
 }

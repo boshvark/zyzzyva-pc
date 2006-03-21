@@ -43,6 +43,7 @@ SOURCES = \
     DefinitionBox.cpp \
     DefinitionDialog.cpp \
     HelpDialog.cpp \
+    IntroForm.cpp \
     JudgeForm.cpp \
     JudgeDialog.cpp \
     LetterBag.cpp \
@@ -85,6 +86,7 @@ HEADERS = \
     DefinitionDialog.h \
     DefinitionLabel.h \
     HelpDialog.h \
+    IntroForm.h \
     JudgeForm.h \
     JudgeDialog.h \
     LoadAnagramsThread.h \

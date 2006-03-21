@@ -60,6 +60,7 @@ class MainWindow : public QMainWindow
     void newSearchForm();
     void newDefineForm();
     void newJudgeForm();
+    void newIntroForm();
     void editSettings();
     void viewDefinition();
     void viewVariation (int variation);
