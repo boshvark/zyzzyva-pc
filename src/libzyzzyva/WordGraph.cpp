@@ -24,15 +24,12 @@
 
 #include "WordGraph.h"
 #include "Defs.h"
+#include <QFile>
 #include <QList>
 #include <QRegExp>
 #include <iostream>
 #include <map>
 #include <stack>
-
-#include <QFile>
-
-#include <QtDebug>
 
 const long TERMINAL_NODE = 0;
 const long ROOT_NODE = 1;
