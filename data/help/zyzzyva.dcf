@@ -40,14 +40,6 @@
       <section ref="preferences.html#save-preferences"
                title="Saving Changes to Preferences" />
     </section>
-    <section ref="judge.html" title="Judging Words">
-      <keyword ref="judge.html">judge</keyword>
-      <section ref="judge.html#full-screen-word-judge"
-               title="Full Screen Word Judge" />
-    </section>
-    <section ref="define.html" title="Defining Words">
-      <keyword ref="define.html">define</keyword>
-    </section>
     <section ref="search.html" title="Searching for Words">
       <keyword ref="search.html">search</keyword>
       <section ref="search.html#search-conditions"
@@ -82,6 +74,14 @@
                title="Analyzing Your Quiz Performance" />
       <section ref="quiz.html#load-save-quiz"
                title="Loading and Saving Quizzes" />
+    </section>
+    <section ref="judge.html" title="Judging Words">
+      <keyword ref="judge.html">judge</keyword>
+      <section ref="judge.html#full-screen-word-judge"
+               title="Full Screen Word Judge" />
+    </section>
+    <section ref="define.html" title="Defining Words">
+      <keyword ref="define.html">define</keyword>
     </section>
     <section ref="view.html" title="Viewing Word Variations">
       <keyword ref="view.html">view</keyword>
