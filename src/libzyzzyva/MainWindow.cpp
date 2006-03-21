@@ -98,7 +98,7 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     Q_CHECK_PTR (fileMenu);
 
     // New Introduction
-    QAction* newIntroAction = new QAction ("&Introduction...", this);
+    QAction* newIntroAction = new QAction ("&Introduction", this);
     Q_CHECK_PTR (newIntroAction);
     newIntroAction->setIcon (QIcon (":/help-icon"));
     connect (newIntroAction, SIGNAL (triggered()), SLOT (newIntroForm()));
