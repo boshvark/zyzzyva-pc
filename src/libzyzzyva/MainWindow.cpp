@@ -136,16 +136,6 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     fileMenu->addSeparator();
 
-    // Open Word List
-    QAction* openWordListAction = new QAction ("&Open...", this);
-    Q_CHECK_PTR (openWordListAction);
-    openWordListAction->setShortcut (tr ("Ctrl+O"));
-    connect (openWordListAction, SIGNAL (triggered()),
-             SLOT (importInteractive()));
-    fileMenu->addAction (openWordListAction);
-
-    fileMenu->addSeparator();
-
     // Close Table
     QAction* closeTabAction = new QAction ("&Close Tab", this);
     Q_CHECK_PTR (closeTabAction);
