@@ -37,6 +37,8 @@ const QString SET_TYPE_ONE_SEVENS_STRING = "Type I Sevens";
 const QString SET_TYPE_TWO_SEVENS_STRING = "Type II Sevens";
 const QString SET_TYPE_THREE_SEVENS_STRING = "Type III Sevens";
 const QString SET_TYPE_ONE_EIGHTS_STRING = "Type I Eights";
+const QString SET_TYPE_TWO_EIGHTS_STRING = "Type II Eights";
+const QString SET_TYPE_THREE_EIGHTS_STRING = "Type III Eights";
 const QString SET_EIGHTS_FROM_SEVEN_STEMS_STRING =
               "Eights From Seven-Letter Stems";
 const QString SET_NEW_IN_OWL2_STRING = "New in OWL2";
@@ -350,6 +352,10 @@ Auxil::stringToSearchSet (const QString& string)
         return SetTypeThreeSevens;
     else if (string == SET_TYPE_ONE_EIGHTS_STRING)
         return SetTypeOneEights;
+    else if (string == SET_TYPE_TWO_EIGHTS_STRING)
+        return SetTypeTwoEights;
+    else if (string == SET_TYPE_THREE_EIGHTS_STRING)
+        return SetTypeThreeEights;
     else if (string == SET_EIGHTS_FROM_SEVEN_STEMS_STRING)
         return SetEightsFromSevenLetterStems;
     else if (string == SET_NEW_IN_OWL2_STRING)
@@ -377,6 +383,8 @@ Auxil::searchSetToString (SearchSet ss)
         case SetTypeTwoSevens: return SET_TYPE_TWO_SEVENS_STRING;
         case SetTypeThreeSevens: return SET_TYPE_THREE_SEVENS_STRING;
         case SetTypeOneEights: return SET_TYPE_ONE_EIGHTS_STRING;
+        case SetTypeTwoEights: return SET_TYPE_TWO_EIGHTS_STRING;
+        case SetTypeThreeEights: return SET_TYPE_THREE_EIGHTS_STRING;
         case SetEightsFromSevenLetterStems:
             return SET_EIGHTS_FROM_SEVEN_STEMS_STRING;
         case SetNewInOwl2: return SET_NEW_IN_OWL2_STRING;

@@ -36,6 +36,8 @@ enum SearchSet {
     SetTypeTwoSevens,
     SetTypeThreeSevens,
     SetTypeOneEights,
+    SetTypeTwoEights,
+    SetTypeThreeEights,
     SetEightsFromSevenLetterStems,
     SetNewInOwl2
 };

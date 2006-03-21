@@ -635,6 +635,9 @@ WordEngine::matchesConditions (const QString& word, const
 bool
 WordEngine::isSetMember (const QString& word, SearchSet ss) const
 {
+    static QString typeTwoChars = "AAADEEEEGIIILNNOORRSSTTU";
+    static int typeTwoCharsLen = typeTwoChars.length();
+
     switch (ss) {
         case SetHookWords:
         return (isAcceptable (word.left (word.length() - 1)) ||
@@ -701,6 +704,33 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                     return true;
             }
             return false;
+        }
+
+        case SetTypeTwoSevens:
+        case SetTypeTwoEights:
+        {
+            if (((ss == SetTypeTwoSevens) && (word.length() != 7)) ||
+                ((ss == SetTypeTwoEights) && (word.length() != 8)))
+                return false;
+
+            bool ok = false;
+            QString alphagram = Auxil::getAlphagram (word);
+            int wi = 0;
+            QChar wc = alphagram[wi];
+            for (int ti = 0; ti < typeTwoCharsLen; ++ti) {
+                QChar tc = typeTwoChars[ti];
+                if (tc == wc) {
+                    ++wi;
+                    if (wi == alphagram.length()) {
+                        ok = true;
+                        break;
+                    }
+                    wc = alphagram[wi];
+                }
+            }
+            return (ok && !isSetMember (word, (ss == SetTypeTwoSevens ?
+                                               SetTypeOneSevens :
+                                               SetTypeOneEights)));
         }
 
         case SetEightsFromSevenLetterStems: {
