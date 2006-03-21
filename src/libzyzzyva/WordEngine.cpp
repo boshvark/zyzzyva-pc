@@ -126,14 +126,17 @@ WordEngine::importDawgFile (const QString& filename, const QString& lexName,
 //! Import definitions from a text file.
 //
 //! @param filename the file to import definitions from
+//! @param wait whether to wait for the operation to finish before returning
 //---------------------------------------------------------------------------
 void
-WordEngine::importDefinitions (const QString& filename)
+WordEngine::importDefinitions (const QString& filename, bool wait)
 {
     definitionsThread->setFilename (filename);
     connect (definitionsThread, SIGNAL (loaded()),
              SLOT (definitionsLoaded()));
     definitionsThread->start();
+    if (wait)
+        definitionsThread->wait();
 }
 
 //---------------------------------------------------------------------------
@@ -165,25 +168,16 @@ WordEngine::importNumWords (const QString& filename)
 //! Import anagram counts from a text file.
 //
 //! @param filename the file to import anagram counts definitions from
+//! @param wait whether to wait for the operation to finish before returning
 //---------------------------------------------------------------------------
 void
-WordEngine::importNumAnagrams (const QString& filename)
+WordEngine::importNumAnagrams (const QString& filename, bool wait)
 {
-    QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
-        return;
-
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
-    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
-        QString line (buffer);
-        line = line.simplified();
-        if (!line.length() || (line.at (0) == '#'))
-            continue;
-
-        QString alphagram = line.section (' ', 0, 0).toUpper();
-        int count = line.section (' ', 1).toInt();
-        numAnagramsMap[alphagram] = count;
-    }
+    anagramsThread->setFilename (filename);
+    connect (anagramsThread, SIGNAL (loaded()), SLOT (anagramsLoaded()));
+    anagramsThread->start();
+    if (wait)
+        anagramsThread->wait();
 }
 
 //---------------------------------------------------------------------------
@@ -550,7 +544,9 @@ WordEngine::definitionsLoaded()
 void
 WordEngine::anagramsLoaded()
 {
-    //numAnagramsMap = a;
+    numAnagramsMap = anagramsThread->getAnagramCounts();
+    anagramsThread->quit();
+    anagramsThread->disconnect();
 }
 
 //---------------------------------------------------------------------------

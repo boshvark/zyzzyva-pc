@@ -46,6 +46,7 @@ SOURCES = \
     JudgeForm.cpp \
     JudgeDialog.cpp \
     LetterBag.cpp \
+    LoadAnagramsThread.cpp \
     LoadDefinitionsThread.cpp \
     MainSettings.cpp \
     MainWindow.cpp \
@@ -86,6 +87,7 @@ HEADERS = \
     HelpDialog.h \
     JudgeForm.h \
     JudgeDialog.h \
+    LoadAnagramsThread.h \
     LoadDefinitionsThread.h \
     MainWindow.h \
     NewQuizDialog.h \

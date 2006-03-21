@@ -26,6 +26,7 @@
 #define ZYZZYVA_WORD_ENGINE_H
 
 #include "WordGraph.h"
+#include "LoadAnagramsThread.h"
 #include "LoadDefinitionsThread.h"
 #include <QMap>
 #include <QString>
@@ -39,16 +40,17 @@ class WordEngine : public QObject
     public:
     WordEngine (QObject* parent = 0)
         : QObject (parent),
-          definitionsThread (new LoadDefinitionsThread(this)) { }
+          definitionsThread (new LoadDefinitionsThread(this)),
+          anagramsThread (new LoadAnagramsThread(this)) { }
     ~WordEngine() { }
 
     int importTextFile (const QString& filename, const QString& lexName, bool
                         loadDefinitions = true, QString* errString = 0);
     bool importDawgFile (const QString& filename, const QString& lexName, bool
                          reverse = false, QString* errString = 0);
-    void importDefinitions (const QString& filename);
+    void importDefinitions (const QString& filename, bool wait = false);
     int importNumWords (const QString& filename);
-    void importNumAnagrams (const QString& filename);
+    void importNumAnagrams (const QString& filename, bool wait = false);
     int importStems (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;
@@ -82,6 +84,7 @@ class WordEngine : public QObject
     std::map< int, std::set<QString> > stemAlphagrams;
 
     LoadDefinitionsThread* definitionsThread;
+    LoadAnagramsThread*    anagramsThread;
 };
 
 #endif // ZYZZYVA_WORD_ENGINE_H
