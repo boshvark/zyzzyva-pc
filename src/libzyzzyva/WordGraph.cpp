@@ -57,6 +57,9 @@ using namespace Defs;
 WordGraph::WordGraph()
     : dawg (0), rdawg (0)
 {
+    // Test for endianness
+    char endianTest[2] = { 1, 0 };
+    bigEndian = (*(short*) endianTest != 1);
 }
 
 //---------------------------------------------------------------------------
@@ -665,20 +668,20 @@ WordGraph::readData (long* data, long count, QFile& file)
     char* p = (char*) data;
     file.read (p, count * sizeof (long));
 
-#ifdef Q_WS_MAC
     // Convert from little-endian to big-endian if necessary
-    char c;
-    for (int i = 0; i < count; ++i) {
-        p = (char*) data;
-        c = p[0];
-        p[0] = p[3];
-        p[3] = c;
-        c = p[1];
-        p[1] = p[2];
-        p[2] = c;
-        ++data;
+    if (bigEndian) {
+        char c;
+        for (int i = 0; i < count; ++i) {
+            p = (char*) data;
+            c = p[0];
+            p[0] = p[3];
+            p[3] = c;
+            c = p[1];
+            p[1] = p[2];
+            p[2] = c;
+            ++data;
+        }
     }
-#endif // Q_WS_MAC
 
     return count;
 }

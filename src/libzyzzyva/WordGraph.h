@@ -85,6 +85,8 @@ class WordGraph
     long* dawg;
     long* rdawg;
 
+    bool bigEndian;
+
     // OLD dawg structures - only used where new DAWG is unavailable
     Node* top;
     Node* rtop;
