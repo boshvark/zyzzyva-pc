@@ -306,8 +306,7 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     if (!instance)
         instance = this;
 
-    // FIXME: Make this depend on the user's preferences
-    if (true)
+    if (MainSettings::getDisplayWelcome())
         newIntroForm();
 
     connect (helpDialog, SIGNAL (error (const QString&)),

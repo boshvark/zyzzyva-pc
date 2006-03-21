@@ -73,6 +73,7 @@ class SettingsDialog : public QDialog
     QComboBox*   autoImportLexiconCombo;
     QWidget*     autoImportCustomWidget;
     QLineEdit*   autoImportCustomLine;
+    QCheckBox*   displayWelcomeCbox;
     QCheckBox*   themeCbox;
     QLabel*      themeLabel;
     QComboBox*   themeCombo;

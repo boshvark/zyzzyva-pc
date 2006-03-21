@@ -35,6 +35,7 @@ const QString SETTINGS_MAIN_WINDOW_SIZE = "main_window_size";
 const QString SETTINGS_IMPORT = "autoimport";
 const QString SETTINGS_IMPORT_LEXICON = "autoimport_lexicon";
 const QString SETTINGS_IMPORT_FILE = "autoimport_file";
+const QString SETTINGS_DISPLAY_WELCOME = "display_welcome";
 const QString SETTINGS_FONT_MAIN = "font";
 const QString SETTINGS_FONT_WORD_LISTS = "font_word_lists";
 const QString SETTINGS_FONT_QUIZ_LABEL = "font_quiz_label";
@@ -91,6 +92,9 @@ MainSettings::readSettings()
 
     instance->autoImportFile
         = settings.value (SETTINGS_IMPORT_FILE).toString();
+
+    instance->displayWelcome
+        = settings.value (SETTINGS_DISPLAY_WELCOME, true).toBool();
 
     instance->useTileTheme
         = settings.value (SETTINGS_USE_TILE_THEME, true).toBool();
@@ -172,6 +176,7 @@ MainSettings::writeSettings()
     settings.setValue (SETTINGS_IMPORT, instance->useAutoImport);
     settings.setValue (SETTINGS_IMPORT_LEXICON, instance->autoImportLexicon);
     settings.setValue (SETTINGS_IMPORT_FILE, instance->autoImportFile);
+    settings.setValue (SETTINGS_DISPLAY_WELCOME, instance->displayWelcome);
     settings.setValue (SETTINGS_USE_TILE_THEME, instance->useTileTheme);
     settings.setValue (SETTINGS_TILE_THEME, instance->tileTheme);
     settings.setValue (SETTINGS_QUIZ_LETTER_ORDER,

@@ -158,6 +158,20 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
              SLOT (autoImportBrowseButtonClicked()));
     autoImportCustomHlay->addWidget (autoImportBrowseButton);
 
+    QGroupBox* displayWelcomeGbox = new QGroupBox ("Welcome");
+    Q_CHECK_PTR (displayWelcomeGbox);
+    generalPrefVlay->addWidget (displayWelcomeGbox);
+    generalPrefVlay->setStretchFactor (displayWelcomeGbox, 1);
+
+    QVBoxLayout* displayWelcomeVlay = new QVBoxLayout (displayWelcomeGbox);
+    Q_CHECK_PTR (displayWelcomeVlay);
+    displayWelcomeVlay->setMargin (MARGIN);
+    displayWelcomeVlay->setSpacing (SPACING);
+
+    displayWelcomeCbox = new QCheckBox ("Display Welcome on startup");
+    Q_CHECK_PTR (displayWelcomeCbox);
+    displayWelcomeVlay->addWidget (displayWelcomeCbox);
+
     generalPrefVlay->addStretch (2);
 
     // Quiz Prefs
@@ -590,6 +604,8 @@ SettingsDialog::readSettings()
     QString autoImportFile = MainSettings::getAutoImportFile();
     autoImportCustomLine->setText (autoImportFile);
 
+    displayWelcomeCbox->setChecked (MainSettings::getDisplayWelcome());
+
     fillThemeCombo();
     bool useTileTheme = MainSettings::getUseTileTheme();
     themeCbox->setChecked (useTileTheme);
@@ -678,6 +694,7 @@ SettingsDialog::writeSettings()
     MainSettings::setAutoImportLexicon
         (autoImportLexiconCombo->currentText());
     MainSettings::setAutoImportFile (autoImportCustomLine->text());
+    MainSettings::setDisplayWelcome (displayWelcomeCbox->isChecked());
     MainSettings::setUseTileTheme (themeCbox->isChecked());
     MainSettings::setTileTheme (themeCombo->currentText());
     MainSettings::setQuizLetterOrder (letterOrderCombo->currentText());
