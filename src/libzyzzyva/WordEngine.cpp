@@ -310,6 +310,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     // New in OWL2 conditions with Must Be in Word List conditions.
     bool mustSearchGraph = false;
     bool wordListCondition = false;
+    bool numAnagramsCondition = false;
     int probRangeMin = 0;
     int probRangeMax = 0;
     int i = 0;
@@ -324,6 +325,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             break;
 
             case SearchCondition::NumAnagrams:
+            numAnagramsCondition = true;
             break;
 
             case SearchCondition::BelongToGroup: {
@@ -352,6 +354,12 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
         }
         ++i;
     }
+
+    // Wait for Num Anagrams thread to finish before performing a search with
+    // a Num Anagrams condition
+    if (numAnagramsCondition && anagramsThread->isRunning())
+        anagramsThread->wait();
+
     if (wordListCondition && !mustSearchGraph)
         return nonGraphSearch (optimizedSpec);
 
