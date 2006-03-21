@@ -255,6 +255,33 @@
   appropriately.  An exact length can also be specified by making the
   <i>Min</i> and <i>Max</i> values equal to each other.</p>
 
+  <a name="probability-order">
+  <h3>Probability Order</h3>
+
+  <p>A <i>Probability Order</i> search condition can be used to limit the
+  search results to a certain range of words in order of probability.  For
+  example, to find the top 1000 7-letter words in order of probability, create
+  a search with a <i>Length</i> condition of Min 7, Max 7, and a
+  <i>Probability Order</i> condition of Min 1, Max 1000.</p>
+
+  <p>The <i>Probability Order</i> condition is applied last, after all other
+  search conditions.  So for example, in the search mentioned above, Zyzzyva
+  first finds all 7-letter words.  Then it finds the words ranked 1-1000 out
+  of that list.  This works as one would expect for a simple search like "all
+  7-letter words".</p>
+
+  <p>However, for a more complicated search like <i>Length</i> Min 7, Max 7;
+  <i>Not In Word List</i> X; <i>Probability Order</i> Min 1, Max 5000, the
+  behavior may be somewhat unexpected.  First, Zyzzyva finds all the 7-letter
+  words that are not in word list X.  Then, it takes the top 5000 of those
+  words.  The "1-5000" probability condition doesn't find 7s that are ranked
+  1-5000 in overall probability.  Instead, Zyzzyva ranks the words that are
+  found by the rest of the search conditions, then takes the top 5000 words of
+  that set.</p>
+
+  <p>This behavior is relatively unintuitive, and will probably change in the
+  near future.</p>
+
   <a name="other-options">
   <h3>Other Options</h3>
 

@@ -62,6 +62,8 @@
                  title="Belongs to Group" />
         <section ref="search.html#in-word-list" title="In Word List" />
         <section ref="search.html#num-anagrams" title="Number of Anagrams" />
+        <section ref="search.html#probability-order"
+                 title="Probability Order" />
       </section>
       <section ref="search.html#other-options" title="Other Options" />
       <section ref="search.html#load-save-search"
