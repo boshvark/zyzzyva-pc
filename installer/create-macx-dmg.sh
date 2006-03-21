@@ -26,9 +26,14 @@
 QTDIR=/usr/local/Trolltech/Qt-4.1.1
 QTVER=4.0
 
+# Copy executable into bundle
+echo "Copying Zyzzyva executable into bundle..."
+rm -rf zyzzyva.app
+mkdir zyzzyva.app
+cp -r bin/zyzzyva.app/Contents zyzzyva.app
+
 # Copy data directory into bundle
 echo "Copying data directory into bundle..."
-rm -rf zyzzyva.app/Contents/MacOS/data
 cp -r data zyzzyva.app/Contents/MacOS
 
 # Copy Assistant client into bundle
@@ -46,6 +51,17 @@ cp $QTDIR/bin/assistant.app/Contents/Resources/assistant.icns \
 echo "Creating Contents/Frameworks directory in bundle..."
 rm -rf zyzzyva.app/Contents/Frameworks
 mkdir -p zyzzyva.app/Contents/Frameworks
+
+# Copy Zyzzyva libs to Frameworks directory
+echo "Copying libzyzzyva into bundle..."
+cp bin/libzyzzyva.1.dylib zyzzyva.app/Contents/Frameworks
+
+# Change link location for libzyzzyva in executable
+echo "Changing link location for libzyzzyva in Zyzzyva executable..."
+install_name_tool -change \
+    libzyzzyva.1.dylib \
+    @executable_path/../Frameworks/libzyzzyva.1.dylib \
+    zyzzyva.app/Contents/MacOS/zyzzyva
 
 # Copy Qt frameworks into bundle and tell the executable to link to them
 for i in Qt3Support QtGui QtNetwork QtSql QtXml QtCore ; do
@@ -75,6 +91,17 @@ for i in Qt3Support QtGui QtNetwork QtSql QtXml QtCore ; do
         @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
         zyzzyva.app/Contents/MacOS/zyzzyva
 done
+
+# Copy libQtTest into bundle
+echo "Copying libQtTest into bundle..."
+cp $QTDIR/lib/libQtTest.4.dylib zyzzyva.app/Contents/Frameworks
+
+# Change link locations for libQtTest in executable
+echo "Changing link location for libQtTest in Zyzzyva executable..."
+install_name_tool -change \
+    $QTDIR/lib/libQtTest.4.dylib \
+    @executable_path/../Frameworks/libQtTest.4.dylib \
+    zyzzyva.app/Contents/MacOS/zyzzyva
 
 # Change reference to QtCore in QtGui framework
 echo "Changing link location for QtCore.framework in QtGui.framework..."
@@ -166,6 +193,34 @@ install_name_tool -change \
     $QTDIR/lib/QtXml.framework/Versions/$QTVER/QtXml \
     @executable_path/../Frameworks/QtXml.framework/Versions/$QTVER/QtXml \
     zyzzyva.app/Contents/MacOS/assistant
+
+# Change reference to QtCore in libzyzzyva
+echo "Changing link location for QtCore.framework in libzyzzyva..."
+install_name_tool -change \
+    $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
+    @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
+    zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+
+# Change reference to QtGui in libzyzzyva
+echo "Changing link location for QtGui.framework in libzyzzyva..."
+install_name_tool -change \
+    $QTDIR/lib/QtGui.framework/Versions/$QTVER/QtGui \
+    @executable_path/../Frameworks/QtGui.framework/Versions/$QTVER/QtGui \
+    zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+
+# Change reference to QtNetwork in libzyzzyva
+echo "Changing link location for QtNetwork.framework in libzyzzyva..."
+install_name_tool -change \
+    $QTDIR/lib/QtNetwork.framework/Versions/$QTVER/QtNetwork \
+    @executable_path/../Frameworks/QtNetwork.framework/Versions/$QTVER/QtNetwork \
+    zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+
+# Change reference to QtXml in libzyzzyva
+echo "Changing link location for QtXml.framework in libzyzzyva..."
+install_name_tool -change \
+    $QTDIR/lib/QtXml.framework/Versions/$QTVER/QtXml \
+    @executable_path/../Frameworks/QtXml.framework/Versions/$QTVER/QtXml \
+    zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
 
 # Create disk image
 echo "Creating disk image..."
