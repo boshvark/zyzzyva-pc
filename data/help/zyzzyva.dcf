@@ -20,6 +20,10 @@
                  title="Question Display" />
         <section ref="preferences.html#quiz-behavior" title="Quiz Behavior" />
       </section>
+      <section ref="preferences.html#judge" title="Word Judge Preferences">
+        <section ref="preferences.html#judge-log-files"
+                 title="Word Judge Log Files" />
+      </section>
       <section ref="preferences.html#fonts" title="Font Preferences" />
       <section ref="preferences.html#word-tables"
                title="Word Table Preferences">
