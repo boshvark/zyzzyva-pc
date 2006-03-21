@@ -35,12 +35,16 @@ const QChar BLANK_CHAR = '_';
 //
 //! Constructor.  Precalculate the M choose N probabilities for all
 //! combinations up to MAX_WORD_LEN.
+//
+//! @param distribution the letter distribution to use
 //---------------------------------------------------------------------------
-LetterBag::LetterBag()
+LetterBag::LetterBag (const QString& distribution)
     : totalLetters (0)
 {
-    QString distribution = MainSettings::getLetterDistribution();
-    QStringList strList = distribution.split (" ");
+    QString dist (distribution);
+    if (dist.isEmpty())
+        dist = MainSettings::getLetterDistribution();
+    QStringList strList = dist.split (" ");
 
     int maxFrequency = MAX_WORD_LEN;
 

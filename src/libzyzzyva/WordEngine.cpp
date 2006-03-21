@@ -637,6 +637,13 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 {
     static QString typeTwoChars = "AAADEEEEGIIILNNOORRSSTTU";
     static int typeTwoCharsLen = typeTwoChars.length();
+    static LetterBag letterBag ("A:9 B:2 C:2 D:4 E:12 F:2 G:3 H:2 I:9 J:1 "
+                                "K:1 L:4 M:2 N:6 O:8 P:2 Q:1 R:6 S:4 T:6 "
+                                "U:4 V:2 W:2 X:1 Y:2 Z:1 _:2");
+    static double typeThreeSevenCombos
+        = letterBag.getNumCombinations ("HUNTERS");
+    static double typeThreeEightCombos
+        = letterBag.getNumCombinations ("NOTIFIED");
 
     switch (ss) {
         case SetHookWords:
@@ -731,6 +738,26 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
             return (ok && !isSetMember (word, (ss == SetTypeTwoSevens ?
                                                SetTypeOneSevens :
                                                SetTypeOneEights)));
+        }
+
+        case SetTypeThreeSevens: {
+            if (word.length() != 7)
+                return false;
+
+            double combos = letterBag.getNumCombinations (word);
+            return ((combos >= typeThreeSevenCombos) &&
+                    !isSetMember (word, SetTypeOneSevens) &&
+                    !isSetMember (word, SetTypeTwoSevens));
+        }
+
+        case SetTypeThreeEights: {
+            if (word.length() != 8)
+                return false;
+
+            double combos = letterBag.getNumCombinations (word);
+            return ((combos >= typeThreeEightCombos) &&
+                    !isSetMember (word, SetTypeOneEights) &&
+                    !isSetMember (word, SetTypeTwoEights));
         }
 
         case SetEightsFromSevenLetterStems: {

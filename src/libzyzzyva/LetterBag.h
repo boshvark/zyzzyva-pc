@@ -28,11 +28,12 @@
 #include <QChar>
 #include <QMap>
 #include <QList>
+#include <QString>
 
 class LetterBag
 {
     public:
-    LetterBag();
+    LetterBag (const QString& distribution = QString::null);
     ~LetterBag() { }
 
     double getProbability (const QString& word) const;
