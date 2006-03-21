@@ -295,7 +295,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (judgePrefVlay);
     judgePrefVlay->setMargin (0);
 
-    QLabel* judgePrefLabel = new QLabel (WORD_LIST_PREFS_ITEM);
+    QLabel* judgePrefLabel = new QLabel (JUDGE_PREFS_ITEM);
     Q_CHECK_PTR (judgePrefLabel);
     judgePrefLabel->setFrameShape (QFrame::StyledPanel);
     judgePrefVlay->addWidget (judgePrefLabel);
