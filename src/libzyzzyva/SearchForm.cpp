@@ -151,7 +151,8 @@ SearchForm::search()
     while (it.hasNext()) {
         SearchCondition::SearchType type = it.next().type;
         if ((type == SearchCondition::AnagramMatch) ||
-            (type == SearchCondition::SubanagramMatch))
+            (type == SearchCondition::SubanagramMatch) ||
+            (type == SearchCondition::NumAnagrams))
         {
             hasAnagramCondition = true;
             break;
