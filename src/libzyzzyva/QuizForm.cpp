@@ -295,7 +295,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
     buttonGlay->addWidget (newQuizButton, 1, 1, Qt::AlignHCenter);
 
-    saveQuizButton = new ZPushButton ("&Save Quiz...");
+    saveQuizButton = new ZPushButton ("&Save Quiz");
     Q_CHECK_PTR (saveQuizButton);
     saveQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuizClicked()));
@@ -508,7 +508,7 @@ QuizForm::saveQuizClicked()
 {
     pauseTimer();
 
-    // XXX: This code is copied wholesale from NewQuizDialog::saveQuiz!
+    // XXX: This code is copied mostly from NewQuizDialog::saveQuiz!
 
     // Try saving in the same location as the spec's current filename
     QString startDir = Auxil::getQuizDir() + "/saved";
@@ -518,16 +518,20 @@ QuizForm::saveQuizClicked()
         startDir = currentFilename;
     }
 
-    QString filename = QFileDialog::getSaveFileName (this, "Save Quiz",
-        startDir, "Zyzzyva Quiz Files (*.zzq)");
-
-    if (filename.isEmpty())
-        return;
-
+    QString filename = quizEngine->getQuizSpec().getFilename();
     bool filenameEdited = false;
-    if (!filename.endsWith (".zzq", Qt::CaseInsensitive)) {
-        filename += ".zzq";
-        filenameEdited = true;
+
+    if (filename.isEmpty()) {
+        filename = QFileDialog::getSaveFileName (this, "Save Quiz", startDir,
+                                                "Zyzzyva Quiz Files (*.zzq)");
+
+        if (filename.isEmpty())
+            return;
+
+        if (!filename.endsWith (".zzq", Qt::CaseInsensitive)) {
+            filename += ".zzq";
+            filenameEdited = true;
+        }
     }
 
     QFile file (filename);
@@ -563,6 +567,9 @@ QuizForm::saveQuizClicked()
     quizEngine->setQuizSpecFilename (filename);
     setQuizNameFromFilename (filename);
     unsavedChanges = false;
+
+    setStatusString ("Quiz saved successfully.");
+    QTimer::singleShot (2000, this, SLOT (updateStatusString()));
 }
 
 //---------------------------------------------------------------------------
