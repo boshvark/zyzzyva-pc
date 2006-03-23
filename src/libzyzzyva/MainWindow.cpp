@@ -311,6 +311,8 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     connect (helpDialog, SIGNAL (error (const QString&)),
              SLOT (helpDialogError (const QString&)));
+
+    QTimer::singleShot (0, this, SLOT (displayLexiconError()));
 }
 
 //---------------------------------------------------------------------------
@@ -333,6 +335,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     QString definitionFile;
     QString numWordsFile;
     QString numAnagramsFile;
+    QString checksumFile;
     bool dawg = true;
     if (lexicon == "Custom") {
         importFile = MainSettings::getAutoImportFile();
@@ -352,6 +355,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
             definitionFile =    prefix + ".txt";
             numAnagramsFile =   prefix + "-num-anagrams.txt";
             numWordsFile =      prefix + "-num-words.txt";
+            checksumFile =      prefix + "-checksums.txt";
         }
     }
 
@@ -366,12 +370,30 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     }
 
     if (dawg) {
-        importDawg (importFile, lexicon, false);
-        importDawg (reverseImportFile, lexicon, true);
-        int numWords = wordEngine->importNumWords (numWordsFile);
-        setNumWords (numWords);
-        wordEngine->importNumAnagrams (numAnagramsFile);
-        wordEngine->importDefinitions (definitionFile);
+        quint16 expectedForwardChecksum = 0;
+        quint16 expectedReverseChecksum = 0;
+
+        QList<quint16> checksums = importChecksums (checksumFile);
+        if (checksums.size() >= 2) {
+            expectedForwardChecksum = checksums[0];
+            expectedReverseChecksum = checksums[1];
+        }
+        else {
+            // warning!
+        }
+
+        lexiconError = QString::null;
+
+        if (importDawg (importFile, lexicon, false, &lexiconError,
+                        &expectedForwardChecksum) &&
+            importDawg (reverseImportFile, lexicon, true, &lexiconError,
+                        &expectedReverseChecksum))
+        {
+            int numWords = wordEngine->importNumWords (numWordsFile);
+            setNumWords (numWords);
+            wordEngine->importNumAnagrams (numAnagramsFile);
+            wordEngine->importDefinitions (definitionFile);
+        }
     }
     else
         importText (importFile, lexicon);
@@ -632,6 +654,25 @@ MainWindow::displayHelp()
 }
 
 //---------------------------------------------------------------------------
+//  displayLexiconError
+//
+//! Display any lexicon errors, and ask the user whether to proceed in the
+//! face of any errors.
+//---------------------------------------------------------------------------
+void
+MainWindow::displayLexiconError()
+{
+    if (lexiconError.isEmpty())
+        return;
+
+    int code = QMessageBox::warning (this, "Lexicon Warning",
+                                     lexiconError + "\nProceed anyway?",
+                                     QMessageBox::Yes, QMessageBox::No);
+    if (code != QMessageBox::Yes)
+        qApp->quit();
+}
+
+//---------------------------------------------------------------------------
 //  helpDialogError
 //
 //! Called when an error occurs in the help dialog.
@@ -874,21 +915,60 @@ MainWindow::newTab (QWidget* widget, const QIcon& icon, const QString& title)
 //! @param file the file to import words from
 //! @param lexiconName the name of the lexicon
 //! @param reverse whether the DAWG contains reversed words
-//! @return the number of imported words
+//! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
-int
+bool
 MainWindow::importDawg (const QString& file, const QString& lexiconName, bool
-                        reverse)
+                        reverse, QString* errString, quint16*
+                        expectedChecksum)
 {
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-    int imported = wordEngine->importDawgFile (file, lexiconName, reverse);
+    bool ok = wordEngine->importDawgFile (file, lexiconName, reverse,
+                                          errString, expectedChecksum);
     QApplication::restoreOverrideCursor();
 
+    if (!ok) {
+        // Pop up warning stating why DAWG could not be loaded.
+    }
+
+    else if (errString && !errString->isEmpty()) {
+        // Pop up warning, and ask user whether to proceed.
+    }
+
+
+
+    // If failure, notify the user and bail out
+
     if (!reverse) {
-        setNumWords (imported);
+        //setNumWords (imported);
         setWindowTitle (APPLICATION_TITLE + " - " + lexiconName);
     }
-    return imported;
+    return ok;
+}
+
+//---------------------------------------------------------------------------
+//  importChecksums
+//
+//! Import words from a text file.
+//
+//! @param file the file to import words from
+//! @param lexiconName the name of the lexicon
+//! @return the number of imported words
+//---------------------------------------------------------------------------
+QList<quint16>
+MainWindow::importChecksums (const QString& filename)
+{
+    QList<quint16> checksums;
+    QFile file (filename);
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+        return checksums;
+
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
+        checksums.append (line.toUShort());
+    }
+    return checksums;
 }
 
 //---------------------------------------------------------------------------

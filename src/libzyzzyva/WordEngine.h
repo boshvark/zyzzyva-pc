@@ -44,10 +44,12 @@ class WordEngine : public QObject
           anagramsThread (new LoadAnagramsThread(this)) { }
     ~WordEngine() { }
 
+    void clearLexicon();
     int importTextFile (const QString& filename, const QString& lexName, bool
                         loadDefinitions = true, QString* errString = 0);
     bool importDawgFile (const QString& filename, const QString& lexName, bool
-                         reverse = false, QString* errString = 0);
+                         reverse = false, QString* errString = 0, quint16*
+                         expectedChecksum = 0);
     void importDefinitions (const QString& filename, bool wait = false);
     int importNumWords (const QString& filename);
     void importNumAnagrams (const QString& filename, bool wait = false);

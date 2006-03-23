@@ -106,17 +106,18 @@ WordEngine::importTextFile (const QString& filename, const QString& lexName,
 //---------------------------------------------------------------------------
 bool
 WordEngine::importDawgFile (const QString& filename, const QString& lexName,
-                            bool reverse, QString* errString)
+                            bool reverse, QString* errString, quint16*
+                            expectedChecksum)
 {
-    bool ok = graph.importDawgFile (filename, reverse, errString);
+    bool ok = graph.importDawgFile (filename, reverse, errString,
+                                    expectedChecksum);
 
     if (!ok)
         return false;
 
-    if (reverse)
-        return true;
+    if (!reverse)
+        lexiconName = lexName;
 
-    lexiconName = lexName;
     return true;
 }
 

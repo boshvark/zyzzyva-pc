@@ -38,7 +38,7 @@ class WordGraph
 
     void clear();
     bool importDawgFile (const QString& filename, bool reverse, QString*
-                         errString);
+                         errString, quint16* expectedChecksum);
     void addWord (const QString& w);
     bool containsWord (const QString& w) const;
     QStringList search (const SearchSpec& spec) const;

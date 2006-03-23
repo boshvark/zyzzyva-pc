@@ -94,11 +94,12 @@ WordGraph::clear()
 //! @param filename the name of the DAWG file to import
 //! @param reverse whether the DAWG contains reversed words
 //! @param errString returns the error string in case of error
+//! @param checksum the expected checksum value
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
 WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
-                           errString)
+                           errString, quint16* expectedChecksum)
 {
     QFile file (filename);
     if (!file.open (QIODevice::ReadOnly)) {
@@ -123,6 +124,15 @@ WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
         dawg[0] = 0;
         p = &dawg[1];
         readData (p, numEdges, file);
+    }
+
+    if (expectedChecksum && errString) {
+        char* cp = (char*) p;
+        if (*expectedChecksum != qChecksum (cp, numEdges)) {
+            *errString =
+                "The lexicon checksum does not match the expected checksum.\n"
+                "It is possible the lexicon has been corrupted.\n";
+        }
     }
 
     return true;

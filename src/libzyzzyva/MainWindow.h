@@ -66,6 +66,7 @@ class MainWindow : public QMainWindow
     void viewVariation (int variation);
     void displayAbout();
     void displayHelp();
+    void displayLexiconError();
     void helpDialogError (const QString& message);
     void closeCurrentTab();
     void currentTabChanged (int index);
@@ -76,9 +77,10 @@ class MainWindow : public QMainWindow
 
     private:
     int  importText (const QString& file, const QString& lexiconName);
-    int  importDawg (const QString& file, const QString& lexiconName,
-                     bool reverse = false);
-    void importDefinitions (const QString& file);
+    bool importDawg (const QString& file, const QString& lexiconName,
+                     bool reverse = false, QString* errString = 0,
+                     quint16* expectedChecksum = 0);
+    QList<quint16> importChecksums (const QString& file);
     int  importStems();
     void setNumWords (int num);
     void readSettings (bool useGeometry);
@@ -95,6 +97,8 @@ class MainWindow : public QMainWindow
     SettingsDialog* settingsDialog;
     AboutDialog*    aboutDialog;
     HelpDialog*     helpDialog;
+
+    QString lexiconError;
 
     static MainWindow*  instance;
 };
