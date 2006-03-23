@@ -551,6 +551,8 @@ QuizForm::saveQuizClicked()
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
         << document.toString();
 
+    quizEngine->setQuizSpecFilename (filename);
+    setQuizNameFromFilename (filename);
     unsavedChanges = false;
 }
 

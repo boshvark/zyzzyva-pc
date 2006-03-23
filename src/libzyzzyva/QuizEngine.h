@@ -70,6 +70,9 @@ class QuizEngine
     bool getQuestionComplete() const {
         return quizSpec.getProgress().getQuestionComplete(); }
     bool onLastQuestion() const;
+    void setQuizSpecFilename (const QString& filename) {
+        quizSpec.setFilename (filename);
+    }
 
     private:
     void clearQuestion();
