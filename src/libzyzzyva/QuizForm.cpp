@@ -568,6 +568,7 @@ QuizForm::saveQuizClicked()
     setQuizNameFromFilename (filename);
     unsavedChanges = false;
 
+    selectInputArea();
     setStatusString ("Quiz saved successfully.");
     QTimer::singleShot (2000, this, SLOT (updateStatusString()));
 }
@@ -807,6 +808,7 @@ void
 QuizForm::analyzeClicked()
 {
     analyzeDialog->show();
+    selectInputArea();
 }
 
 //---------------------------------------------------------------------------
