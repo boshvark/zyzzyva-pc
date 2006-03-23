@@ -26,7 +26,6 @@
 #define ZYZZYVA_INTRO_FORM_H
 
 #include "ActionForm.h"
-#include <QTextBrowser>
 
 class WordEngine;
 
@@ -37,9 +36,6 @@ class IntroForm : public ActionForm
     IntroForm (QWidget* parent = 0, Qt::WFlags f = 0);
     ~IntroForm() { }
     QString getStatusString() const { return QString::null; }
-
-    private:
-    QTextBrowser* browser;
 };
 
 #endif // ZYZZYVA_INTRO_FORM_H

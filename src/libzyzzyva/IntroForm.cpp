@@ -22,6 +22,7 @@
 
 #include "IntroForm.h"
 #include "Auxil.h"
+#include <QTextBrowser>
 #include <QVBoxLayout>
 
 //---------------------------------------------------------------------------
@@ -35,10 +36,13 @@
 IntroForm::IntroForm (QWidget* parent, Qt::WFlags f)
     : ActionForm (IntroFormType, parent, f)
 {
-    QVBoxLayout* layout = new QVBoxLayout (this);
+    QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    Q_CHECK_PTR (mainVlay);
 
-    browser = new QTextBrowser (this);
+    QTextBrowser* browser = new QTextBrowser (this);
     Q_CHECK_PTR (browser);
-    browser->setSource (Auxil::getHelpDir() + "/index.html");
-    layout->addWidget (browser);
+    mainVlay->addWidget (browser);
+
+    QString mainPage = Auxil::getHelpDir() + "/index.html";
+    browser->setSource (QUrl::fromLocalFile (mainPage));
 }
