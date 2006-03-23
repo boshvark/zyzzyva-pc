@@ -200,8 +200,10 @@ NewQuizDialog::getQuizSpec()
     }
     quizSpec.setTimerSpec (timerSpec);
 
-    if (!progressCbox->isChecked())
+    if (!progressCbox->isChecked()) {
         quizSpec.setProgress (QuizProgress());
+        quizSpec.setFilename (QString::null);
+    }
 
     return quizSpec;
 }
