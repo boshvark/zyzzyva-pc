@@ -1216,7 +1216,9 @@ QuizForm::promptToSaveChanges()
 
         case QMessageBox::Yes:
         saveQuizClicked();
-        return true;
+
+        // If the quiz spec does not have a filename, the save was cancelled
+        return !quizEngine->getQuizSpec().getFilename().isEmpty();
 
         default:
         return false;
