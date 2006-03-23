@@ -110,6 +110,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     : ActionForm (QuizFormType, parent, f), wordEngine (we),
     quizEngine (new QuizEngine (wordEngine)),
     timerId (0), timerPaused (0), checkBringsJudgment (true),
+    unsavedChanges (false),
     // FIXME: This dialog should be nonmodal!
     analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
                                           Qt::WindowMinMaxButtonsHint))
@@ -355,6 +356,7 @@ QuizForm::responseEntered()
     QuizEngine::ResponseStatus status = quizEngine->respond (response);
     QString displayResponse = response;
     QString statusStr = "";
+    unsavedChanges = true;
 
     if (status == QuizEngine::Correct) {
         if (response.contains (":"))
@@ -484,6 +486,7 @@ QuizForm::newQuiz (const QuizSpec& spec)
 
     QTimer::singleShot (0, this, SLOT (selectInputArea()));
 
+    unsavedChanges = false;
     return true;
 }
 
@@ -539,6 +542,8 @@ QuizForm::saveQuizClicked()
     QTextStream stream (&file);
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
         << document.toString();
+
+    unsavedChanges = false;
 }
 
 //---------------------------------------------------------------------------
@@ -572,6 +577,10 @@ void
 QuizForm::newQuizClicked()
 {
     pauseTimer();
+
+    if (!promptToSaveChanges())
+        return;
+
     NewQuizDialog* dialog = new NewQuizDialog (wordEngine, this);
     Q_CHECK_PTR (dialog);
     QuizSpec spec = quizEngine->getQuizSpec();
@@ -631,6 +640,7 @@ QuizForm::nextQuestionClicked()
                               "Error getting next question.");
     startQuestion();
     analyzeDialog->updateStats();
+    unsavedChanges = true;
 }
 
 //---------------------------------------------------------------------------
@@ -681,6 +691,7 @@ QuizForm::checkResponseClicked()
     checkResponseButton->setEnabled (false);
     quizEngine->completeQuestion();
     analyzeDialog->updateStats();
+    unsavedChanges = true;
 
     // Disable the Mark as Missed button if all responses were missed
     if (quizEngine->getQuestionCorrect() == 0)
@@ -847,6 +858,7 @@ QuizForm::startQuestion()
         startNewTimer();
 
     updateStatusString();
+    unsavedChanges = true;
 
     QApplication::restoreOverrideCursor();
 }
@@ -1142,6 +1154,39 @@ QuizForm::selectInputArea()
     }
     else {
         checkResponseButton->setFocus();
+    }
+}
+
+//---------------------------------------------------------------------------
+//  promptToSaveChanges
+//
+//! Prompt the user to save any unsaved changes in this quiz.
+//
+//! @return true if everything is okay and can proceed normally, false if the
+//! action generating this request should be cancelled
+//---------------------------------------------------------------------------
+bool
+QuizForm::promptToSaveChanges()
+{
+    if (!unsavedChanges)
+        return true;
+
+    int code = QMessageBox::warning (this, "Save Quiz?",
+                                     "This quiz has unsaved changes.  "
+                                     "Would you like to save it?",
+                                     QMessageBox::Yes, QMessageBox::No,
+                                     QMessageBox::Cancel);
+
+    switch (code) {
+        case QMessageBox::No:
+        return true;
+
+        case QMessageBox::Yes:
+        saveQuizClicked();
+        return true;
+
+        default:
+        return false;
     }
 }
 

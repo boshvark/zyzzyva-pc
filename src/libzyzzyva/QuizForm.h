@@ -56,6 +56,7 @@ class QuizForm : public ActionForm
     QuizForm (WordEngine* we, QWidget* parent = 0, Qt::WFlags f = 0);
     ~QuizForm();
     QString getStatusString() const;
+    bool hasUnsavedChanges() const { return unsavedChanges; }
 
     public slots:
     bool newQuiz (const QuizSpec& spec);
@@ -78,6 +79,7 @@ class QuizForm : public ActionForm
     void stopDisplayingCorrectAnswers();
     void displayNextCorrectAnswer();
     void selectInputArea();
+    bool promptToSaveChanges();
 
     protected:
     void keyPressEvent (QKeyEvent* event);
@@ -141,6 +143,8 @@ class QuizForm : public ActionForm
 
     QTimer* displayAnswerTimer;
     int currentDisplayAnswer;
+
+    bool unsavedChanges;
 
     AnalyzeQuizDialog* analyzeDialog;
 };

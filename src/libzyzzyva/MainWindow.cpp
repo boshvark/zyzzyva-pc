@@ -698,6 +698,18 @@ MainWindow::closeCurrentTab()
     if (!w)
         return;
 
+    // Prompt to save changes if this is a Quiz tab
+    ActionForm* form = static_cast<ActionForm*>(w);
+    ActionForm::ActionFormType type = form->getType();
+    if (type == ActionForm::QuizFormType) {
+        QuizForm* quizForm = static_cast<QuizForm*> (form);
+        if (quizForm->hasUnsavedChanges()) {
+            bool ok = quizForm->promptToSaveChanges();
+            if (!ok)
+                return;
+        }
+    }
+
     tabStack->removeTab (tabStack->indexOf (w));
     delete w;
     if (tabStack->count() == 0) {
@@ -761,6 +773,24 @@ MainWindow::tabStatusChanged (const QString& status)
 void
 MainWindow::closeEvent (QCloseEvent* event)
 {
+    // Look for unsaved quizzes
+    int count = tabStack->count();
+    for (int i = 0; i < count; ++i) {
+        ActionForm* form = static_cast<ActionForm*> (tabStack->widget (i));
+        ActionForm::ActionFormType type = form->getType();
+        if (type == ActionForm::QuizFormType) {
+            QuizForm* quizForm = static_cast<QuizForm*> (form);
+            if (quizForm->hasUnsavedChanges()) {
+                tabStack->setCurrentWidget (quizForm);
+                bool ok = quizForm->promptToSaveChanges();
+                if (!ok) {
+                    event->ignore();
+                    return;
+                }
+            }
+        }
+    }
+
     writeSettings();
     event->accept();
 }
