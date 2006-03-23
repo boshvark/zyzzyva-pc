@@ -56,6 +56,7 @@ using namespace Defs;
 
 const QString PAUSE_BUTTON = "&Pause";
 const QString UNPAUSE_BUTTON = "Un&pause";
+const int TITLE_FONT_PIXEL_SIZE = 20;
 
 //---------------------------------------------------------------------------
 //  vowelsFirstCmp
@@ -115,6 +116,9 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
                                           Qt::WindowMinMaxButtonsHint))
 {
+    QFont titleFont = qApp->font();
+    titleFont.setPixelSize (TITLE_FONT_PIXEL_SIZE);
+
     QHBoxLayout* mainHlay = new QHBoxLayout (this);
     mainHlay->setMargin (MARGIN);
     mainHlay->setSpacing (SPACING);
@@ -132,16 +136,19 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
 
     quizTypeLabel = new QLabel;
     Q_CHECK_PTR (quizTypeLabel);
+    quizTypeLabel->setFont (titleFont);
     quizTypeLabel->setAlignment (Qt::AlignLeft);
     topHlay->addWidget (quizTypeLabel);
 
     timerLabel = new QLabel;
     Q_CHECK_PTR (timerLabel);
+    timerLabel->setFont (titleFont);
     timerLabel->setAlignment (Qt::AlignHCenter);
     topHlay->addWidget (timerLabel);
 
     quizNameLabel = new QLabel;
     Q_CHECK_PTR (quizNameLabel);
+    quizNameLabel->setFont (titleFont);
     quizNameLabel->setAlignment (Qt::AlignRight);
     quizNameLabel->setText ("Unnamed Quiz");
     topHlay->addWidget (quizNameLabel);
