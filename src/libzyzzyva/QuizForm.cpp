@@ -362,7 +362,7 @@ QuizForm::responseEntered()
     QuizEngine::ResponseStatus status = quizEngine->respond (response);
     QString displayResponse = response;
     QString statusStr = "";
-    unsavedChanges = true;
+    setUnsavedChanges (true);
 
     if (status == QuizEngine::Correct) {
         if (response.contains (":"))
@@ -494,7 +494,7 @@ QuizForm::newQuiz (const QuizSpec& spec)
 
     QTimer::singleShot (0, this, SLOT (selectInputArea()));
 
-    unsavedChanges = false;
+    setUnsavedChanges (false);
     return true;
 }
 
@@ -566,7 +566,7 @@ QuizForm::saveQuizClicked()
 
     quizEngine->setQuizSpecFilename (filename);
     setQuizNameFromFilename (filename);
-    unsavedChanges = false;
+    setUnsavedChanges (false);
 
     selectInputArea();
     setStatusString ("Quiz saved successfully.");
@@ -667,7 +667,7 @@ QuizForm::nextQuestionClicked()
                               "Error getting next question.");
     startQuestion();
     analyzeDialog->updateStats();
-    unsavedChanges = true;
+    setUnsavedChanges (true);
 }
 
 //---------------------------------------------------------------------------
@@ -718,7 +718,7 @@ QuizForm::checkResponseClicked()
     checkResponseButton->setEnabled (false);
     quizEngine->completeQuestion();
     analyzeDialog->updateStats();
-    unsavedChanges = true;
+    setUnsavedChanges (true);
 
     // Disable the Mark as Missed button if all responses were missed
     if (quizEngine->getQuestionCorrect() == 0)
@@ -886,7 +886,7 @@ QuizForm::startQuestion()
         startNewTimer();
 
     updateStatusString();
-    unsavedChanges = true;
+    setUnsavedChanges (true);
 
     QApplication::restoreOverrideCursor();
 }
@@ -1316,6 +1316,21 @@ QuizForm::setQuizNameFromFilename (const QString& filename)
     quizName.remove (QRegExp ("^.*/"));
     quizName.remove (QRegExp ("\\.zzq$"));
     setQuizName (quizName);
+}
+
+//---------------------------------------------------------------------------
+//  setUnsavedChanges
+//
+//! Set the unsaved changes flag, and enable or disable the Save Quiz button
+//! as appropriate.
+//
+//! @param b whether there are unsaved changes
+//---------------------------------------------------------------------------
+void
+QuizForm::setUnsavedChanges (bool b)
+{
+    unsavedChanges = b;
+    saveQuizButton->setEnabled (b);
 }
 
 //---------------------------------------------------------------------------

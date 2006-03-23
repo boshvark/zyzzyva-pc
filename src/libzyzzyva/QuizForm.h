@@ -103,6 +103,7 @@ class QuizForm : public ActionForm
     void setTimerDisplay (int seconds);
     void setQuizName (const QString& name);
     void setQuizNameFromFilename (const QString& filename);
+    void setUnsavedChanges (bool b);
     void clearTileTheme();
     void reflowLayout();
     bool responseMatchesQuestion (const QString& response) const;
