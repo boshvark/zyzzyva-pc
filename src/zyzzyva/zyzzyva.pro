@@ -34,7 +34,9 @@ OBJECTS_DIR = build/obj
 INCLUDEPATH += build/moc $$ROOT/src/libzyzzyva
 DEPENDPATH += build/moc
 RESOURCES = $$ROOT/zyzzyva.qrc
-RC_FILE = $$ROOT/images/zyzzyva.icns
+macx {
+    RC_FILE = $$ROOT/images/zyzzyva.icns
+}
 
 LIBS = -lzyzzyva -L$$ROOT/bin
 
