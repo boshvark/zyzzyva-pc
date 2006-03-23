@@ -509,8 +509,17 @@ QuizForm::saveQuizClicked()
     pauseTimer();
 
     // XXX: This code is copied wholesale from NewQuizDialog::saveQuiz!
+
+    // Try saving in the same location as the spec's current filename
+    QString startDir = Auxil::getQuizDir() + "/saved";
+    QString currentFilename = quizEngine->getQuizSpec().getFilename();
+    if (!currentFilename.isEmpty()) {
+        currentFilename.remove ("/[^/]+$");
+        startDir = currentFilename;
+    }
+
     QString filename = QFileDialog::getSaveFileName (this, "Save Quiz",
-        Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)");
+        startDir, "Zyzzyva Quiz Files (*.zzq)");
 
     if (filename.isEmpty())
         return;

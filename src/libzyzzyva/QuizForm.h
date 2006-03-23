@@ -147,8 +147,6 @@ class QuizForm : public ActionForm
     QTimer* displayAnswerTimer;
     int currentDisplayAnswer;
 
-    QString quizName;
-    QString quizFile;
     bool unsavedChanges;
 
     AnalyzeQuizDialog* analyzeDialog;

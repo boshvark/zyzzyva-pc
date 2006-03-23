@@ -394,10 +394,16 @@ NewQuizDialog::loadQuiz()
 void
 NewQuizDialog::saveQuiz()
 {
-    // FIXME: Try saving in the same location as the spec's current filename
+    // Try saving in the same location as the spec's current filename
+    QString startDir = Auxil::getQuizDir() + "/saved";
+    QString currentFilename = quizSpec.getFilename();
+    if (!currentFilename.isEmpty()) {
+        currentFilename.remove ("/[^/]+$");
+        startDir = currentFilename;
+    }
 
     QString filename = QFileDialog::getSaveFileName (this, "Save Quiz",
-        Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)");
+        startDir, "Zyzzyva Quiz Files (*.zzq)");
 
     if (filename.isEmpty())
         return;
