@@ -132,13 +132,19 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
 
     quizTypeLabel = new QLabel;
     Q_CHECK_PTR (quizTypeLabel);
+    quizTypeLabel->setAlignment (Qt::AlignLeft);
     topHlay->addWidget (quizTypeLabel);
-
-    topHlay->addStretch (1);
 
     timerLabel = new QLabel;
     Q_CHECK_PTR (timerLabel);
+    timerLabel->setAlignment (Qt::AlignHCenter);
     topHlay->addWidget (timerLabel);
+
+    quizNameLabel = new QLabel;
+    Q_CHECK_PTR (quizNameLabel);
+    quizNameLabel->setAlignment (Qt::AlignRight);
+    quizNameLabel->setText ("Unnamed Quiz");
+    topHlay->addWidget (quizNameLabel);
 
     QHBoxLayout* quizBoxHlay = new QHBoxLayout;
     quizBoxHlay->setSpacing (SPACING);
@@ -483,6 +489,8 @@ QuizForm::newQuiz (const QuizSpec& spec)
         inputValidator->setOptions (WordValidator::AllowHooks);
     else
         inputValidator->setOptions (WordValidator::None);
+
+    setQuizNameFromFilename (spec.getFilename());
 
     QTimer::singleShot (0, this, SLOT (selectInputArea()));
 
@@ -1254,6 +1262,35 @@ QuizForm::setTimerDisplay (int seconds)
     else
         text.sprintf ("%02d:%02d", minutes, seconds);
     timerLabel->setText (text);
+}
+
+//---------------------------------------------------------------------------
+//  setQuizName
+//
+//! Set the quiz name.
+//
+//! @param name the name of the quiz
+//---------------------------------------------------------------------------
+void
+QuizForm::setQuizName (const QString& name)
+{
+    quizNameLabel->setText (name);
+}
+
+//---------------------------------------------------------------------------
+//  setQuizName
+//
+//! Set the quiz name from a filename.
+//
+//! @param filename the filename
+//---------------------------------------------------------------------------
+void
+QuizForm::setQuizNameFromFilename (const QString& filename)
+{
+    QString quizName (filename);
+    quizName.remove (QRegExp ("^.*/"));
+    quizName.remove (QRegExp ("\\.zzq$"));
+    setQuizName (quizName);
 }
 
 //---------------------------------------------------------------------------

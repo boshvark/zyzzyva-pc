@@ -66,6 +66,7 @@ class QuizSpec
     void setRandomSeed (unsigned int i) { randomSeed = i; }
     void setRandomSeed2 (unsigned int i) { randomSeed2 = i; }
     void setRandomAlgorithm (int i) { randomAlgorithm = i; }
+    void setFilename (const QString& fname) { filename = fname; }
 
     void addIncorrect (const QString& word) { progress.addIncorrect (word); }
     void addMissed (const QString& word) { progress.addMissed (word); }
@@ -79,6 +80,7 @@ class QuizSpec
     unsigned int getRandomSeed() const { return randomSeed; }
     unsigned int getRandomSeed2() const { return randomSeed2; }
     int getRandomAlgorithm() const { return randomAlgorithm; }
+    QString getFilename() const { return filename; }
 
     private:
     QString lexicon;
@@ -90,6 +92,7 @@ class QuizSpec
     unsigned int randomSeed;
     unsigned int randomSeed2;
     int randomAlgorithm;
+    QString filename;
 };
 
 #endif // ZYZZYVA_QUIZ_SPEC_H

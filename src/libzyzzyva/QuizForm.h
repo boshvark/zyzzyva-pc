@@ -101,6 +101,8 @@ class QuizForm : public ActionForm
     void setQuestionStatus (int correct, int total);
     void setStatusString (const QString& status);
     void setTimerDisplay (int seconds);
+    void setQuizName (const QString& name);
+    void setQuizNameFromFilename (const QString& filename);
     void clearTileTheme();
     void reflowLayout();
     bool responseMatchesQuestion (const QString& response) const;
@@ -112,6 +114,7 @@ class QuizForm : public ActionForm
     QuizEngine*   quizEngine;
     QLabel*       quizTypeLabel;
     QLabel*       timerLabel;
+    QLabel*       quizNameLabel;
     QStackedWidget* questionStack;
     QuizCanvas*   questionCanvas;
     QuizQuestionLabel* questionLabel;
@@ -144,6 +147,8 @@ class QuizForm : public ActionForm
     QTimer* displayAnswerTimer;
     int currentDisplayAnswer;
 
+    QString quizName;
+    QString quizFile;
     bool unsavedChanges;
 
     AnalyzeQuizDialog* analyzeDialog;

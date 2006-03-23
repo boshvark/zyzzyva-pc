@@ -59,6 +59,7 @@ class NewQuizDialog : public QDialog
 
     private:
     void disableProgress();
+    void clearFilename();
 
     private:
     SearchSpecForm* specForm;

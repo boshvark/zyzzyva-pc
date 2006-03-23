@@ -216,8 +216,6 @@ NewQuizDialog::getQuizSpec()
 void
 NewQuizDialog::setQuizSpec (const QuizSpec& spec)
 {
-    quizSpec = spec;
-
     typeCombo->setCurrentIndex (typeCombo->findText
                                 (Auxil::quizTypeToString (spec.getType())));
     typeActivated (typeCombo->currentText());
@@ -246,6 +244,7 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
         progressCbox->setEnabled (true);
         progressCbox->setChecked (true);
     }
+    quizSpec = spec;
 }
 
 //---------------------------------------------------------------------------
@@ -268,6 +267,7 @@ NewQuizDialog::typeActivated (const QString& text)
         randomCbox->setEnabled (true);
     }
     disableProgress();
+    clearFilename();
 }
 
 //---------------------------------------------------------------------------
@@ -293,6 +293,7 @@ void
 NewQuizDialog::searchContentsChanged()
 {
     disableProgress();
+    clearFilename();
 }
 
 //---------------------------------------------------------------------------
@@ -306,6 +307,7 @@ void
 NewQuizDialog::randomToggled (bool)
 {
     disableProgress();
+    clearFilename();
 }
 
 //---------------------------------------------------------------------------
@@ -380,6 +382,7 @@ NewQuizDialog::loadQuiz()
         spec.setLexicon (currentLexicon);
     }
 
+    spec.setFilename (filename);
     setQuizSpec (spec);
 }
 
@@ -391,6 +394,8 @@ NewQuizDialog::loadQuiz()
 void
 NewQuizDialog::saveQuiz()
 {
+    // FIXME: Try saving in the same location as the spec's current filename
+
     QString filename = QFileDialog::getSaveFileName (this, "Save Quiz",
         Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)");
 
@@ -444,4 +449,15 @@ NewQuizDialog::disableProgress()
 {
     progressCbox->setChecked (false);
     progressCbox->setEnabled (false);
+}
+
+//---------------------------------------------------------------------------
+//  clearFilename
+//
+//! Remove the filename associated with the quiz specification.
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::clearFilename()
+{
+    quizSpec.setFilename (QString::null);
 }
