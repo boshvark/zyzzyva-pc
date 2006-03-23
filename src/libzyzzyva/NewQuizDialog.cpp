@@ -92,6 +92,7 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (specForm);
     connect (specForm, SIGNAL (contentsChanged()),
              SLOT (searchContentsChanged()));
+    connect (specForm, SIGNAL (returnPressed()), SLOT (accept()));
     specHlay->addWidget (specForm);
 
     progressCbox = new QCheckBox ("Restore &progress");
