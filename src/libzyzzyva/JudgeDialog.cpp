@@ -347,7 +347,8 @@ JudgeDialog::clearResultsReleaseHold()
 void
 JudgeDialog::displayExit()
 {
-    instLabel->setText (INSTRUCTION_MESSAGE + "\nTo exit, press Shift-ESC.");
+    instLabel->setText (INSTRUCTION_MESSAGE + "\nTo exit, hold SHIFT and "
+                        "press the ESC key.");
     exitTimer->start (CLEAR_EXIT_DELAY);
 }
 
