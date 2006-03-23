@@ -1199,8 +1199,13 @@ QuizForm::promptToSaveChanges()
     if (!unsavedChanges)
         return true;
 
+    QString quizName = quizNameLabel->text();
+    if (!quizName.isEmpty())
+        quizName = "(\"" + quizName + "\") ";
+
     int code = QMessageBox::warning (this, "Save Quiz?",
-                                     "This quiz has unsaved changes.  "
+                                     "This quiz " + quizName
+                                     + "has unsaved changes.\n"
                                      "Would you like to save it?",
                                      QMessageBox::Yes, QMessageBox::No,
                                      QMessageBox::Cancel);
