@@ -7,8 +7,6 @@
     <property name="abouturl">./about.html</property>
   </profile>
   <DCF ref="index.html" title="Zyzzyva Help">
-    <section ref="load.html" title="Loading a Lexicon">
-    </section>
     <section ref="preferences.html" title="Preferences">
       <section ref="preferences.html#general" title="General Preferences">
         <keyword ref="preferences.html#auto-load-lexicon">lexicon</keyword>
