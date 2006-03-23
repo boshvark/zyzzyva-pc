@@ -46,6 +46,8 @@ class JudgeDialog : public QDialog
     void clear();
     void judgeWord();
     void clearResultsReleaseHold();
+    void displayExit();
+    void clearExit();
 
     protected slots:
     void keyPressEvent (QKeyEvent* e);
@@ -54,10 +56,12 @@ class JudgeDialog : public QDialog
     WordEngine*     engine;
     QStackedWidget* widgetStack;
     QWidget*        inputWidget;
+    QLabel*         instLabel;
     WordTextEdit*   inputArea;
     QWidget*        resultWidget;
     QLabel*         resultLabel;
     QTimer*         resultTimer;
+    QTimer*         exitTimer;
     int             clearResultsHold;
 };
 

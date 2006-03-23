@@ -50,6 +50,7 @@ const int CLEAR_RESULTS_MIN_DELAY = 500;
 const int EXIT_TIMEOUT = 5000;
 const int NUM_KEYPRESSES_TO_EXIT = 10;
 const int NUM_KEYPRESSES_TO_DISPLAY = 5;
+const int CLEAR_EXIT_DELAY = 5000;
 
 const QString INSTRUCTION_MESSAGE = "1. Enter words, separated by "
                                     "SPACE or ENTER.\n"
@@ -96,7 +97,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     inputVlay->setSpacing (20);
     Q_CHECK_PTR (inputVlay);
 
-    QLabel* instLabel = new QLabel (INSTRUCTION_MESSAGE);
+    instLabel = new QLabel (INSTRUCTION_MESSAGE);
     Q_CHECK_PTR (instLabel);
     instLabel->setFont (instructionFont);
     instLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
@@ -151,6 +152,10 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     resultTimer = new QTimer (this);
     Q_CHECK_PTR (resultTimer);
     connect (resultTimer, SIGNAL (timeout()), SLOT (clear()));
+
+    exitTimer = new QTimer (this);
+    Q_CHECK_PTR (exitTimer);
+    connect (exitTimer, SIGNAL (timeout()), SLOT (clearExit()));
 
     clear();
     showFullScreen();
@@ -214,6 +219,8 @@ void
 JudgeDialog::clear()
 {
     resultTimer->stop();
+    exitTimer->stop();
+    clearExit();
     inputArea->clear();
     widgetStack->setCurrentWidget (inputWidget);
 }
@@ -333,6 +340,29 @@ JudgeDialog::clearResultsReleaseHold()
 }
 
 //---------------------------------------------------------------------------
+//  displayExit
+//
+//! Display instructions for exiting full screen mode.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::displayExit()
+{
+    instLabel->setText (INSTRUCTION_MESSAGE + "\nTo exit, press Shift-ESC.");
+    exitTimer->start (CLEAR_EXIT_DELAY);
+}
+
+//---------------------------------------------------------------------------
+//  clearExit
+//
+//! Clear instructions for exiting full screen mode.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::clearExit()
+{
+    instLabel->setText (INSTRUCTION_MESSAGE);
+}
+
+//---------------------------------------------------------------------------
 //  keyPressEvent
 //
 //! Receive key press events for the widget.  Reimplemented from QWidget.
@@ -356,6 +386,8 @@ JudgeDialog::keyPressEvent (QKeyEvent* event)
         Qt::KeyboardModifiers modifiers = event->modifiers();
         if (modifiers & Qt::ShiftModifier)
             accept();
+        else if (!cleared)
+            displayExit();
     }
     else
         event->ignore();
