@@ -7,39 +7,6 @@
     <property name="abouturl">./about.html</property>
   </profile>
   <DCF ref="index.html" title="Zyzzyva Help">
-    <section ref="preferences.html" title="Preferences">
-      <section ref="preferences.html#general" title="General Preferences">
-        <keyword ref="preferences.html#auto-load-lexicon">lexicon</keyword>
-        <section ref="preferences.html#auto-load-lexicon"
-                 title="Lexicon" />
-        <section ref="preferences.html#welcome-display"
-                 title="Welcome Display" />
-      </section>
-      <section ref="preferences.html#quiz" title="Quiz Preferences">
-        <section ref="preferences.html#question-display"
-                 title="Question Display" />
-        <section ref="preferences.html#quiz-behavior" title="Quiz Behavior" />
-      </section>
-      <section ref="preferences.html#judge" title="Word Judge Preferences">
-        <section ref="preferences.html#judge-log-files"
-                 title="Word Judge Log Files" />
-      </section>
-      <section ref="preferences.html#fonts" title="Font Preferences" />
-      <section ref="preferences.html#word-tables"
-               title="Word Table Preferences">
-        <section ref="preferences.html#sort-by-length"
-                 title="Sort by word length" />
-        <section ref="preferences.html#group-by-anagrams"
-                 title="Group by anagrams" />
-        <section ref="preferences.html#show-hooks" title="Show hooks" />
-        <section ref="preferences.html#show-inner-hooks"
-                 title="Show inner hooks" />
-        <section ref="preferences.html#show-definitions"
-                 title="Show definitions" />
-      </section>
-      <section ref="preferences.html#save-preferences"
-               title="Saving Changes to Preferences" />
-    </section>
     <section ref="search.html" title="Searching for Words">
       <keyword ref="search.html">search</keyword>
       <section ref="search.html#search-conditions"
@@ -100,6 +67,39 @@
                title="Saving a Word List" />
       <section ref="wordlists.html#quiz-from-word-list"
                title="Creating a Quiz from a Word List" />
+    </section>
+    <section ref="preferences.html" title="Preferences">
+      <section ref="preferences.html#general" title="General Preferences">
+        <keyword ref="preferences.html#auto-load-lexicon">lexicon</keyword>
+        <section ref="preferences.html#auto-load-lexicon"
+                 title="Lexicon" />
+        <section ref="preferences.html#welcome-display"
+                 title="Welcome Display" />
+      </section>
+      <section ref="preferences.html#quiz" title="Quiz Preferences">
+        <section ref="preferences.html#question-display"
+                 title="Question Display" />
+        <section ref="preferences.html#quiz-behavior" title="Quiz Behavior" />
+      </section>
+      <section ref="preferences.html#judge" title="Word Judge Preferences">
+        <section ref="preferences.html#judge-log-files"
+                 title="Word Judge Log Files" />
+      </section>
+      <section ref="preferences.html#fonts" title="Font Preferences" />
+      <section ref="preferences.html#word-tables"
+               title="Word Table Preferences">
+        <section ref="preferences.html#sort-by-length"
+                 title="Sort by word length" />
+        <section ref="preferences.html#group-by-anagrams"
+                 title="Group by anagrams" />
+        <section ref="preferences.html#show-hooks" title="Show hooks" />
+        <section ref="preferences.html#show-inner-hooks"
+                 title="Show inner hooks" />
+        <section ref="preferences.html#show-definitions"
+                 title="Show definitions" />
+      </section>
+      <section ref="preferences.html#save-preferences"
+               title="Saving Changes to Preferences" />
     </section>
 
   </DCF>
