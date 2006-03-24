@@ -76,7 +76,7 @@ class WordGraph
     private:
     bool matchesSpec (QString word, const SearchSpec& spec) const;
     QString reverseString (const QString& s) const;
-    long readData (long* data, long count, QFile& file);
+    long convertEndian (long* data, long count);
 
     void addWordOld (const QString& w, bool reverse);
     bool containsWordOld (const QString& w) const;

@@ -111,19 +111,24 @@ WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
 
     long numEdges;
     long* p = &numEdges;
-    readData (p, 1, file);
+    char* cp = (char*) p;
+    file.read (cp, 1 * sizeof (long));
+    if (bigEndian)
+        convertEndian (p, 1);
 
     if (reverse) {
         rdawg = new long[numEdges + 1];
         rdawg[0] = 0;
         p = &rdawg[1];
-        readData (p, numEdges, file);
+        cp = (char*) p;
+        file.read (cp, numEdges * sizeof (long));
     }
     else {
         dawg = new long[numEdges + 1];
         dawg[0] = 0;
         p = &dawg[1];
-        readData (p, numEdges, file);
+        cp = (char*) p;
+        file.read (cp, numEdges * sizeof (long));
     }
 
     if (expectedChecksum && errString) {
@@ -134,6 +139,9 @@ WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
                 "It is possible the lexicon has been corrupted.\n";
         }
     }
+
+    if (bigEndian)
+        convertEndian (p, numEdges);
 
     return true;
 }
@@ -659,37 +667,27 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
 }
 
 //---------------------------------------------------------------------------
-//  readData
+//  convertEndian
 //
-//! Read binary data from an input file, converting from big-endian to
-//! little-endian representation if necessary.
+//! Convert a buffer between big-endian and little-endian representation.
 //
 //! @param data an array to read the data into
-//! @param count the number of 32-bit words to read
-//! @param file the input file to read from
-//! @return the number of words read
+//! @param count the number of 32-bit words to convert
+//! @return the number of words converted
 //---------------------------------------------------------------------------
 long
-WordGraph::readData (long* data, long count, QFile& file)
+WordGraph::convertEndian (long* data, long count)
 {
-    char* p = (char*) data;
-    file.read (p, count * sizeof (long));
-
-    // Convert from little-endian to big-endian if necessary
-    if (bigEndian) {
-        char c;
-        for (int i = 0; i < count; ++i) {
-            p = (char*) data;
-            c = p[0];
-            p[0] = p[3];
-            p[3] = c;
-            c = p[1];
-            p[1] = p[2];
-            p[2] = c;
-            ++data;
-        }
+    for (int i = 0; i < count; ++i) {
+        char* p = (char*) data;
+        char c = p[0];
+        p[0] = p[3];
+        p[3] = c;
+        c = p[1];
+        p[1] = p[2];
+        p[2] = c;
+        ++data;
     }
-
     return count;
 }
 
