@@ -326,10 +326,14 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 void
 MainWindow::fileOpenRequested (const QString& filename)
 {
+    QApplication::setOverrideCursor (Qt::WaitCursor);
+
     if (filename.endsWith (".zzq"))
         newQuizFromQuizFile (filename);
     else
         newQuizFromWordFile (filename);
+
+    QApplication::restoreOverrideCursor();
 }
 
 //---------------------------------------------------------------------------
@@ -1006,8 +1010,38 @@ MainWindow::newQuizFromQuizFile (const QString& filename)
 void
 MainWindow::newQuizFromWordFile (const QString& filename)
 {
+    QFile file (filename);
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+        return;
 
+    QStringList words;
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
+        line = line.simplified();
+        if (!line.length() || (line.at (0) == '#'))
+            continue;
 
+        QString word = line.section (' ', 0, 0).toUpper();
+        if (word.isEmpty())
+            continue;
+
+        words.append (word);
+    }
+
+    SearchCondition condition;
+    condition.type = SearchCondition::InWordList;
+    condition.stringValue = words.join (" ");
+
+    SearchSpec searchSpec;
+    searchSpec.conditions.append (condition);
+
+    QuizSpec quizSpec;
+    quizSpec.setType (QuizSpec::QuizAnagrams);
+    quizSpec.setLexicon (wordEngine->getLexiconName());
+    quizSpec.setSearchSpec (searchSpec);
+
+    newQuizForm (quizSpec);
 }
 
 //---------------------------------------------------------------------------
