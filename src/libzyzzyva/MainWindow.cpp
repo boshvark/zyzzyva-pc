@@ -980,7 +980,7 @@ void
 MainWindow::newQuizFromQuizFile (const QString& filename)
 {
     QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text));
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
         return;
 
     QString errorMsg;
