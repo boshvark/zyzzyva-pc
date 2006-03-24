@@ -7,6 +7,9 @@
     <property name="abouturl">./about.html</property>
   </profile>
   <DCF ref="index.html" title="Zyzzyva Help">
+    <section ref="quickstart.html" title="Quick Start">
+      <keyword ref="quickstart.html">quick start</keyword>
+    </section>
     <section ref="search.html" title="Searching for Words">
       <keyword ref="search.html">search</keyword>
       <section ref="search.html#search-conditions"
