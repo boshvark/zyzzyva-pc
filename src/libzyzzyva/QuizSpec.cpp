@@ -60,6 +60,29 @@ QuizSpec::asString() const
 }
 
 //---------------------------------------------------------------------------
+//  asXml
+//
+//! Return an XML string representing the search spec.
+//
+//! @return the XML string representation
+//---------------------------------------------------------------------------
+QString
+QuizSpec::asXml() const
+{
+    QDomImplementation implementation;
+    QDomDocument document (implementation.createDocumentType
+                           ("zyzzyva-quiz", QString::null,
+                            "http://pietdepsi.com/dtd/zyzzyva-quiz.dtd"));
+
+    document.appendChild (asDomElement());
+
+    //// XXX: There should be a programmatic way to write the <?xml?> header
+    //// based on the QDomImplementation, shouldn't there?
+    return QString ("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n") +
+        document.toString();
+}
+
+//---------------------------------------------------------------------------
 //  asDomElement
 //
 //! Return a DOM element representing the quiz spec.
@@ -106,10 +129,12 @@ QuizSpec::asDomElement() const
 //! Reset the object based on the contents of a DOM element representing a
 //! quiz spec.
 //
+//! @param element the DOM element
+//! @param errStr return an error string
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizSpec::fromDomElement (const QDomElement& element)
+QuizSpec::fromDomElement (const QDomElement& element, QString*)
 {
     if (element.tagName() != XML_TOP_ELEMENT)
         return false;
@@ -208,5 +233,43 @@ QuizSpec::fromDomElement (const QDomElement& element)
     }
 
     *this = tmpSpec;
+    return true;
+}
+
+//---------------------------------------------------------------------------
+//  fromXmlFile
+//
+//! Reset the object based on the contents of a file containing an XML
+//! string representing a quiz spec.
+//
+//! @param file the XML file
+//! @param errStr return an error string
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizSpec::fromXmlFile (QFile& file, QString* errStr)
+{
+    QString errorMsg;
+    int errorLine = 0;
+    int errorColumn = 0;
+
+    QDomDocument document;
+    bool success = document.setContent (&file, false, &errorMsg, &errorLine,
+                                        &errorColumn);
+
+    if (!success) {
+        if (errStr) {
+            *errStr = "Error in quiz file, line " +
+                      QString::number (errorLine) + ", column " +
+                      QString::number (errorColumn) + ": " + 
+                      errorMsg;
+        }
+        return false;
+    }
+
+    if (!fromDomElement (document.documentElement(), errStr))
+        return false;
+
+    filename = file.fileName();
     return true;
 }

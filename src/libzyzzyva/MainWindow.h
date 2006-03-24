@@ -88,6 +88,8 @@ class MainWindow : public QMainWindow
     void readSettings (bool useGeometry);
     void writeSettings();
     void newTab (QWidget* widget, const QIcon& icon, const QString& title);
+    void newQuizFromQuizFile (const QString& filename);
+    void newQuizFromWordFile (const QString& filename);
 
     private:
     WordEngine*  wordEngine;

@@ -326,8 +326,10 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 void
 MainWindow::fileOpenRequested (const QString& filename)
 {
-    QMessageBox::information (this, "File Open Requested",
-        "File Open Requested:\n" + filename);
+    if (filename.endsWith (".zzq"))
+        newQuizFromQuizFile (filename);
+    else
+        newQuizFromWordFile (filename);
 }
 
 //---------------------------------------------------------------------------
@@ -965,6 +967,47 @@ MainWindow::newTab (QWidget* widget, const QIcon& icon, const QString& title)
     tabStack->addTab (widget, icon, title);
     tabStack->setCurrentWidget (widget);
     closeButton->show();
+}
+
+//---------------------------------------------------------------------------
+//  newQuizFromQuizFile
+//
+//! Create a new Quiz tab and start a quiz from a saved quiz file.
+//
+//! @param filename the file
+//---------------------------------------------------------------------------
+void
+MainWindow::newQuizFromQuizFile (const QString& filename)
+{
+    QFile file (filename);
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text));
+        return;
+
+    QString errorMsg;
+    QuizSpec quizSpec;
+    if (!quizSpec.fromXmlFile (file, &errorMsg)) {
+        QMessageBox::warning (this, "Cannot Create Quiz",
+                              "An error occurred while creating the quiz.\n"
+                              + errorMsg);
+        return;
+    }
+
+    newQuizForm (quizSpec);
+}
+
+//---------------------------------------------------------------------------
+//  newQuizFromWordFile
+//
+//! Create a new Quiz tab and start a quiz from a list of words in a plain
+//! text file.
+//
+//! @param filename the file
+//---------------------------------------------------------------------------
+void
+MainWindow::newQuizFromWordFile (const QString& filename)
+{
+
+
 }
 
 //---------------------------------------------------------------------------
