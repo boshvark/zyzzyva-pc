@@ -316,6 +316,21 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 }
 
 //---------------------------------------------------------------------------
+//  fileOpenRequested
+//
+//! Called when a request is made to open a file.  Open the file and start
+//! a quiz from it, if possible.
+//
+//! @param filename the filename
+//---------------------------------------------------------------------------
+void
+MainWindow::fileOpenRequested (const QString& filename)
+{
+    QMessageBox::information (this, "File Open Requested",
+        "File Open Requested:\n" + filename);
+}
+
+//---------------------------------------------------------------------------
 //  processArguments
 //
 //! Process command-line arguments.
@@ -325,7 +340,9 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 void
 MainWindow::processArguments (const QStringList& args)
 {
-    // FIXME: start quizzes, etc.
+    QString arg;
+    foreach (arg, args)
+        fileOpenRequested (arg);
 }
 
 //---------------------------------------------------------------------------

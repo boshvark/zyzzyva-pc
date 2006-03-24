@@ -52,6 +52,7 @@ class MainWindow : public QMainWindow
     static MainWindow* getInstance() { return instance; }
 
     public slots:
+    void fileOpenRequested (const QString& filename);
     void processArguments (const QStringList& args);
     void tryAutoImport (QSplashScreen* splash);
     void importInteractive();

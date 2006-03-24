@@ -23,7 +23,8 @@
 //---------------------------------------------------------------------------
 
 #include "MainWindow.h"
-#include <QApplication>
+#include "ZApplication.h"
+#include <QObject>
 #include <QPixmap>
 #include <QSplashScreen>
 
@@ -33,7 +34,7 @@ const QString SETTINGS_APPLICATION_NAME = "Zyzzyva";
 
 int main (int argc, char** argv)
 {
-    QApplication app (argc, argv);
+    ZApplication app (argc, argv);
     QCoreApplication::setOrganizationName (SETTINGS_ORGANIZATION_NAME);
     QCoreApplication::setOrganizationDomain (SETTINGS_DOMAIN_NAME);
     QCoreApplication::setApplicationName (SETTINGS_APPLICATION_NAME);
@@ -56,6 +57,17 @@ int main (int argc, char** argv)
         }
         window->processArguments (args);
     }
+
+    // Handle file open requests
+    QStringList files = app.getFileOpenRequests();
+    QString file;
+    foreach (file, files) {
+        window->fileOpenRequested (file);
+    }
+    app.clearFileOpenRequests();
+
+    QObject::connect (&app, SIGNAL (fileOpenRequested (const QString&)),
+                      window, SLOT (fileOpenRequested (const QString&)));
 
     return app.exec();
 }
