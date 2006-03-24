@@ -86,10 +86,6 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect (searchButton, SIGNAL (clicked()), SLOT (search()));
     buttonHlay->addWidget (searchButton);
 
-    resultLabel = new QLabel;
-    Q_CHECK_PTR (resultLabel);
-    specVlay->addWidget (resultLabel);
-
     resultView = new WordTableView (wordEngine);
     Q_CHECK_PTR (resultView);
     resultView->verticalHeader()->hide();
@@ -135,7 +131,6 @@ SearchForm::search()
     resultModel->removeRows (0, resultModel->rowCount());
 
     statusString = "Searching...";
-    resultLabel->setText (statusString);
     emit statusChanged (statusString);
     qApp->processEvents();
 
@@ -236,8 +231,6 @@ SearchForm::updateResultTotal (int num)
 {
     QString wordStr = QString::number (num) + " word";
     if (num != 1) wordStr += "s";
-    QString text = "Search Results : " + wordStr;
-    resultLabel->setText (text);
     statusString = "Search found " + wordStr;
     emit statusChanged (statusString);
 }

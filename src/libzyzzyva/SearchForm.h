@@ -51,7 +51,6 @@ class SearchForm : public ActionForm
     WordEngine*     wordEngine;
     SearchSpecForm* specForm;
     QCheckBox*      lowerCaseCbox;
-    QLabel*         resultLabel;
     WordTableView*  resultView;
     WordTableModel* resultModel;
     ZPushButton*    searchButton;
