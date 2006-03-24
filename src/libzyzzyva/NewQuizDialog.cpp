@@ -336,31 +336,16 @@ NewQuizDialog::loadQuiz()
     }
 
     QString errorMsg;
-    int errorLine = 0;
-    int errorColumn = 0;
-
+    QuizSpec spec;
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-    QDomDocument document;
-    bool success = document.setContent (&file, false, &errorMsg, &errorLine,
-                                        &errorColumn);
+    bool ok = spec.fromXmlFile (file, &errorMsg);
     QApplication::restoreOverrideCursor();
 
-    if (!success) {
+    if (!ok) {
         QMessageBox::warning (this, "Error in Quiz File",
-                              "Error in quiz file, line " +
-                              QString::number (errorLine) + ", column " +
-                              QString::number (errorColumn) + ": " + 
-                              errorMsg);
+                              "Error in quiz file.\n" + errorMsg);
         return;
     }
-
-    QuizSpec spec;
-    if (!spec.fromDomElement (document.documentElement())) {
-        QMessageBox::warning (this, "Error in Quiz File",
-                              "Error in quiz file.");
-        return;
-    }
-
 
     QString quizLexicon = spec.getLexicon();
     QString currentLexicon = wordEngine->getLexiconName();
@@ -385,7 +370,6 @@ NewQuizDialog::loadQuiz()
         spec.setLexicon (currentLexicon);
     }
 
-    spec.setFilename (filename);
     setQuizSpec (spec);
 }
 
@@ -434,18 +418,8 @@ NewQuizDialog::saveQuiz()
         return;
     }
 
-    QDomImplementation implementation;
-    QDomDocument document (implementation.createDocumentType
-                           ("zyzzyva-quiz", QString::null,
-                            "http://pietdepsi.com/dtd/zyzzyva-quiz.dtd"));
-
-    document.appendChild (getQuizSpec().asDomElement());
-
-    //// XXX: There should be a programmatic way to write the <?xml?> header
-    //// based on the QDomImplementation, shouldn't there?
     QTextStream stream (&file);
-    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-        << document.toString();
+    stream << getQuizSpec().asXml();
 }
 
 //---------------------------------------------------------------------------

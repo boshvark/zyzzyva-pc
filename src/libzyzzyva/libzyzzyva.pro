@@ -74,6 +74,7 @@ SOURCES = \
     WordTableView.cpp \
     WordValidator.cpp \
     WordVariationDialog.cpp \
+    ZApplication.cpp \
     ZPushButton.cpp
 
 # Header files that must be run through moc
@@ -110,4 +111,5 @@ HEADERS = \
     WordTextEdit.h \
     WordValidator.h \
     WordVariationDialog.h \
+    ZApplication.h \
     ZPushButton.h

@@ -5,6 +5,8 @@ http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.12.0
  User-visible changes:
  * Load lexicons from precompiled binary files for fast startup
  * Check lexicons against precomputed checksums for data integrity
+ * Start quizzes by choosing 'Open With' on a .zzq file
+ * Start quizzes by choosing 'Open With' on a word list file
  * Save quizzes with a single click
  * Warn if a quiz with unsaved progress is about to be closed
  * Save log files during full screen Word Judge
