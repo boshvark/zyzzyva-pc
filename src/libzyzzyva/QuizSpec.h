@@ -29,6 +29,7 @@
 #include "QuizTimerSpec.h"
 #include "Rand.h"
 #include "SearchSpec.h"
+#include <QFile>
 #include "Defs.h"
 
 class QuizSpec
@@ -54,8 +55,10 @@ class QuizSpec
     ~QuizSpec() { }
 
     QString asString() const;
+    QString asXml() const;
     QDomElement asDomElement() const;
-    bool fromDomElement (const QDomElement& element);
+    bool fromDomElement (const QDomElement& element, QString* errStr = 0);
+    bool fromXmlFile (QFile& file, QString* errStr = 0);
 
     void setLexicon (const QString& lex) { lexicon = lex; }
     void setType (QuizType t) { type = t; }

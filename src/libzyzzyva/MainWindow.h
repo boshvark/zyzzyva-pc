@@ -52,6 +52,8 @@ class MainWindow : public QMainWindow
     static MainWindow* getInstance() { return instance; }
 
     public slots:
+    void fileOpenRequested (const QString& filename);
+    void processArguments (const QStringList& args);
     void tryAutoImport (QSplashScreen* splash);
     void importInteractive();
     void newQuizFormInteractive();
@@ -86,6 +88,8 @@ class MainWindow : public QMainWindow
     void readSettings (bool useGeometry);
     void writeSettings();
     void newTab (QWidget* widget, const QIcon& icon, const QString& title);
+    void newQuizFromQuizFile (const QString& filename);
+    void newQuizFromWordFile (const QString& filename);
 
     private:
     WordEngine*  wordEngine;

@@ -316,6 +316,42 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 }
 
 //---------------------------------------------------------------------------
+//  fileOpenRequested
+//
+//! Called when a request is made to open a file.  Open the file and start
+//! a quiz from it, if possible.
+//
+//! @param filename the filename
+//---------------------------------------------------------------------------
+void
+MainWindow::fileOpenRequested (const QString& filename)
+{
+    QApplication::setOverrideCursor (Qt::WaitCursor);
+
+    if (filename.endsWith (".zzq"))
+        newQuizFromQuizFile (filename);
+    else
+        newQuizFromWordFile (filename);
+
+    QApplication::restoreOverrideCursor();
+}
+
+//---------------------------------------------------------------------------
+//  processArguments
+//
+//! Process command-line arguments.
+//
+//! @param args a list of arguments
+//---------------------------------------------------------------------------
+void
+MainWindow::processArguments (const QStringList& args)
+{
+    QString arg;
+    foreach (arg, args)
+        fileOpenRequested (arg);
+}
+
+//---------------------------------------------------------------------------
 //  tryAutoImport
 //
 //! Try automatically importing a lexicon, if the user has enabled it in
@@ -935,6 +971,77 @@ MainWindow::newTab (QWidget* widget, const QIcon& icon, const QString& title)
     tabStack->addTab (widget, icon, title);
     tabStack->setCurrentWidget (widget);
     closeButton->show();
+}
+
+//---------------------------------------------------------------------------
+//  newQuizFromQuizFile
+//
+//! Create a new Quiz tab and start a quiz from a saved quiz file.
+//
+//! @param filename the file
+//---------------------------------------------------------------------------
+void
+MainWindow::newQuizFromQuizFile (const QString& filename)
+{
+    QFile file (filename);
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QString errorMsg;
+    QuizSpec quizSpec;
+    if (!quizSpec.fromXmlFile (file, &errorMsg)) {
+        QMessageBox::warning (this, "Cannot Create Quiz",
+                              "An error occurred while creating the quiz.\n"
+                              + errorMsg);
+        return;
+    }
+
+    newQuizForm (quizSpec);
+}
+
+//---------------------------------------------------------------------------
+//  newQuizFromWordFile
+//
+//! Create a new Quiz tab and start a quiz from a list of words in a plain
+//! text file.
+//
+//! @param filename the file
+//---------------------------------------------------------------------------
+void
+MainWindow::newQuizFromWordFile (const QString& filename)
+{
+    QFile file (filename);
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QStringList words;
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
+        line = line.simplified();
+        if (!line.length() || (line.at (0) == '#'))
+            continue;
+
+        QString word = line.section (' ', 0, 0).toUpper();
+        if (word.isEmpty())
+            continue;
+
+        words.append (word);
+    }
+
+    SearchCondition condition;
+    condition.type = SearchCondition::InWordList;
+    condition.stringValue = words.join (" ");
+
+    SearchSpec searchSpec;
+    searchSpec.conditions.append (condition);
+
+    QuizSpec quizSpec;
+    quizSpec.setType (QuizSpec::QuizAnagrams);
+    quizSpec.setLexicon (wordEngine->getLexiconName());
+    quizSpec.setSearchSpec (searchSpec);
+
+    newQuizForm (quizSpec);
 }
 
 //---------------------------------------------------------------------------
