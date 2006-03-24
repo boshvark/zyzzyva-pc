@@ -1,3 +1,24 @@
+Version 0.12.0
+Released 2006-03-24, from /branches/0.12.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.12.0
+
+ User-visible changes:
+ * Load lexicons from precompiled binary files for fast startup
+ * Check lexicons against precomputed checksums for data integrity
+ * Save quizzes with a single click
+ * Warn if a quiz with unsaved progress is about to be closed
+ * Save log files during full screen Word Judge
+ * Welcome page on startup with links to help documentation
+ * New search conditions for Type II 7s and 8s, Type III 7s and 8s
+ * Group Number of Anagrams searches by alphagram, not alphabetically
+ * Fix several bugs
+
+ Developer-visible changes:
+ * Move most code into a separate libzyzzyva shared library
+ * Add some unit tests for searches
+ * Upgrade from Qt 4.1.0 to Qt 4.1.1
+
+
 Version 0.11.1
 Released 2006-03-02, from /branches/0.11.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.11.1
