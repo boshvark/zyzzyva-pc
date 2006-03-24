@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------
-# testts.pro
+# zyzzyva.pro
 #
 # Build configuration file for Zyzzyva tests using qmake.
 #
@@ -24,7 +24,7 @@
 
 TEMPLATE = app
 TARGET = zyzzyva
-CONFIG += qt release thread warn_on assistant qtestlib
+CONFIG += qt release thread warn_on assistant
 QT += xml
 
 ROOT = ../..
