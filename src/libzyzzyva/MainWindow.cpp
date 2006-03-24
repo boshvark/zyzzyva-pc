@@ -316,6 +316,19 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 }
 
 //---------------------------------------------------------------------------
+//  processArguments
+//
+//! Process command-line arguments.
+//
+//! @param args a list of arguments
+//---------------------------------------------------------------------------
+void
+MainWindow::processArguments (const QStringList& args)
+{
+    // FIXME: start quizzes, etc.
+}
+
+//---------------------------------------------------------------------------
 //  tryAutoImport
 //
 //! Try automatically importing a lexicon, if the user has enabled it in

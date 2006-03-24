@@ -48,5 +48,14 @@ int main (int argc, char** argv)
     splash->finish (window);
     delete splash;
 
+    // Handle command-line arguments
+    if (argc > 1) {
+        QStringList args;
+        for (int i = 1; i < argc; ++i) {
+            args.append (QString (argv[i]));
+        }
+        window->processArguments (args);
+    }
+
     return app.exec();
 }

@@ -52,6 +52,7 @@ class MainWindow : public QMainWindow
     static MainWindow* getInstance() { return instance; }
 
     public slots:
+    void processArguments (const QStringList& args);
     void tryAutoImport (QSplashScreen* splash);
     void importInteractive();
     void newQuizFormInteractive();
