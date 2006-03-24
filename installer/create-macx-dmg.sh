@@ -32,6 +32,10 @@ rm -rf zyzzyva.app
 mkdir zyzzyva.app
 cp -r bin/zyzzyva.app/Contents zyzzyva.app
 
+# Copy zyzzyva.tap
+echo "Copying zyzzyva.top into bundle..."
+cp zyzzyva.top zyzzyva.app/Contents/MacOS
+
 # Copy data directory into bundle
 echo "Copying data directory into bundle..."
 cp -r data zyzzyva.app/Contents/MacOS
