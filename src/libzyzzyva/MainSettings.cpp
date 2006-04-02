@@ -57,6 +57,7 @@ const QString SETTINGS_QUIZ_AUTO_ADVANCE = "quiz_auto_advance";
 const QString SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT
     = "quiz_auto_end_after_incorrect";
 const QString SETTINGS_QUIZ_CYCLE_ANSWERS = "quiz_cycle_answers";
+const QString SETTINGS_QUIZ_RECORD_STATS = "quiz_record_stats";
 const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
 const QString SETTINGS_JUDGE_SAVE_LOG = "judge_save_log";
 const QString SETTINGS_JUDGE_LOG_DIR = "judge_log_dir";
@@ -123,6 +124,8 @@ MainSettings::readSettings()
                           false).toBool();
     instance->quizCycleAnswers
         = settings.value (SETTINGS_QUIZ_CYCLE_ANSWERS, true).toBool();
+    instance->quizRecordStats
+        = settings.value (SETTINGS_QUIZ_RECORD_STATS, true).toBool();
 
     instance->mainFont
         = settings.value (SETTINGS_FONT_MAIN).toString();
@@ -194,6 +197,8 @@ MainSettings::writeSettings()
                        instance->quizAutoEndAfterIncorrect);
     settings.setValue (SETTINGS_QUIZ_CYCLE_ANSWERS,
                        instance->quizCycleAnswers);
+    settings.setValue (SETTINGS_QUIZ_RECORD_STATS,
+                       instance->quizRecordStats);
     settings.setValue (SETTINGS_FONT_MAIN, instance->mainFont);
     settings.setValue (SETTINGS_FONT_WORD_LISTS, instance->wordListFont);
     settings.setValue (SETTINGS_FONT_QUIZ_LABEL, instance->quizLabelFont);

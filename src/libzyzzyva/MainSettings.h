@@ -84,6 +84,10 @@ class MainSettings
         return instance->quizCycleAnswers; }
     static void setQuizCycleAnswers (bool b) {
         instance->quizCycleAnswers = b; }
+    static bool getQuizRecordStats() {
+        return instance->quizRecordStats; }
+    static void setQuizRecordStats (bool b) {
+        instance->quizRecordStats = b; }
     static QString getMainFont() { return instance->mainFont; }
     static void setMainFont (const QString& str) { instance->mainFont = str; }
     static QString getWordListFont() { return instance->wordListFont; }
@@ -158,6 +162,7 @@ class MainSettings
     bool quizAutoAdvance;
     bool quizAutoEndAfterIncorrect;
     bool quizCycleAnswers;
+    bool quizRecordStats;
     QString mainFont;
     QString wordListFont;
     QString quizLabelFont;
