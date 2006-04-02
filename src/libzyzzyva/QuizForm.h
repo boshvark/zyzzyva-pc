@@ -107,6 +107,7 @@ class QuizForm : public ActionForm
     void clearTileTheme();
     void reflowLayout();
     bool responseMatchesQuestion (const QString& response) const;
+    void recordQuestionStats (bool correct);
 
     void timerEvent (QTimerEvent* event);
 
@@ -144,6 +145,7 @@ class QuizForm : public ActionForm
     QString statusString;
     QString tileTheme;
     bool checkBringsJudgment;
+    bool recordStatsBlocked;
 
     QTimer* displayAnswerTimer;
     int currentDisplayAnswer;

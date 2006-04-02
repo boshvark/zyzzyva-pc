@@ -111,7 +111,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     : ActionForm (QuizFormType, parent, f), wordEngine (we),
     quizEngine (new QuizEngine (wordEngine)),
     timerId (0), timerPaused (0), checkBringsJudgment (true),
-    unsavedChanges (false),
+    recordStatsBlocked (false), unsavedChanges (false),
     // FIXME: This dialog should be nonmodal!
     analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
                                           Qt::WindowMinMaxButtonsHint))
@@ -487,8 +487,13 @@ QuizForm::newQuiz (const QuizSpec& spec)
                             (quizEngine->getQuizSpec().getType()));
     startQuestion();
     analyzeDialog->newQuiz (spec);
-    if (quizEngine->getQuestionComplete())
+
+    // If the question is complete, don't record stats when restoring it
+    if (quizEngine->getQuestionComplete()) {
+        recordStatsBlocked = true;
         checkResponseClicked();
+        recordStatsBlocked = false;
+    }
 
     flashcardCbox->setChecked (MainSettings::getQuizUseFlashcardMode());
 
@@ -731,6 +736,10 @@ QuizForm::checkResponseClicked()
     if (quizEngine->getQuestionCorrect() == 0)
         markMissedButton->setEnabled (false);
 
+    // FIXME: Count Incorrect answers (not just Missed) as incorrect when
+    // recording stats
+    bool questionCorrect = true;
+
     QStringList unanswered = quizEngine->getMissed();
     if (unanswered.empty()) {
         responseModel->clearLastAddedIndex();
@@ -750,6 +759,7 @@ QuizForm::checkResponseClicked()
         MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
 
         analyzeDialog->addMissed (unanswered);
+        questionCorrect = false;
     }
 
     if ((quizEngine->numQuestions() > 0) && !quizEngine->onLastQuestion()) {
@@ -768,6 +778,9 @@ QuizForm::checkResponseClicked()
     {
         startDisplayingCorrectAnswers();
     }
+
+    if (MainSettings::getQuizRecordStats() && !recordStatsBlocked)
+        recordQuestionStats (questionCorrect);
 
     QApplication::restoreOverrideCursor();
 }
@@ -1428,6 +1441,120 @@ QuizForm::responseMatchesQuestion (const QString& response) const
         default: break;
     }
     return true;
+}
+
+//---------------------------------------------------------------------------
+//  recordQuestionStats
+//
+//! Record statistics for the current quiz question.
+//
+//! \param question the question whose statistics to record
+//! \param correct whether to record a correct or incorrect response
+//---------------------------------------------------------------------------
+void
+QuizForm::recordQuestionStats (bool correct)
+{
+    QString dirName = Auxil::getQuizDir() + "/stats";
+    QDir dir (dirName);
+    if (!dir.exists() && !dir.mkdir (dirName)) {
+        qWarning ("Cannot create quiz stats directory\n");
+        return;
+    }
+
+    // FIXME: This has absolutely no protection for concurrent access!
+
+    QString question = quizEngine->getQuestion();
+    QString quizType = quizTypeLabel->text();
+
+    QString filename = dirName + "/" + quizType + ".txt";
+    QString tmpFilename = filename + ".tmp";
+
+    QFile readFile (filename);
+    if (!readFile.open (QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning ("Cannot read quiz stats file\n");
+        //return;
+    }
+    QTextStream readStream (&readFile);
+
+    QFile writeFile (tmpFilename);
+    if (!writeFile.open (QIODevice::WriteOnly | QIODevice::Text)) {
+        qWarning ("Cannot write to temporary quiz stats file\n");
+        return;
+    }
+    QTextStream writeStream (&writeFile);
+
+    bool written = false;
+
+    QString line;
+    while (!(line = readStream.readLine (MAX_INPUT_LINE_LEN)).isNull()) {
+        if (written) {
+            writeStream << line;
+            endl (writeStream);
+            continue;
+        }
+
+        QString word = line.section (' ', 0, 0);
+
+        // word correct incorrect streak attitude
+        // Attitude: 1 always ask, 0 neutral, -1 never ask
+
+        if (word == question) {
+            int numCorrect = line.section (' ', 1, 1).toInt();
+            int numIncorrect = line.section (' ', 2, 2).toInt();
+            int streak = line.section (' ', 3, 3).toInt();
+            int attitude = line.section (' ', 4, 4).toInt();
+
+            if (correct) {
+                ++numCorrect;
+                if (streak < 0)
+                    streak = 1;
+                else
+                    ++streak;
+            }
+            else {
+                ++numIncorrect;
+                if (streak > 0)
+                    streak = -1;
+                else
+                    --streak;
+            }
+
+            writeStream << question << " " << numCorrect << " " <<
+                numIncorrect << " " << streak << " " << attitude;
+            endl (writeStream);
+            written = true;
+        }
+
+        else {
+            if (word > question) {
+                if (correct)
+                    writeStream << question << " 1 0 1 0";
+                else
+                    writeStream << question << " 0 1 -1 0";
+
+                endl (writeStream);
+                written = true;
+            }
+
+            writeStream << line;
+            endl (writeStream);
+        }
+    }
+
+    if (!written) {
+        if (correct)
+            writeStream << question << " 1 0 1 0";
+        else
+            writeStream << question << " 0 1 -1 0";
+
+        endl (writeStream);
+    }
+
+    readFile.close();
+    writeFile.close();
+
+    readFile.remove();
+    writeFile.rename (filename);
 }
 
 //---------------------------------------------------------------------------
