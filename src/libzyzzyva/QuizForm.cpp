@@ -732,10 +732,6 @@ QuizForm::checkResponseClicked()
     analyzeDialog->updateStats();
     setUnsavedChanges (true);
 
-    // Disable the Mark as Missed button if all responses were missed
-    if (quizEngine->getQuestionCorrect() == 0)
-        markMissedButton->setEnabled (false);
-
     // FIXME: Count Incorrect answers (not just Missed) as incorrect when
     // recording stats
     bool questionCorrect = true;
@@ -760,6 +756,8 @@ QuizForm::checkResponseClicked()
 
         analyzeDialog->addMissed (unanswered);
         questionCorrect = false;
+
+        markMissedButton->setEnabled (false);
     }
 
     if ((quizEngine->numQuestions() > 0) && !quizEngine->onLastQuestion()) {
