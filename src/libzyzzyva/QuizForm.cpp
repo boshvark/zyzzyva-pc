@@ -1452,9 +1452,11 @@ QuizForm::responseMatchesQuestion (const QString& response) const
 void
 QuizForm::recordQuestionStats (bool correct)
 {
-    QString dirName = Auxil::getQuizDir() + "/stats";
+    QString lexicon = quizEngine->getQuizSpec().getLexicon();
+
+    QString dirName = Auxil::getQuizDir() + "/stats/" + lexicon;
     QDir dir (dirName);
-    if (!dir.exists() && !dir.mkdir (dirName)) {
+    if (!dir.exists() && !dir.mkpath (dirName)) {
         qWarning ("Cannot create quiz stats directory\n");
         return;
     }
