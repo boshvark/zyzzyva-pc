@@ -40,6 +40,7 @@
 #include <QMenu>
 #include <QSignalMapper>
 #include <QTextStream>
+#include <QToolTip>
 
 using namespace std;
 
@@ -343,6 +344,41 @@ WordTableView::contextMenuEvent (QContextMenuEvent* e)
 
     popupMenu->exec (QCursor::pos());
     delete popupMenu;
+}
+
+//---------------------------------------------------------------------------
+//  viewportEvent
+//
+//! This event handler, for event e, can be reimplemented in a subclass to
+//! receive viewport events.
+//
+//! @param e the viewport event
+//
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordTableView::viewportEvent (QEvent* e)
+{
+    switch (e->type()) {
+        case QEvent::ToolTip: {
+            QHelpEvent* helpEvent = static_cast<QHelpEvent*>(e);
+            QModelIndex index = indexAt (helpEvent->pos());
+            if (index.isValid() &&
+                (index.column() == WordTableModel::DEFINITION_COLUMN))
+            {
+                QToolTip::showText (helpEvent->globalPos(),
+                                    index.model()->data
+                                        (index, Qt::DisplayRole).toString());
+            }
+        }
+        break;
+
+        default:
+        QTreeView::viewportEvent (e);
+        break;
+    }
+
+    return true;
 }
 
 //---------------------------------------------------------------------------

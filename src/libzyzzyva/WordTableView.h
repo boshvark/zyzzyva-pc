@@ -42,6 +42,7 @@ class WordTableView : public QTreeView
 
     protected:
     virtual void contextMenuEvent (QContextMenuEvent* e);
+    virtual bool viewportEvent (QEvent* e);
     virtual int sizeHintForColumn (int column) const;
     virtual int sizeHintForRow (int row) const;
 
