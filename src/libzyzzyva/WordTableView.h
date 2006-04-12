@@ -54,6 +54,8 @@ class WordTableView : public QTreeView
 
     private:
     bool exportFile (const QString& filename, QString* err) const;
+    QString hookToolTipText (const QString& word, const QString& hooks,
+                             bool front) const;
 
     private:
     WordEngine* wordEngine;

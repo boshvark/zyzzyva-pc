@@ -226,6 +226,37 @@ WordTableView::exportFile (const QString& filename, QString* err) const
 }
 
 //---------------------------------------------------------------------------
+//  hookToolTipText
+//
+//! This event handler, for event e, can be reimplemented in a subclass to
+//! receive widget context menu events.
+//
+//! @param word the word whose hooks to display
+//! @param hooks the hooks to display
+//! @param front true if the hooks are fronthooks, false if back hooks
+//
+//! @return the tool tip text
+//---------------------------------------------------------------------------
+QString
+WordTableView::hookToolTipText (const QString& word, const QString& hooks,
+                                bool front) const
+{
+    QString text;
+
+    QString hook;
+    foreach (hook, hooks) {
+        QString hookWord = (front ? (hook.toUpper() + word)
+                                  : (word + hook.toUpper()));
+        if (!text.isEmpty())
+            text += "\n\n";
+
+        text += hookWord + " : " + wordEngine->getDefinition (hookWord);
+    }
+
+    return text;
+}
+
+//---------------------------------------------------------------------------
 //  contextMenuEvent
 //
 //! This event handler, for event e, can be reimplemented in a subclass to
@@ -363,13 +394,36 @@ WordTableView::viewportEvent (QEvent* e)
         case QEvent::ToolTip: {
             QHelpEvent* helpEvent = static_cast<QHelpEvent*>(e);
             QModelIndex index = indexAt (helpEvent->pos());
-            if (index.isValid() &&
-                (index.column() == WordTableModel::DEFINITION_COLUMN))
-            {
-                QToolTip::showText (helpEvent->globalPos(),
-                                    index.model()->data
-                                        (index, Qt::DisplayRole).toString());
+            if (!index.isValid())
+                break;
+
+            QString toolTipText;
+            switch (index.column()) {
+                case WordTableModel::DEFINITION_COLUMN:
+                toolTipText = index.model()->data (index,
+                                                   Qt::DisplayRole).toString();
+                break;
+
+                case WordTableModel::FRONT_HOOK_COLUMN:
+                case WordTableModel::BACK_HOOK_COLUMN: {
+                    QString hooks =
+                        index.model()->data (index, Qt::EditRole).toString();
+                    QString word = index.model()->data (index.sibling
+                            (index.row(), WordTableModel::WORD_COLUMN),
+                            Qt::EditRole).toString();
+                    bool front = (index.column() ==
+                                  WordTableModel::FRONT_HOOK_COLUMN);
+
+                    toolTipText = hookToolTipText (word, hooks, front);
+                }
+                break;
+
+                default:
+                break;
             }
+
+            if (!toolTipText.isEmpty())
+                QToolTip::showText (helpEvent->globalPos(), toolTipText);
         }
         break;
 
