@@ -35,16 +35,22 @@ const int WordTableDelegate::ITEM_YPADDING = 0;
 
 const QColor VALID_NORMAL_WORD_FOREGROUND = Qt::black;
 const QColor VALID_NORMAL_WORD_BACKGROUND = Qt::white;
+const QColor VALID_NORMAL_WORD_OUTLINE = Qt::lightGray;
 const QColor VALID_NORMAL_ALTERNATE_FOREGROUND = Qt::black;
 const QColor VALID_NORMAL_ALTERNATE_BACKGROUND = Qt::lightGray;
+const QColor VALID_NORMAL_ALTERNATE_OUTLINE = Qt::white;
 const QColor VALID_CORRECT_WORD_FOREGROUND = Qt::black;
 const QColor VALID_CORRECT_WORD_BACKGROUND = Qt::white;
+const QColor VALID_CORRECT_WORD_OUTLINE = Qt::lightGray;
 const QColor VALID_MISSED_WORD_FOREGROUND = Qt::black;
 const QColor VALID_MISSED_WORD_BACKGROUND = Qt::cyan;
+const QColor VALID_MISSED_WORD_OUTLINE = Qt::white;
 const QColor LAST_ADDED_WORD_FOREGROUND = Qt::black;
 const QColor LAST_ADDED_WORD_BACKGROUND = Qt::green;
+const QColor LAST_ADDED_WORD_OUTLINE = Qt::white;
 const QColor INVALID_WORD_FOREGROUND = Qt::black;
 const QColor INVALID_WORD_BACKGROUND = Qt::red;
+const QColor INVALID_WORD_OUTLINE = Qt::white;
 
 //---------------------------------------------------------------------------
 //  WordTableDelegate
@@ -103,31 +109,43 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
                                                        Qt::UserRole).toInt());
 
     QColor color;
+    QColor outlineColor;
 
     // Draw background
     switch (type) {
         case WordTableModel::WordNormal:
         color = VALID_NORMAL_WORD_BACKGROUND;
+        outlineColor = VALID_NORMAL_WORD_OUTLINE;
         break;
         case WordTableModel::WordNormalAlternate:
         color = VALID_NORMAL_ALTERNATE_BACKGROUND;
+        outlineColor = VALID_NORMAL_ALTERNATE_OUTLINE;
         break;
         case WordTableModel::WordCorrect:
         color = VALID_CORRECT_WORD_BACKGROUND;
+        outlineColor = VALID_CORRECT_WORD_OUTLINE;
         break;
         case WordTableModel::WordMissed:
         color = VALID_MISSED_WORD_BACKGROUND;
+        outlineColor = VALID_MISSED_WORD_OUTLINE;
         break;
         case WordTableModel::WordIncorrect:
         color = INVALID_WORD_BACKGROUND;
+        outlineColor = INVALID_WORD_OUTLINE;
         break;
         case WordTableModel::WordLastAdded:
         color = LAST_ADDED_WORD_BACKGROUND;
+        outlineColor = LAST_ADDED_WORD_OUTLINE;
         break;
         default: break;
     }
     painter->setBrush (QBrush (color));
+    painter->setPen (color);
     painter->drawRect (option.rect);
+
+    painter->setPen (outlineColor);
+    painter->drawLine (option.rect.left(), option.rect.bottom(),
+                       option.rect.right(), option.rect.bottom());
 
     // Draw foreground
     switch (type) {
