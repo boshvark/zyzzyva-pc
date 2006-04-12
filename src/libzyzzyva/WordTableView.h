@@ -26,11 +26,11 @@
 #define ZYZZYVA_WORD_TABLE_VIEW_H
 
 #include <QString>
-#include <QTableView>
+#include <QTreeView>
 
 class WordEngine;
 
-class WordTableView : public QTableView
+class WordTableView : public QTreeView
 {
     Q_OBJECT
     public:

@@ -43,7 +43,6 @@
 #include <QApplication>
 #include <QColor>
 #include <QFileDialog>
-#include <QHeaderView>
 #include <QMessageBox>
 #include <QTimerEvent>
 #include <QGridLayout>
@@ -213,7 +212,6 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
 
     responseView = new WordTableView (wordEngine);
     Q_CHECK_PTR (responseView);
-    responseView->verticalHeader()->hide();
     mainVlay->addWidget (responseView);
 
     responseModel = new WordTableModel (wordEngine, this);

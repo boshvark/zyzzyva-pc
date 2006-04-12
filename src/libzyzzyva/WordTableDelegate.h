@@ -35,10 +35,14 @@ class WordTableDelegate : public QItemDelegate
     Q_OBJECT
     public:
     static const int ITEM_XPADDING;
+    static const int ITEM_YPADDING;
 
     public:
     WordTableDelegate (QWidget* parent = 0);
     virtual ~WordTableDelegate() { }
+
+    virtual QSize sizeHint (const QStyleOptionViewItem& option,
+                            const QModelIndex& index) const;
 
     protected:
     virtual void paint (QPainter* painter, const QStyleOptionViewItem& option,

@@ -32,7 +32,6 @@
 #include "ZPushButton.h"
 #include <QApplication>
 #include <QHBoxLayout>
-#include <QHeaderView>
 #include <QLabel>
 #include <QList>
 #include <QVBoxLayout>
@@ -82,7 +81,6 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
 
     leftModel = new WordTableModel (wordEngine, this);
     Q_CHECK_PTR (leftModel);
-    leftView->verticalHeader()->hide();
     connect (leftModel, SIGNAL (wordsChanged()),
              leftView, SLOT (resizeAllColumnsToContents()));
     leftView->setModel (leftModel);
@@ -99,7 +97,6 @@ WordVariationDialog::WordVariationDialog (WordEngine* we, const QString& word,
 
         rightModel = new WordTableModel (wordEngine, this);
         Q_CHECK_PTR (rightModel);
-        rightView->verticalHeader()->hide();
         connect (rightModel, SIGNAL (wordsChanged()),
                  rightView, SLOT (resizeAllColumnsToContents()));
         rightView->setModel (rightModel);

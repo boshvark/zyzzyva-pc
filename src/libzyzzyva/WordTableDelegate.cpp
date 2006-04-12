@@ -31,6 +31,7 @@
 using namespace std;
 
 const int WordTableDelegate::ITEM_XPADDING = 5;
+const int WordTableDelegate::ITEM_YPADDING = 0;
 
 const QColor VALID_NORMAL_WORD_FOREGROUND = Qt::black;
 const QColor VALID_NORMAL_WORD_BACKGROUND = Qt::white;
@@ -55,6 +56,26 @@ const QColor INVALID_WORD_BACKGROUND = Qt::red;
 WordTableDelegate::WordTableDelegate (QWidget* parent)
     : QItemDelegate (parent)
 {
+}
+
+//---------------------------------------------------------------------------
+//  sizeHint
+//
+//! Determine the size hint of an item in a word list.
+//
+//! @param painter the painter to use
+//! @param option style option
+//! @param index the model index corresponding to the item
+//---------------------------------------------------------------------------
+QSize
+WordTableDelegate::sizeHint (const QStyleOptionViewItem& option,
+                             const QModelIndex& index) const
+{
+    QString text = index.model()->data (index, Qt::DisplayRole).toString();
+    QFontMetrics fm (option.font);
+    QRect rect = fm.boundingRect (QRect (0, 0, 1000, 1000), 0, text);
+    return QSize (rect.width() + ITEM_XPADDING,
+                  rect.height() + ITEM_YPADDING);
 }
 
 //---------------------------------------------------------------------------
@@ -137,9 +158,11 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
         ((index.column() == WordTableModel::FRONT_HOOK_COLUMN) ?
          Qt::AlignRight : Qt::AlignLeft);
 
-    painter->drawText (option.rect.adjusted (ITEM_XPADDING, 0,
-                                             -ITEM_XPADDING, 0),
-                       flags,
-                       index.model()->data (index,
-                                            Qt::DisplayRole).toString());
+    QRect rectToDraw = option.rect.adjusted (ITEM_XPADDING, 0,
+                                             -ITEM_XPADDING, 0);
+    int width = option.rect.width() - 2 * ITEM_XPADDING;
+    QFontMetrics fm (option.font);
+    QString text = index.model()->data (index, Qt::DisplayRole).toString();
+    text = elidedText (fm, width, Qt::ElideRight, text);
+    painter->drawText (rectToDraw, flags, text);
 }

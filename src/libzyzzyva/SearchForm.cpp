@@ -31,7 +31,6 @@
 #include "ZPushButton.h"
 #include "Defs.h"
 #include <QApplication>
-#include <QHeaderView>
 #include <QLabel>
 #include <QLineEdit>
 #include <QVBoxLayout>
@@ -88,7 +87,6 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     resultView = new WordTableView (wordEngine);
     Q_CHECK_PTR (resultView);
-    resultView->verticalHeader()->hide();
     specVlay->addWidget (resultView, 1);
 
     resultModel = new WordTableModel (wordEngine, this);

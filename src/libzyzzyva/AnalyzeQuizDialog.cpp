@@ -32,7 +32,6 @@
 #include "WordTableView.h"
 #include "ZPushButton.h"
 #include <QHBoxLayout>
-#include <QHeaderView>
 #include <QLabel>
 #include <QVBoxLayout>
 
@@ -81,7 +80,6 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 
     missedView = new WordTableView (wordEngine);
     Q_CHECK_PTR (missedView);
-    missedView->verticalHeader()->hide();
     mainVlay->addWidget (missedView);
 
     missedModel = new WordTableModel (wordEngine, this);
@@ -107,7 +105,6 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 
     incorrectView = new WordTableView (wordEngine);
     Q_CHECK_PTR (incorrectView);
-    incorrectView->verticalHeader()->hide();
     mainVlay->addWidget (incorrectView);
 
     incorrectModel = new WordTableModel (wordEngine, this);

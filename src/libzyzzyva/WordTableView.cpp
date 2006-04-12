@@ -51,10 +51,11 @@ using namespace std;
 //! @param parent the parent object
 //---------------------------------------------------------------------------
 WordTableView::WordTableView (WordEngine* e, QWidget* parent)
-    : QTableView (parent), wordEngine (e)
+    : QTreeView (parent), wordEngine (e)
 {
     setSelectionBehavior (QAbstractItemView::SelectRows);
     setSelectionMode (QAbstractItemView::SingleSelection);
+    setRootIsDecorated (false);
 
     WordTableDelegate* delegate = new WordTableDelegate (this);
     setItemDelegate (delegate);
@@ -234,9 +235,9 @@ WordTableView::exportFile (const QString& filename, QString* err) const
 void
 WordTableView::contextMenuEvent (QContextMenuEvent* e)
 {
-    int row = rowAt (e->y());
-    int column = columnAt (e->x());
-    bool wordOptions = ((row >= 0) && (column >= 0));
+    QModelIndex index = indexAt (e->pos());
+    bool wordOptions = (index.isValid() &&
+                        (index.row() >= 0) && (index.column() >= 0));
 
     QMenu* popupMenu = new QMenu;
     Q_CHECK_PTR (popupMenu);
