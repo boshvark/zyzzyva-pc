@@ -92,7 +92,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     resultModel = new WordTableModel (wordEngine, this);
     Q_CHECK_PTR (resultModel);
     connect (resultModel, SIGNAL (wordsChanged()),
-             resultView, SLOT (resizeAllColumnsToContents()));
+             resultView, SLOT (resizeItemsToContents()));
     resultView->setModel (resultModel);
 
     specChanged();

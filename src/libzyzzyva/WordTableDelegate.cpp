@@ -163,6 +163,13 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
     int width = option.rect.width() - 2 * ITEM_XPADDING;
     QFontMetrics fm (option.font);
     QString text = index.model()->data (index, Qt::DisplayRole).toString();
-    text = elidedText (fm, width, Qt::ElideRight, text);
-    painter->drawText (rectToDraw, flags, text);
+    QStringList defs = text.split ("\n");
+    QString textToDraw;
+    QString def;
+    foreach (def, defs) {
+        if (!textToDraw.isEmpty())
+            textToDraw += "\n";
+        textToDraw += elidedText (fm, width, Qt::ElideRight, def);
+    }
+    painter->drawText (rectToDraw, flags, textToDraw);
 }
