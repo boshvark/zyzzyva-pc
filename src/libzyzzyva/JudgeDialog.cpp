@@ -52,9 +52,9 @@ const int NUM_KEYPRESSES_TO_EXIT = 10;
 const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 const int CLEAR_EXIT_DELAY = 5000;
 
-const QString INSTRUCTION_MESSAGE = "1. Enter words, separated by "
-                                    "SPACE or ENTER.\n"
-                                    "2. Press TAB to judge the play.\n"
+const QString INSTRUCTION_MESSAGE = "1. CHALLENGER: Enter words, "
+                                    "separated by SPACE or ENTER.\n"
+                                    "2. OPPONENT: Press TAB to judge the play.\n"
                                     "3. Press any key to clear the results.";
 
 using namespace Defs;
