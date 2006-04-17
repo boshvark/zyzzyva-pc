@@ -592,6 +592,7 @@ void
 QuizForm::alphaOrderClicked()
 {
     setQuestionLabel (quizEngine->getQuestion(), Defs::QUIZ_LETTERS_ALPHA);
+    selectInputArea();
 }
 
 //---------------------------------------------------------------------------
@@ -603,6 +604,7 @@ void
 QuizForm::randomOrderClicked()
 {
     setQuestionLabel (quizEngine->getQuestion(), Defs::QUIZ_LETTERS_RANDOM);
+    selectInputArea();
 }
 
 //---------------------------------------------------------------------------
@@ -628,6 +630,7 @@ QuizForm::newQuizClicked()
     dialog->setQuizSpec (spec);
     int code = dialog->exec();
     if (code != QDialog::Accepted) {
+        selectInputArea();
         unpauseTimer();
         return;
     }
@@ -813,6 +816,8 @@ QuizForm::pauseClicked()
         pauseTimer();
     else if (pauseButton->text() == UNPAUSE_BUTTON)
         unpauseTimer();
+
+    selectInputArea();
 }
 
 //---------------------------------------------------------------------------
