@@ -81,7 +81,6 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     searchButton = new ZPushButton ("&Search");
     Q_CHECK_PTR (searchButton);
     searchButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    searchButton->setFocusPolicy (Qt::TabFocus);
     connect (searchButton, SIGNAL (clicked()), SLOT (search()));
     buttonHlay->addWidget (searchButton);
 
