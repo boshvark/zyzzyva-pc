@@ -54,6 +54,7 @@ using namespace std;
 WordTableView::WordTableView (WordEngine* e, QWidget* parent)
     : QTreeView (parent), wordEngine (e)
 {
+    setFocusPolicy (Qt::NoFocus);
     setSelectionBehavior (QAbstractItemView::SelectRows);
     setSelectionMode (QAbstractItemView::SingleSelection);
     setRootIsDecorated (false);
