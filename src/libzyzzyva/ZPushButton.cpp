@@ -27,6 +27,17 @@
 #include <QKeyEvent>
 
 //---------------------------------------------------------------------------
+//  init
+//
+//! Initialize the object.
+//---------------------------------------------------------------------------
+void
+ZPushButton::init()
+{
+    setFocusPolicy (Qt::TabFocus);
+}
+
+//---------------------------------------------------------------------------
 //  keyPressEvent
 //
 //! Called when this widget receives a key press event.  If the key is Enter
