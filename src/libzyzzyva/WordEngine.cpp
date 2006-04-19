@@ -448,6 +448,15 @@ WordEngine::getDefinition (const QString& word) const
         QSqlQuery query (qstr, db);
         if (query.next())
             definition = query.value (0).toString();
+
+        QStringList defs = definition.split (" / ");
+        definition = "";
+        QString def;
+        foreach (def, defs) {
+            if (!definition.isEmpty())
+                definition += "\n";
+            definition += replaceDefinitionLinks (def, MAX_DEFINITION_LINKS);
+        }
     }
 
     else {
@@ -462,7 +471,7 @@ WordEngine::getDefinition (const QString& word) const
             if (!definition.isEmpty())
                 definition += "\n";
             definition += replaceDefinitionLinks (mit->second,
-                                                MAX_DEFINITION_LINKS);
+                                                  MAX_DEFINITION_LINKS);
         }
     }
 
@@ -1032,15 +1041,45 @@ WordEngine::replaceDefinitionLinks (const QString& definition, int maxDepth,
 QString
 WordEngine::getSubDefinition (const QString& word, const QString& pos) const
 {
-    std::map<QString, std::multimap<QString, QString> >::const_iterator it =
-        definitions.find (word);
-    if (it == definitions.end())
-        return QString::null;
+    if (db.isOpen()) {
+        QString qstr =
+            QString ("SELECT definition FROM words WHERE lexicon=")
+            + QString::number (Auxil::lexiconNameToInt (lexiconName))
+            + " AND word='" + word + "'";
+        QSqlQuery query (qstr, db);
+        QString definition;
+        if (query.next())
+            definition = query.value (0).toString();
 
-    const multimap<QString, QString>& mmap = it->second;
-    multimap<QString, QString>::const_iterator mit = mmap.find (pos);
-    if (mit == mmap.end())
-        return QString::null;
+        if (definition.isEmpty())
+            return QString::null;
 
-    return mit->second.left (mit->second.indexOf (" ["));
+        QRegExp posRegex (QString ("\\[(\\w+)"));
+        QStringList defs = definition.split (" / ");
+        QString def;
+        foreach (def, defs) {
+            QString pos;
+            if (posRegex.indexIn (def, 0) >= 0) {
+                pos = posRegex.cap (1);
+            }
+            return def.left (def.indexOf (" ["));
+        }
+    }
+
+    else {
+        std::map<QString,
+            std::multimap<QString, QString> >::const_iterator it =
+            definitions.find (word);
+        if (it == definitions.end())
+            return QString::null;
+
+        const multimap<QString, QString>& mmap = it->second;
+        multimap<QString, QString>::const_iterator mit = mmap.find (pos);
+        if (mit == mmap.end())
+            return QString::null;
+
+        return mit->second.left (mit->second.indexOf (" ["));
+    }
+
+    return QString::null;
 }
