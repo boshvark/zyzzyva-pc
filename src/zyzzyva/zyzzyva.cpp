@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// main.cpp
+// zyzzyva.cpp
 //
-// The main program.
+// The main Zyzzyva program.
 //
 // Copyright 2004, 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
 //

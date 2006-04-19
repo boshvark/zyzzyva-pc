@@ -42,4 +42,4 @@ LIBS = -lzyzzyva -L$$ROOT/bin
 
 # Source files
 SOURCES = \
-    main.cpp
+    zyzzyva.cpp
