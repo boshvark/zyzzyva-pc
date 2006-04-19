@@ -479,23 +479,37 @@ WordEngine::getDefinition (const QString& word) const
 QString
 WordEngine::getFrontHookLetters (const QString& word) const
 {
-    SearchSpec spec;
-    SearchCondition condition;
-    condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = "?" + word;
-    spec.conditions.append (condition);
-
-    // Put first letter of each word in a set, for alphabetical order
-    QStringList words = search (spec, true);
-    set<QChar> letters;
-    QStringList::iterator it;
-    for (it = words.begin(); it != words.end(); ++it)
-        letters.insert ((*it).at (0).toLower());
-
     QString ret;
-    set<QChar>::iterator sit;
-    for (sit = letters.begin(); sit != letters.end(); ++sit)
-        ret += *sit;
+
+    if (db.isOpen()) {
+        QString qstr = "SELECT front_hooks FROM words WHERE lexicon=1 "
+            // lexiconName
+            "AND word='" + word + "'";
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            ret = query.value (0).toString();
+    }
+
+    else {
+        SearchSpec spec;
+        SearchCondition condition;
+        condition.type = SearchCondition::PatternMatch;
+        condition.stringValue = "?" + word;
+        spec.conditions.append (condition);
+
+        // Put first letter of each word in a set, for alphabetical order
+        QStringList words = search (spec, true);
+        set<QChar> letters;
+        QStringList::iterator it;
+        for (it = words.begin(); it != words.end(); ++it)
+            letters.insert ((*it).at (0).toLower());
+
+        QString ret;
+        set<QChar>::iterator sit;
+        for (sit = letters.begin(); sit != letters.end(); ++sit)
+            ret += *sit;
+    }
+
     return ret;
 }
 
@@ -511,23 +525,37 @@ WordEngine::getFrontHookLetters (const QString& word) const
 QString
 WordEngine::getBackHookLetters (const QString& word) const
 {
-    SearchSpec spec;
-    SearchCondition condition;
-    condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = word + "?";
-    spec.conditions.append (condition);
-
-    // Put first letter of each word in a set, for alphabetical order
-    QStringList words = search (spec, true);
-    set<QChar> letters;
-    QStringList::iterator it;
-    for (it = words.begin(); it != words.end(); ++it)
-        letters.insert ((*it).at ((*it).length() - 1).toLower());
-
     QString ret;
-    set<QChar>::iterator sit;
-    for (sit = letters.begin(); sit != letters.end(); ++sit)
-        ret += *sit;
+
+    if (db.isOpen()) {
+        QString qstr = "SELECT back_hooks FROM words WHERE lexicon=1 "
+            // lexiconName
+            "AND word='" + word + "'";
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            ret = query.value (0).toString();
+    }
+
+    else {
+        SearchSpec spec;
+        SearchCondition condition;
+        condition.type = SearchCondition::PatternMatch;
+        condition.stringValue = word + "?";
+        spec.conditions.append (condition);
+
+        // Put first letter of each word in a set, for alphabetical order
+        QStringList words = search (spec, true);
+        set<QChar> letters;
+        QStringList::iterator it;
+        for (it = words.begin(); it != words.end(); ++it)
+            letters.insert ((*it).at ((*it).length() - 1).toLower());
+
+        QString ret;
+        set<QChar>::iterator sit;
+        for (sit = letters.begin(); sit != letters.end(); ++sit)
+            ret += *sit;
+    }
+
     return ret;
 }
 
