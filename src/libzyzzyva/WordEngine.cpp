@@ -417,8 +417,9 @@ int
 WordEngine::getNumWords() const
 {
     if (db.isOpen()) {
-        QString qstr = "SELECT count(*) FROM words WHERE lexicon=1";
-            // lexiconName
+        QString qstr =
+            QString ("SELECT count(*) FROM words WHERE lexicon=")
+            + QString::number (Auxil::lexiconNameToInt (lexiconName));
         QSqlQuery query (qstr, db);
         if (query.next())
             return query.value (0).toInt();
@@ -440,9 +441,10 @@ WordEngine::getDefinition (const QString& word) const
     QString definition;
 
     if (db.isOpen()) {
-        QString qstr = "SELECT definition FROM words WHERE lexicon=1 "
-            // lexiconName
-            "AND word='" + word + "'";
+        QString qstr =
+            QString ("SELECT definition FROM words WHERE lexicon=")
+            + QString::number (Auxil::lexiconNameToInt (lexiconName))
+            + " AND word='" + word + "'";
         QSqlQuery query (qstr, db);
         if (query.next())
             definition = query.value (0).toString();
@@ -482,9 +484,10 @@ WordEngine::getFrontHookLetters (const QString& word) const
     QString ret;
 
     if (db.isOpen()) {
-        QString qstr = "SELECT front_hooks FROM words WHERE lexicon=1 "
-            // lexiconName
-            "AND word='" + word + "'";
+        QString qstr =
+            QString ("SELECT front_hooks FROM words WHERE lexicon=")
+            + QString::number (Auxil::lexiconNameToInt (lexiconName))
+            + " AND word='" + word + "'";
         QSqlQuery query (qstr, db);
         if (query.next())
             ret = query.value (0).toString();
@@ -528,9 +531,10 @@ WordEngine::getBackHookLetters (const QString& word) const
     QString ret;
 
     if (db.isOpen()) {
-        QString qstr = "SELECT back_hooks FROM words WHERE lexicon=1 "
-            // lexiconName
-            "AND word='" + word + "'";
+        QString qstr =
+            QString ("SELECT back_hooks FROM words WHERE lexicon=")
+            + QString::number (Auxil::lexiconNameToInt (lexiconName))
+            + " AND word='" + word + "'";
         QSqlQuery query (qstr, db);
         if (query.next())
             ret = query.value (0).toString();
@@ -800,9 +804,10 @@ int
 WordEngine::numAnagrams (const QString& word) const
 {
     if (db.isOpen()) {
-        QString qstr = "SELECT num_anagrams FROM words WHERE lexicon=1 "
-            // lexiconName
-            "AND word='" + word + "'";
+        QString qstr =
+            QString ("SELECT num_anagrams FROM words WHERE lexicon=")
+            + QString::number (Auxil::lexiconNameToInt (lexiconName))
+            + " AND word='" + word + "'";
         QSqlQuery query (qstr, db);
         if (query.next())
             return query.value (0).toInt();
