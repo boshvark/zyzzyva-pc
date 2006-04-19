@@ -25,7 +25,7 @@
 TEMPLATE = lib
 TARGET = zyzzyva
 CONFIG += qt release thread warn_on assistant
-QT += xml
+QT += sql xml
 
 ROOT = ../..
 DESTDIR = $$ROOT/bin
@@ -47,8 +47,6 @@ SOURCES = \
     JudgeForm.cpp \
     JudgeDialog.cpp \
     LetterBag.cpp \
-    LoadAnagramsThread.cpp \
-    LoadDefinitionsThread.cpp \
     MainSettings.cpp \
     MainWindow.cpp \
     NewQuizDialog.cpp \
@@ -90,8 +88,6 @@ HEADERS = \
     IntroForm.h \
     JudgeForm.h \
     JudgeDialog.h \
-    LoadAnagramsThread.h \
-    LoadDefinitionsThread.h \
     MainWindow.h \
     NewQuizDialog.h \
     QuizCanvas.h \

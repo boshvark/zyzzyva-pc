@@ -24,7 +24,6 @@
 
 #include "WordEngine.h"
 #include "LetterBag.h"
-#include "LoadDefinitionsThread.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QFile>
@@ -39,6 +38,30 @@ using std::map;
 using std::make_pair;
 using std::multimap;
 
+//---------------------------------------------------------------------------
+//  initDatabase
+//
+//! Initialize the database connection.
+//
+//! @param filename the name of the database file
+//! @param errString returns the error string in case of error
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::initDatabase (const QString& filename, QString* errString)
+{
+    db = QSqlDatabase::addDatabase ("QSQLITE");
+    db.setDatabaseName (filename);
+    bool ok = db.open();
+
+    if (!ok) {
+        if (errString)
+            *errString = db.lastError().text();
+        return false;
+    }
+
+    return true;
+}
 
 //---------------------------------------------------------------------------
 //  importTextFile
@@ -119,66 +142,6 @@ WordEngine::importDawgFile (const QString& filename, const QString& lexName,
         lexiconName = lexName;
 
     return true;
-}
-
-//---------------------------------------------------------------------------
-//  importDefinitions
-//
-//! Import definitions from a text file.
-//
-//! @param filename the file to import definitions from
-//! @param wait whether to wait for the operation to finish before returning
-//---------------------------------------------------------------------------
-void
-WordEngine::importDefinitions (const QString& filename, bool wait)
-{
-    definitionsThread->setFilename (filename);
-    connect (definitionsThread, SIGNAL (loaded()),
-             SLOT (definitionsLoaded()));
-    definitionsThread->start();
-    if (wait)
-        definitionsThread->wait();
-}
-
-//---------------------------------------------------------------------------
-//  importNumWords
-//
-//! Import a word count from a text file.
-//
-//! @param filename the file to import the word count from
-//! @return the word count
-//---------------------------------------------------------------------------
-int
-WordEngine::importNumWords (const QString& filename)
-{
-    QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
-        return 0;
-
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
-    if (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
-        QString line (buffer);
-        return line.simplified().section (' ', 0, 0).toInt();
-    }
-    return 0;
-}
-
-//---------------------------------------------------------------------------
-//  importNumAnagrams
-//
-//! Import anagram counts from a text file.
-//
-//! @param filename the file to import anagram counts definitions from
-//! @param wait whether to wait for the operation to finish before returning
-//---------------------------------------------------------------------------
-void
-WordEngine::importNumAnagrams (const QString& filename, bool wait)
-{
-    anagramsThread->setFilename (filename);
-    connect (anagramsThread, SIGNAL (loaded()), SLOT (anagramsLoaded()));
-    anagramsThread->start();
-    if (wait)
-        anagramsThread->wait();
 }
 
 //---------------------------------------------------------------------------
@@ -356,10 +319,9 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
         ++i;
     }
 
-    // Wait for Num Anagrams thread to finish before performing a search with
-    // a Num Anagrams condition
-    if (numAnagramsCondition && anagramsThread->isRunning())
-        anagramsThread->wait();
+    if (db.isOpen()) {
+        QSqlQuery query ("BEGIN TRANSACTION", db);
+    }
 
     if (wordListCondition && !mustSearchGraph)
         return nonGraphSearch (optimizedSpec);
@@ -409,6 +371,10 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             *it = (*it).toUpper();
     }
 
+    if (db.isOpen()) {
+        QSqlQuery query ("END TRANSACTION", db);
+    }
+
     return wordList;
 }
 
@@ -441,6 +407,26 @@ WordEngine::alphagrams (const QStringList& list) const
 }
 
 //---------------------------------------------------------------------------
+//  getNumWords
+//
+//! Return a word count for the current lexicon.
+//
+//! @return the word count
+//---------------------------------------------------------------------------
+int
+WordEngine::getNumWords() const
+{
+    if (db.isOpen()) {
+        QString qstr = "SELECT count(*) FROM words WHERE lexicon=1";
+            // lexiconName
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            return query.value (0).toInt();
+    }
+    return 0;
+}
+
+//---------------------------------------------------------------------------
 //  getDefinition
 //
 //! Return the definition associated with a word.
@@ -451,20 +437,33 @@ WordEngine::alphagrams (const QStringList& list) const
 QString
 WordEngine::getDefinition (const QString& word) const
 {
-    map<QString, multimap<QString, QString> >::const_iterator it =
-        definitions.find (word);
-    if (it == definitions.end())
-        return QString::null;
-
-    const multimap<QString, QString>& mmap = it->second;
-    multimap<QString, QString>::const_iterator mit;
     QString definition;
-    for (mit = mmap.begin(); mit != mmap.end(); ++mit) {
-        if (!definition.isEmpty())
-            definition += "\n";
-        definition += replaceDefinitionLinks (mit->second,
-                                              MAX_DEFINITION_LINKS);
+
+    if (db.isOpen()) {
+        QString qstr = "SELECT definition FROM words WHERE lexicon=1 "
+            // lexiconName
+            "AND word='" + word + "'";
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            definition = query.value (0).toString();
     }
+
+    else {
+        map<QString, multimap<QString, QString> >::const_iterator it =
+            definitions.find (word);
+        if (it == definitions.end())
+            return QString::null;
+
+        const multimap<QString, QString>& mmap = it->second;
+        multimap<QString, QString>::const_iterator mit;
+        for (mit = mmap.begin(); mit != mmap.end(); ++mit) {
+            if (!definition.isEmpty())
+                definition += "\n";
+            definition += replaceDefinitionLinks (mit->second,
+                                                MAX_DEFINITION_LINKS);
+        }
+    }
+
     return definition;
 }
 
@@ -530,32 +529,6 @@ WordEngine::getBackHookLetters (const QString& word) const
     for (sit = letters.begin(); sit != letters.end(); ++sit)
         ret += *sit;
     return ret;
-}
-
-//---------------------------------------------------------------------------
-//  definitionsLoaded
-//
-//! Called when the definition-loading thread is complete.
-//---------------------------------------------------------------------------
-void
-WordEngine::definitionsLoaded()
-{
-    definitions = definitionsThread->getDefinitions();
-    definitionsThread->quit();
-    definitionsThread->disconnect();
-}
-
-//---------------------------------------------------------------------------
-//  anagramsLoaded
-//
-//! Called when the anagram-loading thread is complete.
-//---------------------------------------------------------------------------
-void
-WordEngine::anagramsLoaded()
-{
-    numAnagramsMap = anagramsThread->getAnagramCounts();
-    anagramsThread->quit();
-    anagramsThread->disconnect();
 }
 
 //---------------------------------------------------------------------------
@@ -798,8 +771,21 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 int
 WordEngine::numAnagrams (const QString& word) const
 {
-    QString alpha = Auxil::getAlphagram (word);
-    return numAnagramsMap.contains (alpha) ? numAnagramsMap[alpha] : 0;
+    if (db.isOpen()) {
+        QString qstr = "SELECT num_anagrams FROM words WHERE lexicon=1 "
+            // lexiconName
+            "AND word='" + word + "'";
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            return query.value (0).toInt();
+    }
+
+    else {
+        QString alpha = Auxil::getAlphagram (word);
+        return numAnagramsMap.contains (alpha) ? numAnagramsMap[alpha] : 0;
+    }
+
+    return 0;
 }
 
 //---------------------------------------------------------------------------

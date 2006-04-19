@@ -52,6 +52,8 @@
 #include <QStatusBar>
 #include <QToolBar>
 
+#include <QtDebug>
+
 MainWindow* MainWindow::instance = 0;
 
 const QString APPLICATION_TITLE = "Zyzzyva";
@@ -372,6 +374,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     QString numWordsFile;
     QString numAnagramsFile;
     QString checksumFile;
+    QString dbFile;
     bool dawg = true;
     if (lexicon == "Custom") {
         importFile = MainSettings::getAutoImportFile();
@@ -388,10 +391,11 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
             QString prefix = Auxil::getWordsDir() + prefixMap.value (lexicon);
             importFile =        prefix + ".dwg";
             reverseImportFile = prefix + "-r.dwg";
-            definitionFile =    prefix + ".txt";
-            numAnagramsFile =   prefix + "-num-anagrams.txt";
-            numWordsFile =      prefix + "-num-words.txt";
+            //definitionFile =    prefix + ".txt";
+            //numAnagramsFile =   prefix + "-num-anagrams.txt";
+            //numWordsFile =      prefix + "-num-words.txt";
             checksumFile =      prefix + "-checksums.txt";
+            dbFile =            Auxil::getWordsDir() + "/words.db";
         }
     }
 
@@ -425,11 +429,18 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
             importDawg (reverseImportFile, lexicon, true, &lexiconError,
                         &expectedReverseChecksum))
         {
-            int numWords = wordEngine->importNumWords (numWordsFile);
+            bool ok = wordEngine->initDatabase (dbFile, &lexiconError);
+            if (!ok) {
+                qDebug() << "Error initializing database: " << lexiconError;
+            }
+
+            int numWords = wordEngine->getNumWords();
             setNumWords (numWords);
-            wordEngine->importNumAnagrams (numAnagramsFile);
-            wordEngine->importDefinitions (definitionFile);
         }
+
+
+
+
     }
     else
         importText (importFile, lexicon);

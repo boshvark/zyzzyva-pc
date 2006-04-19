@@ -26,11 +26,10 @@
 #define ZYZZYVA_WORD_ENGINE_H
 
 #include "WordGraph.h"
-#include "LoadAnagramsThread.h"
-#include "LoadDefinitionsThread.h"
 #include <QMap>
 #include <QString>
 #include <QStringList>
+#include <QtSql>
 #include <map>
 #include <set>
 
@@ -39,24 +38,21 @@ class WordEngine : public QObject
     Q_OBJECT
     public:
     WordEngine (QObject* parent = 0)
-        : QObject (parent),
-          definitionsThread (new LoadDefinitionsThread(this)),
-          anagramsThread (new LoadAnagramsThread(this)) { }
+        : QObject (parent) { }
     ~WordEngine() { }
 
     void clearLexicon();
+    bool initDatabase (const QString& filename, QString* errString = 0);
     int importTextFile (const QString& filename, const QString& lexName, bool
                         loadDefinitions = true, QString* errString = 0);
     bool importDawgFile (const QString& filename, const QString& lexName, bool
                          reverse = false, QString* errString = 0, quint16*
                          expectedChecksum = 0);
-    void importDefinitions (const QString& filename, bool wait = false);
-    int importNumWords (const QString& filename);
-    void importNumAnagrams (const QString& filename, bool wait = false);
     int importStems (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;
     QStringList alphagrams (const QStringList& list) const;
+    int getNumWords() const;
     QString getDefinition (const QString& word) const;
     QString getLexiconName() const { return lexiconName; }
     QString getFrontHookLetters (const QString& word) const;
@@ -85,8 +81,7 @@ class WordEngine : public QObject
     QMap<QString, int> numAnagramsMap;
     std::map< int, std::set<QString> > stemAlphagrams;
 
-    LoadDefinitionsThread* definitionsThread;
-    LoadAnagramsThread*    anagramsThread;
+    QSqlDatabase db;
 };
 
 #endif // ZYZZYVA_WORD_ENGINE_H
