@@ -42,7 +42,8 @@ class WordEngine : public QObject
     ~WordEngine() { }
 
     void clearLexicon();
-    bool initDatabase (const QString& filename, QString* errString = 0);
+    bool connectToDatabase (const QString& filename, QString* errString = 0);
+    bool initDatabase();
     int importTextFile (const QString& filename, const QString& lexName, bool
                         loadDefinitions = true, QString* errString = 0);
     bool importDawgFile (const QString& filename, const QString& lexName, bool
@@ -57,10 +58,6 @@ class WordEngine : public QObject
     QString getLexiconName() const { return lexiconName; }
     QString getFrontHookLetters (const QString& word) const;
     QString getBackHookLetters (const QString& word) const;
-
-    public slots:
-    void definitionsLoaded();
-    void anagramsLoaded();
 
     private:
     bool matchesConditions (const QString& word, const QList<SearchCondition>&

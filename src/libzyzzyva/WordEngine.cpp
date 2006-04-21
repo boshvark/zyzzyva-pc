@@ -39,7 +39,7 @@ using std::make_pair;
 using std::multimap;
 
 //---------------------------------------------------------------------------
-//  initDatabase
+//  connectToDatabase
 //
 //! Initialize the database connection.
 //
@@ -48,7 +48,7 @@ using std::multimap;
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::initDatabase (const QString& filename, QString* errString)
+WordEngine::connectToDatabase (const QString& filename, QString* errString)
 {
     db = QSqlDatabase::addDatabase ("QSQLITE");
     db.setDatabaseName (filename);
@@ -61,6 +61,22 @@ WordEngine::initDatabase (const QString& filename, QString* errString)
     }
 
     return true;
+}
+
+//---------------------------------------------------------------------------
+//  initDatabase
+//
+//! Initialize the database contents from the currently loaded lexicon.
+//! Assumes the database has already been opened.
+//
+//! @param filename the name of the database file
+//! @param errString returns the error string in case of error
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::initDatabase()
+{
+    qDebug() << "Initializing database with data!";
 }
 
 //---------------------------------------------------------------------------

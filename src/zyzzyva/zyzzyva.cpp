@@ -49,6 +49,8 @@ int main (int argc, char** argv)
     splash->finish (window);
     delete splash;
 
+    window->connectToDatabase();
+
     // Handle command-line arguments
     if (argc > 1) {
         QStringList args;

@@ -73,6 +73,7 @@ class MainWindow : public QMainWindow
     void closeCurrentTab();
     void currentTabChanged (int index);
     void tabStatusChanged (const QString& status);
+    void connectToDatabase();
 
     protected:
     virtual void closeEvent (QCloseEvent* event);

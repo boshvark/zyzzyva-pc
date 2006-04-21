@@ -296,7 +296,6 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     lexiconLabel = new QLabel;
     Q_CHECK_PTR (lexiconLabel);
     statusBar()->addWidget (lexiconLabel, 1);
-    setNumWords (0);
 
     readSettings (true);
 
@@ -304,6 +303,7 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     setWindowIcon (QIcon (":/zyzzyva-32x32"));
 
     tryAutoImport (splash);
+    setNumWords (0);
 
     if (!instance)
         instance = this;
@@ -424,23 +424,10 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
 
         lexiconError = QString::null;
 
-        if (importDawg (importFile, lexicon, false, &lexiconError,
-                        &expectedForwardChecksum) &&
-            importDawg (reverseImportFile, lexicon, true, &lexiconError,
-                        &expectedReverseChecksum))
-        {
-            bool ok = wordEngine->initDatabase (dbFile, &lexiconError);
-            if (!ok) {
-                qDebug() << "Error initializing database: " << lexiconError;
-            }
-
-            int numWords = wordEngine->getNumWords();
-            setNumWords (numWords);
-        }
-
-
-
-
+        importDawg (importFile, lexicon, false, &lexiconError,
+                    &expectedForwardChecksum);
+        importDawg (reverseImportFile, lexicon, true, &lexiconError,
+                    &expectedReverseChecksum);
     }
     else
         importText (importFile, lexicon);
@@ -810,6 +797,70 @@ MainWindow::tabStatusChanged (const QString& status)
 }
 
 //---------------------------------------------------------------------------
+//  connectToDatabase
+//
+//! Connect to the database.  Create the database if necessary.
+//
+//! @param the new status string
+//---------------------------------------------------------------------------
+void
+MainWindow::connectToDatabase()
+{
+    QMap<QString, QString> prefixMap;
+    prefixMap["OWL"] = "/north-american/owl";
+    prefixMap["OWL2"] = "/north-american/owl2";
+    prefixMap["SOWPODS"] = "/british/sowpods";
+    prefixMap["ODS"] = "/french/ods4";
+
+    QString lexicon = wordEngine->getLexiconName();
+
+    qDebug() << "*** connectToDatabase: Lexicon: " << lexicon;
+
+    if (!prefixMap.contains (lexicon))
+        return;
+
+    QString prefix = Auxil::getWordsDir() + prefixMap.value (lexicon);
+    QString filename = prefix + ".db";
+
+    QFile file (filename);
+
+    QString dbError;
+    bool createDatabase = false;
+
+    if (!file.exists()) {
+        QString message =
+            "For searches and quizzes to work correctly, Zyzzyva must\n"
+            "create a database of certain information for the current\n"
+            "lexicon (" + lexicon + ").  This may take several minutes.\n"
+            "This database is not needed if you only want to use the\n"
+            "Word Judge mode.\n\n"
+            "Create the database now?";
+
+        int code = QMessageBox::question (this, "Create database file?",
+                                          message, QMessageBox::Yes,
+                                          QMessageBox::No);
+
+        if (code != QMessageBox::Yes) {
+            return;
+        }
+
+        createDatabase = true;
+    }
+
+    bool ok = wordEngine->connectToDatabase (filename, &dbError);
+    if (!ok) {
+        QMessageBox::warning (this, "Database Initialization Error",
+                              "Unable to initialize database:\n" + dbError);
+        return;
+    }
+
+    if (createDatabase)
+        wordEngine->initDatabase();
+
+    setNumWords (wordEngine->getNumWords());
+}
+
+//---------------------------------------------------------------------------
 //  closeEvent
 //
 //! The event handler for widget close events, called when the main window is
@@ -852,9 +903,14 @@ MainWindow::closeEvent (QCloseEvent* event)
 void
 MainWindow::setNumWords (int num)
 {
-    lexiconLabel->setText (num ? wordEngine->getLexiconName() + " - "
-                                 + QString::number (num) + " words"
-                               : "No words loaded");
+    QString label = wordEngine->getLexiconName();
+
+    if (label.isEmpty())
+        label = "No lexicon loaded";
+    else if (num)
+        label += " - " + QString::number (num) + " words";
+
+    lexiconLabel->setText (label);
 }
 
 //---------------------------------------------------------------------------
