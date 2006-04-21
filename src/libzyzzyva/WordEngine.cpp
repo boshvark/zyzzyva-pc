@@ -26,6 +26,7 @@
 #include "LetterBag.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <QApplication>
 #include <QFile>
 #include <QRegExp>
 #include <set>
@@ -76,7 +77,144 @@ WordEngine::connectToDatabase (const QString& filename, QString* errString)
 bool
 WordEngine::initDatabase()
 {
-    qDebug() << "Initializing database with data!";
+    if (!db.isOpen())
+        return false;
+
+    QMap<QString, QString> prefixMap;
+    prefixMap["OWL"] = "/north-american/owl";
+    prefixMap["OWL2"] = "/north-american/owl2";
+    prefixMap["SOWPODS"] = "/british/sowpods";
+    prefixMap["ODS"] = "/french/ods4";
+
+    if (!prefixMap.contains (lexiconName))
+        return false;
+
+    QString prefix = Auxil::getWordsDir() + prefixMap.value (lexiconName);
+    QString definitionFilename = prefix + ".txt";
+
+    // Read definitions
+    QMap<QString, QString> definitionMap;
+    QFile definitionFile (definitionFilename);
+    if (definitionFile.open (QIODevice::ReadOnly | QIODevice::Text)) {
+        char* buffer = new char [MAX_INPUT_LINE_LEN];
+        while (definitionFile.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+            QString line (buffer);
+            line = line.simplified();
+            if (!line.length() || (line.at (0) == '#'))
+                continue;
+            QString word = line.section (' ', 0, 0).toUpper();
+            QString definition = line.section (' ', 1);
+            definitionMap[word] = definition;
+        }
+    }
+
+    QApplication::setOverrideCursor (Qt::WaitCursor);
+
+    SearchCondition searchCondition;
+    searchCondition.type = SearchCondition::PatternMatch;
+    searchCondition.stringValue = "*";
+    SearchSpec searchSpec;
+    searchSpec.conditions.append (searchCondition);
+
+    QStringList allWords = search (searchSpec, true);
+
+    LetterBag letterBag;
+    QSet<QString> wordSet;
+    QMap<int, QMultiMap<double, QString> > wordMap;
+    QMap<QString, int> numAnagramsMap;
+
+    QString word;
+    foreach (word, allWords) {
+        wordSet.insert (word);
+
+        QMultiMap<double, QString>& comboMap = wordMap[word.length()];
+        comboMap.insert (letterBag.getNumCombinations (word), word);
+
+        QString alphagram = Auxil::getAlphagram (word);
+        if (numAnagramsMap.contains (alphagram))
+            ++numAnagramsMap[alphagram];
+        else
+            numAnagramsMap[alphagram] = 1;
+    }
+
+    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
+
+    QString qstr = "CREATE TABLE words (word varchar(16), "
+        "length integer, combinations integer, probability_order integer, "
+        "alphagram varchar(16), num_anagrams integer, "
+        "front_hooks varchar(32), back_hooks varchar(32), "
+        "definition varchar(256))";
+
+    QSqlQuery query (qstr);
+
+    query.prepare ("INSERT INTO words (word, length, combinations, "
+                   "probability_order, alphagram, num_anagrams, "
+                   "front_hooks, back_hooks, definition) "
+                   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    QStringList letters;
+    letters << "A" << "B" << "C" << "D" << "E" << "F" << "G" << "H" <<
+        "I" << "J" << "K" << "L" << "M" << "N" << "O" << "P" << "Q" <<
+        "R" << "S" << "T" << "U" << "V" << "W" << "X" << "Y" << "Z";
+
+    int numInserts = 0;
+    QMapIterator<int, QMultiMap<double, QString> > it (wordMap);
+    while (it.hasNext()) {
+        int probOrder = 1;
+        it.next();
+        int length = it.key();
+        QMultiMap<double, QString>& comboMap = wordMap[length];
+
+        QMapIterator<double, QString> jt (comboMap);
+        jt.toBack();
+        while (jt.hasPrevious()) {
+            jt.previous();
+            double combinations = jt.key();
+            QString word = jt.value();
+
+            QString front, back;
+            QString letter;
+            foreach (letter, letters) {
+                if (wordSet.contains (letter + word))
+                    front += letter;
+                if (wordSet.contains (word + letter))
+                    back += letter;
+            }
+
+            QString alphagram = Auxil::getAlphagram (word);
+            QString definition;
+            if (definitionMap.contains (word))
+                definition = definitionMap[word];
+
+            query.bindValue (0, word);
+            query.bindValue (1, length);
+            query.bindValue (2, combinations);
+            query.bindValue (3, probOrder);
+            query.bindValue (4, alphagram);
+            query.bindValue (5, numAnagramsMap[alphagram]);
+            query.bindValue (6, front.toLower());
+            query.bindValue (7, back.toLower());
+            query.bindValue (8, definition);
+            query.exec();
+
+            if ((numInserts % 1000) == 0) {
+                transactionQuery.exec ("END TRANSACTION");
+                transactionQuery.exec ("BEGIN TRANSACTION");
+            }
+            ++numInserts;
+
+            ++probOrder;
+        }
+
+    }
+    transactionQuery.exec ("END TRANSACTION");
+
+    query.exec ("CREATE UNIQUE INDEX word_index on words (word)");
+    query.exec ("CREATE INDEX length_index on words (length)");
+    query.exec ("VACUUM");
+
+    QApplication::restoreOverrideCursor();
+    return true;
 }
 
 //---------------------------------------------------------------------------
@@ -433,9 +571,7 @@ int
 WordEngine::getNumWords() const
 {
     if (db.isOpen()) {
-        QString qstr =
-            QString ("SELECT count(*) FROM words WHERE lexicon=")
-            + QString::number (Auxil::lexiconNameToInt (lexiconName));
+        QString qstr = "SELECT count(*) FROM words";
         QSqlQuery query (qstr, db);
         if (query.next())
             return query.value (0).toInt();
@@ -457,10 +593,8 @@ WordEngine::getDefinition (const QString& word) const
     QString definition;
 
     if (db.isOpen()) {
-        QString qstr =
-            QString ("SELECT definition FROM words WHERE lexicon=")
-            + QString::number (Auxil::lexiconNameToInt (lexiconName))
-            + " AND word='" + word + "'";
+        QString qstr = "SELECT definition FROM words WHERE word='" +
+            word + "'";
         QSqlQuery query (qstr, db);
         if (query.next())
             definition = query.value (0).toString();
@@ -509,10 +643,8 @@ WordEngine::getFrontHookLetters (const QString& word) const
     QString ret;
 
     if (db.isOpen()) {
-        QString qstr =
-            QString ("SELECT front_hooks FROM words WHERE lexicon=")
-            + QString::number (Auxil::lexiconNameToInt (lexiconName))
-            + " AND word='" + word + "'";
+        QString qstr = "SELECT front_hooks FROM words WHERE word='" +
+            word + "'";
         QSqlQuery query (qstr, db);
         if (query.next())
             ret = query.value (0).toString();
@@ -556,10 +688,8 @@ WordEngine::getBackHookLetters (const QString& word) const
     QString ret;
 
     if (db.isOpen()) {
-        QString qstr =
-            QString ("SELECT back_hooks FROM words WHERE lexicon=")
-            + QString::number (Auxil::lexiconNameToInt (lexiconName))
-            + " AND word='" + word + "'";
+        QString qstr = "SELECT back_hooks FROM words WHERE word='" +
+            word + "'";
         QSqlQuery query (qstr, db);
         if (query.next())
             ret = query.value (0).toString();
@@ -829,10 +959,8 @@ int
 WordEngine::numAnagrams (const QString& word) const
 {
     if (db.isOpen()) {
-        QString qstr =
-            QString ("SELECT num_anagrams FROM words WHERE lexicon=")
-            + QString::number (Auxil::lexiconNameToInt (lexiconName))
-            + " AND word='" + word + "'";
+        QString qstr = "SELECT num_anagrams FROM words WHERE word='" +
+            word + "'";
         QSqlQuery query (qstr, db);
         if (query.next())
             return query.value (0).toInt();
@@ -1058,10 +1186,8 @@ QString
 WordEngine::getSubDefinition (const QString& word, const QString& pos) const
 {
     if (db.isOpen()) {
-        QString qstr =
-            QString ("SELECT definition FROM words WHERE lexicon=")
-            + QString::number (Auxil::lexiconNameToInt (lexiconName))
-            + " AND word='" + word + "'";
+        QString qstr = "SELECT definition FROM words WHERE word='" +
+            word + "'";
         QSqlQuery query (qstr, db);
         QString definition;
         if (query.next())

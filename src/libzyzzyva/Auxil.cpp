@@ -598,26 +598,3 @@ Auxil::stringToQuizType (const QString& s)
     else
         return QuizSpec::UnknownQuizType;
 }
-
-//---------------------------------------------------------------------------
-//  lexiconNameToInt
-//
-//! Convert a lexicon name to an int value.
-//
-//! @param lexicon the lexicon name
-//! @return the int value
-//---------------------------------------------------------------------------
-int
-Auxil::lexiconNameToInt (const QString& lexicon)
-{
-    if (lexicon == "OWL")
-        return 0;
-    if (lexicon == "OWL2")
-        return 1;
-    else if (lexicon == "SOWPODS")
-        return 2;
-    else if (lexicon == "ODS")
-        return 3;
-    else
-        return -1;
-}

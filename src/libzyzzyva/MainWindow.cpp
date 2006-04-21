@@ -814,8 +814,6 @@ MainWindow::connectToDatabase()
 
     QString lexicon = wordEngine->getLexiconName();
 
-    qDebug() << "*** connectToDatabase: Lexicon: " << lexicon;
-
     if (!prefixMap.contains (lexicon))
         return;
 
@@ -831,7 +829,8 @@ MainWindow::connectToDatabase()
         QString message =
             "For searches and quizzes to work correctly, Zyzzyva must\n"
             "create a database of certain information for the current\n"
-            "lexicon (" + lexicon + ").  This may take several minutes.\n"
+            "lexicon (" + lexicon + ").  This may take several minutes,\n"
+            "but it will only need to be done once.\n\n"
             "This database is not needed if you only want to use the\n"
             "Word Judge mode.\n\n"
             "Create the database now?";
@@ -849,13 +848,19 @@ MainWindow::connectToDatabase()
 
     bool ok = wordEngine->connectToDatabase (filename, &dbError);
     if (!ok) {
-        QMessageBox::warning (this, "Database Initialization Error",
-                              "Unable to initialize database:\n" + dbError);
+        QMessageBox::warning (this, "Database Connection Error",
+                              "Unable to connect to database:\n" + dbError);
         return;
     }
 
-    if (createDatabase)
-        wordEngine->initDatabase();
+    if (createDatabase) {
+        if (wordEngine->initDatabase())
+            QMessageBox::information (this, "Database Initialized",
+                                      "Database successfully initialized.");
+        else
+            QMessageBox::warning (this, "Database Initialization Error",
+                                  "Unable to initialize database.");
+    }
 
     setNumWords (wordEngine->getNumWords());
 }
