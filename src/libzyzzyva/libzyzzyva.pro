@@ -39,6 +39,7 @@ SOURCES = \
     AboutDialog.cpp \
     AnalyzeQuizDialog.cpp \
     Auxil.cpp \
+    CreateDatabaseThread.cpp \
     DefineForm.cpp \
     DefinitionBox.cpp \
     DefinitionDialog.cpp \
@@ -80,6 +81,7 @@ HEADERS = \
     AboutDialog.h \
     ActionForm.h \
     AnalyzeQuizDialog.h \
+    CreateDatabaseThread.h \
     DefineForm.h \
     DefinitionBox.h \
     DefinitionDialog.h \

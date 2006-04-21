@@ -24,6 +24,7 @@
 
 #include "MainWindow.h"
 #include "AboutDialog.h"
+#include "CreateDatabaseThread.h"
 #include "DefinitionDialog.h"
 #include "DefineForm.h"
 #include "HelpDialog.h"
@@ -48,6 +49,7 @@
 #include <QLabel>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QProgressDialog>
 #include <QSignalMapper>
 #include <QStatusBar>
 #include <QToolBar>
@@ -818,14 +820,15 @@ MainWindow::connectToDatabase()
         return;
 
     QString prefix = Auxil::getWordsDir() + prefixMap.value (lexicon);
-    QString filename = prefix + ".db";
+    QString dbFilename = prefix + ".db";
+    QString definitionFilename = prefix + ".txt";
 
-    QFile file (filename);
+    QFile dbFile (dbFilename);
 
     QString dbError;
     bool createDatabase = false;
 
-    if (!file.exists()) {
+    if (!dbFile.exists()) {
         QString message =
             "For searches and quizzes to work correctly, Zyzzyva must\n"
             "create a database of certain information for the current\n"
@@ -846,21 +849,50 @@ MainWindow::connectToDatabase()
         createDatabase = true;
     }
 
-    bool ok = wordEngine->connectToDatabase (filename, &dbError);
+    if (createDatabase) {
+        QProgressDialog* dialog = new QProgressDialog (this);
+
+        QLabel* dialogLabel = new QLabel ("Creating " + lexicon +
+                                          " database...");
+        dialog->setWindowTitle ("Creating " + lexicon + "Database");
+        dialog->setLabel (dialogLabel);
+
+        CreateDatabaseThread* thread = new CreateDatabaseThread
+            (this, wordEngine, dbFilename, definitionFilename);
+        connect (thread, SIGNAL (steps (int)),
+                 dialog, SLOT (setMaximum (int)));
+        connect (thread, SIGNAL (progress (int)),
+                 dialog, SLOT (setValue (int)));
+        connect (dialog, SIGNAL (cancel()), thread, SLOT (cancel()));
+
+        QApplication::setOverrideCursor (Qt::WaitCursor);
+
+        thread->start();
+        dialog->exec();
+
+        QApplication::restoreOverrideCursor();
+
+        if (thread->getCancelled()) {
+            QMessageBox::warning (this, "Database Not Created",
+                                  "Database creation cancelled.");
+        }
+        else {
+            QMessageBox::information (this, "Database Created",
+                                      "The " + lexicon + " database was "
+                                      "successfully created.");
+        }
+
+        delete thread;
+        delete dialog;
+    }
+
+    bool ok = wordEngine->connectToDatabase (dbFilename, &dbError);
     if (!ok) {
         QMessageBox::warning (this, "Database Connection Error",
                               "Unable to connect to database:\n" + dbError);
         return;
     }
 
-    if (createDatabase) {
-        if (wordEngine->initDatabase())
-            QMessageBox::information (this, "Database Initialized",
-                                      "Database successfully initialized.");
-        else
-            QMessageBox::warning (this, "Database Initialization Error",
-                                  "Unable to initialize database.");
-    }
 
     setNumWords (wordEngine->getNumWords());
 }
