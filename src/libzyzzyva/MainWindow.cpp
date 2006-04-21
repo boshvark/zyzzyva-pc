@@ -395,7 +395,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
             //numAnagramsFile =   prefix + "-num-anagrams.txt";
             //numWordsFile =      prefix + "-num-words.txt";
             checksumFile =      prefix + "-checksums.txt";
-            dbFile =            Auxil::getWordsDir() + "/words.db";
+            dbFile =            prefix + ".db";
         }
     }
 
