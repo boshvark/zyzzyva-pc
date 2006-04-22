@@ -863,18 +863,19 @@ MainWindow::connectToDatabase()
                  dialog, SLOT (setMaximum (int)));
         connect (thread, SIGNAL (progress (int)),
                  dialog, SLOT (setValue (int)));
-        connect (dialog, SIGNAL (cancel()), thread, SLOT (cancel()));
+        connect (dialog, SIGNAL (canceled()), thread, SLOT (cancel()));
 
         QApplication::setOverrideCursor (Qt::WaitCursor);
 
         thread->start();
         dialog->exec();
+        thread->quit();
 
         QApplication::restoreOverrideCursor();
 
         if (thread->getCancelled()) {
-            QMessageBox::warning (this, "Database Not Created",
-                                  "Database creation cancelled.");
+            QMessageBox::information (this, "Database Not Created",
+                                      "Database creation cancelled.");
         }
         else {
             QMessageBox::information (this, "Database Created",

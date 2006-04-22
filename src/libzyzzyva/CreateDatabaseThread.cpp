@@ -41,6 +41,11 @@ CreateDatabaseThread::run()
 {
     runPrivate();
     QSqlDatabase::removeDatabase ("threaddb");
+
+    if (cancelled) {
+        QFile dbFile (dbFilename);
+        dbFile.remove();
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -95,8 +100,11 @@ CreateDatabaseThread::runPrivate()
         else
             numAnagramsMap[alphagram] = 1;
 
-        if ((stepNum % 1000) == 0)
+        if ((stepNum % 1000) == 0) {
+            if (cancelled)
+                return;
             emit progress (stepNum);
+        }
         ++stepNum;
     }
     stepNum = numWords;
@@ -116,10 +124,16 @@ CreateDatabaseThread::runPrivate()
             QString definition = line.section (' ', 1);
             definitionMap[word] = definition;
 
-            if ((stepNum % 1000) == 0)
+            if ((stepNum % 1000) == 0) {
+                if (cancelled) {
+                    delete buffer;
+                    return;
+                }
                 emit progress (stepNum);
+            }
             ++stepNum;
         }
+        delete buffer;
     }
     stepNum = numWords * 2;
     emit progress (stepNum);
@@ -187,6 +201,8 @@ CreateDatabaseThread::runPrivate()
 
             if ((numInserts % 1000) == 0) {
                 transactionQuery.exec ("END TRANSACTION");
+                if (cancelled)
+                    return;
                 transactionQuery.exec ("BEGIN TRANSACTION");
                 emit progress (stepNum);
             }
@@ -198,20 +214,23 @@ CreateDatabaseThread::runPrivate()
 
     transactionQuery.exec ("END TRANSACTION");
     stepNum = numWords * 4;
+    if (cancelled)
+        return;
     emit progress (stepNum);
 
     // STEP 4: Create indexes and vacuum
     query.exec ("CREATE UNIQUE INDEX word_index on words (word)");
     stepNum += (2 * numWords / 3);
+    if (cancelled)
+        return;
     emit progress (stepNum);
     query.exec ("CREATE INDEX length_index on words (length)");
     stepNum += (2 * numWords / 3);
+    if (cancelled)
+        return;
     emit progress (stepNum);
     query.exec ("VACUUM");
     stepNum += (2 * numWords / 3);
-    emit progress (stepNum);
-    db.close();
-
     emit progress (numSteps);
 }
 
