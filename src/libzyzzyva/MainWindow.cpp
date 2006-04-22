@@ -384,8 +384,8 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     }
     else {
         QMap<QString, QString> prefixMap;
-        prefixMap["OWL"] = "/north-american/owl";
-        prefixMap["OWL2"] = "/north-american/owl2";
+        prefixMap["OWL+LWL"] = "/north-american/owl-lwl";
+        prefixMap["OWL2+LWL"] = "/north-american/owl2-lwl";
         prefixMap["SOWPODS"] = "/british/sowpods";
         prefixMap["ODS"] = "/french/ods4";
 
@@ -809,8 +809,8 @@ void
 MainWindow::connectToDatabase()
 {
     QMap<QString, QString> prefixMap;
-    prefixMap["OWL"] = "/north-american/owl";
-    prefixMap["OWL2"] = "/north-american/owl2";
+    prefixMap["OWL+LWL"] = "/north-american/owl-lwl";
+    prefixMap["OWL2+LWL"] = "/north-american/owl2-lwl";
     prefixMap["SOWPODS"] = "/british/sowpods";
     prefixMap["ODS"] = "/french/ods4";
 

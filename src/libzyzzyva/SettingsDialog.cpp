@@ -123,13 +123,13 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
 
     autoImportLexiconCombo = new QComboBox;
     Q_CHECK_PTR (autoImportLexiconCombo);
-    autoImportLexiconCombo->addItem ("OWL");
-    autoImportLexiconCombo->addItem ("OWL2");
+    autoImportLexiconCombo->addItem ("OWL+LWL");
+    autoImportLexiconCombo->addItem ("OWL2+LWL");
     autoImportLexiconCombo->addItem ("SOWPODS");
     autoImportLexiconCombo->addItem ("ODS");
     autoImportLexiconCombo->addItem ("Custom");
     autoImportLexiconCombo->setCurrentIndex
-        (autoImportLexiconCombo->findText ("OWL2"));
+        (autoImportLexiconCombo->findText ("OWL2+LWL"));
     connect (autoImportLexiconCombo, SIGNAL (activated (const QString&)),
              SLOT (autoImportLexiconActivated (const QString&)));
     autoImportLexiconHlay->addWidget (autoImportLexiconCombo);

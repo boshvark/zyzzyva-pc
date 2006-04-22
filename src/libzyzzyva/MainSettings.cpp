@@ -61,7 +61,7 @@ const QString SETTINGS_QUIZ_RECORD_STATS = "quiz_record_stats";
 const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
 const QString SETTINGS_JUDGE_SAVE_LOG = "judge_save_log";
 const QString SETTINGS_JUDGE_LOG_DIR = "judge_log_dir";
-const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL2";
+const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL2+LWL";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb (0, 0, 127);
@@ -90,6 +90,12 @@ MainSettings::readSettings()
     instance->autoImportLexicon
         = settings.value (SETTINGS_IMPORT_LEXICON,
                           DEFAULT_AUTO_IMPORT_LEXICON).toString();
+
+    // Kludge to update the names of the OWL and OWL2 lexicons to have +LWL
+    if (instance->autoImportLexicon == "OWL")
+        instance->autoImportLexicon = "OWL+LWL";
+    else if (instance->autoImportLexicon == "OWL2")
+        instance->autoImportLexicon = "OWL2+LWL";
 
     instance->autoImportFile
         = settings.value (SETTINGS_IMPORT_FILE).toString();
