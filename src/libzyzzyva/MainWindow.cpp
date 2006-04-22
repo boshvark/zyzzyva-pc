@@ -849,6 +849,8 @@ MainWindow::connectToDatabase()
         createDatabase = true;
     }
 
+    bool useDb = true;
+
     if (createDatabase) {
         QProgressDialog* dialog = new QProgressDialog (this);
 
@@ -876,6 +878,9 @@ MainWindow::connectToDatabase()
         if (thread->getCancelled()) {
             QMessageBox::information (this, "Database Not Created",
                                       "Database creation cancelled.");
+            QFile dbFile (dbFilename);
+            dbFile.remove();
+            useDb = false;
         }
         else {
             QMessageBox::information (this, "Database Created",
@@ -887,13 +892,14 @@ MainWindow::connectToDatabase()
         delete dialog;
     }
 
-    bool ok = wordEngine->connectToDatabase (dbFilename, &dbError);
-    if (!ok) {
-        QMessageBox::warning (this, "Database Connection Error",
-                              "Unable to connect to database:\n" + dbError);
-        return;
+    if (useDb) {
+        bool ok = wordEngine->connectToDatabase (dbFilename, &dbError);
+        if (!ok) {
+            QMessageBox::warning (this, "Database Connection Error",
+                                "Unable to connect to database:\n" + dbError);
+            return;
+        }
     }
-
 
     setNumWords (wordEngine->getNumWords());
 }

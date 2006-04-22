@@ -41,11 +41,6 @@ CreateDatabaseThread::run()
 {
     runPrivate();
     QSqlDatabase::removeDatabase ("threaddb");
-
-    if (cancelled) {
-        QFile dbFile (dbFilename);
-        dbFile.remove();
-    }
 }
 
 //---------------------------------------------------------------------------
