@@ -164,88 +164,88 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     connect (editPrefsAction, SIGNAL (triggered()), SLOT (editSettings()));
     editMenu->addAction (editPrefsAction);
 
-    // View Menu
-    QMenu* viewMenu = menuBar()->addMenu ("&View");
-    Q_CHECK_PTR (viewMenu);
+    // Word Menu
+    QMenu* wordMenu = menuBar()->addMenu ("&Word");
+    Q_CHECK_PTR (wordMenu);
 
-    // View Definition
+    // Word Definition
     QAction* viewDefinitionAction = new QAction ("&Definition...", this);
     Q_CHECK_PTR (viewDefinitionAction);
     connect (viewDefinitionAction, SIGNAL (triggered()),
              SLOT (viewDefinition()));
-    viewMenu->addAction (viewDefinitionAction);
+    wordMenu->addAction (viewDefinitionAction);
 
-    QSignalMapper* viewMapper = new QSignalMapper (this);
-    Q_CHECK_PTR (viewMapper);
+    QSignalMapper* wordMapper = new QSignalMapper (this);
+    Q_CHECK_PTR (wordMapper);
 
-    // View Anagrams
+    // Word Anagrams
     QAction* viewAnagramsAction = new QAction ("&Anagrams...", this);
     Q_CHECK_PTR (viewAnagramsAction);
     connect (viewAnagramsAction, SIGNAL (triggered()),
-             viewMapper, SLOT (map()));
-    viewMapper->setMapping (viewAnagramsAction, VariationAnagrams);
-    viewMenu->addAction (viewAnagramsAction);
+             wordMapper, SLOT (map()));
+    wordMapper->setMapping (viewAnagramsAction, VariationAnagrams);
+    wordMenu->addAction (viewAnagramsAction);
 
-    // View Subanagrams
+    // Word Subanagrams
     QAction* viewSubanagramsAction = new QAction ("&Subanagrams...", this);
     Q_CHECK_PTR (viewSubanagramsAction);
     connect (viewSubanagramsAction, SIGNAL (triggered()),
-             viewMapper, SLOT (map()));
-    viewMapper->setMapping (viewSubanagramsAction, VariationSubanagrams);
-    viewMenu->addAction (viewSubanagramsAction);
+             wordMapper, SLOT (map()));
+    wordMapper->setMapping (viewSubanagramsAction, VariationSubanagrams);
+    wordMenu->addAction (viewSubanagramsAction);
 
-    // View Hooks
+    // Word Hooks
     QAction* viewHooksAction = new QAction ("&Hooks...", this);
     Q_CHECK_PTR (viewHooksAction);
-    connect (viewHooksAction, SIGNAL (triggered()), viewMapper, SLOT (map()));
-    viewMapper->setMapping (viewHooksAction, VariationHooks);
-    viewMenu->addAction (viewHooksAction);
+    connect (viewHooksAction, SIGNAL (triggered()), wordMapper, SLOT (map()));
+    wordMapper->setMapping (viewHooksAction, VariationHooks);
+    wordMenu->addAction (viewHooksAction);
 
-    // View Extensions
+    // Word Extensions
     QAction* viewExtensionsAction = new QAction ("&Extensions...", this);
     Q_CHECK_PTR (viewExtensionsAction);
     connect (viewExtensionsAction, SIGNAL (triggered()),
-             viewMapper, SLOT (map()));
-    viewMapper->setMapping (viewExtensionsAction, VariationExtensions);
-    viewMenu->addAction (viewExtensionsAction);
+             wordMapper, SLOT (map()));
+    wordMapper->setMapping (viewExtensionsAction, VariationExtensions);
+    wordMenu->addAction (viewExtensionsAction);
 
-    // View Anagram Hooks
+    // Word Anagram Hooks
     QAction* viewAnagramHooksAction = new QAction ("Anagram Hoo&ks...", this);
     Q_CHECK_PTR (viewAnagramHooksAction);
     connect (viewAnagramHooksAction, SIGNAL (triggered()),
-             viewMapper, SLOT (map()));
-    viewMapper->setMapping (viewAnagramHooksAction, VariationAnagramHooks);
-    viewMenu->addAction (viewAnagramHooksAction);
+             wordMapper, SLOT (map()));
+    wordMapper->setMapping (viewAnagramHooksAction, VariationAnagramHooks);
+    wordMenu->addAction (viewAnagramHooksAction);
 
-    // View Blank Anagrams
+    // Word Blank Anagrams
     QAction* viewBlankAnagramsAction = new QAction ("&Blank Anagrams...",
                                                     this);
     Q_CHECK_PTR (viewBlankAnagramsAction);
     connect (viewBlankAnagramsAction, SIGNAL (triggered()),
-             viewMapper, SLOT (map()));
-    viewMapper->setMapping (viewBlankAnagramsAction, VariationBlankAnagrams);
-    viewMenu->addAction (viewBlankAnagramsAction);
+             wordMapper, SLOT (map()));
+    wordMapper->setMapping (viewBlankAnagramsAction, VariationBlankAnagrams);
+    wordMenu->addAction (viewBlankAnagramsAction);
 
-    // View Blank Matches
+    // Word Blank Matches
     QAction* viewBlankMatchesAction = new QAction ("Blank &Matches...", this);
     Q_CHECK_PTR (viewBlankMatchesAction);
     connect (viewBlankMatchesAction, SIGNAL (triggered()),
-             viewMapper, SLOT (map()));
-    viewMapper->setMapping (viewBlankMatchesAction, VariationBlankMatches);
-    viewMenu->addAction (viewBlankMatchesAction);
+             wordMapper, SLOT (map()));
+    wordMapper->setMapping (viewBlankMatchesAction, VariationBlankMatches);
+    wordMenu->addAction (viewBlankMatchesAction);
 
-    // View Transpositions
+    // Word Transpositions
     QAction* viewTranspositionsAction = new QAction ("&Transpositions...",
                                                      this);
     Q_CHECK_PTR (viewTranspositionsAction);
     connect (viewTranspositionsAction, SIGNAL (triggered()),
-             viewMapper, SLOT (map()));
-    viewMapper->setMapping (viewTranspositionsAction,
+             wordMapper, SLOT (map()));
+    wordMapper->setMapping (viewTranspositionsAction,
                             VariationTranspositions);
-    viewMenu->addAction (viewTranspositionsAction);
+    wordMenu->addAction (viewTranspositionsAction);
 
-    // Connect View signal mappings to viewVariation
-    connect (viewMapper, SIGNAL (mapped (int)), SLOT (viewVariation (int)));
+    // Connect Word signal mappings to viewVariation
+    connect (wordMapper, SIGNAL (mapped (int)), SLOT (viewVariation (int)));
 
     // Help Menu
     QMenu* helpMenu = menuBar()->addMenu ("&Help");
@@ -611,7 +611,7 @@ MainWindow::viewDefinition()
 {
     WordEntryDialog* entryDialog = new WordEntryDialog (this);
     Q_CHECK_PTR (entryDialog);
-    entryDialog->setWindowTitle ("View Word Definition");
+    entryDialog->setWindowTitle ("Word Word Definition");
     entryDialog->resize (entryDialog->minimumSizeHint().width() * 2,
                          entryDialog->minimumSizeHint().height());
     int code = entryDialog->exec();
@@ -637,14 +637,14 @@ MainWindow::viewVariation (int variation)
 {
     QString caption;
     switch (variation) {
-        case VariationAnagrams: caption = "View Anagrams"; break;
-        case VariationSubanagrams: caption = "View Subanagrams"; break;
-        case VariationHooks: caption = "View Hooks"; break;
-        case VariationExtensions: caption = "View Extensions"; break;
-        case VariationAnagramHooks: caption = "View Anagram Hooks"; break;
-        case VariationBlankAnagrams: caption = "View Blank Anagrams"; break;
-        case VariationBlankMatches: caption = "View Blank Matches"; break;
-        case VariationTranspositions: caption = "View Transpositions"; break;
+        case VariationAnagrams: caption = "Word Anagrams"; break;
+        case VariationSubanagrams: caption = "Word Subanagrams"; break;
+        case VariationHooks: caption = "Word Hooks"; break;
+        case VariationExtensions: caption = "Word Extensions"; break;
+        case VariationAnagramHooks: caption = "Word Anagram Hooks"; break;
+        case VariationBlankAnagrams: caption = "Word Blank Anagrams"; break;
+        case VariationBlankMatches: caption = "Word Blank Matches"; break;
+        case VariationTranspositions: caption = "Word Transpositions"; break;
         default: break;
     }
 

@@ -278,88 +278,88 @@ WordTableView::contextMenuEvent (QContextMenuEvent* e)
     Q_CHECK_PTR (popupMenu);
 
     if (wordOptions) {
-        QMenu* viewMenu = new QMenu ("View");
-        Q_CHECK_PTR (viewMenu);
-        popupMenu->addMenu (viewMenu);
+        QMenu* wordMenu = new QMenu ("Word");
+        Q_CHECK_PTR (wordMenu);
+        popupMenu->addMenu (wordMenu);
 
-        QSignalMapper* viewMapper = new QSignalMapper (viewMenu);
-        Q_CHECK_PTR (viewMapper);
+        QSignalMapper* wordMapper = new QSignalMapper (wordMenu);
+        Q_CHECK_PTR (wordMapper);
 
-        // View Definition
-        QAction* definitionAction = new QAction ("Definition", viewMenu);
+        // Word Definition
+        QAction* definitionAction = new QAction ("Definition", wordMenu);
         Q_CHECK_PTR (definitionAction);
         connect (definitionAction, SIGNAL (triggered()),
                  SLOT (viewDefinition()));
-        viewMenu->addAction (definitionAction);
+        wordMenu->addAction (definitionAction);
 
-        // View Anagrams
-        QAction* anagramsAction = new QAction ("Anagrams", viewMenu);
+        // Word Anagrams
+        QAction* anagramsAction = new QAction ("Anagrams", wordMenu);
         Q_CHECK_PTR (anagramsAction);
         connect (anagramsAction, SIGNAL (triggered()),
-                 viewMapper, SLOT (map()));
-        viewMapper->setMapping (anagramsAction, VariationAnagrams);
-        viewMenu->addAction (anagramsAction);
+                 wordMapper, SLOT (map()));
+        wordMapper->setMapping (anagramsAction, VariationAnagrams);
+        wordMenu->addAction (anagramsAction);
 
-        // View Subanagrams
-        QAction* subanagramsAction = new QAction ("Subanagrams", viewMenu);
+        // Word Subanagrams
+        QAction* subanagramsAction = new QAction ("Subanagrams", wordMenu);
         Q_CHECK_PTR (subanagramsAction);
         connect (subanagramsAction, SIGNAL (triggered()),
-                 viewMapper, SLOT (map()));
-        viewMapper->setMapping (subanagramsAction, VariationSubanagrams);
-        viewMenu->addAction (subanagramsAction);
+                 wordMapper, SLOT (map()));
+        wordMapper->setMapping (subanagramsAction, VariationSubanagrams);
+        wordMenu->addAction (subanagramsAction);
 
-        // View Hooks
-        QAction* hooksAction = new QAction ("Hooks", viewMenu);
+        // Word Hooks
+        QAction* hooksAction = new QAction ("Hooks", wordMenu);
         Q_CHECK_PTR (hooksAction);
-        connect (hooksAction, SIGNAL (triggered()), viewMapper, SLOT (map()));
-        viewMapper->setMapping (hooksAction, VariationHooks);
-        viewMenu->addAction (hooksAction);
+        connect (hooksAction, SIGNAL (triggered()), wordMapper, SLOT (map()));
+        wordMapper->setMapping (hooksAction, VariationHooks);
+        wordMenu->addAction (hooksAction);
 
-        // View Extensions
-        QAction* extensionsAction = new QAction ("Extensions", viewMenu);
+        // Word Extensions
+        QAction* extensionsAction = new QAction ("Extensions", wordMenu);
         Q_CHECK_PTR (extensionsAction);
         connect (extensionsAction, SIGNAL (triggered()),
-                 viewMapper, SLOT (map()));
-        viewMapper->setMapping (extensionsAction, VariationExtensions);
-        viewMenu->addAction (extensionsAction);
+                 wordMapper, SLOT (map()));
+        wordMapper->setMapping (extensionsAction, VariationExtensions);
+        wordMenu->addAction (extensionsAction);
 
-        // View Anagram Hooks
-        QAction* anagramHooksAction = new QAction ("Anagram Hooks", viewMenu);
+        // Word Anagram Hooks
+        QAction* anagramHooksAction = new QAction ("Anagram Hooks", wordMenu);
         Q_CHECK_PTR (anagramHooksAction);
         connect (anagramHooksAction, SIGNAL (triggered()),
-                 viewMapper, SLOT (map()));
-        viewMapper->setMapping (anagramHooksAction, VariationAnagramHooks);
-        viewMenu->addAction (anagramHooksAction);
+                 wordMapper, SLOT (map()));
+        wordMapper->setMapping (anagramHooksAction, VariationAnagramHooks);
+        wordMenu->addAction (anagramHooksAction);
 
-        // View Blank Anagrams
+        // Word Blank Anagrams
         QAction* blankAnagramsAction = new QAction ("Blank Anagrams",
-                                                    viewMenu);
+                                                    wordMenu);
         Q_CHECK_PTR (blankAnagramsAction);
         connect (blankAnagramsAction, SIGNAL (triggered()),
-                 viewMapper, SLOT (map()));
-        viewMapper->setMapping (blankAnagramsAction, VariationBlankAnagrams);
-        viewMenu->addAction (blankAnagramsAction);
+                 wordMapper, SLOT (map()));
+        wordMapper->setMapping (blankAnagramsAction, VariationBlankAnagrams);
+        wordMenu->addAction (blankAnagramsAction);
 
-        // View Blank Matches
-        QAction* blankMatchesAction = new QAction ("Blank Matches", viewMenu);
+        // Word Blank Matches
+        QAction* blankMatchesAction = new QAction ("Blank Matches", wordMenu);
         Q_CHECK_PTR (blankMatchesAction);
         connect (blankMatchesAction, SIGNAL (triggered()),
-                 viewMapper, SLOT (map()));
-        viewMapper->setMapping (blankMatchesAction, VariationBlankMatches);
-        viewMenu->addAction (blankMatchesAction);
+                 wordMapper, SLOT (map()));
+        wordMapper->setMapping (blankMatchesAction, VariationBlankMatches);
+        wordMenu->addAction (blankMatchesAction);
 
-        // View Transpositions
+        // Word Transpositions
         QAction* transpositionsAction = new QAction ("Transpositions",
-                                                     viewMenu);
+                                                     wordMenu);
         Q_CHECK_PTR (transpositionsAction);
         connect (transpositionsAction, SIGNAL (triggered()),
-                 viewMapper, SLOT (map()));
-        viewMapper->setMapping (transpositionsAction,
+                 wordMapper, SLOT (map()));
+        wordMapper->setMapping (transpositionsAction,
                                 VariationTranspositions);
-        viewMenu->addAction (transpositionsAction);
+        wordMenu->addAction (transpositionsAction);
 
-        // Connect View signal mappings to viewVariation
-        connect (viewMapper, SIGNAL (mapped (int)),
+        // Connect Word signal mappings to viewVariation
+        connect (wordMapper, SIGNAL (mapped (int)),
                  SLOT (viewVariation (int)));
     }
 
