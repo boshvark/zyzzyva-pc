@@ -856,7 +856,7 @@ MainWindow::connectToDatabase()
 
         QLabel* dialogLabel = new QLabel ("Creating " + lexicon +
                                           " database...");
-        dialog->setWindowTitle ("Creating " + lexicon + "Database");
+        dialog->setWindowTitle ("Creating " + lexicon + " Database");
         dialog->setLabel (dialogLabel);
 
         CreateDatabaseThread* thread = new CreateDatabaseThread
