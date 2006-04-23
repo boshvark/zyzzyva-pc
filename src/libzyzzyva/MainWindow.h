@@ -79,6 +79,7 @@ class MainWindow : public QMainWindow
     virtual void closeEvent (QCloseEvent* event);
 
     private:
+    void makeUserDirs();
     int  importText (const QString& file, const QString& lexiconName);
     bool importDawg (const QString& file, const QString& lexiconName,
                      bool reverse = false, QString* errString = 0,

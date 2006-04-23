@@ -322,7 +322,7 @@ void
 NewQuizDialog::loadQuiz()
 {
     QString filename = QFileDialog::getOpenFileName (this, "Load Quiz",
-        Auxil::getQuizDir(), "Zyzzyva Quiz Files (*.zzq)");
+        Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)");
 
     if (filename.isEmpty())
         return;

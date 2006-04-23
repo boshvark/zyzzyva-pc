@@ -299,6 +299,8 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     Q_CHECK_PTR (lexiconLabel);
     statusBar()->addWidget (lexiconLabel, 1);
 
+    makeUserDirs();
+
     readSettings (true);
 
     setWindowTitle (APPLICATION_TITLE);
@@ -817,9 +819,8 @@ MainWindow::connectToDatabase()
     QString definitionFilename = Auxil::getWordsDir() +
         prefixMap.value (lexicon) + ".txt";
 
-    QString dbPath = Auxil::getUserDataDir() + "/lexicons";
+    QString dbPath = Auxil::getUserDir() + "/lexicons";
     QString dbFilename = dbPath + "/" + lexicon + ".db";
-
     QFile dbFile (dbFilename);
     QDir dir;
     dir.mkpath (dbPath);
@@ -1216,6 +1217,24 @@ MainWindow::importChecksums (const QString& filename)
         checksums.append (line.toUShort());
     }
     return checksums;
+}
+
+//---------------------------------------------------------------------------
+//  importText
+//
+//! Import words from a text file.
+//
+//! @param file the file to import words from
+//! @param lexiconName the name of the lexicon
+//! @return the number of imported words
+//---------------------------------------------------------------------------
+void
+MainWindow::makeUserDirs()
+{
+    QDir dir;
+    dir.mkpath (Auxil::getQuizDir() + "/saved");
+    dir.mkpath (Auxil::getSearchDir() + "/saved");
+    dir.mkpath (Auxil::getUserWordsDir() + "/saved");
 }
 
 //---------------------------------------------------------------------------

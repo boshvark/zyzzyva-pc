@@ -139,7 +139,7 @@ WordTableView::exportRequested()
     }
 
     QString filename = QFileDialog::getSaveFileName (this, "Save Word List",
-        Auxil::getWordsDir() + "/saved", "Text Files (*.txt)");
+        Auxil::getUserWordsDir() + "/saved", "Text Files (*.txt)");
 
     if (filename.isEmpty())
         return;

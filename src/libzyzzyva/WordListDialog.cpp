@@ -155,7 +155,8 @@ void
 WordListDialog::openFileClicked()
 {
     QString filename = QFileDialog::getOpenFileName (this,
-        "Open Word List File", Auxil::getWordsDir(), "Text Files (*.txt)");
+        "Open Word List File", Auxil::getUserWordsDir() + "/saved",
+        "Text Files (*.txt)");
 
     if (filename.isEmpty())
         return;

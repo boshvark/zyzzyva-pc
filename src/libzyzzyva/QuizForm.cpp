@@ -1457,7 +1457,7 @@ QuizForm::recordQuestionStats (bool correct)
 {
     QString lexicon = quizEngine->getQuizSpec().getLexicon();
 
-    QString dirName = Auxil::getQuizDir() + "/stats/" + lexicon;
+    QString dirName = Auxil::getQuizDir() + "/data/" + lexicon;
     QDir dir (dirName);
     if (!dir.exists() && !dir.mkpath (dirName)) {
         qWarning ("Cannot create quiz stats directory\n");

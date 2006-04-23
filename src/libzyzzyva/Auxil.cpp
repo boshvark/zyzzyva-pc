@@ -205,7 +205,7 @@ Auxil::getHelpDir()
 QString
 Auxil::getQuizDir()
 {
-    return getRootDir() + "/data/quiz";
+    return getUserDir() + "/quiz";
 }
 
 //---------------------------------------------------------------------------
@@ -219,7 +219,7 @@ Auxil::getQuizDir()
 QString
 Auxil::getSearchDir()
 {
-    return getRootDir() + "/data/search";
+    return getUserDir() + "/search";
 }
 
 //---------------------------------------------------------------------------
@@ -250,14 +250,27 @@ Auxil::getWordsDir()
 }
 
 //---------------------------------------------------------------------------
-//  getUserDataDir
+//  getUserWordsDir
 //
-//! Return the top-level directory where application user data can be saved.
+//! Return the top-level user directory for word lists.
 //
 //! @return the directory name
 //---------------------------------------------------------------------------
 QString
-Auxil::getUserDataDir()
+Auxil::getUserWordsDir()
+{
+    return getUserDir() + "/words";
+}
+
+//---------------------------------------------------------------------------
+//  getUserDir
+//
+//! Return the top-level directory where user data can be saved.
+//
+//! @return the directory name
+//---------------------------------------------------------------------------
+QString
+Auxil::getUserDir()
 {
     return QDir::homePath() + "/.zyzzyva";
 }

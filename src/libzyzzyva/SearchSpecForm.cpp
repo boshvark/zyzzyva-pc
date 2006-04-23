@@ -264,7 +264,7 @@ void
 SearchSpecForm::loadSearch()
 {
     QString filename = QFileDialog::getOpenFileName (this, "Load Search",
-        Auxil::getSearchDir(), "Zyzzyva Search Files (*.zzs)");
+        Auxil::getSearchDir() + "/saved", "Zyzzyva Search Files (*.zzs)");
 
     if (filename.isEmpty())
         return;
