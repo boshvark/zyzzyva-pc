@@ -68,21 +68,6 @@ WordEngine::connectToDatabase (const QString& filename, QString* errString)
 }
 
 //---------------------------------------------------------------------------
-//  initDatabase
-//
-//! Initialize the database contents from the currently loaded lexicon.
-//! Assumes the database has already been opened.
-//
-//! @param filename the name of the database file
-//! @param errString returns the error string in case of error
-//! @return true if successful, false otherwise
-//---------------------------------------------------------------------------
-bool
-WordEngine::initDatabase()
-{
-}
-
-//---------------------------------------------------------------------------
 //  importTextFile
 //
 //! Import words from a text file.  The file is assumed to be in plain text

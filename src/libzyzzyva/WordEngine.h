@@ -43,7 +43,6 @@ class WordEngine : public QObject
 
     void clearLexicon();
     bool connectToDatabase (const QString& filename, QString* errString = 0);
-    bool initDatabase();
     int importTextFile (const QString& filename, const QString& lexName, bool
                         loadDefinitions = true, QString* errString = 0);
     bool importDawgFile (const QString& filename, const QString& lexName, bool
