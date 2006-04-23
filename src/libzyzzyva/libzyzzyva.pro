@@ -34,6 +34,15 @@ OBJECTS_DIR = build/obj
 INCLUDEPATH += build/moc
 DEPENDPATH += build/moc
 
+unix {
+    VERSION = $$system(cat $$ROOT/VERSION)
+    DEFINES += ZYZZYVA_VERSION=$$VERSION
+}
+win32 {
+    VERSION = $$system(type $$ROOT/VERSION)
+    DEFINES += ZYZZYVA_VERSION=$$VERSION
+}
+
 # Source files
 SOURCES = \
     AboutDialog.cpp \
