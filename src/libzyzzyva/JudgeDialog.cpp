@@ -144,8 +144,12 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     titleHlay->addStretch (1);
 
     QString lexicon = engine->getLexiconName();
+    QDate date = Auxil::lexiconToDate (lexicon);
+    QString dateStr = "";
+    if (date.isValid())
+        dateStr = date.toString("MMMM d, yyyy");
     QLabel* lexiconLabel = new QLabel ("Lexicon: " + lexicon + "\n" +
-                                       Auxil::lexiconToDate (lexicon));
+                                       dateStr);
     Q_CHECK_PTR (lexiconLabel);
     lexiconLabel->setFont (titleFont);
     lexiconLabel->setAlignment (Qt::AlignRight);

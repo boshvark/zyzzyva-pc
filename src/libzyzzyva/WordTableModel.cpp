@@ -232,7 +232,7 @@ WordTableModel::data (const QModelIndex& index, int role) const
             }
             int probOrder = wordEngine->getProbabilityOrder (wordUpper);
             wordItem.setProbabilityOrder (probOrder);
-            return probOrder;
+            return (probOrder ? QString::number (probOrder) : QString());
         }
 
         case FRONT_HOOK_COLUMN:

@@ -638,15 +638,15 @@ Auxil::stringToQuizType (const QString& s)
 //
 //! Convert a lexicon name to the date the lexicon was last updated
 //
-//! @param s the string representation
-//! @return the quiz type
+//! @param s the lexicon name
+//! @return the date the lexicon was last modified
 //---------------------------------------------------------------------------
-QString
+QDate
 Auxil::lexiconToDate (const QString& lexicon)
 {
     if (lexicon == "OWL+LWL")
-        return "July 1, 2003";
+        return QDate (2003, 7, 1);
     if (lexicon == "OWL2+LWL")
-        return "March 1, 2006";
-    return QString::null;
+        return QDate (2006, 3, 1);
+    return QDate();
 }
