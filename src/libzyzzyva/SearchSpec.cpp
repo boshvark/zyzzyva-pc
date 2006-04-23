@@ -28,7 +28,9 @@
 
 using namespace Defs;
 
+const int CURRENT_VERSION = 1;
 const QString XML_TOP_ELEMENT = "zyzzyva-search";
+const QString XML_VERSION_ATTR = "version";
 const QString XML_CONDITIONS_ELEMENT = "conditions";
 const QString XML_CONJUNCTION_ELEMENT = "and";
 const QString XML_DISJUNCTION_ELEMENT = "or";
@@ -65,6 +67,7 @@ SearchSpec::asDomElement() const
 {
     QDomDocument doc;
     QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
+    topElement.setAttribute (XML_VERSION_ATTR, CURRENT_VERSION);
 
     if (conditions.empty())
         return topElement;
@@ -99,6 +102,15 @@ SearchSpec::fromDomElement (const QDomElement& element)
     if (element.tagName() != XML_TOP_ELEMENT)
         return false;
 
+    SearchSpec tmpSpec;
+
+    if (element.hasAttribute (XML_VERSION_ATTR)) {
+        bool ok;
+        tmpSpec.version = element.attribute (XML_VERSION_ATTR).toInt (&ok);
+        if (!ok)
+            return false;
+    }
+
     QDomElement elem = element.firstChild().toElement();
     if (elem.isNull() || (elem.tagName() != XML_CONDITIONS_ELEMENT))
         return false;
@@ -110,7 +122,6 @@ SearchSpec::fromDomElement (const QDomElement& element)
         return false;
     }
 
-    SearchSpec tmpSpec;
     tmpSpec.conjunction = (elem.tagName() == XML_CONJUNCTION_ELEMENT);
 
     for (elem = elem.firstChild().toElement(); !elem.isNull();
@@ -124,6 +135,8 @@ SearchSpec::fromDomElement (const QDomElement& element)
 
     if (tmpSpec.conditions.empty())
         return false;
+
+    tmpSpec.update();
 
     *this = tmpSpec;
     return true;
@@ -332,3 +345,27 @@ SearchSpec::optimize()
     conditions = wildcardConditions + newConditions;
 }
 
+
+//---------------------------------------------------------------------------
+//  update
+//
+//! Update older search specs so they are current.  This process includes
+//! replacing obsolete search conditions with equivalent current ones.  For
+//! example, the meaning of the Probability Order condition has changed - its
+//! old meaning is now represented by the Limit By Probability Order
+//! condition.
+//---------------------------------------------------------------------------
+void
+SearchSpec::update()
+{
+    // 0: Change Probability Order conditions to Limit By Probability Order
+    if (version == 0) {
+        QMutableListIterator<SearchCondition> it (conditions);
+        while (it.hasNext()) {
+            SearchCondition& condition = it.next();
+            if (condition.type == SearchCondition::ProbabilityOrder)
+                condition.type = SearchCondition::LimitByProbabilityOrder;
+        }
+        ++version;
+    }
+}

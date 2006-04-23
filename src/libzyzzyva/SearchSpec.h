@@ -34,14 +34,16 @@
 class SearchSpec
 {
     public:
-    SearchSpec() : conjunction (true) { }
+    SearchSpec() : version (0), conjunction (true) { }
     ~SearchSpec() { }
 
     QString asString() const;
     QDomElement asDomElement() const;
     bool fromDomElement (const QDomElement& element);
     void optimize();
+    void update();
 
+    int version;
     bool conjunction;
     QList<SearchCondition> conditions;
 };

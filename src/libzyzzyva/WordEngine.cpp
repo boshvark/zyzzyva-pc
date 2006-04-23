@@ -291,8 +291,8 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     bool mustSearchGraph = false;
     bool wordListCondition = false;
     bool numAnagramsCondition = false;
-    int probRangeMin = 0;
-    int probRangeMax = 0;
+    int probLimitRangeMin = 0;
+    int probLimitRangeMax = 0;
     int i = 0;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
@@ -323,9 +323,9 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             }
             break;
 
-            case SearchCondition::ProbabilityOrder:
-            probRangeMin = condition.minValue;
-            probRangeMax = condition.maxValue;
+            case SearchCondition::LimitByProbabilityOrder:
+            probLimitRangeMin = condition.minValue;
+            probLimitRangeMax = condition.maxValue;
             break;
 
             default:
@@ -354,15 +354,15 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     }
 
     // Keep only words in the probability order range
-    if (probRangeMax > 0) {
+    if (probLimitRangeMax > 0) {
 
-        if (probRangeMin > wordList.size()) {
+        if (probLimitRangeMin > wordList.size()) {
             wordList.clear();
             return wordList;
         }
 
-        if (probRangeMin <= 0)
-            probRangeMin = 1;
+        if (probLimitRangeMin <= 0)
+            probLimitRangeMin = 1;
 
         LetterBag bag;
         QMap<QString, QString> probMap;
@@ -376,8 +376,9 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             probMap.insert (radix, word);
         }
 
-        wordList = probMap.values().mid (probRangeMin - 1,
-                                         probRangeMax - probRangeMin + 1);
+        wordList = probMap.values().mid (probLimitRangeMin - 1,
+                                         probLimitRangeMax - probLimitRangeMin
+                                         + 1);
     }
 
     // Convert to all caps if necessary

@@ -47,6 +47,7 @@ class SearchCondition
         NumAnagrams,
         Probability,
         ProbabilityOrder,
+        LimitByProbabilityOrder,
 
         // Obsolete search condition types
         OldExactLength,

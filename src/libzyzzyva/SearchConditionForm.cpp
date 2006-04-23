@@ -78,7 +78,9 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
           << Auxil::searchTypeToString (SearchCondition::BelongToGroup)
           << Auxil::searchTypeToString (SearchCondition::InWordList)
           << Auxil::searchTypeToString (SearchCondition::NumAnagrams)
-          << Auxil::searchTypeToString (SearchCondition::ProbabilityOrder);
+          << Auxil::searchTypeToString (SearchCondition::ProbabilityOrder)
+          << Auxil::searchTypeToString
+             (SearchCondition::LimitByProbabilityOrder);
 
     typeCbox = new QComboBox;
     Q_CHECK_PTR (typeCbox);
@@ -258,6 +260,7 @@ SearchConditionForm::getSearchCondition() const
         case SearchCondition::NumAnagrams:
         case SearchCondition::Probability:
         case SearchCondition::ProbabilityOrder:
+        case SearchCondition::LimitByProbabilityOrder:
         condition.minValue = paramMinSbox->value();
         condition.maxValue = paramMaxSbox->value();
         break;
@@ -316,6 +319,7 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
         case SearchCondition::NumAnagrams:
         case SearchCondition::Probability:
         case SearchCondition::ProbabilityOrder:
+        case SearchCondition::LimitByProbabilityOrder:
         paramMinSbox->setValue (condition.minValue);
         paramMaxSbox->setValue (condition.maxValue);
         break;
@@ -429,6 +433,7 @@ SearchConditionForm::typeChanged (const QString& string)
 
         case SearchCondition::NumAnagrams:
         case SearchCondition::ProbabilityOrder:
+        case SearchCondition::LimitByProbabilityOrder:
         negationCbox->setCheckState (Qt::Unchecked);
         negationCbox->setEnabled (false);
         paramMinSbox->setMaximum (MAX_MAX_INT_VALUE);
