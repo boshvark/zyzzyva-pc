@@ -799,8 +799,6 @@ MainWindow::tabStatusChanged (const QString& status)
 //  connectToDatabase
 //
 //! Connect to the database.  Create the database if necessary.
-//
-//! @param the new status string
 //---------------------------------------------------------------------------
 void
 MainWindow::connectToDatabase()
