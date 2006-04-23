@@ -814,11 +814,15 @@ MainWindow::connectToDatabase()
     if (!prefixMap.contains (lexicon))
         return;
 
-    QString prefix = Auxil::getWordsDir() + prefixMap.value (lexicon);
-    QString dbFilename = prefix + ".db";
-    QString definitionFilename = prefix + ".txt";
+    QString definitionFilename = Auxil::getWordsDir() +
+        prefixMap.value (lexicon) + ".txt";
+
+    QString dbPath = Auxil::getUserDataDir() + "/lexicons";
+    QString dbFilename = dbPath + "/" + lexicon + ".db";
 
     QFile dbFile (dbFilename);
+    QDir dir;
+    dir.mkpath (dbPath);
 
     QString dbError;
     bool createDatabase = false;
