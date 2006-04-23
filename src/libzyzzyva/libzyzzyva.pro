@@ -39,7 +39,7 @@ unix {
     DEFINES += ZYZZYVA_VERSION=$$VERSION
 }
 win32 {
-    VERSION = $$system(type $$ROOT/VERSION)
+    VERSION = $$system(type ..\..\VERSION)
     DEFINES += ZYZZYVA_VERSION=$$VERSION
 }
 
