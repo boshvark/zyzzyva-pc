@@ -64,17 +64,23 @@ CreateDatabaseThread::runPrivate()
     SearchSpec searchSpec;
     searchSpec.conditions.append (searchCondition);
 
+    // Start at 5% progress
+    emit (steps (100));
+    emit (progress (4));
+
     QStringList allWords = wordEngine->search (searchSpec, true);
 
     // Total number of progress steps is number of words times 4.
     // - One for finding each word's stats
     // - One for reading each word's definitions
     // - Two for inserting each word's values into the database
-    // - Two total for creating indexes and cleaning up
+    // - Two total for creating indexes
     int numWords = allWords.size();
+    int baseProgress = numWords * 6 / 16;
     int numSteps = numWords * 6 + 1;
     emit steps (numSteps);
-    int stepNum = 0;
+    int stepNum = baseProgress;
+    emit progress (stepNum);
 
     LetterBag letterBag;
     QSet<QString> wordSet;
@@ -102,7 +108,7 @@ CreateDatabaseThread::runPrivate()
         }
         ++stepNum;
     }
-    stepNum = numWords;
+    stepNum = baseProgress + numWords;
     emit progress (stepNum);
 
     // STEP 2: Read word definitions
@@ -130,7 +136,7 @@ CreateDatabaseThread::runPrivate()
         }
         delete buffer;
     }
-    stepNum = numWords * 2;
+    stepNum = baseProgress + numWords * 2;
     emit progress (stepNum);
 
     QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
@@ -208,24 +214,20 @@ CreateDatabaseThread::runPrivate()
     }
 
     transactionQuery.exec ("END TRANSACTION");
-    stepNum = numWords * 4;
+    stepNum = baseProgress + numWords * 4;
     if (cancelled)
         return;
     emit progress (stepNum);
 
     // STEP 4: Create indexes and vacuum
     query.exec ("CREATE UNIQUE INDEX word_index on words (word)");
-    stepNum += (2 * numWords / 3);
+    stepNum += numWords;
     if (cancelled)
         return;
     emit progress (stepNum);
     query.exec ("CREATE INDEX length_index on words (length)");
-    stepNum += (2 * numWords / 3);
     if (cancelled)
         return;
-    emit progress (stepNum);
-    query.exec ("VACUUM");
-    stepNum += (2 * numWords / 3);
     emit progress (numSteps);
 }
 
