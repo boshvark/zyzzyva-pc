@@ -73,8 +73,8 @@ WordEngineTest::tryImport()
                         "/north-american/6-letter-stems.txt");
     engine.importStems (Auxil::getWordsDir() +
                         "/north-american/7-letter-stems.txt");
-    engine.importNumAnagrams (Auxil::getWordsDir() +
-                              "/north-american/owl2-num-anagrams.txt", true);
+    //engine.importNumAnagrams (Auxil::getWordsDir() +
+    //                          "/north-american/owl2-num-anagrams.txt", true);
 
     MainSettings::setLetterDistribution ("A:9 B:2 C:2 D:4 E:12 F:2 G:3 H:2 "
                                          "I:9 J:1 K:1 L:4 M:2 N:6 O:8 P:2 "
