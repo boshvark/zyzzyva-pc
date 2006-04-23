@@ -31,6 +31,7 @@
 #include <QImage>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QSqlDatabase>
 #include <QStackedWidget>
 #include <QString>
 #include <QTimer>
@@ -107,6 +108,7 @@ class QuizForm : public ActionForm
     void clearTileTheme();
     void reflowLayout();
     bool responseMatchesQuestion (const QString& response) const;
+    void connectToDatabase();
     void recordQuestionStats (bool correct);
 
     void timerEvent (QTimerEvent* event);
@@ -146,6 +148,8 @@ class QuizForm : public ActionForm
     QString tileTheme;
     bool checkBringsJudgment;
     bool recordStatsBlocked;
+    QSqlDatabase db;
+    QString dbConnectionName;
 
     QTimer* displayAnswerTimer;
     int currentDisplayAnswer;

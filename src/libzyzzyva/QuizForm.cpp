@@ -44,12 +44,14 @@
 #include <QColor>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSqlQuery>
 #include <QTimerEvent>
 #include <QGridLayout>
 #include <QTextStream>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <ctime>
 
 using namespace Defs;
 
@@ -327,6 +329,11 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
 //---------------------------------------------------------------------------
 QuizForm::~QuizForm()
 {
+    if (db.isOpen()) {
+        db.close();
+        // FIXME: should also remove from list of databases - change db to
+        // pointer to QSqlDatabase instead, so it can be deleted?
+    }
     delete quizEngine;
 }
 
@@ -503,6 +510,8 @@ QuizForm::newQuiz (const QuizSpec& spec)
     setQuizNameFromFilename (spec.getFilename());
 
     QTimer::singleShot (0, this, SLOT (selectInputArea()));
+
+    connectToDatabase();
 
     setUnsavedChanges (false);
     return true;
@@ -1445,15 +1454,12 @@ QuizForm::responseMatchesQuestion (const QString& response) const
 }
 
 //---------------------------------------------------------------------------
-//  recordQuestionStats
+//  connectToDatabase
 //
-//! Record statistics for the current quiz question.
-//
-//! \param question the question whose statistics to record
-//! \param correct whether to record a correct or incorrect response
+//! Connect to the database.  Create the database if necessary.
 //---------------------------------------------------------------------------
 void
-QuizForm::recordQuestionStats (bool correct)
+QuizForm::connectToDatabase()
 {
     QString lexicon = quizEngine->getQuizSpec().getLexicon();
 
@@ -1464,100 +1470,114 @@ QuizForm::recordQuestionStats (bool correct)
         return;
     }
 
-    // FIXME: This has absolutely no protection for concurrent access!
+    QString quizType = quizTypeLabel->text();
+    QString dbFilename = dirName + "/" + quizType + ".db";
+
+    // Get random connection name
+    Rand rng (Rand::MarsagliaMwc, std::time (0), Auxil::getPid());
+    unsigned int r = rng.rand();
+    dbConnectionName = "quiz" + QString::number (r);
+    db = QSqlDatabase::addDatabase ("QSQLITE", dbConnectionName);
+    db.setDatabaseName (dbFilename);
+    if (!db.open())
+        return;
+
+    // For some reason, CREATE TABLE IF NOT EXISTS is not working?  Syntax
+    // error near "NOT"
+
+    QSqlQuery query (db);
+    query.exec ("SELECT name FROM sqlite_master WHERE type='table' "
+                "AND name='questions'");
+    if (!query.next()) {
+        query.exec ("CREATE TABLE questions "
+            "(question varchar(16), correct integer, incorrect integer, "
+            "streak integer, last_correct integer, difficulty integer)");
+    }
+
+    query.exec ("SELECT name FROM sqlite_master WHERE type='index' "
+                "AND name='question_index' AND tbl_name='questions'");
+    if (!query.next()) {
+        query.exec ("CREATE UNIQUE INDEX question_index ON questions "
+                    "(question)");
+    }
+}
+
+//---------------------------------------------------------------------------
+//  recordQuestionStats
+//
+//! Record statistics for the current quiz question.
+//
+//! \param question the question whose statistics to record
+//! \param correct whether to record a correct or incorrect response
+//---------------------------------------------------------------------------
+void
+QuizForm::recordQuestionStats (bool correct)
+{
+    if (!db.isOpen())
+        return;
 
     QString question = quizEngine->getQuestion();
-    QString quizType = quizTypeLabel->text();
 
-    QString filename = dirName + "/" + quizType + ".txt";
-    QString tmpFilename = filename + ".tmp";
+    QSqlQuery query (db);
+    query.prepare ("SELECT correct, incorrect, streak, last_correct, "
+                   "difficulty FROM questions WHERE question=?");
+    query.bindValue (0, question);
+    query.exec();
 
-    QFile readFile (filename);
-    if (!readFile.open (QIODevice::ReadOnly | QIODevice::Text)) {
-        qWarning ("Cannot read quiz stats file\n");
-        //return;
-    }
-    QTextStream readStream (&readFile);
+    if (query.next()) {
+        int numCorrect = query.value (0).toInt();
+        int numIncorrect = query.value (1).toInt();
+        int streak = query.value (2).toInt();
+        int lastCorrect = query.value (3).toInt();
+        int difficulty = query.value (4).toInt();
 
-    QFile writeFile (tmpFilename);
-    if (!writeFile.open (QIODevice::WriteOnly | QIODevice::Text)) {
-        qWarning ("Cannot write to temporary quiz stats file\n");
-        return;
-    }
-    QTextStream writeStream (&writeFile);
-
-    bool written = false;
-
-    QString line;
-    while (!(line = readStream.readLine (MAX_INPUT_LINE_LEN)).isNull()) {
-        if (written) {
-            writeStream << line;
-            endl (writeStream);
-            continue;
+        if (correct) {
+            ++numCorrect;
+            if (streak < 0)
+                streak = 1;
+            else
+                ++streak;
+            lastCorrect = std::time (0);
         }
-
-        QString word = line.section (' ', 0, 0);
-
-        // word correct incorrect streak attitude
-        // Attitude: 1 always ask, 0 neutral, -1 never ask
-
-        if (word == question) {
-            int numCorrect = line.section (' ', 1, 1).toInt();
-            int numIncorrect = line.section (' ', 2, 2).toInt();
-            int streak = line.section (' ', 3, 3).toInt();
-            int attitude = line.section (' ', 4, 4).toInt();
-
-            if (correct) {
-                ++numCorrect;
-                if (streak < 0)
-                    streak = 1;
-                else
-                    ++streak;
-            }
-            else {
-                ++numIncorrect;
-                if (streak > 0)
-                    streak = -1;
-                else
-                    --streak;
-            }
-
-            writeStream << question << " " << numCorrect << " " <<
-                numIncorrect << " " << streak << " " << attitude;
-            endl (writeStream);
-            written = true;
-        }
-
         else {
-            if (word > question) {
-                if (correct)
-                    writeStream << question << " 1 0 1 0";
-                else
-                    writeStream << question << " 0 1 -1 0";
-
-                endl (writeStream);
-                written = true;
-            }
-
-            writeStream << line;
-            endl (writeStream);
+            ++numIncorrect;
+            if (streak > 0)
+                streak = -1;
+            else
+                --streak;
         }
+
+        query.prepare ("UPDATE questions SET correct=?, incorrect=?, "
+                       "streak=?, last_correct=?, difficulty=? "
+                       "WHERE question=?");
+        query.bindValue (0, numCorrect);
+        query.bindValue (1, numIncorrect);
+        query.bindValue (2, streak);
+        query.bindValue (3, lastCorrect);
+        // XXX: Fix difficulty ratings!
+        query.bindValue (4, difficulty);
+        query.bindValue (5, question);
+        query.exec();
     }
 
-    if (!written) {
-        if (correct)
-            writeStream << question << " 1 0 1 0";
-        else
-            writeStream << question << " 0 1 -1 0";
-
-        endl (writeStream);
+    else {
+        int numCorrect = (correct ? 1 : 0);
+        int numIncorrect = (correct ? 0 : 1);
+        int streak = (correct ? 1 : -1);
+        int lastCorrect = (correct ? std::time (0) : 0);
+        // XXX: Fix difficulty ratings!
+        int difficulty = 50;
+        query.prepare ("INSERT INTO questions (question, correct, "
+                       "incorrect, streak, last_correct, difficulty) "
+                       "VALUES (?, ?, ?, ?, ?, ?)");
+        query.bindValue (0, question);
+        query.bindValue (1, numCorrect);
+        query.bindValue (2, numIncorrect);
+        query.bindValue (3, streak);
+        query.bindValue (4, lastCorrect);
+        query.bindValue (5, difficulty);
+        query.exec();
     }
-
-    readFile.close();
-    writeFile.close();
-
-    readFile.remove();
-    writeFile.rename (filename);
 }
 
 //---------------------------------------------------------------------------
