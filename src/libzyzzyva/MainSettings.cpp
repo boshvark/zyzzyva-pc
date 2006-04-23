@@ -168,8 +168,7 @@ MainSettings::readSettings()
         = settings.value (SETTINGS_JUDGE_SAVE_LOG, true).toBool();
     instance->judgeLogDir
         = settings.value (SETTINGS_JUDGE_LOG_DIR,
-                          Auxil::getRootDir() +
-                          "/data/judge/saved").toString();
+                          Auxil::getUserDir() + "/judge").toString();
     settings.endGroup();
 }
 

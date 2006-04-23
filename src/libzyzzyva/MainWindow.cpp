@@ -1235,6 +1235,7 @@ MainWindow::makeUserDirs()
     dir.mkpath (Auxil::getQuizDir() + "/saved");
     dir.mkpath (Auxil::getSearchDir() + "/saved");
     dir.mkpath (Auxil::getUserWordsDir() + "/saved");
+    dir.mkpath (Auxil::getUserDir() + "/judge");
 }
 
 //---------------------------------------------------------------------------
