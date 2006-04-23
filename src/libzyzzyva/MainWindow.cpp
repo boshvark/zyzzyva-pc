@@ -376,7 +376,6 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
     QString numWordsFile;
     QString numAnagramsFile;
     QString checksumFile;
-    QString dbFile;
     bool dawg = true;
     if (lexicon == "Custom") {
         importFile = MainSettings::getAutoImportFile();
@@ -393,11 +392,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
             QString prefix = Auxil::getWordsDir() + prefixMap.value (lexicon);
             importFile =        prefix + ".dwg";
             reverseImportFile = prefix + "-r.dwg";
-            //definitionFile =    prefix + ".txt";
-            //numAnagramsFile =   prefix + "-num-anagrams.txt";
-            //numWordsFile =      prefix + "-num-words.txt";
             checksumFile =      prefix + "-checksums.txt";
-            dbFile =            prefix + ".db";
         }
     }
 
