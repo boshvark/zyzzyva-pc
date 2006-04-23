@@ -627,6 +627,13 @@ WordEngine::matchesConditions (const QString& word, const
             }
             break;
 
+            case SearchCondition::ProbabilityOrder: {
+                int num = getProbabilityOrder (wordUpper); 
+                if ((num < condition.minValue) || (num > condition.maxValue))
+                    return false;
+            }
+            break;
+
             default: break;
         }
     }
@@ -820,6 +827,28 @@ WordEngine::numAnagrams (const QString& word) const
     else {
         QString alpha = Auxil::getAlphagram (word);
         return numAnagramsMap.contains (alpha) ? numAnagramsMap[alpha] : 0;
+    }
+
+    return 0;
+}
+
+//---------------------------------------------------------------------------
+//  getProbabilityOrder
+//
+//! Get the probability order for a word.
+//
+//! @param word the word
+//! @return the probability order
+//---------------------------------------------------------------------------
+int
+WordEngine::getProbabilityOrder (const QString& word) const
+{
+    if (db.isOpen()) {
+        QString qstr = "SELECT probability_order FROM words WHERE word='" +
+            word + "'";
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            return query.value (0).toInt();
     }
 
     return 0;

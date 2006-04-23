@@ -63,6 +63,7 @@ class WordEngine : public QObject
                             conditions) const;
     bool isSetMember (const QString& word, SearchSet ss) const;
     int numAnagrams (const QString& word) const;
+    int getProbabilityOrder (const QString& word) const;
     QStringList nonGraphSearch (const SearchSpec& spec) const;
     void addDefinition (const QString& word, const QString& definition);
     QString replaceDefinitionLinks (const QString& definition, int maxDepth,
