@@ -57,9 +57,11 @@ class WordTableModel : public QAbstractTableModel
         QString getBackHooks() const { return backHooks; }
         bool getFrontParentHook() const { return frontParentHook; }
         bool getBackParentHook() const { return backParentHook; }
+        int getProbabilityOrder() const { return probabilityOrder; }
         void setWord (const QString& w) { word = w; }
         void setType (WordType t) { type = t; }
         void setWildcard (const QString& w) { wildcard = w; }
+        void setProbabilityOrder (int p) { probabilityOrder = p; }
 
         void setHooks (const QString& front, const QString& back);
         void setParentHooks (bool front, bool back);
@@ -83,6 +85,7 @@ class WordTableModel : public QAbstractTableModel
         QString backHooks;
         bool frontParentHook;
         bool backParentHook;
+        int probabilityOrder;
     };
 
     Q_OBJECT
@@ -128,10 +131,11 @@ class WordTableModel : public QAbstractTableModel
     public:
     enum {
         WILDCARD_MATCH_COLUMN = 0,
-        FRONT_HOOK_COLUMN = 1,
-        WORD_COLUMN = 2,
-        BACK_HOOK_COLUMN = 3,
-        DEFINITION_COLUMN = 4
+        PROBABILITY_ORDER_COLUMN = 1,
+        FRONT_HOOK_COLUMN = 2,
+        WORD_COLUMN = 3,
+        BACK_HOOK_COLUMN = 4,
+        DEFINITION_COLUMN = 5
     };
 
     static const QChar PARENT_HOOK_CHAR;

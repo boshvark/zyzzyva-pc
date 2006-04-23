@@ -31,13 +31,14 @@ using namespace std;
 
 const QChar WordTableModel::PARENT_HOOK_CHAR = '-';
 const QString WILDCARD_MATCH_HEADER = "?";
+const QString PROBABILITY_ORDER_HEADER = "P";
 const QString FRONT_HOOK_HEADER = "<";
 const QString WORD_HEADER = "Word";
 const QString BACK_HOOK_HEADER = ">";
 const QString DEFINITION_HEADER = "Definition";
 const int ITEM_MARGIN = 5;
 const int DEFAULT_COLUMN_WIDTH = 100;
-const int NUM_COLUMNS = 5;
+const int NUM_COLUMNS = 6;
 
 //---------------------------------------------------------------------------
 //  lessThan
@@ -225,6 +226,15 @@ WordTableModel::data (const QModelIndex& index, int role) const
         case WILDCARD_MATCH_COLUMN:
         return wordItem.getWildcard();
 
+        case PROBABILITY_ORDER_COLUMN: {
+            if (!MainSettings::getWordListShowProbabilityOrder()) {
+                return QString();
+            }
+            int probOrder = wordEngine->getProbabilityOrder (wordUpper);
+            wordItem.setProbabilityOrder (probOrder);
+            return probOrder;
+        }
+
         case FRONT_HOOK_COLUMN:
         if (!MainSettings::getWordListShowHooks()) {
             return QString();
@@ -301,6 +311,10 @@ WordTableModel::headerData (int section, Qt::Orientation orientation, int
             case WILDCARD_MATCH_COLUMN:
             return MainSettings::getWordListGroupByAnagrams() ?
                 WILDCARD_MATCH_HEADER : QString::null;
+
+            case PROBABILITY_ORDER_COLUMN:
+            return MainSettings::getWordListShowProbabilityOrder() ?
+                PROBABILITY_ORDER_HEADER : QString::null;
 
             case FRONT_HOOK_COLUMN:
             return MainSettings::getWordListShowHooks() ?

@@ -110,6 +110,10 @@ class MainSettings
         return instance->wordListGroupByAnagrams; }
     static void setWordListGroupByAnagrams (bool b) {
         instance->wordListGroupByAnagrams = b; }
+    static bool getWordListShowProbabilityOrder() {
+        return instance->wordListShowProbabilityOrder; }
+    static void setWordListShowProbabilityOrder (bool b) {
+        instance->wordListShowProbabilityOrder = b; }
     static bool getWordListShowHooks() {
         return instance->wordListShowHooks; }
     static void setWordListShowHooks (bool b) {
@@ -170,6 +174,7 @@ class MainSettings
     QString definitionFont;
     bool wordListSortByLength;
     bool wordListGroupByAnagrams;
+    bool wordListShowProbabilityOrder;
     bool wordListShowHooks;
     bool wordListShowHookParents;
     bool wordListShowDefinitions;

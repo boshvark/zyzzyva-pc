@@ -57,13 +57,13 @@ class WordEngine : public QObject
     QString getLexiconName() const { return lexiconName; }
     QString getFrontHookLetters (const QString& word) const;
     QString getBackHookLetters (const QString& word) const;
+    int getProbabilityOrder (const QString& word) const;
 
     private:
     bool matchesConditions (const QString& word, const QList<SearchCondition>&
                             conditions) const;
     bool isSetMember (const QString& word, SearchSet ss) const;
     int numAnagrams (const QString& word) const;
-    int getProbabilityOrder (const QString& word) const;
     QStringList nonGraphSearch (const SearchSpec& spec) const;
     void addDefinition (const QString& word, const QString& definition);
     QString replaceDefinitionLinks (const QString& definition, int maxDepth,

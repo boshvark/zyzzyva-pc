@@ -95,6 +95,7 @@ class SettingsDialog : public QDialog
     QLineEdit*   fontWordInputLine;
     QCheckBox*   lengthSortCbox;
     QCheckBox*   anagramGroupCbox;
+    QCheckBox*   showProbabilityOrderCbox;
     QCheckBox*   showHookParentsCbox;
     QCheckBox*   showHooksCbox;
     QCheckBox*   showDefinitionCbox;
