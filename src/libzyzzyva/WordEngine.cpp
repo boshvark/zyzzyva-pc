@@ -515,7 +515,6 @@ WordEngine::getFrontHookLetters (const QString& word) const
         for (it = words.begin(); it != words.end(); ++it)
             letters.insert ((*it).at (0).toLower());
 
-        QString ret;
         set<QChar>::iterator sit;
         for (sit = letters.begin(); sit != letters.end(); ++sit)
             ret += *sit;
@@ -560,7 +559,6 @@ WordEngine::getBackHookLetters (const QString& word) const
         for (it = words.begin(); it != words.end(); ++it)
             letters.insert ((*it).at ((*it).length() - 1).toLower());
 
-        QString ret;
         set<QChar>::iterator sit;
         for (sit = letters.begin(); sit != letters.end(); ++sit)
             ret += *sit;
