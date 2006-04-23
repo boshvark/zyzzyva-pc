@@ -250,6 +250,20 @@ Auxil::getWordsDir()
 }
 
 //---------------------------------------------------------------------------
+//  getUserDataDir
+//
+//! Return the top-level directory where application user data can be saved.
+//
+//! @return the directory name
+//---------------------------------------------------------------------------
+QString
+Auxil::getUserDataDir()
+{
+    return QDir::homePath() + "/.zyzzyva";
+}
+
+
+//---------------------------------------------------------------------------
 //  wordWrap
 //
 //! Wrap a string so that no line is longer than a certain length.
