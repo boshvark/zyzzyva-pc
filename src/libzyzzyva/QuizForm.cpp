@@ -112,7 +112,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     : ActionForm (QuizFormType, parent, f), wordEngine (we),
     quizEngine (new QuizEngine (wordEngine)),
     timerId (0), timerPaused (0), checkBringsJudgment (true),
-    recordStatsBlocked (false), unsavedChanges (false),
+    recordStatsBlocked (false), unsavedChanges (false), db (0),
     // FIXME: This dialog should be nonmodal!
     analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
                                           Qt::WindowMinMaxButtonsHint))
@@ -329,11 +329,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
 //---------------------------------------------------------------------------
 QuizForm::~QuizForm()
 {
-    if (db.isOpen()) {
-        db.close();
-        // FIXME: should also remove from list of databases - change db to
-        // pointer to QSqlDatabase instead, so it can be deleted?
-    }
+    disconnectDatabase();
     delete quizEngine;
 }
 
@@ -455,6 +451,8 @@ QuizForm::responseEntered()
 bool
 QuizForm::newQuiz (const QuizSpec& spec)
 {
+    disconnectDatabase();
+
     timerSpec = spec.getTimerSpec();
 
     // Enable or disable Alpha and Random buttons depending on Quiz type
@@ -1477,15 +1475,16 @@ QuizForm::connectToDatabase()
     Rand rng (Rand::MarsagliaMwc, std::time (0), Auxil::getPid());
     unsigned int r = rng.rand();
     dbConnectionName = "quiz" + QString::number (r);
-    db = QSqlDatabase::addDatabase ("QSQLITE", dbConnectionName);
-    db.setDatabaseName (dbFilename);
-    if (!db.open())
+    db = new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE",
+                                                      dbConnectionName));
+    db->setDatabaseName (dbFilename);
+    if (!db->open())
         return;
 
     // For some reason, CREATE TABLE IF NOT EXISTS is not working?  Syntax
     // error near "NOT"
 
-    QSqlQuery query (db);
+    QSqlQuery query (*db);
     query.exec ("SELECT name FROM sqlite_master WHERE type='table' "
                 "AND name='questions'");
     if (!query.next()) {
@@ -1503,6 +1502,23 @@ QuizForm::connectToDatabase()
 }
 
 //---------------------------------------------------------------------------
+//  disconnectDatabase
+//
+//! Disconnect from the database.
+//---------------------------------------------------------------------------
+void
+QuizForm::disconnectDatabase()
+{
+    if (db) {
+        if (db->isOpen())
+            db->close();
+        delete db;
+        QSqlDatabase::removeDatabase (dbConnectionName);
+        dbConnectionName = QString::null;
+    }
+}
+
+//---------------------------------------------------------------------------
 //  recordQuestionStats
 //
 //! Record statistics for the current quiz question.
@@ -1513,12 +1529,12 @@ QuizForm::connectToDatabase()
 void
 QuizForm::recordQuestionStats (bool correct)
 {
-    if (!db.isOpen())
+    if (!db->isOpen())
         return;
 
     QString question = quizEngine->getQuestion();
 
-    QSqlQuery query (db);
+    QSqlQuery query (*db);
     query.prepare ("SELECT correct, incorrect, streak, last_correct, "
                    "difficulty FROM questions WHERE question=?");
     query.bindValue (0, question);

@@ -109,6 +109,7 @@ class QuizForm : public ActionForm
     void reflowLayout();
     bool responseMatchesQuestion (const QString& response) const;
     void connectToDatabase();
+    void disconnectDatabase();
     void recordQuestionStats (bool correct);
 
     void timerEvent (QTimerEvent* event);
@@ -148,13 +149,13 @@ class QuizForm : public ActionForm
     QString tileTheme;
     bool checkBringsJudgment;
     bool recordStatsBlocked;
-    QSqlDatabase db;
+    bool unsavedChanges;
+
+    QSqlDatabase* db;
     QString dbConnectionName;
 
     QTimer* displayAnswerTimer;
     int currentDisplayAnswer;
-
-    bool unsavedChanges;
 
     AnalyzeQuizDialog* analyzeDialog;
 };
