@@ -40,7 +40,7 @@ unix {
 }
 win32 {
     VERSION = $$system(type ..\..\VERSION)
-    DEFINES += ZYZZYVA_VERSION=\"\\\"$$VERSION\\\"\"
+    DEFINES += ZYZZYVA_VERSION=\"$$VERSION\"
 }
 
 # Source files

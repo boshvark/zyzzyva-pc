@@ -38,7 +38,12 @@ macx {
     RC_FILE = $$ROOT/images/zyzzyva.icns
 }
 
-LIBS = -lzyzzyva -L$$ROOT/bin
+unix {
+    LIBS = -lzyzzyva -L$$ROOT/bin
+}
+win32 {
+    LIBS = -lzyzzyva0 -L$$ROOT/bin
+}
 
 # Source files
 SOURCES = \
