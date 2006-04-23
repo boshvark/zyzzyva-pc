@@ -29,6 +29,9 @@
 #include <QApplication>
 #include <QFile>
 #include <QRegExp>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QVariant>
 #include <set>
 
 const int MAX_DEFINITION_LINKS = 3;

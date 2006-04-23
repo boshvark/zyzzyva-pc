@@ -29,7 +29,7 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
-#include <QtSql>
+#include <QSqlDatabase>
 #include <map>
 #include <set>
 
