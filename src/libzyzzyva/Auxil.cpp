@@ -605,3 +605,21 @@ Auxil::stringToQuizType (const QString& s)
     else
         return QuizSpec::UnknownQuizType;
 }
+
+//---------------------------------------------------------------------------
+//  lexiconToDate
+//
+//! Convert a lexicon name to the date the lexicon was last updated
+//
+//! @param s the string representation
+//! @return the quiz type
+//---------------------------------------------------------------------------
+QString
+Auxil::lexiconToDate (const QString& lexicon)
+{
+    if (lexicon == "OWL+LWL")
+        return "July 1, 2003";
+    if (lexicon == "OWL2+LWL")
+        return "March 1, 2006";
+    return QString::null;
+}

@@ -49,6 +49,7 @@ namespace Auxil {
     SearchCondition::SearchType stringToSearchType (const QString& string);
     QString quizTypeToString (QuizSpec::QuizType type);
     QuizSpec::QuizType stringToQuizType (const QString& string);
+    QString lexiconToDate (const QString& lexicon);
 }
 
 #endif // ZYZZYVA_AUXIL_H

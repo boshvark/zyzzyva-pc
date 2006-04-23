@@ -135,15 +135,17 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (titleHlay);
     inputVlay->addLayout (titleHlay);
 
-    QLabel* programLabel = new QLabel ("Zyzzyva Word Judge");
+    QLabel* programLabel = new QLabel ("Zyzzyva Word Judge\n"
+                                       "Version " ZYZZYVA_VERSION);
     Q_CHECK_PTR (programLabel);
     programLabel->setFont (titleFont);
     titleHlay->addWidget (programLabel);
 
     titleHlay->addStretch (1);
 
-    QLabel* lexiconLabel = new QLabel ("Lexicon: " +
-                                       engine->getLexiconName());
+    QString lexicon = engine->getLexiconName();
+    QLabel* lexiconLabel = new QLabel ("Lexicon: " + lexicon + "\n" +
+                                       Auxil::lexiconToDate (lexicon));
     Q_CHECK_PTR (lexiconLabel);
     lexiconLabel->setFont (titleFont);
     lexiconLabel->setAlignment (Qt::AlignRight);
