@@ -504,39 +504,49 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     wordListPrefLabel->setFrameShape (QFrame::StyledPanel);
     wordListPrefVlay->addWidget (wordListPrefLabel);
 
-    QGroupBox* wordListGbox = new QGroupBox;
-    Q_CHECK_PTR (wordListGbox);
-    wordListPrefVlay->addWidget (wordListGbox);
-    wordListPrefVlay->setStretchFactor (wordListGbox, 1);
+    QGroupBox* wordListDisplayGbox = new QGroupBox ("Display Columns");
+    Q_CHECK_PTR (wordListDisplayGbox);
+    wordListPrefVlay->addWidget (wordListDisplayGbox);
+    wordListPrefVlay->setStretchFactor (wordListDisplayGbox, 1);
 
-    QVBoxLayout* wordListVlay = new QVBoxLayout (wordListGbox);
-    Q_CHECK_PTR (wordListVlay);
-    wordListVlay->setMargin (MARGIN);
-    wordListVlay->setSpacing (SPACING);
-
-    lengthSortCbox = new QCheckBox ("Sort by word length");
-    Q_CHECK_PTR (lengthSortCbox);
-    wordListVlay->addWidget (lengthSortCbox);
-
-    anagramGroupCbox = new QCheckBox ("Group by anagrams");
-    Q_CHECK_PTR (anagramGroupCbox);
-    wordListVlay->addWidget (anagramGroupCbox);
+    QVBoxLayout* wordListDisplayVlay = new QVBoxLayout (wordListDisplayGbox);
+    Q_CHECK_PTR (wordListDisplayVlay);
+    wordListDisplayVlay->setMargin (MARGIN);
+    wordListDisplayVlay->setSpacing (SPACING);
 
     showProbabilityOrderCbox = new QCheckBox ("Show probability order");
     Q_CHECK_PTR (showProbabilityOrderCbox);
-    wordListVlay->addWidget (showProbabilityOrderCbox);
+    wordListDisplayVlay->addWidget (showProbabilityOrderCbox);
 
     showHooksCbox = new QCheckBox ("Show hooks");
     Q_CHECK_PTR (showHooksCbox);
-    wordListVlay->addWidget (showHooksCbox);
+    wordListDisplayVlay->addWidget (showHooksCbox);
 
     showHookParentsCbox = new QCheckBox ("Show inner hooks");
     Q_CHECK_PTR (showHookParentsCbox);
-    wordListVlay->addWidget (showHookParentsCbox);
+    wordListDisplayVlay->addWidget (showHookParentsCbox);
 
     showDefinitionCbox = new QCheckBox ("Show definitions");
     Q_CHECK_PTR (showDefinitionCbox);
-    wordListVlay->addWidget (showDefinitionCbox);
+    wordListDisplayVlay->addWidget (showDefinitionCbox);
+
+    QGroupBox* wordListSortGbox = new QGroupBox ("Sorting and Grouping");
+    Q_CHECK_PTR (wordListSortGbox);
+    wordListPrefVlay->addWidget (wordListSortGbox);
+    wordListPrefVlay->setStretchFactor (wordListSortGbox, 1);
+
+    QVBoxLayout* wordListSortVlay = new QVBoxLayout (wordListSortGbox);
+    Q_CHECK_PTR (wordListSortVlay);
+    wordListSortVlay->setMargin (MARGIN);
+    wordListSortVlay->setSpacing (SPACING);
+
+    lengthSortCbox = new QCheckBox ("Sort by word length");
+    Q_CHECK_PTR (lengthSortCbox);
+    wordListSortVlay->addWidget (lengthSortCbox);
+
+    anagramGroupCbox = new QCheckBox ("Group by anagrams");
+    Q_CHECK_PTR (anagramGroupCbox);
+    wordListSortVlay->addWidget (anagramGroupCbox);
 
     wordListPrefVlay->addStretch (2);
 
