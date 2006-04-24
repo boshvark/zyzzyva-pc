@@ -139,6 +139,7 @@ SearchForm::search()
     // Check for Anagram or Subanagram conditions, and only group by
     // alphagrams if one of them is present
     bool hasAnagramCondition = false;
+    bool hasProbabilityCondition = false;
     QListIterator<SearchCondition> it (spec.conditions);
     while (it.hasNext()) {
         SearchCondition::SearchType type = it.next().type;
@@ -147,7 +148,12 @@ SearchForm::search()
             (type == SearchCondition::NumAnagrams))
         {
             hasAnagramCondition = true;
-            break;
+        }
+
+        if ((type == SearchCondition::ProbabilityOrder) ||
+            (type == SearchCondition::LimitByProbabilityOrder))
+        {
+            hasProbabilityCondition = true;
         }
     }
 
@@ -173,12 +179,19 @@ SearchForm::search()
             }
         }
 
+        QString wordUpper = word.toUpper();
+
         // Convert to all caps if necessary
         if (!lowerCaseCbox->isChecked())
-            word = word.toUpper();
+            word = wordUpper;
 
-        wordItems.append (WordTableModel::WordItem
-                          (word, WordTableModel::WordNormal, wildcard));
+        WordTableModel::WordItem wordItem (word, WordTableModel::WordNormal,
+                                           wildcard);
+
+        int probOrder = wordEngine->getProbabilityOrder (wordUpper);
+        wordItem.setProbabilityOrder (probOrder);
+
+        wordItems.append (wordItem);
     }
 
     // FIXME: Probably not the right way to get alphabetical sorting instead
@@ -186,7 +199,10 @@ SearchForm::search()
     bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
     if (!hasAnagramCondition)
         MainSettings::setWordListGroupByAnagrams (false);
+    if (hasProbabilityCondition)
+        MainSettings::setWordListSortByProbabilityOrder (true);
     resultModel->addWords (wordItems);
+    MainSettings::setWordListSortByProbabilityOrder (false);
     if (!hasAnagramCondition)
         MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
 

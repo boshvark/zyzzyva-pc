@@ -106,6 +106,10 @@ class MainSettings
         return instance->wordListSortByLength; }
     static void setWordListSortByLength (bool b) {
         instance->wordListSortByLength = b; }
+    static bool getWordListSortByProbabilityOrder() {
+        return instance->wordListSortByProbabilityOrder; }
+    static void setWordListSortByProbabilityOrder (bool b) {
+        instance->wordListSortByProbabilityOrder = b; }
     static bool getWordListGroupByAnagrams() {
         return instance->wordListGroupByAnagrams; }
     static void setWordListGroupByAnagrams (bool b) {
@@ -139,7 +143,9 @@ class MainSettings
 
     private:
     MainSettings() : useAutoImport (false), useTileTheme (false),
-                     wordListSortByLength (false), wordListShowHooks (false),
+                     wordListSortByLength (false),
+                     wordListSortByProbabilityOrder (false),
+                     wordListShowHooks (false),
                      wordListShowHookParents (false),
                      wordListShowDefinitions (false), judgeSaveLog (true) { }
     ~MainSettings() { }
@@ -173,6 +179,7 @@ class MainSettings
     QString wordInputFont;
     QString definitionFont;
     bool wordListSortByLength;
+    bool wordListSortByProbabilityOrder;
     bool wordListGroupByAnagrams;
     bool wordListShowProbabilityOrder;
     bool wordListShowHooks;

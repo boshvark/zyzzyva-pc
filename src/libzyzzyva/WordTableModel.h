@@ -61,12 +61,13 @@ class WordTableModel : public QAbstractTableModel
         void setWord (const QString& w) { word = w; }
         void setType (WordType t) { type = t; }
         void setWildcard (const QString& w) { wildcard = w; }
-        void setProbabilityOrder (int p) { probabilityOrder = p; }
+        void setProbabilityOrder (int p);
 
         void setHooks (const QString& front, const QString& back);
         void setParentHooks (bool front, bool back);
         bool hooksAreValid() const { return hooksValid; }
         bool parentHooksAreValid() const { return parentHooksValid; }
+        bool probabilityOrderIsValid() const { return probabilityOrderValid; }
 
         bool operator== (const WordItem& other) const {
             return ((word == other.word) && (type == other.type));
@@ -78,14 +79,15 @@ class WordTableModel : public QAbstractTableModel
         private:
         bool hooksValid;
         bool parentHooksValid;
+        bool probabilityOrderValid;
         QString word;
         WordType type;
+        int probabilityOrder;
         QString wildcard;
         QString frontHooks;
         QString backHooks;
         bool frontParentHook;
         bool backParentHook;
-        int probabilityOrder;
     };
 
     Q_OBJECT

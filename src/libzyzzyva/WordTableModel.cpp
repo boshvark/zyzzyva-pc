@@ -71,6 +71,15 @@ lessThan (const WordTableModel::WordItem& a,
             return false;
     }
 
+    if (MainSettings::getWordListSortByProbabilityOrder()) {
+        if (a.getProbabilityOrder() < b.getProbabilityOrder()) {
+            return true;
+        }
+        else if (b.getProbabilityOrder() < a.getProbabilityOrder()) {
+            return false;
+        }
+    }
+
     return (a.getWord().toUpper() < b.getWord().toUpper());
 }
 
@@ -230,8 +239,14 @@ WordTableModel::data (const QModelIndex& index, int role) const
             if (!MainSettings::getWordListShowProbabilityOrder()) {
                 return QString();
             }
-            int probOrder = wordEngine->getProbabilityOrder (wordUpper);
-            wordItem.setProbabilityOrder (probOrder);
+
+            if (!wordItem.probabilityOrderIsValid()) {
+                int p = wordEngine->getProbabilityOrder (wordUpper);
+                if (p)
+                    wordItem.setProbabilityOrder (p);
+            }
+
+            int probOrder = wordItem.getProbabilityOrder();
             return (probOrder ? QString::number (probOrder) : QString());
         }
 
@@ -420,6 +435,9 @@ WordTableModel::setData (const QModelIndex& index, const QVariant& value, int
                      isBackHook (word.getWord().toUpper()));
             }
         }
+        else if (index.column() == PROBABILITY_ORDER_COLUMN) {
+            wordList[index.row()].setProbabilityOrder (value.toInt());
+        }
         else {
             return false;
         }
@@ -487,6 +505,10 @@ WordTableModel::addWordPrivate (const WordItem& word, int row)
     setData (index (row, WORD_COLUMN), word.getType(), Qt::UserRole);
     setData (index (row, WILDCARD_MATCH_COLUMN), word.getWildcard(),
                     Qt::EditRole);
+    if (word.probabilityOrderIsValid()) {
+        setData (index (row, PROBABILITY_ORDER_COLUMN),
+                 word.getProbabilityOrder(), Qt::EditRole);
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -553,8 +575,24 @@ WordTableModel::WordItem::init()
 {
     hooksValid = false;
     parentHooksValid = false;
+    probabilityOrderValid = false;
     frontParentHook = false;
     backParentHook = false;
+    probabilityOrder = 0;
+}
+
+//---------------------------------------------------------------------------
+//  setProbabilityOrder
+//
+//! Set probability order of a word item.
+//
+//! @param p the probability order
+//---------------------------------------------------------------------------
+void
+WordTableModel::WordItem::setProbabilityOrder (int p)
+{
+    probabilityOrder = p;
+    probabilityOrderValid = true;
 }
 
 //---------------------------------------------------------------------------
