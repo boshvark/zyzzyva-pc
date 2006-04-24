@@ -54,8 +54,6 @@
 #include <QStatusBar>
 #include <QToolBar>
 
-#include <QtDebug>
-
 MainWindow* MainWindow::instance = 0;
 
 const QString APPLICATION_TITLE = "Zyzzyva";
