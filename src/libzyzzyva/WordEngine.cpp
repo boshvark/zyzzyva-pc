@@ -1078,11 +1078,11 @@ WordEngine::getSubDefinition (const QString& word, const QString& pos) const
         QStringList defs = definition.split (" / ");
         QString def;
         foreach (def, defs) {
-            QString pos;
-            if (posRegex.indexIn (def, 0) >= 0) {
-                pos = posRegex.cap (1);
+            if ((posRegex.indexIn (def, 0) >= 0) &&
+                (posRegex.cap (1) == pos))
+            {
+                return def.left (def.indexOf (" ["));
             }
-            return def.left (def.indexOf (" ["));
         }
     }
 
