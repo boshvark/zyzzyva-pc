@@ -30,6 +30,8 @@
         <section ref="search.html#num-anagrams" title="Number of Anagrams" />
         <section ref="search.html#probability-order"
                  title="Probability Order" />
+        <section ref="search.html#limit-by-probability-order"
+                 title="Limit by Probability Order" />
       </section>
       <section ref="search.html#other-options" title="Other Options" />
       <section ref="search.html#load-save-search"
@@ -96,6 +98,8 @@
         <section ref="preferences.html#group-by-anagrams"
                  title="Group by anagrams" />
         <section ref="preferences.html#show-hooks" title="Show hooks" />
+        <section ref="preferences.html#show-probability-order"
+                 title="Show probability order" />
         <section ref="preferences.html#show-inner-hooks"
                  title="Show inner hooks" />
         <section ref="preferences.html#show-definitions"
