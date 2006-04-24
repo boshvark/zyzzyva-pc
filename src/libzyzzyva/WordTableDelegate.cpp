@@ -172,9 +172,17 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
     painter->setPen (color);
 
     // Align text to left except for front hooks, which are aligned right
-    int flags = Qt::AlignVCenter |
-        ((index.column() == WordTableModel::FRONT_HOOK_COLUMN) ?
-         Qt::AlignRight : Qt::AlignLeft);
+    int flags = Qt::AlignVCenter;
+    switch (index.column()) {
+        case WordTableModel::FRONT_HOOK_COLUMN:
+        case WordTableModel::PROBABILITY_ORDER_COLUMN:
+        flags |= Qt::AlignRight;
+        break;
+
+        default:
+        flags |= Qt::AlignLeft;
+        break;
+    }
 
     QRect rectToDraw = option.rect.adjusted (ITEM_XPADDING, 0,
                                              -ITEM_XPADDING, 0);
