@@ -373,6 +373,8 @@ SearchConditionForm::isValid() const
                (paramMinSbox->value() <= paramMaxSbox->value());
 
         case SearchCondition::NumAnagrams:
+        case SearchCondition::ProbabilityOrder:
+        case SearchCondition::LimitByProbabilityOrder:
         return ((paramMinSbox->value() > 0) ||
                 (paramMaxSbox->value() < MAX_MAX_INT_VALUE)) &&
                (paramMinSbox->value() <= paramMaxSbox->value());
