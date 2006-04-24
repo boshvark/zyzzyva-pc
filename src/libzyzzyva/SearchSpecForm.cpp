@@ -101,7 +101,7 @@ SearchSpecForm::SearchSpecForm (QWidget* parent, Qt::WFlags f)
     connect (moreButton, SIGNAL (clicked()), SLOT (addConditionForm()));
     buttonHlay->addWidget (moreButton);
 
-    fewerButton = new ZPushButton ("Fe&wer");
+    fewerButton = new ZPushButton ("Fewe&r");
     Q_CHECK_PTR (fewerButton);
     fewerButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (fewerButton, SIGNAL (clicked()), SLOT (removeConditionForm()));
