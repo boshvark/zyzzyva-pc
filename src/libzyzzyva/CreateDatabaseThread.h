@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_CREATE_DATABASE_THREAD_H
 #define ZYZZYVA_CREATE_DATABASE_THREAD_H
 
+#include <QSqlDatabase>
 #include <QThread>
 #include <QString>
 #include <map>
@@ -56,6 +57,11 @@ class CreateDatabaseThread : public QThread
 
     private:
     void runPrivate();
+    void createTables (QSqlDatabase& db);
+    void createIndexes (QSqlDatabase& db);
+    void insertWords (QSqlDatabase& db, int& stepNum);
+    void updateProbabilityOrder (QSqlDatabase& db, int& stepNum);
+    void updateDefinitions (QSqlDatabase& db, int& stepNum);
 
     WordEngine* wordEngine;
     QString dbFilename;

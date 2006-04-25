@@ -57,90 +57,45 @@ CreateDatabaseThread::runPrivate()
     if (!db.open())
         return;
 
-    // Find all words in the lexicon
-    SearchCondition searchCondition;
-    searchCondition.type = SearchCondition::PatternMatch;
-    searchCondition.stringValue = "*";
-    SearchSpec searchSpec;
-    searchSpec.conditions.append (searchCondition);
-
-    // Start at 5% progress
+    // Start at 1% progress
     emit (steps (100));
-    emit (progress (4));
-
-    QStringList allWords = wordEngine->search (searchSpec, true);
+    emit (progress (1));
 
     // Total number of progress steps is number of words times 4.
     // - One for finding each word's stats
     // - One for reading each word's definitions
     // - Two for inserting each word's values into the database
     // - Two total for creating indexes
-    int numWords = allWords.size();
-    int baseProgress = numWords * 6 / 16;
-    int numSteps = numWords * 6 + 1;
+    int numWords = wordEngine->getNumWords();
+    int baseProgress = numWords * 4 / 99;
+    int numSteps = numWords * 4 + baseProgress + 1;
     emit steps (numSteps);
     int stepNum = baseProgress;
     emit progress (stepNum);
 
-    LetterBag letterBag;
-    QSet<QString> wordSet;
-    QMap<int, QMultiMap<double, QString> > wordMap;
-    QMap<QString, int> numAnagramsMap;
+    createTables (db);
 
-    // STEP 1: Find word stats
-    QString word;
-    foreach (word, allWords) {
-        wordSet.insert (word);
+    createIndexes (db);
 
-        QMultiMap<double, QString>& comboMap = wordMap[word.length()];
-        comboMap.insert (letterBag.getNumCombinations (word), word);
+    insertWords (db, stepNum);
 
-        QString alphagram = Auxil::getAlphagram (word);
-        if (numAnagramsMap.contains (alphagram))
-            ++numAnagramsMap[alphagram];
-        else
-            numAnagramsMap[alphagram] = 1;
+    updateProbabilityOrder (db, stepNum);
 
-        if ((stepNum % 1000) == 0) {
-            if (cancelled)
-                return;
-            emit progress (stepNum);
-        }
-        ++stepNum;
-    }
-    stepNum = baseProgress + numWords;
-    emit progress (stepNum);
+    updateDefinitions (db, stepNum);
 
-    // STEP 2: Read word definitions
-    QMap<QString, QString> definitionMap;
-    QFile definitionFile (definitionFilename);
-    if (definitionFile.open (QIODevice::ReadOnly | QIODevice::Text)) {
-        char* buffer = new char [MAX_INPUT_LINE_LEN];
-        while (definitionFile.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
-            QString line (buffer);
-            line = line.simplified();
-            if (!line.length() || (line.at (0) == '#'))
-                continue;
-            QString word = line.section (' ', 0, 0).toUpper();
-            QString definition = line.section (' ', 1);
-            definitionMap[word] = definition;
+    emit progress (numSteps);
+}
 
-            if ((stepNum % 1000) == 0) {
-                if (cancelled) {
-                    delete buffer;
-                    return;
-                }
-                emit progress (stepNum);
-            }
-            ++stepNum;
-        }
-        delete buffer;
-    }
-    stepNum = baseProgress + numWords * 2;
-    emit progress (stepNum);
-
-    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
-
+//---------------------------------------------------------------------------
+//  createTables
+//
+//! Create the database tables.
+//
+//! @param db the database
+//---------------------------------------------------------------------------
+void
+CreateDatabaseThread::createTables (QSqlDatabase& db)
+{
     QString qstr = "CREATE TABLE words (word varchar(16), "
         "length integer, combinations integer, probability_order integer, "
         "alphagram varchar(16), num_anagrams integer, "
@@ -148,87 +103,236 @@ CreateDatabaseThread::runPrivate()
         "definition varchar(256))";
 
     QSqlQuery query (qstr, db);
+}
 
-    query.prepare ("INSERT INTO words (word, length, combinations, "
-                    "probability_order, alphagram, num_anagrams, "
-                    "front_hooks, back_hooks, definition) "
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+//---------------------------------------------------------------------------
+//  createIndexes
+//
+//! Create the database indexes.
+//
+//! @param db the database
+//! @param stepNum the current step number
+//---------------------------------------------------------------------------
+void
+CreateDatabaseThread::createIndexes (QSqlDatabase& db)
+{
+    QSqlQuery query (db);
+    query.exec ("CREATE UNIQUE INDEX word_index on words (word)");
+    if (cancelled)
+        return;
+    query.exec ("CREATE INDEX length_index on words (length)");
+    if (cancelled)
+        return;
+}
 
+//---------------------------------------------------------------------------
+//  insertWords
+//
+//! Insert words into the database.
+//
+//! @param db the database
+//! @param stepNum the current step number
+//---------------------------------------------------------------------------
+void
+CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
+{
+    LetterBag letterBag;
     QStringList letters;
     letters << "A" << "B" << "C" << "D" << "E" << "F" << "G" << "H" <<
         "I" << "J" << "K" << "L" << "M" << "N" << "O" << "P" << "Q" <<
         "R" << "S" << "T" << "U" << "V" << "W" << "X" << "Y" << "Z";
 
-    // STEP 3: Insert values into the database
-    int numInserts = 0;
-    QMapIterator<int, QMultiMap<double, QString> > it (wordMap);
-    while (it.hasNext()) {
-        int probOrder = 1;
-        it.next();
-        int length = it.key();
-        QMultiMap<double, QString>& comboMap = wordMap[length];
+    SearchCondition searchCondition;
+    searchCondition.type = SearchCondition::Length;
+    SearchSpec searchSpec;
+    searchSpec.conditions.append (searchCondition);
 
-        QMapIterator<double, QString> jt (comboMap);
-        jt.toBack();
-        while (jt.hasPrevious()) {
-            jt.previous();
-            double combinations = jt.key();
-            QString word = jt.value();
+    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
+
+    QSqlQuery query (db);
+
+    QMap<QString, int> numAnagramsMap;
+
+    for (int length = 1; length <= MAX_WORD_LEN; ++length) {
+
+        searchSpec.conditions[0].minValue = length;
+        searchSpec.conditions[0].maxValue = length;
+
+        QStringList words = wordEngine->search (searchSpec, true);
+
+        query.prepare ("INSERT INTO words (word, length, combinations, "
+                       "alphagram, front_hooks, back_hooks) "
+                       "VALUES (?, ?, ?, ?, ?, ?)");
+
+        // Insert words with length, combinations, hooks
+        QString word;
+        foreach (word, words) {
+            double combinations = letterBag.getNumCombinations (word);
+
+            QString alphagram = Auxil::getAlphagram (word);
+            if (numAnagramsMap.contains (alphagram))
+                ++numAnagramsMap[alphagram];
+            else
+                numAnagramsMap[alphagram] = 1;
 
             QString front, back;
             QString letter;
             foreach (letter, letters) {
-                if (wordSet.contains (letter + word))
+                if (wordEngine->isAcceptable (letter + word))
                     front += letter;
-                if (wordSet.contains (word + letter))
+                if (wordEngine->isAcceptable (word + letter))
                     back += letter;
             }
-
-            QString alphagram = Auxil::getAlphagram (word);
-            QString definition;
-            if (definitionMap.contains (word))
-                definition = definitionMap[word];
 
             query.bindValue (0, word);
             query.bindValue (1, length);
             query.bindValue (2, combinations);
-            query.bindValue (3, probOrder);
-            query.bindValue (4, alphagram);
-            query.bindValue (5, numAnagramsMap[alphagram]);
-            query.bindValue (6, front.toLower());
-            query.bindValue (7, back.toLower());
-            query.bindValue (8, definition);
+            query.bindValue (3, alphagram);
+            query.bindValue (4, front.toLower());
+            query.bindValue (5, back.toLower());
             query.exec();
 
-            if ((numInserts % 1000) == 0) {
+            if ((stepNum % 1000) == 0) {
                 transactionQuery.exec ("END TRANSACTION");
                 if (cancelled)
                     return;
                 transactionQuery.exec ("BEGIN TRANSACTION");
                 emit progress (stepNum);
             }
-            stepNum += 2;
-            ++numInserts;
-            ++probOrder;
+            ++stepNum;
+        }
+
+        // Update number of anagrams
+        query.prepare ("UPDATE words SET num_anagrams=? WHERE word=?");
+
+        foreach (word, words) {
+            QString alphagram = Auxil::getAlphagram (word);
+            query.bindValue (0, numAnagramsMap[alphagram]);
+            query.bindValue (1, word);
+            query.exec();
+
+            if ((stepNum % 1000) == 0) {
+                transactionQuery.exec ("END TRANSACTION");
+                if (cancelled)
+                    return;
+                transactionQuery.exec ("BEGIN TRANSACTION");
+                emit progress (stepNum);
+            }
+            ++stepNum;
         }
     }
 
     transactionQuery.exec ("END TRANSACTION");
-    stepNum = baseProgress + numWords * 4;
-    if (cancelled)
-        return;
-    emit progress (stepNum);
+}
 
-    // STEP 4: Create indexes and vacuum
-    query.exec ("CREATE UNIQUE INDEX word_index on words (word)");
-    stepNum += numWords;
-    if (cancelled)
-        return;
-    emit progress (stepNum);
-    query.exec ("CREATE INDEX length_index on words (length)");
-    if (cancelled)
-        return;
-    emit progress (numSteps);
+//---------------------------------------------------------------------------
+//  updateProbabilityOrder
+//
+//! Update probability order of words in the database.
+//
+//! @param db the database
+//! @param stepNum the current step number
+//---------------------------------------------------------------------------
+void
+CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
+{
+    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
+
+    QSqlQuery selectQuery (db);
+    selectQuery.prepare ("SELECT word FROM words WHERE length=? "
+                         "ORDER BY combinations DESC, word");
+
+    QSqlQuery updateQuery (db);
+    updateQuery.prepare ("UPDATE words SET probability_order=? WHERE word=?");
+
+    for (int length = 1; length <= MAX_WORD_LEN; ++length) {
+
+        selectQuery.bindValue (0, length);
+        selectQuery.exec();
+
+        int probOrder = 1;
+
+        while (selectQuery.next()) {
+
+            QString word = selectQuery.value (0).toString();
+
+            updateQuery.bindValue (0, probOrder);
+            updateQuery.bindValue (1, word);
+            updateQuery.exec();
+
+            if ((stepNum % 1000) == 0) {
+                transactionQuery.exec ("END TRANSACTION");
+                if (cancelled)
+                    return;
+                transactionQuery.exec ("BEGIN TRANSACTION");
+                emit progress (stepNum);
+            }
+            ++probOrder;
+            ++stepNum;
+        }
+    }
+
+    transactionQuery.exec ("END TRANSACTION");
+}
+
+//---------------------------------------------------------------------------
+//  updateDefinitions
+//
+//! Update definitions of words in the database.
+//
+//! @param db the database
+//! @param stepNum the current step number
+//---------------------------------------------------------------------------
+void
+CreateDatabaseThread::updateDefinitions (QSqlDatabase& db, int& stepNum)
+{
+    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
+
+    QSqlQuery query (db);
+    query.prepare ("UPDATE words SET definition=? WHERE word=?");
+
+    QMap<QString, QString> definitionMap;
+    QFile definitionFile (definitionFilename);
+    if (definitionFile.open (QIODevice::ReadOnly | QIODevice::Text)) {
+        char* buffer = new char [MAX_INPUT_LINE_LEN];
+        while (definitionFile.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+            QString line (buffer);
+            line = line.simplified();
+            if (!line.length() || (line.at (0) == '#')) {
+                if ((stepNum % 1000) == 0) {
+                    transactionQuery.exec ("END TRANSACTION");
+                    if (cancelled) {
+                        delete buffer;
+                        return;
+                    }
+                    transactionQuery.exec ("BEGIN TRANSACTION");
+                    emit progress (stepNum);
+                }
+                ++stepNum;
+                continue;
+            }
+            QString word = line.section (' ', 0, 0).toUpper();
+            QString definition = line.section (' ', 1);
+
+            query.bindValue (0, definition);
+            query.bindValue (1, word);
+            query.exec();
+
+            if ((stepNum % 1000) == 0) {
+                transactionQuery.exec ("END TRANSACTION");
+                if (cancelled) {
+                    delete buffer;
+                    return;
+                }
+                transactionQuery.exec ("BEGIN TRANSACTION");
+                emit progress (stepNum);
+            }
+            ++stepNum;
+        }
+        delete buffer;
+    }
+
+    transactionQuery.exec ("END TRANSACTION");
 }
 
 //---------------------------------------------------------------------------
