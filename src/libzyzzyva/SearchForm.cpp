@@ -136,75 +136,78 @@ SearchForm::search()
     QStringList wordList = wordEngine->search (specForm->getSearchSpec(),
                                                false);
 
-    // Check for Anagram or Subanagram conditions, and only group by
-    // alphagrams if one of them is present
-    bool hasAnagramCondition = false;
-    bool hasProbabilityCondition = false;
-    QListIterator<SearchCondition> it (spec.conditions);
-    while (it.hasNext()) {
-        SearchCondition::SearchType type = it.next().type;
-        if ((type == SearchCondition::AnagramMatch) ||
-            (type == SearchCondition::SubanagramMatch) ||
-            (type == SearchCondition::NumAnagrams))
-        {
-            hasAnagramCondition = true;
-        }
+    if (!wordList.empty()) {
 
-        if ((type == SearchCondition::ProbabilityOrder) ||
-            (type == SearchCondition::LimitByProbabilityOrder))
-        {
-            hasProbabilityCondition = true;
-        }
-    }
-
-    // Create a list of WordItem objects from the words
-    QList<WordTableModel::WordItem> wordItems;
-    QString word;
-    foreach (word, wordList) {
-
-        QString wildcard;
-        if (hasAnagramCondition) {
-            // Get wildcard characters
-            QList<QChar> wildcardChars;
-            for (int i = 0; i < word.length(); ++i) {
-                QChar c = word[i];
-                if (c.isLower())
-                    wildcardChars.append (c);
+        // Check for Anagram or Subanagram conditions, and only group by
+        // alphagrams if one of them is present
+        bool hasAnagramCondition = false;
+        bool hasProbabilityCondition = false;
+        QListIterator<SearchCondition> it (spec.conditions);
+        while (it.hasNext()) {
+            SearchCondition::SearchType type = it.next().type;
+            if ((type == SearchCondition::AnagramMatch) ||
+                (type == SearchCondition::SubanagramMatch) ||
+                (type == SearchCondition::NumAnagrams))
+            {
+                hasAnagramCondition = true;
             }
-            if (!wildcardChars.isEmpty()) {
-                qSort (wildcardChars);
-                QChar c;
-                foreach (c, wildcardChars)
-                    wildcard.append (c.toUpper());
+
+            if ((type == SearchCondition::ProbabilityOrder) ||
+                (type == SearchCondition::LimitByProbabilityOrder))
+            {
+                hasProbabilityCondition = true;
             }
         }
 
-        QString wordUpper = word.toUpper();
+        // Create a list of WordItem objects from the words
+        QList<WordTableModel::WordItem> wordItems;
+        QString word;
+        foreach (word, wordList) {
 
-        // Convert to all caps if necessary
-        if (!lowerCaseCbox->isChecked())
-            word = wordUpper;
+            QString wildcard;
+            if (hasAnagramCondition) {
+                // Get wildcard characters
+                QList<QChar> wildcardChars;
+                for (int i = 0; i < word.length(); ++i) {
+                    QChar c = word[i];
+                    if (c.isLower())
+                        wildcardChars.append (c);
+                }
+                if (!wildcardChars.isEmpty()) {
+                    qSort (wildcardChars);
+                    QChar c;
+                    foreach (c, wildcardChars)
+                        wildcard.append (c.toUpper());
+                }
+            }
 
-        WordTableModel::WordItem wordItem (word, WordTableModel::WordNormal,
-                                           wildcard);
+            QString wordUpper = word.toUpper();
 
-        int probOrder = wordEngine->getProbabilityOrder (wordUpper);
-        wordItem.setProbabilityOrder (probOrder);
+            // Convert to all caps if necessary
+            if (!lowerCaseCbox->isChecked())
+                word = wordUpper;
 
-        wordItems.append (wordItem);
+            WordTableModel::WordItem wordItem
+                (word, WordTableModel::WordNormal, wildcard);
+
+            int probOrder = wordEngine->getProbabilityOrder (wordUpper);
+            wordItem.setProbabilityOrder (probOrder);
+
+            wordItems.append (wordItem);
+        }
+
+        // FIXME: Probably not the right way to get alphabetical sorting instead
+        // of alphagram sorting
+        bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
+        if (!hasAnagramCondition)
+            MainSettings::setWordListGroupByAnagrams (false);
+        if (hasProbabilityCondition)
+            MainSettings::setWordListSortByProbabilityOrder (true);
+        resultModel->addWords (wordItems);
+        MainSettings::setWordListSortByProbabilityOrder (false);
+        if (!hasAnagramCondition)
+            MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
     }
-
-    // FIXME: Probably not the right way to get alphabetical sorting instead
-    // of alphagram sorting
-    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-    if (!hasAnagramCondition)
-        MainSettings::setWordListGroupByAnagrams (false);
-    if (hasProbabilityCondition)
-        MainSettings::setWordListSortByProbabilityOrder (true);
-    resultModel->addWords (wordItems);
-    MainSettings::setWordListSortByProbabilityOrder (false);
-    if (!hasAnagramCondition)
-        MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
 
     updateResultTotal (wordList.size());
 
