@@ -37,9 +37,10 @@ class CreateDatabaseThread : public QThread
     Q_OBJECT
     public:
     CreateDatabaseThread (QObject* parent = 0, WordEngine* e,
-                          const QString& db, const QString& def)
-        : QThread (parent), wordEngine (e), dbFilename (db),
-          definitionFilename (def), cancelled (false) { }
+                          const QString& lex, const QString& db,
+                          const QString& def)
+        : QThread (parent), wordEngine (e), lexiconName (lex),
+          dbFilename (db), definitionFilename (def), cancelled (false) { }
     ~CreateDatabaseThread() { }
 
     bool getCancelled() { return cancelled; }
@@ -59,11 +60,13 @@ class CreateDatabaseThread : public QThread
     void runPrivate();
     void createTables (QSqlDatabase& db);
     void createIndexes (QSqlDatabase& db);
+    void insertVersion (QSqlDatabase& db);
     void insertWords (QSqlDatabase& db, int& stepNum);
     void updateProbabilityOrder (QSqlDatabase& db, int& stepNum);
     void updateDefinitions (QSqlDatabase& db, int& stepNum);
 
     WordEngine* wordEngine;
+    QString lexiconName;
     QString dbFilename;
     QString definitionFilename;
     bool cancelled;

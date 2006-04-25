@@ -96,13 +96,21 @@ CreateDatabaseThread::runPrivate()
 void
 CreateDatabaseThread::createTables (QSqlDatabase& db)
 {
-    QString qstr = "CREATE TABLE words (word varchar(16), "
+    QSqlQuery query (db);
+
+    query.exec ("CREATE TABLE words (word varchar(16), "
         "length integer, combinations integer, probability_order integer, "
         "alphagram varchar(16), num_anagrams integer, "
         "front_hooks varchar(32), back_hooks varchar(32), "
-        "definition varchar(256))";
+        "definition varchar(256))");
 
-    QSqlQuery query (qstr, db);
+    query.exec ("CREATE TABLE db_version (version integer)");
+    query.exec ("INSERT into db_version (version) VALUES (1)");
+
+    query.exec ("CREATE TABLE lexicon_date (date date)");
+    query.prepare ("INSERT into lexicon_date (date) VALUES (?)");
+    query.bindValue (0, Auxil::lexiconToDate (lexiconName));
+    query.exec();
 }
 
 //---------------------------------------------------------------------------
