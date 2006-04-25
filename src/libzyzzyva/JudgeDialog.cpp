@@ -106,6 +106,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     inputArea = new WordTextEdit;
     Q_CHECK_PTR (inputArea);
+    inputArea->setContextMenuPolicy (Qt::NoContextMenu);
     inputArea->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
     inputArea->setFont (formFont);
     connect (inputArea, SIGNAL (textChanged()), SLOT (textChanged()));
