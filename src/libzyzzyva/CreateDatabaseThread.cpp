@@ -100,6 +100,7 @@ CreateDatabaseThread::createTables (QSqlDatabase& db)
 
     query.exec ("CREATE TABLE words (word varchar(16), "
         "length integer, combinations integer, probability_order integer, "
+        "min_probability_order integer, max_probability_order integer, "
         "alphagram varchar(16), num_anagrams integer, "
         "front_hooks varchar(32), back_hooks varchar(32), "
         "definition varchar(256))");
@@ -247,23 +248,45 @@ CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
     QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
 
     QSqlQuery selectQuery (db);
-    selectQuery.prepare ("SELECT word FROM words WHERE length=? "
+    selectQuery.prepare ("SELECT word, combinations FROM words WHERE length=? "
                          "ORDER BY combinations DESC, word");
 
     QSqlQuery updateQuery (db);
     updateQuery.prepare ("UPDATE words SET probability_order=? WHERE word=?");
 
-    for (int length = 1; length <= MAX_WORD_LEN; ++length) {
+    QSqlQuery updateEqualQuery (db);
+    updateEqualQuery.prepare ("UPDATE words SET min_probability_order=?, "
+                              "max_probability_order=? WHERE word=?");
 
+    for (int length = 1; length <= MAX_WORD_LEN; ++length) {
         selectQuery.bindValue (0, length);
         selectQuery.exec();
 
+        QStringList equalWords;
+
         int probOrder = 1;
+        int minProbOrder = 1;
+        double prevCombinations = 0;
 
         while (selectQuery.next()) {
-
             QString word = selectQuery.value (0).toString();
+            double combinations = selectQuery.value (1).toDouble();
 
+            // Update probability ranges
+            if ((combinations != prevCombinations) && !equalWords.empty()) {
+                QString equalWord;
+                foreach (equalWord, equalWords) {
+                    updateEqualQuery.bindValue (0, minProbOrder);
+                    updateEqualQuery.bindValue (1, probOrder - 1);
+                    updateEqualQuery.bindValue (2, equalWord);
+                    updateEqualQuery.exec();
+                }
+                minProbOrder = probOrder;
+                equalWords.clear();
+            }
+            equalWords.append (word);
+
+            // Update probability order of this word
             updateQuery.bindValue (0, probOrder);
             updateQuery.bindValue (1, word);
             updateQuery.exec();
@@ -275,8 +298,19 @@ CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
                 transactionQuery.exec ("BEGIN TRANSACTION");
                 emit progress (stepNum);
             }
+
+            prevCombinations = combinations;
             ++probOrder;
             ++stepNum;
+        }
+
+        // Update probability ranges for last range
+        QString equalWord;
+        foreach (equalWord, equalWords) {
+            updateEqualQuery.bindValue (0, minProbOrder);
+            updateEqualQuery.bindValue (1, probOrder - 1);
+            updateEqualQuery.bindValue (2, equalWord);
+            updateEqualQuery.exec();
         }
     }
 

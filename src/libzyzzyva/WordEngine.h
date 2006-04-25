@@ -58,6 +58,8 @@ class WordEngine : public QObject
     QString getFrontHookLetters (const QString& word) const;
     QString getBackHookLetters (const QString& word) const;
     int getProbabilityOrder (const QString& word) const;
+    int getMinProbabilityOrder (const QString& word) const;
+    int getMaxProbabilityOrder (const QString& word) const;
 
     private:
     bool matchesConditions (const QString& word, const QList<SearchCondition>&

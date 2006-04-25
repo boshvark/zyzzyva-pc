@@ -850,7 +850,48 @@ WordEngine::getProbabilityOrder (const QString& word) const
         if (query.next())
             return query.value (0).toInt();
     }
+    return 0;
+}
 
+//---------------------------------------------------------------------------
+//  getMinProbabilityOrder
+//
+//! Get the minimum probability order for a word.
+//
+//! @param word the word
+//! @return the probability order
+//---------------------------------------------------------------------------
+int
+WordEngine::getMinProbabilityOrder (const QString& word) const
+{
+    if (db.isOpen()) {
+        QString qstr = "SELECT min_probability_order FROM words WHERE word='" +
+            word + "'";
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            return query.value (0).toInt();
+    }
+    return 0;
+}
+
+//---------------------------------------------------------------------------
+//  getMaxProbabilityOrder
+//
+//! Get the maximum probability order for a word.
+//
+//! @param word the word
+//! @return the probability order
+//---------------------------------------------------------------------------
+int
+WordEngine::getMaxProbabilityOrder (const QString& word) const
+{
+    if (db.isOpen()) {
+        QString qstr = "SELECT max_probability_order FROM words WHERE word='" +
+            word + "'";
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            return query.value (0).toInt();
+    }
     return 0;
 }
 
