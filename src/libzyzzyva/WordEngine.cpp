@@ -629,8 +629,20 @@ WordEngine::matchesConditions (const QString& word, const
 
             case SearchCondition::ProbabilityOrder: {
                 int num = getProbabilityOrder (wordUpper); 
-                if ((num < condition.minValue) || (num > condition.maxValue))
-                    return false;
+                if ((num >= condition.minValue) && (num <= condition.maxValue))
+                    return true;
+                // Lax probability order
+                if (condition.boolValue) {
+                    int min = getMinProbabilityOrder (wordUpper);
+                    if ((min >= condition.minValue) &&
+                        (min <= condition.maxValue))
+                        return true;
+                    int max = getMaxProbabilityOrder (wordUpper);
+                    if ((max >= condition.minValue) &&
+                        (max <= condition.maxValue))
+                        return true;
+                }
+                return false;
             }
             break;
 
