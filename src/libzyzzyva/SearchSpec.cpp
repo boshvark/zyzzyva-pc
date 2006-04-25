@@ -363,8 +363,10 @@ SearchSpec::update()
         QMutableListIterator<SearchCondition> it (conditions);
         while (it.hasNext()) {
             SearchCondition& condition = it.next();
-            if (condition.type == SearchCondition::ProbabilityOrder)
+            if (condition.type == SearchCondition::ProbabilityOrder) {
                 condition.type = SearchCondition::LimitByProbabilityOrder;
+                condition.legacy = true;
+            }
         }
         ++version;
     }
