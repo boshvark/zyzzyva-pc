@@ -224,6 +224,9 @@ AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 void
 AnalyzeQuizDialog::addMissed (const QStringList& words, bool update)
 {
+    if (words.empty())
+        return;
+
     QList<WordTableModel::WordItem> wordItems;
     QString word;
     foreach (word, words) {
@@ -276,6 +279,9 @@ AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
 void
 AnalyzeQuizDialog::addIncorrect (const QStringList& words, bool update)
 {
+    if (words.empty())
+        return;
+
     QList<WordTableModel::WordItem> wordItems;
     QString word;
     foreach (word, words) {
