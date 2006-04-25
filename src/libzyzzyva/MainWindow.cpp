@@ -826,8 +826,8 @@ MainWindow::connectToDatabase()
 
     if (!dbFile.exists()) {
         QString message =
-            "For searches and quizzes to work correctly, Zyzzyva must\n"
-            "create a database of certain information for the current\n"
+            "For certain searches and quizzes to work correctly, Zyzzyva\n"
+            "must create a database of information about the current\n"
             "lexicon (" + lexicon + ").  This may take several minutes,\n"
             "but it will only need to be done once.\n\n"
             "This database is not needed if you only want to use the\n"
