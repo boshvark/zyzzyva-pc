@@ -64,7 +64,7 @@ class SearchCondition
 
     public:
     SearchCondition() : type (UnknownSearchType), minValue (0),
-                        maxValue (0), negated (false) { }
+                        maxValue (0), negated (false), boolValue (false) { }
     QString asString() const;
     QDomElement asDomElement() const;
     bool fromDomElement (const QDomElement& element);
@@ -74,6 +74,7 @@ class SearchCondition
     int minValue;
     int maxValue;
     bool negated;
+    bool boolValue;
 };
 
 #endif // ZYZZYVA_SEARCH_CONDITION_H

@@ -33,6 +33,7 @@ const QString XML_TYPE_ATTR = "type";
 const QString XML_STRING_ATTR = "string";
 const QString XML_MIN_ATTR = "min";
 const QString XML_MAX_ATTR = "max";
+const QString XML_BOOL_ATTR = "bool";
 const QString XML_NEGATED_ATTR = "negated";
 const QString XML_OLD_NUMBER_ATTR = "number";
 const QString XML_OLD_PERCENT_ATTR = "percent";
@@ -77,6 +78,8 @@ SearchCondition::asString() const
         case LimitByProbabilityOrder:
         str += "Min " + QString::number (minValue) + ", Max "
             + QString::number (maxValue);
+        if (boolValue)
+            str += " (Lax)";
         break;
 
         case Probability:
@@ -136,6 +139,10 @@ SearchCondition::asDomElement() const
         case LimitByProbabilityOrder:
         topElement.setAttribute (XML_MIN_ATTR, minValue);
         topElement.setAttribute (XML_MAX_ATTR, maxValue);
+        if ((type == ProbabilityOrder) || (type == LimitByProbabilityOrder)) {
+            topElement.setAttribute (XML_BOOL_ATTR,
+                (boolValue ? QString ("true") : QString ("false")));
+        }
         break;
 
         case Probability:
@@ -205,10 +212,16 @@ SearchCondition::fromDomElement (const QDomElement& element)
         }
         break;
 
-        case Length:
-        case NumAnagrams:
         case ProbabilityOrder:
         case LimitByProbabilityOrder:
+        if (element.hasAttribute (XML_BOOL_ATTR)) {
+            tmpCondition.boolValue =
+                (element.attribute (XML_BOOL_ATTR) == "true");
+        }
+        // fall through
+
+        case Length:
+        case NumAnagrams:
         if (!element.hasAttribute (XML_MIN_ATTR) ||
             !element.hasAttribute (XML_MAX_ATTR))
             return false;

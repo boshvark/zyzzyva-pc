@@ -69,6 +69,7 @@ class SearchConditionForm : public QWidget
     QWidget*        paramSboxWidget;
     QSpinBox*       paramMinSbox;
     QSpinBox*       paramMaxSbox;
+    QCheckBox*      paramProbCbox;
     QWidget*        paramCboxWidget;
     QComboBox*      paramCbox;
     QWidget*        paramConsistWidget;

@@ -139,6 +139,11 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
              SIGNAL (contentsChanged()));
     paramSboxHlay->addWidget (paramMaxSbox, 1);
 
+    paramProbCbox = new QCheckBox ("Lax");
+    Q_CHECK_PTR (paramProbCbox);
+    paramProbCbox->setCheckState (Qt::Checked);
+    paramSboxHlay->addWidget (paramProbCbox);
+
     paramStack->addWidget (paramSboxWidget);
 
     // Frame containing just a combo box
@@ -259,10 +264,15 @@ SearchConditionForm::getSearchCondition() const
         case SearchCondition::Length:
         case SearchCondition::NumAnagrams:
         case SearchCondition::Probability:
+        condition.minValue = paramMinSbox->value();
+        condition.maxValue = paramMaxSbox->value();
+        break;
+
         case SearchCondition::ProbabilityOrder:
         case SearchCondition::LimitByProbabilityOrder:
         condition.minValue = paramMinSbox->value();
         condition.maxValue = paramMaxSbox->value();
+        condition.boolValue = (paramProbCbox->checkState() == Qt::Checked);
         break;
 
         case SearchCondition::ConsistOf:
@@ -318,10 +328,16 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
         case SearchCondition::Length:
         case SearchCondition::NumAnagrams:
         case SearchCondition::Probability:
+        paramMinSbox->setValue (condition.minValue);
+        paramMaxSbox->setValue (condition.maxValue);
+        break;
+
         case SearchCondition::ProbabilityOrder:
         case SearchCondition::LimitByProbabilityOrder:
         paramMinSbox->setValue (condition.minValue);
         paramMaxSbox->setValue (condition.maxValue);
+        paramProbCbox->setCheckState (condition.boolValue ? Qt::Checked
+                                                          : Qt::Unchecked);
         break;
 
         case SearchCondition::ConsistOf:
@@ -442,6 +458,11 @@ SearchConditionForm::typeChanged (const QString& string)
         paramMinSbox->setValue (0);
         paramMaxSbox->setMaximum (MAX_MAX_INT_VALUE);
         paramMaxSbox->setValue (MAX_MAX_INT_VALUE);
+        paramProbCbox->setCheckState (Qt::Checked);
+        if (type == SearchCondition::NumAnagrams)
+            paramProbCbox->hide();
+        else
+            paramProbCbox->show();
         paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
