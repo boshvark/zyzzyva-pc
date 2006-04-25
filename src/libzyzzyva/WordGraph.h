@@ -42,6 +42,7 @@ class WordGraph
     void addWord (const QString& w);
     bool containsWord (const QString& w) const;
     QStringList search (const SearchSpec& spec) const;
+    int getNumWords() const;
 
     private:
     class Node {
@@ -81,6 +82,7 @@ class WordGraph
     void addWordOld (const QString& w, bool reverse);
     bool containsWordOld (const QString& w) const;
     QStringList searchOld (const SearchSpec& spec) const;
+    int getNumWords (long node) const;
 
     long* dawg;
     long* rdawg;

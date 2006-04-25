@@ -31,6 +31,8 @@
 #include <map>
 #include <stack>
 
+#include <QtDebug>
+
 const long TERMINAL_NODE = 0;
 const long ROOT_NODE = 1;
 
@@ -603,6 +605,23 @@ WordGraph::search (const SearchSpec& spec) const
     }
 
     return wordList;
+}
+
+//---------------------------------------------------------------------------
+//  getNumWords
+//
+//! Return the number of words in the graph.
+//
+//! @return the number of words
+//---------------------------------------------------------------------------
+int
+WordGraph::getNumWords() const
+{
+    // FIXME: Clearly this is wrong
+    if (!dawg)
+        return 0;
+
+    return getNumWords (ROOT_NODE);
 }
 
 //---------------------------------------------------------------------------
@@ -1181,6 +1200,29 @@ WordGraph::searchOld (const SearchSpec& spec) const
     }
 
     return wordList;
+}
+
+//---------------------------------------------------------------------------
+//  getNumWords
+//
+//! Return the number of words under a node in the graph.
+//
+//! @return the number of words
+//---------------------------------------------------------------------------
+int
+WordGraph::getNumWords (long node) const
+{
+    int count = 0;
+    for (long* edge = &dawg[node]; ; ++edge) {
+        if ((*edge & M_END_OF_WORD) != 0)
+            ++count;
+        node = *edge & M_NODE_POINTER;
+        if (node)
+            count += getNumWords (node);
+        if (*edge & M_END_OF_NODE)
+            break;
+    }
+    return count;
 }
 
 //---------------------------------------------------------------------------

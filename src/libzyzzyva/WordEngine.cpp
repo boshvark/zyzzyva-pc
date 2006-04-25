@@ -427,6 +427,8 @@ WordEngine::getNumWords() const
         if (query.next())
             return query.value (0).toInt();
     }
+    else
+        return graph.getNumWords();
     return 0;
 }
 
