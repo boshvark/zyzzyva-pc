@@ -375,6 +375,10 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             probLimitRangeMin = 0;
         if (probLimitRangeMinLax < 0)
             probLimitRangeMinLax = 0;
+        if (probLimitRangeMax > wordList.size() - 1)
+            probLimitRangeMax = wordList.size() - 1;
+        if (probLimitRangeMaxLax > wordList.size() - 1)
+            probLimitRangeMaxLax = wordList.size() - 1;
 
         // Use the higher of the min values as working min
         int min = ((probLimitRangeMin > probLimitRangeMinLax)
@@ -411,7 +415,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
 
         QString maxRadix = keys[max];
         QString maxCombinations = maxRadix.left (9);
-        while ((max < (keys.size() - 1)) && (max < probLimitRangeMax)) {
+        while ((max < keys.size() - 1) && (max < probLimitRangeMax)) {
             if (maxCombinations != keys[max + 1].left (9))
                 break;
             ++max;
