@@ -446,6 +446,7 @@ SearchConditionForm::typeChanged (const QString& string)
         paramMinSbox->setValue (0);
         paramMaxSbox->setMaximum (MAX_WORD_LEN);
         paramMaxSbox->setValue (MAX_WORD_LEN);
+        paramProbCbox->hide();
         paramStack->setCurrentWidget (paramSboxWidget);
         break;
 
