@@ -279,8 +279,11 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     bool mustSearchGraph = false;
     bool wordListCondition = false;
     bool numAnagramsCondition = false;
+    bool probLimitRangeCondition = false;
     int probLimitRangeMin = 0;
-    int probLimitRangeMax = 0;
+    int probLimitRangeMax = 999999;
+    int probLimitRangeMinLax = 0;
+    int probLimitRangeMaxLax = 999999;
     int i = 0;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
@@ -312,8 +315,19 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             break;
 
             case SearchCondition::LimitByProbabilityOrder:
-            probLimitRangeMin = condition.minValue;
-            probLimitRangeMax = condition.maxValue;
+            probLimitRangeCondition = true;
+            if (condition.boolValue) {
+                if (condition.minValue > probLimitRangeMinLax)
+                    probLimitRangeMinLax = condition.minValue;
+                if (condition.maxValue < probLimitRangeMaxLax)
+                    probLimitRangeMaxLax = condition.maxValue;
+            }
+            else {
+                if (condition.minValue > probLimitRangeMin)
+                    probLimitRangeMin = condition.minValue;
+                if (condition.maxValue < probLimitRangeMax)
+                    probLimitRangeMax = condition.maxValue;
+            }
             break;
 
             default:
@@ -342,21 +356,42 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     }
 
     // Keep only words in the probability order range
-    if (probLimitRangeMax > 0) {
+    if (probLimitRangeCondition) {
 
-        if (probLimitRangeMin > wordList.size()) {
+        if ((probLimitRangeMin > wordList.size()) ||
+            (probLimitRangeMinLax > wordList.size()))
+        {
             wordList.clear();
             return wordList;
         }
 
-        if (probLimitRangeMin <= 0)
-            probLimitRangeMin = 1;
+        // Convert from 1-based to 0-based offset
+        --probLimitRangeMin;
+        --probLimitRangeMax;
+        --probLimitRangeMinLax;
+        --probLimitRangeMaxLax;
 
+        if (probLimitRangeMin < 0)
+            probLimitRangeMin = 0;
+        if (probLimitRangeMinLax < 0)
+            probLimitRangeMinLax = 0;
+
+        // Use the higher of the min values as working min
+        int min = ((probLimitRangeMin > probLimitRangeMinLax)
+                   ? probLimitRangeMin : probLimitRangeMinLax);
+
+        // Use the lower of the max values as working max
+        int max = ((probLimitRangeMax < probLimitRangeMaxLax)
+                   ? probLimitRangeMax : probLimitRangeMaxLax);
+
+        // Sort the words according to probability order
         LetterBag bag;
         QMap<QString, QString> probMap;
 
         QString word;
         foreach (word, wordList) {
+            // FIXME: change this radix for new probability sorting - leave
+            // alone for old probability sorting
             QString radix;
             radix.sprintf ("%09.0f",
                 1e9 - 1 - bag.getNumCombinations (word.toUpper()));
@@ -364,9 +399,25 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             probMap.insert (radix, word);
         }
 
-        wordList = probMap.values().mid (probLimitRangeMin - 1,
-                                         probLimitRangeMax - probLimitRangeMin
-                                         + 1);
+        QStringList keys = probMap.keys();
+
+        QString minRadix = keys[min];
+        QString minCombinations = minRadix.left (9);
+        while ((min > 0) && (min > probLimitRangeMin)) {
+            if (minCombinations != keys[min - 1].left (9))
+                break;
+            --min;
+        }
+
+        QString maxRadix = keys[max];
+        QString maxCombinations = maxRadix.left (9);
+        while ((max < (keys.size() - 1)) && (max < probLimitRangeMax)) {
+            if (maxCombinations != keys[max + 1].left (9))
+                break;
+            ++max;
+        }
+
+        wordList = probMap.values().mid (min, max - min + 1);
     }
 
     // Convert to all caps if necessary
