@@ -52,7 +52,7 @@ using namespace Defs;
 //! Constructor.
 //---------------------------------------------------------------------------
 WordGraph::WordGraph()
-    : dawg (0), rdawg (0)
+    : dawg (0), rdawg (0), top (0), rtop (0)
 {
     // Test for endianness
     char endianTest[2] = { 1, 0 };
