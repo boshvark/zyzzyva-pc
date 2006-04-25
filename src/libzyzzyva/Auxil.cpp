@@ -272,7 +272,9 @@ Auxil::getUserWordsDir()
 QString
 Auxil::getUserDir()
 {
-    return QDir::homePath() + "/.zyzzyva";
+    QString home = QDir::homePath();
+    home.replace ("//", "/");
+    return (home + "/.zyzzyva");
 }
 
 
