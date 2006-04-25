@@ -392,6 +392,9 @@ WordTableModel::insertRows (int row, int count, const QModelIndex&)
 bool
 WordTableModel::removeRows (int row, int count, const QModelIndex&)
 {
+    if (wordList.empty())
+        return true;
+
     beginRemoveRows (QModelIndex(), row, row + count - 1);
 
     for (int i = 0; i < count; ++i) {
