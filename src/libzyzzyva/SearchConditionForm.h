@@ -81,6 +81,8 @@ class SearchConditionForm : public QWidget
     QString         paramWordListString;
     WordValidator*  letterValidator;
     WordValidator*  patternValidator;
+
+    bool legacy;
 };
 
 #endif // ZYZZYVA_SEARCH_CONDITION_FORM_H

@@ -280,6 +280,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     bool wordListCondition = false;
     bool numAnagramsCondition = false;
     bool probLimitRangeCondition = false;
+    bool legacyProbCondition = false;
     int probLimitRangeMin = 0;
     int probLimitRangeMax = 999999;
     int probLimitRangeMinLax = 0;
@@ -328,6 +329,8 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
                 if (condition.maxValue < probLimitRangeMax)
                     probLimitRangeMax = condition.maxValue;
             }
+            if (condition.legacy)
+                legacyProbCondition = true;
             break;
 
             default:
@@ -397,9 +400,14 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             // FIXME: change this radix for new probability sorting - leave
             // alone for old probability sorting
             QString radix;
+            QString wordUpper = word.toUpper();
             radix.sprintf ("%09.0f",
-                1e9 - 1 - bag.getNumCombinations (word.toUpper()));
-            radix += word.toUpper();
+                1e9 - 1 - bag.getNumCombinations (wordUpper));
+            // Legacy probability order limits are sorted alphabetically, not
+            // by alphagram
+            if (!legacyProbCondition)
+                radix += Auxil::getAlphagram (wordUpper);
+            radix += wordUpper;
             probMap.insert (radix, word);
         }
 

@@ -49,8 +49,7 @@ using namespace Defs;
 SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
     : QWidget (parent, f),
     letterValidator (new WordValidator (this)),
-    patternValidator (new WordValidator (this))
-
+    patternValidator (new WordValidator (this)), legacy (false)
 {
     patternValidator->setOptions (WordValidator::AllowQuestionMarks |
                                   WordValidator::AllowAsterisks |
@@ -250,6 +249,7 @@ SearchConditionForm::getSearchCondition() const
     QString typeStr = typeCbox->currentText();
     condition.type = Auxil::stringToSearchType (typeStr);
     condition.negated = (negationCbox->checkState() == Qt::Checked);
+    condition.legacy = legacy;
 
     switch (condition.type) {
         case SearchCondition::PatternMatch:
@@ -314,6 +314,7 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
     typeChanged (typeCbox->currentText());
     negationCbox->setCheckState (condition.negated ? Qt::Checked
                                                    : Qt::Unchecked);
+    legacy = condition.legacy;
 
     switch (condition.type) {
         case SearchCondition::PatternMatch:
@@ -514,6 +515,7 @@ SearchConditionForm::typeChanged (const QString& string)
         break;
     }
 
+    legacy = false;
     emit contentsChanged();
 }
 
