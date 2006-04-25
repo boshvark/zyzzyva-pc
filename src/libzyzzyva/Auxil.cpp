@@ -273,7 +273,7 @@ QString
 Auxil::getUserDir()
 {
     QString home = QDir::homePath();
-    home.replace ("//", "/");
+    home.replace (QRegExp ("/+$"), "");
     return (home + "/.zyzzyva");
 }
 
