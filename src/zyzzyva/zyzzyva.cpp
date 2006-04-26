@@ -49,6 +49,7 @@ int main (int argc, char** argv)
     splash->finish (window);
     delete splash;
 
+    QApplication::setOverrideCursor (Qt::WaitCursor);
     window->connectToDatabase();
 
     // Handle command-line arguments
@@ -70,6 +71,8 @@ int main (int argc, char** argv)
 
     QObject::connect (&app, SIGNAL (fileOpenRequested (const QString&)),
                       window, SLOT (fileOpenRequested (const QString&)));
+
+    QApplication::restoreOverrideCursor();
 
     return app.exec();
 }
