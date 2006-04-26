@@ -249,20 +249,18 @@ CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
 
     QSqlQuery selectQuery (db);
     selectQuery.prepare ("SELECT word, combinations FROM words WHERE length=? "
-                         "ORDER BY combinations DESC, word");
+                         "ORDER BY combinations DESC");
 
     QSqlQuery updateQuery (db);
-    updateQuery.prepare ("UPDATE words SET probability_order=? WHERE word=?");
-
-    QSqlQuery updateEqualQuery (db);
-    updateEqualQuery.prepare ("UPDATE words SET min_probability_order=?, "
-                              "max_probability_order=? WHERE word=?");
+    updateQuery.prepare ("UPDATE words SET probability_order=?, "
+                         "min_probability_order=?, max_probability_order=? "
+                         "WHERE word=?");
 
     for (int length = 1; length <= MAX_WORD_LEN; ++length) {
         selectQuery.bindValue (0, length);
         selectQuery.exec();
 
-        QStringList equalWords;
+        QMap<QString, QString> equalWordMap;
 
         int probOrder = 1;
         int minProbOrder = 1;
@@ -273,44 +271,52 @@ CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
             double combinations = selectQuery.value (1).toDouble();
 
             // Update probability ranges
-            if ((combinations != prevCombinations) && !equalWords.empty()) {
-                QString equalWord;
-                foreach (equalWord, equalWords) {
-                    updateEqualQuery.bindValue (0, minProbOrder);
-                    updateEqualQuery.bindValue (1, probOrder - 1);
-                    updateEqualQuery.bindValue (2, equalWord);
-                    updateEqualQuery.exec();
+            if ((combinations != prevCombinations) && !equalWordMap.empty()) {
+                int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
+                QMapIterator<QString, QString> it (equalWordMap);
+                while (it.hasNext()) {
+                    it.next();
+                    QString equalWord = it.value();
+
+                    // Update probability order and range of this word
+                    updateQuery.bindValue (0, probOrder);
+                    updateQuery.bindValue (1, minProbOrder);
+                    updateQuery.bindValue (2, maxProbOrder);
+                    updateQuery.bindValue (3, equalWord);
+                    updateQuery.exec();
+
+                    if ((stepNum % 1000) == 0) {
+                        transactionQuery.exec ("END TRANSACTION");
+                        if (cancelled)
+                            return;
+                        transactionQuery.exec ("BEGIN TRANSACTION");
+                        emit progress (stepNum);
+                    }
+
+                    ++probOrder;
+                    ++stepNum;
                 }
                 minProbOrder = probOrder;
-                equalWords.clear();
+                equalWordMap.clear();
             }
-            equalWords.append (word);
 
-            // Update probability order of this word
-            updateQuery.bindValue (0, probOrder);
-            updateQuery.bindValue (1, word);
-            updateQuery.exec();
-
-            if ((stepNum % 1000) == 0) {
-                transactionQuery.exec ("END TRANSACTION");
-                if (cancelled)
-                    return;
-                transactionQuery.exec ("BEGIN TRANSACTION");
-                emit progress (stepNum);
-            }
+            // Sort words by alphagram
+            QString radix = Auxil::getAlphagram (word) + word;
+            equalWordMap.insert (radix, word);
 
             prevCombinations = combinations;
-            ++probOrder;
-            ++stepNum;
         }
 
-        // Update probability ranges for last range
-        QString equalWord;
-        foreach (equalWord, equalWords) {
-            updateEqualQuery.bindValue (0, minProbOrder);
-            updateEqualQuery.bindValue (1, probOrder - 1);
-            updateEqualQuery.bindValue (2, equalWord);
-            updateEqualQuery.exec();
+        int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
+        QMapIterator<QString, QString> it (equalWordMap);
+        while (it.hasNext()) {
+            it.next();
+            QString equalWord = it.value();
+            updateQuery.bindValue (0, probOrder);
+            updateQuery.bindValue (1, minProbOrder);
+            updateQuery.bindValue (2, maxProbOrder);
+            updateQuery.bindValue (3, equalWord);
+            updateQuery.exec();
         }
     }
 
