@@ -305,6 +305,16 @@
   condition of Min 1, Max 1000.  In OWL2, there are two such words: NOTARIZE
   and TRIAZOLE.</p>
 
+  <p>If the <i>Lax</i> checkbox is activated, the search will also find all
+  words that have equal probability as the minimum or maximum of the range.
+  For example, in OWL2, a search for <tt>Length: Min 7, Max 7</tt>,
+  <tt>Probability Order: Min 7, Max 8 (Lax)</tt> will find 10 words, whose
+  probability orders are 1 through 10.  This is because all the 7-letter words
+  with probability order 1-7 have the same probability, as do all the words
+  with probability order 8-10.  The <i>Lax</i> checkbox allows them all to be
+  found although their unique probability orders are not strictly between 7
+  and 8.</p>
+
   <a name="limit-by-probability-order">
   <h3>Limit by Probability Order</h3>
 
