@@ -10,8 +10,10 @@ http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.14.0
  * Display probability order automatically in word lists
  * Clarify Word Judge instructions on input screen
  * Display Zyzzyva version and lexicon date on Word Judge input screen
- * Change Probability Order condition to Limit by Probability Order
+ * Rename Probability Order condition to Limit by Probability Order
+ * Change Probability Order to sort by alphagram instead of alphabetically
  * New Probability Order condition for probability order by word length
+ * New Lax attribute for Probability Order conditions
  * Rename OWL2 lexicon to OWL2+LWL
  * Rename View menu to Word menu
  * Use home directory for saving/loading quizzes, word lists, etc.
