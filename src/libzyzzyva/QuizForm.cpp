@@ -361,9 +361,11 @@ QuizForm::responseEntered()
     }
 
     if (!responseMatchesQuestion (response)) {
+        pauseTimer();
         QMessageBox::warning (this, "Response does not match question",
                               "Sorry, your response does not match the "
                               "question.");
+        unpauseTimer();
         return;
     }
 
