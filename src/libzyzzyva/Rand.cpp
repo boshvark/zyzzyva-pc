@@ -4,7 +4,7 @@
 // A random number generator based on George Marsaglia's algorithms found
 // on this web page:  http://www.ciphersbyritter.com/NEWS4/RANDC.HTM
 //
-// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //

@@ -3,7 +3,7 @@
 //
 // A class to represent quiz progress.
 //
-// Copyright 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //

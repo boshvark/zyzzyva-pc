@@ -3,7 +3,7 @@
 //
 // A dialog for displaying variations of a word, such as hooks, anagrams, etc.
 //
-// Copyright 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //

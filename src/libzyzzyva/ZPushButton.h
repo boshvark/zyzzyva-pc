@@ -4,7 +4,7 @@
 // A class derived from ZPushButton.  This class allows buttons to be clicked
 // by pressing Enter as well as the space bar.
 //
-// Copyright 2006 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
