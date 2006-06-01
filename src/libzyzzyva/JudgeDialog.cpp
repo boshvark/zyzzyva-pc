@@ -51,6 +51,7 @@ const int EXIT_TIMEOUT = 5000;
 const int NUM_KEYPRESSES_TO_EXIT = 10;
 const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 const int CLEAR_EXIT_DELAY = 5000;
+const int MAX_JUDGE_WORDS = 8;
 
 const QString INSTRUCTION_MESSAGE = "1. CHALLENGER: Enter words, "
                                     "separated by SPACE or ENTER.\n"
@@ -184,19 +185,40 @@ JudgeDialog::textChanged()
     inputArea->blockSignals (true);
     QString text = inputArea->toPlainText().toUpper();
     int lookIndex = 0;
+    int wordLength = 0;
+    int numWords = 0;
     bool afterSpace = false;
     bool doJudge = false;
     for (int i = 0; i < text.length(); ++i) {
         QChar c = text.at (lookIndex);
 
         if (c.isLetter()) {
-            afterSpace = false;
+            if (wordLength == 0)
+                ++numWords;
+
+            if (numWords <= MAX_JUDGE_WORDS) {
+                afterSpace = false;
+                ++wordLength;
+                if (wordLength > MAX_WORD_LEN) {
+                    text.insert (lookIndex, "\n");
+                    afterSpace = true;
+                    wordLength = 0;
+                    if (i < origCursorPosition)
+                        --deletedBeforeCursor;
+                }
+            }
+
+            // Disallow more than MAX_JUDGE_WORDS by whiting them out
+            else {
+                text.replace (lookIndex, 1, "\n");
+            }
             ++lookIndex;
         }
         else if ((lookIndex > 0) && c.isSpace() && (c != '\t') && !afterSpace) {
             text.replace (lookIndex, 1, "\n");
             afterSpace = true;
             ++lookIndex;
+            wordLength = 0;
         }
         else {
             if (c == '\t')
@@ -204,12 +226,16 @@ JudgeDialog::textChanged()
             text.remove (lookIndex, 1);
             if (i < origCursorPosition)
                 ++deletedBeforeCursor;
+            wordLength = 0;
         }
     }
     text.replace (QRegExp ("\\n+"), "\n");
 
     inputArea->setPlainText (text);
-    cursor.setPosition (origCursorPosition - deletedBeforeCursor);
+    int position = origCursorPosition - deletedBeforeCursor;
+    if (position > text.length())
+        position = text.length();
+    cursor.setPosition (position);
     inputArea->setTextCursor (cursor);
     inputArea->blockSignals (false);
 
