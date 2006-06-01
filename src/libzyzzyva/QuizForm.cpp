@@ -1199,17 +1199,20 @@ QuizForm::displayNextCorrectAnswer()
 //  selectInputArea
 //
 //! Give focus to a text input area if possible.  Otherwise give focus to
-//! Check Answers button.
+//! Check Answers button, or the Next button.
 //---------------------------------------------------------------------------
 void
 QuizForm::selectInputArea()
 {
-    if (inputLine->isVisible()) {
+    if (inputLine->isVisible() && inputLine->isEnabled()) {
         inputLine->setFocus();
         inputLine->setSelection (0, inputLine->text().length());
     }
-    else {
+    else if (checkResponseButton->isEnabled()) {
         checkResponseButton->setFocus();
+    }
+    else {
+        nextQuestionButton->setFocus();
     }
 }
 
