@@ -267,11 +267,13 @@ JudgeDialog::judgeWord()
     QString resultStr;
     QColor resultColor;
     if (acceptable) {
-        resultStr = "<font color=\"blue\">YES, the play is ACCEPTABLE</font>";
-        resultColor = Qt::blue;
+        resultStr = "<font color=\"#00bb00\">YES, the play is "
+                    "<b>ACCEPTABLE</b></font>";
+        resultColor = QColor (0, 204, 0);
     }
     else {
-        resultStr = "<font color=\"red\">NO, the play is UNACCEPTABLE</font>";
+        resultStr = "<font color=\"red\">NO, the play is "
+                    "<b>UNACCEPTABLE</b></font>";
         resultColor = Qt::red;
     }
     resultStr += "<br><br>" + wordStr;
