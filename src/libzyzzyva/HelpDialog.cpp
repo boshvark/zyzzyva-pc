@@ -3,7 +3,7 @@
 //
 // A help browser dialog.
 //
-// Copyright 2005 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

@@ -3,7 +3,7 @@
 //
 // A drawing surface for quiz questions.
 //
-// Copyright 2006 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //

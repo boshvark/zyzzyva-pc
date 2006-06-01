@@ -3,7 +3,7 @@
 //
 // A form for looking up and displaying word definitions.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

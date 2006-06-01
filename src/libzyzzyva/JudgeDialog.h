@@ -4,7 +4,7 @@
 // A full-screen dialog for Word Judge functionality, in which the user can
 // very easily judge the validity of one or more words.
 //
-// Copyright 2006 Michael W Thelen <mike@pietdepsi.com>.
+// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
