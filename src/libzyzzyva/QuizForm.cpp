@@ -544,8 +544,10 @@ QuizForm::saveQuizClicked()
         filename = QFileDialog::getSaveFileName (this, "Save Quiz", startDir,
                                                 "Zyzzyva Quiz Files (*.zzq)");
 
-        if (filename.isEmpty())
+        if (filename.isEmpty()) {
+            unpauseTimer();
             return;
+        }
 
         if (!filename.endsWith (".zzq", Qt::CaseInsensitive)) {
             filename += ".zzq";
@@ -559,14 +561,17 @@ QuizForm::saveQuizClicked()
                                          "The file already exists.  "
                                          "Overwrite it?", QMessageBox::Yes,
                                          QMessageBox::No);
-        if (code != QMessageBox::Yes)
+        if (code != QMessageBox::Yes) {
+            unpauseTimer();
             return;
+        }
     }
 
     if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
         QMessageBox::warning (this, "Error Saving Quiz",
                               "Cannot save quiz:\n" + file.errorString() +
                               ".");
+        unpauseTimer();
         return;
     }
 
@@ -590,6 +595,7 @@ QuizForm::saveQuizClicked()
     selectInputArea();
     setStatusString ("Quiz saved successfully.");
     QTimer::singleShot (2000, this, SLOT (updateStatusString()));
+    unpauseTimer();
 }
 
 //---------------------------------------------------------------------------
