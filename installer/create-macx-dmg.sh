@@ -23,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #-----------------------------------------------------------------------------
 
-QTDIR=/usr/local/Trolltech/Qt-4.1.2
+QTDIR=/usr/local/Trolltech/Qt-4.1.3
 QTVER=4.0
 
 # Copy executable into bundle
