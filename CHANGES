@@ -1,3 +1,18 @@
+Version 0.14.1
+Released 2006-06-02, from /branches/0.14.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.14.1
+
+ User-visible changes:
+ * Fix bug that caused crashes while loading on some Windows systems
+ * Do not display main window until after connecting to the database
+ * Change Word Judge "acceptable" adjudication color from blue to green
+ * Disallow long input in the Word Judge
+ * Various other bug fixes
+
+ Developer-visible changes:
+ * Upgrade from Qt 4.1.2 to Qt 4.1.3
+
+
 Version 0.14.0
 Released 2006-04-25, from /branches/0.14.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.14.0
