@@ -36,9 +36,8 @@ class CreateDatabaseThread : public QThread
 {
     Q_OBJECT
     public:
-    CreateDatabaseThread (QObject* parent = 0, WordEngine* e,
-                          const QString& lex, const QString& db,
-                          const QString& def)
+    CreateDatabaseThread (WordEngine* e, const QString& lex, const QString& db,
+                          const QString& def, QObject* parent = 0)
         : QThread (parent), wordEngine (e), lexiconName (lex),
           dbFilename (db), definitionFilename (def), cancelled (false) { }
     ~CreateDatabaseThread() { }

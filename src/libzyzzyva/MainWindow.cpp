@@ -884,7 +884,7 @@ MainWindow::connectToDatabase()
         dialog->setLabel (dialogLabel);
 
         CreateDatabaseThread* thread = new CreateDatabaseThread
-            (this, wordEngine, lexicon, dbFilename, definitionFilename);
+            (wordEngine, lexicon, dbFilename, definitionFilename, this);
         connect (thread, SIGNAL (steps (int)),
                  dialog, SLOT (setMaximum (int)));
         connect (thread, SIGNAL (progress (int)),
