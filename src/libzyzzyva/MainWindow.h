@@ -73,6 +73,10 @@ class MainWindow : public QMainWindow
     void closeCurrentTab();
     void currentTabChanged (int index);
     void tabStatusChanged (const QString& status);
+
+    public:
+    QString getLexiconPrefix (const QString& lexicon);
+    QString getDatabaseFilename();
     void connectToDatabase();
 
     protected:

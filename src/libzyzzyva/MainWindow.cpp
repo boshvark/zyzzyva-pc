@@ -794,6 +794,48 @@ MainWindow::tabStatusChanged (const QString& status)
 }
 
 //---------------------------------------------------------------------------
+//  getLexiconPrefix
+//
+//! Return the path associated with a lexicon name.
+//
+//! @param lexicon the lexicon name
+//! @return the path where the lexicon data is found
+//---------------------------------------------------------------------------
+QString
+MainWindow::getLexiconPrefix (const QString& lexicon)
+{
+    QMap<QString, QString> pmap;
+    pmap["OWL+LWL"] = "/north-american/owl-lwl";
+    pmap["OWL2+LWL"] = "/north-american/owl2-lwl";
+    pmap["SOWPODS"] = "/british/sowpods";
+    pmap["ODS"] = "/french/ods4";
+    return pmap.contains (lexicon) ? pmap.value (lexicon) : QString::null;
+}
+
+//---------------------------------------------------------------------------
+//  getDatabaseFilename
+//
+//! Return the database filename that should be used for the current lexicon.
+//! Also create the db directory if it doesn't already exist.  FIXME: That
+//! should be done somewhere else!
+//
+//! @return the database filename, or QString::null if error
+//---------------------------------------------------------------------------
+QString
+MainWindow::getDatabaseFilename()
+{
+    QString lexicon = wordEngine->getLexiconName();
+    QString lexiconPrefix = getLexiconPrefix (lexicon);
+    if (lexiconPrefix.isEmpty())
+        return QString::null;
+
+    QString dbPath = Auxil::getUserDir() + "/lexicons";
+    QDir dir;
+    dir.mkpath (dbPath);
+    return (dbPath + "/" + lexicon + ".db");
+}
+
+//---------------------------------------------------------------------------
 //  connectToDatabase
 //
 //! Connect to the database.  Create the database if necessary.
@@ -801,28 +843,14 @@ MainWindow::tabStatusChanged (const QString& status)
 void
 MainWindow::connectToDatabase()
 {
-    QMap<QString, QString> prefixMap;
-    prefixMap["OWL+LWL"] = "/north-american/owl-lwl";
-    prefixMap["OWL2+LWL"] = "/north-american/owl2-lwl";
-    prefixMap["SOWPODS"] = "/british/sowpods";
-    prefixMap["ODS"] = "/french/ods4";
-
+    QString dbFilename = getDatabaseFilename();
     QString lexicon = wordEngine->getLexiconName();
-
-    if (!prefixMap.contains (lexicon))
-        return;
-
-    QString definitionFilename = Auxil::getWordsDir() +
-        prefixMap.value (lexicon) + ".txt";
-
-    QString dbPath = Auxil::getUserDir() + "/lexicons";
-    QString dbFilename = dbPath + "/" + lexicon + ".db";
-    QFile dbFile (dbFilename);
-    QDir dir;
-    dir.mkpath (dbPath);
+    QString lexiconPrefix = getLexiconPrefix (lexicon);
+    QString definitionFilename = Auxil::getWordsDir() + lexiconPrefix + ".txt";
 
     QString dbError;
     bool createDatabase = false;
+    QFile dbFile (dbFilename);
 
     if (!dbFile.exists()) {
         QString message =
