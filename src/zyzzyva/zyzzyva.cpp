@@ -24,6 +24,7 @@
 
 #include "MainWindow.h"
 #include "ZApplication.h"
+#include <QFile>
 #include <QObject>
 #include <QPixmap>
 #include <QSplashScreen>
@@ -44,12 +45,25 @@ int main (int argc, char** argv)
     splash->show();
 
     MainWindow* window = new MainWindow (0, splash);
-    window->show();
 
+    // Connect to database if it exists
+    QString dbFilename = window->getDatabaseFilename();
+    bool dbExists = QFile (dbFilename).exists();
+    if (dbExists) {
+        splash->showMessage ("Connecting to database...",
+                             Qt::AlignHCenter | Qt::AlignBottom);
+        qApp->processEvents();
+        window->connectToDatabase();
+    }
+
+    window->show();
     splash->finish (window);
     delete splash;
 
-    window->connectToDatabase();
+    // Try to create database if it does not exist
+    if (!dbExists) {
+        window->connectToDatabase();
+    }
 
     // Handle command-line arguments
     if (argc > 1) {
