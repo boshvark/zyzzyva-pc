@@ -135,24 +135,21 @@ IscConnectionThread::socketError()
 void
 IscConnectionThread::socketStateChanged (QAbstractSocket::SocketState state)
 {
-    qDebug() << "*** socketStateChanged";
     switch (state) {
         case QAbstractSocket::UnconnectedState:
-        qDebug() << "UnconnectedState: The socket is not connected.";
+        emit statusChanged ("Not connected.");
         break;
 
         case QAbstractSocket::HostLookupState:
-        qDebug() << "HostLookupState: The socket is performing a host "
-                    "name lookup.";
+        emit statusChanged ("Looking up hostname...");
         break;
 
         case QAbstractSocket::ConnectingState:
-        qDebug() << "ConnectingState: The socket has started establishing "
-                    "a connection.";
+        emit statusChanged ("Establishing connection...");
         break;
 
         case QAbstractSocket::ConnectedState: {
-            qDebug() << "ConnectedState: A connection is established.";
+            emit statusChanged ("Logging in...");
 
             QByteArray bytes;
             QString message;
@@ -186,6 +183,8 @@ IscConnectionThread::socketStateChanged (QAbstractSocket::SocketState state)
             qDebug() << "Message: |" << message << "|";
             socket->write (bytes);
 
+            emit statusChanged ("Connected.");
+
             keepAliveTimer.setInterval (KEEP_ALIVE_INTERVAL);
             connect (&keepAliveTimer, SIGNAL (timeout()),
                      SLOT (keepAliveTimeout()));
@@ -194,21 +193,19 @@ IscConnectionThread::socketStateChanged (QAbstractSocket::SocketState state)
         break;
 
         case QAbstractSocket::BoundState:
-        qDebug() << "BoundState: The socket is bound to an address and port "
-                    "(for servers).";
+        emit statusChanged ("Bound to an address and port.");
         break;
 
         case QAbstractSocket::ClosingState:
-        qDebug() << "ClosingState: The socket is about to close (data may "
-                    "still be waiting to be written).";
+        emit statusChanged ("Disconnecting...");
         break;
 
         case QAbstractSocket::ListeningState:
-        qDebug() << "ListeningState: for internal use only.";
+        emit statusChanged ("Listening...");
         break;
 
         default:
-        qDebug() << "*** UNKNOWN STATE!";
+        emit statusChanged ("");
         break;
     }
 }

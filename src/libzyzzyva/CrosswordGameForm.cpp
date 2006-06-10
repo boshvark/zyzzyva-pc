@@ -202,7 +202,8 @@ CrosswordGameForm::inputReturnPressed()
 void
 CrosswordGameForm::threadStatusChanged (const QString& status)
 {
-    qDebug() << "*** threadStatusChanged: " << status;
+    statusString = status;
+    emit statusChanged (status);
 }
 
 //---------------------------------------------------------------------------
