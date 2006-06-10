@@ -27,8 +27,10 @@
 
 #include "ActionForm.h"
 #include <QLineEdit>
+#include <QPushButton>
 #include <QTableWidget>
 #include <QTextEdit>
+#include <QTcpSocket>
 #include <QString>
 
 class CrosswordGameForm : public ActionForm
@@ -36,17 +38,26 @@ class CrosswordGameForm : public ActionForm
     Q_OBJECT
     public:
     CrosswordGameForm (QWidget* parent = 0, Qt::WFlags f = 0);
+    ~CrosswordGameForm();
     QString getStatusString() const;
 
     public slots:
     void connectClicked();
     void inputReturnPressed();
+    void socketStateChanged (QAbstractSocket::SocketState state);
+    void socketReadyRead();
+
+    private:
+    void messageAppendHtml (const QString& text);
 
     private:
     QTableWidget* boardTable;
+    QPushButton* connectButton;
     QTextEdit* messageArea;
     QLineEdit* inputLine;
     QString statusString;
+
+    QTcpSocket* socket;
 };
 
 #endif // ZYZZYVA_CROSSWORD_GAME_FORM_H

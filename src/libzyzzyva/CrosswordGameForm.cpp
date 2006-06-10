@@ -23,7 +23,6 @@
 #include "CrosswordGameForm.h"
 #include "Defs.h"
 #include <QHBoxLayout>
-#include <QPushButton>
 #include <QTextCursor>
 #include <QVBoxLayout>
 
@@ -38,7 +37,7 @@ using namespace Defs;
 //! @param f widget flags
 //---------------------------------------------------------------------------
 CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
-    : ActionForm (CrosswordGameFormType, parent, f)
+    : ActionForm (CrosswordGameFormType, parent, f), socket (0)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this);
     Q_CHECK_PTR (mainHlay);
@@ -67,7 +66,7 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
 
     buttonHlay->addStretch (1);
 
-    QPushButton* connectButton = new QPushButton ("&Connect", this);
+    connectButton = new QPushButton ("&Connect", this);
     Q_CHECK_PTR (connectButton);
     connect (connectButton, SIGNAL (clicked()), SLOT (connectClicked()));
     buttonHlay->addWidget (connectButton);
@@ -93,6 +92,17 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
 }
 
 //---------------------------------------------------------------------------
+//  ~CrosswordGameForm
+//
+//! Destructor.
+//---------------------------------------------------------------------------
+CrosswordGameForm::~CrosswordGameForm()
+{
+    if (socket)
+        socket->disconnectFromHost();
+}
+
+//---------------------------------------------------------------------------
 //  getStatusString
 //
 //! Returns the current status string.
@@ -113,7 +123,13 @@ CrosswordGameForm::getStatusString() const
 void
 CrosswordGameForm::connectClicked()
 {
-    qDebug("Connect clicked!");
+    socket = new QTcpSocket (this);
+    Q_CHECK_PTR (socket);
+    connect (socket, SIGNAL (stateChanged (QAbstractSocket::SocketState)),
+             SLOT (socketStateChanged (QAbstractSocket::SocketState)));
+    connect (socket, SIGNAL (readyRead()), SLOT (socketReadyRead()));
+    socket->connectToHost ("pietdepsi.com", 21);
+    connectButton->setEnabled (false);
 }
 
 //---------------------------------------------------------------------------
@@ -128,9 +144,86 @@ CrosswordGameForm::inputReturnPressed()
     if (text.isEmpty())
         return;
 
+    messageAppendHtml ("<font color=\"red\">" + text + "</font><br>");
+    inputLine->clear();
+}
+
+//---------------------------------------------------------------------------
+//  socketStateChanged
+//
+//! Called when the socket state changes.
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::socketStateChanged (QAbstractSocket::SocketState state)
+{
+    qDebug ("*** socketStateChanged");
+    switch (state) {
+        case QAbstractSocket::UnconnectedState:
+        qDebug ("UnconnectedState: The socket is not connected.");
+        break;
+
+        case QAbstractSocket::HostLookupState:
+        qDebug ("HostLookupState: The socket is performing a host "
+                "name lookup.");
+        break;
+
+        case QAbstractSocket::ConnectingState:
+        qDebug ("ConnectingState: The socket has started establishing "
+                "a connection.");
+        break;
+
+        case QAbstractSocket::ConnectedState:
+        qDebug ("ConnectedState: A connection is established.");
+        break;
+
+        case QAbstractSocket::BoundState:
+        qDebug ("BoundState: The socket is bound to an address and port "
+                "(for servers).");
+        break;
+
+        case QAbstractSocket::ClosingState:
+        qDebug ("ClosingState: The socket is about to close (data may "
+                "still be waiting to be written).");
+        break;
+
+        case QAbstractSocket::ListeningState:
+        qDebug ("ListeningState: for internal use only.");
+        break;
+
+        default:
+        qDebug ("*** UNKNOWN STATE!");
+        break;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  socketReadyRead
+//
+//! Called when the socket has data ready to read.
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::socketReadyRead()
+{
+    qDebug ("*** socketReadyRead");
+    while (socket->canReadLine()) {
+        QByteArray byteArray = socket->readLine (8092);
+        QString line (byteArray);
+        messageAppendHtml ("<font color=\"blue\">" + line + "</font><br>");
+    }
+}
+
+//---------------------------------------------------------------------------
+//  messageAppendHtml
+//
+//! Append HTML to the end of the message area.
+//
+//! @param text the text to append
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::messageAppendHtml (const QString& text)
+{
     messageArea->insertHtml ("<font color=\"red\">" + text + "</font><br>");
     QTextCursor cursor = messageArea->textCursor();
     cursor.movePosition (QTextCursor::End);
     messageArea->setTextCursor (cursor);
-    inputLine->clear();
 }

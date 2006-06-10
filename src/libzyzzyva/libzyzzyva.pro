@@ -25,7 +25,7 @@
 TEMPLATE = lib
 TARGET = zyzzyva
 CONFIG += qt release thread warn_on assistant
-QT += sql xml
+QT += sql xml network
 
 ROOT = ../..
 DESTDIR = $$ROOT/bin
