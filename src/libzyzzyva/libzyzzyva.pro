@@ -55,6 +55,7 @@ SOURCES = \
     DefinitionDialog.cpp \
     HelpDialog.cpp \
     IntroForm.cpp \
+    IscConnectionThread.cpp \
     JudgeForm.cpp \
     JudgeDialog.cpp \
     LetterBag.cpp \
@@ -99,6 +100,7 @@ HEADERS = \
     DefinitionLabel.h \
     HelpDialog.h \
     IntroForm.h \
+    IscConnectionThread.h \
     JudgeForm.h \
     JudgeDialog.h \
     MainWindow.h \

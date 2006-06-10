@@ -30,9 +30,9 @@
 #include <QPushButton>
 #include <QTableWidget>
 #include <QTextEdit>
-#include <QTcpSocket>
-#include <QTimer>
 #include <QString>
+
+class IscConnectionThread;
 
 class CrosswordGameForm : public ActionForm
 {
@@ -45,10 +45,8 @@ class CrosswordGameForm : public ActionForm
     public slots:
     void connectClicked();
     void inputReturnPressed();
-    void socketStateChanged (QAbstractSocket::SocketState state);
-    void socketReadyRead();
-    void socketBytesWritten (qint64 bytes);
-    void keepAliveTimeout();
+    void threadStatusChanged (const QString& status);
+    void threadMessageReceived (const QString& message);
 
     private:
     void messageAppendHtml (const QString& text);
@@ -60,8 +58,7 @@ class CrosswordGameForm : public ActionForm
     QLineEdit* inputLine;
     QString statusString;
 
-    QTcpSocket* socket;
-    QTimer keepAliveTimer;
+    IscConnectionThread* iscThread;
 };
 
 #endif // ZYZZYVA_CROSSWORD_GAME_FORM_H
