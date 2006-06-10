@@ -1,9 +1,9 @@
 //---------------------------------------------------------------------------
-// ActionForm.h
+// CrosswordGameForm.h
 //
-// A base class for main action forms.
+// A form for playing a crossword game.
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -22,39 +22,19 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_ACTION_FORM_H
-#define ZYZZYVA_ACTION_FORM_H
+#ifndef ZYZZYVA_CROSSWORD_GAME_FORM_H
+#define ZYZZYVA_CROSSWORD_GAME_FORM_H
 
-#include <QFrame>
-#include <QString>
+#include "ActionForm.h"
 
-class ActionForm : public QFrame
+class CrosswordGameForm : public ActionForm
 {
     Q_OBJECT
-
     public:
-    enum ActionFormType {
-        UnknownFormType,
-        QuizFormType,
-        SearchFormType,
-        DefineFormType,
-        JudgeFormType,
-        IntroFormType,
-        CrosswordGameFormType
-    };
-
-    public:
-    ActionForm (ActionFormType t, QWidget* parent = 0, Qt::WFlags f = 0)
-        : QFrame (parent, f), type (t) { }
-    virtual ~ActionForm() { }
-    virtual ActionFormType getType() const { return type; }
-    virtual QString getStatusString() const { return QString::null; }
-
-    signals:
-    void statusChanged (const QString& status);
+    CrosswordGameForm (QWidget* parent = 0, Qt::WFlags f = 0);
+    QString getStatusString() const;
 
     private:
-    ActionFormType type;
 };
 
-#endif // ZYZZYVA_ACTION_FORM_H
+#endif // ZYZZYVA_CROSSWORD_GAME_FORM_H
