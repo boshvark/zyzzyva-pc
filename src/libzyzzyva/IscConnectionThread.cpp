@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "IscConnectionThread.h"
+#include "Rand.h"
 
 #include <QtDebug>
 
@@ -74,7 +75,9 @@ IscConnectionThread::connectToServer (const QString& creds,
     connect (socket, SIGNAL (bytesWritten (qint64)),
              SLOT (socketBytesWritten (qint64)));
 
-    socket->connectToHost ("66.98.172.34", 1327);
+    Rand r;
+    int port = 1321 + r.rand (9);
+    socket->connectToHost ("66.98.172.34", port);
 
     if (socketHadError) {
         if (err)
