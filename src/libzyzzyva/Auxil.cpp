@@ -277,6 +277,18 @@ Auxil::getUserDir()
     return (home + "/.zyzzyva");
 }
 
+//---------------------------------------------------------------------------
+//  getUserConfigDir
+//
+//! Return the top-level user directory for configuration.
+//
+//! @return the directory name
+//---------------------------------------------------------------------------
+QString
+Auxil::getUserConfigDir()
+{
+    return getUserDir() + "/config";
+}
 
 //---------------------------------------------------------------------------
 //  wordWrap

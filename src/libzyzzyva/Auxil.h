@@ -43,6 +43,7 @@ namespace Auxil {
     QString getWordsDir();
     QString getUserWordsDir();
     QString getUserDir();
+    QString getUserConfigDir();
     QString wordWrap (const QString& str, int wrapLength);
     bool isVowel (QChar c);
     QString getAlphagram (const QString& word);

@@ -21,12 +21,18 @@
 //---------------------------------------------------------------------------
 
 #include "CrosswordGameForm.h"
+#include "Auxil.h"
 #include "Defs.h"
+#include <QFile>
 #include <QHBoxLayout>
 #include <QTextCursor>
 #include <QVBoxLayout>
 
+#include <QtDebug>
+
 using namespace Defs;
+
+//const int KEEP_ALIVE_INTERVAL = 31000;
 
 //---------------------------------------------------------------------------
 //  CrosswordGameForm
@@ -128,7 +134,10 @@ CrosswordGameForm::connectClicked()
     connect (socket, SIGNAL (stateChanged (QAbstractSocket::SocketState)),
              SLOT (socketStateChanged (QAbstractSocket::SocketState)));
     connect (socket, SIGNAL (readyRead()), SLOT (socketReadyRead()));
-    socket->connectToHost ("pietdepsi.com", 21);
+    connect (socket, SIGNAL (bytesWritten (qint64)),
+             SLOT (socketBytesWritten (qint64)));
+    //socket->connectToHost ("pietdepsi.com", 21);
+    socket->connectToHost ("66.98.172.34", 1327);
     connectButton->setEnabled (false);
 }
 
@@ -156,42 +165,85 @@ CrosswordGameForm::inputReturnPressed()
 void
 CrosswordGameForm::socketStateChanged (QAbstractSocket::SocketState state)
 {
-    qDebug ("*** socketStateChanged");
+    qDebug() << "*** socketStateChanged";
     switch (state) {
         case QAbstractSocket::UnconnectedState:
-        qDebug ("UnconnectedState: The socket is not connected.");
+        qDebug() << "UnconnectedState: The socket is not connected.";
         break;
 
         case QAbstractSocket::HostLookupState:
-        qDebug ("HostLookupState: The socket is performing a host "
-                "name lookup.");
+        qDebug() << "HostLookupState: The socket is performing a host "
+                    "name lookup.";
         break;
 
         case QAbstractSocket::ConnectingState:
-        qDebug ("ConnectingState: The socket has started establishing "
-                "a connection.");
+        qDebug() << "ConnectingState: The socket has started establishing "
+                    "a connection.";
         break;
 
-        case QAbstractSocket::ConnectedState:
-        qDebug ("ConnectedState: A connection is established.");
+        case QAbstractSocket::ConnectedState: {
+            qDebug() << "ConnectedState: A connection is established.";
+
+            QByteArray bytes;
+            QString message;
+
+            QFile file (Auxil::getUserConfigDir() + "/isc-creds");
+            if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+                return;
+
+            QByteArray credBytes = file.readLine();
+            QString credStr (credBytes);
+            credStr = credStr.simplified();
+
+            message = "0 LOGIN " + credStr;
+            bytes.append (char (0x00));
+            bytes.append (char (0x2c));
+            bytes.append (message);
+            qDebug() << "Message: |" << message << "|";
+            socket->write (bytes);
+
+            // Wait for SETALL
+            socket->waitForReadyRead (10000);
+            // Wait for SET FORMULA, BUDDIES, etc.
+            socket->waitForReadyRead (10000);
+
+            message = "0 SOUGHT";
+            bytes.clear();
+            bytes.append (char (0x00));
+            bytes.append (char (0x08));
+            bytes.append (message);
+            qDebug() << "Message: |" << message << "|";
+            socket->write (bytes);
+
+            socket->waitForReadyRead (10000);
+            message = "0 RESUME LOGIN";
+            bytes.clear();
+            bytes.append (char (0x00));
+            bytes.append (char (0x0e));
+            bytes.append (message);
+            qDebug() << "Message: |" << message << "|";
+            socket->write (bytes);
+
+            //keepAliveTimer.setInterval (KEEP_ALIVE_INTERVAL);
+        }
         break;
 
         case QAbstractSocket::BoundState:
-        qDebug ("BoundState: The socket is bound to an address and port "
-                "(for servers).");
+        qDebug() << "BoundState: The socket is bound to an address and port "
+                    "(for servers).";
         break;
 
         case QAbstractSocket::ClosingState:
-        qDebug ("ClosingState: The socket is about to close (data may "
-                "still be waiting to be written).");
+        qDebug() << "ClosingState: The socket is about to close (data may "
+                    "still be waiting to be written).";
         break;
 
         case QAbstractSocket::ListeningState:
-        qDebug ("ListeningState: for internal use only.");
+        qDebug() << "ListeningState: for internal use only.";
         break;
 
         default:
-        qDebug ("*** UNKNOWN STATE!");
+        qDebug() << "*** UNKNOWN STATE!";
         break;
     }
 }
@@ -204,13 +256,46 @@ CrosswordGameForm::socketStateChanged (QAbstractSocket::SocketState state)
 void
 CrosswordGameForm::socketReadyRead()
 {
-    qDebug ("*** socketReadyRead");
-    while (socket->canReadLine()) {
-        QByteArray byteArray = socket->readLine (8092);
-        QString line (byteArray);
-        messageAppendHtml ("<font color=\"blue\">" + line + "</font><br>");
+    qDebug() << "*** socketReadyRead";
+    QByteArray byteArray = socket->readAll();
+
+    QString message;
+    for (int i = 0; i < byteArray.size(); ++i) {
+        QChar c (byteArray[i]);
+        if (c.isPrint()) {
+            message = byteArray.right (byteArray.size() - i);
+            break;
+        }
+    }
+
+    qDebug() << "Read " << byteArray.size() << " bytes: |" << message << "|";
+
+    if (!byteArray.isEmpty())
+        messageAppendHtml ("<font color=\"blue\">" + message +
+                            "</font><br>");
+
+    if (message.contains ("0 PING REPLY")) {
+        QByteArray bytes;
+        QString response = "0 PING REPLY";
+        bytes.append (char (0x00));
+        bytes.append (char (0x0c));
+        bytes.append (response);
+        qDebug() << "Bytes: |" << bytes << "|";
+        socket->write (bytes);
     }
 }
+
+//---------------------------------------------------------------------------
+//  socketBytesWritten
+//
+//! Called when data has been written to the socket.
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::socketBytesWritten (qint64 bytes)
+{
+    qDebug() << "*** socketBytesWritten: " << bytes << " bytes";
+}
+
 
 //---------------------------------------------------------------------------
 //  messageAppendHtml

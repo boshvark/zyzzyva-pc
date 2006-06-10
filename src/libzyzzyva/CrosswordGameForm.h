@@ -46,6 +46,7 @@ class CrosswordGameForm : public ActionForm
     void inputReturnPressed();
     void socketStateChanged (QAbstractSocket::SocketState state);
     void socketReadyRead();
+    void socketBytesWritten (qint64 bytes);
 
     private:
     void messageAppendHtml (const QString& text);
@@ -58,6 +59,7 @@ class CrosswordGameForm : public ActionForm
     QString statusString;
 
     QTcpSocket* socket;
+    //QTimer keepAliveTimer;
 };
 
 #endif // ZYZZYVA_CROSSWORD_GAME_FORM_H
