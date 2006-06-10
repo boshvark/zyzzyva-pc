@@ -39,6 +39,7 @@ class CrosswordGameForm : public ActionForm
     QString getStatusString() const;
 
     public slots:
+    void connectClicked();
     void inputReturnPressed();
 
     private:

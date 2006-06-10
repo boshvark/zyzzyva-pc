@@ -23,6 +23,7 @@
 #include "CrosswordGameForm.h"
 #include "Defs.h"
 #include <QHBoxLayout>
+#include <QPushButton>
 #include <QTextCursor>
 #include <QVBoxLayout>
 
@@ -44,6 +45,12 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     mainHlay->setMargin (MARGIN);
     mainHlay->setSpacing (SPACING);
 
+    QVBoxLayout* boardVlay = new QVBoxLayout;
+    Q_CHECK_PTR (boardVlay);
+    boardVlay->setMargin (0);
+    boardVlay->setSpacing (SPACING);
+    mainHlay->addLayout (boardVlay);
+
     boardTable = new QTableWidget (this);
     Q_CHECK_PTR (boardTable);
     boardTable->setColumnCount (15);
@@ -52,7 +59,20 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
         boardTable->setColumnWidth (i, 20);
         boardTable->setRowHeight (i, 20);
     }
-    mainHlay->addWidget (boardTable);
+    boardVlay->addWidget (boardTable);
+
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    Q_CHECK_PTR (buttonHlay);
+    boardVlay->addLayout (buttonHlay);
+
+    buttonHlay->addStretch (1);
+
+    QPushButton* connectButton = new QPushButton ("&Connect", this);
+    Q_CHECK_PTR (connectButton);
+    connect (connectButton, SIGNAL (clicked()), SLOT (connectClicked()));
+    buttonHlay->addWidget (connectButton);
+
+    buttonHlay->addStretch (1);
 
     QVBoxLayout* messageVlay = new QVBoxLayout;
     Q_CHECK_PTR (messageVlay);
@@ -83,6 +103,17 @@ QString
 CrosswordGameForm::getStatusString() const
 {
     return statusString;
+}
+
+//---------------------------------------------------------------------------
+//  inputReturnPressed
+//
+//! Called when the Connect button is clicked.
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::connectClicked()
+{
+    qDebug("Connect clicked!");
 }
 
 //---------------------------------------------------------------------------
