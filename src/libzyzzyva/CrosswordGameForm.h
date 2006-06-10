@@ -44,6 +44,7 @@ class CrosswordGameForm : public ActionForm
 
     public slots:
     void connectClicked();
+    void disconnectClicked();
     void inputReturnPressed();
     void threadStatusChanged (const QString& status);
     void threadMessageReceived (const QString& message);
@@ -54,6 +55,7 @@ class CrosswordGameForm : public ActionForm
     private:
     QTableWidget* boardTable;
     QPushButton* connectButton;
+    QPushButton* disconnectButton;
     QTextEdit* messageArea;
     QLineEdit* inputLine;
     QString statusString;

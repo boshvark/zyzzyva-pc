@@ -76,6 +76,12 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     connect (connectButton, SIGNAL (clicked()), SLOT (connectClicked()));
     buttonHlay->addWidget (connectButton);
 
+    disconnectButton = new QPushButton ("&Disconnect", this);
+    Q_CHECK_PTR (disconnectButton);
+    connect (disconnectButton, SIGNAL (clicked()), SLOT (disconnectClicked()));
+    disconnectButton->setEnabled (false);
+    buttonHlay->addWidget (disconnectButton);
+
     buttonHlay->addStretch (1);
 
     QVBoxLayout* messageVlay = new QVBoxLayout;
@@ -119,7 +125,7 @@ CrosswordGameForm::getStatusString() const
 }
 
 //---------------------------------------------------------------------------
-//  inputReturnPressed
+//  connectClicked
 //
 //! Called when the Connect button is clicked.
 //---------------------------------------------------------------------------
@@ -147,6 +153,27 @@ CrosswordGameForm::connectClicked()
         return;
 
     connectButton->setEnabled (false);
+    disconnectButton->setEnabled (true);
+}
+
+//---------------------------------------------------------------------------
+//  disconnectClicked
+//
+//! Called when the Disconnect button is clicked.
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::disconnectClicked()
+{
+    if (!iscThread)
+        return;
+
+    iscThread->disconnectFromServer();
+    iscThread->quit();
+    delete iscThread;
+    iscThread = 0;
+
+    disconnectButton->setEnabled (false);
+    connectButton->setEnabled (true);
 }
 
 //---------------------------------------------------------------------------

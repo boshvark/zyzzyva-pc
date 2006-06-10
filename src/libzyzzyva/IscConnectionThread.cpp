@@ -95,6 +95,12 @@ IscConnectionThread::connectToServer (const QString& creds,
 void
 IscConnectionThread::disconnectFromServer()
 {
+    if (!socket)
+        return;
+
+    socket->disconnectFromHost();
+    delete socket;
+    socket = 0;
 }
 
 //---------------------------------------------------------------------------
