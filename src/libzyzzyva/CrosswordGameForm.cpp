@@ -22,7 +22,8 @@
 
 #include "CrosswordGameForm.h"
 #include "Defs.h"
-#include <QLabel>
+#include <QHBoxLayout>
+#include <QTextCursor>
 #include <QVBoxLayout>
 
 using namespace Defs;
@@ -38,12 +39,67 @@ using namespace Defs;
 CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     : ActionForm (CrosswordGameFormType, parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    mainVlay->setMargin (MARGIN);
-    mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
+    QHBoxLayout* mainHlay = new QHBoxLayout (this);
+    Q_CHECK_PTR (mainHlay);
+    mainHlay->setMargin (MARGIN);
+    mainHlay->setSpacing (SPACING);
 
-    QLabel* label = new QLabel ("I am a crossword game form!");
-    Q_CHECK_PTR (label);
-    mainVlay->addWidget (label);
+    boardTable = new QTableWidget (this);
+    Q_CHECK_PTR (boardTable);
+    boardTable->setColumnCount (15);
+    boardTable->setRowCount (15);
+    for (int i = 0; i < 15; ++i) {
+        boardTable->setColumnWidth (i, 20);
+        boardTable->setRowHeight (i, 20);
+    }
+    mainHlay->addWidget (boardTable);
+
+    QVBoxLayout* messageVlay = new QVBoxLayout;
+    Q_CHECK_PTR (messageVlay);
+    messageVlay->setMargin (0);
+    messageVlay->setSpacing (SPACING);
+    mainHlay->addLayout (messageVlay);
+
+    messageArea = new QTextEdit (this);
+    Q_CHECK_PTR (messageArea);
+    messageArea->setReadOnly (true);
+    messageVlay->addWidget (messageArea);
+
+    inputLine = new QLineEdit (this);
+    Q_CHECK_PTR (inputLine);
+    connect (inputLine, SIGNAL (returnPressed()),
+             SLOT (inputReturnPressed()));
+    messageVlay->addWidget (inputLine);
+}
+
+//---------------------------------------------------------------------------
+//  getStatusString
+//
+//! Returns the current status string.
+//
+//! @return the current status string
+//---------------------------------------------------------------------------
+QString
+CrosswordGameForm::getStatusString() const
+{
+    return statusString;
+}
+
+//---------------------------------------------------------------------------
+//  inputReturnPressed
+//
+//! Called when return is pressed in the input line.
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::inputReturnPressed()
+{
+    QString text = inputLine->text();
+    if (text.isEmpty())
+        return;
+
+    messageArea->insertHtml ("<font color=\"red\">" + text + "</font><br>");
+    QTextCursor cursor = messageArea->textCursor();
+    cursor.movePosition (QTextCursor::End);
+    messageArea->setTextCursor (cursor);
+    inputLine->clear();
 }

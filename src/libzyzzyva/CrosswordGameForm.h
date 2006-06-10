@@ -26,6 +26,10 @@
 #define ZYZZYVA_CROSSWORD_GAME_FORM_H
 
 #include "ActionForm.h"
+#include <QLineEdit>
+#include <QTableWidget>
+#include <QTextEdit>
+#include <QString>
 
 class CrosswordGameForm : public ActionForm
 {
@@ -34,7 +38,14 @@ class CrosswordGameForm : public ActionForm
     CrosswordGameForm (QWidget* parent = 0, Qt::WFlags f = 0);
     QString getStatusString() const;
 
+    public slots:
+    void inputReturnPressed();
+
     private:
+    QTableWidget* boardTable;
+    QTextEdit* messageArea;
+    QLineEdit* inputLine;
+    QString statusString;
 };
 
 #endif // ZYZZYVA_CROSSWORD_GAME_FORM_H

@@ -25,6 +25,7 @@
 #include "MainWindow.h"
 #include "AboutDialog.h"
 #include "CreateDatabaseThread.h"
+#include "CrosswordGameForm.h"
 #include "DefinitionDialog.h"
 #include "DefineForm.h"
 #include "HelpDialog.h"
@@ -60,6 +61,7 @@ const QString APPLICATION_TITLE = "Zyzzyva";
 
 const QString IMPORT_FAILURE_TITLE = "Load Failed";
 const QString IMPORT_COMPLETE_TITLE = "Load Complete";
+const QString CROSSWORD_GAME_TAB_TITLE = "Crossword Game";
 const QString DEFINE_TAB_TITLE = "Definition";
 const QString INTRO_TAB_TITLE = "Welcome";
 const QString JUDGE_TAB_TITLE = "Word Judge";
@@ -120,6 +122,14 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     newSearchAction->setIcon (QIcon (":/search-icon"));
     connect (newSearchAction, SIGNAL (triggered()), SLOT (newSearchForm()));
     fileMenu->addAction (newSearchAction);
+
+    // New Crossword Game
+    QAction* newCrosswordGameAction = new QAction ("Crossword &Game", this);
+    Q_CHECK_PTR (newCrosswordGameAction);
+    newCrosswordGameAction->setIcon (QIcon (":/define-icon"));
+    connect (newCrosswordGameAction, SIGNAL (triggered()),
+             SLOT (newCrosswordGameForm()));
+    fileMenu->addAction (newCrosswordGameAction);
 
     // New Definition
     QAction* newDefinitionAction = new QAction ("&Definition", this);
@@ -529,6 +539,21 @@ MainWindow::newSearchForm()
     SearchForm* form = new SearchForm (wordEngine);
     Q_CHECK_PTR (form);
     newTab (form, QIcon (":/search-icon"), SEARCH_TAB_TITLE);
+    connect (form, SIGNAL (statusChanged (const QString&)),
+             SLOT (tabStatusChanged (const QString&)));
+}
+
+//---------------------------------------------------------------------------
+//  newCrosswordGameForm
+//
+//! Create a crossword game form.
+//---------------------------------------------------------------------------
+void
+MainWindow::newCrosswordGameForm()
+{
+    CrosswordGameForm* form = new CrosswordGameForm;
+    Q_CHECK_PTR (form);
+    newTab (form, QIcon (":/define-icon"), CROSSWORD_GAME_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
 }
