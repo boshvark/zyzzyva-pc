@@ -31,6 +31,7 @@
 #include <QTableWidget>
 #include <QTextEdit>
 #include <QTcpSocket>
+#include <QTimer>
 #include <QString>
 
 class CrosswordGameForm : public ActionForm
@@ -47,6 +48,7 @@ class CrosswordGameForm : public ActionForm
     void socketStateChanged (QAbstractSocket::SocketState state);
     void socketReadyRead();
     void socketBytesWritten (qint64 bytes);
+    void keepAliveTimeout();
 
     private:
     void messageAppendHtml (const QString& text);
@@ -59,7 +61,7 @@ class CrosswordGameForm : public ActionForm
     QString statusString;
 
     QTcpSocket* socket;
-    //QTimer keepAliveTimer;
+    QTimer keepAliveTimer;
 };
 
 #endif // ZYZZYVA_CROSSWORD_GAME_FORM_H

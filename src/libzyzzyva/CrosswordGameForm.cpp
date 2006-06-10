@@ -32,7 +32,7 @@
 
 using namespace Defs;
 
-//const int KEEP_ALIVE_INTERVAL = 31000;
+const int KEEP_ALIVE_INTERVAL = 31000;
 
 //---------------------------------------------------------------------------
 //  CrosswordGameForm
@@ -224,7 +224,10 @@ CrosswordGameForm::socketStateChanged (QAbstractSocket::SocketState state)
             qDebug() << "Message: |" << message << "|";
             socket->write (bytes);
 
-            //keepAliveTimer.setInterval (KEEP_ALIVE_INTERVAL);
+            keepAliveTimer.setInterval (KEEP_ALIVE_INTERVAL);
+            connect (&keepAliveTimer, SIGNAL (timeout()),
+                     SLOT (keepAliveTimeout()));
+            keepAliveTimer.start();
         }
         break;
 
@@ -296,6 +299,27 @@ CrosswordGameForm::socketBytesWritten (qint64 bytes)
     qDebug() << "*** socketBytesWritten: " << bytes << " bytes";
 }
 
+//---------------------------------------------------------------------------
+//  keepAliveTimeout
+//
+//! Called when the keep-alive timer goes off.
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::keepAliveTimeout()
+{
+    qDebug() << "*** Keep alive timeout!";
+
+    if (!socket)
+        return;
+
+    QByteArray bytes;
+    QString response = "0 ALIVE";
+    bytes.append (char (0x00));
+    bytes.append (char (0x07));
+    bytes.append (response);
+    qDebug() << "Bytes: |" << bytes << "|";
+    socket->write (bytes);
+}
 
 //---------------------------------------------------------------------------
 //  messageAppendHtml
