@@ -49,9 +49,9 @@ JudgeForm::JudgeForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     : ActionForm (JudgeFormType, parent, f), engine (e)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    Q_CHECK_PTR (mainVlay);
     mainVlay->setMargin (MARGIN);
     mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
 
     wordArea = new WordTextEdit;
     Q_CHECK_PTR (wordArea);
