@@ -282,9 +282,14 @@ CrosswordGameForm::messageAppendHtml (const QString& text,
     QString html = "<font color=\"" + colorStr + "\">" +
                    encodeHtmlEntities (text) + "</font><br>";
     qDebug() << "HTML: " << html;
+
+    // Move to the end, append HTML, and move to the end again
+    QTextCursor cursor = messageArea->textCursor();
+    cursor.movePosition (QTextCursor::End);
+    messageArea->setTextCursor (cursor);
+
     messageArea->insertHtml (html);
 
-    QTextCursor cursor = messageArea->textCursor();
     cursor.movePosition (QTextCursor::End);
     messageArea->setTextCursor (cursor);
 }
