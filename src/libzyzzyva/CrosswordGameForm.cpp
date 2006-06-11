@@ -189,7 +189,7 @@ CrosswordGameForm::inputReturnPressed()
         return;
 
     text = canonizeMessage (text);
-    messageAppendHtml (text, QColor (0xff, 0x00, 0x00));
+    messageAppendHtml (text, QColor (0x00, 0x00, 0xff));
     iscThread->sendMessage (text);
 
     inputLine->clear();
@@ -223,13 +223,150 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
     QString args = message.section (" ", 1);
 
     // Take care of messages the GUI doesn't need to know about
-    if (command == "TELL") {
+    if ((command == "TELL") || (command == "WHISPER")) {
         QString sender = args.section (" ", 0, 0);
         QString channel = args.section (" ", 1, 1); // ?
         QString text = args.section (" ", 2);
 
-        messageAppendHtml (sender + " tells you: " + text,
-                           QColor (0x8b, 0x00, 0x8b));
+        if (command == "TELL") {
+            messageAppendHtml (sender + " tells you: " + text,
+                            QColor (0x8b, 0x00, 0x8b));
+        }
+        else if (command == "WHISPER") {
+            messageAppendHtml (sender + " whispers: " + text,
+                            QColor (0x64, 0x95, 0xed));
+        }
+    }
+
+    else if (command == "OBSERVE") {
+        QString action = args.section (" ", 0, 0);
+        args = args.section (" ", 1);
+
+        if (action == "MOVE") {
+            args = args.simplified();
+            QString placement = args.section (" ", 0, 0);
+            QString play = args.section (" ", 1, 1);
+            QString score = args.section (" ", 2, 2);
+            QString minutes = args.section (" ", 3, 3);
+            QString seconds = args.section (" ", 4, 4);
+            QString newRack = args.section (" ", 5, 5);
+            messageAppendHtml ("MOVE " + placement + " " + play + " " + score,
+                               QColor (0x00, 0x00, 0xff));
+        }
+
+        else if (action == "CHANGE") {
+            args = args.simplified();
+
+            messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
+
+            // OBSERVE CHANGE erxievz 03 27 7
+
+            // OBSERVE CHANGE czledre 02 5 5
+
+        }
+
+        else if (action == "LOGIN") {
+            args = args.trimmed();
+            // What does the first line mean?
+
+            QStringList lines = args.split ("\n");
+
+            QString line;
+            foreach (line, lines) {
+                messageAppendHtml ("Line: " + line,
+                                   QColor (0x00, 0x00, 0xff));
+            }
+
+            // FIXME
+            QString firstLine = lines[0];
+
+            QStringList vars = lines[1].split (" ");
+
+            QString lexicon;
+            char lexnum = vars[0][0].toAscii();
+            switch (lexnum) {
+                case '0': lexicon = "TWL98"; break;
+                case '1': lexicon = "SOWPODS"; break;
+                case '2': lexicon = "ODS"; break;
+                case '3': lexicon = "LOC2000"; break;
+
+                // FIXME
+                case '4': lexicon = "PARO"; break;
+                // FIXME
+                case '5': lexicon = "MULTI"; break;
+
+                case '6': lexicon = "SWL"; break;
+                default:  lexicon = "Unknown"; break;
+            }
+
+            QString time = vars[1];
+            QString increment = vars[2];
+            QString moreVars = vars[3];
+            bool rated = (moreVars[0] == '1');
+
+
+            // SINGLE   c
+            // DOUBLE   b
+            // VOID     v
+            // 5-POINTS f
+
+            char challnum = moreVars[1].toAscii();
+            QString challenge;
+            switch (challnum) {
+                case '0': challenge = "SINGLE"; break;
+                case '1': challenge = "DOUBLE"; break;
+                case '2': challenge = "5-POINTS"; break;
+                case '3': challenge = "VOID"; break;
+                default:  challenge = "Unknown"; break;
+            }
+
+            bool noescape = (moreVars[2] == '1');
+
+            // FIXME
+            QChar something = moreVars[3];
+            QChar somethingElse = moreVars[4];
+
+            QStringList aPlayerSplit = lines[2].split (" ");
+            QString aPlayer = aPlayerSplit[0];
+            QString aPlayerRating = aPlayerSplit[1];
+            QString aPlayerInitialRack = aPlayerSplit[2];
+            // FIXME
+            QString aPlayerSomething = aPlayerSplit[3];
+
+
+            QString aPlayerMoveLine = lines[3];
+
+
+            QStringList bPlayerSplit = lines[5].split (" ");
+            QString bPlayer = bPlayerSplit[0];
+            QString bPlayerRating = bPlayerSplit[1];
+            QString bPlayerInitialRack = bPlayerSplit[2];
+            // FIXME
+            QString bPlayerSomething = bPlayerSplit[3];
+
+
+            QString bPlayerMoveLine = lines[6];
+
+
+            QString text = "You are now observing: " + aPlayer + " vs " +
+                bPlayer + " " + lexicon + " " + time + " " + increment + " " +
+                (rated ? QString ("rated") : QString ("unrated")) + " " +
+                "noescape=" + (noescape ? QString ("ON") : QString ("OFF")) +
+                " challenge=" + challenge;
+
+            // FIXME: also say which player is on move
+
+            messageAppendHtml (text, QColor (0x00, 0x00, 0x00));
+        }
+
+        else if (action == "RESIGN") {
+            // FIXME
+            messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
+        }
+
+        else {
+            messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
+        }
     }
 
     else if (command == "ASITIS") {
@@ -253,7 +390,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
     }
 
     else {
-        messageAppendHtml (message, QColor (0x00, 0x00, 0xff));
+        messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
     }
 }
 
@@ -280,7 +417,6 @@ CrosswordGameForm::messageAppendHtml (const QString& text,
 
     QString html = "<font color=\"" + colorStr + "\">" +
                    encodeHtmlEntities (text) + "</font><br>";
-    qDebug() << "HTML: " << html;
 
     // Move to the end, append HTML, and move to the end again
     QTextCursor cursor = messageArea->textCursor();
@@ -334,10 +470,13 @@ CrosswordGameForm::canonizeMessage (const QString& message)
         args = args.section (" ", 1);
     }
 
+    // FIXME: this will also falsely match incorrect commands like ALVO
     if (command.startsWith ("AL"))
         command = "ALLOBSERVERS";
     else if (command.startsWith ("F"))
         command = "FINGER";
+    else if (command.startsWith ("O"))
+        command = "OBSERVE";
 
     return command + " " + args;
 }
