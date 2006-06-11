@@ -189,6 +189,9 @@ CrosswordGameForm::inputReturnPressed()
         return;
 
     messageAppendHtml ("<font color=\"red\">" + text + "</font><br>");
+
+    iscThread->sendMessage (text);
+
     inputLine->clear();
 }
 

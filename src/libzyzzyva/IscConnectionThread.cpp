@@ -119,6 +119,25 @@ void
 IscConnectionThread::sendMessage (const QString& message)
 {
     qDebug() << "*** sendMessage: " << message;
+
+    QString str = message.simplified();
+
+    QString command = str.section (" ", 0, 0).toUpper();
+    QString args = str.section (" ", 1);
+
+    qDebug() << "Command: " << command;
+    qDebug() << "Args:    " << args;
+
+    if (command == "TELL") {
+        socket->write (encodeMessage ("TELL " + args));
+    }
+
+    //if (str.
+
+
+
+    // OBSERVE: 0x00 0x0a 0 OBSERVE
+
 }
 
 //---------------------------------------------------------------------------
@@ -156,37 +175,19 @@ IscConnectionThread::socketStateChanged (QAbstractSocket::SocketState state)
         case QAbstractSocket::ConnectedState: {
             emit statusChanged ("Logging in...");
 
-            QByteArray bytes;
-            QString message;
-
-            message = "0 LOGIN " + credentials;
-            bytes.append (char (0x00));
-            bytes.append (char (0x2c));
-            bytes.append (message);
-            qDebug() << "Message: |" << message << "|";
-            socket->write (bytes);
+            socket->write (encodeMessage ("LOGIN " + credentials));
 
             // Wait for SETALL
             socket->waitForReadyRead (10000);
+
             // Wait for SET FORMULA, BUDDIES, etc.
             socket->waitForReadyRead (10000);
 
-            message = "0 SOUGHT";
-            bytes.clear();
-            bytes.append (char (0x00));
-            bytes.append (char (0x08));
-            bytes.append (message);
-            qDebug() << "Message: |" << message << "|";
-            socket->write (bytes);
+            socket->write (encodeMessage ("SOUGHT"));
 
             socket->waitForReadyRead (10000);
-            message = "0 RESUME LOGIN";
-            bytes.clear();
-            bytes.append (char (0x00));
-            bytes.append (char (0x0e));
-            bytes.append (message);
-            qDebug() << "Message: |" << message << "|";
-            socket->write (bytes);
+
+            socket->write (encodeMessage ("RESUME LOGIN"));
 
             emit statusChanged ("Connected.");
 
@@ -226,6 +227,8 @@ IscConnectionThread::socketReadyRead()
     qDebug() << "*** socketReadyRead";
     QByteArray byteArray = socket->readAll();
 
+    // TELL: 0x00 0x16 0 TELL sender 0 message
+
     QString message;
     for (int i = 0; i < byteArray.size(); ++i) {
         QChar c (byteArray[i]);
@@ -241,13 +244,7 @@ IscConnectionThread::socketReadyRead()
         emit messageReceived (message);
 
     if (message.contains ("0 PING REPLY")) {
-        QByteArray bytes;
-        QString response = "0 PING REPLY";
-        bytes.append (char (0x00));
-        bytes.append (char (0x0c));
-        bytes.append (response);
-        qDebug() << "Bytes: |" << bytes << "|";
-        socket->write (bytes);
+        socket->write (encodeMessage ("PING REPLY"));
     }
 }
 
@@ -270,16 +267,28 @@ IscConnectionThread::socketBytesWritten (qint64 bytes)
 void
 IscConnectionThread::keepAliveTimeout()
 {
-    qDebug() << "*** Keep alive timeout!";
-
     if (!socket)
         return;
+    socket->write (encodeMessage ("ALIVE"));
+}
 
+//---------------------------------------------------------------------------
+//  encodeMessage
+//
+//! Encode a message for the server by prepending a null character followed by
+//! another byte indicating message length, followed by "0 " and the message.
+//
+//! @param message the message to encode
+//! @return an array of bytes to be sent to the server
+//---------------------------------------------------------------------------
+QByteArray
+IscConnectionThread::encodeMessage (const QString& message)
+{
+    int length = message.length() + 2;
     QByteArray bytes;
-    QString response = "0 ALIVE";
     bytes.append (char (0x00));
-    bytes.append (char (0x07));
-    bytes.append (response);
-    qDebug() << "Bytes: |" << bytes << "|";
-    socket->write (bytes);
+    bytes.append (char (length));
+    bytes.append (QString ("0 "));
+    bytes.append (message);
+    return bytes;
 }

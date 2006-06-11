@@ -54,6 +54,7 @@ class IscConnectionThread : public QThread
     void socketReadyRead();
     void socketBytesWritten (qint64 bytes);
     void keepAliveTimeout();
+    QByteArray encodeMessage (const QString& message);
 
     protected:
     void run();
