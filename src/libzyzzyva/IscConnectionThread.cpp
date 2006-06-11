@@ -259,8 +259,8 @@ QByteArray
 IscConnectionThread::encodeMessage (const QString& message)
 {
     int length = message.length() + 2;
-    char high = (length & 0xff00) >> 8;
-    char low  = (length & 0x00ff);
+    unsigned char high = (length & 0xff00) >> 8;
+    unsigned char low  = (length & 0x00ff);
 
     QByteArray bytes;
     bytes.append (high);
@@ -282,8 +282,8 @@ IscConnectionThread::encodeMessage (const QString& message)
 QString
 IscConnectionThread::decodeMessage (const QByteArray& bytes)
 {
-    char high = bytes[0];
-    char low  = bytes[1];
+    unsigned char high = bytes[0];
+    unsigned char low  = bytes[1];
     int length = (high << 8) + low - 2;
     return QString (bytes.mid (4, length));
 }
