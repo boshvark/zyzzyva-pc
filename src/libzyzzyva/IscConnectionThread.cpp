@@ -120,9 +120,21 @@ IscConnectionThread::sendMessage (const QString& message)
     if (!socket)
         return;
 
-    QString str = message.simplified();
-    QString command = str.section (" ", 0, 0).toUpper();
-    QString args = str.section (" ", 1);
+    QString command = message.section (" ", 0, 0).toUpper();
+    QString args = message.section (" ", 1);
+
+    if (command == "SET") {
+        QString subcommand = args.section (" ", 0, 0).toUpper();
+        command += " " + subcommand;
+        args = args.section (" ", 1);
+
+        if (subcommand == "FINGER") {
+            int index = args.section (" ", 0, 0).toInt() - 1;
+            command += " " + QString::number (index);
+            args = args.section (" ", 1);
+        }
+    }
+
     socket->write (encodeMessage (command + " " + args));
 }
 

@@ -52,6 +52,7 @@ class CrosswordGameForm : public ActionForm
     private:
     void messageAppendHtml (const QString& text, const QColor& color);
     QString encodeHtmlEntities (const QString& text);
+    QString canonizeMessage (const QString& text);
 
     private:
     QTableWidget* boardTable;

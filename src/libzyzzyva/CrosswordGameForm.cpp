@@ -188,8 +188,8 @@ CrosswordGameForm::inputReturnPressed()
     if (text.isEmpty())
         return;
 
+    text = canonizeMessage (text);
     messageAppendHtml (text, QColor (0xff, 0x00, 0x00));
-
     iscThread->sendMessage (text);
 
     inputLine->clear();
@@ -219,9 +219,8 @@ CrosswordGameForm::threadStatusChanged (const QString& status)
 void
 CrosswordGameForm::threadMessageReceived (const QString& message)
 {
-    QString str = message.trimmed();
-    QString command = str.section (" ", 0, 0).toUpper();
-    QString args = str.section (" ", 1);
+    QString command = message.section (" ", 0, 0);
+    QString args = message.section (" ", 1);
 
     // Take care of messages the GUI doesn't need to know about
     if (command == "TELL") {
@@ -254,7 +253,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
     }
 
     else {
-        messageAppendHtml (str, QColor (0x00, 0x00, 0xff));
+        messageAppendHtml (message, QColor (0x00, 0x00, 0xff));
     }
 }
 
@@ -311,4 +310,34 @@ CrosswordGameForm::encodeHtmlEntities (const QString& text)
     encoded.replace (">", "&gt;");
     encoded.replace ("\n", "<br>");
     return encoded;
+}
+
+//---------------------------------------------------------------------------
+//  canonizeMessage
+//
+//! Transform a message into canonical form.  Translate any shorthand commands
+//! into their full equivalents.
+//
+//! @param message the message to canonize
+//! @return the canonized message
+//---------------------------------------------------------------------------
+QString
+CrosswordGameForm::canonizeMessage (const QString& message)
+{
+    QString str = message.trimmed();
+    QString command = str.section (" ", 0, 0).toUpper();
+    QString args = str.section (" ", 1);
+
+    if (command == "SET") {
+        QString subcommand = args.section (" ", 0, 0).toUpper();
+        command += " " + subcommand;
+        args = args.section (" ", 1);
+    }
+
+    if (command.startsWith ("AL"))
+        command = "ALLOBSERVERS";
+    else if (command.startsWith ("F"))
+        command = "FINGER";
+
+    return command + " " + args;
 }
