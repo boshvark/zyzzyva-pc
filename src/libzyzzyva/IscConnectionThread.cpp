@@ -24,6 +24,7 @@
 
 #include "IscConnectionThread.h"
 #include "Rand.h"
+#include "Auxil.h"
 
 #include <QtDebug>
 
@@ -75,8 +76,9 @@ IscConnectionThread::connectToServer (const QString& creds,
     connect (socket, SIGNAL (bytesWritten (qint64)),
              SLOT (socketBytesWritten (qint64)));
 
-    Rand r;
-    int port = 1321 + r.rand (9);
+    // Connect to a random port between 1321 and 1330
+    Rand rng (Rand::MarsagliaMwc, std::time (0), Auxil::getPid());
+    int port = 1321 + rng.rand (9);
     socket->connectToHost ("66.98.172.34", port);
 
     if (socketHadError) {
