@@ -73,8 +73,6 @@ IscConnectionThread::connectToServer (const QString& creds,
     connect (socket, SIGNAL (stateChanged (QAbstractSocket::SocketState)),
              SLOT (socketStateChanged (QAbstractSocket::SocketState)));
     connect (socket, SIGNAL (readyRead()), SLOT (socketReadyRead()));
-    connect (socket, SIGNAL (bytesWritten (qint64)),
-             SLOT (socketBytesWritten (qint64)));
 
     // Connect to a random port between 1321 and 1330
     Rand rng (Rand::MarsagliaMwc, std::time (0), Auxil::getPid());
@@ -125,6 +123,29 @@ IscConnectionThread::sendMessage (const QString& message)
     QString command = str.section (" ", 0, 0).toUpper();
     QString args = str.section (" ", 1);
     socket->write (encodeMessage (command + " " + args));
+}
+
+//---------------------------------------------------------------------------
+//  receiveMessage
+//
+//! Receive a message from the server.
+//
+//! @param message the message
+//---------------------------------------------------------------------------
+void
+IscConnectionThread::receiveMessage (const QString& message)
+{
+    QString str = message.simplified();
+    QString command = str.section (" ", 0, 0).toUpper();
+    QString args = str.section (" ", 1);
+
+    // Take care of messages the GUI doesn't need to know about
+    if (command == "PING")
+        sendMessage ("PING REPLY");
+
+    // Send all other messages to the GUI
+    else
+        emit messageReceived (message);
 }
 
 //---------------------------------------------------------------------------
@@ -211,39 +232,11 @@ IscConnectionThread::socketStateChanged (QAbstractSocket::SocketState state)
 void
 IscConnectionThread::socketReadyRead()
 {
-    qDebug() << "*** socketReadyRead";
-    QByteArray byteArray = socket->readAll();
+    QByteArray bytes = socket->readAll();
+    QString message = decodeMessage (bytes);
 
-    // TELL: 0x00 0x16 0 TELL sender 0 message
-
-    QString message;
-    for (int i = 0; i < byteArray.size(); ++i) {
-        QChar c (byteArray[i]);
-        if (c.isPrint()) {
-            message = byteArray.right (byteArray.size() - i);
-            break;
-        }
-    }
-
-    qDebug() << "Read " << byteArray.size() << " bytes: |" << message << "|";
-
-    if (!byteArray.isEmpty())
-        emit messageReceived (message);
-
-    if (message.contains ("0 PING REPLY")) {
-        sendMessage ("PING REPLY");
-    }
-}
-
-//---------------------------------------------------------------------------
-//  socketBytesWritten
-//
-//! Called when data has been written to the socket.
-//---------------------------------------------------------------------------
-void
-IscConnectionThread::socketBytesWritten (qint64 bytes)
-{
-    qDebug() << "*** socketBytesWritten: " << bytes << " bytes";
+    if (!message.isEmpty())
+        receiveMessage (message);
 }
 
 //---------------------------------------------------------------------------
@@ -276,4 +269,20 @@ IscConnectionThread::encodeMessage (const QString& message)
     bytes.append (QString ("0 "));
     bytes.append (message);
     return bytes;
+}
+
+//---------------------------------------------------------------------------
+//  decodeMessage
+//
+//! Decode a message from the server by removing a null character followed by
+//! another byte indicating message length, followed by "0 ".
+//
+//! @param bytes the bytes to decode
+//! @return the decoded message
+//---------------------------------------------------------------------------
+QString
+IscConnectionThread::decodeMessage (const QByteArray& bytes)
+{
+    int length = bytes[1] - 2;
+    return QString (bytes.mid (4, length));
 }

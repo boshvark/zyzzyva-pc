@@ -47,14 +47,15 @@ class IscConnectionThread : public QThread
 
     public slots:
     void sendMessage (const QString& message);
+    void receiveMessage (const QString& message);
 
     private slots:
     void socketError();
     void socketStateChanged (QAbstractSocket::SocketState state);
     void socketReadyRead();
-    void socketBytesWritten (qint64 bytes);
     void keepAliveTimeout();
     QByteArray encodeMessage (const QString& message);
+    QString decodeMessage (const QByteArray& bytes);
 
     protected:
     void run();
