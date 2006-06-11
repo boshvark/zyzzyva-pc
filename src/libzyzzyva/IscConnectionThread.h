@@ -50,7 +50,7 @@ class IscConnectionThread : public QThread
     void receiveMessage (const QString& message);
 
     private slots:
-    void socketError();
+    void socketError (QAbstractSocket::SocketError error);
     void socketStateChanged (QAbstractSocket::SocketState state);
     void socketReadyRead();
     void keepAliveTimeout();

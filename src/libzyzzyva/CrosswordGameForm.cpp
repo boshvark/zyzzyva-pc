@@ -219,7 +219,7 @@ CrosswordGameForm::threadStatusChanged (const QString& status)
 void
 CrosswordGameForm::threadMessageReceived (const QString& message)
 {
-    QString str = message.simplified();
+    QString str = message.trimmed();
     QString command = str.section (" ", 0, 0).toUpper();
     QString args = str.section (" ", 1);
 
@@ -233,6 +233,18 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                            QColor (0x8b, 0x00, 0x8b));
     }
 
+    else if (command == "ASITIS") {
+        messageAppendHtml (args, QColor (0x00, 0x00, 0x00));
+    }
+
+    else if (command == "SETALL") {
+        // do nothing yet
+    }
+
+    else if (command == "SOUGHT") {
+        // do nothing yet
+    }
+
     else if (command == "SEEK") {
         // do nothing yet
     }
@@ -242,7 +254,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
     }
 
     else {
-        messageAppendHtml (message, QColor (0x00, 0x00, 0xff));
+        messageAppendHtml (str, QColor (0x00, 0x00, 0xff));
     }
 }
 
@@ -267,8 +279,10 @@ CrosswordGameForm::messageAppendHtml (const QString& text,
                                            arg (green, minPad, base, pad).
                                            arg (blue, minPad, base, pad);
 
-    messageArea->insertHtml ("<font color=\"" + colorStr + "\">" +
-                             encodeHtmlEntities (text) + "</font><br>");
+    QString html = "<font color=\"" + colorStr + "\">" +
+                   encodeHtmlEntities (text) + "</font><br>";
+    qDebug() << "HTML: " << html;
+    messageArea->insertHtml (html);
 
     QTextCursor cursor = messageArea->textCursor();
     cursor.movePosition (QTextCursor::End);
@@ -290,5 +304,6 @@ CrosswordGameForm::encodeHtmlEntities (const QString& text)
     encoded.replace ("&", "&amp;");
     encoded.replace ("<", "&lt;");
     encoded.replace (">", "&gt;");
+    encoded.replace ("\n", "<br>");
     return encoded;
 }

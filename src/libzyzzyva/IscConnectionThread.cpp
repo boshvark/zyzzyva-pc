@@ -69,7 +69,8 @@ IscConnectionThread::connectToServer (const QString& creds,
     credentials = creds;
     socket = new QTcpSocket (this);
     Q_CHECK_PTR (socket);
-    connect (socket, SIGNAL (error()), SLOT (socketError()));
+    connect (socket, SIGNAL (error(QAbstractSocket::SocketError)),
+             SLOT (socketError(QAbstractSocket::SocketError)));
     connect (socket, SIGNAL (stateChanged (QAbstractSocket::SocketState)),
              SLOT (socketStateChanged (QAbstractSocket::SocketState)));
     connect (socket, SIGNAL (readyRead()), SLOT (socketReadyRead()));
@@ -145,11 +146,13 @@ IscConnectionThread::receiveMessage (const QString& message)
 //  socketError
 //
 //! Called when the socket encounters an error.
+//
+//! @param the error
 //---------------------------------------------------------------------------
 void
-IscConnectionThread::socketError()
+IscConnectionThread::socketError (QAbstractSocket::SocketError error)
 {
-
+    qDebug() << "*** socketError: " << error;
 }
 
 //---------------------------------------------------------------------------
@@ -246,8 +249,8 @@ IscConnectionThread::keepAliveTimeout()
 //---------------------------------------------------------------------------
 //  encodeMessage
 //
-//! Encode a message for the server by prepending a null character followed by
-//! another byte indicating message length, followed by "0 " and the message.
+//! Encode a message for the server by prepending two bytes indicating message
+//! length, followed by "0 " and the message.
 //
 //! @param message the message to encode
 //! @return an array of bytes to be sent to the server
@@ -256,9 +259,12 @@ QByteArray
 IscConnectionThread::encodeMessage (const QString& message)
 {
     int length = message.length() + 2;
+    char high = (length & 0xff00) >> 8;
+    char low  = (length & 0x00ff);
+
     QByteArray bytes;
-    bytes.append (char (0x00));
-    bytes.append (char (length));
+    bytes.append (high);
+    bytes.append (low);
     bytes.append (QString ("0 "));
     bytes.append (message);
     return bytes;
@@ -276,6 +282,8 @@ IscConnectionThread::encodeMessage (const QString& message)
 QString
 IscConnectionThread::decodeMessage (const QByteArray& bytes)
 {
-    int length = bytes[1] - 2;
+    char high = bytes[0];
+    char low  = bytes[1];
+    int length = (high << 8) + low - 2;
     return QString (bytes.mid (4, length));
 }
