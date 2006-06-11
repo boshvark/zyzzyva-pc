@@ -118,26 +118,13 @@ IscConnectionThread::disconnectFromServer()
 void
 IscConnectionThread::sendMessage (const QString& message)
 {
-    qDebug() << "*** sendMessage: " << message;
+    if (!socket)
+        return;
 
     QString str = message.simplified();
-
     QString command = str.section (" ", 0, 0).toUpper();
     QString args = str.section (" ", 1);
-
-    qDebug() << "Command: " << command;
-    qDebug() << "Args:    " << args;
-
-    if (command == "TELL") {
-        socket->write (encodeMessage ("TELL " + args));
-    }
-
-    //if (str.
-
-
-
-    // OBSERVE: 0x00 0x0a 0 OBSERVE
-
+    socket->write (encodeMessage (command + " " + args));
 }
 
 //---------------------------------------------------------------------------
@@ -175,7 +162,7 @@ IscConnectionThread::socketStateChanged (QAbstractSocket::SocketState state)
         case QAbstractSocket::ConnectedState: {
             emit statusChanged ("Logging in...");
 
-            socket->write (encodeMessage ("LOGIN " + credentials));
+            sendMessage ("LOGIN " + credentials);
 
             // Wait for SETALL
             socket->waitForReadyRead (10000);
@@ -183,11 +170,11 @@ IscConnectionThread::socketStateChanged (QAbstractSocket::SocketState state)
             // Wait for SET FORMULA, BUDDIES, etc.
             socket->waitForReadyRead (10000);
 
-            socket->write (encodeMessage ("SOUGHT"));
+            sendMessage ("SOUGHT");
 
             socket->waitForReadyRead (10000);
 
-            socket->write (encodeMessage ("RESUME LOGIN"));
+            sendMessage ("RESUME LOGIN");
 
             emit statusChanged ("Connected.");
 
@@ -244,7 +231,7 @@ IscConnectionThread::socketReadyRead()
         emit messageReceived (message);
 
     if (message.contains ("0 PING REPLY")) {
-        socket->write (encodeMessage ("PING REPLY"));
+        sendMessage ("PING REPLY");
     }
 }
 
@@ -267,9 +254,7 @@ IscConnectionThread::socketBytesWritten (qint64 bytes)
 void
 IscConnectionThread::keepAliveTimeout()
 {
-    if (!socket)
-        return;
-    socket->write (encodeMessage ("ALIVE"));
+    sendMessage ("ALIVE");
 }
 
 //---------------------------------------------------------------------------
