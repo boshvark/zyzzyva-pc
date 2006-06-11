@@ -135,15 +135,8 @@ IscConnectionThread::sendMessage (const QString& message)
 void
 IscConnectionThread::receiveMessage (const QString& message)
 {
-    QString str = message.simplified();
-    QString command = str.section (" ", 0, 0).toUpper();
-    QString args = str.section (" ", 1);
-
-    // Take care of messages the GUI doesn't need to know about
-    if (command == "PING")
+    if (message == "PING REPLY")
         sendMessage ("PING REPLY");
-
-    // Send all other messages to the GUI
     else
         emit messageReceived (message);
 }

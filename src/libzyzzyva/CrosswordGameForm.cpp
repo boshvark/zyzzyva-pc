@@ -188,7 +188,7 @@ CrosswordGameForm::inputReturnPressed()
     if (text.isEmpty())
         return;
 
-    messageAppendHtml ("<font color=\"red\">" + text + "</font><br>");
+    messageAppendHtml (text, QColor (0xff, 0x00, 0x00));
 
     iscThread->sendMessage (text);
 
@@ -219,8 +219,31 @@ CrosswordGameForm::threadStatusChanged (const QString& status)
 void
 CrosswordGameForm::threadMessageReceived (const QString& message)
 {
-    qDebug() << "*** threadMessageReceived: " << message;
-    messageAppendHtml ("<font color=\"blue\">" + message + "</font><br>");
+    QString str = message.simplified();
+    QString command = str.section (" ", 0, 0).toUpper();
+    QString args = str.section (" ", 1);
+
+    // Take care of messages the GUI doesn't need to know about
+    if (command == "TELL") {
+        QString sender = args.section (" ", 0, 0);
+        QString channel = args.section (" ", 1, 1); // ?
+        QString text = args.section (" ", 2);
+
+        messageAppendHtml (sender + " tells you: " + text,
+                           QColor (0x8b, 0x00, 0x8b));
+    }
+
+    else if (command == "SEEK") {
+        // do nothing yet
+    }
+
+    else if (command == "UNSEEK") {
+        // do nothing yet
+    }
+
+    else {
+        messageAppendHtml (message, QColor (0x00, 0x00, 0xff));
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -231,10 +254,41 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 //! @param text the text to append
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::messageAppendHtml (const QString& text)
+CrosswordGameForm::messageAppendHtml (const QString& text,
+                                      const QColor& color)
 {
-    messageArea->insertHtml ("<font color=\"red\">" + text + "</font><br>");
+    int red = color.red();
+    int green = color.green();
+    int blue = color.blue();
+    int minPad = 2;
+    int base = 16;
+    QChar pad = '0';
+    QString colorStr = QString ("#%1%2%3").arg (red, minPad, base, pad).
+                                           arg (green, minPad, base, pad).
+                                           arg (blue, minPad, base, pad);
+
+    messageArea->insertHtml ("<font color=\"" + colorStr + "\">" +
+                             encodeHtmlEntities (text) + "</font><br>");
+
     QTextCursor cursor = messageArea->textCursor();
     cursor.movePosition (QTextCursor::End);
     messageArea->setTextCursor (cursor);
+}
+
+//---------------------------------------------------------------------------
+//  encodeHtmlEntities
+//
+//! Encode HTML entities in a string.
+//
+//! @param text the string to encode
+//! @return the encoded string
+//---------------------------------------------------------------------------
+QString
+CrosswordGameForm::encodeHtmlEntities (const QString& text)
+{
+    QString encoded = text;
+    encoded.replace ("&", "&amp;");
+    encoded.replace ("<", "&lt;");
+    encoded.replace (">", "&gt;");
+    return encoded;
 }
