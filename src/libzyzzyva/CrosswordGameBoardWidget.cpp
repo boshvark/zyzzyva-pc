@@ -122,7 +122,7 @@ CrosswordGameBoardWidget::makePixmap() const
             palette.setColor (QPalette::Dark, color);
 
             QRect rect (col * COLUMN_WIDTH, row * ROW_HEIGHT,
-                            COLUMN_WIDTH, ROW_HEIGHT);
+                        COLUMN_WIDTH, ROW_HEIGHT);
             painter.setPen (color);
             painter.setBrush (color);
             painter.drawRect (rect);
@@ -131,11 +131,23 @@ CrosswordGameBoardWidget::makePixmap() const
 
             CrosswordGameBoard::Tile tile = board->getTile (row, col);
             if (tile.isValid()) {
-                painter.setPen (QColor ("black"));
+                QPen pen (color);
+                pen.setColor (QColor ("black"));
+                pen.setWidth (3);
+                painter.setPen (pen);
                 QChar letter = tile.getLetter();
-                if (tile.isBlank())
-                    letter = letter.toLower();
                 painter.drawText (rect, Qt::AlignCenter, letter);
+
+                if (tile.isBlank()) {
+                    pen.setWidth (2);
+                    painter.setPen (pen);
+                    painter.setBrush (Qt::NoBrush);
+                    rect.setX (rect.x() + 3);
+                    rect.setY (rect.y() + 3);
+                    rect.setWidth (rect.width() - 3);
+                    rect.setHeight (rect.height() - 3);
+                    painter.drawRect (rect);
+                }
             }
         }
     }
