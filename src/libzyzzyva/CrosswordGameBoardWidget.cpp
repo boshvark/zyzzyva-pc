@@ -56,9 +56,7 @@ CrosswordGameBoardWidget::CrosswordGameBoardWidget (QWidget* parent,
 {
     setFrameStyle (QFrame::StyledPanel | QFrame::Raised);
     setLineWidth (2);
-
     setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    //resize (NUM_ROWS * ROW_HEIGHT, NUM_COLUMNS * COLUMN_WIDTH);
 
     initSquareTypes();
     pixmap = makePixmap();
