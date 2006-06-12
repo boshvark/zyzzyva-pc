@@ -21,6 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "CrosswordGameBoardWidget.h"
+#include "CrosswordGameBoard.h"
 #include "Defs.h"
 #include <QPainter>
 #include <QVBoxLayout>
@@ -29,8 +30,6 @@
 
 using namespace Defs;
 
-const int NUM_ROWS = 15;
-const int NUM_COLUMNS = 15;
 const int COLUMN_WIDTH = 30;
 const int ROW_HEIGHT = 30;
 const int VERTICAL_HEADER_WIDTH = 10;
@@ -50,15 +49,15 @@ const QColor TRIPLE_WORD_COLOR = QColor ("firebrick");
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-CrosswordGameBoardWidget::CrosswordGameBoardWidget (QWidget* parent,
+CrosswordGameBoardWidget::CrosswordGameBoardWidget (CrosswordGameBoard* b,
+                                                    QWidget* parent,
                                                     Qt::WFlags f)
-    : QFrame (parent, f)
+    : QFrame (parent, f), board (b)
 {
     setFrameStyle (QFrame::StyledPanel | QFrame::Raised);
     setLineWidth (2);
     setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
 
-    initSquareTypes();
     pixmap = makePixmap();
 }
 
@@ -100,8 +99,8 @@ CrosswordGameBoardWidget::makePixmap() const
     QPixmap pixmap (getBoardSize());
     QPainter painter (&pixmap);
 
-    for (int row = 0; row < NUM_ROWS; ++row) {
-        for (int col = 0; col < NUM_COLUMNS; ++col) {
+    for (int row = 0; row < board->getNumRows(); ++row) {
+        for (int col = 0; col < board->getNumColumns(); ++col) {
             QColor color = getBackgroundColor (row, col);
             QPalette palette;
             palette.setColor (QPalette::Light, color.light (125));
@@ -133,14 +132,15 @@ CrosswordGameBoardWidget::makePixmap() const
 QColor
 CrosswordGameBoardWidget::getBackgroundColor (int row, int col) const
 {
-    SquareType squareType = squareTypes[row][col];
+    CrosswordGameBoard::SquareType squareType =
+        board->getSquareType (row, col);
     switch (squareType) {
-        case NoBonus:      return NO_BONUS_COLOR;
-        case DoubleLetter: return DOUBLE_LETTER_COLOR;
-        case TripleLetter: return TRIPLE_LETTER_COLOR;
-        case DoubleWord:   return DOUBLE_WORD_COLOR;
-        case TripleWord:   return TRIPLE_WORD_COLOR;
-        default:           return NO_BONUS_COLOR;
+        case CrosswordGameBoard::NoBonus:      return NO_BONUS_COLOR;
+        case CrosswordGameBoard::DoubleLetter: return DOUBLE_LETTER_COLOR;
+        case CrosswordGameBoard::TripleLetter: return TRIPLE_LETTER_COLOR;
+        case CrosswordGameBoard::DoubleWord:   return DOUBLE_WORD_COLOR;
+        case CrosswordGameBoard::TripleWord:   return TRIPLE_WORD_COLOR;
+        default:                               return NO_BONUS_COLOR;
     }
 }
 
@@ -154,59 +154,8 @@ CrosswordGameBoardWidget::getBackgroundColor (int row, int col) const
 QSize
 CrosswordGameBoardWidget::getBoardSize() const
 {
-    return QSize (NUM_COLUMNS * COLUMN_WIDTH, NUM_ROWS * ROW_HEIGHT);
-}
-
-//---------------------------------------------------------------------------
-//  initSquareTypes
-//
-//! Initialize the collection of square types on the board.
-//---------------------------------------------------------------------------
-void
-CrosswordGameBoardWidget::initSquareTypes()
-{
-    QList<SquareType> col1;
-    col1 << TripleWord << NoBonus << NoBonus << DoubleLetter << NoBonus <<
-        NoBonus << NoBonus << TripleWord << NoBonus << NoBonus <<
-        NoBonus << DoubleLetter << NoBonus << NoBonus << TripleWord;
-
-    QList<SquareType> col2;
-    col2 << NoBonus << DoubleWord << NoBonus << NoBonus << NoBonus <<
-        TripleLetter << NoBonus << NoBonus << NoBonus << TripleLetter <<
-        NoBonus << NoBonus << NoBonus << DoubleWord << NoBonus;
-
-    QList<SquareType> col3;
-    col3 << NoBonus << NoBonus << DoubleWord << NoBonus << NoBonus <<
-        NoBonus << DoubleLetter << NoBonus << DoubleLetter << NoBonus <<
-        NoBonus << NoBonus << DoubleWord << NoBonus << NoBonus;
-
-    QList<SquareType> col4;
-    col4 << DoubleLetter << NoBonus << NoBonus << DoubleWord << NoBonus <<
-        NoBonus << NoBonus << DoubleLetter << NoBonus << NoBonus <<
-        NoBonus << DoubleWord << NoBonus << NoBonus << DoubleLetter;
-
-    QList<SquareType> col5;
-    col5 << NoBonus << NoBonus << NoBonus << NoBonus << DoubleWord <<
-        NoBonus << NoBonus << NoBonus << NoBonus << NoBonus <<
-        DoubleWord << NoBonus << NoBonus << NoBonus << NoBonus;
-
-    QList<SquareType> col6;
-    col6 << NoBonus << TripleLetter << NoBonus << NoBonus << NoBonus <<
-        TripleLetter << NoBonus << NoBonus << NoBonus << TripleLetter <<
-        NoBonus << NoBonus << NoBonus << TripleLetter << NoBonus;
-
-    QList<SquareType> col7;
-    col7 << NoBonus << NoBonus << DoubleLetter << NoBonus << NoBonus <<
-        NoBonus << DoubleLetter << NoBonus << DoubleLetter << NoBonus <<
-        NoBonus << NoBonus << DoubleLetter << NoBonus << NoBonus;
-
-    QList<SquareType> col8;
-    col8 << TripleWord << NoBonus << NoBonus << DoubleLetter << NoBonus <<
-        NoBonus << NoBonus << DoubleWord << NoBonus << NoBonus <<
-        NoBonus << DoubleLetter << NoBonus << NoBonus << TripleWord;
-
-    squareTypes << col1 << col2 << col3 << col4 << col5 << col6 << col7 <<
-        col8 << col7 << col6 << col5 << col4 << col3 << col2 << col1;
+    return QSize (board->getNumColumns() * COLUMN_WIDTH,
+                  board->getNumRows() * ROW_HEIGHT);
 }
 
 //---------------------------------------------------------------------------

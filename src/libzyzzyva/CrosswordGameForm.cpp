@@ -21,6 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "CrosswordGameForm.h"
+#include "CrosswordGameBoard.h"
 #include "CrosswordGameBoardWidget.h"
 #include "IscConnectionThread.h"
 #include "Auxil.h"
@@ -46,7 +47,8 @@ const int BOARD_ROW_HEIGHT = 30;
 //! @param f widget flags
 //---------------------------------------------------------------------------
 CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
-    : ActionForm (CrosswordGameFormType, parent, f), iscThread (0)
+    : ActionForm (CrosswordGameFormType, parent, f),
+      board (new CrosswordGameBoard()), iscThread (0)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this);
     Q_CHECK_PTR (mainHlay);
@@ -59,9 +61,9 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     boardVlay->setSpacing (SPACING);
     mainHlay->addLayout (boardVlay);
 
-    gameBoard = new CrosswordGameBoardWidget (this);
-    Q_CHECK_PTR (gameBoard);
-    boardVlay->addWidget (gameBoard);
+    boardWidget = new CrosswordGameBoardWidget (board, this);
+    Q_CHECK_PTR (boardWidget);
+    boardVlay->addWidget (boardWidget);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     Q_CHECK_PTR (buttonHlay);

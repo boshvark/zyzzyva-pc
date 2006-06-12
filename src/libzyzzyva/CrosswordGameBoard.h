@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// CrosswordGameBoardWidget.h
+// CrosswordGameBoard.h
 //
-// A widget for displaying and manipulating a crossword game board.
+// A class to represent a crossword game board.
 //
 // Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
 //
@@ -22,35 +22,42 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_CROSSWORD_GAME_BOARD_WIDGET_H
-#define ZYZZYVA_CROSSWORD_GAME_BOARD_WIDGET_H
+#ifndef ZYZZYVA_CROSSWORD_GAME_BOARD_H
+#define ZYZZYVA_CROSSWORD_GAME_BOARD_H
 
-#include <QFrame>
-#include <QPixmap>
+#include <QChar>
+#include <QList>
 
-class CrosswordGameBoard;
-
-class CrosswordGameBoardWidget : public QFrame
+class CrosswordGameBoard
 {
-    Q_OBJECT
+    class Tile {
+        public:
+        QChar letter;
+        bool isBlank;
+    };
 
     public:
-    CrosswordGameBoardWidget (CrosswordGameBoard* board, QWidget* parent = 0,
-                              Qt::WFlags f = 0);
+    enum SquareType {
+        Invalid = 0,
+        NoBonus,
+        DoubleLetter,
+        TripleLetter,
+        DoubleWord,
+        TripleWord
+    };
 
-    QSize minimumSizeHint() const;
-    QSize sizeHint() const;
+    public:
+    CrosswordGameBoard();
+    SquareType getSquareType (int row, int col) const;
+    int getNumRows() const;
+    int getNumColumns() const;
 
     private:
-    QPixmap makePixmap() const;
-    QColor getBackgroundColor (int row, int col) const;
-    QSize getBoardSize() const;
-
-    virtual void paintEvent (QPaintEvent* event);
+    void initSquareTypes();
 
     private:
-    QPixmap pixmap;
-    CrosswordGameBoard* board;
+    QList< QList<SquareType> > squareTypes;
+    QList< QList<Tile> > tiles;
 };
 
-#endif // ZYZZYVA_CROSSWORD_GAME_BOARD_WIDGET_H
+#endif // ZYZZYVA_CROSSWORD_GAME_BOARD_H

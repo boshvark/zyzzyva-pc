@@ -49,6 +49,7 @@ SOURCES = \
     AnalyzeQuizDialog.cpp \
     Auxil.cpp \
     CreateDatabaseThread.cpp \
+    CrosswordGameBoard.cpp \
     CrosswordGameBoardWidget.cpp \
     CrosswordGameForm.cpp \
     DefineForm.cpp \
@@ -94,6 +95,7 @@ HEADERS = \
     ActionForm.h \
     AnalyzeQuizDialog.h \
     CreateDatabaseThread.h \
+    CrosswordGameBoard.h \
     CrosswordGameBoardWidget.h \
     CrosswordGameForm.h \
     DefineForm.h \

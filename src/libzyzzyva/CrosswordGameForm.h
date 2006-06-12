@@ -31,6 +31,7 @@
 #include <QTextEdit>
 #include <QString>
 
+class CrosswordGameBoard;
 class CrosswordGameBoardWidget;
 class IscConnectionThread;
 
@@ -55,13 +56,14 @@ class CrosswordGameForm : public ActionForm
     QString canonizeMessage (const QString& text);
 
     private:
-    CrosswordGameBoardWidget* gameBoard;
+    CrosswordGameBoardWidget* boardWidget;
     QPushButton* connectButton;
     QPushButton* disconnectButton;
     QTextEdit* messageArea;
     QLineEdit* inputLine;
     QString statusString;
 
+    CrosswordGameBoard* board;
     IscConnectionThread* iscThread;
 };
 
