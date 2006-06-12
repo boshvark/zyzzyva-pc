@@ -27,13 +27,28 @@
 
 #include <QChar>
 #include <QList>
+#include <QObject>
 
-class CrosswordGameBoard
+class CrosswordGameBoard : public QObject
 {
+    Q_OBJECT
+
     class Tile {
         public:
+        Tile() : blank (false), valid (false) { }
+        Tile (const QChar& c, bool b)
+            : letter (c), blank (b), valid (true) { }
+
+        void setLetter (const QChar& c) { letter = c; valid = true; }
+        void setBlank (bool b) { blank = b; valid = true; }
+        QChar getLetter() const { return letter; }
+        bool isBlank() const { return blank; }
+        bool isValid() const { return valid; }
+
+        private:
         QChar letter;
-        bool isBlank;
+        bool blank;
+        bool valid;
     };
 
     public:
@@ -49,11 +64,12 @@ class CrosswordGameBoard
     public:
     CrosswordGameBoard();
     SquareType getSquareType (int row, int col) const;
+    Tile getTile (int row, int col) const;
     int getNumRows() const;
     int getNumColumns() const;
 
-    private:
-    void initSquareTypes();
+    signals:
+    void changed();
 
     private:
     QList< QList<SquareType> > squareTypes;

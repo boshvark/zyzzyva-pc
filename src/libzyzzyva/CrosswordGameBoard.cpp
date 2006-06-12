@@ -35,61 +35,16 @@ const int NUM_COLUMNS = 15;
 //---------------------------------------------------------------------------
 CrosswordGameBoard::CrosswordGameBoard()
 {
-    initSquareTypes();
-}
+    // Initialize tiles
+    for (int row = 0; row < NUM_ROWS; ++row) {
+        QList<Tile> rowTiles;
+        for (int col = 0; col < NUM_COLUMNS; ++col) {
+            rowTiles << Tile();
+        }
+        tiles << rowTiles;
+    }
 
-//---------------------------------------------------------------------------
-//  getSquareType
-//
-//! Get the square type for a row and column.
-//
-//! @param row the row number
-//! @param col the column number
-//! @return the square type
-//---------------------------------------------------------------------------
-CrosswordGameBoard::SquareType
-CrosswordGameBoard::getSquareType (int row, int col) const
-{
-    if ((row < 0) || (row > NUM_ROWS) || (col < 0) || (col > NUM_COLUMNS))
-        return Invalid;
-
-    return squareTypes[row][col];
-}
-
-//---------------------------------------------------------------------------
-//  getNumRows
-//
-//! Get the number of rows.
-//
-//! @return the number of rows
-//---------------------------------------------------------------------------
-int
-CrosswordGameBoard::getNumRows() const
-{
-    return NUM_ROWS;
-}
-
-//---------------------------------------------------------------------------
-//  getNumColumns
-//
-//! Get the number of columns.
-//
-//! @return the number of columns
-//---------------------------------------------------------------------------
-int
-CrosswordGameBoard::getNumColumns() const
-{
-    return NUM_COLUMNS;
-}
-
-//---------------------------------------------------------------------------
-//  initSquareTypes
-//
-//! Initialize the collection of square types on the board.
-//---------------------------------------------------------------------------
-void
-CrosswordGameBoard::initSquareTypes()
-{
+    // Initialize square types
     QList<SquareType> col1;
     col1 << TripleWord << NoBonus << NoBonus << DoubleLetter << NoBonus <<
         NoBonus << NoBonus << TripleWord << NoBonus << NoBonus <<
@@ -132,4 +87,66 @@ CrosswordGameBoard::initSquareTypes()
 
     squareTypes << col1 << col2 << col3 << col4 << col5 << col6 << col7 <<
         col8 << col7 << col6 << col5 << col4 << col3 << col2 << col1;
+}
+
+//---------------------------------------------------------------------------
+//  getSquareType
+//
+//! Get the square type for a row and column.
+//
+//! @param row the row number
+//! @param col the column number
+//! @return the square type
+//---------------------------------------------------------------------------
+CrosswordGameBoard::SquareType
+CrosswordGameBoard::getSquareType (int row, int col) const
+{
+    if ((row < 0) || (row > NUM_ROWS) || (col < 0) || (col > NUM_COLUMNS))
+        return Invalid;
+
+    return squareTypes[row][col];
+}
+
+//---------------------------------------------------------------------------
+//  getTile
+//
+//! Get the tile for a row and column.
+//
+//! @param row the row number
+//! @param col the column number
+//! @return the square type
+//---------------------------------------------------------------------------
+CrosswordGameBoard::Tile
+CrosswordGameBoard::getTile (int row, int col) const
+{
+    if ((row < 0) || (row > NUM_ROWS) || (col < 0) || (col > NUM_COLUMNS))
+        return Tile();
+
+    return tiles[row][col];
+}
+
+//---------------------------------------------------------------------------
+//  getNumRows
+//
+//! Get the number of rows.
+//
+//! @return the number of rows
+//---------------------------------------------------------------------------
+int
+CrosswordGameBoard::getNumRows() const
+{
+    return NUM_ROWS;
+}
+
+//---------------------------------------------------------------------------
+//  getNumColumns
+//
+//! Get the number of columns.
+//
+//! @return the number of columns
+//---------------------------------------------------------------------------
+int
+CrosswordGameBoard::getNumColumns() const
+{
+    return NUM_COLUMNS;
 }

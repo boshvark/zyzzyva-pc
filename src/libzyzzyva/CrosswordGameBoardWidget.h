@@ -41,6 +41,9 @@ class CrosswordGameBoardWidget : public QFrame
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
+    public slots:
+    void boardChanged();
+
     private:
     QPixmap makePixmap() const;
     QColor getBackgroundColor (int row, int col) const;

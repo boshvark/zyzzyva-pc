@@ -59,6 +59,8 @@ CrosswordGameBoardWidget::CrosswordGameBoardWidget (CrosswordGameBoard* b,
     setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     pixmap = makePixmap();
+
+    connect (board, SIGNAL (changed()), SLOT (boardChanged()));
 }
 
 //---------------------------------------------------------------------------
@@ -84,6 +86,17 @@ QSize
 CrosswordGameBoardWidget::sizeHint() const
 {
     return minimumSizeHint();
+}
+
+//---------------------------------------------------------------------------
+//  boardChanged
+//
+//! Called when the board is changed.
+//---------------------------------------------------------------------------
+void
+CrosswordGameBoardWidget::boardChanged()
+{
+    update();
 }
 
 //---------------------------------------------------------------------------
