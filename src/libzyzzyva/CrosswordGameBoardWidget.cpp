@@ -36,11 +36,11 @@ const int ROW_HEIGHT = 30;
 const int VERTICAL_HEADER_WIDTH = 10;
 const int HORIZONTAL_HEADER_HEIGHT = 10;
 
-const QColor NO_BONUS_COLOR = QColor (0xff, 0xff, 0xff);
-const QColor DOUBLE_LETTER_COLOR = QColor (0x7f, 0xff, 0xd4);
-const QColor TRIPLE_LETTER_COLOR = QColor (0x00, 0x00, 0xff);
-const QColor DOUBLE_WORD_COLOR = QColor (0xfa, 0x80, 0x72);
-const QColor TRIPLE_WORD_COLOR = QColor (0xff, 0x00, 0x00);
+const QColor NO_BONUS_COLOR = QColor ("gainsboro");
+const QColor DOUBLE_LETTER_COLOR = QColor ("cornflowerblue");
+const QColor TRIPLE_LETTER_COLOR = QColor ("slateblue");
+const QColor DOUBLE_WORD_COLOR = QColor ("palevioletred");
+const QColor TRIPLE_WORD_COLOR = QColor ("firebrick");
 
 //---------------------------------------------------------------------------
 //  CrosswordGameBoardWidget
@@ -57,11 +57,8 @@ CrosswordGameBoardWidget::CrosswordGameBoardWidget (QWidget* parent,
     setFrameStyle (QFrame::StyledPanel | QFrame::Raised);
     setLineWidth (2);
 
-    setPalette (QPalette (QColor (0xff, 0xff, 0xff)));
-    setAutoFillBackground (true);
-
-    resize (NUM_ROWS * ROW_HEIGHT, NUM_COLUMNS * COLUMN_WIDTH);
     setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
+    resize (NUM_ROWS * ROW_HEIGHT, NUM_COLUMNS * COLUMN_WIDTH);
 
     initSquareTypes();
     pixmap = makePixmap();
@@ -82,9 +79,19 @@ CrosswordGameBoardWidget::makePixmap()
 
     for (int row = 0; row < NUM_ROWS; ++row) {
         for (int col = 0; col < NUM_COLUMNS; ++col) {
-            painter.setBrush (getBackgroundColor (row, col));
-            painter.drawRect (col * COLUMN_WIDTH, row * ROW_HEIGHT,
-                              COLUMN_WIDTH, ROW_HEIGHT);
+            QColor color = getBackgroundColor (row, col);
+            QPalette palette;
+            palette.setColor (QPalette::Light, color.light (125));
+            palette.setColor (QPalette::Mid, color);
+            palette.setColor (QPalette::Dark, color);
+
+            QRect rect (col * COLUMN_WIDTH, row * ROW_HEIGHT,
+                            COLUMN_WIDTH, ROW_HEIGHT);
+            painter.setPen (color);
+            painter.setBrush (color);
+            painter.drawRect (rect);
+
+            qDrawShadePanel (&painter, rect, palette, false, 1);
         }
     }
 
