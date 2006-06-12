@@ -57,11 +57,36 @@ CrosswordGameBoardWidget::CrosswordGameBoardWidget (QWidget* parent,
     setFrameStyle (QFrame::StyledPanel | QFrame::Raised);
     setLineWidth (2);
 
-    setSizePolicy (QSizePolicy::Minimum, QSizePolicy::Minimum);
-    resize (NUM_ROWS * ROW_HEIGHT, NUM_COLUMNS * COLUMN_WIDTH);
+    setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    //resize (NUM_ROWS * ROW_HEIGHT, NUM_COLUMNS * COLUMN_WIDTH);
 
     initSquareTypes();
     pixmap = makePixmap();
+}
+
+//---------------------------------------------------------------------------
+//  minimumSizeHint
+//
+//! Set the minimum size hint of the board.
+//---------------------------------------------------------------------------
+QSize
+CrosswordGameBoardWidget::minimumSizeHint() const
+{
+    QSize size = getBoardSize();
+    size.setWidth (size.width() + 2 * lineWidth());
+    size.setHeight (size.height() + 2 * lineWidth());
+    return size;
+}
+
+//---------------------------------------------------------------------------
+//  sizeHint
+//
+//! Set the size hint of the board.
+//---------------------------------------------------------------------------
+QSize
+CrosswordGameBoardWidget::sizeHint() const
+{
+    return minimumSizeHint();
 }
 
 //---------------------------------------------------------------------------
@@ -72,7 +97,7 @@ CrosswordGameBoardWidget::CrosswordGameBoardWidget (QWidget* parent,
 //! @return the pixmap
 //---------------------------------------------------------------------------
 QPixmap
-CrosswordGameBoardWidget::makePixmap()
+CrosswordGameBoardWidget::makePixmap() const
 {
     QPixmap pixmap (getBoardSize());
     QPainter painter (&pixmap);
@@ -108,7 +133,7 @@ CrosswordGameBoardWidget::makePixmap()
 //! @return the background color
 //---------------------------------------------------------------------------
 QColor
-CrosswordGameBoardWidget::getBackgroundColor (int row, int col)
+CrosswordGameBoardWidget::getBackgroundColor (int row, int col) const
 {
     SquareType squareType = squareTypes[row][col];
     switch (squareType) {
@@ -129,7 +154,7 @@ CrosswordGameBoardWidget::getBackgroundColor (int row, int col)
 //! @return the board size
 //---------------------------------------------------------------------------
 QSize
-CrosswordGameBoardWidget::getBoardSize()
+CrosswordGameBoardWidget::getBoardSize() const
 {
     return QSize (NUM_COLUMNS * COLUMN_WIDTH, NUM_ROWS * ROW_HEIGHT);
 }

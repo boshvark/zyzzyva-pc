@@ -44,10 +44,13 @@ class CrosswordGameBoardWidget : public QFrame
     public:
     CrosswordGameBoardWidget (QWidget* parent = 0, Qt::WFlags f = 0);
 
+    QSize minimumSizeHint() const;
+    QSize sizeHint() const;
+
     private:
-    QPixmap makePixmap();
-    QColor getBackgroundColor (int row, int col);
-    QSize getBoardSize();
+    QPixmap makePixmap() const;
+    QColor getBackgroundColor (int row, int col) const;
+    QSize getBoardSize() const;
     void initSquareTypes();
 
     virtual void paintEvent (QPaintEvent* event);
