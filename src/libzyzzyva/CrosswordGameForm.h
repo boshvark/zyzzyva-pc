@@ -28,10 +28,10 @@
 #include "ActionForm.h"
 #include <QLineEdit>
 #include <QPushButton>
-#include <QTableWidget>
 #include <QTextEdit>
 #include <QString>
 
+class CrosswordGameBoardWidget;
 class IscConnectionThread;
 
 class CrosswordGameForm : public ActionForm
@@ -55,7 +55,7 @@ class CrosswordGameForm : public ActionForm
     QString canonizeMessage (const QString& text);
 
     private:
-    QTableWidget* boardTable;
+    CrosswordGameBoardWidget* gameBoard;
     QPushButton* connectButton;
     QPushButton* disconnectButton;
     QTextEdit* messageArea;

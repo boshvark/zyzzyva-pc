@@ -21,6 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "CrosswordGameForm.h"
+#include "CrosswordGameBoardWidget.h"
 #include "IscConnectionThread.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -32,6 +33,9 @@
 #include <QtDebug>
 
 using namespace Defs;
+
+const int BOARD_COLUMN_WIDTH = 30;
+const int BOARD_ROW_HEIGHT = 30;
 
 //---------------------------------------------------------------------------
 //  CrosswordGameForm
@@ -55,15 +59,9 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     boardVlay->setSpacing (SPACING);
     mainHlay->addLayout (boardVlay);
 
-    boardTable = new QTableWidget (this);
-    Q_CHECK_PTR (boardTable);
-    boardTable->setColumnCount (15);
-    boardTable->setRowCount (15);
-    for (int i = 0; i < 15; ++i) {
-        boardTable->setColumnWidth (i, 20);
-        boardTable->setRowHeight (i, 20);
-    }
-    boardVlay->addWidget (boardTable);
+    gameBoard = new CrosswordGameBoardWidget (this);
+    Q_CHECK_PTR (gameBoard);
+    boardVlay->addWidget (gameBoard);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     Q_CHECK_PTR (buttonHlay);
@@ -242,6 +240,12 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         QString action = args.section (" ", 0, 0);
         args = args.section (" ", 1);
 
+        // going over time:
+        // OBSERVE ADJUST OVERTIME SonOfAulay
+        //
+        // final pass of the game:
+        // OBSERVE PAS 05 43 ---
+
         if (action == "MOVE") {
             args = args.simplified();
             QString placement = args.section (" ", 0, 0);
@@ -367,6 +371,13 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         else {
             messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
         }
+    }
+
+    else if (command == "ASITIS") {
+        messageAppendHtml (args, QColor (0x00, 0x00, 0x00));
+        // CHANNEL 0 PropRod 4 aap asked: match
+        // shows up as:
+        // #0 PropRod(H) -> app asked: match
     }
 
     else if (command == "ASITIS") {
