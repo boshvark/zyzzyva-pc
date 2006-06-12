@@ -127,6 +127,15 @@ CrosswordGameBoardWidget::makePixmap() const
             painter.drawRect (rect);
 
             qDrawShadePanel (&painter, rect, palette, false, 1);
+
+            CrosswordGameBoard::Tile tile = board->getTile (row, col);
+            if (tile.isValid()) {
+                painter.setPen (QColor ("black"));
+                QChar letter = tile.getLetter();
+                if (tile.isBlank())
+                    letter = letter.toLower();
+                painter.drawText (rect, Qt::AlignCenter, letter);
+            }
         }
     }
 

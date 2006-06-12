@@ -33,6 +33,7 @@ class CrosswordGameBoard : public QObject
 {
     Q_OBJECT
 
+    public:
     class Tile {
         public:
         Tile() : blank (false), valid (false) { }
@@ -51,7 +52,6 @@ class CrosswordGameBoard : public QObject
         bool valid;
     };
 
-    public:
     enum SquareType {
         Invalid = 0,
         NoBonus,
