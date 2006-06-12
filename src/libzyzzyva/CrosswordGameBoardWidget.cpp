@@ -139,7 +139,7 @@ CrosswordGameBoardWidget::makePixmap() const
                 painter.drawText (rect, Qt::AlignCenter, letter);
 
                 if (tile.isBlank()) {
-                    pen.setWidth (2);
+                    pen.setWidth (1);
                     painter.setPen (pen);
                     painter.setBrush (Qt::NoBrush);
                     rect.setX (rect.x() + 3);
