@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_DEFINE_FORM_H
-#define ZYZZYVA_DEFINE_FORM_H
+#ifndef ZYZZYVA_CROSSWORD_GAME_BOARD_WIDGET_H
+#define ZYZZYVA_CROSSWORD_GAME_BOARD_WIDGET_H
 
 #include <QFrame>
 #include <QPixmap>
@@ -60,4 +60,4 @@ class CrosswordGameBoardWidget : public QFrame
     QList< QList<SquareType> > squareTypes;
 };
 
-#endif // ZYZZYVA_DEFINE_FORM_H
+#endif // ZYZZYVA_CROSSWORD_GAME_BOARD_WIDGET_H
