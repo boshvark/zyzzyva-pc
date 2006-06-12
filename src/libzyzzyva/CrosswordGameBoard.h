@@ -36,19 +36,22 @@ class CrosswordGameBoard : public QObject
     public:
     class Tile {
         public:
-        Tile() : blank (false), valid (false) { }
-        Tile (const QChar& c, bool b)
-            : letter (c), blank (b), valid (true) { }
+        Tile() : blank (false), playerNum (0), valid (false) { }
+        Tile (const QChar& c, bool b, int p)
+            : letter (c), blank (b), playerNum (p), valid (true) { }
 
         void setLetter (const QChar& c) { letter = c; valid = true; }
         void setBlank (bool b) { blank = b; valid = true; }
+        void setPlayerNum (bool p) { playerNum = p; }
         QChar getLetter() const { return letter; }
         bool isBlank() const { return blank; }
+        bool getPlayerNum() const { return playerNum; }
         bool isValid() const { return valid; }
 
         private:
         QChar letter;
         bool blank;
+        int playerNum;
         bool valid;
     };
 
@@ -67,6 +70,7 @@ class CrosswordGameBoard : public QObject
     Tile getTile (int row, int col) const;
     int getNumRows() const;
     int getNumColumns() const;
+    void makeMove (const QString& move, const QString& placement, int player);
 
     signals:
     void changed();

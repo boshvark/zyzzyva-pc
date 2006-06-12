@@ -23,6 +23,8 @@
 #include "CrosswordGameBoard.h"
 #include "Defs.h"
 
+#include <QtDebug>
+
 using namespace Defs;
 
 const int NUM_ROWS = 15;
@@ -149,4 +151,50 @@ int
 CrosswordGameBoard::getNumColumns() const
 {
     return NUM_COLUMNS;
+}
+
+//---------------------------------------------------------------------------
+//  makeMove
+//
+//! Make a move on the board.
+//
+//! @param move the word to be played
+//! @param placement the placement of the word
+//! @param player the player number
+//---------------------------------------------------------------------------
+void
+CrosswordGameBoard::makeMove (const QString& move, const QString& placement,
+                              int player)
+{
+    QRegExp re ("\\d+|\\w"); 
+    int pos = re.indexIn (placement, 0);
+    QString aMatch = placement.mid (pos, re.matchedLength());
+    pos = re.indexIn (placement, pos + re.matchedLength());
+    QString bMatch = placement.mid (pos, re.matchedLength());
+
+    bool horizontal = aMatch[0].isNumber();
+
+    if (horizontal) {
+        int row = aMatch.toInt() - 1;
+        int col = bMatch[0].toUpper().toAscii() - 'A';
+        for (int i = 0; i < move.length(); ++i) {
+            tiles[row][col].setLetter (move[i].toUpper());
+            tiles[row][col].setBlank (move[i].isUpper());
+            tiles[row][col].setPlayerNum (player);
+            ++col;
+        }
+    }
+
+    else {
+        int row = bMatch.toInt() - 1;
+        int col = aMatch[0].toUpper().toAscii() - 'A';
+        for (int i = 0; i < move.length(); ++i) {
+            tiles[row][col].setLetter (move[i].toUpper());
+            tiles[row][col].setBlank (move[i].isUpper());
+            tiles[row][col].setPlayerNum (player);
+            ++row;
+        }
+    }
+
+    emit changed();
 }

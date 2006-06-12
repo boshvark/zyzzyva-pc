@@ -96,7 +96,8 @@ CrosswordGameBoardWidget::sizeHint() const
 void
 CrosswordGameBoardWidget::boardChanged()
 {
-    update();
+    pixmap = makePixmap();
+    update (contentsRect());
 }
 
 //---------------------------------------------------------------------------
@@ -194,6 +195,5 @@ CrosswordGameBoardWidget::paintEvent (QPaintEvent* event)
     QRect rect (contentsRect());
     painter.drawPixmap (contentsRect().topLeft(), pixmap);
     painter.end();
-
     QFrame::paintEvent (event);
 }
