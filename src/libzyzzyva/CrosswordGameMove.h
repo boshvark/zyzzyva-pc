@@ -59,6 +59,9 @@ class CrosswordGameMove
     void setRow (int r) { row = r; }
     void setColumn (int c) { column = c; }
     void setWord (const QString& w) { word = w; }
+    void setScore (int s) { score = s; }
+    void setMinutesLeft (int m) { minutesLeft = m; }
+    void setSecondsLeft (int s) { secondsLeft = s; }
     void setNumExchanged (int n) { numExchanged = n; }
     void setExchangedLetters (const QString& s) {
         exchangedLetters = s;
@@ -67,17 +70,22 @@ class CrosswordGameMove
     void setPenaltyType (PenaltyType p) { penaltyType = p; }
     void setPenaltyPoints (int n) { penaltyPoints = n; }
     void setPlayerNum (int n) { playerNum = n; }
+    void setNewRack (const QString& r) { newRack = r; }
 
     Type getType() const { return type; }
     Orientation getOrientation() const { return orientation; }
     int getRow() const { return row; }
     int getColumn() const { return column; }
     QString getWord() const { return word; }
+    int getScore() const { return score; }
+    int getMinutesLeft() const { return minutesLeft; }
+    int getSecondsLeft() const { return secondsLeft; }
     int getNumExchanged() const { return numExchanged; }
     QString getExchangedLetters() const { return exchangedLetters; }
     PenaltyType getPenaltyType() const { return penaltyType; }
     int getPenaltyPoints() const { return penaltyPoints; }
     int getPlayerNum() const { return playerNum; }
+    QString getNewRack() const { return newRack; }
     bool isValid() const;
 
     private:
@@ -90,11 +98,15 @@ class CrosswordGameMove
     int row;
     int column;
     QString word;
+    int score;
+    int minutesLeft;
+    int secondsLeft;
     int numExchanged;
     QString exchangedLetters;
     PenaltyType penaltyType;
     int penaltyPoints;
     int playerNum;
+    QString newRack;
 };
 
 #endif // ZYZZYVA_CROSSWORD_GAME_MOVE_H

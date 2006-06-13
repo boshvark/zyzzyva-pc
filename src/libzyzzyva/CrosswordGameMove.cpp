@@ -21,6 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "CrosswordGameMove.h"
+#include "Auxil.h"
 #include "Defs.h"
 
 #include <QtDebug>
@@ -47,22 +48,24 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
 
         type = Move;
 
-        QString tPlacement = translateCoordinates (split[1]);
-        QString tWord = split[2];
-        QString tScore = split[3];
-        QString tMinutes = split[4];
-        QString tSeconds = split[5];
-        QString tNewRack = split[6];
+        QString placement = translateCoordinates (split[1]);
+        word = split[2];
+        score = split[3].toInt();
+        minutesLeft = split[4].toInt();
+        secondsLeft = split[5].toInt();
+        newRack = Auxil::getAlphagram (split[6]);
         //QString tChangeNumber = split[7];
 
+
+
+
         QRegExp re ("\\d+|\\w"); 
-        int pos = re.indexIn (tPlacement, 0);
-        QString aMatch = tPlacement.mid (pos, re.matchedLength());
-        pos = re.indexIn (tPlacement, pos + re.matchedLength());
-        QString bMatch = tPlacement.mid (pos, re.matchedLength());
+        int pos = re.indexIn (placement, 0);
+        QString aMatch = placement.mid (pos, re.matchedLength());
+        pos = re.indexIn (placement, pos + re.matchedLength());
+        QString bMatch = placement.mid (pos, re.matchedLength());
 
         orientation = aMatch[0].isNumber() ? Horizontal : Vertical;
-        word = tWord;
 
         if (orientation == Horizontal) {
             row = aMatch.toInt() - 1;
@@ -136,6 +139,9 @@ CrosswordGameMove::init()
     orientation = NoOrientation;
     row = -1;
     column = -1;
+    score = 0;
+    minutesLeft = 0;
+    secondsLeft = 0;
     numExchanged = 0;
     penaltyType = NoPenalty;
     penaltyPoints = 0;

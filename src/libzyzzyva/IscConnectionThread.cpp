@@ -69,8 +69,8 @@ IscConnectionThread::connectToServer (const QString& creds,
     credentials = creds;
     socket = new QTcpSocket (this);
     Q_CHECK_PTR (socket);
-    connect (socket, SIGNAL (error(QAbstractSocket::SocketError)),
-             SLOT (socketError(QAbstractSocket::SocketError)));
+    connect (socket, SIGNAL (error (QAbstractSocket::SocketError)),
+             SIGNAL (socketError (QAbstractSocket::SocketError)));
     connect (socket, SIGNAL (stateChanged (QAbstractSocket::SocketState)),
              SLOT (socketStateChanged (QAbstractSocket::SocketState)));
     connect (socket, SIGNAL (readyRead()), SLOT (socketReadyRead()));
@@ -152,19 +152,6 @@ IscConnectionThread::receiveMessage (const QString& message)
         sendMessage ("PING REPLY");
     else
         emit messageReceived (message);
-}
-
-//---------------------------------------------------------------------------
-//  socketError
-//
-//! Called when the socket encounters an error.
-//
-//! @param the error
-//---------------------------------------------------------------------------
-void
-IscConnectionThread::socketError (QAbstractSocket::SocketError error)
-{
-    qDebug() << "*** socketError: " << error;
 }
 
 //---------------------------------------------------------------------------

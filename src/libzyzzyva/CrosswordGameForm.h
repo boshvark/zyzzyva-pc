@@ -27,6 +27,8 @@
 
 #include "ActionForm.h"
 #include "CrosswordGameMove.h"
+#include <QAbstractSocket>
+#include <QLabel>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QTextEdit>
@@ -50,6 +52,7 @@ class CrosswordGameForm : public ActionForm
     void inputReturnPressed();
     void threadStatusChanged (const QString& status);
     void threadMessageReceived (const QString& message);
+    void threadSocketError (QAbstractSocket::SocketError error);
 
     private:
     void messageAppendHtml (const QString& text, const QColor& color);
@@ -66,6 +69,12 @@ class CrosswordGameForm : public ActionForm
     QLineEdit* inputLine;
     QString statusString;
 
+    QLabel* aPlayerLabel;
+    QLabel* aScoreLabel;
+    QLabel* aRackLabel;
+    QLabel* bPlayerLabel;
+    QLabel* bScoreLabel;
+    QLabel* bRackLabel;
     CrosswordGameBoard* board;
     IscConnectionThread* iscThread;
 };

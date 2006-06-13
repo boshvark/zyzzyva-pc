@@ -29,6 +29,7 @@
 #include "Defs.h"
 #include <QFile>
 #include <QHBoxLayout>
+#include <QMessageBox>
 #include <QTextCursor>
 #include <QVBoxLayout>
 
@@ -61,6 +62,42 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     boardVlay->setMargin (0);
     boardVlay->setSpacing (SPACING);
     mainHlay->addLayout (boardVlay);
+
+    QHBoxLayout* playerHlay = new QHBoxLayout;
+    Q_CHECK_PTR (playerHlay);
+    boardVlay->addLayout (playerHlay);
+
+    aPlayerLabel = new QLabel ("Alice");
+    Q_CHECK_PTR (aPlayerLabel);
+    playerHlay->addWidget (aPlayerLabel);
+
+    bPlayerLabel = new QLabel ("Bob");
+    Q_CHECK_PTR (bPlayerLabel);
+    playerHlay->addWidget (bPlayerLabel);
+
+    QHBoxLayout* scoreHlay = new QHBoxLayout;
+    Q_CHECK_PTR (scoreHlay);
+    boardVlay->addLayout (scoreHlay);
+
+    aScoreLabel = new QLabel ("0");
+    Q_CHECK_PTR (aScoreLabel);
+    scoreHlay->addWidget (aScoreLabel);
+
+    bScoreLabel = new QLabel ("0");
+    Q_CHECK_PTR (bScoreLabel);
+    scoreHlay->addWidget (bScoreLabel);
+
+    QHBoxLayout* rackHlay = new QHBoxLayout;
+    Q_CHECK_PTR (rackHlay);
+    boardVlay->addLayout (rackHlay);
+
+    aRackLabel = new QLabel;
+    Q_CHECK_PTR (aRackLabel);
+    rackHlay->addWidget (aRackLabel);
+
+    bRackLabel = new QLabel;
+    Q_CHECK_PTR (bRackLabel);
+    rackHlay->addWidget (bRackLabel);
 
     boardWidget = new CrosswordGameBoardWidget (board, this);
     Q_CHECK_PTR (boardWidget);
@@ -147,6 +184,8 @@ CrosswordGameForm::connectClicked()
              SLOT (threadMessageReceived (const QString&)));
     connect (iscThread, SIGNAL (statusChanged (const QString&)),
              SLOT (threadStatusChanged (const QString&)));
+    connect (iscThread, SIGNAL (socketError (QAbstractSocket::SocketError)),
+             SLOT (threadSocketError (QAbstractSocket::SocketError)));
 
     QByteArray credBytes = file.readLine();
     QString credStr (credBytes);
@@ -353,6 +392,9 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             QStringList aPlayerSplit = lines[2].split (" ");
             QString aPlayer = aPlayerSplit[0];
             QString aRating = aPlayerSplit[1];
+
+            aPlayerLabel->setText (aPlayer + " (" + aRating + ")");
+
             QString aInitialRack = aPlayerSplit[2];
             // FIXME
             QString aSomething = aPlayerSplit[3];
@@ -376,6 +418,9 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             QStringList bPlayerSplit = lines[5].split (" ");
             QString bPlayer = bPlayerSplit[0];
             QString bRating = bPlayerSplit[1];
+
+            bPlayerLabel->setText (bPlayer + " (" + bRating + ")");
+
             QString bInitialRack = bPlayerSplit[2];
             // FIXME
             QString bSomething = bPlayerSplit[3];
@@ -563,5 +608,85 @@ CrosswordGameForm::canonizeMessage (const QString& message)
 void
 CrosswordGameForm::displayMove (const CrosswordGameMove& move)
 {
+    int playerNum = move.getPlayerNum();
+
+    if (playerNum == 1) {
+        aScoreLabel->setText (QString::number (aScoreLabel->text().toInt() +
+                                               move.getScore()));
+        aRackLabel->setText (move.getNewRack());
+    }
+    else if (playerNum == 2) {
+        bScoreLabel->setText (QString::number (bScoreLabel->text().toInt() +
+                                               move.getScore()));
+        bRackLabel->setText (move.getNewRack());
+    }
+
     board->makeMove (move);
+}
+
+//---------------------------------------------------------------------------
+//  threadSocketError
+//
+//! Called when the socket encounters an error.
+//
+//! @param the error
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::threadSocketError (QAbstractSocket::SocketError error)
+{
+    QString errorMsg;
+    switch (error) {
+        case QAbstractSocket::ConnectionRefusedError:
+        errorMsg = "Connection refused.";
+        break;
+
+        case QAbstractSocket::RemoteHostClosedError:
+        errorMsg = "Connection closed by remote host.";
+        break;
+
+        case QAbstractSocket::HostNotFoundError:
+        errorMsg = "Host address not found.";
+        break;
+
+        case QAbstractSocket::SocketAccessError:
+        errorMsg = "Operation failed because of insufficient privileges.";
+        break;
+
+        case QAbstractSocket::SocketResourceError:
+        errorMsg = "Too many sockets open.";
+        break;
+
+        case QAbstractSocket::SocketTimeoutError:
+        errorMsg = "Socket operation timed out.";
+        break;
+
+        case QAbstractSocket::DatagramTooLargeError:
+        errorMsg = "Datagram too large.";
+        break;
+
+        case QAbstractSocket::NetworkError:
+        errorMsg = "Network error (cable unplugged?).";
+        break;
+
+        case QAbstractSocket::AddressInUseError:
+        errorMsg = "Address already in use.";
+        break;
+
+        case QAbstractSocket::SocketAddressNotAvailableError:
+        errorMsg = "Address does not belong to host.";
+        break;
+
+        case QAbstractSocket::UnsupportedSocketOperationError:
+        errorMsg = "Unsupported socket operation.";
+        break;
+
+        case QAbstractSocket::UnknownSocketError:
+        errorMsg = "Unknown socket error.";
+        break;
+    }
+
+    QMessageBox::warning (this, "Network Error",
+                          "A network error occurred:\n" + errorMsg);
+
+    disconnectClicked();
 }

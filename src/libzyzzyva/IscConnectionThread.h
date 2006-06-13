@@ -44,13 +44,13 @@ class IscConnectionThread : public QThread
     signals:
     void messageReceived (const QString& message);
     void statusChanged (const QString& status);
+    void socketError (QAbstractSocket::SocketError error);
 
     public slots:
     void sendMessage (const QString& message);
     void receiveMessage (const QString& message);
 
     private slots:
-    void socketError (QAbstractSocket::SocketError error);
     void socketStateChanged (QAbstractSocket::SocketState state);
     void socketReadyRead();
     void keepAliveTimeout();
