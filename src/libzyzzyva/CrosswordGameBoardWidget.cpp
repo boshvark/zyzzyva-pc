@@ -32,6 +32,7 @@ using namespace Defs;
 
 const int COLUMN_WIDTH = 30;
 const int ROW_HEIGHT = 30;
+const int LETTER_HEIGHT = 16;
 const int VERTICAL_HEADER_WIDTH = 10;
 const int HORIZONTAL_HEADER_HEIGHT = 10;
 const int TILE_MARGIN = 2;
@@ -156,7 +157,7 @@ CrosswordGameBoardWidget::makePixmap() const
                                  TILE_SHADE_PANEL_WIDTH);
 
                 QFont tileFont = font();
-                tileFont.setPixelSize (15);
+                tileFont.setPixelSize (LETTER_HEIGHT);
                 tileFont.setWeight (QFont::Black);
                 painter.setFont (tileFont);
 
