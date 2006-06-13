@@ -172,10 +172,12 @@ CrosswordGameBoard::makeMove (const CrosswordGameMove& move)
     QString word = move.getWord();
 
     for (int i = 0; i < word.length(); ++i) {
-        QChar letter = word[i];
-        tiles[row][col].setLetter (letter.toUpper());
-        tiles[row][col].setBlank (letter.isUpper());
-        tiles[row][col].setPlayerNum (move.getPlayerNum());
+        if (!tiles[row][col].isValid()) {
+            QChar letter = word[i];
+            tiles[row][col].setLetter (letter.toUpper());
+            tiles[row][col].setBlank (letter.isUpper());
+            tiles[row][col].setPlayerNum (move.getPlayerNum());
+        }
 
         if (orientation == CrosswordGameMove::Horizontal)
             ++col;
