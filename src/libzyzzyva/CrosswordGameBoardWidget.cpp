@@ -36,6 +36,8 @@ const int VERTICAL_HEADER_WIDTH = 10;
 const int HORIZONTAL_HEADER_HEIGHT = 10;
 const int TILE_MARGIN = 2;
 const int BLANK_SQUARE_MARGIN = 4;
+const int SQUARE_SHADE_PANEL_WIDTH = 1;
+const int TILE_SHADE_PANEL_WIDTH = 2;
 
 const QColor NO_BONUS_COLOR = QColor (0xdc, 0xdc, 0xdc);
 const QColor DOUBLE_LETTER_COLOR = QColor (0x64, 0x95, 0xed);
@@ -130,15 +132,18 @@ CrosswordGameBoardWidget::makePixmap() const
             painter.setBrush (color);
             painter.drawRect (rect);
 
-            qDrawShadePanel (&painter, rect, palette, false, 1);
+            qDrawShadePanel (&painter, rect, palette, false,
+                             SQUARE_SHADE_PANEL_WIDTH);
 
             CrosswordGameBoard::Tile tile = board->getTile (row, col);
             if (tile.isValid()) {
 
                 QRect tileRect (col * COLUMN_WIDTH + TILE_MARGIN,
                                 row * ROW_HEIGHT + TILE_MARGIN,
-                                COLUMN_WIDTH - 2 * TILE_MARGIN,
-                                ROW_HEIGHT - 2 * TILE_MARGIN);
+                                COLUMN_WIDTH - 2 * TILE_MARGIN -
+                                    SQUARE_SHADE_PANEL_WIDTH,
+                                ROW_HEIGHT - 2 * TILE_MARGIN -
+                                    SQUARE_SHADE_PANEL_WIDTH);
                 color = TILE_COLOR;
                 palette.setColor (QPalette::Light, color.light (125));
                 palette.setColor (QPalette::Mid, color);
@@ -147,7 +152,13 @@ CrosswordGameBoardWidget::makePixmap() const
                 painter.setPen (QColor ("black"));
                 painter.setBrush (color);
                 painter.drawRect (tileRect);
-                qDrawShadePanel (&painter, tileRect, palette, false, 2);
+                qDrawShadePanel (&painter, tileRect, palette, false,
+                                 TILE_SHADE_PANEL_WIDTH);
+
+                QFont tileFont = font();
+                tileFont.setPixelSize (15);
+                tileFont.setWeight (QFont::Black);
+                painter.setFont (tileFont);
 
                 QPen pen (color);
                 pen.setColor (QColor ("black"));
