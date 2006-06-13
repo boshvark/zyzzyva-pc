@@ -158,42 +158,30 @@ CrosswordGameBoard::getNumColumns() const
 //
 //! Make a move on the board.
 //
-//! @param move the word to be played
-//! @param placement the placement of the word
+//! @param move the move to be played
 //! @param player the player number
 //---------------------------------------------------------------------------
 void
-CrosswordGameBoard::makeMove (const QString& move, const QString& placement,
-                              int player)
+CrosswordGameBoard::makeMove (const CrosswordGameMove& move, int player)
 {
-    QRegExp re ("\\d+|\\w"); 
-    int pos = re.indexIn (placement, 0);
-    QString aMatch = placement.mid (pos, re.matchedLength());
-    pos = re.indexIn (placement, pos + re.matchedLength());
-    QString bMatch = placement.mid (pos, re.matchedLength());
+    if (!move.isValid())
+        return;
 
-    bool horizontal = aMatch[0].isNumber();
+    CrosswordGameMove::Orientation orientation = move.getOrientation();
+    int row = move.getRow();
+    int col = move.getColumn();
+    QString word = move.getWord();
 
-    if (horizontal) {
-        int row = aMatch.toInt() - 1;
-        int col = bMatch[0].toUpper().toAscii() - 'A';
-        for (int i = 0; i < move.length(); ++i) {
-            tiles[row][col].setLetter (move[i].toUpper());
-            tiles[row][col].setBlank (move[i].isUpper());
-            tiles[row][col].setPlayerNum (player);
+    for (int i = 0; i < word.length(); ++i) {
+        QChar letter = word[i];
+        tiles[row][col].setLetter (letter.toUpper());
+        tiles[row][col].setBlank (letter.isUpper());
+        tiles[row][col].setPlayerNum (player);
+
+        if (orientation == CrosswordGameMove::Horizontal)
             ++col;
-        }
-    }
-
-    else {
-        int row = bMatch.toInt() - 1;
-        int col = aMatch[0].toUpper().toAscii() - 'A';
-        for (int i = 0; i < move.length(); ++i) {
-            tiles[row][col].setLetter (move[i].toUpper());
-            tiles[row][col].setBlank (move[i].isUpper());
-            tiles[row][col].setPlayerNum (player);
+        else
             ++row;
-        }
     }
 
     emit changed();

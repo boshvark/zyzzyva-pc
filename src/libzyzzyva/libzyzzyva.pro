@@ -52,6 +52,7 @@ SOURCES = \
     CrosswordGameBoard.cpp \
     CrosswordGameBoardWidget.cpp \
     CrosswordGameForm.cpp \
+    CrosswordGameMove.cpp \
     DefineForm.cpp \
     DefinitionBox.cpp \
     DefinitionDialog.cpp \

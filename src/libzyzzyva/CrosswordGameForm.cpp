@@ -23,6 +23,7 @@
 #include "CrosswordGameForm.h"
 #include "CrosswordGameBoard.h"
 #include "CrosswordGameBoardWidget.h"
+#include "CrosswordGameMove.h"
 #include "IscConnectionThread.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -252,7 +253,12 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         // OBSERVE PAS 05 43 ---
 
         if (action == "MOVE") {
+            args = action + " " + args;
             args = args.simplified();
+
+            CrosswordGameMove move (args);
+
+            // FIXME: Just for display purposes - fix this later
             QString placement = args.section (" ", 0, 0);
             QString play = args.section (" ", 1, 1);
             QString score = args.section (" ", 2, 2);
@@ -262,8 +268,11 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             messageAppendHtml ("MOVE " + placement + " " + play + " " + score,
                                QColor (0x00, 0x00, 0xff));
 
+
+            displayMove (move, 1);
+
             // FIXME: fix player num
-            displayMove (play, translateCoordinates (placement), 1);
+            //displayMove (play, translateCoordinates (placement), 1);
         }
 
         else if (action == "CHANGE") {
@@ -347,24 +356,17 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 
             QString aMoveLine = lines[3];
 
+            //QList<CrosswordGameMove> aPlayerMoves;
+
             // FIXME: don't forget exchanges so they can be woven back in
             // order
             QStringList tokens = aMoveLine.split (" ");
-            QRegExp moveRe ("MOVE(\\s+\\S+){7}");
+            QRegExp moveRe ("MOVE(\\s+\\S+){7}|CHANGE(\\s+\\S+){4}");
             int pos = 0;
             while ((pos = moveRe.indexIn (aMoveLine, pos)) >= 0) {
                 QString match = aMoveLine.mid (pos, moveRe.matchedLength());
-                QStringList moveSplit = match.split (" ");
-                QString placement = moveSplit[1];
-                QString word = moveSplit[2];
-                QString score = moveSplit[3];
-                QString minutes = moveSplit[4];
-                QString seconds = moveSplit[5];
-                QString newRack = moveSplit[6];
-                QString something = moveSplit[7];
-                // FIXME: fix player number, and display all moves at once,
-                // interleaving them appropriately
-                displayMove (word, translateCoordinates (placement), 1);
+                CrosswordGameMove move (match);
+                displayMove (move, 1);
                 pos += moveRe.matchedLength();
             }
 
@@ -385,17 +387,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             pos = 0;
             while ((pos = moveRe.indexIn (bMoveLine, pos)) >= 0) {
                 QString match = bMoveLine.mid (pos, moveRe.matchedLength());
-                QStringList moveSplit = match.split (" ");
-                QString placement = moveSplit[1];
-                QString word = moveSplit[2];
-                QString score = moveSplit[3];
-                QString minutes = moveSplit[4];
-                QString seconds = moveSplit[5];
-                QString newRack = moveSplit[6];
-                QString something = moveSplit[7];
-                // FIXME: fix player number, and display all moves at once,
-                // interleaving them appropriately
-                displayMove (word, translateCoordinates (placement), 1);
+                CrosswordGameMove move (match);
+                displayMove (move, 1);
                 pos += moveRe.matchedLength();
             }
 
@@ -545,68 +538,11 @@ CrosswordGameForm::canonizeMessage (const QString& message)
 //
 //! Display a move on the board.
 //
-//! @param move the word
-//! @param placement the board placement
+//! @param move the move
 //! @param player the player number
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::displayMove (const QString& move, const QString& placement,
-                                int player)
+CrosswordGameForm::displayMove (const CrosswordGameMove& move, int player)
 {
-    board->makeMove (move, placement, player);
-}
-
-//---------------------------------------------------------------------------
-//  translateCoordinates
-//
-//! Translate ISC coordinates to real coordinates, and vice versa.
-//
-//! @param coordinates the coordinates to translate
-//! @return the translated coordinates
-//---------------------------------------------------------------------------
-QString
-CrosswordGameForm::translateCoordinates (const QString& coordinates)
-{
-    QString real;
-    QRegExp re ("\\d+|\\w");
-
-    int pos = 0;
-    while ((pos = re.indexIn (coordinates, pos)) >= 0) {
-        QString match = coordinates.mid (pos, re.matchedLength());
-
-        if (match == "1") real += "A";
-        else if (match == "2") real += "B";
-        else if (match == "3") real += "C";
-        else if (match == "4") real += "D";
-        else if (match == "5") real += "E";
-        else if (match == "6") real += "F";
-        else if (match == "7") real += "G";
-        else if (match == "8") real += "H";
-        else if (match == "9") real += "I";
-        else if (match == "10") real += "J";
-        else if (match == "11") real += "K";
-        else if (match == "12") real += "L";
-        else if (match == "13") real += "M";
-        else if (match == "14") real += "N";
-        else if (match == "15") real += "O";
-        else if (match == "A") real += "1";
-        else if (match == "B") real += "2";
-        else if (match == "C") real += "3";
-        else if (match == "D") real += "4";
-        else if (match == "E") real += "5";
-        else if (match == "F") real += "6";
-        else if (match == "G") real += "7";
-        else if (match == "H") real += "8";
-        else if (match == "I") real += "9";
-        else if (match == "J") real += "10";
-        else if (match == "K") real += "11";
-        else if (match == "L") real += "12";
-        else if (match == "M") real += "13";
-        else if (match == "N") real += "14";
-        else if (match == "O") real += "15";
-
-        pos += re.matchedLength();
-    }
-
-    return real;
+    board->makeMove (move, player);
 }

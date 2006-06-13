@@ -26,6 +26,7 @@
 #define ZYZZYVA_CROSSWORD_GAME_FORM_H
 
 #include "ActionForm.h"
+#include "CrosswordGameMove.h"
 #include <QLineEdit>
 #include <QPushButton>
 #include <QTextEdit>
@@ -55,9 +56,7 @@ class CrosswordGameForm : public ActionForm
     QString encodeHtmlEntities (const QString& text);
     QString canonizeMessage (const QString& text);
 
-    void displayMove (const QString& move, const QString& placement,
-                      int player);
-    QString translateCoordinates (const QString& coordinates);
+    void displayMove (const CrosswordGameMove& move, int player);
 
     private:
     CrosswordGameBoardWidget* boardWidget;

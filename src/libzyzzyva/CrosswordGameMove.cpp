@@ -1,0 +1,194 @@
+//---------------------------------------------------------------------------
+// CrosswordGameMove.cpp
+//
+// A class to represent a crossword game move.
+//
+// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+//
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, write to the Free Software
+// Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+//---------------------------------------------------------------------------
+
+#include "CrosswordGameMove.h"
+#include "Defs.h"
+
+#include <QtDebug>
+
+using namespace Defs;
+
+//---------------------------------------------------------------------------
+//  CrosswordGameMove
+//
+//! Constructor.
+//
+//! @param str a string representation of the move
+//---------------------------------------------------------------------------
+CrosswordGameMove::CrosswordGameMove (const QString& str)
+{
+    init();
+
+    QStringList split = str.split (" ");
+    QString tMoveType = split[0];
+
+    if (tMoveType == "MOVE") {
+        if (split.size() < 7)
+            return;
+
+        type = Move;
+
+        QString tPlacement = translateCoordinates (split[1]);
+        QString tWord = split[2];
+        QString tScore = split[3];
+        QString tMinutes = split[4];
+        QString tSeconds = split[5];
+        QString tNewRack = split[6];
+        //QString tChangeNumber = split[7];
+
+        QRegExp re ("\\d+|\\w"); 
+        int pos = re.indexIn (tPlacement, 0);
+        QString aMatch = tPlacement.mid (pos, re.matchedLength());
+        pos = re.indexIn (tPlacement, pos + re.matchedLength());
+        QString bMatch = tPlacement.mid (pos, re.matchedLength());
+
+        orientation = aMatch[0].isNumber() ? Horizontal : Vertical;
+        word = tWord;
+
+        if (orientation == Horizontal) {
+            row = aMatch.toInt() - 1;
+            column = bMatch[0].toUpper().toAscii() - 'A';
+        }
+        else {
+            row = bMatch.toInt() - 1;
+            column = aMatch[0].toUpper().toAscii() - 'A';
+        }
+    }
+
+    else if (tMoveType == "CHANGE") {
+
+    }
+ 
+}
+
+//---------------------------------------------------------------------------
+//  isValid
+//
+//! Determine whether the move can possibly be valid.
+//
+//! @return true if valid, false otherwise
+//---------------------------------------------------------------------------
+bool
+CrosswordGameMove::isValid() const
+{
+    if (type == Invalid)
+        return false;
+
+    if (type == Move) {
+        if (orientation == NoOrientation)
+            return false;
+        if ((row < 0) || (row > 15))
+            return false;
+        if ((column < 0) || (column > 15))
+            return false;
+        if (word.isEmpty())
+            return false;
+    }
+
+    else if (type == Exchange) {
+        if ((numExchanged <= 0) || (numExchanged > 7))
+            return false;
+    }
+
+    else if (type == Challenge) {
+        // You can have free challenges, but they don't count as a move
+        if (penaltyType == NoPenalty)
+            return false;
+
+        if (penaltyPoints <= 0)
+            return false;
+    }
+
+    return true;
+}
+
+//---------------------------------------------------------------------------
+//  init
+//
+//! Initialize the object.
+//---------------------------------------------------------------------------
+void
+CrosswordGameMove::init()
+{
+    type = Invalid;
+    orientation = NoOrientation;
+    row = -1;
+    column = -1;
+    numExchanged = 0;
+    penaltyType = NoPenalty;
+    penaltyPoints = 0;
+}
+
+//---------------------------------------------------------------------------
+//  translateCoordinates
+//
+//! Translate ISC coordinates to real coordinates, and vice versa.
+//
+//! @param coordinates the coordinates to translate
+//! @return the translated coordinates
+//---------------------------------------------------------------------------
+QString
+CrosswordGameMove::translateCoordinates (const QString& coordinates)
+{
+    QString real;
+    QRegExp re ("\\d+|\\w");
+
+    int pos = 0;
+    while ((pos = re.indexIn (coordinates, pos)) >= 0) {
+        QString match = coordinates.mid (pos, re.matchedLength());
+
+        if (match == "1") real += "A";
+        else if (match == "2") real += "B";
+        else if (match == "3") real += "C";
+        else if (match == "4") real += "D";
+        else if (match == "5") real += "E";
+        else if (match == "6") real += "F";
+        else if (match == "7") real += "G";
+        else if (match == "8") real += "H";
+        else if (match == "9") real += "I";
+        else if (match == "10") real += "J";
+        else if (match == "11") real += "K";
+        else if (match == "12") real += "L";
+        else if (match == "13") real += "M";
+        else if (match == "14") real += "N";
+        else if (match == "15") real += "O";
+        else if (match == "A") real += "1";
+        else if (match == "B") real += "2";
+        else if (match == "C") real += "3";
+        else if (match == "D") real += "4";
+        else if (match == "E") real += "5";
+        else if (match == "F") real += "6";
+        else if (match == "G") real += "7";
+        else if (match == "H") real += "8";
+        else if (match == "I") real += "9";
+        else if (match == "J") real += "10";
+        else if (match == "K") real += "11";
+        else if (match == "L") real += "12";
+        else if (match == "M") real += "13";
+        else if (match == "N") real += "14";
+        else if (match == "O") real += "15";
+
+        pos += re.matchedLength();
+    }
+
+    return real;
+}
