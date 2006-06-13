@@ -256,10 +256,9 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         // OBSERVE PAS 05 43 ---
 
         if (action == "MOVE") {
-            args = action + " " + args;
             args = args.simplified();
 
-            CrosswordGameMove move (args);
+            CrosswordGameMove move (action + " " + args);
 
             // FIXME: Just for display purposes - fix this later
             QString placement = args.section (" ", 0, 0);
