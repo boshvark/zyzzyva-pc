@@ -35,11 +35,12 @@ const int ROW_HEIGHT = 30;
 const int VERTICAL_HEADER_WIDTH = 10;
 const int HORIZONTAL_HEADER_HEIGHT = 10;
 
-const QColor NO_BONUS_COLOR = QColor ("gainsboro");
-const QColor DOUBLE_LETTER_COLOR = QColor ("cornflowerblue");
-const QColor TRIPLE_LETTER_COLOR = QColor ("slateblue");
-const QColor DOUBLE_WORD_COLOR = QColor ("palevioletred");
-const QColor TRIPLE_WORD_COLOR = QColor ("firebrick");
+const QColor NO_BONUS_COLOR = QColor (0xdc, 0xdc, 0xdc);
+const QColor DOUBLE_LETTER_COLOR = QColor (0x64, 0x95, 0xed);
+const QColor TRIPLE_LETTER_COLOR = QColor (0x6a, 0x5a, 0xcd);
+const QColor DOUBLE_WORD_COLOR = QColor (0xdb, 0x70, 0x93);
+const QColor TRIPLE_WORD_COLOR = QColor (0xb2, 0x22, 0x22);
+const QColor TILE_COLOR = QColor (0xf0, 0xe6, 0x8c);
 
 //---------------------------------------------------------------------------
 //  CrosswordGameBoardWidget

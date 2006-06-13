@@ -340,24 +340,64 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 
             QStringList aPlayerSplit = lines[2].split (" ");
             QString aPlayer = aPlayerSplit[0];
-            QString aPlayerRating = aPlayerSplit[1];
-            QString aPlayerInitialRack = aPlayerSplit[2];
+            QString aRating = aPlayerSplit[1];
+            QString aInitialRack = aPlayerSplit[2];
             // FIXME
-            QString aPlayerSomething = aPlayerSplit[3];
+            QString aSomething = aPlayerSplit[3];
 
+            QString aMoveLine = lines[3];
 
-            QString aPlayerMoveLine = lines[3];
+            // FIXME: don't forget exchanges so they can be woven back in
+            // order
+            QStringList tokens = aMoveLine.split (" ");
+            QRegExp moveRe ("MOVE(\\s+\\S+){7}");
+            int pos = 0;
+            while ((pos = moveRe.indexIn (aMoveLine, pos)) >= 0) {
+                QString match = aMoveLine.mid (pos, moveRe.matchedLength());
+                QStringList moveSplit = match.split (" ");
+                QString placement = moveSplit[1];
+                QString word = moveSplit[2];
+                QString score = moveSplit[3];
+                QString minutes = moveSplit[4];
+                QString seconds = moveSplit[5];
+                QString newRack = moveSplit[6];
+                QString something = moveSplit[7];
+                // FIXME: fix player number, and display all moves at once,
+                // interleaving them appropriately
+                displayMove (word, translateCoordinates (placement), 1);
+                pos += moveRe.matchedLength();
+            }
 
 
             QStringList bPlayerSplit = lines[5].split (" ");
             QString bPlayer = bPlayerSplit[0];
-            QString bPlayerRating = bPlayerSplit[1];
-            QString bPlayerInitialRack = bPlayerSplit[2];
+            QString bRating = bPlayerSplit[1];
+            QString bInitialRack = bPlayerSplit[2];
             // FIXME
-            QString bPlayerSomething = bPlayerSplit[3];
+            QString bSomething = bPlayerSplit[3];
 
 
-            QString bPlayerMoveLine = lines[6];
+            QString bMoveLine = lines[6];
+
+            // FIXME: don't forget exchanges so they can be woven back in
+            // order
+            tokens = bMoveLine.split (" ");
+            pos = 0;
+            while ((pos = moveRe.indexIn (bMoveLine, pos)) >= 0) {
+                QString match = bMoveLine.mid (pos, moveRe.matchedLength());
+                QStringList moveSplit = match.split (" ");
+                QString placement = moveSplit[1];
+                QString word = moveSplit[2];
+                QString score = moveSplit[3];
+                QString minutes = moveSplit[4];
+                QString seconds = moveSplit[5];
+                QString newRack = moveSplit[6];
+                QString something = moveSplit[7];
+                // FIXME: fix player number, and display all moves at once,
+                // interleaving them appropriately
+                displayMove (word, translateCoordinates (placement), 1);
+                pos += moveRe.matchedLength();
+            }
 
 
             QString text = "You are now observing: " + aPlayer + " vs " +
