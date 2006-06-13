@@ -34,6 +34,8 @@ const int COLUMN_WIDTH = 30;
 const int ROW_HEIGHT = 30;
 const int VERTICAL_HEADER_WIDTH = 10;
 const int HORIZONTAL_HEADER_HEIGHT = 10;
+const int TILE_MARGIN = 2;
+const int BLANK_SQUARE_MARGIN = 4;
 
 const QColor NO_BONUS_COLOR = QColor (0xdc, 0xdc, 0xdc);
 const QColor DOUBLE_LETTER_COLOR = QColor (0x64, 0x95, 0xed);
@@ -120,7 +122,7 @@ CrosswordGameBoardWidget::makePixmap() const
             QPalette palette;
             palette.setColor (QPalette::Light, color.light (125));
             palette.setColor (QPalette::Mid, color);
-            palette.setColor (QPalette::Dark, color);
+            palette.setColor (QPalette::Dark, color.dark (125));
 
             QRect rect (col * COLUMN_WIDTH, row * ROW_HEIGHT,
                         COLUMN_WIDTH, ROW_HEIGHT);
@@ -132,9 +134,23 @@ CrosswordGameBoardWidget::makePixmap() const
 
             CrosswordGameBoard::Tile tile = board->getTile (row, col);
             if (tile.isValid()) {
+
+                QRect tileRect (col * COLUMN_WIDTH + TILE_MARGIN,
+                                row * ROW_HEIGHT + TILE_MARGIN,
+                                COLUMN_WIDTH - 2 * TILE_MARGIN,
+                                ROW_HEIGHT - 2 * TILE_MARGIN);
+                color = TILE_COLOR;
+                palette.setColor (QPalette::Light, color.light (125));
+                palette.setColor (QPalette::Mid, color);
+                palette.setColor (QPalette::Dark, color.dark (125));
+
+                painter.setPen (QColor ("black"));
+                painter.setBrush (color);
+                painter.drawRect (tileRect);
+                qDrawShadePanel (&painter, tileRect, palette, false, 2);
+
                 QPen pen (color);
                 pen.setColor (QColor ("black"));
-                pen.setWidth (3);
                 painter.setPen (pen);
                 QChar letter = tile.getLetter();
                 painter.drawText (rect, Qt::AlignCenter, letter);
@@ -143,10 +159,10 @@ CrosswordGameBoardWidget::makePixmap() const
                     pen.setWidth (1);
                     painter.setPen (pen);
                     painter.setBrush (Qt::NoBrush);
-                    rect.setX (rect.x() + 3);
-                    rect.setY (rect.y() + 3);
-                    rect.setWidth (rect.width() - 3);
-                    rect.setHeight (rect.height() - 3);
+                    rect.setX (rect.x() + BLANK_SQUARE_MARGIN);
+                    rect.setY (rect.y() + BLANK_SQUARE_MARGIN);
+                    rect.setWidth (rect.width() - BLANK_SQUARE_MARGIN);
+                    rect.setHeight (rect.height() - BLANK_SQUARE_MARGIN);
                     painter.drawRect (rect);
                 }
             }
