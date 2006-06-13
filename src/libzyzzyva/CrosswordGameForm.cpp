@@ -226,6 +226,9 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
     // A hush fills the room as olaugh walks in! :)
     // WHO BEST 1877 olaugh a 0 0
 
+    // trey is playing drbing now!
+    // GAMES BEST 1926 1922 trey 1930 drbing TWL98 18 0 n
+
     // Take care of messages the GUI doesn't need to know about
     if ((command == "TELL") || (command == "WHISPER")) {
         QString sender = args.section (" ", 0, 0);
@@ -286,6 +289,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         }
 
         else if (action == "LOGIN") {
+            board->clear();
+
             args = args.trimmed();
             // What does the first line mean?
 

@@ -67,6 +67,7 @@ class CrosswordGameBoard : public QObject
 
     public:
     CrosswordGameBoard();
+    void clear();
     SquareType getSquareType (int row, int col) const;
     Tile getTile (int row, int col) const;
     int getNumRows() const;
