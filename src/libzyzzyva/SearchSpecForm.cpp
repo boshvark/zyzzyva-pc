@@ -183,7 +183,7 @@ SearchSpecForm::setSearchSpec (const SearchSpec& spec)
 //! Determine whether the input in all visible search condition forms is
 //! valid.
 //
-//! @return true if valid, false otherwise 
+//! @return true if valid, false otherwise
 //---------------------------------------------------------------------------
 bool
 SearchSpecForm::isValid() const
