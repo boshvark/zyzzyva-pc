@@ -36,7 +36,7 @@ const int LETTER_HEIGHT = 16;
 const int VERTICAL_HEADER_WIDTH = 10;
 const int HORIZONTAL_HEADER_HEIGHT = 10;
 const int TILE_MARGIN = 2;
-const int BLANK_SQUARE_MARGIN = 4;
+const int BLANK_SQUARE_MARGIN = 5;
 const int SQUARE_SHADE_PANEL_WIDTH = 1;
 const int TILE_SHADE_PANEL_WIDTH = 2;
 
@@ -176,15 +176,17 @@ CrosswordGameBoardWidget::makePixmap() const
                 painter.drawText (rect, Qt::AlignCenter, letter);
 
                 if (tile.isBlank()) {
-                    QPen pen (QColor (0x00, 0x00, 0x00));
+                    QPen pen (color);
                     pen.setWidth (1);
                     painter.setPen (pen);
                     painter.setBrush (Qt::NoBrush);
-                    rect.setX (rect.x() + BLANK_SQUARE_MARGIN);
-                    rect.setY (rect.y() + BLANK_SQUARE_MARGIN);
-                    rect.setWidth (rect.width() - BLANK_SQUARE_MARGIN);
-                    rect.setHeight (rect.height() - BLANK_SQUARE_MARGIN);
-                    painter.drawRect (rect);
+                    QRect blankRect (rect.x() + BLANK_SQUARE_MARGIN,
+                                     rect.y() + BLANK_SQUARE_MARGIN,
+                                     rect.width() - 2 * BLANK_SQUARE_MARGIN -
+                                         SQUARE_SHADE_PANEL_WIDTH,
+                                     rect.height() - 2 * BLANK_SQUARE_MARGIN -
+                                         SQUARE_SHADE_PANEL_WIDTH);
+                    painter.drawRect (blankRect);
                 }
             }
         }
