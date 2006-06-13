@@ -145,6 +145,7 @@ CrosswordGameBoardWidget::makePixmap() const
                                     SQUARE_SHADE_PANEL_WIDTH,
                                 ROW_HEIGHT - 2 * TILE_MARGIN -
                                     SQUARE_SHADE_PANEL_WIDTH);
+
                 color = TILE_COLOR;
                 palette.setColor (QPalette::Light, color.light (125));
                 palette.setColor (QPalette::Mid, color);
@@ -161,13 +162,18 @@ CrosswordGameBoardWidget::makePixmap() const
                 tileFont.setWeight (QFont::Black);
                 painter.setFont (tileFont);
 
-                QPen pen (color);
-                pen.setColor (QColor ("black"));
-                painter.setPen (pen);
+                switch (tile.getPlayerNum()) {
+                    case 1:  color = QColor (0x00, 0x00, 0xff); break;
+                    case 2:  color = QColor (0xff, 0x00, 0x00); break;
+                    default: color = QColor (0x00, 0x00, 0x00); break;
+                }
+                painter.setPen (QPen (color));
+
                 QChar letter = tile.getLetter();
                 painter.drawText (rect, Qt::AlignCenter, letter);
 
                 if (tile.isBlank()) {
+                    QPen pen (QColor (0x00, 0x00, 0x00));
                     pen.setWidth (1);
                     painter.setPen (pen);
                     painter.setBrush (Qt::NoBrush);

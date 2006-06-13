@@ -43,10 +43,10 @@ class CrosswordGameBoard : public QObject
 
         void setLetter (const QChar& c) { letter = c; valid = true; }
         void setBlank (bool b) { blank = b; valid = true; }
-        void setPlayerNum (bool p) { playerNum = p; }
+        void setPlayerNum (int p) { playerNum = p; }
         QChar getLetter() const { return letter; }
         bool isBlank() const { return blank; }
-        bool getPlayerNum() const { return playerNum; }
+        int getPlayerNum() const { return playerNum; }
         bool isValid() const { return valid; }
 
         private:

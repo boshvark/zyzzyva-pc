@@ -366,7 +366,6 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                 CrosswordGameMove move (match);
                 move.setPlayerNum (1);
                 aPlayerMoves.append (move);
-                //displayMove (move, 1);
                 pos += moveRe.matchedLength();
             }
 
@@ -389,7 +388,6 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                 CrosswordGameMove move (match);
                 move.setPlayerNum (2);
                 bPlayerMoves.append (move);
-                //displayMove (move, 1);
                 pos += moveRe.matchedLength();
             }
 
