@@ -38,7 +38,9 @@ const int HORIZONTAL_HEADER_HEIGHT = 10;
 const int TILE_MARGIN = 2;
 const int BLANK_SQUARE_MARGIN = 5;
 const int SQUARE_SHADE_PANEL_WIDTH = 1;
+const int SQUARE_SHADE_VALUE = 125;
 const int TILE_SHADE_PANEL_WIDTH = 2;
+const int TILE_SHADE_VALUE = 150;
 
 const QColor NO_BONUS_COLOR = QColor (0xdc, 0xdc, 0xdc);
 const QColor DOUBLE_LETTER_COLOR = QColor (0x64, 0x95, 0xed);
@@ -126,9 +128,11 @@ CrosswordGameBoardWidget::makePixmap() const
         for (int col = 0; col < board->getNumColumns(); ++col) {
             QColor color = getBackgroundColor (row, col);
             QPalette palette;
-            palette.setColor (QPalette::Light, color.light (125));
+            palette.setColor (QPalette::Light,
+                              color.light (SQUARE_SHADE_VALUE));
             palette.setColor (QPalette::Mid, color);
-            palette.setColor (QPalette::Dark, color.dark (125));
+            palette.setColor (QPalette::Dark,
+                              color.dark (SQUARE_SHADE_VALUE));
 
             QRect rect (col * COLUMN_WIDTH, row * ROW_HEIGHT,
                         COLUMN_WIDTH, ROW_HEIGHT);
@@ -150,9 +154,11 @@ CrosswordGameBoardWidget::makePixmap() const
                                     SQUARE_SHADE_PANEL_WIDTH);
 
                 color = TILE_COLOR;
-                palette.setColor (QPalette::Light, color.light (125));
+                palette.setColor (QPalette::Light,
+                                  color.light (TILE_SHADE_VALUE));
                 palette.setColor (QPalette::Mid, color);
-                palette.setColor (QPalette::Dark, color.dark (125));
+                palette.setColor (QPalette::Dark,
+                                  color.dark (TILE_SHADE_VALUE));
 
                 painter.setPen (QColor ("black"));
                 painter.setBrush (color);
