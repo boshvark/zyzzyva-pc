@@ -46,6 +46,9 @@ const QColor TRIPLE_LETTER_COLOR = QColor (0x6a, 0x5a, 0xcd);
 const QColor DOUBLE_WORD_COLOR = QColor (0xdb, 0x70, 0x93);
 const QColor TRIPLE_WORD_COLOR = QColor (0xb2, 0x22, 0x22);
 const QColor TILE_COLOR = QColor (0xf0, 0xe6, 0x8c);
+const QColor DEFAULT_LETTER_COLOR = QColor (0x00, 0x00, 0x00);
+const QColor PLAYER1_LETTER_COLOR = QColor (0x00, 0x00, 0xb0);
+const QColor PLAYER2_LETTER_COLOR = QColor (0xb0, 0x00, 0x00);
 
 //---------------------------------------------------------------------------
 //  CrosswordGameBoardWidget
@@ -163,9 +166,9 @@ CrosswordGameBoardWidget::makePixmap() const
                 painter.setFont (tileFont);
 
                 switch (tile.getPlayerNum()) {
-                    case 1:  color = QColor (0x00, 0x00, 0xff); break;
-                    case 2:  color = QColor (0xff, 0x00, 0x00); break;
-                    default: color = QColor (0x00, 0x00, 0x00); break;
+                    case 1:  color = PLAYER1_LETTER_COLOR; break;
+                    case 2:  color = PLAYER2_LETTER_COLOR; break;
+                    default: color = DEFAULT_LETTER_COLOR; break;
                 }
                 painter.setPen (QPen (color));
 
