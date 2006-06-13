@@ -66,6 +66,7 @@ class CrosswordGameMove
     }
     void setPenaltyType (PenaltyType p) { penaltyType = p; }
     void setPenaltyPoints (int n) { penaltyPoints = n; }
+    void setPlayerNum (int n) { playerNum = n; }
 
     Type getType() const { return type; }
     Orientation getOrientation() const { return orientation; }
@@ -76,6 +77,7 @@ class CrosswordGameMove
     QString getExchangedLetters() const { return exchangedLetters; }
     PenaltyType getPenaltyType() const { return penaltyType; }
     int getPenaltyPoints() const { return penaltyPoints; }
+    int getPlayerNum() const { return playerNum; }
     bool isValid() const;
 
     private:
@@ -92,6 +94,7 @@ class CrosswordGameMove
     QString exchangedLetters;
     PenaltyType penaltyType;
     int penaltyPoints;
+    int playerNum;
 };
 
 #endif // ZYZZYVA_CROSSWORD_GAME_MOVE_H

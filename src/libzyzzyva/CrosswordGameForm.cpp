@@ -269,10 +269,9 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                                QColor (0x00, 0x00, 0xff));
 
 
-            displayMove (move, 1);
-
             // FIXME: fix player num
-            //displayMove (play, translateCoordinates (placement), 1);
+            move.setPlayerNum (1);
+            displayMove (move);
         }
 
         else if (action == "CHANGE") {
@@ -355,8 +354,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             QString aSomething = aPlayerSplit[3];
 
             QString aMoveLine = lines[3];
-
-            //QList<CrosswordGameMove> aPlayerMoves;
+            QList<CrosswordGameMove> aPlayerMoves;
 
             // FIXME: don't forget exchanges so they can be woven back in
             // order
@@ -366,10 +364,11 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             while ((pos = moveRe.indexIn (aMoveLine, pos)) >= 0) {
                 QString match = aMoveLine.mid (pos, moveRe.matchedLength());
                 CrosswordGameMove move (match);
-                displayMove (move, 1);
+                move.setPlayerNum (1);
+                aPlayerMoves.append (move);
+                //displayMove (move, 1);
                 pos += moveRe.matchedLength();
             }
-
 
             QStringList bPlayerSplit = lines[5].split (" ");
             QString bPlayer = bPlayerSplit[0];
@@ -378,8 +377,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             // FIXME
             QString bSomething = bPlayerSplit[3];
 
-
             QString bMoveLine = lines[6];
+            QList<CrosswordGameMove> bPlayerMoves;
 
             // FIXME: don't forget exchanges so they can be woven back in
             // order
@@ -388,10 +387,29 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             while ((pos = moveRe.indexIn (bMoveLine, pos)) >= 0) {
                 QString match = bMoveLine.mid (pos, moveRe.matchedLength());
                 CrosswordGameMove move (match);
-                displayMove (move, 1);
+                move.setPlayerNum (2);
+                bPlayerMoves.append (move);
+                //displayMove (move, 1);
                 pos += moveRe.matchedLength();
             }
 
+            QListIterator<CrosswordGameMove> aMoveIt (aPlayerMoves);
+            QListIterator<CrosswordGameMove> bMoveIt (bPlayerMoves);
+
+            CrosswordGameMove move;
+            while (true) {
+                bool ok = true;
+
+                if (aMoveIt.hasNext())
+                    displayMove (aMoveIt.next());
+                else
+                    ok = false;
+
+                if (bMoveIt.hasNext())
+                    displayMove (bMoveIt.next());
+                else if (!ok)
+                    break;
+            }
 
             QString text = "You are now observing: " + aPlayer + " vs " +
                 bPlayer + " " + lexicon + " " + time + " " + increment + " " +
@@ -539,10 +557,9 @@ CrosswordGameForm::canonizeMessage (const QString& message)
 //! Display a move on the board.
 //
 //! @param move the move
-//! @param player the player number
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::displayMove (const CrosswordGameMove& move, int player)
+CrosswordGameForm::displayMove (const CrosswordGameMove& move)
 {
-    board->makeMove (move, player);
+    board->makeMove (move);
 }

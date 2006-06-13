@@ -159,10 +159,9 @@ CrosswordGameBoard::getNumColumns() const
 //! Make a move on the board.
 //
 //! @param move the move to be played
-//! @param player the player number
 //---------------------------------------------------------------------------
 void
-CrosswordGameBoard::makeMove (const CrosswordGameMove& move, int player)
+CrosswordGameBoard::makeMove (const CrosswordGameMove& move)
 {
     if (!move.isValid())
         return;
@@ -176,7 +175,7 @@ CrosswordGameBoard::makeMove (const CrosswordGameMove& move, int player)
         QChar letter = word[i];
         tiles[row][col].setLetter (letter.toUpper());
         tiles[row][col].setBlank (letter.isUpper());
-        tiles[row][col].setPlayerNum (player);
+        tiles[row][col].setPlayerNum (move.getPlayerNum());
 
         if (orientation == CrosswordGameMove::Horizontal)
             ++col;

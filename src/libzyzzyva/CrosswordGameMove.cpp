@@ -93,6 +93,9 @@ CrosswordGameMove::isValid() const
     if (type == Invalid)
         return false;
 
+    if (playerNum == 0)
+        return false;
+
     if (type == Move) {
         if (orientation == NoOrientation)
             return false;
@@ -136,6 +139,7 @@ CrosswordGameMove::init()
     numExchanged = 0;
     penaltyType = NoPenalty;
     penaltyPoints = 0;
+    playerNum = 0;
 }
 
 //---------------------------------------------------------------------------

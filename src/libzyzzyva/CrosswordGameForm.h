@@ -56,7 +56,7 @@ class CrosswordGameForm : public ActionForm
     QString encodeHtmlEntities (const QString& text);
     QString canonizeMessage (const QString& text);
 
-    void displayMove (const CrosswordGameMove& move, int player);
+    void displayMove (const CrosswordGameMove& move);
 
     private:
     CrosswordGameBoardWidget* boardWidget;
