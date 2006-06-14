@@ -102,7 +102,9 @@ IscConnectionThread::disconnectFromServer()
     if (!socket)
         return;
 
-    socket->disconnectFromHost();
+    if (socket->isValid())
+        socket->disconnectFromHost();
+
     delete socket;
     socket = 0;
 }
