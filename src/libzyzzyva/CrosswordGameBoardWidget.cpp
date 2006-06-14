@@ -24,9 +24,6 @@
 #include "CrosswordGameGame.h"
 #include "Defs.h"
 #include <QPainter>
-#include <QVBoxLayout>
-
-#include <QtDebug>
 
 using namespace Defs;
 
