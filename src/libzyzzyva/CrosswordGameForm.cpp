@@ -309,9 +309,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             messageAppendHtml ("MOVE " + placement + " " + play + " " + score,
                                QColor (0x00, 0x00, 0xff));
 
-
-            // FIXME: fix player num
-            move.setPlayerNum (1);
+            move.setPlayerNum (game->getPlayerToMove());
             displayMove (move);
         }
 

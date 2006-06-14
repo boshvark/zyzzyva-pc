@@ -41,6 +41,10 @@ class CrosswordGameGame : public QObject
     void clear();
     bool makeMove (const CrosswordGameMove& move);
 
+    int getPlayerToMove() const { return playerToMove; }
+    int getPlayerScore (int playerNum);
+    QString getPlayerRack (int playerNum);
+
     CrosswordGameBoard::SquareType getSquareType (int row, int col) const {
         return board.getSquareType (row, col);
     }
@@ -58,10 +62,10 @@ class CrosswordGameGame : public QObject
 
     private:
     int playerToMove;
-    QString aPlayerRack;
-    QString bPlayerRack;
     int aPlayerScore;
     int bPlayerScore;
+    QString aPlayerRack;
+    QString bPlayerRack;
     LetterBag letterBag;
     CrosswordGameBoard board;
     QList<CrosswordGameMove> moveHistory;

@@ -79,5 +79,55 @@ CrosswordGameGame::init()
 bool
 CrosswordGameGame::makeMove (const CrosswordGameMove& move)
 {
-    return board.makeMove (move);
+    if (!board.makeMove (move))
+        return false;
+
+    switch (move.getPlayerNum()) {
+        case 1: playerToMove = 2; break;
+        case 2: playerToMove = 1; break;
+        default:
+        if (playerToMove == 1)
+            playerToMove = 2;
+        else if (playerToMove == 2)
+            playerToMove = 1;
+        break;
+    }
+
+    return true;
+}
+
+//---------------------------------------------------------------------------
+//  getPlayerScore
+//
+//! Get the score for a player.
+//
+//! @param playerNum the player number
+//! @return the player score, or -1 if invalid player number
+//---------------------------------------------------------------------------
+int
+CrosswordGameGame::getPlayerScore (int playerNum)
+{
+    switch (playerNum) {
+        case 1: return aPlayerScore;
+        case 2: return bPlayerScore;
+        default: return -1;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  getPlayerRack
+//
+//! Get the rack for a player.
+//
+//! @param playerNum the player number
+//! @return the player rack, or -1 if invalid player number
+//---------------------------------------------------------------------------
+QString
+CrosswordGameGame::getPlayerRack (int playerNum)
+{
+    switch (playerNum) {
+        case 1: return aPlayerRack;
+        case 2: return bPlayerRack;
+        default: return QString();
+    }
 }
