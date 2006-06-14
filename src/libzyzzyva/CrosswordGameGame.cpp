@@ -35,8 +35,6 @@ using namespace Defs;
 CrosswordGameGame::CrosswordGameGame()
 {
     init();
-
-    connect (&board, SIGNAL (changed()), SIGNAL (changed()));
 }
 
 //---------------------------------------------------------------------------
@@ -66,6 +64,7 @@ CrosswordGameGame::init()
     letterBag = LetterBag();
     board.clear();
     moveHistory.clear();
+    emit changed();
 }
 
 //---------------------------------------------------------------------------
@@ -83,16 +82,34 @@ CrosswordGameGame::makeMove (const CrosswordGameMove& move)
         return false;
 
     switch (move.getPlayerNum()) {
-        case 1: playerToMove = 2; break;
-        case 2: playerToMove = 1; break;
+        case 1:
+        aPlayerScore += move.getScore();
+        aPlayerRack = move.getNewRack();
+        playerToMove = 2;
+        break;
+
+        case 2:
+        bPlayerScore += move.getScore();
+        bPlayerRack = move.getNewRack();
+        playerToMove = 1;
+        break;
+
         default:
-        if (playerToMove == 1)
+        if (playerToMove == 1) {
+            aPlayerScore += move.getScore();
+            aPlayerRack = move.getNewRack();
             playerToMove = 2;
-        else if (playerToMove == 2)
+        }
+        else if (playerToMove == 2) {
+            bPlayerScore += move.getScore();
+            bPlayerRack = move.getNewRack();
             playerToMove = 1;
+        }
         break;
     }
 
+    moveHistory.append (move);
+    emit changed();
     return true;
 }
 

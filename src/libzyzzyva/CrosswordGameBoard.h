@@ -30,10 +30,8 @@
 #include <QList>
 #include <QObject>
 
-class CrosswordGameBoard : public QObject
+class CrosswordGameBoard
 {
-    Q_OBJECT
-
     public:
     class Tile {
         public:
@@ -73,9 +71,6 @@ class CrosswordGameBoard : public QObject
     int getNumRows() const;
     int getNumColumns() const;
     bool makeMove (const CrosswordGameMove& move);
-
-    signals:
-    void changed();
 
     private:
     QList< QList<SquareType> > squareTypes;

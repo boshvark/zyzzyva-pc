@@ -97,7 +97,6 @@ HEADERS = \
     ActionForm.h \
     AnalyzeQuizDialog.h \
     CreateDatabaseThread.h \
-    CrosswordGameBoard.h \
     CrosswordGameBoardWidget.h \
     CrosswordGameForm.h \
     CrosswordGameGame.h \

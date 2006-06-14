@@ -68,10 +68,7 @@ CrosswordGameBoardWidget::CrosswordGameBoardWidget (CrosswordGameGame* g,
     setFrameStyle (QFrame::StyledPanel | QFrame::Raised);
     setLineWidth (2);
     setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-
     pixmap = makePixmap();
-
-    connect (game, SIGNAL (changed()), SLOT (gameChanged()));
 }
 
 //---------------------------------------------------------------------------

@@ -138,6 +138,8 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     connect (inputLine, SIGNAL (returnPressed()),
              SLOT (inputReturnPressed()));
     messageVlay->addWidget (inputLine);
+
+    connect (game, SIGNAL (changed()), SLOT (gameChanged()));
 }
 
 //---------------------------------------------------------------------------
@@ -310,7 +312,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                                QColor (0x00, 0x00, 0xff));
 
             move.setPlayerNum (game->getPlayerToMove());
-            displayMove (move);
+            game->makeMove (move);
         }
 
         else if (action == "CHANGE") {
@@ -446,12 +448,12 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                 bool ok = true;
 
                 if (aMoveIt.hasNext())
-                    displayMove (aMoveIt.next());
+                    game->makeMove (aMoveIt.next());
                 else
                     ok = false;
 
                 if (bMoveIt.hasNext())
-                    displayMove (bMoveIt.next());
+                    game->makeMove (bMoveIt.next());
                 else if (!ok)
                     break;
             }
@@ -597,29 +599,19 @@ CrosswordGameForm::canonizeMessage (const QString& message)
 }
 
 //---------------------------------------------------------------------------
-//  displayMove
+//  gameChanged
 //
-//! Display a move on the board.
-//
-//! @param move the move
+//! Called when the game changes.  Redisplay the board and all associated game
+//! information.
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::displayMove (const CrosswordGameMove& move)
+CrosswordGameForm::gameChanged()
 {
-    int playerNum = move.getPlayerNum();
-
-    if (playerNum == 1) {
-        aScoreLabel->setText (QString::number (aScoreLabel->text().toInt() +
-                                               move.getScore()));
-        aRackLabel->setText (move.getNewRack());
-    }
-    else if (playerNum == 2) {
-        bScoreLabel->setText (QString::number (bScoreLabel->text().toInt() +
-                                               move.getScore()));
-        bRackLabel->setText (move.getNewRack());
-    }
-
-    game->makeMove (move);
+    boardWidget->gameChanged();
+    aScoreLabel->setText (QString::number (game->getPlayerScore (1)));
+    bScoreLabel->setText (QString::number (game->getPlayerScore (2)));
+    aRackLabel->setText (game->getPlayerRack (1));
+    bRackLabel->setText (game->getPlayerRack (2));
 }
 
 //---------------------------------------------------------------------------

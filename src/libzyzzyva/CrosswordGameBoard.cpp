@@ -104,7 +104,6 @@ CrosswordGameBoard::clear()
             tiles[row][col] = Tile();
         }
     }
-    emit changed();
 }
 
 //---------------------------------------------------------------------------
@@ -202,6 +201,5 @@ CrosswordGameBoard::makeMove (const CrosswordGameMove& move)
             ++row;
     }
 
-    emit changed();
     return true;
 }

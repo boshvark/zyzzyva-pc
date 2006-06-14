@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_CROSSWORD_GAME_MOVE_H
 #define ZYZZYVA_CROSSWORD_GAME_MOVE_H
 
+#include "Auxil.h"
 #include <QString>
 
 class CrosswordGameMove
@@ -70,7 +71,7 @@ class CrosswordGameMove
     void setPenaltyType (PenaltyType p) { penaltyType = p; }
     void setPenaltyPoints (int n) { penaltyPoints = n; }
     void setPlayerNum (int n) { playerNum = n; }
-    void setNewRack (const QString& r) { newRack = r; }
+    void setNewRack (const QString& r) { newRack = Auxil::getAlphagram (r); }
 
     Type getType() const { return type; }
     Orientation getOrientation() const { return orientation; }

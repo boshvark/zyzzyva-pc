@@ -53,13 +53,12 @@ class CrosswordGameForm : public ActionForm
     void threadStatusChanged (const QString& status);
     void threadMessageReceived (const QString& message);
     void threadSocketError (QAbstractSocket::SocketError error);
+    void gameChanged();
 
     private:
     void messageAppendHtml (const QString& text, const QColor& color);
     QString encodeHtmlEntities (const QString& text);
     QString canonizeMessage (const QString& text);
-
-    void displayMove (const CrosswordGameMove& move);
 
     private:
     CrosswordGameBoardWidget* boardWidget;
