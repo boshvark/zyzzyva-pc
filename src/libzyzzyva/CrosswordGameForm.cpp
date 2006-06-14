@@ -619,6 +619,20 @@ CrosswordGameForm::gameChanged()
     bScoreLabel->setText (QString::number (game->getPlayerScore (2)));
     aRackLabel->setText (game->getPlayerRack (1));
     bRackLabel->setText (game->getPlayerRack (2));
+
+    QFont font = aPlayerLabel->font();
+    font.setWeight (QFont::Normal);
+    QFont boldFont = font;
+    boldFont.setWeight (QFont::Bold);
+    int playerToMove = game->getPlayerToMove();
+    if (playerToMove == 1) {
+        aPlayerLabel->setFont (boldFont);
+        bPlayerLabel->setFont (font);
+    }
+    else if (playerToMove == 2) {
+        aPlayerLabel->setFont (font);
+        bPlayerLabel->setFont (boldFont);
+    }
 }
 
 //---------------------------------------------------------------------------
