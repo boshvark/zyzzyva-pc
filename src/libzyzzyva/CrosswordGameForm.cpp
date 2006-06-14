@@ -27,6 +27,7 @@
 #include "IscConnectionThread.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <QApplication>
 #include <QFile>
 #include <QHBoxLayout>
 #include <QMessageBox>
@@ -39,6 +40,8 @@ using namespace Defs;
 
 const int BOARD_COLUMN_WIDTH = 30;
 const int BOARD_ROW_HEIGHT = 30;
+const int PLAYER_FONT_PIXEL_SIZE = 15;
+const int SCORE_FONT_PIXEL_SIZE = 25;
 
 //---------------------------------------------------------------------------
 //  CrosswordGameForm
@@ -52,6 +55,13 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     : ActionForm (CrosswordGameFormType, parent, f),
       game (new CrosswordGameGame()), iscThread (0)
 {
+    QFont playerFont = qApp->font();
+    playerFont.setPixelSize (PLAYER_FONT_PIXEL_SIZE);
+
+    QFont scoreFont = qApp->font();
+    scoreFont.setPixelSize (SCORE_FONT_PIXEL_SIZE);
+    scoreFont.setWeight (QFont::Bold);
+
     QHBoxLayout* mainHlay = new QHBoxLayout (this);
     Q_CHECK_PTR (mainHlay);
     mainHlay->setMargin (MARGIN);
@@ -65,27 +75,30 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
 
     QHBoxLayout* playerHlay = new QHBoxLayout;
     Q_CHECK_PTR (playerHlay);
+    playerHlay->setSpacing (10);
     boardVlay->addLayout (playerHlay);
-
-    aPlayerLabel = new QLabel ("Alice");
-    Q_CHECK_PTR (aPlayerLabel);
-    playerHlay->addWidget (aPlayerLabel);
-
-    bPlayerLabel = new QLabel ("Bob");
-    Q_CHECK_PTR (bPlayerLabel);
-    playerHlay->addWidget (bPlayerLabel);
-
-    QHBoxLayout* scoreHlay = new QHBoxLayout;
-    Q_CHECK_PTR (scoreHlay);
-    boardVlay->addLayout (scoreHlay);
 
     aScoreLabel = new QLabel ("0");
     Q_CHECK_PTR (aScoreLabel);
-    scoreHlay->addWidget (aScoreLabel);
+    aScoreLabel->setFont (scoreFont);
+    playerHlay->addWidget (aScoreLabel);
+
+    aPlayerLabel = new QLabel ("Alice");
+    Q_CHECK_PTR (aPlayerLabel);
+    aPlayerLabel->setFont (playerFont);
+    playerHlay->addWidget (aPlayerLabel);
+
+    playerHlay->addStretch (1);
+
+    bPlayerLabel = new QLabel ("Bob");
+    Q_CHECK_PTR (bPlayerLabel);
+    bPlayerLabel->setFont (playerFont);
+    playerHlay->addWidget (bPlayerLabel);
 
     bScoreLabel = new QLabel ("0");
     Q_CHECK_PTR (bScoreLabel);
-    scoreHlay->addWidget (bScoreLabel);
+    bScoreLabel->setFont (scoreFont);
+    playerHlay->addWidget (bScoreLabel);
 
     QHBoxLayout* rackHlay = new QHBoxLayout;
     Q_CHECK_PTR (rackHlay);
@@ -333,12 +346,6 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             // What does the first line mean?
 
             QStringList lines = args.split ("\n");
-
-            QString line;
-            foreach (line, lines) {
-                messageAppendHtml ("Line: " + line,
-                                   QColor (0x00, 0x00, 0xff));
-            }
 
             // FIXME
             QString firstLine = lines[0];
