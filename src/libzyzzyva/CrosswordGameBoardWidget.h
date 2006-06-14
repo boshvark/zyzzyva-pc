@@ -28,21 +28,21 @@
 #include <QFrame>
 #include <QPixmap>
 
-class CrosswordGameBoard;
+class CrosswordGameGame;
 
 class CrosswordGameBoardWidget : public QFrame
 {
     Q_OBJECT
 
     public:
-    CrosswordGameBoardWidget (CrosswordGameBoard* board, QWidget* parent = 0,
+    CrosswordGameBoardWidget (CrosswordGameGame* game, QWidget* parent = 0,
                               Qt::WFlags f = 0);
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
     public slots:
-    void boardChanged();
+    void gameChanged();
 
     private:
     QPixmap makePixmap() const;
@@ -53,7 +53,7 @@ class CrosswordGameBoardWidget : public QFrame
 
     private:
     QPixmap pixmap;
-    CrosswordGameBoard* board;
+    CrosswordGameGame* game;
 };
 
 #endif // ZYZZYVA_CROSSWORD_GAME_BOARD_WIDGET_H

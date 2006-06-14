@@ -175,12 +175,13 @@ CrosswordGameBoard::getNumColumns() const
 //! Make a move on the board.
 //
 //! @param move the move to be played
+//! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
-void
+bool
 CrosswordGameBoard::makeMove (const CrosswordGameMove& move)
 {
     if (!move.isValid())
-        return;
+        return false;
 
     CrosswordGameMove::Orientation orientation = move.getOrientation();
     int row = move.getRow();
@@ -202,4 +203,5 @@ CrosswordGameBoard::makeMove (const CrosswordGameMove& move)
     }
 
     emit changed();
+    return true;
 }

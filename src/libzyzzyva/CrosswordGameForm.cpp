@@ -21,8 +21,8 @@
 //---------------------------------------------------------------------------
 
 #include "CrosswordGameForm.h"
-#include "CrosswordGameBoard.h"
 #include "CrosswordGameBoardWidget.h"
+#include "CrosswordGameGame.h"
 #include "CrosswordGameMove.h"
 #include "IscConnectionThread.h"
 #include "Auxil.h"
@@ -50,7 +50,7 @@ const int BOARD_ROW_HEIGHT = 30;
 //---------------------------------------------------------------------------
 CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     : ActionForm (CrosswordGameFormType, parent, f),
-      board (new CrosswordGameBoard()), iscThread (0)
+      game (new CrosswordGameGame()), iscThread (0)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout (this);
     Q_CHECK_PTR (mainHlay);
@@ -99,7 +99,7 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (bRackLabel);
     rackHlay->addWidget (bRackLabel);
 
-    boardWidget = new CrosswordGameBoardWidget (board, this);
+    boardWidget = new CrosswordGameBoardWidget (game, this);
     Q_CHECK_PTR (boardWidget);
     boardVlay->addWidget (boardWidget);
 
@@ -327,7 +327,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         }
 
         else if (action == "LOGIN") {
-            board->clear();
+            game->clear();
 
             args = args.trimmed();
             // What does the first line mean?
@@ -621,7 +621,7 @@ CrosswordGameForm::displayMove (const CrosswordGameMove& move)
         bRackLabel->setText (move.getNewRack());
     }
 
-    board->makeMove (move);
+    game->makeMove (move);
 }
 
 //---------------------------------------------------------------------------

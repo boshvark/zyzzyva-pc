@@ -21,7 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "CrosswordGameBoardWidget.h"
-#include "CrosswordGameBoard.h"
+#include "CrosswordGameGame.h"
 #include "Defs.h"
 #include <QPainter>
 #include <QVBoxLayout>
@@ -60,10 +60,10 @@ const QColor PLAYER2_LETTER_COLOR = QColor (0xb0, 0x00, 0x00);
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-CrosswordGameBoardWidget::CrosswordGameBoardWidget (CrosswordGameBoard* b,
+CrosswordGameBoardWidget::CrosswordGameBoardWidget (CrosswordGameGame* g,
                                                     QWidget* parent,
                                                     Qt::WFlags f)
-    : QFrame (parent, f), board (b)
+    : QFrame (parent, f), game (g)
 {
     setFrameStyle (QFrame::StyledPanel | QFrame::Raised);
     setLineWidth (2);
@@ -71,7 +71,7 @@ CrosswordGameBoardWidget::CrosswordGameBoardWidget (CrosswordGameBoard* b,
 
     pixmap = makePixmap();
 
-    connect (board, SIGNAL (changed()), SLOT (boardChanged()));
+    connect (game, SIGNAL (changed()), SLOT (gameChanged()));
 }
 
 //---------------------------------------------------------------------------
@@ -100,12 +100,12 @@ CrosswordGameBoardWidget::sizeHint() const
 }
 
 //---------------------------------------------------------------------------
-//  boardChanged
+//  gameChanged
 //
-//! Called when the board is changed.
+//! Called when the game is changed.
 //---------------------------------------------------------------------------
 void
-CrosswordGameBoardWidget::boardChanged()
+CrosswordGameBoardWidget::gameChanged()
 {
     pixmap = makePixmap();
     update (contentsRect());
@@ -124,8 +124,8 @@ CrosswordGameBoardWidget::makePixmap() const
     QPixmap pixmap (getBoardSize());
     QPainter painter (&pixmap);
 
-    for (int row = 0; row < board->getNumRows(); ++row) {
-        for (int col = 0; col < board->getNumColumns(); ++col) {
+    for (int row = 0; row < game->getNumRows(); ++row) {
+        for (int col = 0; col < game->getNumColumns(); ++col) {
             QColor color = getBackgroundColor (row, col);
             QPalette palette;
             palette.setColor (QPalette::Light,
@@ -143,7 +143,7 @@ CrosswordGameBoardWidget::makePixmap() const
             qDrawShadePanel (&painter, rect, palette, false,
                              SQUARE_SHADE_PANEL_WIDTH);
 
-            CrosswordGameBoard::Tile tile = board->getTile (row, col);
+            CrosswordGameBoard::Tile tile = game->getTile (row, col);
             if (tile.isValid()) {
 
                 QRect tileRect (col * COLUMN_WIDTH + TILE_MARGIN,
@@ -214,7 +214,7 @@ QColor
 CrosswordGameBoardWidget::getBackgroundColor (int row, int col) const
 {
     CrosswordGameBoard::SquareType squareType =
-        board->getSquareType (row, col);
+        game->getSquareType (row, col);
     switch (squareType) {
         case CrosswordGameBoard::NoBonus:      return NO_BONUS_COLOR;
         case CrosswordGameBoard::DoubleLetter: return DOUBLE_LETTER_COLOR;
@@ -235,8 +235,8 @@ CrosswordGameBoardWidget::getBackgroundColor (int row, int col) const
 QSize
 CrosswordGameBoardWidget::getBoardSize() const
 {
-    return QSize (board->getNumColumns() * COLUMN_WIDTH,
-                  board->getNumRows() * ROW_HEIGHT);
+    return QSize (game->getNumColumns() * COLUMN_WIDTH,
+                  game->getNumRows() * ROW_HEIGHT);
 }
 
 //---------------------------------------------------------------------------

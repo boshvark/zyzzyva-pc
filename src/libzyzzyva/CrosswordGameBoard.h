@@ -72,7 +72,7 @@ class CrosswordGameBoard : public QObject
     Tile getTile (int row, int col) const;
     int getNumRows() const;
     int getNumColumns() const;
-    void makeMove (const CrosswordGameMove& move);
+    bool makeMove (const CrosswordGameMove& move);
 
     signals:
     void changed();

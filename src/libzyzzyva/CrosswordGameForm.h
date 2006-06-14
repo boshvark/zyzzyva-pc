@@ -34,8 +34,8 @@
 #include <QTextEdit>
 #include <QString>
 
-class CrosswordGameBoard;
 class CrosswordGameBoardWidget;
+class CrosswordGameGame;
 class IscConnectionThread;
 
 class CrosswordGameForm : public ActionForm
@@ -75,7 +75,7 @@ class CrosswordGameForm : public ActionForm
     QLabel* bPlayerLabel;
     QLabel* bScoreLabel;
     QLabel* bRackLabel;
-    CrosswordGameBoard* board;
+    CrosswordGameGame* game;
     IscConnectionThread* iscThread;
 };
 
