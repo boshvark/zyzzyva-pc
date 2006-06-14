@@ -189,9 +189,9 @@ CrosswordGameBoardWidget::makePixmap() const
                     QRect blankRect (rect.x() + BLANK_SQUARE_MARGIN,
                                      rect.y() + BLANK_SQUARE_MARGIN,
                                      rect.width() - 2 * BLANK_SQUARE_MARGIN -
-                                         SQUARE_SHADE_PANEL_WIDTH,
+                                         SQUARE_SHADE_PANEL_WIDTH - 1,
                                      rect.height() - 2 * BLANK_SQUARE_MARGIN -
-                                         SQUARE_SHADE_PANEL_WIDTH);
+                                         SQUARE_SHADE_PANEL_WIDTH - 1);
                     painter.drawRect (blankRect);
                 }
             }
