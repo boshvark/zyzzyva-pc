@@ -54,10 +54,9 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
         minutesLeft = split[4].toInt();
         secondsLeft = split[5].toInt();
         newRack = Auxil::getAlphagram (split[6]);
+        if (newRack == "---")
+            newRack = QString();
         //QString tChangeNumber = split[7];
-
-
-
 
         QRegExp re ("\\d+|\\w"); 
         int pos = re.indexIn (placement, 0);

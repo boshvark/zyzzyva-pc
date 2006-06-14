@@ -54,6 +54,7 @@ SOURCES = \
     CrosswordGameForm.cpp \
     CrosswordGameGame.cpp \
     CrosswordGameMove.cpp \
+    CrosswordGameRackWidget.cpp \
     DefineForm.cpp \
     DefinitionBox.cpp \
     DefinitionDialog.cpp \
@@ -100,6 +101,7 @@ HEADERS = \
     CrosswordGameBoardWidget.h \
     CrosswordGameForm.h \
     CrosswordGameGame.h \
+    CrosswordGameRackWidget.h \
     DefineForm.h \
     DefinitionBox.h \
     DefinitionDialog.h \

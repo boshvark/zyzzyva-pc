@@ -24,6 +24,7 @@
 #include "CrosswordGameBoardWidget.h"
 #include "CrosswordGameGame.h"
 #include "CrosswordGameMove.h"
+#include "CrosswordGameRackWidget.h"
 #include "IscConnectionThread.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -104,13 +105,15 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (rackHlay);
     boardVlay->addLayout (rackHlay);
 
-    aRackLabel = new QLabel;
-    Q_CHECK_PTR (aRackLabel);
-    rackHlay->addWidget (aRackLabel);
+    aRackWidget = new CrosswordGameRackWidget (1, this);
+    Q_CHECK_PTR (aRackWidget);
+    rackHlay->addWidget (aRackWidget);
 
-    bRackLabel = new QLabel;
-    Q_CHECK_PTR (bRackLabel);
-    rackHlay->addWidget (bRackLabel);
+    rackHlay->addStretch (1);
+
+    bRackWidget = new CrosswordGameRackWidget (2, this);
+    Q_CHECK_PTR (bRackWidget);
+    rackHlay->addWidget (bRackWidget);
 
     boardWidget = new CrosswordGameBoardWidget (game, this);
     Q_CHECK_PTR (boardWidget);
@@ -309,6 +312,11 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         // final pass of the game:
         // OBSERVE PAS 05 43 ---
 
+        // final challenge (losing)
+        // OBSERVE CHALLENGE Yes Yes Yes
+        // OBSERVE PAS 17 24 ---
+        // OBSERVE RESIGN nunavut 4
+
         if (action == "MOVE") {
             args = args.simplified();
 
@@ -321,6 +329,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             QString minutes = args.section (" ", 3, 3);
             QString seconds = args.section (" ", 4, 4);
             QString newRack = args.section (" ", 5, 5);
+            if (newRack == "---")
+                newRack = QString();
             messageAppendHtml ("MOVE " + placement + " " + play + " " + score,
                                QColor (0x00, 0x00, 0xff));
 
@@ -617,8 +627,8 @@ CrosswordGameForm::gameChanged()
     boardWidget->gameChanged();
     aScoreLabel->setText (QString::number (game->getPlayerScore (1)));
     bScoreLabel->setText (QString::number (game->getPlayerScore (2)));
-    aRackLabel->setText (game->getPlayerRack (1));
-    bRackLabel->setText (game->getPlayerRack (2));
+    aRackWidget->setRack (game->getPlayerRack (1));
+    bRackWidget->setRack (game->getPlayerRack (2));
 
     QFont font = aPlayerLabel->font();
     font.setWeight (QFont::Normal);

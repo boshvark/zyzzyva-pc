@@ -36,6 +36,7 @@
 
 class CrosswordGameBoardWidget;
 class CrosswordGameGame;
+class CrosswordGameRackWidget;
 class IscConnectionThread;
 
 class CrosswordGameForm : public ActionForm
@@ -70,10 +71,10 @@ class CrosswordGameForm : public ActionForm
 
     QLabel* aPlayerLabel;
     QLabel* aScoreLabel;
-    QLabel* aRackLabel;
     QLabel* bPlayerLabel;
     QLabel* bScoreLabel;
-    QLabel* bRackLabel;
+    CrosswordGameRackWidget* aRackWidget;
+    CrosswordGameRackWidget* bRackWidget;
     CrosswordGameGame* game;
     IscConnectionThread* iscThread;
 };
