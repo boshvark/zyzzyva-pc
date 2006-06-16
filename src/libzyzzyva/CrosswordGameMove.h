@@ -33,6 +33,7 @@ class CrosswordGameMove
     public:
     enum Type {
         Invalid,
+        DrawTiles,
         Move,
         Exchange,
         Challenge,

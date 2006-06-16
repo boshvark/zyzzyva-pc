@@ -79,7 +79,11 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
     else if (tMoveType == "CHANGE") {
 
     }
- 
+
+    else if (tMoveType == "DRAW") {
+        type = DrawTiles;
+        newRack = Auxil::getAlphagram (split[1]);
+    }
 }
 
 //---------------------------------------------------------------------------

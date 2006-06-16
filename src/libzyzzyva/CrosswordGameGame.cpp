@@ -78,8 +78,11 @@ CrosswordGameGame::init()
 bool
 CrosswordGameGame::makeMove (const CrosswordGameMove& move)
 {
-    if (!board.makeMove (move))
+    if ((move.getType() != CrosswordGameMove::DrawTiles) &&
+        !board.makeMove (move))
+    {
         return false;
+    }
 
     switch (move.getPlayerNum()) {
         case 1:

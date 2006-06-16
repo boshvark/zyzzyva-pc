@@ -277,6 +277,8 @@ CrosswordGameForm::threadStatusChanged (const QString& status)
 void
 CrosswordGameForm::threadMessageReceived (const QString& message)
 {
+    //qDebug() << "*** threadMessageReceived: " << message;
+
     QString command = message.section (" ", 0, 0);
     QString args = message.section (" ", 1);
 
@@ -316,6 +318,11 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         // OBSERVE CHALLENGE Yes Yes Yes
         // OBSERVE PAS 17 24 ---
         // OBSERVE RESIGN nunavut 4
+
+        // successful challenge - need to remove tiles from board, revert to
+        // previous rack
+        // OBSERVE CHALLENGE Yes No
+        // OBSERVE PAS 04 20 L6_pry_28
 
         if (action == "MOVE") {
             args = args.simplified();
@@ -416,8 +423,13 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             // FIXME
             QString aSomething = aPlayerSplit[3];
 
-            QString aMoveLine = lines[3];
             QList<CrosswordGameMove> aPlayerMoves;
+
+            CrosswordGameMove aDrawMove ("DRAW " + aInitialRack);
+            aDrawMove.setPlayerNum (1);
+            aPlayerMoves.append (aDrawMove);
+
+            QString aMoveLine = lines[3];
 
             // FIXME: don't forget exchanges so they can be woven back in
             // order
@@ -442,8 +454,13 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             // FIXME
             QString bSomething = bPlayerSplit[3];
 
-            QString bMoveLine = lines[6];
             QList<CrosswordGameMove> bPlayerMoves;
+
+            CrosswordGameMove bDrawMove ("DRAW " + bInitialRack);
+            bDrawMove.setPlayerNum (2);
+            bPlayerMoves.append (bDrawMove);
+
+            QString bMoveLine = lines[6];
 
             // FIXME: don't forget exchanges so they can be woven back in
             // order
