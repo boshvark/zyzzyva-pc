@@ -37,7 +37,9 @@ class CrosswordGameMove
         Move,
         Exchange,
         Challenge,
-        Pass
+        TakeBack,
+        Pass,
+        Resign
     };
 
     enum Orientation {
@@ -92,7 +94,8 @@ class CrosswordGameMove
 
     private:
     void init();
-    QString translateCoordinates (const QString& coordinates);
+    void setPlacement (const QString& placement);
+    QString translateCoordinates (const QString& coordinates) const;
 
     private:
     Type type;

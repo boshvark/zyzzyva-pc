@@ -78,40 +78,104 @@ CrosswordGameGame::init()
 bool
 CrosswordGameGame::makeMove (const CrosswordGameMove& move)
 {
-    if ((move.getType() != CrosswordGameMove::DrawTiles) &&
-        !board.makeMove (move))
-    {
-        return false;
-    }
+    if (move.getType() == CrosswordGameMove::TakeBack)
+        return challengeLastMove();
 
-    switch (move.getPlayerNum()) {
+    if (!board.makeMove (move))
+        return false;
+
+    bool pass = (move.getType() == CrosswordGameMove::Pass);
+    CrosswordGameMove newMove = move;
+
+    switch (newMove.getPlayerNum()) {
         case 1:
-        aPlayerScore += move.getScore();
-        aPlayerRack = move.getNewRack();
-        playerToMove = 2;
+        aPlayerScore += newMove.getScore();
+        if (pass)
+            newMove.setNewRack (aPlayerRack);
+        else
+            aPlayerRack = newMove.getNewRack();
         break;
 
         case 2:
-        bPlayerScore += move.getScore();
-        bPlayerRack = move.getNewRack();
-        playerToMove = 1;
+        bPlayerScore += newMove.getScore();
+        if (pass)
+            newMove.setNewRack (bPlayerRack);
+        else
+            bPlayerRack = newMove.getNewRack();
         break;
 
         default:
         if (playerToMove == 1) {
-            aPlayerScore += move.getScore();
-            aPlayerRack = move.getNewRack();
-            playerToMove = 2;
+            aPlayerScore += newMove.getScore();
+            if (pass)
+                newMove.setNewRack (aPlayerRack);
+            else
+                aPlayerRack = newMove.getNewRack();
         }
         else if (playerToMove == 2) {
-            bPlayerScore += move.getScore();
-            bPlayerRack = move.getNewRack();
-            playerToMove = 1;
+            bPlayerScore += newMove.getScore();
+            if (pass)
+                newMove.setNewRack (bPlayerRack);
+            else
+                bPlayerRack = newMove.getNewRack();
         }
         break;
     }
 
-    moveHistory.append (move);
+    playerToMove = (newMove.getPlayerNum() == 1) ? 2 : 1;
+    moveHistory.append (newMove);
+    emit changed();
+    return true;
+}
+
+//---------------------------------------------------------------------------
+//  challengeLastMove
+//
+//! Mark the last move as challenged, and remove it from the board.
+//
+//! @param playerNum the player number
+//! @return the player score, or -1 if invalid player number
+//---------------------------------------------------------------------------
+bool
+CrosswordGameGame::challengeLastMove()
+{
+    if (moveHistory.isEmpty())
+        return false;
+
+    QListIterator<CrosswordGameMove> it (moveHistory);
+    it.toBack();
+
+    CrosswordGameMove challengedMove = it.previous();
+    int challengedPlayer = challengedMove.getPlayerNum();
+
+    // Restore previous rack and score
+    while (it.hasPrevious()) {
+        CrosswordGameMove oldMove = it.previous();
+        if (oldMove.getPlayerNum() != challengedPlayer)
+            continue;
+
+        QString oldRack = oldMove.getNewRack();
+        if (challengedPlayer == 1) {
+            aPlayerScore -= challengedMove.getScore();
+            aPlayerRack = oldRack;
+        }
+        else {
+            bPlayerScore -= challengedMove.getScore();
+            bPlayerRack = oldRack;
+        }
+
+        // FIXME: this is kind of redundant when challengeLastMove is called
+        // from makeMove
+        CrosswordGameMove takeBackMove = challengedMove;
+        takeBackMove.setType (CrosswordGameMove::TakeBack);
+        takeBackMove.setScore (-challengedMove.getScore());
+        takeBackMove.setNewRack (oldRack);
+        moveHistory.append (takeBackMove);
+
+        board.removeMove (challengedMove);
+        break;
+    }
+
     emit changed();
     return true;
 }

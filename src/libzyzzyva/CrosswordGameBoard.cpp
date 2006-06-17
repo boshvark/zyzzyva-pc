@@ -194,6 +194,41 @@ CrosswordGameBoard::makeMove (const CrosswordGameMove& move)
             tiles[row][col].setBlank (letter.isUpper());
             tiles[row][col].setPlayerNum (move.getPlayerNum());
         }
+        tiles[row][col].incrementTimesUsed();
+
+        if (orientation == CrosswordGameMove::Horizontal)
+            ++col;
+        else
+            ++row;
+    }
+
+    return true;
+}
+
+//---------------------------------------------------------------------------
+//  removeMove
+//
+//! Remove a move from the board.
+//
+//! @param move the move to be removed
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+CrosswordGameBoard::removeMove (const CrosswordGameMove& move)
+{
+    if (!move.isValid())
+        return false;
+
+    CrosswordGameMove::Orientation orientation = move.getOrientation();
+    int row = move.getRow();
+    int col = move.getColumn();
+    QString word = move.getWord();
+
+    for (int i = 0; i < word.length(); ++i) {
+        tiles[row][col].decrementTimesUsed();
+        if (tiles[row][col].getTimesUsed() <= 0) {
+            tiles[row][col] = Tile();
+        }
 
         if (orientation == CrosswordGameMove::Horizontal)
             ++col;

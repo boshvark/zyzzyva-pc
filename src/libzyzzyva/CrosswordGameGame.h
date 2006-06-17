@@ -40,6 +40,7 @@ class CrosswordGameGame : public QObject
     CrosswordGameGame();
     void clear();
     bool makeMove (const CrosswordGameMove& move);
+    bool challengeLastMove();
 
     int getPlayerToMove() const { return playerToMove; }
     int getPlayerScore (int playerNum);

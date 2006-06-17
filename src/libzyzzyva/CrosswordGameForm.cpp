@@ -277,7 +277,7 @@ CrosswordGameForm::threadStatusChanged (const QString& status)
 void
 CrosswordGameForm::threadMessageReceived (const QString& message)
 {
-    //qDebug() << "*** threadMessageReceived: " << message;
+    qDebug() << "*** threadMessageReceived: " << message;
 
     QString command = message.section (" ", 0, 0);
     QString args = message.section (" ", 1);
@@ -287,6 +287,31 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 
     // trey is playing drbing now!
     // GAMES BEST 1926 1922 trey 1930 drbing TWL98 18 0 n
+
+    // auto-logout after 60 minutes
+    // CLOSE Autologout due to idleness for over 60 minutes.
+    // but then:
+    // QSocketNotifier: Invalid socket specified
+    // QSocketNotifier: Internal error
+    // ./zyzzyva.sh: line 3: 14243 Segmentation fault
+    // $HOME/dev/zyzzyva-trunk/bin/zyzzyva
+
+    // OBSERVE LOGIN with racks hidden?
+    // 0 20 0 11111
+    // Woland 1805 usranii null
+    // MOVE H8 nairu 12 20 00 aeiiiis 0 MOVE D8 liaise 12 20 00 uglosii 0 MOVE
+    // J8 yogi 12 20 00 uroilis 0 MOVE C11 liri 16 20 00 uftroes 0 MOVE K10
+    // ofter 29 20 00 udwonse 0 MOVE L4 unsowed 85 20 00 aueevho 0 MOVE 15F
+    // heave 37 20 00 lheavou 0 MOVE 15L hula 46 20 00 vnereor 0 MOVE G7 nave
+    // 28 20 00 gdenorr 0
+    //  STOP
+    //  lamancha 1394 lcy?gae null
+    //  MOVE 8C elEgancy 64 12 25 xjkueae 0 MOVE C7 kex 44 11 57 naeuelj 0
+    //  MOVE F6 jugal 31 11 22 nepeaao 0 CHANGE neopnae 11 12 2 MOVE 14J prone
+    //  26 10 44 oatqnes 0 MOVE B12 qat 43 10 24 posewns 0 MOVE 8L wows 30 08
+    //  45 etmspan 0 MOVE K4 meat 24 06 21 dnsmitp 0
+    //   STOP
+    //
 
     // Take care of messages the GUI doesn't need to know about
     if ((command == "TELL") || (command == "WHISPER")) {
@@ -348,7 +373,15 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         else if (action == "CHANGE") {
             args = args.simplified();
 
-            messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
+            CrosswordGameMove move (action + " " + args);
+
+            int numExchanged = move.getNumExchanged();
+
+            messageAppendHtml ("CHANGE " + QString::number (numExchanged),
+                               QColor (0x00, 0x00, 0xff));
+
+            move.setPlayerNum (game->getPlayerToMove());
+            game->makeMove (move);
 
             // OBSERVE CHANGE erxievz 03 27 7
 
@@ -434,12 +467,23 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             // FIXME: don't forget exchanges so they can be woven back in
             // order
             QStringList tokens = aMoveLine.split (" ");
-            QRegExp moveRe ("MOVE(\\s+\\S+){7}|CHANGE(\\s+\\S+){4}");
+            QRegExp moveRe ("MOVE(\\s+\\S+){7}|CHANGE(\\s+\\S+){4}|"
+                            "PAS(\\s+\\S+){3}");
             int pos = 0;
             while ((pos = moveRe.indexIn (aMoveLine, pos)) >= 0) {
                 QString match = aMoveLine.mid (pos, moveRe.matchedLength());
                 CrosswordGameMove move (match);
                 move.setPlayerNum (1);
+
+                if (move.getType() == CrosswordGameMove::TakeBack) {
+                    CrosswordGameMove challengedMove = move;
+                    challengedMove.setType (CrosswordGameMove::Move);
+                    challengedMove.setScore (-move.getScore());
+                    challengedMove.setNewRack
+                        (aPlayerMoves.last().getNewRack());
+                    aPlayerMoves.append (challengedMove);
+                }
+
                 aPlayerMoves.append (move);
                 pos += moveRe.matchedLength();
             }
@@ -470,6 +514,16 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                 QString match = bMoveLine.mid (pos, moveRe.matchedLength());
                 CrosswordGameMove move (match);
                 move.setPlayerNum (2);
+
+                if (move.getType() == CrosswordGameMove::TakeBack) {
+                    CrosswordGameMove challengedMove = move;
+                    challengedMove.setType (CrosswordGameMove::Move);
+                    challengedMove.setScore (-move.getScore());
+                    challengedMove.setNewRack
+                        (bPlayerMoves.last().getNewRack());
+                    bPlayerMoves.append (challengedMove);
+                }
+
                 bPlayerMoves.append (move);
                 pos += moveRe.matchedLength();
             }
@@ -477,19 +531,49 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             QListIterator<CrosswordGameMove> aMoveIt (aPlayerMoves);
             QListIterator<CrosswordGameMove> bMoveIt (bPlayerMoves);
 
-            CrosswordGameMove move;
-            while (true) {
-                bool ok = true;
+            CrosswordGameMove aMove;
+            if (aMoveIt.hasNext())
+                aMove = aMoveIt.next();
+            CrosswordGameMove bMove;
+            if (bMoveIt.hasNext())
+                bMove = bMoveIt.next();
 
-                if (aMoveIt.hasNext())
-                    game->makeMove (aMoveIt.next());
-                else
-                    ok = false;
+            int playerToMove = 1;
+            while (aMove.isValid() || bMove.isValid()) {
 
-                if (bMoveIt.hasNext())
-                    game->makeMove (bMoveIt.next());
-                else if (!ok)
-                    break;
+                if ((playerToMove == 1) && aMove.isValid()) {
+                    game->makeMove (aMove);
+                    if (aMoveIt.hasNext())
+                        aMove = aMoveIt.next();
+                    else
+                        aMove = CrosswordGameMove();
+
+                    if (aMove.getType() == CrosswordGameMove::TakeBack) {
+                        game->makeMove (aMove);
+                        if (aMoveIt.hasNext())
+                            aMove = aMoveIt.next();
+                        else
+                            aMove = CrosswordGameMove();
+                    }
+                }
+
+                else if ((playerToMove == 2) && bMove.isValid()) {
+                    game->makeMove (bMove);
+                    if (bMoveIt.hasNext())
+                        bMove = bMoveIt.next();
+                    else
+                        bMove = CrosswordGameMove();
+
+                    if (bMove.getType() == CrosswordGameMove::TakeBack) {
+                        game->makeMove (bMove);
+                        if (bMoveIt.hasNext())
+                            bMove = bMoveIt.next();
+                        else
+                            bMove = CrosswordGameMove();
+                    }
+                }
+
+                playerToMove = (playerToMove == 1 ? 2 : 1);
             }
 
             QString text = "You are now observing: " + aPlayer + " vs " +
@@ -501,6 +585,60 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             // FIXME: also say which player is on move
 
             messageAppendHtml (text, QColor (0x00, 0x00, 0x00));
+        }
+
+        else if (action == "CHALLENGE") {
+            args = args.simplified();
+
+
+            // If player A plays a valid word and player B challenges it, it
+            // looks like this:
+            // OBSERVE CHALLENGE Yes
+
+            // If player A plays a phony and player B challenges it off, it
+            // looks like this.  Player A has 41:21 remaining, and the
+            // challenged play was cvaVcier at 8A for 92 points.
+            // OBSERVE CHALLENGE No
+            // OBSERVE PAS   41 21 8A_cvaVcier_92
+
+
+            QStringList judgments = args.split (" ");
+            QString judgment;
+            bool acceptable = true;
+            foreach (judgment, judgments) {
+                if (judgment == "Yes")
+                    continue;
+                acceptable = false;
+                break;
+            }
+
+            QString acceptableStr = acceptable ? QString ("valid")
+                                               : QString ("invalid");
+
+            messageAppendHtml ("Challenge: move is " + acceptableStr + ".",
+                               QColor (0x00, 0x00, 0xff));
+
+        }
+
+        else if (action == "PAS") {
+            args = args.simplified();
+
+            QString minutes = args.section (" ", 0, 0);
+            QString seconds = args.section (" ", 1, 1);
+            QString challengedPlay = args.section (" ", 2, 2);
+
+            if (challengedPlay != "---")
+                game->challengeLastMove();
+            else {
+                CrosswordGameMove move;
+                move.setType (CrosswordGameMove::Pass);
+                int playerToMove = game->getPlayerToMove();
+                move.setPlayerNum (playerToMove);
+                move.setNewRack (game->getPlayerRack (playerToMove));
+                game->makeMove (move);
+            }
+
+            messageAppendHtml ("PASS", QColor (0x00, 0x00, 0xff));
         }
 
         else if (action == "RESIGN") {

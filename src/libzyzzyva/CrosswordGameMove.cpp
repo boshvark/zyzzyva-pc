@@ -58,26 +58,39 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
             newRack = QString();
         //QString tChangeNumber = split[7];
 
-        QRegExp re ("\\d+|\\w"); 
-        int pos = re.indexIn (placement, 0);
-        QString aMatch = placement.mid (pos, re.matchedLength());
-        pos = re.indexIn (placement, pos + re.matchedLength());
-        QString bMatch = placement.mid (pos, re.matchedLength());
+        setPlacement (placement);
+    }
 
-        orientation = aMatch[0].isNumber() ? Horizontal : Vertical;
+    else if (tMoveType == "PAS") {
+        if (split.size() < 4)
+            return;
 
-        if (orientation == Horizontal) {
-            row = aMatch.toInt() - 1;
-            column = bMatch[0].toUpper().toAscii() - 'A';
+        minutesLeft = split[1].toInt();
+        secondsLeft = split[2].toInt();
+        QString challenged = split[3];
+        if (challenged == "---") {
+            type = Pass;
         }
         else {
-            row = bMatch.toInt() - 1;
-            column = aMatch[0].toUpper().toAscii() - 'A';
+            type = TakeBack;
+            penaltyType = LoseTurn;
+            QStringList tokens = challenged.split ("_");
+            QString placement = translateCoordinates (tokens[0]);
+            word = tokens[1];
+            score = -tokens[2].toInt();
+            setPlacement (placement);
         }
     }
 
     else if (tMoveType == "CHANGE") {
+        if (split.size() < 5)
+            return;
 
+        type = Exchange;
+        newRack = split[1];
+        minutesLeft = split[2].toInt();
+        secondsLeft = split[3].toInt();
+        numExchanged = split[4].toInt();
     }
 
     else if (tMoveType == "DRAW") {
@@ -99,7 +112,7 @@ CrosswordGameMove::isValid() const
     if (type == Invalid)
         return false;
 
-    if (playerNum == 0)
+    if (playerNum <= 0)
         return false;
 
     if (type == Move) {
@@ -152,6 +165,34 @@ CrosswordGameMove::init()
 }
 
 //---------------------------------------------------------------------------
+//  setPlacement
+//
+//! Set the orientation, row and column values from a placement string.
+//
+//! @param placement the placement string
+//---------------------------------------------------------------------------
+void
+CrosswordGameMove::setPlacement (const QString& placement)
+{
+    QRegExp re ("\\d+|\\w");
+    int pos = re.indexIn (placement, 0);
+    QString aMatch = placement.mid (pos, re.matchedLength());
+    pos = re.indexIn (placement, pos + re.matchedLength());
+    QString bMatch = placement.mid (pos, re.matchedLength());
+
+    orientation = aMatch[0].isNumber() ? Horizontal : Vertical;
+
+    if (orientation == Horizontal) {
+        row = aMatch.toInt() - 1;
+        column = bMatch[0].toUpper().toAscii() - 'A';
+    }
+    else {
+        row = bMatch.toInt() - 1;
+        column = aMatch[0].toUpper().toAscii() - 'A';
+    }
+}
+
+//---------------------------------------------------------------------------
 //  translateCoordinates
 //
 //! Translate ISC coordinates to real coordinates, and vice versa.
@@ -160,7 +201,7 @@ CrosswordGameMove::init()
 //! @return the translated coordinates
 //---------------------------------------------------------------------------
 QString
-CrosswordGameMove::translateCoordinates (const QString& coordinates)
+CrosswordGameMove::translateCoordinates (const QString& coordinates) const
 {
     QString real;
     QRegExp re ("\\d+|\\w");
