@@ -230,10 +230,11 @@ void
 IscConnectionThread::socketReadyRead()
 {
     QByteArray bytes = socket->readAll();
-    QString message = decodeMessage (bytes);
-
-    if (!message.isEmpty())
+    QStringList messages = decodeMessage (bytes);
+    QString message;
+    foreach (message, messages) {
         receiveMessage (message);
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -274,17 +275,26 @@ IscConnectionThread::encodeMessage (const QString& message)
 //---------------------------------------------------------------------------
 //  decodeMessage
 //
-//! Decode a message from the server by removing a null character followed by
-//! another byte indicating message length, followed by "0 ".
+//! Decode a message from the server by interpreting the first two bytes as
+//! message length, followed by the message itself.  More than one message may
+//! be present in the data stream, so return a list of all messages found.
 //
 //! @param bytes the bytes to decode
-//! @return the decoded message
+//! @return the decoded messages
 //---------------------------------------------------------------------------
-QString
+QStringList
 IscConnectionThread::decodeMessage (const QByteArray& bytes)
 {
-    unsigned char high = bytes[0];
-    unsigned char low  = bytes[1];
-    int length = (high << 8) + low - 2;
-    return QString (bytes.mid (4, length));
+    int index = 0;
+    QStringList messages;
+
+    while (index < bytes.size()) {
+        unsigned char high = bytes[index];
+        unsigned char low  = bytes[index + 1];
+        int length = (high << 8) + low - 2;
+        messages.append (QString (bytes.mid (index + 4, length)));
+        index += length + 4;
+    }
+
+    return messages;
 }

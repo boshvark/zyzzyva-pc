@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_CREATE_DATABASE_THREAD_H
 #define ZYZZYVA_CREATE_DATABASE_THREAD_H
 
+#include <QStringList>
 #include <QTcpSocket>
 #include <QThread>
 #include <QTimer>
@@ -55,7 +56,7 @@ class IscConnectionThread : public QThread
     void socketReadyRead();
     void keepAliveTimeout();
     QByteArray encodeMessage (const QString& message);
-    QString decodeMessage (const QByteArray& bytes);
+    QStringList decodeMessage (const QByteArray& bytes);
 
     protected:
     void run();
