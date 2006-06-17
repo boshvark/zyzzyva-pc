@@ -313,6 +313,13 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
     //   STOP
     //
 
+    // Receiving a match request:
+    // MATCH 0 moobles 0 60 0 0 0 1 -1
+
+    // Accepting a match request:
+    // (um, the client pickes tiles for both players and who goes first???)
+    // ACCEPT moobles 0 60 0 0 0 1 2 egimnor eeeghns
+
     // Take care of messages the GUI doesn't need to know about
     if ((command == "TELL") || (command == "WHISPER")) {
         QString sender = args.section (" ", 0, 0);
@@ -327,6 +334,35 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             messageAppendHtml (sender + " whispers: " + text,
                             QColor (0x64, 0x95, 0xed));
         }
+    }
+
+    else if (command == "MATCH") {
+        //args = args.simplified();
+
+        //QStringList split = args.split (" ");
+        //QString somethingA = split[0];
+        //QString requester = split[1];
+        //QString somethingB = split[2];
+        //int minutes = split[3].toInt();
+        //QString somethingC = split[4];
+        //QString somethingD = split[5];
+        //QString somethingE = split[6];
+        //QString somethingF = split[7];
+        //QString somethingG = split[8];
+        //    messageAppendHtml (sender + " whispers: " + text,
+        //                    QColor (0x64, 0x95, 0xed));
+
+        //if (requester == "moobles") {
+        //    QString response = "ACCEPT " + requester + " " + somethingB +
+        //                            " " + QString::number (minutes) + " " +
+        //                            somethingC + " " + somethingD + " " +
+        //                            somethingE + " " + somethingF +
+        //                            " 2 aeinrst fjqvxyz";
+        //    qDebug() << "Sending response: " << response;
+        //    iscThread->sendMessage (response);
+        //}
+
+        messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
     }
 
     else if (command == "OBSERVE") {
