@@ -32,6 +32,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QTextEdit>
+#include <QTimer>
 #include <QString>
 
 class CrosswordGameBoardWidget;
@@ -55,11 +56,16 @@ class CrosswordGameForm : public ActionForm
     void threadMessageReceived (const QString& message);
     void threadSocketError (QAbstractSocket::SocketError error);
     void gameChanged();
+    void clockTimeout (int playerNum);
 
     private:
     void messageAppendHtml (const QString& text, const QColor& color);
     QString encodeHtmlEntities (const QString& text);
     QString canonizeMessage (const QString& text);
+    void setClock (int playerNum, int minutes, int seconds);
+    void decrementClock (int playerNum);
+    void startClock (int playerNum);
+    void stopClock (int playerNum);
 
     private:
     CrosswordGameBoardWidget* boardWidget;
@@ -70,11 +76,22 @@ class CrosswordGameForm : public ActionForm
     QString statusString;
 
     QLabel* aPlayerLabel;
+    QLabel* aRatingLabel;
     QLabel* aScoreLabel;
+    QLabel* aTimerLabel;
     QLabel* bPlayerLabel;
+    QLabel* bRatingLabel;
     QLabel* bScoreLabel;
+    QLabel* bTimerLabel;
     CrosswordGameRackWidget* aRackWidget;
     CrosswordGameRackWidget* bRackWidget;
+
+    QTimer aTimer;
+    QTimer bTimer;
+    int aMinutes;
+    int aSeconds;
+    int bMinutes;
+    int bSeconds;
     CrosswordGameGame* game;
     IscConnectionThread* iscThread;
 };

@@ -32,6 +32,7 @@
 #include <QFile>
 #include <QHBoxLayout>
 #include <QMessageBox>
+#include <QSignalMapper>
 #include <QTextCursor>
 #include <QVBoxLayout>
 
@@ -84,17 +85,37 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     aScoreLabel->setFont (scoreFont);
     playerHlay->addWidget (aScoreLabel);
 
+    aRatingLabel = new QLabel ("(0)");
+    Q_CHECK_PTR (aRatingLabel);
+    aRatingLabel->setFont (playerFont);
+    playerHlay->addWidget (aRatingLabel);
+
     aPlayerLabel = new QLabel ("Alice");
     Q_CHECK_PTR (aPlayerLabel);
     aPlayerLabel->setFont (playerFont);
     playerHlay->addWidget (aPlayerLabel);
 
+    aTimerLabel = new QLabel ("0:00");
+    Q_CHECK_PTR (aTimerLabel);
+    aTimerLabel->setFont (playerFont);
+    playerHlay->addWidget (aTimerLabel);
+
     playerHlay->addStretch (1);
+
+    bTimerLabel = new QLabel ("0:00");
+    Q_CHECK_PTR (bTimerLabel);
+    bTimerLabel->setFont (playerFont);
+    playerHlay->addWidget (bTimerLabel);
 
     bPlayerLabel = new QLabel ("Bob");
     Q_CHECK_PTR (bPlayerLabel);
     bPlayerLabel->setFont (playerFont);
     playerHlay->addWidget (bPlayerLabel);
+
+    bRatingLabel = new QLabel ("(0)");
+    Q_CHECK_PTR (bRatingLabel);
+    bRatingLabel->setFont (playerFont);
+    playerHlay->addWidget (bRatingLabel);
 
     bScoreLabel = new QLabel ("0");
     Q_CHECK_PTR (bScoreLabel);
@@ -154,6 +175,16 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     connect (inputLine, SIGNAL (returnPressed()),
              SLOT (inputReturnPressed()));
     messageVlay->addWidget (inputLine);
+
+    // Set up connections for clock timers
+    QSignalMapper* clockSignalMapper = new QSignalMapper (this);
+    Q_CHECK_PTR (clockSignalMapper);
+    connect (clockSignalMapper, SIGNAL (mapped (int)),
+             SLOT (clockTimeout (int)));
+    connect (&aTimer, SIGNAL (timeout()), clockSignalMapper, SLOT (map()));
+    clockSignalMapper->setMapping (&aTimer, 1);
+    connect (&bTimer, SIGNAL (timeout()), clockSignalMapper, SLOT (map()));
+    clockSignalMapper->setMapping (&bTimer, 2);
 
     connect (game, SIGNAL (changed()), SLOT (gameChanged()));
 }
@@ -394,16 +425,26 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             QString placement = args.section (" ", 0, 0);
             QString play = args.section (" ", 1, 1);
             QString score = args.section (" ", 2, 2);
-            QString minutes = args.section (" ", 3, 3);
-            QString seconds = args.section (" ", 4, 4);
-            QString newRack = args.section (" ", 5, 5);
-            if (newRack == "---")
-                newRack = QString();
-            messageAppendHtml ("MOVE " + placement + " " + play + " " + score,
-                               QColor (0x00, 0x00, 0xff));
+            //int minutes = args.section (" ", 3, 3).toInt();
+            //int seconds = args.section (" ", 4, 4).toInt();
+            //QString newRack = args.section (" ", 5, 5);
+            //if (newRack == "---")
+                //newRack = QString();
 
-            move.setPlayerNum (game->getPlayerToMove());
+            int playerToMove = game->getPlayerToMove();
+            move.setPlayerNum (playerToMove);
+
+            QString playerName = playerToMove == 1 ? aPlayerLabel->text()
+                                                   : bPlayerLabel->text();
+
+            messageAppendHtml (playerName + ": MOVE " + placement + " " +
+                               play + " " + score, QColor (0x00, 0x00, 0xff));
+
             game->makeMove (move);
+            stopClock (playerToMove);
+            setClock (playerToMove, move.getMinutesLeft(),
+                      move.getSecondsLeft());
+            startClock (playerToMove == 1 ? 2 : 1);
         }
 
         else if (action == "CHANGE") {
@@ -416,8 +457,14 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             messageAppendHtml ("CHANGE " + QString::number (numExchanged),
                                QColor (0x00, 0x00, 0xff));
 
-            move.setPlayerNum (game->getPlayerToMove());
+            int playerToMove = game->getPlayerToMove();
+            move.setPlayerNum (playerToMove);
+
             game->makeMove (move);
+            stopClock (playerToMove);
+            setClock (playerToMove, move.getMinutesLeft(),
+                      move.getSecondsLeft());
+            startClock (playerToMove == 1 ? 2 : 1);
 
             // OBSERVE CHANGE erxievz 03 27 7
 
@@ -427,6 +474,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 
         else if (action == "LOGIN") {
             game->clear();
+            stopClock (1);
+            stopClock (2);
 
             args = args.trimmed();
             // What does the first line mean?
@@ -486,7 +535,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             QString aPlayer = aPlayerSplit[0];
             QString aRating = aPlayerSplit[1];
 
-            aPlayerLabel->setText (aPlayer + " (" + aRating + ")");
+            aPlayerLabel->setText (aPlayer);
+            aRatingLabel->setText ("(" + aRating + ")");
 
             QString aInitialRack = aPlayerSplit[2];
             // FIXME
@@ -528,7 +578,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             QString bPlayer = bPlayerSplit[0];
             QString bRating = bPlayerSplit[1];
 
-            bPlayerLabel->setText (bPlayer + " (" + bRating + ")");
+            bPlayerLabel->setText (bPlayer);
+            bRatingLabel->setText ("(" + bRating + ")");
 
             QString bInitialRack = bPlayerSplit[2];
             // FIXME
@@ -577,8 +628,13 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             int playerToMove = 1;
             while (aMove.isValid() || bMove.isValid()) {
 
+                // FIXME: all this duplicated code belongs in its own method -
+                // it's duplicated above when observing a MOVE, too
                 if ((playerToMove == 1) && aMove.isValid()) {
                     game->makeMove (aMove);
+                    stopClock (playerToMove);
+                    setClock (playerToMove, aMove.getMinutesLeft(),
+                              aMove.getSecondsLeft());
                     if (aMoveIt.hasNext())
                         aMove = aMoveIt.next();
                     else
@@ -586,6 +642,9 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 
                     if (aMove.getType() == CrosswordGameMove::TakeBack) {
                         game->makeMove (aMove);
+                        stopClock (playerToMove);
+                        setClock (playerToMove, aMove.getMinutesLeft(),
+                                  aMove.getSecondsLeft());
                         if (aMoveIt.hasNext())
                             aMove = aMoveIt.next();
                         else
@@ -595,6 +654,9 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 
                 else if ((playerToMove == 2) && bMove.isValid()) {
                     game->makeMove (bMove);
+                    stopClock (playerToMove);
+                    setClock (playerToMove, bMove.getMinutesLeft(),
+                              bMove.getSecondsLeft());
                     if (bMoveIt.hasNext())
                         bMove = bMoveIt.next();
                     else
@@ -602,6 +664,9 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 
                     if (bMove.getType() == CrosswordGameMove::TakeBack) {
                         game->makeMove (bMove);
+                        stopClock (playerToMove);
+                        setClock (playerToMove, bMove.getMinutesLeft(),
+                                  bMove.getSecondsLeft());
                         if (bMoveIt.hasNext())
                             bMove = bMoveIt.next();
                         else
@@ -611,6 +676,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 
                 playerToMove = (playerToMove == 1 ? 2 : 1);
             }
+
+            startClock (playerToMove);
 
             QString text = "You are now observing: " + aPlayer + " vs " +
                 bPlayer + " " + lexicon + " " + time + " " + increment + " " +
@@ -659,8 +726,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         else if (action == "PAS") {
             args = args.simplified();
 
-            QString minutes = args.section (" ", 0, 0);
-            QString seconds = args.section (" ", 1, 1);
+            int minutes = args.section (" ", 0, 0).toInt();
+            int seconds = args.section (" ", 1, 1).toInt();
             QString challengedPlay = args.section (" ", 2, 2);
 
             if (challengedPlay != "---")
@@ -670,8 +737,15 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                 move.setType (CrosswordGameMove::Pass);
                 int playerToMove = game->getPlayerToMove();
                 move.setPlayerNum (playerToMove);
+                move.setMinutesLeft (minutes);
+                move.setSecondsLeft (seconds);
                 move.setNewRack (game->getPlayerRack (playerToMove));
+
                 game->makeMove (move);
+                stopClock (playerToMove);
+                setClock (playerToMove, move.getMinutesLeft(),
+                          move.getSecondsLeft());
+                startClock (playerToMove == 1 ? 2 : 1);
             }
 
             messageAppendHtml ("PASS", QColor (0x00, 0x00, 0xff));
@@ -807,6 +881,93 @@ CrosswordGameForm::canonizeMessage (const QString& message)
 }
 
 //---------------------------------------------------------------------------
+//  setClock
+//
+//! Set a certain number of minutes and seconds on one player's clock.
+//
+//! @param playerNum the player whose clock to set
+//! @param minutes the number of minutes
+//! @param the number of seconds
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::setClock (int playerNum, int minutes, int seconds)
+{
+    QLabel* label = 0;
+    if (playerNum == 1) {
+        aMinutes = minutes;
+        aSeconds = seconds;
+        label = aTimerLabel;
+    }
+    else if (playerNum == 2) {
+        bMinutes = minutes;
+        bSeconds = seconds;
+        label = bTimerLabel;
+    }
+
+    if (label) {
+        label->setText (QString ("%1:%2").
+                        arg (QString::number (minutes)).
+                        arg (QString::number (seconds), 2, '0'));
+    }
+}
+
+//---------------------------------------------------------------------------
+//  decrementClock
+//
+//! Subtract one second from one player's clock
+//
+//! @param playerNum the player whose clock to decrement
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::decrementClock (int playerNum)
+{
+    if (playerNum == 1) {
+        if (aSeconds > 0)
+            setClock (1, aMinutes, aSeconds - 1);
+        else
+            setClock (1, aMinutes - 1, 59);
+    }
+    else if (playerNum == 2) {
+        if (bSeconds > 0)
+            setClock (2, bMinutes, bSeconds - 1);
+        else
+            setClock (2, bMinutes - 1, 59);
+    }
+}
+
+//---------------------------------------------------------------------------
+//  startClock
+//
+//! Start the timer that decrements one player's clock.
+//
+//! @param playerNum the player whose clock to start
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::startClock (int playerNum)
+{
+    if (playerNum == 1)
+        aTimer.start (1000);
+    else if (playerNum == 2)
+        bTimer.start (1000);
+}
+
+//---------------------------------------------------------------------------
+//  stopClock
+//
+//! Stop the timer that decrements one player's clock.
+//
+//! @param playerNum the player whose clock to stop
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::stopClock (int playerNum)
+{
+    if (playerNum == 1)
+        aTimer.stop();
+    else if (playerNum == 2)
+        bTimer.stop();
+}
+
+//---------------------------------------------------------------------------
 //  gameChanged
 //
 //! Called when the game changes.  Redisplay the board and all associated game
@@ -828,12 +989,34 @@ CrosswordGameForm::gameChanged()
     int playerToMove = game->getPlayerToMove();
     if (playerToMove == 1) {
         aPlayerLabel->setFont (boldFont);
+        aRatingLabel->setFont (boldFont);
+        aTimerLabel->setFont (boldFont);
         bPlayerLabel->setFont (font);
+        bRatingLabel->setFont (font);
+        bTimerLabel->setFont (font);
     }
     else if (playerToMove == 2) {
         aPlayerLabel->setFont (font);
+        aRatingLabel->setFont (font);
+        aTimerLabel->setFont (font);
         bPlayerLabel->setFont (boldFont);
+        bRatingLabel->setFont (boldFont);
+        bTimerLabel->setFont (boldFont);
     }
+}
+
+//---------------------------------------------------------------------------
+//  clockTimeout
+//
+//! Called when a clock timer emits a timeout signal.  Decrements the
+//! appropriate player's clock.
+//
+//! @param playerNum the player number
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::clockTimeout (int playerNum)
+{
+    decrementClock (playerNum);
 }
 
 //---------------------------------------------------------------------------
@@ -841,7 +1024,7 @@ CrosswordGameForm::gameChanged()
 //
 //! Called when the socket encounters an error.
 //
-//! @param the error
+//! @param error the error
 //---------------------------------------------------------------------------
 void
 CrosswordGameForm::threadSocketError (QAbstractSocket::SocketError error)
