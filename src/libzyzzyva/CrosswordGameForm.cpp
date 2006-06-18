@@ -45,7 +45,7 @@ const int BOARD_COLUMN_WIDTH = 30;
 const int BOARD_ROW_HEIGHT = 30;
 const int PLAYER_FONT_PIXEL_SIZE = 15;
 const int TIMER_FONT_PIXEL_SIZE = 15;
-const int SCORE_FONT_PIXEL_SIZE = 15;
+const int SCORE_FONT_PIXEL_SIZE = 20;
 
 //---------------------------------------------------------------------------
 //  CrosswordGameForm
@@ -816,7 +816,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             int seconds = args.section (" ", 1, 1).toInt();
             QString challengedPlay = args.section (" ", 2, 2);
 
-            if (challengedPlay != "---")
+            if ((challengedPlay != "---") && !challengedPlay.isEmpty())
                 game->challengeLastMove();
             else {
                 int playerToMove = game->getPlayerToMove();
