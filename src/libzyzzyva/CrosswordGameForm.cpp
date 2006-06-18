@@ -138,9 +138,13 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (bRackWidget);
     rackHlay->addWidget (bRackWidget);
 
+    QHBoxLayout* boardHlay = new QHBoxLayout;
+    Q_CHECK_PTR (boardHlay);
+    boardVlay->addLayout (boardHlay);
+
     boardWidget = new CrosswordGameBoardWidget (game, this);
     Q_CHECK_PTR (boardWidget);
-    boardVlay->addWidget (boardWidget);
+    boardHlay->addWidget (boardWidget);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     Q_CHECK_PTR (buttonHlay);
