@@ -64,7 +64,6 @@ class CrosswordGameMove
     void setColumn (int c) { column = c; }
     void setWord (const QString& w) { word = w; }
     void setScore (int s) { score = s; }
-    void setMinutesLeft (int m) { minutesLeft = m; }
     void setSecondsLeft (int s) { secondsLeft = s; }
     void setNumExchanged (int n) { numExchanged = n; }
     void setExchangedLetters (const QString& s) {
@@ -82,7 +81,6 @@ class CrosswordGameMove
     int getColumn() const { return column; }
     QString getWord() const { return word; }
     int getScore() const { return score; }
-    int getMinutesLeft() const { return minutesLeft; }
     int getSecondsLeft() const { return secondsLeft; }
     int getNumExchanged() const { return numExchanged; }
     QString getExchangedLetters() const { return exchangedLetters; }
@@ -104,7 +102,6 @@ class CrosswordGameMove
     int column;
     QString word;
     int score;
-    int minutesLeft;
     int secondsLeft;
     int numExchanged;
     QString exchangedLetters;

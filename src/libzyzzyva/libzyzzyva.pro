@@ -61,6 +61,7 @@ SOURCES = \
     HelpDialog.cpp \
     IntroForm.cpp \
     IscConnectionThread.cpp \
+    IscConverter.cpp \
     JudgeForm.cpp \
     JudgeDialog.cpp \
     LetterBag.cpp \

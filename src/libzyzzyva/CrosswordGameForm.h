@@ -62,7 +62,11 @@ class CrosswordGameForm : public ActionForm
     void messageAppendHtml (const QString& text, const QColor& color);
     QString encodeHtmlEntities (const QString& text);
     QString canonizeMessage (const QString& text);
-    void setClock (int playerNum, int minutes, int seconds);
+    int minutesSecondsToSeconds (int minutes, int seconds,
+                                 bool overtime = false);
+    int secondsToMinutesSeconds (int totalSeconds, int& minutes, int& seconds,
+                                 bool overtime = false);
+    void setClock (int playerNum, int seconds);
     void decrementClock (int playerNum);
     void startClock (int playerNum);
     void stopClock (int playerNum);
@@ -86,12 +90,14 @@ class CrosswordGameForm : public ActionForm
     CrosswordGameRackWidget* aRackWidget;
     CrosswordGameRackWidget* bRackWidget;
 
+    // Shouldn't these really be somewhere else?
     QTimer aTimer;
     QTimer bTimer;
-    int aMinutes;
     int aSeconds;
-    int bMinutes;
     int bSeconds;
+    bool aOvertime;
+    bool bOvertime;
+
     CrosswordGameGame* game;
     IscConnectionThread* iscThread;
 };

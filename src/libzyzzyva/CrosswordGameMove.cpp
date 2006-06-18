@@ -21,6 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "CrosswordGameMove.h"
+#include "IscConverter.h"
 #include "Auxil.h"
 #include "Defs.h"
 
@@ -51,8 +52,9 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
         QString placement = translateCoordinates (split[1]);
         word = split[2];
         score = split[3].toInt();
-        minutesLeft = split[4].toInt();
-        secondsLeft = split[5].toInt();
+        int minutes = split[4].toInt();
+        int seconds = split[5].toInt();
+        secondsLeft = IscConverter::timeIscToReal (minutes, seconds);
         newRack = Auxil::getAlphagram (split[6]);
         if (newRack == "---")
             newRack = QString();
@@ -65,8 +67,9 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
         if (split.size() < 4)
             return;
 
-        minutesLeft = split[1].toInt();
-        secondsLeft = split[2].toInt();
+        int minutes = split[1].toInt();
+        int seconds = split[2].toInt();
+        secondsLeft = IscConverter::timeIscToReal (minutes, seconds);
         QString challenged = split[3];
         if (challenged == "---") {
             type = Pass;
@@ -88,8 +91,9 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
 
         type = Exchange;
         newRack = split[1];
-        minutesLeft = split[2].toInt();
-        secondsLeft = split[3].toInt();
+        int minutes = split[2].toInt();
+        int seconds = split[3].toInt();
+        secondsLeft = IscConverter::timeIscToReal (minutes, seconds);
         numExchanged = split[4].toInt();
     }
 
@@ -156,7 +160,6 @@ CrosswordGameMove::init()
     row = -1;
     column = -1;
     score = 0;
-    minutesLeft = 0;
     secondsLeft = 0;
     numExchanged = 0;
     penaltyType = NoPenalty;

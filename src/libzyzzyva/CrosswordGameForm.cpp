@@ -26,6 +26,7 @@
 #include "CrosswordGameMove.h"
 #include "CrosswordGameRackWidget.h"
 #include "IscConnectionThread.h"
+#include "IscConverter.h"
 #include "Auxil.h"
 #include "Defs.h"
 #include <QApplication>
@@ -55,6 +56,7 @@ const int SCORE_FONT_PIXEL_SIZE = 25;
 //---------------------------------------------------------------------------
 CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     : ActionForm (CrosswordGameFormType, parent, f),
+      aSeconds (0), bSeconds (0), aOvertime (false), bOvertime (false),
       game (new CrosswordGameGame()), iscThread (0)
 {
     QFont playerFont = qApp->font();
@@ -400,6 +402,17 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         QString action = args.section (" ", 0, 0);
         args = args.section (" ", 1);
 
+        // OBSERVE LOGIN when first move was made overtime:
+        // OBSERVE LOGIN
+        // 101 null
+        // 0 3 0 01001
+        // meebles 0 aademru -100
+        // MOVE H8 dream 22 00 55 aenopqu 0
+        //  STOP
+        // moobles 0 ccdeiru null
+        //
+        //  STOP
+
         // going over time:
         // OBSERVE ADJUST OVERTIME SonOfAulay
         //
@@ -434,6 +447,13 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             int playerToMove = game->getPlayerToMove();
             move.setPlayerNum (playerToMove);
 
+            // Yuck kludge - fix seconds left if overtime
+            bool overtime = (playerToMove == 1 ? aOvertime : bOvertime);
+            if (overtime) {
+                move.setSecondsLeft (IscConverter::timeIscToReal
+                                     (0, move.getSecondsLeft(), true));
+            }
+
             QString playerName = playerToMove == 1 ? aPlayerLabel->text()
                                                    : bPlayerLabel->text();
 
@@ -442,8 +462,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 
             game->makeMove (move);
             stopClock (playerToMove);
-            setClock (playerToMove, move.getMinutesLeft(),
-                      move.getSecondsLeft());
+
+            setClock (playerToMove, move.getSecondsLeft());
             startClock (playerToMove == 1 ? 2 : 1);
         }
 
@@ -460,10 +480,16 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             int playerToMove = game->getPlayerToMove();
             move.setPlayerNum (playerToMove);
 
+            // Yuck kludge - fix seconds left if overtime
+            bool overtime = (playerToMove == 1 ? aOvertime : bOvertime);
+            if (overtime) {
+                move.setSecondsLeft (IscConverter::timeIscToReal
+                                     (0, move.getSecondsLeft(), true));
+            }
+
             game->makeMove (move);
             stopClock (playerToMove);
-            setClock (playerToMove, move.getMinutesLeft(),
-                      move.getSecondsLeft());
+            setClock (playerToMove, move.getSecondsLeft());
             startClock (playerToMove == 1 ? 2 : 1);
 
             // OBSERVE CHANGE erxievz 03 27 7
@@ -504,11 +530,14 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                 default:  lexicon = "Unknown"; break;
             }
 
-            QString time = vars[1];
+            int minutes = vars[1].toInt();
             QString increment = vars[2];
             QString moreVars = vars[3];
             bool rated = (moreVars[0] == '1');
 
+            int seconds = IscConverter::timeIscToReal (minutes, 0);
+            setClock (1, seconds);
+            setClock (2, seconds);
 
             // SINGLE   c
             // DOUBLE   b
@@ -539,12 +568,13 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             aRatingLabel->setText ("(" + aRating + ")");
 
             QString aInitialRack = aPlayerSplit[2];
-            // FIXME
-            QString aSomething = aPlayerSplit[3];
+            aOvertime = (aPlayerSplit[3] == "-100");
+
 
             QList<CrosswordGameMove> aPlayerMoves;
 
             CrosswordGameMove aDrawMove ("DRAW " + aInitialRack);
+            aDrawMove.setSecondsLeft (seconds);
             aDrawMove.setPlayerNum (1);
             aPlayerMoves.append (aDrawMove);
 
@@ -560,6 +590,12 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                 QString match = aMoveLine.mid (pos, moveRe.matchedLength());
                 CrosswordGameMove move (match);
                 move.setPlayerNum (1);
+
+                // Yuck kludge - fix seconds left if overtime
+                if (aOvertime && (move.getSecondsLeft() < 60)) {
+                    move.setSecondsLeft (IscConverter::timeIscToReal
+                                        (0, move.getSecondsLeft(), true));
+                }
 
                 if (move.getType() == CrosswordGameMove::TakeBack) {
                     CrosswordGameMove challengedMove = move;
@@ -582,12 +618,12 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             bRatingLabel->setText ("(" + bRating + ")");
 
             QString bInitialRack = bPlayerSplit[2];
-            // FIXME
-            QString bSomething = bPlayerSplit[3];
+            bOvertime = (bPlayerSplit[3] == "-100");
 
             QList<CrosswordGameMove> bPlayerMoves;
 
             CrosswordGameMove bDrawMove ("DRAW " + bInitialRack);
+            bDrawMove.setSecondsLeft (seconds);
             bDrawMove.setPlayerNum (2);
             bPlayerMoves.append (bDrawMove);
 
@@ -601,6 +637,12 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                 QString match = bMoveLine.mid (pos, moveRe.matchedLength());
                 CrosswordGameMove move (match);
                 move.setPlayerNum (2);
+
+                // Yuck kludge - fix seconds left if overtime
+                if (bOvertime && (move.getSecondsLeft() < 60)) {
+                    move.setSecondsLeft (IscConverter::timeIscToReal
+                                        (0, move.getSecondsLeft(), true));
+                }
 
                 if (move.getType() == CrosswordGameMove::TakeBack) {
                     CrosswordGameMove challengedMove = move;
@@ -633,8 +675,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                 if ((playerToMove == 1) && aMove.isValid()) {
                     game->makeMove (aMove);
                     stopClock (playerToMove);
-                    setClock (playerToMove, aMove.getMinutesLeft(),
-                              aMove.getSecondsLeft());
+                    setClock (playerToMove, aMove.getSecondsLeft());
                     if (aMoveIt.hasNext())
                         aMove = aMoveIt.next();
                     else
@@ -643,8 +684,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                     if (aMove.getType() == CrosswordGameMove::TakeBack) {
                         game->makeMove (aMove);
                         stopClock (playerToMove);
-                        setClock (playerToMove, aMove.getMinutesLeft(),
-                                  aMove.getSecondsLeft());
+                        setClock (playerToMove, aMove.getSecondsLeft());
                         if (aMoveIt.hasNext())
                             aMove = aMoveIt.next();
                         else
@@ -655,8 +695,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                 else if ((playerToMove == 2) && bMove.isValid()) {
                     game->makeMove (bMove);
                     stopClock (playerToMove);
-                    setClock (playerToMove, bMove.getMinutesLeft(),
-                              bMove.getSecondsLeft());
+                    setClock (playerToMove, bMove.getSecondsLeft());
                     if (bMoveIt.hasNext())
                         bMove = bMoveIt.next();
                     else
@@ -665,8 +704,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                     if (bMove.getType() == CrosswordGameMove::TakeBack) {
                         game->makeMove (bMove);
                         stopClock (playerToMove);
-                        setClock (playerToMove, bMove.getMinutesLeft(),
-                                  bMove.getSecondsLeft());
+                        setClock (playerToMove, bMove.getSecondsLeft());
                         if (bMoveIt.hasNext())
                             bMove = bMoveIt.next();
                         else
@@ -680,7 +718,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             startClock (playerToMove);
 
             QString text = "You are now observing: " + aPlayer + " vs " +
-                bPlayer + " " + lexicon + " " + time + " " + increment + " " +
+                bPlayer + " " + lexicon + " " + QString::number (minutes) +
+                " " + increment + " " +
                 (rated ? QString ("rated") : QString ("unrated")) + " " +
                 "noescape=" + (noescape ? QString ("ON") : QString ("OFF")) +
                 " challenge=" + challenge;
@@ -733,18 +772,20 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
             if (challengedPlay != "---")
                 game->challengeLastMove();
             else {
+                int playerToMove = game->getPlayerToMove();
+                bool overtime = (playerToMove == 1 ? aOvertime : bOvertime);
+                int realSeconds = IscConverter::timeIscToReal
+                    (minutes, seconds, overtime);
+
                 CrosswordGameMove move;
                 move.setType (CrosswordGameMove::Pass);
-                int playerToMove = game->getPlayerToMove();
                 move.setPlayerNum (playerToMove);
-                move.setMinutesLeft (minutes);
-                move.setSecondsLeft (seconds);
+                move.setSecondsLeft (realSeconds);
                 move.setNewRack (game->getPlayerRack (playerToMove));
 
                 game->makeMove (move);
                 stopClock (playerToMove);
-                setClock (playerToMove, move.getMinutesLeft(),
-                          move.getSecondsLeft());
+                setClock (playerToMove, move.getSecondsLeft());
                 startClock (playerToMove == 1 ? 2 : 1);
             }
 
@@ -754,6 +795,18 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         else if (action == "RESIGN") {
             // FIXME
             messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
+        }
+
+        else if (action == "ADJUST") {
+            QString arg = args.section (" ", 0, 0);
+            QString playerName = args.section (" ", 1, 1);
+
+            if (arg == "OVERTIME") {
+                if (playerName == aPlayerLabel->text())
+                    aOvertime = true;
+                else if (playerName == bPlayerLabel->text())
+                    bOvertime = true;
+            }
         }
 
         else {
@@ -883,29 +936,42 @@ CrosswordGameForm::canonizeMessage (const QString& message)
 //---------------------------------------------------------------------------
 //  setClock
 //
-//! Set a certain number of minutes and seconds on one player's clock.
+//! Set a certain number of seconds on one player's clock.
 //
 //! @param playerNum the player whose clock to set
-//! @param minutes the number of minutes
-//! @param the number of seconds
+//! @param seconds the number of seconds
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::setClock (int playerNum, int minutes, int seconds)
+CrosswordGameForm::setClock (int playerNum, int seconds)
 {
+    qDebug() << "*** setClock: " << playerNum << seconds;
     QLabel* label = 0;
     if (playerNum == 1) {
-        aMinutes = minutes;
         aSeconds = seconds;
         label = aTimerLabel;
     }
     else if (playerNum == 2) {
-        bMinutes = minutes;
         bSeconds = seconds;
         label = bTimerLabel;
     }
 
     if (label) {
-        label->setText (QString ("%1:%2").
+        if (seconds < 0) {
+            QPalette palette (label->palette());
+            palette.setColor (QPalette::WindowText, QColor (0xff, 0x00, 0x00));
+            label->setPalette (palette);
+            seconds = -seconds;
+        }
+        else {
+            QPalette palette (label->palette());
+            palette.setColor (QPalette::WindowText, QColor (0x00, 0x00, 0x00));
+            label->setPalette (palette);
+        }
+
+        int minutes = seconds / 60;
+        seconds %= 60;
+        label->setText (QString ("%1%2:%3").
+                        arg (seconds < 0 ? QString ("-") : QString()).
                         arg (QString::number (minutes)).
                         arg (QString::number (seconds), 2, '0'));
     }
@@ -921,18 +987,10 @@ CrosswordGameForm::setClock (int playerNum, int minutes, int seconds)
 void
 CrosswordGameForm::decrementClock (int playerNum)
 {
-    if (playerNum == 1) {
-        if (aSeconds > 0)
-            setClock (1, aMinutes, aSeconds - 1);
-        else
-            setClock (1, aMinutes - 1, 59);
-    }
-    else if (playerNum == 2) {
-        if (bSeconds > 0)
-            setClock (2, bMinutes, bSeconds - 1);
-        else
-            setClock (2, bMinutes - 1, 59);
-    }
+    if (playerNum == 1)
+        setClock (1, --aSeconds);
+    else if (playerNum == 2)
+        setClock (2, --bSeconds);
 }
 
 //---------------------------------------------------------------------------
