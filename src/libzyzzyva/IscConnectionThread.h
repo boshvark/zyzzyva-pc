@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_CREATE_DATABASE_THREAD_H
-#define ZYZZYVA_CREATE_DATABASE_THREAD_H
+#ifndef ZYZZYVA_ISC_CONNECTION_THREAD_H
+#define ZYZZYVA_ISC_CONNECTION_THREAD_H
 
 #include <QStringList>
 #include <QTcpSocket>
@@ -68,4 +68,4 @@ class IscConnectionThread : public QThread
     bool socketHadError;
 };
 
-#endif // ZYZZYVA_CREATE_DATABASE_THREAD_H
+#endif // ZYZZYVA_ISC_CONNECTION_THREAD_H
