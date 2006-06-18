@@ -39,7 +39,10 @@ class CrosswordGameMove
         Challenge,
         TakeBack,
         Pass,
-        Resign
+        Resign,
+        TimePenalty,
+        RackBonus,
+        GameOver
     };
 
     enum Orientation {

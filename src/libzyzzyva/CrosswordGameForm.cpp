@@ -795,8 +795,128 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         else if (action == "RESIGN") {
             stopClock (1);
             stopClock (2);
-            // FIXME
-            messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
+
+            QString aPlayerName = aPlayerLabel->text();
+            QString bPlayerName = bPlayerLabel->text();
+
+            // Apply rack bonuses or penalties
+            QString aRack = game->getPlayerRack (1);
+            int aRackValue = game->getRackValue (aRack);
+            QString bRack = game->getPlayerRack (2);
+            int bRackValue = game->getRackValue (bRack);
+
+            if ((aRackValue > 0) && (bRackValue > 0)) {
+                CrosswordGameMove aRackMove;
+                aRackMove.setPlayerNum (1);
+                aRackMove.setType (CrosswordGameMove::RackBonus);
+                aRackMove.setScore (-aRackValue);
+                aRackMove.setNewRack (aRack);
+                game->makeMove (aRackMove);
+                messageAppendHtml (aPlayerName + " loses " +
+                                   QString::number (aRackValue) + " points "
+                                   "for the final rack: " + aRack,
+                                   QColor (0x00, 0x00, 0x00));
+
+                CrosswordGameMove bRackMove;
+                bRackMove.setPlayerNum (2);
+                bRackMove.setType (CrosswordGameMove::RackBonus);
+                bRackMove.setScore (-bRackValue);
+                bRackMove.setNewRack (bRack);
+                game->makeMove (bRackMove);
+                messageAppendHtml (bPlayerName + " loses " +
+                                   QString::number (bRackValue) + " points "
+                                   "for the final rack: " + bRack,
+                                   QColor (0x00, 0x00, 0x00));
+            }
+
+            else if (aRackValue > 0) {
+                int bonus = 2 * aRackValue;
+                CrosswordGameMove bRackMove;
+                bRackMove.setPlayerNum (2);
+                bRackMove.setType (CrosswordGameMove::RackBonus);
+                bRackMove.setScore (bonus);
+                bRackMove.setNewRack (bRack);
+                game->makeMove (bRackMove);
+                messageAppendHtml (bPlayerName + " gets " +
+                                   QString::number (bonus) + " points for " +
+                                   aPlayerName + "'s final rack: " + aRack,
+                                   QColor (0x00, 0x00, 0x00));
+            }
+
+            else if (bRackValue > 0) {
+                int bonus = 2 * bRackValue;
+                CrosswordGameMove aRackMove;
+                aRackMove.setPlayerNum (1);
+                aRackMove.setType (CrosswordGameMove::RackBonus);
+                aRackMove.setScore (bonus);
+                aRackMove.setNewRack (aRack);
+                game->makeMove (aRackMove);
+                messageAppendHtml (bPlayerName + " gets " +
+                                   QString::number (bonus) + " points for " +
+                                   bPlayerName + "'s final rack: " + bRack,
+                                   QColor (0x00, 0x00, 0x00));
+            }
+
+            // Apply time penalties
+
+            if (aOvertime) {
+                int penalty = 10;
+                CrosswordGameMove overtimeMove;
+                overtimeMove.setPlayerNum (1);
+                overtimeMove.setType (CrosswordGameMove::TimePenalty);
+                overtimeMove.setScore (-penalty);
+                overtimeMove.setNewRack (aRack);
+                game->makeMove (overtimeMove);
+                messageAppendHtml (aPlayerName + " loses " +
+                                   QString::number (penalty) + " points for "
+                                   "going over time.",
+                                   QColor (0x00, 0x00, 0x00));
+            }
+
+            if (bOvertime) {
+                int penalty = 10;
+                CrosswordGameMove overtimeMove;
+                overtimeMove.setPlayerNum (2);
+                overtimeMove.setType (CrosswordGameMove::TimePenalty);
+                overtimeMove.setScore (-penalty);
+                overtimeMove.setNewRack (bRack);
+                game->makeMove (overtimeMove);
+                messageAppendHtml (bPlayerName + " loses " +
+                                   QString::number (penalty) + " points for "
+                                   "going over time.",
+                                   QColor (0x00, 0x00, 0x00));
+            }
+
+            // End the game
+
+            int aScore = game->getPlayerScore (1);
+            int bScore = game->getPlayerScore (2);
+
+            QString aScoreStr = aPlayerName + " " + QString::number (aScore);
+            QString bScoreStr = bPlayerName + " " + QString::number (bScore);
+
+
+            QString finalScoreStr = "Final score: ";
+            if (aScore > bScore) {
+                finalScoreStr += aScoreStr + ", " + bScoreStr;
+                messageAppendHtml (finalScoreStr, QColor (0x00, 0x00, 0x00));
+                messageAppendHtml (aPlayerName + " wins the game.",
+                                   QColor (0x00, 0x00, 0x00));
+            }
+            else if (bScore > aScore) {
+                finalScoreStr += bScoreStr + ", " + aScoreStr;
+                messageAppendHtml (finalScoreStr, QColor (0x00, 0x00, 0x00));
+                messageAppendHtml (bPlayerName + " wins the game.",
+                                   QColor (0x00, 0x00, 0x00));
+            }
+            else {
+                finalScoreStr += aScoreStr + ", " + bScoreStr;
+                messageAppendHtml (finalScoreStr, QColor (0x00, 0x00, 0x00));
+                messageAppendHtml ("The game ends in a tie.",
+                                   QColor (0x00, 0x00, 0x00));
+            }
+
+            gameChanged();
         }
 
         else if (action == "ADJUST") {

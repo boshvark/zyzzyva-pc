@@ -28,7 +28,7 @@
 
 using namespace Defs;
 
-const QChar BLANK_CHAR = '_';
+const QChar LetterBag::BLANK_CHAR = '_';
 
 //---------------------------------------------------------------------------
 //  LetterBag
@@ -78,6 +78,36 @@ LetterBag::LetterBag (const QString& distribution)
         }
         subChooseCombos.append (subList);
     }
+
+    // Set letter values
+    // FIXME: this should be able to be passed in as a parameter
+    letterValues[BLANK_CHAR] = 0;
+    letterValues['A'] = 1;
+    letterValues['B'] = 3;
+    letterValues['C'] = 3;
+    letterValues['D'] = 2;
+    letterValues['E'] = 1;
+    letterValues['F'] = 4;
+    letterValues['G'] = 2;
+    letterValues['H'] = 4;
+    letterValues['I'] = 1;
+    letterValues['J'] = 8;
+    letterValues['K'] = 5;
+    letterValues['L'] = 1;
+    letterValues['M'] = 3;
+    letterValues['N'] = 1;
+    letterValues['O'] = 1;
+    letterValues['P'] = 3;
+    letterValues['Q'] = 10;
+    letterValues['R'] = 1;
+    letterValues['S'] = 1;
+    letterValues['T'] = 1;
+    letterValues['U'] = 1;
+    letterValues['V'] = 4;
+    letterValues['W'] = 4;
+    letterValues['X'] = 8;
+    letterValues['Y'] = 4;
+    letterValues['Z'] = 10;
 }
 
 //---------------------------------------------------------------------------
@@ -173,4 +203,32 @@ LetterBag::getNumCombinations (const QString& word) const
     }
 
     return totalCombos;
+}
+
+//---------------------------------------------------------------------------
+//  getLetterValue
+//
+//! Return the point value of a letter.
+//
+//! @param letter the letter
+//! @return the point value
+//---------------------------------------------------------------------------
+int
+LetterBag::getLetterValue (const QChar& letter) const
+{
+    return letterValues.value (letter.toUpper(), 0);
+}
+
+//---------------------------------------------------------------------------
+//  setLetterValue
+//
+//! Set the point value of a letter.
+//
+//! @param letter the letter
+//! @param value the point value
+//---------------------------------------------------------------------------
+void
+LetterBag::setLetterValue (const QChar& letter, int value)
+{
+    letterValues[letter] = value;
 }

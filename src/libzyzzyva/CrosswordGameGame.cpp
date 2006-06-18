@@ -129,6 +129,27 @@ CrosswordGameGame::makeMove (const CrosswordGameMove& move)
 }
 
 //---------------------------------------------------------------------------
+//  getRackValue
+//
+//! Calculate the total point value of all the tiles on a rack.
+//
+//! @param rack the rack of letters
+//! @return the total value
+//---------------------------------------------------------------------------
+int
+CrosswordGameGame::getRackValue (const QString& rack) const
+{
+    int value = 0;
+    for (int i = 0; i < rack.length(); ++i) {
+        QChar letter = rack[i];
+        if (letter == '?')
+            letter = LetterBag::BLANK_CHAR;
+        value += letterBag.getLetterValue (letter);
+    }
+    return value;
+}
+
+//---------------------------------------------------------------------------
 //  challengeLastMove
 //
 //! Mark the last move as challenged, and remove it from the board.

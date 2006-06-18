@@ -42,6 +42,8 @@ class CrosswordGameGame : public QObject
     bool makeMove (const CrosswordGameMove& move);
     bool challengeLastMove();
 
+    int getRackValue (const QString& rack) const;
+
     int getPlayerToMove() const { return playerToMove; }
     int getPlayerScore (int playerNum);
     QString getPlayerRack (int playerNum);

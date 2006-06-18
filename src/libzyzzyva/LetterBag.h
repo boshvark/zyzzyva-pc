@@ -39,12 +39,19 @@ class LetterBag
     double getProbability (const QString& word) const;
     double getNumCombinations (const QString& word) const;
 
+    int getLetterValue (const QChar& letter) const;
+    void setLetterValue (const QChar& letter, int value);
+
     private:
     int totalLetters;
     QMap<QChar, int> letterFrequencies;
+    QMap<QChar, int> letterValues;
 
     QList<double> fullChooseCombos;
     QList<QList<double> > subChooseCombos;
+
+    public:
+    static const QChar BLANK_CHAR;
 };
 
 #endif // ZYZZYVA_LETTER_BAG_H
