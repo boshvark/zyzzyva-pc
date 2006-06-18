@@ -81,45 +81,101 @@ CrosswordGameGame::makeMove (const CrosswordGameMove& move)
     if (move.getType() == CrosswordGameMove::TakeBack)
         return challengeLastMove();
 
-    if (!board.makeMove (move))
+    QString lettersPlaced;
+    if (!board.makeMove (move, &lettersPlaced))
         return false;
 
     bool pass = (move.getType() == CrosswordGameMove::Pass);
     CrosswordGameMove newMove = move;
+    QString newRack;
+    QString oldRack;
 
     switch (newMove.getPlayerNum()) {
         case 1:
+        oldRack = aPlayerRack.toUpper();
         aPlayerScore += newMove.getScore();
         if (pass)
             newMove.setNewRack (aPlayerRack);
         else
             aPlayerRack = newMove.getNewRack();
+        newRack = aPlayerRack.toUpper();
         break;
 
         case 2:
+        oldRack = bPlayerRack.toUpper();
         bPlayerScore += newMove.getScore();
         if (pass)
             newMove.setNewRack (bPlayerRack);
         else
             bPlayerRack = newMove.getNewRack();
+        newRack = bPlayerRack.toUpper();
         break;
 
         default:
         if (playerToMove == 1) {
+            oldRack = aPlayerRack.toUpper();
             aPlayerScore += newMove.getScore();
             if (pass)
                 newMove.setNewRack (aPlayerRack);
             else
                 aPlayerRack = newMove.getNewRack();
+            newRack = aPlayerRack.toUpper();
         }
         else if (playerToMove == 2) {
+            oldRack = bPlayerRack.toUpper();
             bPlayerScore += newMove.getScore();
             if (pass)
                 newMove.setNewRack (bPlayerRack);
             else
                 bPlayerRack = newMove.getNewRack();
+            newRack = bPlayerRack.toUpper();
         }
         break;
+    }
+
+    // Draw tiles from the bag
+    if (!lettersPlaced.isEmpty()) {
+        lettersPlaced = Auxil::getAlphagram (lettersPlaced);
+        oldRack = Auxil::getAlphagram (oldRack);
+
+        qDebug() << "Old rack was: " << oldRack;
+        qDebug() << "Letters placed were: " << lettersPlaced;
+
+        QString lettersLeft;
+        int p = 0;
+        for (int i = 0; i < oldRack.length(); ++i) {
+            if ((p == lettersPlaced.length()) ||
+                (oldRack[i] != lettersPlaced[p]))
+                lettersLeft += oldRack[i];
+            else
+                ++p;
+        }
+
+        qDebug() << "Letters left were: " << lettersLeft;
+
+        newRack = Auxil::getAlphagram (newRack);
+        int q = 0;
+        for (int i = 0; i < newRack.length(); ++i) {
+            if ((q == lettersLeft.length()) ||
+                (newRack[i] != lettersLeft[q]))
+            {
+                QChar c = newRack[i];
+                if (c == '?')
+                    c = LetterBag::BLANK_CHAR;
+                letterBag.drawLetter (c);
+            }
+            else
+                ++q;
+        }
+    }
+
+    else if (newMove.getType() == CrosswordGameMove::DrawTiles) {
+        for (int i = 0; i < newRack.length(); ++i) {
+            QChar c = newRack[i].toUpper();
+            if (c == '?')
+                c = LetterBag::BLANK_CHAR;
+            letterBag.drawLetter (c);
+        }
     }
 
     playerToMove = (newMove.getPlayerNum() == 1) ? 2 : 1;
@@ -147,6 +203,66 @@ CrosswordGameGame::getRackValue (const QString& rack) const
         value += letterBag.getLetterValue (letter);
     }
     return value;
+}
+
+//---------------------------------------------------------------------------
+//  getTilesInBag
+//
+//! Get a string of tiles that are in the bag.
+//
+//! @return a string containing all tiles in the bag
+//---------------------------------------------------------------------------
+QString
+CrosswordGameGame::getTilesInBag() const
+{
+    QString string = letterBag.getLetters();
+    string = string.replace (LetterBag::BLANK_CHAR, "?");
+    return Auxil::getAlphagram (string);
+}
+
+//---------------------------------------------------------------------------
+//  getUnseenTiles
+//
+//! Get a string of tiles that are unseen from a player's point of view.
+//
+//! @param playerNum the player
+//! @return a string containing all unseen tiles
+//---------------------------------------------------------------------------
+QString
+CrosswordGameGame::getUnseenTiles (int playerNum) const
+{
+    QString bag = letterBag.getLetters();
+    bag.replace (LetterBag::BLANK_CHAR, QChar ('?'));
+    bag = Auxil::getAlphagram (bag);
+    qDebug() << "Contents of bag: " << bag;
+
+    QString oppRack = (playerNum == 1 ? bPlayerRack : aPlayerRack);
+    oppRack = Auxil::getAlphagram (oppRack.toUpper());
+
+    QString unseen;
+    int a = 0;
+    int b = 0;
+    while ((a < bag.length()) || (b < oppRack.length())) {
+        if (a == bag.length()) {
+            unseen += oppRack[b];
+            ++b;
+        }
+        else if (b == oppRack.length()) {
+            unseen += bag[a];
+            ++a;
+        }
+        else if (bag[a] <= oppRack[b]) {
+            unseen += bag[a];
+            ++a;
+        }
+        else {
+            unseen += oppRack[b];
+            ++b;
+        }
+    }
+
+    unseen.replace (LetterBag::BLANK_CHAR, "?");
+    return unseen;
 }
 
 //---------------------------------------------------------------------------

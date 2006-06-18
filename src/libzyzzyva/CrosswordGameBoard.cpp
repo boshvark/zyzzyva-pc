@@ -174,10 +174,12 @@ CrosswordGameBoard::getNumColumns() const
 //! Make a move on the board.
 //
 //! @param move the move to be played
+//! @param lettersPlaced return a list of letters placed on the board
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-CrosswordGameBoard::makeMove (const CrosswordGameMove& move)
+CrosswordGameBoard::makeMove (const CrosswordGameMove& move,
+                              QString* lettersPlaced)
 {
     if (!move.isValid())
         return false;
@@ -193,6 +195,10 @@ CrosswordGameBoard::makeMove (const CrosswordGameMove& move)
             tiles[row][col].setLetter (letter.toUpper());
             tiles[row][col].setBlank (letter.isUpper());
             tiles[row][col].setPlayerNum (move.getPlayerNum());
+            if (lettersPlaced) {
+                (*lettersPlaced) += (letter.isUpper() ? QChar ('?')
+                                                      : letter.toUpper());
+            }
         }
         tiles[row][col].incrementTimesUsed();
 
@@ -211,10 +217,12 @@ CrosswordGameBoard::makeMove (const CrosswordGameMove& move)
 //! Remove a move from the board.
 //
 //! @param move the move to be removed
+//! @param lettersRemoved return a list of letters removed from the board
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-CrosswordGameBoard::removeMove (const CrosswordGameMove& move)
+CrosswordGameBoard::removeMove (const CrosswordGameMove& move,
+                                QString* lettersRemoved)
 {
     if (!move.isValid())
         return false;
@@ -227,6 +235,10 @@ CrosswordGameBoard::removeMove (const CrosswordGameMove& move)
     for (int i = 0; i < word.length(); ++i) {
         tiles[row][col].decrementTimesUsed();
         if (tiles[row][col].getTimesUsed() <= 0) {
+            if (lettersRemoved) {
+                (*lettersRemoved) += tiles[row][col].isBlank() ? QChar ('?')
+                                     : tiles[row][col].getLetter();
+            }
             tiles[row][col] = Tile();
         }
 

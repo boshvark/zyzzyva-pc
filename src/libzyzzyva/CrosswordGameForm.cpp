@@ -44,7 +44,8 @@ using namespace Defs;
 const int BOARD_COLUMN_WIDTH = 30;
 const int BOARD_ROW_HEIGHT = 30;
 const int PLAYER_FONT_PIXEL_SIZE = 15;
-const int SCORE_FONT_PIXEL_SIZE = 25;
+const int TIMER_FONT_PIXEL_SIZE = 15;
+const int SCORE_FONT_PIXEL_SIZE = 15;
 
 //---------------------------------------------------------------------------
 //  CrosswordGameForm
@@ -62,6 +63,9 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     QFont playerFont = qApp->font();
     playerFont.setPixelSize (PLAYER_FONT_PIXEL_SIZE);
 
+    QFont timerFont = qApp->font();
+    timerFont.setPixelSize (TIMER_FONT_PIXEL_SIZE);
+
     QFont scoreFont = qApp->font();
     scoreFont.setPixelSize (SCORE_FONT_PIXEL_SIZE);
     scoreFont.setWeight (QFont::Bold);
@@ -73,70 +77,103 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
 
     QVBoxLayout* boardVlay = new QVBoxLayout;
     Q_CHECK_PTR (boardVlay);
-    boardVlay->setMargin (0);
+    boardVlay->setMargin (MARGIN);
     boardVlay->setSpacing (SPACING);
     mainHlay->addLayout (boardVlay);
 
     QHBoxLayout* playerHlay = new QHBoxLayout;
     Q_CHECK_PTR (playerHlay);
-    playerHlay->setSpacing (10);
     boardVlay->addLayout (playerHlay);
 
-    aScoreLabel = new QLabel ("0");
-    Q_CHECK_PTR (aScoreLabel);
-    aScoreLabel->setFont (scoreFont);
-    playerHlay->addWidget (aScoreLabel);
+    QVBoxLayout* aPlayerVlay = new QVBoxLayout;
+    Q_CHECK_PTR (aPlayerVlay);
+    playerHlay->addLayout (aPlayerVlay);
 
-    aRatingLabel = new QLabel ("(0)");
-    Q_CHECK_PTR (aRatingLabel);
-    aRatingLabel->setFont (playerFont);
-    playerHlay->addWidget (aRatingLabel);
+    QHBoxLayout* aPlayerNameHlay = new QHBoxLayout;
+    Q_CHECK_PTR (aPlayerNameHlay);
+    aPlayerVlay->addLayout (aPlayerNameHlay);
 
-    aPlayerLabel = new QLabel ("Alice");
+    aPlayerLabel = new QLabel;
     Q_CHECK_PTR (aPlayerLabel);
+    aPlayerLabel->setAlignment (Qt::AlignRight | Qt::AlignVCenter);
     aPlayerLabel->setFont (playerFont);
-    playerHlay->addWidget (aPlayerLabel);
+    aPlayerNameHlay->addWidget (aPlayerLabel);
 
-    aTimerLabel = new QLabel ("0:00");
+    aRatingLabel = new QLabel;
+    Q_CHECK_PTR (aRatingLabel);
+    aRatingLabel->setAlignment (Qt::AlignLeft | Qt::AlignVCenter);
+    aRatingLabel->setFont (playerFont);
+    aPlayerNameHlay->addWidget (aRatingLabel);
+
+    QHBoxLayout* aPlayerStatsHlay = new QHBoxLayout;
+    Q_CHECK_PTR (aPlayerStatsHlay);
+    aPlayerVlay->addLayout (aPlayerStatsHlay);
+
+    aScoreLabel = new QLabel;
+    Q_CHECK_PTR (aScoreLabel);
+    aScoreLabel->setAlignment (Qt::AlignLeft | Qt::AlignVCenter);
+    aScoreLabel->setFont (scoreFont);
+    aPlayerStatsHlay->addWidget (aScoreLabel);
+
+    aTimerLabel = new QLabel;
     Q_CHECK_PTR (aTimerLabel);
-    aTimerLabel->setFont (playerFont);
-    playerHlay->addWidget (aTimerLabel);
+    aTimerLabel->setAlignment (Qt::AlignRight | Qt::AlignVCenter);
+    aTimerLabel->setFont (timerFont);
+    aPlayerStatsHlay->addWidget (aTimerLabel);
 
-    playerHlay->addStretch (1);
-
-    bTimerLabel = new QLabel ("0:00");
-    Q_CHECK_PTR (bTimerLabel);
-    bTimerLabel->setFont (playerFont);
-    playerHlay->addWidget (bTimerLabel);
-
-    bPlayerLabel = new QLabel ("Bob");
-    Q_CHECK_PTR (bPlayerLabel);
-    bPlayerLabel->setFont (playerFont);
-    playerHlay->addWidget (bPlayerLabel);
-
-    bRatingLabel = new QLabel ("(0)");
-    Q_CHECK_PTR (bRatingLabel);
-    bRatingLabel->setFont (playerFont);
-    playerHlay->addWidget (bRatingLabel);
-
-    bScoreLabel = new QLabel ("0");
-    Q_CHECK_PTR (bScoreLabel);
-    bScoreLabel->setFont (scoreFont);
-    playerHlay->addWidget (bScoreLabel);
-
-    QHBoxLayout* rackHlay = new QHBoxLayout;
-    Q_CHECK_PTR (rackHlay);
-    boardVlay->addLayout (rackHlay);
+    QHBoxLayout* aPlayerRackHlay = new QHBoxLayout;
+    Q_CHECK_PTR (aPlayerRackHlay);
+    aPlayerVlay->addLayout (aPlayerRackHlay);
 
     aRackWidget = new CrosswordGameRackWidget (1, this);
     Q_CHECK_PTR (aRackWidget);
-    rackHlay->addWidget (aRackWidget);
+    aPlayerRackHlay->addWidget (aRackWidget);
 
-    rackHlay->addStretch (1);
+    playerHlay->addStretch (1);
+
+    QVBoxLayout* bPlayerVlay = new QVBoxLayout;
+    Q_CHECK_PTR (bPlayerVlay);
+    playerHlay->addLayout (bPlayerVlay);
+
+    QHBoxLayout* bPlayerNameHlay = new QHBoxLayout;
+    Q_CHECK_PTR (bPlayerNameHlay);
+    bPlayerVlay->addLayout (bPlayerNameHlay);
+
+    bPlayerLabel = new QLabel;
+    Q_CHECK_PTR (bPlayerLabel);
+    bPlayerLabel->setAlignment (Qt::AlignRight | Qt::AlignVCenter);
+    bPlayerLabel->setFont (playerFont);
+    bPlayerNameHlay->addWidget (bPlayerLabel);
+
+    bRatingLabel = new QLabel;
+    Q_CHECK_PTR (bRatingLabel);
+    bRatingLabel->setAlignment (Qt::AlignLeft | Qt::AlignVCenter);
+    bRatingLabel->setFont (playerFont);
+    bPlayerNameHlay->addWidget (bRatingLabel);
+
+    QHBoxLayout* bPlayerStatsHlay = new QHBoxLayout;
+    Q_CHECK_PTR (bPlayerStatsHlay);
+    bPlayerVlay->addLayout (bPlayerStatsHlay);
+
+    bTimerLabel = new QLabel;
+    Q_CHECK_PTR (bTimerLabel);
+    bTimerLabel->setAlignment (Qt::AlignLeft | Qt::AlignVCenter);
+    bTimerLabel->setFont (timerFont);
+    bPlayerStatsHlay->addWidget (bTimerLabel);
+
+    bScoreLabel = new QLabel;
+    Q_CHECK_PTR (bScoreLabel);
+    bScoreLabel->setAlignment (Qt::AlignRight | Qt::AlignVCenter);
+    bScoreLabel->setFont (scoreFont);
+    bPlayerStatsHlay->addWidget (bScoreLabel);
+
+    QHBoxLayout* bPlayerRackHlay = new QHBoxLayout;
+    Q_CHECK_PTR (bPlayerRackHlay);
+    bPlayerVlay->addLayout (bPlayerRackHlay);
 
     bRackWidget = new CrosswordGameRackWidget (2, this);
     Q_CHECK_PTR (bRackWidget);
-    rackHlay->addWidget (bRackWidget);
+    bPlayerRackHlay->addWidget (bRackWidget);
 
     QHBoxLayout* boardHlay = new QHBoxLayout;
     Q_CHECK_PTR (boardHlay);
@@ -164,6 +201,15 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     buttonHlay->addWidget (disconnectButton);
 
     buttonHlay->addStretch (1);
+
+    QVBoxLayout* unseenVlay = new QVBoxLayout;
+    Q_CHECK_PTR (unseenVlay);
+    mainHlay->addLayout (unseenVlay);
+
+    unseenLabel = new QLabel;
+    Q_CHECK_PTR (unseenLabel);
+    unseenLabel->setWordWrap (true);
+    unseenVlay->addWidget (unseenLabel);
 
     QVBoxLayout* messageVlay = new QVBoxLayout;
     Q_CHECK_PTR (messageVlay);
@@ -1196,6 +1242,17 @@ CrosswordGameForm::gameChanged()
         bRatingLabel->setFont (boldFont);
         bTimerLabel->setFont (boldFont);
     }
+
+    QString bagStr = game->getTilesInBag();
+    int numInBag = bagStr.length();
+    bagStr.replace (QRegExp ("(.)"), "\\1 ");
+    QString unseenStr = game->getUnseenTiles (playerToMove);
+    int numUnseen = unseenStr.length();
+    unseenStr.replace (QRegExp ("(.)"), "\\1 ");
+    unseenLabel->setText ("Tiles in Bag (" + QString::number (numInBag) +
+                          "): " + bagStr + "\n" +
+                          "Unseen (" + QString::number (numUnseen) +
+                          "): " + unseenStr);
 }
 
 //---------------------------------------------------------------------------

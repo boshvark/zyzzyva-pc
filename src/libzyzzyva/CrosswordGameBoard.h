@@ -75,8 +75,9 @@ class CrosswordGameBoard
     Tile getTile (int row, int col) const;
     int getNumRows() const;
     int getNumColumns() const;
-    bool makeMove (const CrosswordGameMove& move);
-    bool removeMove (const CrosswordGameMove& move);
+    bool makeMove (const CrosswordGameMove& move, QString* lettersPlaced = 0);
+    bool removeMove (const CrosswordGameMove& move,
+                     QString* lettersRemoved = 0);
 
     private:
     QList< QList<SquareType> > squareTypes;

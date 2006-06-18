@@ -44,6 +44,10 @@ class CrosswordGameGame : public QObject
 
     int getRackValue (const QString& rack) const;
 
+    int getNumTilesInBag() const { return letterBag.getNumLetters(); }
+    QString getTilesInBag() const;
+    QString getUnseenTiles (int playerNum) const;
+
     int getPlayerToMove() const { return playerToMove; }
     int getPlayerScore (int playerNum);
     QString getPlayerRack (int playerNum);

@@ -73,6 +73,7 @@ class CrosswordGameForm : public ActionForm
 
     private:
     CrosswordGameBoardWidget* boardWidget;
+    QLabel* unseenLabel;
     QPushButton* connectButton;
     QPushButton* disconnectButton;
     QTextEdit* messageArea;

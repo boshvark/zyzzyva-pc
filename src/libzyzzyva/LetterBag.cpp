@@ -232,3 +232,94 @@ LetterBag::setLetterValue (const QChar& letter, int value)
 {
     letterValues[letter] = value;
 }
+
+//---------------------------------------------------------------------------
+//  insertLetter
+//
+//! Insert a letter into the bag.
+//
+//! @param letter the letter
+//---------------------------------------------------------------------------
+void
+LetterBag::insertLetter (const QChar& letter)
+{
+    QChar c = letter.toUpper();
+    if (letterFrequencies.contains (c))
+        ++letterFrequencies[c];
+    else
+        letterFrequencies[c] = 1;
+    ++totalLetters;
+}
+
+//---------------------------------------------------------------------------
+//  drawLetter
+//
+//! Draw a specific letter from the bag.
+//
+//! @param letter the letter
+//! @return true if the letter can be drawn, false if it is not in the bag
+//---------------------------------------------------------------------------
+bool
+LetterBag::drawLetter (const QChar& letter)
+{
+    QChar c = letter.toUpper();
+    if (!letterFrequencies.contains (c) || (letterFrequencies[c] == 0))
+        return false;
+
+    --letterFrequencies[c];
+    --totalLetters;
+    return true;
+}
+
+//---------------------------------------------------------------------------
+//  drawRandomLetter
+//
+//! Draw a random letter from the bag.
+//
+//! @return the letter, or an empty character of the bag is empty
+//---------------------------------------------------------------------------
+QChar
+LetterBag::drawRandomLetter()
+{
+    if (totalLetters == 0)
+        return QChar();
+
+    // FIXME: implement this!
+    return QChar();
+}
+
+//---------------------------------------------------------------------------
+//  getLetters
+//
+//! Return a string containing all the letters in the bag.
+//
+//! @return the string with letters alphabetized
+//---------------------------------------------------------------------------
+QString
+LetterBag::getLetters() const
+{
+    QString string;
+    QMapIterator <QChar, int> it (letterFrequencies);
+    while (it.hasNext()) {
+        it.next();
+        QChar letter = it.key();
+        int frequency = it.value();
+        for (int i = 0; i < frequency; ++i) {
+            string += letter;
+        }
+    }
+    return string;
+}
+
+//---------------------------------------------------------------------------
+//  getNumLetters
+//
+//! Return the number of letters in the bag.
+//
+//! @return the number of letters
+//---------------------------------------------------------------------------
+int
+LetterBag::getNumLetters() const
+{
+    return totalLetters;
+}

@@ -42,6 +42,13 @@ class LetterBag
     int getLetterValue (const QChar& letter) const;
     void setLetterValue (const QChar& letter, int value);
 
+    void insertLetter (const QChar& letter);
+    bool drawLetter (const QChar& letter);
+    QChar drawRandomLetter();
+
+    QString getLetters() const;
+    int getNumLetters() const;
+
     private:
     int totalLetters;
     QMap<QChar, int> letterFrequencies;
