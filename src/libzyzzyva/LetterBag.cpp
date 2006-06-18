@@ -254,7 +254,12 @@ LetterBag::insertLetter (const QChar& letter)
 //---------------------------------------------------------------------------
 //  drawLetter
 //
-//! Draw a specific letter from the bag.
+//! Draw a specific letter from the bag.  This even allows you to draw letters
+//! that are not in the bag, or more of a letter than is in the bag.  The
+//! reason for this is because racks are invented at certain points when
+//! recreating an ISC game (particularly when a word has been challenged off).
+//! We need to allow letters to be drawn multiple times and then replaced
+//! after the challenge.
 //
 //! @param letter the letter
 //! @return true if the letter can be drawn, false if it is not in the bag
@@ -263,9 +268,6 @@ bool
 LetterBag::drawLetter (const QChar& letter)
 {
     QChar c = letter.toUpper();
-    if (!letterFrequencies.contains (c) || (letterFrequencies[c] == 0))
-        return false;
-
     --letterFrequencies[c];
     --totalLetters;
     return true;

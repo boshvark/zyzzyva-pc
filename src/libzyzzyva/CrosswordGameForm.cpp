@@ -202,20 +202,16 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
 
     buttonHlay->addStretch (1);
 
-    QVBoxLayout* unseenVlay = new QVBoxLayout;
-    Q_CHECK_PTR (unseenVlay);
-    mainHlay->addLayout (unseenVlay);
-
-    unseenLabel = new QLabel;
-    Q_CHECK_PTR (unseenLabel);
-    unseenLabel->setWordWrap (true);
-    unseenVlay->addWidget (unseenLabel);
-
     QVBoxLayout* messageVlay = new QVBoxLayout;
     Q_CHECK_PTR (messageVlay);
     messageVlay->setMargin (0);
     messageVlay->setSpacing (SPACING);
     mainHlay->addLayout (messageVlay);
+
+    unseenLabel = new QLabel;
+    Q_CHECK_PTR (unseenLabel);
+    unseenLabel->setWordWrap (true);
+    messageVlay->addWidget (unseenLabel);
 
     messageArea = new QTextEdit (this);
     Q_CHECK_PTR (messageArea);
@@ -651,6 +647,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                     CrosswordGameMove challengedMove = move;
                     challengedMove.setType (CrosswordGameMove::Move);
                     challengedMove.setScore (-move.getScore());
+                    // this is a hack - that's not really the new rack
                     challengedMove.setNewRack
                         (aPlayerMoves.last().getNewRack());
                     aPlayerMoves.append (challengedMove);
@@ -1250,9 +1247,9 @@ CrosswordGameForm::gameChanged()
     int numUnseen = unseenStr.length();
     unseenStr.replace (QRegExp ("(.)"), "\\1 ");
     unseenLabel->setText ("Tiles in Bag (" + QString::number (numInBag) +
-                          "): " + bagStr + "\n" +
-                          "Unseen (" + QString::number (numUnseen) +
-                          "): " + unseenStr);
+                          "): " + bagStr); // + "\n" +
+                          //"Unseen (" + QString::number (numUnseen) +
+                          //"): " + unseenStr);
 }
 
 //---------------------------------------------------------------------------

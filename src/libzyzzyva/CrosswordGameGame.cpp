@@ -178,6 +178,21 @@ CrosswordGameGame::makeMove (const CrosswordGameMove& move)
         }
     }
 
+    else if (newMove.getType() == CrosswordGameMove::Exchange) {
+        for (int i = 0; i < oldRack.length(); ++i) {
+            QChar c = oldRack[i].toUpper();
+            if (c == '?')
+                c = LetterBag::BLANK_CHAR;
+            letterBag.insertLetter (c);
+        }
+        for (int i = 0; i < newRack.length(); ++i) {
+            QChar c = newRack[i].toUpper();
+            if (c == '?')
+                c = LetterBag::BLANK_CHAR;
+            letterBag.drawLetter (c);
+        }
+    }
+
     playerToMove = (newMove.getPlayerNum() == 1) ? 2 : 1;
     moveHistory.append (newMove);
     emit changed();
@@ -284,21 +299,36 @@ CrosswordGameGame::challengeLastMove()
 
     CrosswordGameMove challengedMove = it.previous();
     int challengedPlayer = challengedMove.getPlayerNum();
+    qDebug() << "Challenged player: " << challengedPlayer;
+    qDebug() << "Challenged word: " << challengedMove.getWord();
+    bool replaceTiles = true;
 
     // Restore previous rack and score
     while (it.hasPrevious()) {
+        qDebug() << "Checking previous move";
         CrosswordGameMove oldMove = it.previous();
-        if (oldMove.getPlayerNum() != challengedPlayer)
-            continue;
 
-        QString oldRack = oldMove.getNewRack();
+        // Skip over moves by the challenging player when looking for the
+        // previous rac
+        if (oldMove.getPlayerNum() != challengedPlayer) {
+            replaceTiles = false;
+            continue;
+        }
+
+        qDebug() << "Player A rack: " << aPlayerRack;
+        qDebug() << "Player B rack: " << bPlayerRack;
+
+        QString oldRack;
+        QString newRack = oldMove.getNewRack();
         if (challengedPlayer == 1) {
+            oldRack = aPlayerRack;
             aPlayerScore -= challengedMove.getScore();
-            aPlayerRack = oldRack;
+            aPlayerRack = newRack;
         }
         else {
+            oldRack = bPlayerRack;
             bPlayerScore -= challengedMove.getScore();
-            bPlayerRack = oldRack;
+            bPlayerRack = newRack;
         }
 
         // FIXME: this is kind of redundant when challengeLastMove is called
@@ -306,10 +336,51 @@ CrosswordGameGame::challengeLastMove()
         CrosswordGameMove takeBackMove = challengedMove;
         takeBackMove.setType (CrosswordGameMove::TakeBack);
         takeBackMove.setScore (-challengedMove.getScore());
-        takeBackMove.setNewRack (oldRack);
+        takeBackMove.setNewRack (newRack);
         moveHistory.append (takeBackMove);
 
-        board.removeMove (challengedMove);
+        QString lettersRemoved;
+        board.removeMove (challengedMove, &lettersRemoved);
+
+        if (!lettersRemoved.isEmpty()) {
+            lettersRemoved = Auxil::getAlphagram (lettersRemoved);
+            newRack = Auxil::getAlphagram (newRack.toUpper());
+
+
+            // Find removed letters in new rack
+            qDebug() << "New rack was: " << newRack;
+            qDebug() << "Letters removed were: " << lettersRemoved;
+
+            QString lettersLeft;
+            int p = 0;
+            for (int i = 0; i < newRack.length(); ++i) {
+                if ((p == lettersRemoved.length()) ||
+                    (newRack[i] != lettersRemoved[p]))
+                    lettersLeft += newRack[i];
+                else
+                    ++p;
+            }
+
+            qDebug() << "Letters left: " << lettersLeft;
+
+            // Find letters in old rack not left on the rack
+            oldRack = Auxil::getAlphagram (oldRack.toUpper());
+            qDebug() << "Old rack was: " << oldRack;
+            int q = 0;
+            for (int i = 0; i < oldRack.length(); ++i) {
+                if ((q == lettersLeft.length()) ||
+                    (oldRack[i] != lettersLeft[q]))
+                {
+                    QChar c = oldRack[i];
+                    if (c == '?')
+                        c = LetterBag::BLANK_CHAR;
+                    qDebug() << "Replacing letter: " << c;
+                    letterBag.insertLetter (c);
+                }
+                else
+                    ++q;
+            }
+        }
         break;
     }
 
