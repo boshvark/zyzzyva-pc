@@ -793,6 +793,8 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         }
 
         else if (action == "RESIGN") {
+            stopClock (1);
+            stopClock (2);
             // FIXME
             messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
         }
@@ -806,6 +808,12 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
                     aOvertime = true;
                 else if (playerName == bPlayerLabel->text())
                     bOvertime = true;
+
+                messageAppendHtml (playerName + "'s game time has expired. " +
+                                   playerName + " will get 1 more minute "
+                                   "with a 10-point penalty.  When this "
+                                   "minute expires he will forfeit on time.",
+                                   QColor (0x00, 0x00, 0x00));
             }
         }
 
@@ -944,7 +952,6 @@ CrosswordGameForm::canonizeMessage (const QString& message)
 void
 CrosswordGameForm::setClock (int playerNum, int seconds)
 {
-    qDebug() << "*** setClock: " << playerNum << seconds;
     QLabel* label = 0;
     if (playerNum == 1) {
         aSeconds = seconds;
@@ -956,11 +963,17 @@ CrosswordGameForm::setClock (int playerNum, int seconds)
     }
 
     if (label) {
+        bool overtime = false;
+        int minutes = seconds / 60;
+        seconds %= 60;
+
         if (seconds < 0) {
             QPalette palette (label->palette());
             palette.setColor (QPalette::WindowText, QColor (0xff, 0x00, 0x00));
             label->setPalette (palette);
+            minutes = -minutes;
             seconds = -seconds;
+            overtime = true;
         }
         else {
             QPalette palette (label->palette());
@@ -968,10 +981,8 @@ CrosswordGameForm::setClock (int playerNum, int seconds)
             label->setPalette (palette);
         }
 
-        int minutes = seconds / 60;
-        seconds %= 60;
         label->setText (QString ("%1%2:%3").
-                        arg (seconds < 0 ? QString ("-") : QString()).
+                        arg (overtime ? QString ("-") : QString()).
                         arg (QString::number (minutes)).
                         arg (QString::number (seconds), 2, '0'));
     }
