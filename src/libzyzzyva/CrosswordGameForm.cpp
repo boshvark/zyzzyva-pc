@@ -710,7 +710,7 @@ CrosswordGameForm::processObserve (const QString& string)
         CrosswordGameMove move (action + " " + args.simplified());
         int playerToMove = game->getPlayerToMove();
         move.setPlayerNum (playerToMove);
-        fixIscMove (move);
+        fixMoveOvertime (move);
         makeMove (move);
     }
 
@@ -718,7 +718,7 @@ CrosswordGameForm::processObserve (const QString& string)
         CrosswordGameMove move (action + " " + args.simplified());
         int playerToMove = game->getPlayerToMove();
         move.setPlayerNum (playerToMove);
-        fixIscMove (move);
+        fixMoveOvertime (move);
         makeMove (move);
     }
 
@@ -1024,46 +1024,12 @@ CrosswordGameForm::processLogin (const QString& string)
     QString aInitialRack = aPlayerSplit[2];
     aOvertime = (aPlayerSplit[3] == "-100");
 
-
     QList<CrosswordGameMove> aPlayerMoves;
-
     CrosswordGameMove aDrawMove ("DRAW " + aInitialRack);
     aDrawMove.setSecondsLeft (seconds);
     aDrawMove.setPlayerNum (1);
     aPlayerMoves.append (aDrawMove);
-
-    QString aMoveLine = lines[3];
-
-    // FIXME: don't forget exchanges so they can be woven back in
-    // order
-    QStringList tokens = aMoveLine.split (" ");
-    QRegExp moveRe ("MOVE(\\s+\\S+){7}|CHANGE(\\s+\\S+){4}|"
-                    "PAS(\\s+\\S+){3}");
-    int pos = 0;
-    while ((pos = moveRe.indexIn (aMoveLine, pos)) >= 0) {
-        QString match = aMoveLine.mid (pos, moveRe.matchedLength());
-        CrosswordGameMove move (match);
-        move.setPlayerNum (1);
-
-        // Yuck kludge - fix seconds left if overtime
-        if (aOvertime && (move.getSecondsLeft() < 60)) {
-            move.setSecondsLeft (IscConverter::timeIscToReal
-                                 (0, move.getSecondsLeft(), true));
-        }
-
-        if (move.getType() == CrosswordGameMove::TakeBack) {
-            CrosswordGameMove challengedMove = move;
-            challengedMove.setType (CrosswordGameMove::Move);
-            challengedMove.setScore (-move.getScore());
-            // this is a hack - that's not really the new rack
-            challengedMove.setNewRack
-                (aPlayerMoves.last().getNewRack());
-            aPlayerMoves.append (challengedMove);
-        }
-
-        aPlayerMoves.append (move);
-        pos += moveRe.matchedLength();
-    }
+    appendMoves (aPlayerMoves, lines[3], 1);
 
     QStringList bPlayerSplit = lines[5].split (" ");
     QString bPlayer = bPlayerSplit[0];
@@ -1076,41 +1042,11 @@ CrosswordGameForm::processLogin (const QString& string)
     bOvertime = (bPlayerSplit[3] == "-100");
 
     QList<CrosswordGameMove> bPlayerMoves;
-
     CrosswordGameMove bDrawMove ("DRAW " + bInitialRack);
     bDrawMove.setSecondsLeft (seconds);
     bDrawMove.setPlayerNum (2);
     bPlayerMoves.append (bDrawMove);
-
-    QString bMoveLine = lines[6];
-
-    // FIXME: don't forget exchanges so they can be woven back in
-    // order
-    tokens = bMoveLine.split (" ");
-    pos = 0;
-    while ((pos = moveRe.indexIn (bMoveLine, pos)) >= 0) {
-        QString match = bMoveLine.mid (pos, moveRe.matchedLength());
-        CrosswordGameMove move (match);
-        move.setPlayerNum (2);
-
-        // Yuck kludge - fix seconds left if overtime
-        if (bOvertime && (move.getSecondsLeft() < 60)) {
-            move.setSecondsLeft (IscConverter::timeIscToReal
-                                 (0, move.getSecondsLeft(), true));
-        }
-
-        if (move.getType() == CrosswordGameMove::TakeBack) {
-            CrosswordGameMove challengedMove = move;
-            challengedMove.setType (CrosswordGameMove::Move);
-            challengedMove.setScore (-move.getScore());
-            challengedMove.setNewRack
-                (bPlayerMoves.last().getNewRack());
-            bPlayerMoves.append (challengedMove);
-        }
-
-        bPlayerMoves.append (move);
-        pos += moveRe.matchedLength();
-    }
+    appendMoves (bPlayerMoves, lines[6], 2);
 
     QListIterator<CrosswordGameMove> aMoveIt (aPlayerMoves);
     QListIterator<CrosswordGameMove> bMoveIt (bPlayerMoves);
@@ -1229,23 +1165,62 @@ CrosswordGameForm::makeMove (CrosswordGameMove& move)
 }
 
 //---------------------------------------------------------------------------
-//  fixIscMove
+//  fixMoveOvertime
 //
-//! Fix a move from ISC.
+//! Fix a move from ISC.  Fix the number of seconds left if the player to
+//! move is over on time.
 //
 //! @param move the move
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::fixIscMove (CrosswordGameMove& move) const
+CrosswordGameForm::fixMoveOvertime (CrosswordGameMove& move) const
 {
-    // Yuck kludge - fix seconds left if overtime
-    // FIXME: Should be a parameter?
-    int playerToMove = game->getPlayerToMove();
+    int playerToMove = move.getPlayerNum();
     bool overtime = (playerToMove == 1 ? aOvertime : bOvertime);
     if (overtime) {
         move.setSecondsLeft (IscConverter::timeIscToReal
                              (0, move.getSecondsLeft(), true));
     }
+}
+
+//---------------------------------------------------------------------------
+//  appendMoves
+//
+//! Append a list of moves from a string representation.
+//
+//! @param moves the list of moves to append to
+//! @param string the string containing the moves
+//! @param playerToMove the player number to set on each move
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+CrosswordGameForm::appendMoves (QList<CrosswordGameMove>& moves, const
+                                QString& string, int playerToMove) const
+{
+    QStringList tokens = string.split (" ");
+    QRegExp moveRe ("MOVE(\\s+\\S+){7}|CHANGE(\\s+\\S+){4}|"
+                    "PAS(\\s+\\S+){3}");
+    int pos = 0;
+    while ((pos = moveRe.indexIn (string, pos)) >= 0) {
+        QString match = string.mid (pos, moveRe.matchedLength());
+        CrosswordGameMove move (match);
+        move.setPlayerNum (playerToMove);
+        fixMoveOvertime (move);
+
+        if (move.getType() == CrosswordGameMove::TakeBack) {
+            CrosswordGameMove challengedMove = move;
+            challengedMove.setType (CrosswordGameMove::Move);
+            challengedMove.setScore (-move.getScore());
+            // this is a hack - that's not really the new rack
+            challengedMove.setNewRack (moves.last().getNewRack());
+            moves.append (challengedMove);
+        }
+
+        moves.append (move);
+        pos += moveRe.matchedLength();
+    }
+
+    return true;
 }
 
 //---------------------------------------------------------------------------

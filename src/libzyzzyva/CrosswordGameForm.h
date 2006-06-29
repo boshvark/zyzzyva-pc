@@ -76,7 +76,10 @@ class CrosswordGameForm : public ActionForm
     void processLogin (const QString& string);
     void makeMove (CrosswordGameMove& move);
     int scoreMove (const CrosswordGameMove& move);
-    void fixIscMove (CrosswordGameMove& move) const;
+    void fixMoveOvertime (CrosswordGameMove& move) const;
+
+    bool appendMoves (QList<CrosswordGameMove>& moves, const QString& string,
+                      int playerToMove) const;
 
     private:
     CrosswordGameBoardWidget* boardWidget;
