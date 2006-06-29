@@ -71,6 +71,13 @@ class CrosswordGameForm : public ActionForm
     void startClock (int playerNum);
     void stopClock (int playerNum);
 
+    //void processGameAction (const QString& string);
+    void processObserve (const QString& string);
+    //void processMove (const QString& string);
+    void makeMove (CrosswordGameMove& move);
+    int scoreMove (const CrosswordGameMove& move);
+    void fixIscMove (CrosswordGameMove& move) const;
+
     private:
     CrosswordGameBoardWidget* boardWidget;
     QLabel* unseenLabel;
@@ -98,6 +105,7 @@ class CrosswordGameForm : public ActionForm
     int bSeconds;
     bool aOvertime;
     bool bOvertime;
+    bool playingGame;
 
     CrosswordGameGame* game;
     IscConnectionThread* iscThread;

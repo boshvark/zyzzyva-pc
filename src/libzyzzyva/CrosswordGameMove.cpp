@@ -49,7 +49,7 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
 
         type = Move;
 
-        QString placement = translateCoordinates (split[1]);
+        QString placement = IscConverter::convertCoordinates (split[1]);
         word = split[2];
         score = split[3].toInt();
         int minutes = split[4].toInt();
@@ -78,7 +78,7 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
             type = TakeBack;
             penaltyType = LoseTurn;
             QStringList tokens = challenged.split ("_");
-            QString placement = translateCoordinates (tokens[0]);
+            QString placement = IscConverter::convertCoordinates (tokens[0]);
             word = tokens[1];
             score = -tokens[2].toInt();
             setPlacement (placement);
@@ -101,6 +101,34 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
         type = DrawTiles;
         newRack = Auxil::getAlphagram (split[1]);
     }
+}
+
+//---------------------------------------------------------------------------
+//  getPlacement
+//
+//! Return a string representing the placement of the play.
+//
+//! @return true if valid, false otherwise
+//---------------------------------------------------------------------------
+QString
+CrosswordGameMove::getPlacement() const
+{
+    QString placement;
+    if (type != Move)
+        return placement;
+
+    QString rowStr = QString::number (row + 1);
+    QString colStr = QChar ('A' + column);
+
+    if (orientation == Horizontal) {
+        placement = rowStr + colStr;
+    }
+
+    else if (orientation == Vertical) {
+        placement = colStr + rowStr;
+    }
+
+    return placement;
 }
 
 //---------------------------------------------------------------------------
@@ -193,59 +221,4 @@ CrosswordGameMove::setPlacement (const QString& placement)
         row = bMatch.toInt() - 1;
         column = aMatch[0].toUpper().toAscii() - 'A';
     }
-}
-
-//---------------------------------------------------------------------------
-//  translateCoordinates
-//
-//! Translate ISC coordinates to real coordinates, and vice versa.
-//
-//! @param coordinates the coordinates to translate
-//! @return the translated coordinates
-//---------------------------------------------------------------------------
-QString
-CrosswordGameMove::translateCoordinates (const QString& coordinates) const
-{
-    QString real;
-    QRegExp re ("\\d+|\\w");
-
-    int pos = 0;
-    while ((pos = re.indexIn (coordinates, pos)) >= 0) {
-        QString match = coordinates.mid (pos, re.matchedLength());
-
-        if (match == "1") real += "A";
-        else if (match == "2") real += "B";
-        else if (match == "3") real += "C";
-        else if (match == "4") real += "D";
-        else if (match == "5") real += "E";
-        else if (match == "6") real += "F";
-        else if (match == "7") real += "G";
-        else if (match == "8") real += "H";
-        else if (match == "9") real += "I";
-        else if (match == "10") real += "J";
-        else if (match == "11") real += "K";
-        else if (match == "12") real += "L";
-        else if (match == "13") real += "M";
-        else if (match == "14") real += "N";
-        else if (match == "15") real += "O";
-        else if (match == "A") real += "1";
-        else if (match == "B") real += "2";
-        else if (match == "C") real += "3";
-        else if (match == "D") real += "4";
-        else if (match == "E") real += "5";
-        else if (match == "F") real += "6";
-        else if (match == "G") real += "7";
-        else if (match == "H") real += "8";
-        else if (match == "I") real += "9";
-        else if (match == "J") real += "10";
-        else if (match == "K") real += "11";
-        else if (match == "L") real += "12";
-        else if (match == "M") real += "13";
-        else if (match == "N") real += "14";
-        else if (match == "O") real += "15";
-
-        pos += re.matchedLength();
-    }
-
-    return real;
 }

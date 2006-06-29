@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "IscConverter.h"
+#include <QRegExp>
 
 //---------------------------------------------------------------------------
 //  timeIscToReal
@@ -65,4 +66,59 @@ IscConverter::timeRealToIsc (int totalSeconds, int& minutes, int& seconds,
         minutes = -minutes;
         seconds += 60;
     }
+}
+
+//---------------------------------------------------------------------------
+//  convertCoordinates
+//
+//! Convert ISC coordinates to real coordinates, and vice versa.
+//
+//! @param coordinates the coordinates to convert
+//! @return the converted coordinates
+//---------------------------------------------------------------------------
+QString
+IscConverter::convertCoordinates (const QString& coordinates)
+{
+    QString real;
+    QRegExp re ("\\d+|\\w");
+
+    int pos = 0;
+    while ((pos = re.indexIn (coordinates, pos)) >= 0) {
+        QString match = coordinates.mid (pos, re.matchedLength());
+
+        if (match == "1") real += "A";
+        else if (match == "2") real += "B";
+        else if (match == "3") real += "C";
+        else if (match == "4") real += "D";
+        else if (match == "5") real += "E";
+        else if (match == "6") real += "F";
+        else if (match == "7") real += "G";
+        else if (match == "8") real += "H";
+        else if (match == "9") real += "I";
+        else if (match == "10") real += "J";
+        else if (match == "11") real += "K";
+        else if (match == "12") real += "L";
+        else if (match == "13") real += "M";
+        else if (match == "14") real += "N";
+        else if (match == "15") real += "O";
+        else if (match == "A") real += "1";
+        else if (match == "B") real += "2";
+        else if (match == "C") real += "3";
+        else if (match == "D") real += "4";
+        else if (match == "E") real += "5";
+        else if (match == "F") real += "6";
+        else if (match == "G") real += "7";
+        else if (match == "H") real += "8";
+        else if (match == "I") real += "9";
+        else if (match == "J") real += "10";
+        else if (match == "K") real += "11";
+        else if (match == "L") real += "12";
+        else if (match == "M") real += "13";
+        else if (match == "N") real += "14";
+        else if (match == "O") real += "15";
+
+        pos += re.matchedLength();
+    }
+
+    return real;
 }

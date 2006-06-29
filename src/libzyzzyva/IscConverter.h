@@ -25,11 +25,14 @@
 #ifndef ZYZZYVA_ISC_CONVERTER_H
 #define ZYZZYVA_ISC_CONVERTER_H
 
+#include <QString>
+
 namespace IscConverter
 {
     int timeIscToReal (int minutes, int seconds, bool overtime = false);
     void timeRealToIsc (int totalSeconds, int& minutes, int& seconds,
                         bool overtime = false);
+    QString convertCoordinates (const QString& coordinates);
 };
 
 #endif // ZYZZYVA_ISC_CONVERTER_H

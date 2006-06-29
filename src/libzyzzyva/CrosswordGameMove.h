@@ -82,6 +82,7 @@ class CrosswordGameMove
     Orientation getOrientation() const { return orientation; }
     int getRow() const { return row; }
     int getColumn() const { return column; }
+    QString getPlacement() const;
     QString getWord() const { return word; }
     int getScore() const { return score; }
     int getSecondsLeft() const { return secondsLeft; }
@@ -96,7 +97,6 @@ class CrosswordGameMove
     private:
     void init();
     void setPlacement (const QString& placement);
-    QString translateCoordinates (const QString& coordinates) const;
 
     private:
     Type type;
