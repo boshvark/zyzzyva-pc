@@ -706,6 +706,16 @@ CrosswordGameForm::processObserve (const QString& string)
     // OBSERVE CHANGE erxievz 03 27 7
     // OBSERVE CHANGE czledre 02 5 5
 
+    // If player A plays a valid word and player B challenges it, it
+    // looks like this:
+    // OBSERVE CHALLENGE Yes
+
+    // If player A plays a phony and player B challenges it off, it
+    // looks like this.  Player A has 41:21 remaining, and the
+    // challenged play was cvaVcier at 8A for 92 points.
+    // OBSERVE CHALLENGE No
+    // OBSERVE PAS   41 21 8A_cvaVcier_92
+
     if (action == "MOVE") {
         CrosswordGameMove move (action + " " + args.simplified());
         int playerToMove = game->getPlayerToMove();
@@ -727,21 +737,7 @@ CrosswordGameForm::processObserve (const QString& string)
     }
 
     else if (action == "CHALLENGE") {
-        args = args.simplified();
-
-
-        // If player A plays a valid word and player B challenges it, it
-        // looks like this:
-        // OBSERVE CHALLENGE Yes
-
-        // If player A plays a phony and player B challenges it off, it
-        // looks like this.  Player A has 41:21 remaining, and the
-        // challenged play was cvaVcier at 8A for 92 points.
-        // OBSERVE CHALLENGE No
-        // OBSERVE PAS   41 21 8A_cvaVcier_92
-
-
-        QStringList judgments = args.split (" ");
+        QStringList judgments = args.simplified().split (" ");
         QString judgment;
         bool acceptable = true;
         foreach (judgment, judgments) {
@@ -752,16 +748,13 @@ CrosswordGameForm::processObserve (const QString& string)
         }
 
         QString acceptableStr = acceptable ? QString ("valid")
-            : QString ("invalid");
-
-        messageAppendHtml ("Challenge: move is " + acceptableStr + ".",
+                                           : QString ("invalid");
+        messageAppendHtml ("CHALLENGE: move is " + acceptableStr + ".",
                            QColor (0x00, 0x00, 0xff));
-
     }
 
     else if (action == "PAS") {
         args = args.simplified();
-
         int minutes = args.section (" ", 0, 0).toInt();
         int seconds = args.section (" ", 1, 1).toInt();
         QString challengedPlay = args.section (" ", 2, 2);
@@ -769,6 +762,10 @@ CrosswordGameForm::processObserve (const QString& string)
 
         if ((challengedPlay != "---") && !challengedPlay.isEmpty()) {
             game->challengeLastMove();
+            QString playerName = playerToMove == 1 ? aPlayerLabel->text()
+                                                   : bPlayerLabel->text();
+            messageAppendHtml (playerName + ": PASS",
+                               QColor (0x00, 0x00, 0xff));
         }
         else {
             bool overtime = (playerToMove == 1 ? aOvertime : bOvertime);
@@ -780,18 +777,8 @@ CrosswordGameForm::processObserve (const QString& string)
             move.setPlayerNum (playerToMove);
             move.setSecondsLeft (realSeconds);
             move.setNewRack (game->getPlayerRack (playerToMove));
-
-            game->makeMove (move);
-            stopClock (playerToMove);
-            setClock (playerToMove, move.getSecondsLeft());
-            startClock (playerToMove == 1 ? 2 : 1);
+            makeMove (move);
         }
-
-        QString playerName = playerToMove == 1 ? aPlayerLabel->text()
-            : bPlayerLabel->text();
-
-        messageAppendHtml (playerName + ": PASS",
-                           QColor (0x00, 0x00, 0xff));
     }
 
     else if (action == "RESIGN") {
@@ -1061,21 +1048,18 @@ CrosswordGameForm::processLogin (const QString& string)
     int playerToMove = 1;
     while (aMove.isValid() || bMove.isValid()) {
 
-        // FIXME: all this duplicated code belongs in its own method -
-        // it's duplicated above when observing a MOVE, too
         if ((playerToMove == 1) && aMove.isValid()) {
-            game->makeMove (aMove);
-            stopClock (playerToMove);
-            setClock (playerToMove, aMove.getSecondsLeft());
+            fixMoveOvertime (aMove);
+            makeMove (aMove);
+
             if (aMoveIt.hasNext())
                 aMove = aMoveIt.next();
             else
                 aMove = CrosswordGameMove();
 
             if (aMove.getType() == CrosswordGameMove::TakeBack) {
-                game->makeMove (aMove);
-                stopClock (playerToMove);
-                setClock (playerToMove, aMove.getSecondsLeft());
+                fixMoveOvertime (aMove);
+                makeMove (aMove);
                 if (aMoveIt.hasNext())
                     aMove = aMoveIt.next();
                 else
@@ -1084,18 +1068,16 @@ CrosswordGameForm::processLogin (const QString& string)
         }
 
         else if ((playerToMove == 2) && bMove.isValid()) {
-            game->makeMove (bMove);
-            stopClock (playerToMove);
-            setClock (playerToMove, bMove.getSecondsLeft());
+            fixMoveOvertime (bMove);
+            makeMove (bMove);
             if (bMoveIt.hasNext())
                 bMove = bMoveIt.next();
             else
                 bMove = CrosswordGameMove();
 
             if (bMove.getType() == CrosswordGameMove::TakeBack) {
-                game->makeMove (bMove);
-                stopClock (playerToMove);
-                setClock (playerToMove, bMove.getSecondsLeft());
+                fixMoveOvertime (bMove);
+                makeMove (bMove);
                 if (bMoveIt.hasNext())
                     bMove = bMoveIt.next();
                 else
@@ -1106,20 +1088,16 @@ CrosswordGameForm::processLogin (const QString& string)
         playerToMove = (playerToMove == 1 ? 2 : 1);
     }
 
-    startClock (playerToMove);
-
     QString text = "You are now observing: " + aPlayer + " vs " +
         bPlayer + " " + lexicon + " " + QString::number (minutes) +
         " " + increment + " " +
         (rated ? QString ("rated") : QString ("unrated")) + " " +
-                                     "noescape=" + (noescape ? QString ("ON") : QString ("OFF")) +
-                                                                                " challenge=" + challenge;
-
-    // FIXME: also say which player is on move
-
+        "noescape=" + (noescape ? QString ("ON") : QString ("OFF")) +
+        " challenge=" + challenge;
     messageAppendHtml (text, QColor (0x00, 0x00, 0x00));
 
-
+    text = (playerToMove == 1 ? aPlayer : bPlayer) + " to move.";
+    messageAppendHtml (text, QColor (0x00, 0x00, 0x00));
 }
 
 //---------------------------------------------------------------------------
@@ -1153,8 +1131,13 @@ CrosswordGameForm::makeMove (CrosswordGameMove& move)
                                QString::number (numExchanged),
                                QColor (0x00, 0x00, 0xff));
         }
+        break;
 
-
+        case CrosswordGameMove::Pass: {
+            messageAppendHtml (playerName + ": PASS",
+                               QColor (0x00, 0x00, 0xff));
+        }
+        break;
         default: break;
     }
 
@@ -1205,7 +1188,6 @@ CrosswordGameForm::appendMoves (QList<CrosswordGameMove>& moves, const
         QString match = string.mid (pos, moveRe.matchedLength());
         CrosswordGameMove move (match);
         move.setPlayerNum (playerToMove);
-        fixMoveOvertime (move);
 
         if (move.getType() == CrosswordGameMove::TakeBack) {
             CrosswordGameMove challengedMove = move;
