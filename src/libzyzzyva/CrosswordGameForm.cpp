@@ -667,12 +667,11 @@ CrosswordGameForm::stopClock (int playerNum)
 //
 //! Process an OBSERVE message from the ISC server.
 //
-//! @param playerNum the player whose clock to stop
+//! @param string the message
 //---------------------------------------------------------------------------
 void
 CrosswordGameForm::processObserve (const QString& string)
 {
-    qDebug() << "*** processObserve: " << string;
     QString action = string.section (" ", 0, 0);
     QString args = string.section (" ", 1);
 
@@ -703,301 +702,28 @@ CrosswordGameForm::processObserve (const QString& string)
     // OBSERVE CHALLENGE Yes No
     // OBSERVE PAS 04 20 L6_pry_28
 
+    // Exchange:
+    // OBSERVE CHANGE erxievz 03 27 7
+    // OBSERVE CHANGE czledre 02 5 5
+
     if (action == "MOVE") {
-        args = args.simplified();
-
-        CrosswordGameMove move (action + " " + args);
-
+        CrosswordGameMove move (action + " " + args.simplified());
         int playerToMove = game->getPlayerToMove();
         move.setPlayerNum (playerToMove);
-
         fixIscMove (move);
-
-        //CrosswordGameMove move (action + " " + args);
-
         makeMove (move);
     }
 
     else if (action == "CHANGE") {
-        args = args.simplified();
-
-        CrosswordGameMove move (action + " " + args);
-
-        int numExchanged = move.getNumExchanged();
-
+        CrosswordGameMove move (action + " " + args.simplified());
         int playerToMove = game->getPlayerToMove();
         move.setPlayerNum (playerToMove);
-
-        // Yuck kludge - fix seconds left if overtime
-        bool overtime = (playerToMove == 1 ? aOvertime : bOvertime);
-        if (overtime) {
-            move.setSecondsLeft (IscConverter::timeIscToReal
-                                 (0, move.getSecondsLeft(), true));
-        }
-
-        QString playerName = playerToMove == 1 ? aPlayerLabel->text()
-            : bPlayerLabel->text();
-
-        messageAppendHtml (playerName + ": CHANGE " +
-                           QString::number (numExchanged),
-                           QColor (0x00, 0x00, 0xff));
-
-        game->makeMove (move);
-        stopClock (playerToMove);
-        setClock (playerToMove, move.getSecondsLeft());
-        startClock (playerToMove == 1 ? 2 : 1);
-
-        // OBSERVE CHANGE erxievz 03 27 7
-
-        // OBSERVE CHANGE czledre 02 5 5
-
+        fixIscMove (move);
+        makeMove (move);
     }
 
     else if (action == "LOGIN") {
-        qDebug() << "*** A";
-        game->clear();
-        qDebug() << "*** B";
-        stopClock (1);
-        qDebug() << "*** C";
-        stopClock (2);
-        qDebug() << "*** D";
-
-        args = args.trimmed();
-        qDebug() << "*** E";
-        qDebug() << "args: " << args;
-        // What does the first line mean?
-
-        QStringList lines = args.split ("\n");
-        qDebug() << "*** F";
-        qDebug() << "*** lines.size(): " << lines.size();
-
-        // FIXME
-        QString firstLine = lines[0];
-
-        qDebug() << "*** G";
-        qDebug() << "*** lines[1]:" << lines[1];
-        QStringList vars = lines[1].split (" ");
-        qDebug() << "*** G2";
-
-        QString lexicon;
-        char lexnum = vars[0][0].toAscii();
-        switch (lexnum) {
-            case '0': lexicon = "TWL98"; break;
-            case '1': lexicon = "SOWPODS"; break;
-            case '2': lexicon = "ODS"; break;
-            case '3': lexicon = "LOC2000"; break;
-
-                      // FIXME
-            case '4': lexicon = "PARO"; break;
-                      // FIXME
-            case '5': lexicon = "MULTI"; break;
-
-            case '6': lexicon = "SWL"; break;
-            default:  lexicon = "Unknown"; break;
-        }
-
-        int minutes = vars[1].toInt();
-        QString increment = vars[2];
-        QString moreVars = vars[3];
-        bool rated = (moreVars[0] == '1');
-
-        int seconds = IscConverter::timeIscToReal (minutes, 0);
-        setClock (1, seconds);
-        setClock (2, seconds);
-
-        // SINGLE   c
-        // DOUBLE   b
-        // VOID     v
-        // 5-POINTS f
-
-        char challnum = moreVars[1].toAscii();
-        QString challenge;
-        switch (challnum) {
-            case '0': challenge = "SINGLE"; break;
-            case '1': challenge = "DOUBLE"; break;
-            case '2': challenge = "5-POINTS"; break;
-            case '3': challenge = "VOID"; break;
-            default:  challenge = "Unknown"; break;
-        }
-
-        bool noescape = (moreVars[2] == '1');
-
-        // FIXME
-        QChar something = moreVars[3];
-        QChar somethingElse = moreVars[4];
-
-        qDebug() << "*** H";
-        QStringList aPlayerSplit = lines[2].split (" ");
-        QString aPlayer = aPlayerSplit[0];
-        QString aRating = aPlayerSplit[1];
-
-        aPlayerLabel->setText (aPlayer);
-        aRatingLabel->setText ("(" + aRating + ")");
-
-        QString aInitialRack = aPlayerSplit[2];
-        aOvertime = (aPlayerSplit[3] == "-100");
-
-
-        QList<CrosswordGameMove> aPlayerMoves;
-
-        CrosswordGameMove aDrawMove ("DRAW " + aInitialRack);
-        aDrawMove.setSecondsLeft (seconds);
-        aDrawMove.setPlayerNum (1);
-        aPlayerMoves.append (aDrawMove);
-
-        QString aMoveLine = lines[3];
-
-        // FIXME: don't forget exchanges so they can be woven back in
-        // order
-        qDebug() << "*** I";
-        QStringList tokens = aMoveLine.split (" ");
-        QRegExp moveRe ("MOVE(\\s+\\S+){7}|CHANGE(\\s+\\S+){4}|"
-                        "PAS(\\s+\\S+){3}");
-        int pos = 0;
-        while ((pos = moveRe.indexIn (aMoveLine, pos)) >= 0) {
-            QString match = aMoveLine.mid (pos, moveRe.matchedLength());
-            CrosswordGameMove move (match);
-            move.setPlayerNum (1);
-
-            // Yuck kludge - fix seconds left if overtime
-            if (aOvertime && (move.getSecondsLeft() < 60)) {
-                move.setSecondsLeft (IscConverter::timeIscToReal
-                                     (0, move.getSecondsLeft(), true));
-            }
-
-            if (move.getType() == CrosswordGameMove::TakeBack) {
-                CrosswordGameMove challengedMove = move;
-                challengedMove.setType (CrosswordGameMove::Move);
-                challengedMove.setScore (-move.getScore());
-                // this is a hack - that's not really the new rack
-                challengedMove.setNewRack
-                    (aPlayerMoves.last().getNewRack());
-                aPlayerMoves.append (challengedMove);
-            }
-
-            aPlayerMoves.append (move);
-            pos += moveRe.matchedLength();
-        }
-
-        qDebug() << "*** J";
-        QStringList bPlayerSplit = lines[5].split (" ");
-        QString bPlayer = bPlayerSplit[0];
-        QString bRating = bPlayerSplit[1];
-
-        bPlayerLabel->setText (bPlayer);
-        bRatingLabel->setText ("(" + bRating + ")");
-
-        QString bInitialRack = bPlayerSplit[2];
-        bOvertime = (bPlayerSplit[3] == "-100");
-
-        QList<CrosswordGameMove> bPlayerMoves;
-
-        CrosswordGameMove bDrawMove ("DRAW " + bInitialRack);
-        bDrawMove.setSecondsLeft (seconds);
-        bDrawMove.setPlayerNum (2);
-        bPlayerMoves.append (bDrawMove);
-
-        QString bMoveLine = lines[6];
-
-        // FIXME: don't forget exchanges so they can be woven back in
-        // order
-        qDebug() << "*** K";
-        tokens = bMoveLine.split (" ");
-        pos = 0;
-        while ((pos = moveRe.indexIn (bMoveLine, pos)) >= 0) {
-            QString match = bMoveLine.mid (pos, moveRe.matchedLength());
-            CrosswordGameMove move (match);
-            move.setPlayerNum (2);
-
-            // Yuck kludge - fix seconds left if overtime
-            if (bOvertime && (move.getSecondsLeft() < 60)) {
-                move.setSecondsLeft (IscConverter::timeIscToReal
-                                     (0, move.getSecondsLeft(), true));
-            }
-
-            if (move.getType() == CrosswordGameMove::TakeBack) {
-                CrosswordGameMove challengedMove = move;
-                challengedMove.setType (CrosswordGameMove::Move);
-                challengedMove.setScore (-move.getScore());
-                challengedMove.setNewRack
-                    (bPlayerMoves.last().getNewRack());
-                bPlayerMoves.append (challengedMove);
-            }
-
-            bPlayerMoves.append (move);
-            pos += moveRe.matchedLength();
-        }
-
-        QListIterator<CrosswordGameMove> aMoveIt (aPlayerMoves);
-        QListIterator<CrosswordGameMove> bMoveIt (bPlayerMoves);
-
-        CrosswordGameMove aMove;
-        if (aMoveIt.hasNext())
-            aMove = aMoveIt.next();
-        CrosswordGameMove bMove;
-        if (bMoveIt.hasNext())
-            bMove = bMoveIt.next();
-
-        int playerToMove = 1;
-        while (aMove.isValid() || bMove.isValid()) {
-
-            // FIXME: all this duplicated code belongs in its own method -
-            // it's duplicated above when observing a MOVE, too
-            if ((playerToMove == 1) && aMove.isValid()) {
-                game->makeMove (aMove);
-                stopClock (playerToMove);
-                setClock (playerToMove, aMove.getSecondsLeft());
-                if (aMoveIt.hasNext())
-                    aMove = aMoveIt.next();
-                else
-                    aMove = CrosswordGameMove();
-
-                if (aMove.getType() == CrosswordGameMove::TakeBack) {
-                    game->makeMove (aMove);
-                    stopClock (playerToMove);
-                    setClock (playerToMove, aMove.getSecondsLeft());
-                    if (aMoveIt.hasNext())
-                        aMove = aMoveIt.next();
-                    else
-                        aMove = CrosswordGameMove();
-                }
-            }
-
-            else if ((playerToMove == 2) && bMove.isValid()) {
-                game->makeMove (bMove);
-                stopClock (playerToMove);
-                setClock (playerToMove, bMove.getSecondsLeft());
-                if (bMoveIt.hasNext())
-                    bMove = bMoveIt.next();
-                else
-                    bMove = CrosswordGameMove();
-
-                if (bMove.getType() == CrosswordGameMove::TakeBack) {
-                    game->makeMove (bMove);
-                    stopClock (playerToMove);
-                    setClock (playerToMove, bMove.getSecondsLeft());
-                    if (bMoveIt.hasNext())
-                        bMove = bMoveIt.next();
-                    else
-                        bMove = CrosswordGameMove();
-                }
-            }
-
-            playerToMove = (playerToMove == 1 ? 2 : 1);
-        }
-
-        startClock (playerToMove);
-
-        QString text = "You are now observing: " + aPlayer + " vs " +
-            bPlayer + " " + lexicon + " " + QString::number (minutes) +
-            " " + increment + " " +
-            (rated ? QString ("rated") : QString ("unrated")) + " " +
-                                         "noescape=" + (noescape ? QString ("ON") : QString ("OFF")) +
-                                                                                    " challenge=" + challenge;
-
-        // FIXME: also say which player is on move
-
-        messageAppendHtml (text, QColor (0x00, 0x00, 0x00));
+        processLogin (args);
     }
 
     else if (action == "CHALLENGE") {
@@ -1219,6 +945,248 @@ CrosswordGameForm::processObserve (const QString& string)
 }
 
 //---------------------------------------------------------------------------
+//  processLogin
+//
+//! Process a LOGIN message from the ISC server.
+//
+//! @param string the message
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::processLogin (const QString& string)
+{
+    game->clear();
+    stopClock (1);
+    stopClock (2);
+
+    // What does the first line mean?
+
+    QStringList lines = string.trimmed().split ("\n");
+
+    // FIXME
+    QString firstLine = lines[0];
+
+    QStringList vars = lines[1].split (" ");
+
+    QString lexicon;
+    char lexnum = vars[0][0].toAscii();
+    switch (lexnum) {
+        case '0': lexicon = "TWL98"; break;
+        case '1': lexicon = "SOWPODS"; break;
+        case '2': lexicon = "ODS"; break;
+        case '3': lexicon = "LOC2000"; break;
+
+                  // FIXME
+        case '4': lexicon = "PARO"; break;
+                  // FIXME
+        case '5': lexicon = "MULTI"; break;
+
+        case '6': lexicon = "SWL"; break;
+        default:  lexicon = "Unknown"; break;
+    }
+
+    int minutes = vars[1].toInt();
+    QString increment = vars[2];
+    QString moreVars = vars[3];
+    bool rated = (moreVars[0] == '1');
+
+    int seconds = IscConverter::timeIscToReal (minutes, 0);
+    setClock (1, seconds);
+    setClock (2, seconds);
+
+    // SINGLE   c
+    // DOUBLE   b
+    // VOID     v
+    // 5-POINTS f
+
+    char challnum = moreVars[1].toAscii();
+    QString challenge;
+    switch (challnum) {
+        case '0': challenge = "SINGLE"; break;
+        case '1': challenge = "DOUBLE"; break;
+        case '2': challenge = "5-POINTS"; break;
+        case '3': challenge = "VOID"; break;
+        default:  challenge = "Unknown"; break;
+    }
+
+    bool noescape = (moreVars[2] == '1');
+
+    // FIXME
+    QChar something = moreVars[3];
+    QChar somethingElse = moreVars[4];
+
+    QStringList aPlayerSplit = lines[2].split (" ");
+    QString aPlayer = aPlayerSplit[0];
+    QString aRating = aPlayerSplit[1];
+
+    aPlayerLabel->setText (aPlayer);
+    aRatingLabel->setText ("(" + aRating + ")");
+
+    QString aInitialRack = aPlayerSplit[2];
+    aOvertime = (aPlayerSplit[3] == "-100");
+
+
+    QList<CrosswordGameMove> aPlayerMoves;
+
+    CrosswordGameMove aDrawMove ("DRAW " + aInitialRack);
+    aDrawMove.setSecondsLeft (seconds);
+    aDrawMove.setPlayerNum (1);
+    aPlayerMoves.append (aDrawMove);
+
+    QString aMoveLine = lines[3];
+
+    // FIXME: don't forget exchanges so they can be woven back in
+    // order
+    QStringList tokens = aMoveLine.split (" ");
+    QRegExp moveRe ("MOVE(\\s+\\S+){7}|CHANGE(\\s+\\S+){4}|"
+                    "PAS(\\s+\\S+){3}");
+    int pos = 0;
+    while ((pos = moveRe.indexIn (aMoveLine, pos)) >= 0) {
+        QString match = aMoveLine.mid (pos, moveRe.matchedLength());
+        CrosswordGameMove move (match);
+        move.setPlayerNum (1);
+
+        // Yuck kludge - fix seconds left if overtime
+        if (aOvertime && (move.getSecondsLeft() < 60)) {
+            move.setSecondsLeft (IscConverter::timeIscToReal
+                                 (0, move.getSecondsLeft(), true));
+        }
+
+        if (move.getType() == CrosswordGameMove::TakeBack) {
+            CrosswordGameMove challengedMove = move;
+            challengedMove.setType (CrosswordGameMove::Move);
+            challengedMove.setScore (-move.getScore());
+            // this is a hack - that's not really the new rack
+            challengedMove.setNewRack
+                (aPlayerMoves.last().getNewRack());
+            aPlayerMoves.append (challengedMove);
+        }
+
+        aPlayerMoves.append (move);
+        pos += moveRe.matchedLength();
+    }
+
+    QStringList bPlayerSplit = lines[5].split (" ");
+    QString bPlayer = bPlayerSplit[0];
+    QString bRating = bPlayerSplit[1];
+
+    bPlayerLabel->setText (bPlayer);
+    bRatingLabel->setText ("(" + bRating + ")");
+
+    QString bInitialRack = bPlayerSplit[2];
+    bOvertime = (bPlayerSplit[3] == "-100");
+
+    QList<CrosswordGameMove> bPlayerMoves;
+
+    CrosswordGameMove bDrawMove ("DRAW " + bInitialRack);
+    bDrawMove.setSecondsLeft (seconds);
+    bDrawMove.setPlayerNum (2);
+    bPlayerMoves.append (bDrawMove);
+
+    QString bMoveLine = lines[6];
+
+    // FIXME: don't forget exchanges so they can be woven back in
+    // order
+    tokens = bMoveLine.split (" ");
+    pos = 0;
+    while ((pos = moveRe.indexIn (bMoveLine, pos)) >= 0) {
+        QString match = bMoveLine.mid (pos, moveRe.matchedLength());
+        CrosswordGameMove move (match);
+        move.setPlayerNum (2);
+
+        // Yuck kludge - fix seconds left if overtime
+        if (bOvertime && (move.getSecondsLeft() < 60)) {
+            move.setSecondsLeft (IscConverter::timeIscToReal
+                                 (0, move.getSecondsLeft(), true));
+        }
+
+        if (move.getType() == CrosswordGameMove::TakeBack) {
+            CrosswordGameMove challengedMove = move;
+            challengedMove.setType (CrosswordGameMove::Move);
+            challengedMove.setScore (-move.getScore());
+            challengedMove.setNewRack
+                (bPlayerMoves.last().getNewRack());
+            bPlayerMoves.append (challengedMove);
+        }
+
+        bPlayerMoves.append (move);
+        pos += moveRe.matchedLength();
+    }
+
+    QListIterator<CrosswordGameMove> aMoveIt (aPlayerMoves);
+    QListIterator<CrosswordGameMove> bMoveIt (bPlayerMoves);
+
+    CrosswordGameMove aMove;
+    if (aMoveIt.hasNext())
+        aMove = aMoveIt.next();
+    CrosswordGameMove bMove;
+    if (bMoveIt.hasNext())
+        bMove = bMoveIt.next();
+
+    int playerToMove = 1;
+    while (aMove.isValid() || bMove.isValid()) {
+
+        // FIXME: all this duplicated code belongs in its own method -
+        // it's duplicated above when observing a MOVE, too
+        if ((playerToMove == 1) && aMove.isValid()) {
+            game->makeMove (aMove);
+            stopClock (playerToMove);
+            setClock (playerToMove, aMove.getSecondsLeft());
+            if (aMoveIt.hasNext())
+                aMove = aMoveIt.next();
+            else
+                aMove = CrosswordGameMove();
+
+            if (aMove.getType() == CrosswordGameMove::TakeBack) {
+                game->makeMove (aMove);
+                stopClock (playerToMove);
+                setClock (playerToMove, aMove.getSecondsLeft());
+                if (aMoveIt.hasNext())
+                    aMove = aMoveIt.next();
+                else
+                    aMove = CrosswordGameMove();
+            }
+        }
+
+        else if ((playerToMove == 2) && bMove.isValid()) {
+            game->makeMove (bMove);
+            stopClock (playerToMove);
+            setClock (playerToMove, bMove.getSecondsLeft());
+            if (bMoveIt.hasNext())
+                bMove = bMoveIt.next();
+            else
+                bMove = CrosswordGameMove();
+
+            if (bMove.getType() == CrosswordGameMove::TakeBack) {
+                game->makeMove (bMove);
+                stopClock (playerToMove);
+                setClock (playerToMove, bMove.getSecondsLeft());
+                if (bMoveIt.hasNext())
+                    bMove = bMoveIt.next();
+                else
+                    bMove = CrosswordGameMove();
+            }
+        }
+
+        playerToMove = (playerToMove == 1 ? 2 : 1);
+    }
+
+    startClock (playerToMove);
+
+    QString text = "You are now observing: " + aPlayer + " vs " +
+        bPlayer + " " + lexicon + " " + QString::number (minutes) +
+        " " + increment + " " +
+        (rated ? QString ("rated") : QString ("unrated")) + " " +
+                                     "noescape=" + (noescape ? QString ("ON") : QString ("OFF")) +
+                                                                                " challenge=" + challenge;
+
+    // FIXME: also say which player is on move
+
+    messageAppendHtml (text, QColor (0x00, 0x00, 0x00));
+
+
+}
+
+//---------------------------------------------------------------------------
 //  makeMove
 //
 //! Make a move.  If actually playing a game, and if it is our turn to move,
@@ -1229,34 +1197,33 @@ CrosswordGameForm::processObserve (const QString& string)
 void
 CrosswordGameForm::makeMove (CrosswordGameMove& move)
 {
-
-    // FIXME: Just for display purposes - fix this later
-    //QString placement = args.section (" ", 0, 0);
-    //QString play = args.section (" ", 1, 1);
-    //QString score = args.section (" ", 2, 2);
-    //int minutes = args.section (" ", 3, 3).toInt();
-    //int seconds = args.section (" ", 4, 4).toInt();
-    //QString newRack = args.section (" ", 5, 5);
-    //if (newRack == "---")
-    //newRack = QString();
-
     int playerToMove = move.getPlayerNum();
     QString playerName = playerToMove == 1 ? aPlayerLabel->text()
         : bPlayerLabel->text();
 
-    QString placement = move.getPlacement();
-    QString word = move.getWord();
-    QString score = QString::number (move.getScore());
-    messageAppendHtml (playerName + ": MOVE " + placement + " " +
-                       word + " " + score, QColor (0x00, 0x00, 0xff));
+    switch (move.getType()) {
+        case CrosswordGameMove::Move: {
+            QString placement = move.getPlacement();
+            QString word = move.getWord();
+            QString score = QString::number (move.getScore());
+            messageAppendHtml (playerName + ": MOVE " + placement + " " +
+                               word + " " + score, QColor (0x00, 0x00, 0xff));
+        }
+        break;
+
+        case CrosswordGameMove::Exchange: {
+            int numExchanged = move.getNumExchanged();
+            messageAppendHtml (playerName + ": CHANGE " +
+                               QString::number (numExchanged),
+                               QColor (0x00, 0x00, 0xff));
+        }
 
 
-
-
+        default: break;
+    }
 
     game->makeMove (move);
     stopClock (playerToMove);
-
     setClock (playerToMove, move.getSecondsLeft());
     startClock (playerToMove == 1 ? 2 : 1);
 }

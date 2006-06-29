@@ -73,7 +73,7 @@ class CrosswordGameForm : public ActionForm
 
     //void processGameAction (const QString& string);
     void processObserve (const QString& string);
-    //void processMove (const QString& string);
+    void processLogin (const QString& string);
     void makeMove (CrosswordGameMove& move);
     int scoreMove (const CrosswordGameMove& move);
     void fixIscMove (CrosswordGameMove& move) const;
