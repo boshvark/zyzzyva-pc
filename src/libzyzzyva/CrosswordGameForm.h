@@ -72,14 +72,23 @@ class CrosswordGameForm : public ActionForm
     void stopClock (int playerNum);
 
     //void processGameAction (const QString& string);
+    void processCommand (const QString& string);
     void processObserve (const QString& string);
     void processLogin (const QString& string);
+    void processResign (const QString& string);
     void makeMove (CrosswordGameMove& move);
     int scoreMove (const CrosswordGameMove& move);
     void fixMoveOvertime (CrosswordGameMove& move) const;
 
     bool appendMoves (QList<CrosswordGameMove>& moves, const QString& string,
                       int playerToMove) const;
+
+    public:
+    enum GameStatus {
+        NoGame,
+        ObservingGame,
+        PlayingGame
+    };
 
     private:
     CrosswordGameBoardWidget* boardWidget;
@@ -108,8 +117,8 @@ class CrosswordGameForm : public ActionForm
     int bSeconds;
     bool aOvertime;
     bool bOvertime;
-    bool playingGame;
 
+    GameStatus gameStatus;
     CrosswordGameGame* game;
     IscConnectionThread* iscThread;
 };
