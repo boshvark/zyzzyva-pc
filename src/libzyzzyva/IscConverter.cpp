@@ -69,6 +69,101 @@ IscConverter::timeRealToIsc (int totalSeconds, int& minutes, int& seconds,
 }
 
 //---------------------------------------------------------------------------
+//  lexiconToInt
+//
+//! Convert a lexicon name to its numeric value.
+//
+//! @param lexicon the lexicon name
+//! @return the numeric value, or -1 if error
+//---------------------------------------------------------------------------
+int
+IscConverter::lexiconToInt (const QString& lexicon)
+{
+    if (lexicon == "TWL98")
+        return 0;
+    else if (lexicon == "SOWPODS")
+        return 1;
+    else if (lexicon == "ODS")
+        return 2;
+    else if (lexicon == "LOC2000")
+        return 3;
+    else if (lexicon == "MULTI")
+        return 4;
+    else if (lexicon == "PARO")
+        return 5;
+    else if (lexicon == "SWL")
+        return 6;
+    else
+        return -1;
+}
+
+//---------------------------------------------------------------------------
+//  intToLexicon
+//
+//! Convert a lexicon numeric value to its name.
+//
+//! @param lexicon the numeric value
+//! @return the lexicon name, or null string if error
+//---------------------------------------------------------------------------
+QString
+IscConverter::intToLexicon (int lexicon)
+{
+    switch (lexicon) {
+        case 0: return "TWL98";
+        case 1: return "SOWPODS";
+        case 2: return "ODS";
+        case 3: return "LOC2000";
+        case 4: return "MULTI";
+        case 5: return "PARO";
+        case 6: return "SWL";
+        default:  return QString();
+    }
+}
+
+//---------------------------------------------------------------------------
+//  challengeToInt
+//
+//! Convert a challenge name to its numeric value.
+//
+//! @param challenge the challenge name
+//! @return the numeric value, or -1 if error
+//---------------------------------------------------------------------------
+int
+IscConverter::challengeToInt (const QString& challenge)
+{
+    if (challenge == "SINGLE")
+        return 0;
+    else if (challenge == "DOUBLE")
+        return 1;
+    else if (challenge == "5-POINTS")
+        return 2;
+    else if (challenge == "VOID")
+        return 3;
+    else
+        return -1;
+}
+
+//---------------------------------------------------------------------------
+//  intToChallenge
+//
+//! Convert a challenge numeric value to its name.
+//
+//! @param challenge the numeric value
+//! @return the challenge name, or null string if error
+//---------------------------------------------------------------------------
+QString
+IscConverter::intToChallenge (int challenge)
+{
+    switch (challenge) {
+        case 0: return "SINGLE";
+        case 1: return "DOUBLE";
+        case 2: return "5-POINTS";
+        case 3: return "VOID";
+        default:  return QString();
+    }
+}
+
+//---------------------------------------------------------------------------
 //  convertCoordinates
 //
 //! Convert ISC coordinates to real coordinates, and vice versa.

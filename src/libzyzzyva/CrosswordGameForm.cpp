@@ -58,7 +58,8 @@ const int SCORE_FONT_PIXEL_SIZE = 20;
 CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
     : ActionForm (CrosswordGameFormType, parent, f),
       aSeconds (0), bSeconds (0), aOvertime (false), bOvertime (false),
-      gameStatus (NoGame), game (new CrosswordGameGame()), iscThread (0)
+      myPlayerNum (0), gameStatus (NoGame), game (new CrosswordGameGame()),
+      iscThread (0)
 {
     QFont playerFont = qApp->font();
     playerFont.setPixelSize (PLAYER_FONT_PIXEL_SIZE);
@@ -396,6 +397,16 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
     // (um, the client pickes tiles for both players and who goes first???)
     // ACCEPT moobles 0 60 0 0 0 1 2 egimnor eeeghns
 
+    // From the just plain weird dept:
+    // I got this when logging in after having signed Fair-Play Agreement.
+    // Everything should be on one line with no spaces between the commas and
+    // quoted bits.
+    // XI "b9qj9lm 9q9","pilXEbCMmEM9Rlv?","11gYVt","MvlR88b9MvRc 9q9",
+    // "MvlR88b9MvRc","gQ11VV","","pCeERbbEpilXEBRc9M","Y","","FieEA9bXcRe",
+    // "Y","","R0KEpilXACeX9l","Y","","ReRBlRcEMibn9l","Y","",
+    // "pCeE9n9lrEBRc9","Y"
+
+
     // Take care of messages the GUI doesn't need to know about
     if ((command == "TELL") || (command == "WHISPER")) {
         QString sender = args.section (" ", 0, 0);
@@ -413,20 +424,42 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
     }
 
     else if (command == "MATCH") {
-        //args = args.simplified();
+        QStringList split = args.simplified().split (" ");
+        int rating = split[0].toInt();
+        QString requester = split[1];
+        int lexicon = split[2].toInt();
+        QString lexiconName = IscConverter::intToLexicon (lexicon);
+        int minutes = split[3].toInt();
+        int increment = split[4].toInt();
+        int rated = split[5].toInt();
+        int noescape = split[6].toInt();
+        int challenge = split[7].toInt();
+        QString challengeName = IscConverter::intToChallenge (challenge);
+        QString somethingG = split[8];   // -1
 
-        //QStringList split = args.split (" ");
-        //QString somethingA = split[0];
-        //QString requester = split[1];
-        //QString somethingB = split[2];
-        //int minutes = split[3].toInt();
-        //QString somethingC = split[4];
-        //QString somethingD = split[5];
-        //QString somethingE = split[6];
-        //QString somethingF = split[7];
-        //QString somethingG = split[8];
-        //    messageAppendHtml (sender + " whispers: " + text,
-        //                    QColor (0x64, 0x95, 0xed));
+        QString displayMessage = "MATCH request from " + requester + " (" +
+            QString::number (rating) + "): " + lexiconName + " " +
+            QString::number (minutes) + " " + QString::number (increment) +
+            " " + (rated ? QString ("rated") : QString ("unrated")) + " " +
+            (noescape ? QString ("noescape ") : QString ("")) + challengeName;
+
+        // A different (nicer?) match request message
+        //QString displayMessage = "MATCH request from " + requester + " (" +
+        //    QString::number (rating) + "):\n"
+        //    "Lexicon: " + lexiconName + "\n" +
+        //    "Time: " + QString::number (minutes) + " minutes, " +
+        //    QString::number (increment) + " second increment\n" +
+        //    "Rated: " + (rated ? QString ("yes") : QString ("no")) + "\n" +
+        //    "Noescape: " + (noescape ? QString ("on") : QString ("off")) +
+        //    "\nChallenge: " + challengeName;
+
+        messageAppendHtml (displayMessage, QColor (0xff, 0x00, 0xff));
+
+        QString instructions = "Type 'ACCEPT " + requester + "' to accept "
+            "the challenge, or 'DECLINE " + requester + "' to decline it.";
+        messageAppendHtml (instructions, QColor (0x00, 0x00, 0x00));
+
+        // MATCH 0 moobles 0 60 0 0 0 1 -1
 
         //if (requester == "moobles") {
         //    QString response = "ACCEPT " + requester + " " + somethingB +
@@ -437,12 +470,14 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         //    qDebug() << "Sending response: " << response;
         //    iscThread->sendMessage (response);
         //}
-
-        messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
     }
 
     else if (command == "OBSERVE") {
         processObserve (args);
+    }
+
+    else if (command == "MOVE") {
+        processMove (message);
     }
 
     else if (command == "ASITIS") {
@@ -740,6 +775,9 @@ CrosswordGameForm::processObserve (const QString& string)
     // OBSERVE PAS   41 21 8A_cvaVcier_92
 
     if (action == "MOVE") {
+        processMove (string);
+
+
         CrosswordGameMove move (action + " " + args.simplified());
         int playerToMove = game->getPlayerToMove();
         move.setPlayerNum (playerToMove);
@@ -855,22 +893,17 @@ CrosswordGameForm::processLogin (const QString& string)
 
     QStringList vars = lines[1].split (" ");
 
-    QString lexicon;
-    char lexnum = vars[0][0].toAscii();
-    switch (lexnum) {
-        case '0': lexicon = "TWL98"; break;
-        case '1': lexicon = "SOWPODS"; break;
-        case '2': lexicon = "ODS"; break;
-        case '3': lexicon = "LOC2000"; break;
-
-                  // FIXME
-        case '4': lexicon = "PARO"; break;
-                  // FIXME
-        case '5': lexicon = "MULTI"; break;
-
-        case '6': lexicon = "SWL"; break;
-        default:  lexicon = "Unknown"; break;
-    }
+    QString lexicon = IscConverter::intToLexicon (vars[0].toInt());
+    //switch (lexnum) {
+    //    case '0': lexicon = "TWL98"; break;
+    //    case '1': lexicon = "SOWPODS"; break;
+    //    case '2': lexicon = "ODS"; break;
+    //    case '3': lexicon = "LOC2000"; break;
+    //    case '4': lexicon = "MULTI"; break;
+    //    case '5': lexicon = "PARO"; break;
+    //    case '6': lexicon = "SWL"; break;
+    //    default:  lexicon = "Unknown"; break;
+    //}
 
     int minutes = vars[1].toInt();
     QString increment = vars[2];
@@ -1016,6 +1049,7 @@ CrosswordGameForm::processResign (const QString& string)
 
     // FIXME: Need to account for the method of resigning - was it forfeiting
     // on time?  abort by mutual agreement?  something else?
+    // 0: Game aborted by mutual agreement.
     // 1: ?
     // 2: ?
     // 3: ?
@@ -1140,6 +1174,7 @@ CrosswordGameForm::processResign (const QString& string)
     }
 
     gameStatus = NoGame;
+    myPlayerNum = 0;
     gameChanged();
 }
 

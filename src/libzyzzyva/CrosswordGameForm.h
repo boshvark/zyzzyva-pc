@@ -74,6 +74,7 @@ class CrosswordGameForm : public ActionForm
     //void processGameAction (const QString& string);
     void processCommand (const QString& string);
     void processObserve (const QString& string);
+    void processMove (const QString& string);
     void processLogin (const QString& string);
     void processResign (const QString& string);
     void makeMove (CrosswordGameMove& move);
@@ -118,6 +119,7 @@ class CrosswordGameForm : public ActionForm
     bool aOvertime;
     bool bOvertime;
 
+    int myPlayerNum;
     GameStatus gameStatus;
     CrosswordGameGame* game;
     IscConnectionThread* iscThread;

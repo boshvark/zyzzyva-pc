@@ -32,6 +32,10 @@ namespace IscConverter
     int timeIscToReal (int minutes, int seconds, bool overtime = false);
     void timeRealToIsc (int totalSeconds, int& minutes, int& seconds,
                         bool overtime = false);
+    int lexiconToInt (const QString& lexicon);
+    QString intToLexicon (int lexicon);
+    int challengeToInt (const QString& challenge);
+    QString intToChallenge (int challenge);
     QString convertCoordinates (const QString& coordinates);
 };
 
