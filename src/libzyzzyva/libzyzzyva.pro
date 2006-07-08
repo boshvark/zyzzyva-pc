@@ -69,6 +69,7 @@ SOURCES = \
     MainWindow.cpp \
     NewQuizDialog.cpp \
     QuizCanvas.cpp \
+    QuizDatabase.cpp \
     QuizEngine.cpp \
     QuizForm.cpp \
     QuizProgress.cpp \

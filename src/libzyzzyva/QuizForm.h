@@ -40,6 +40,7 @@
 class AnalyzeQuizDialog;
 class DefinitionLabel;
 class QuizCanvas;
+class QuizDatabase;
 class QuizEngine;
 class QuizQuestionLabel;
 class QuizSpec;
@@ -151,8 +152,9 @@ class QuizForm : public ActionForm
     bool recordStatsBlocked;
     bool unsavedChanges;
 
-    QSqlDatabase* db;
-    QString dbConnectionName;
+    QuizDatabase* db;
+    //QSqlDatabase* db;
+    //QString dbConnectionName;
 
     QTimer* displayAnswerTimer;
     int currentDisplayAnswer;

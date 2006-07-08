@@ -30,6 +30,7 @@
 #include "NewQuizDialog.h"
 #include "Rand.h"
 #include "QuizCanvas.h"
+#include "QuizDatabase.h"
 #include "QuizEngine.h"
 #include "QuizQuestionLabel.h"
 #include "WordEngine.h"
@@ -44,14 +45,12 @@
 #include <QColor>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QSqlQuery>
 #include <QTimerEvent>
 #include <QGridLayout>
 #include <QTextStream>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <ctime>
 
 using namespace Defs;
 
@@ -1471,44 +1470,12 @@ void
 QuizForm::connectToDatabase()
 {
     QString lexicon = quizEngine->getQuizSpec().getLexicon();
-
-    QString dirName = Auxil::getQuizDir() + "/data/" + lexicon;
-    QDir dir (dirName);
-    if (!dir.exists() && !dir.mkpath (dirName)) {
-        qWarning ("Cannot create quiz stats directory\n");
-        return;
-    }
-
     QString quizType = quizTypeLabel->text();
-    QString dbFilename = dirName + "/" + quizType + ".db";
 
-    // Get random connection name
-    Rand rng (Rand::MarsagliaMwc, std::time (0), Auxil::getPid());
-    unsigned int r = rng.rand();
-    dbConnectionName = "quiz" + QString::number (r);
-    db = new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE",
-                                                      dbConnectionName));
-    db->setDatabaseName (dbFilename);
-    if (!db->open())
-        return;
-
-    // For some reason, CREATE TABLE IF NOT EXISTS is not working?  Syntax
-    // error near "NOT"
-
-    QSqlQuery query (*db);
-    query.exec ("SELECT name FROM sqlite_master WHERE type='table' "
-                "AND name='questions'");
-    if (!query.next()) {
-        query.exec ("CREATE TABLE questions "
-            "(question varchar(16), correct integer, incorrect integer, "
-            "streak integer, last_correct integer, difficulty integer)");
-    }
-
-    query.exec ("SELECT name FROM sqlite_master WHERE type='index' "
-                "AND name='question_index' AND tbl_name='questions'");
-    if (!query.next()) {
-        query.exec ("CREATE UNIQUE INDEX question_index ON questions "
-                    "(question)");
+    db = new QuizDatabase (lexicon, quizType);
+    if (!db->isValid()) {
+        delete db;
+        db = 0;
     }
 }
 
@@ -1520,13 +1487,8 @@ QuizForm::connectToDatabase()
 void
 QuizForm::disconnectDatabase()
 {
-    if (db) {
-        if (db->isOpen())
-            db->close();
-        delete db;
-        QSqlDatabase::removeDatabase (dbConnectionName);
-        dbConnectionName = QString::null;
-    }
+    delete db;
+    db = 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1540,71 +1502,10 @@ QuizForm::disconnectDatabase()
 void
 QuizForm::recordQuestionStats (bool correct)
 {
-    if (!db->isOpen())
+    if (!db || !db->isValid())
         return;
 
-    QString question = quizEngine->getQuestion();
-
-    QSqlQuery query (*db);
-    query.prepare ("SELECT correct, incorrect, streak, last_correct, "
-                   "difficulty FROM questions WHERE question=?");
-    query.bindValue (0, question);
-    query.exec();
-
-    if (query.next()) {
-        int numCorrect = query.value (0).toInt();
-        int numIncorrect = query.value (1).toInt();
-        int streak = query.value (2).toInt();
-        int lastCorrect = query.value (3).toInt();
-        int difficulty = query.value (4).toInt();
-
-        if (correct) {
-            ++numCorrect;
-            if (streak < 0)
-                streak = 1;
-            else
-                ++streak;
-            lastCorrect = std::time (0);
-        }
-        else {
-            ++numIncorrect;
-            if (streak > 0)
-                streak = -1;
-            else
-                --streak;
-        }
-
-        query.prepare ("UPDATE questions SET correct=?, incorrect=?, "
-                       "streak=?, last_correct=?, difficulty=? "
-                       "WHERE question=?");
-        query.bindValue (0, numCorrect);
-        query.bindValue (1, numIncorrect);
-        query.bindValue (2, streak);
-        query.bindValue (3, lastCorrect);
-        // XXX: Fix difficulty ratings!
-        query.bindValue (4, difficulty);
-        query.bindValue (5, question);
-        query.exec();
-    }
-
-    else {
-        int numCorrect = (correct ? 1 : 0);
-        int numIncorrect = (correct ? 0 : 1);
-        int streak = (correct ? 1 : -1);
-        int lastCorrect = (correct ? std::time (0) : 0);
-        // XXX: Fix difficulty ratings!
-        int difficulty = 50;
-        query.prepare ("INSERT INTO questions (question, correct, "
-                       "incorrect, streak, last_correct, difficulty) "
-                       "VALUES (?, ?, ?, ?, ?, ?)");
-        query.bindValue (0, question);
-        query.bindValue (1, numCorrect);
-        query.bindValue (2, numIncorrect);
-        query.bindValue (3, streak);
-        query.bindValue (4, lastCorrect);
-        query.bindValue (5, difficulty);
-        query.exec();
-    }
+    db->recordResponse (quizEngine->getQuestion(), correct);
 }
 
 //---------------------------------------------------------------------------
@@ -1630,5 +1531,3 @@ QuizForm::timerEvent (QTimerEvent* event)
         checkBringsJudgment = old;
     }
 }
-
-
