@@ -776,13 +776,6 @@ CrosswordGameForm::processObserve (const QString& string)
 
     if (action == "MOVE") {
         processMove (string);
-
-
-        CrosswordGameMove move (action + " " + args.simplified());
-        int playerToMove = game->getPlayerToMove();
-        move.setPlayerNum (playerToMove);
-        fixMoveOvertime (move);
-        makeMove (move);
     }
 
     else if (action == "CHANGE") {
@@ -868,6 +861,23 @@ CrosswordGameForm::processObserve (const QString& string)
     else {
         messageAppendHtml (string, QColor (0x00, 0x00, 0x00));
     }
+}
+
+//---------------------------------------------------------------------------
+//  processMove
+//
+//! Process a MOVE message from the ISC server.
+//
+//! @param string the message
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::processMove (const QString& string)
+{
+    CrosswordGameMove move (string.simplified());
+    int playerToMove = game->getPlayerToMove();
+    move.setPlayerNum (playerToMove);
+    fixMoveOvertime (move);
+    makeMove (move);
 }
 
 //---------------------------------------------------------------------------
