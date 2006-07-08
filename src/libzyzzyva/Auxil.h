@@ -53,6 +53,8 @@ namespace Auxil {
     SearchCondition::SearchType stringToSearchType (const QString& string);
     QString quizTypeToString (QuizSpec::QuizType type);
     QuizSpec::QuizType stringToQuizType (const QString& string);
+    QString quizMethodToString (QuizSpec::QuizMethod method);
+    QuizSpec::QuizMethod stringToQuizMethod (const QString& string);
     QDate lexiconToDate (const QString& lexicon);
 }
 

@@ -49,9 +49,16 @@ class QuizSpec
         QuizWordListRecall
     };
 
+    enum QuizMethod {
+        UnknownQuizMethod = 0,
+        StandardQuizMethod,
+        CardboxQuizMethod
+    };
+
     public:
-    QuizSpec() : type (QuizAnagrams), randomOrder (true), randomSeed (0),
-                 randomSeed2 (0), randomAlgorithm (Rand::MarsagliaMwc) { }
+    QuizSpec() : type (QuizAnagrams), method (StandardQuizMethod),
+                 randomOrder (true), randomSeed (0), randomSeed2 (0),
+                 randomAlgorithm (Rand::MarsagliaMwc) { }
     ~QuizSpec() { }
 
     QString asString() const;
@@ -62,6 +69,7 @@ class QuizSpec
 
     void setLexicon (const QString& lex) { lexicon = lex; }
     void setType (QuizType t) { type = t; }
+    void setMethod (QuizMethod m) { method = m; }
     void setSearchSpec (const SearchSpec& s) { searchSpec = s; }
     void setTimerSpec (const QuizTimerSpec& s) { timerSpec = s; }
     void setProgress (const QuizProgress& p) { progress = p; }
@@ -88,6 +96,7 @@ class QuizSpec
     private:
     QString lexicon;
     QuizType type;
+    QuizMethod method;
     SearchSpec searchSpec;
     QuizTimerSpec timerSpec;
     QuizProgress progress;

@@ -86,6 +86,9 @@ const QString QUIZ_TYPE_ANAGRAM_HOOKS = "Anagram Hooks";
 const QString QUIZ_TYPE_ANAGRAM_HOOK_MNEMONICS = "Anagram Hook Mnemonics";
 const QString QUIZ_TYPE_WORD_LIST_RECALL = "Word List Recall";
 
+const QString QUIZ_METHOD_STANDARD = "Standard";
+const QString QUIZ_METHOD_CARDBOX = "Cardbox";
+
 using namespace Defs;
 
 //---------------------------------------------------------------------------
@@ -645,6 +648,47 @@ Auxil::stringToQuizType (const QString& s)
         return QuizSpec::QuizWordListRecall;
     else
         return QuizSpec::UnknownQuizType;
+}
+
+//---------------------------------------------------------------------------
+//  quizMethodToString
+//
+//! Convert a quiz method to a string representation.
+//
+//! @param t the quiz method
+//! @return the string representation
+//---------------------------------------------------------------------------
+QString
+Auxil::quizMethodToString (QuizSpec::QuizMethod m)
+{
+    switch (m) {
+        case QuizSpec::StandardQuizMethod:
+        return QUIZ_METHOD_STANDARD;
+
+        case QuizSpec::CardboxQuizMethod:
+        return QUIZ_METHOD_CARDBOX;
+
+        default: return QString::null;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  stringToQuizMethod
+//
+//! Convert a string representation to a quiz type.
+//
+//! @param s the string representation
+//! @return the quiz type
+//---------------------------------------------------------------------------
+QuizSpec::QuizMethod
+Auxil::stringToQuizMethod (const QString& s)
+{
+    if (s == QUIZ_METHOD_STANDARD)
+        return QuizSpec::StandardQuizMethod;
+    else if (s == QUIZ_METHOD_CARDBOX)
+        return QuizSpec::CardboxQuizMethod;
+    else
+        return QuizSpec::UnknownQuizMethod;
 }
 
 //---------------------------------------------------------------------------
