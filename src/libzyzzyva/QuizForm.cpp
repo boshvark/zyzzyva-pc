@@ -512,7 +512,7 @@ QuizForm::newQuiz (const QuizSpec& spec)
 
     connectToDatabase();
 
-    setUnsavedChanges (false);
+    setUnsavedChanges (true);
     return true;
 }
 
