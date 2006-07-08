@@ -37,9 +37,7 @@ const int KEEP_ALIVE_INTERVAL = 31000;
 //---------------------------------------------------------------------------
 IscConnectionThread::~IscConnectionThread()
 {
-    if (socket)
-        socket->disconnectFromHost();
-    delete socket;
+    disconnectFromServer();
 }
 
 //---------------------------------------------------------------------------
