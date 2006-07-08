@@ -96,8 +96,8 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
                           (QuizSpec::CardboxQuizMethod));
     methodCombo->setCurrentIndex (methodCombo->findText
         (Auxil::quizMethodToString (QuizSpec::StandardQuizMethod)));
-    //connect (methodCombo, SIGNAL (activated (const QString&)),
-    //         SLOT (methodActivated (const QString&)));
+    connect (methodCombo, SIGNAL (activated (const QString&)),
+             SLOT (methodActivated (const QString&)));
     methodHlay->addWidget (methodCombo);
 
     QGroupBox* specGbox = new QGroupBox ("Search Specification");
@@ -240,11 +240,13 @@ NewQuizDialog::getQuizSpec()
 void
 NewQuizDialog::setQuizSpec (const QuizSpec& spec)
 {
+    // Set method before type, because type may end up changing the method
+    methodCombo->setCurrentIndex
+        (methodCombo->findText (Auxil::quizMethodToString (spec.getMethod())));
+    methodActivated (methodCombo->currentText());
     typeCombo->setCurrentIndex
         (typeCombo->findText (Auxil::quizTypeToString (spec.getType())));
     typeActivated (typeCombo->currentText());
-    methodCombo->setCurrentIndex
-        (methodCombo->findText (Auxil::quizMethodToString (spec.getMethod())));
     specForm->setSearchSpec (spec.getSearchSpec());
     randomCbox->setChecked (spec.getRandomOrder());
     timerCbox->setChecked (false);
@@ -277,7 +279,8 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
 //  typeActivated
 //
 //! Called when the contents of the Quiz Type combo box are changed.  Disable
-//! the Random checkbox if the Word List Recall type is selected.
+//! the Random checkbox if the Word List Recall type is selected.  Also change
+//! the method to Standard if the Word List Recall type is selected.
 //
 //! @param text the text in the combo box
 //---------------------------------------------------------------------------
@@ -288,8 +291,39 @@ NewQuizDialog::typeActivated (const QString& text)
     if (type == QuizSpec::QuizWordListRecall) {
         randomCbox->setEnabled (false);
         randomCbox->setChecked (false);
+        methodCombo->setEnabled (false);
+        methodCombo->setCurrentIndex (methodCombo->findText
+            (Auxil::quizMethodToString (QuizSpec::StandardQuizMethod)));
     }
     else {
+        randomCbox->setEnabled (true);
+        methodCombo->setEnabled (true);
+    }
+    disableProgress();
+    clearFilename();
+}
+
+//---------------------------------------------------------------------------
+//  methodActivated
+//
+//! Called when the contents of the Quiz Method combo box are changed.
+//! Disable the Restore Progress and Random checkboxes if the Cardbox method
+//! is selected.
+//
+//! @param text the text in the combo box
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::methodActivated (const QString& text)
+{
+    QuizSpec::QuizMethod type = Auxil::stringToQuizMethod (text);
+    if (type == QuizSpec::CardboxQuizMethod) {
+        progressCbox->setEnabled (false);
+        progressCbox->setChecked (false);
+        randomCbox->setEnabled (false);
+        randomCbox->setChecked (false);
+    }
+    else {
+        progressCbox->setEnabled (true);
         randomCbox->setEnabled (true);
     }
     disableProgress();
