@@ -268,7 +268,9 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
             default: break;
         }
     }
-    if (!spec.getProgress().isEmpty()) {
+    if ((spec.getMethod() == QuizSpec::StandardQuizMethod) &&
+        !spec.getProgress().isEmpty())
+    {
         progressCbox->setEnabled (true);
         progressCbox->setChecked (true);
     }
@@ -289,16 +291,14 @@ NewQuizDialog::typeActivated (const QString& text)
 {
     QuizSpec::QuizType type = Auxil::stringToQuizType (text);
     if (type == QuizSpec::QuizWordListRecall) {
-        randomCbox->setEnabled (false);
-        randomCbox->setChecked (false);
         methodCombo->setEnabled (false);
         methodCombo->setCurrentIndex (methodCombo->findText
             (Auxil::quizMethodToString (QuizSpec::StandardQuizMethod)));
     }
     else {
-        randomCbox->setEnabled (true);
         methodCombo->setEnabled (true);
     }
+    updateForm();
     disableProgress();
     clearFilename();
 }
@@ -313,19 +313,9 @@ NewQuizDialog::typeActivated (const QString& text)
 //! @param text the text in the combo box
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::methodActivated (const QString& text)
+NewQuizDialog::methodActivated (const QString&)
 {
-    QuizSpec::QuizMethod type = Auxil::stringToQuizMethod (text);
-    if (type == QuizSpec::CardboxQuizMethod) {
-        progressCbox->setEnabled (false);
-        progressCbox->setChecked (false);
-        randomCbox->setEnabled (false);
-        randomCbox->setChecked (false);
-    }
-    else {
-        progressCbox->setEnabled (true);
-        randomCbox->setEnabled (true);
-    }
+    updateForm();
     disableProgress();
     clearFilename();
 }
@@ -500,4 +490,36 @@ void
 NewQuizDialog::clearFilename()
 {
     quizSpec.setFilename (QString::null);
+}
+
+//---------------------------------------------------------------------------
+//  updateForm
+//
+//! Update the state of the form based on the contents of the Quiz Type and
+//! Quiz Method combo boxes.
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::updateForm()
+{
+    QuizSpec::QuizType type =
+        Auxil::stringToQuizType (typeCombo->currentText());
+    QuizSpec::QuizMethod method =
+        Auxil::stringToQuizMethod (methodCombo->currentText());
+
+    if (method == QuizSpec::CardboxQuizMethod) {
+        progressCbox->setEnabled (false);
+        progressCbox->setChecked (false);
+        randomCbox->setEnabled (false);
+        randomCbox->setChecked (false);
+    }
+
+    else if (type == QuizSpec::QuizWordListRecall) {
+        randomCbox->setEnabled (false);
+        randomCbox->setChecked (false);
+    }
+
+    else {
+        progressCbox->setEnabled (true);
+        randomCbox->setEnabled (true);
+    }
 }
