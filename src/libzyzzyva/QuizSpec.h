@@ -84,6 +84,7 @@ class QuizSpec
 
     QString getLexicon() const { return lexicon; }
     QuizType getType() const { return type; }
+    QuizMethod getMethod() const { return method; }
     SearchSpec getSearchSpec() const { return searchSpec; }
     QuizTimerSpec getTimerSpec() const { return timerSpec; }
     QuizProgress getProgress() const { return progress; }

@@ -81,6 +81,25 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
              SLOT (typeActivated (const QString&)));
     typeHlay->addWidget (typeCombo);
 
+    QHBoxLayout* methodHlay = new QHBoxLayout;
+    Q_CHECK_PTR (methodHlay);
+    mainVlay->addLayout (methodHlay);
+
+    QLabel* methodLabel = new QLabel ("Quiz Method:");
+    Q_CHECK_PTR (methodLabel);
+    methodHlay->addWidget (methodLabel);
+
+    methodCombo = new QComboBox;
+    methodCombo->addItem (Auxil::quizMethodToString
+                          (QuizSpec::StandardQuizMethod));
+    methodCombo->addItem (Auxil::quizMethodToString
+                          (QuizSpec::CardboxQuizMethod));
+    methodCombo->setCurrentIndex (methodCombo->findText
+        (Auxil::quizMethodToString (QuizSpec::StandardQuizMethod)));
+    //connect (methodCombo, SIGNAL (activated (const QString&)),
+    //         SLOT (methodActivated (const QString&)));
+    methodHlay->addWidget (methodCombo);
+
     QGroupBox* specGbox = new QGroupBox ("Search Specification");
     Q_CHECK_PTR (specGbox);
     mainVlay->addWidget (specGbox);
@@ -187,6 +206,8 @@ NewQuizDialog::getQuizSpec()
 {
     quizSpec.setLexicon (wordEngine->getLexiconName());
     quizSpec.setType (Auxil::stringToQuizType (typeCombo->currentText()));
+    quizSpec.setMethod (Auxil::stringToQuizMethod
+                        (methodCombo->currentText()));
     quizSpec.setSearchSpec (specForm->getSearchSpec());
     quizSpec.setRandomOrder (randomCbox->isChecked());
 
@@ -219,9 +240,11 @@ NewQuizDialog::getQuizSpec()
 void
 NewQuizDialog::setQuizSpec (const QuizSpec& spec)
 {
-    typeCombo->setCurrentIndex (typeCombo->findText
-                                (Auxil::quizTypeToString (spec.getType())));
+    typeCombo->setCurrentIndex
+        (typeCombo->findText (Auxil::quizTypeToString (spec.getType())));
     typeActivated (typeCombo->currentText());
+    methodCombo->setCurrentIndex
+        (methodCombo->findText (Auxil::quizMethodToString (spec.getMethod())));
     specForm->setSearchSpec (spec.getSearchSpec());
     randomCbox->setChecked (spec.getRandomOrder());
     timerCbox->setChecked (false);
