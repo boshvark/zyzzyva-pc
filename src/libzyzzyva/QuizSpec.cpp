@@ -97,7 +97,7 @@ QuizSpec::asDomElement() const
     QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
     topElement.setAttribute (XML_TOP_TYPE_ATTR, Auxil::quizTypeToString
                              (type));
-    topElement.setAttribute (XML_TOP_TYPE_ATTR, Auxil::quizMethodToString
+    topElement.setAttribute (XML_TOP_METHOD_ATTR, Auxil::quizMethodToString
                              (method));
     topElement.setAttribute (XML_TOP_LEXICON_ATTR, lexicon);
 
