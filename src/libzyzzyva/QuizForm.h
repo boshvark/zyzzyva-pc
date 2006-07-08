@@ -153,8 +153,6 @@ class QuizForm : public ActionForm
     bool unsavedChanges;
 
     QuizDatabase* db;
-    //QSqlDatabase* db;
-    //QString dbConnectionName;
 
     QTimer* displayAnswerTimer;
     int currentDisplayAnswer;
