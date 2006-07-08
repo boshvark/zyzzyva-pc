@@ -513,6 +513,8 @@ QuizForm::newQuiz (const QuizSpec& spec)
     connectToDatabase();
 
     setUnsavedChanges (true);
+    if (spec.getMethod() == QuizSpec::CardboxQuizMethod)
+        saveQuizButton->setEnabled (false);
     return true;
 }
 
@@ -1369,6 +1371,9 @@ QuizForm::setQuizNameFromFilename (const QString& filename)
 void
 QuizForm::setUnsavedChanges (bool b)
 {
+    if (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod)
+        return;
+
     unsavedChanges = b;
     saveQuizButton->setEnabled (b);
 }
