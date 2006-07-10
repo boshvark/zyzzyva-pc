@@ -524,7 +524,7 @@ QuizForm::newQuiz (const QuizSpec& spec)
     QString quizType = quizTypeLabel->text();
     connectToDatabase (lexicon, quizType);
 
-    setUnsavedChanges (true);
+    setUnsavedChanges (spec.getFilename().isEmpty());
     if (spec.getMethod() == QuizSpec::CardboxQuizMethod)
         saveQuizButton->setEnabled (false);
     return true;
