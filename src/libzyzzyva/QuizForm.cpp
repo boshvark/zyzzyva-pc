@@ -481,9 +481,19 @@ QuizForm::newQuiz (const QuizSpec& spec)
     QApplication::restoreOverrideCursor();
 
     if (!ok) {
-        QMessageBox::warning (MainWindow::getInstance(), "Cannot Start Quiz",
-                              "The quiz cannot be started because no "
-                              "questions were found.");
+        QString message;
+        if (spec.getMethod() == QuizSpec::CardboxQuizMethod) {
+            message = "No matching questions are ready for review.\n"
+                      "Please modify your search criteria,\n"
+                      "or add more words to the Cardbox system.";
+        }
+        else {
+            message = "No matching questions were found.\n"
+                      "Please modify your search criteria.";
+        }
+
+        QMessageBox::warning (MainWindow::getInstance(), "No Questions Found",
+                              message);
         return false;
     }
 
@@ -510,7 +520,9 @@ QuizForm::newQuiz (const QuizSpec& spec)
 
     QTimer::singleShot (0, this, SLOT (selectInputArea()));
 
-    connectToDatabase();
+    QString lexicon = quizEngine->getQuizSpec().getLexicon();
+    QString quizType = quizTypeLabel->text();
+    connectToDatabase (lexicon, quizType);
 
     setUnsavedChanges (true);
     if (spec.getMethod() == QuizSpec::CardboxQuizMethod)
@@ -1470,12 +1482,15 @@ QuizForm::responseMatchesQuestion (const QString& response) const
 //  connectToDatabase
 //
 //! Connect to the database.  Create the database if necessary.
+//
+//! @param lexicon the lexicon name
+//! @param quizType the quiz type
 //---------------------------------------------------------------------------
 void
-QuizForm::connectToDatabase()
+QuizForm::connectToDatabase (const QString& lexicon, const QString& quizType)
 {
-    QString lexicon = quizEngine->getQuizSpec().getLexicon();
-    QString quizType = quizTypeLabel->text();
+    if (db && db->isValid())
+        return;
 
     db = new QuizDatabase (lexicon, quizType);
     if (!db->isValid()) {

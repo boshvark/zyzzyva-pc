@@ -33,6 +33,7 @@ using namespace Defs;
 const QString XML_TOP_ELEMENT = "zyzzyva-quiz";
 const QString XML_TOP_TYPE_ATTR = "type";
 const QString XML_TOP_METHOD_ATTR = "method";
+const QString XML_TOP_QUESTION_ORDER_ATTR = "question-order";
 const QString XML_TOP_LEXICON_ATTR = "lexicon";
 const QString XML_QUESTION_SOURCE_ELEMENT = "question-source";
 const QString XML_QUESTION_SOURCE_TYPE_ATTR = "type";
@@ -95,10 +96,12 @@ QuizSpec::asDomElement() const
 {
     QDomDocument doc;
     QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
-    topElement.setAttribute (XML_TOP_TYPE_ATTR, Auxil::quizTypeToString
-                             (type));
-    topElement.setAttribute (XML_TOP_METHOD_ATTR, Auxil::quizMethodToString
-                             (method));
+    topElement.setAttribute (XML_TOP_TYPE_ATTR,
+                             Auxil::quizTypeToString (type));
+    topElement.setAttribute (XML_TOP_METHOD_ATTR,
+                             Auxil::quizMethodToString (method));
+    topElement.setAttribute (XML_TOP_QUESTION_ORDER_ATTR,
+                             Auxil::quizQuestionOrderToString (questionOrder));
     topElement.setAttribute (XML_TOP_LEXICON_ATTR, lexicon);
 
     QDomElement sourceElement = doc.createElement
@@ -108,7 +111,7 @@ QuizSpec::asDomElement() const
     sourceElement.appendChild (searchSpec.asDomElement());
     topElement.appendChild (sourceElement);
 
-    if (randomOrder) {
+    if (questionOrder == RandomOrder) {
         QDomElement randomElement = doc.createElement
             (XML_RANDOMIZER_ELEMENT);
         randomElement.setAttribute (XML_RANDOMIZER_SEED_ATTR, randomSeed);
@@ -143,7 +146,7 @@ QuizSpec::fromDomElement (const QDomElement& element, QString*)
         return false;
 
     QuizSpec tmpSpec;
-    tmpSpec.setRandomOrder (false);
+    tmpSpec.setQuestionOrder (QuizSpec::RandomOrder);
 
     if (element.hasAttribute (XML_TOP_TYPE_ATTR)) {
         QuizSpec::QuizType type = Auxil::stringToQuizType
@@ -159,6 +162,14 @@ QuizSpec::fromDomElement (const QDomElement& element, QString*)
         if (method == QuizSpec::UnknownQuizMethod)
             return false;
         tmpSpec.setMethod (method);
+    }
+
+    if (element.hasAttribute (XML_TOP_QUESTION_ORDER_ATTR)) {
+        QuizSpec::QuestionOrder order = Auxil::stringToQuizQuestionOrder
+            (element.attribute (XML_TOP_QUESTION_ORDER_ATTR));
+        if (order == QuizSpec::UnknownOrder)
+            return false;
+        tmpSpec.setQuestionOrder (order);
     }
 
     if (element.hasAttribute (XML_TOP_LEXICON_ATTR))
@@ -207,7 +218,9 @@ QuizSpec::fromDomElement (const QDomElement& element, QString*)
         }
 
         else if (tag == XML_RANDOMIZER_ELEMENT) {
-            tmpSpec.setRandomOrder (true);
+            if (tmpSpec.getQuestionOrder() != QuizSpec::RandomOrder)
+                return false;
+
             if (!elem.hasAttribute (XML_RANDOMIZER_SEED_ATTR) ||
                 !elem.hasAttribute (XML_RANDOMIZER_ALGORITHM_ATTR))
             {

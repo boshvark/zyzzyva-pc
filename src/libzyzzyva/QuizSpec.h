@@ -55,9 +55,17 @@ class QuizSpec
         CardboxQuizMethod
     };
 
+    enum QuestionOrder {
+        UnknownOrder = 0,
+        RandomOrder,
+        AlphabeticalOrder,
+        ProbabilityOrder,
+        ScheduleOrder
+    };
+
     public:
     QuizSpec() : type (QuizAnagrams), method (StandardQuizMethod),
-                 randomOrder (true), randomSeed (0), randomSeed2 (0),
+                 questionOrder (RandomOrder), randomSeed (0), randomSeed2 (0),
                  randomAlgorithm (Rand::MarsagliaMwc) { }
     ~QuizSpec() { }
 
@@ -73,7 +81,7 @@ class QuizSpec
     void setSearchSpec (const SearchSpec& s) { searchSpec = s; }
     void setTimerSpec (const QuizTimerSpec& s) { timerSpec = s; }
     void setProgress (const QuizProgress& p) { progress = p; }
-    void setRandomOrder (bool b) { randomOrder = b; }
+    void setQuestionOrder (QuestionOrder o) { questionOrder = o; }
     void setRandomSeed (unsigned int i) { randomSeed = i; }
     void setRandomSeed2 (unsigned int i) { randomSeed2 = i; }
     void setRandomAlgorithm (int i) { randomAlgorithm = i; }
@@ -88,7 +96,7 @@ class QuizSpec
     SearchSpec getSearchSpec() const { return searchSpec; }
     QuizTimerSpec getTimerSpec() const { return timerSpec; }
     QuizProgress getProgress() const { return progress; }
-    bool getRandomOrder() const { return randomOrder; }
+    QuestionOrder getQuestionOrder() const { return questionOrder; }
     unsigned int getRandomSeed() const { return randomSeed; }
     unsigned int getRandomSeed2() const { return randomSeed2; }
     int getRandomAlgorithm() const { return randomAlgorithm; }
@@ -101,7 +109,7 @@ class QuizSpec
     SearchSpec searchSpec;
     QuizTimerSpec timerSpec;
     QuizProgress progress;
-    bool randomOrder;
+    QuestionOrder questionOrder;
     unsigned int randomSeed;
     unsigned int randomSeed2;
     int randomAlgorithm;

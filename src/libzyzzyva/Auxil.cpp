@@ -89,6 +89,12 @@ const QString QUIZ_TYPE_WORD_LIST_RECALL = "Word List Recall";
 const QString QUIZ_METHOD_STANDARD = "Standard";
 const QString QUIZ_METHOD_CARDBOX = "Cardbox";
 
+const QString QUIZ_ORDER_UNKNOWN = "Unknown";
+const QString QUIZ_ORDER_RANDOM = "Random";
+const QString QUIZ_ORDER_ALPHABETICAL = "Alphabetical";
+const QString QUIZ_ORDER_PROBABILITY = "Probability";
+const QString QUIZ_ORDER_SCHEDULE = "Schedule";
+
 using namespace Defs;
 
 //---------------------------------------------------------------------------
@@ -655,7 +661,7 @@ Auxil::stringToQuizType (const QString& s)
 //
 //! Convert a quiz method to a string representation.
 //
-//! @param t the quiz method
+//! @param m the quiz method
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
@@ -689,6 +695,60 @@ Auxil::stringToQuizMethod (const QString& s)
         return QuizSpec::CardboxQuizMethod;
     else
         return QuizSpec::UnknownQuizMethod;
+}
+
+//---------------------------------------------------------------------------
+//  quizQuestionOrderToString
+//
+//! Convert a quiz question order to a string representation.
+//
+//! @param o the quiz question order
+//! @return the string representation
+//---------------------------------------------------------------------------
+QString
+Auxil::quizQuestionOrderToString (QuizSpec::QuestionOrder o)
+{
+    switch (o) {
+        case QuizSpec::UnknownOrder:
+        return QUIZ_ORDER_UNKNOWN;
+
+        case QuizSpec::RandomOrder:
+        return QUIZ_ORDER_RANDOM;
+
+        case QuizSpec::AlphabeticalOrder:
+        return QUIZ_ORDER_ALPHABETICAL;
+
+        case QuizSpec::ProbabilityOrder:
+        return QUIZ_ORDER_PROBABILITY;
+
+        case QuizSpec::ScheduleOrder:
+        return QUIZ_ORDER_SCHEDULE;
+
+        default: return QString::null;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  stringToQuizQuestionOrder
+//
+//! Convert a string representation to a quiz question order.
+//
+//! @param s the string representation
+//! @return the quiz question order
+//---------------------------------------------------------------------------
+QuizSpec::QuestionOrder
+Auxil::stringToQuizQuestionOrder (const QString& s)
+{
+    if (s == QUIZ_ORDER_RANDOM)
+        return QuizSpec::RandomOrder;
+    else if (s == QUIZ_ORDER_ALPHABETICAL)
+        return QuizSpec::AlphabeticalOrder;
+    else if (s == QUIZ_ORDER_PROBABILITY)
+        return QuizSpec::ProbabilityOrder;
+    else if (s == QUIZ_ORDER_SCHEDULE)
+        return QuizSpec::ScheduleOrder;
+    else
+        return QuizSpec::UnknownOrder;
 }
 
 //---------------------------------------------------------------------------

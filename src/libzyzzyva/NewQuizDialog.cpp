@@ -209,7 +209,14 @@ NewQuizDialog::getQuizSpec()
     quizSpec.setMethod (Auxil::stringToQuizMethod
                         (methodCombo->currentText()));
     quizSpec.setSearchSpec (specForm->getSearchSpec());
-    quizSpec.setRandomOrder (randomCbox->isChecked());
+
+    // FIXME: fix this when the checkbox is replaced by a combo box
+    if (randomCbox->isChecked()) {
+        quizSpec.setQuestionOrder (QuizSpec::RandomOrder);
+    }
+    else {
+        quizSpec.setQuestionOrder (QuizSpec::AlphabeticalOrder);
+    }
 
     QuizTimerSpec timerSpec;
     if (timerCbox->isChecked()) {
@@ -248,7 +255,10 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
         (typeCombo->findText (Auxil::quizTypeToString (spec.getType())));
     typeActivated (typeCombo->currentText());
     specForm->setSearchSpec (spec.getSearchSpec());
-    randomCbox->setChecked (spec.getRandomOrder());
+
+    // FIXME: fix this when the checkbox is replaced by a combo box
+    randomCbox->setChecked (spec.getQuestionOrder() == QuizSpec::RandomOrder);
+
     timerCbox->setChecked (false);
     timerSbox->setValue (0);
     timerCombo->setCurrentIndex (timerCombo->findText (TIMER_PER_RESPONSE));

@@ -79,46 +79,38 @@ QuizEngine::newQuiz (const QuizSpec& spec)
     quizSpec = spec;
     quizQuestions = questions;
 
-    // Do a random shuffle
-    if (quizSpec.getRandomOrder()) {
-        unsigned int seed = spec.getRandomSeed();
-        if (!seed)
-            seed = std::time (0);
-        unsigned int seed2 = spec.getRandomSeed2();
-        if (!seed2)
-            seed2 = Auxil::getPid();
-        rng.setAlgorithm (spec.getRandomAlgorithm());
-        rng.srand (seed, seed2);
-        quizSpec.setRandomSeed (seed);
-        quizSpec.setRandomSeed2 (seed2);
+    // FIXME: Implement other orderings
 
-        QString tmp;
-        int num = quizQuestions.size();
-        for (int i = 0; i < num - 1; ++i) {
-            unsigned int randnum = rng.rand (num - i - 1);
-            int rnum = i + randnum;
-            if (rnum == i)
-                continue;
-            tmp = quizQuestions[rnum];
-            quizQuestions[rnum] = quizQuestions[i];
-            quizQuestions[i] = tmp;
+    switch (quizSpec.getQuestionOrder()) {
+        case QuizSpec::RandomOrder: {
+            unsigned int seed = spec.getRandomSeed();
+            if (!seed)
+                seed = std::time (0);
+            unsigned int seed2 = spec.getRandomSeed2();
+            if (!seed2)
+                seed2 = Auxil::getPid();
+            rng.setAlgorithm (spec.getRandomAlgorithm());
+            rng.srand (seed, seed2);
+            quizSpec.setRandomSeed (seed);
+            quizSpec.setRandomSeed2 (seed2);
+
+            // XXX: We need a Shuffle class to handle shuffling using various
+            // algorithms!
+            QString tmp;
+            int num = quizQuestions.size();
+            for (int i = 0; i < num - 1; ++i) {
+                unsigned int randnum = rng.rand (num - i - 1);
+                int rnum = i + randnum;
+                if (rnum == i)
+                    continue;
+                tmp = quizQuestions[rnum];
+                quizQuestions[rnum] = quizQuestions[i];
+                quizQuestions[i] = tmp;
+            }
         }
+        break;
 
-        // XXX: We need a Shuffle class to handle shuffling using various
-        // algorithms!
-
-        // Original shuffle algorithm (flawed! but must be preserved for
-        // compatibility)
-//        int num = quizQuestions.size();
-//        for (int i = 0; i < num ; ++i) {
-//            unsigned int randnum = rng.rand (num - i - 1);
-//            int rnum = i + randnum;
-//            if (rnum == i)
-//                continue;
-//            tmp = quizQuestions[rnum];
-//            quizQuestions[rnum] = quizQuestions[i];
-//            quizQuestions[i] = tmp;
-//        }
+        default: break;
     }
 
     // Restore quiz progress

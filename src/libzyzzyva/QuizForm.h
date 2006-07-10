@@ -109,7 +109,7 @@ class QuizForm : public ActionForm
     void clearTileTheme();
     void reflowLayout();
     bool responseMatchesQuestion (const QString& response) const;
-    void connectToDatabase();
+    void connectToDatabase (const QString& lexicon, const QString& quizType);
     void disconnectDatabase();
     void recordQuestionStats (bool correct);
 
