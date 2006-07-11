@@ -248,7 +248,7 @@ QuizDatabase::getReadyQuestions (const QStringList& questions)
     inString += ")";
 
     QString queryStr = "SELECT question FROM questions WHERE "
-        "next_scheduled >= " + QString::number (now) + " AND "
+        "next_scheduled <= " + QString::number (now) + " AND "
         "question IN " + inString + " ORDER BY next_scheduled";
 
     QSqlQuery query (*db);
