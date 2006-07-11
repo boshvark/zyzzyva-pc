@@ -371,7 +371,9 @@ QuizForm::responseEntered()
     QuizEngine::ResponseStatus status = quizEngine->respond (response);
     QString displayResponse = response;
     QString statusStr = "";
-    setUnsavedChanges (true);
+
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+        setUnsavedChanges (true);
 
     if (status == QuizEngine::Correct) {
         if (response.contains (":"))
@@ -525,8 +527,6 @@ QuizForm::newQuiz (const QuizSpec& spec)
     connectToDatabase (lexicon, quizType);
 
     setUnsavedChanges (spec.getFilename().isEmpty());
-    if (spec.getMethod() == QuizSpec::CardboxQuizMethod)
-        saveQuizButton->setEnabled (false);
     return true;
 }
 
@@ -708,7 +708,8 @@ QuizForm::nextQuestionClicked()
                               "Error getting next question.");
     startQuestion();
     analyzeDialog->updateStats();
-    setUnsavedChanges (true);
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+        setUnsavedChanges (true);
 }
 
 //---------------------------------------------------------------------------
@@ -759,7 +760,9 @@ QuizForm::checkResponseClicked()
     checkResponseButton->setEnabled (false);
     quizEngine->completeQuestion();
     analyzeDialog->updateStats();
-    setUnsavedChanges (true);
+
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+        setUnsavedChanges (true);
 
     // FIXME: Count Incorrect answers (not just Missed) as incorrect when
     // recording stats
@@ -935,7 +938,9 @@ QuizForm::startQuestion()
         startNewTimer();
 
     updateStatusString();
-    setUnsavedChanges (true);
+
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+        setUnsavedChanges (true);
 
     QApplication::restoreOverrideCursor();
 }
@@ -1383,9 +1388,6 @@ QuizForm::setQuizNameFromFilename (const QString& filename)
 void
 QuizForm::setUnsavedChanges (bool b)
 {
-    if (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod)
-        return;
-
     unsavedChanges = b;
     saveQuizButton->setEnabled (b);
 }
