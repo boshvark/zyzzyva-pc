@@ -54,7 +54,7 @@ class NewQuizDialog : public QDialog
     void typeActivated (const QString& text);
     void methodActivated (const QString& text);
     void searchContentsChanged();
-    void randomToggled (bool on);
+    void questionOrderActivated (const QString& text);
     void loadQuiz();
     void saveQuiz();
 
@@ -68,7 +68,7 @@ class NewQuizDialog : public QDialog
     QComboBox*      typeCombo;
     QComboBox*      methodCombo;
     QCheckBox*      progressCbox;
-    QCheckBox*      randomCbox;
+    QComboBox*      questionOrderCombo;
     ZPushButton*    saveQuizButton;
     ZPushButton*    okButton;
     QWidget*        timerWidget;

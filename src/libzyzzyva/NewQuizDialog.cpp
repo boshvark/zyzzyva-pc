@@ -119,11 +119,26 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     progressCbox->setEnabled (false);
     mainVlay->addWidget (progressCbox);
 
-    randomCbox = new QCheckBox ("&Randomize order");
-    Q_CHECK_PTR (randomCbox);
-    randomCbox->setChecked (true);
-    connect (randomCbox, SIGNAL (toggled (bool)), SLOT (randomToggled (bool)));
-    mainVlay->addWidget (randomCbox);
+    QHBoxLayout* questionOrderHlay = new QHBoxLayout;
+    Q_CHECK_PTR (questionOrderHlay);
+    mainVlay->addLayout (questionOrderHlay);
+
+    QLabel* questionOrderLabel = new QLabel ("Question Order:");
+    Q_CHECK_PTR (questionOrderLabel);
+    questionOrderHlay->addWidget (questionOrderLabel);
+
+    questionOrderCombo = new QComboBox;
+    questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
+                                 (QuizSpec::RandomOrder));
+    questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
+                                 (QuizSpec::AlphabeticalOrder));
+    questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
+                                 (QuizSpec::ProbabilityOrder));
+    questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
+                                 (QuizSpec::ScheduleOrder));
+    connect (questionOrderCombo, SIGNAL (activated (const QString&)),
+             SLOT (questionOrderActivated (const QString&)));
+    questionOrderHlay->addWidget (questionOrderCombo);
 
     QHBoxLayout* timerHlay = new QHBoxLayout;
     Q_CHECK_PTR (timerHlay);
@@ -209,14 +224,8 @@ NewQuizDialog::getQuizSpec()
     quizSpec.setMethod (Auxil::stringToQuizMethod
                         (methodCombo->currentText()));
     quizSpec.setSearchSpec (specForm->getSearchSpec());
-
-    // FIXME: fix this when the checkbox is replaced by a combo box
-    if (randomCbox->isChecked()) {
-        quizSpec.setQuestionOrder (QuizSpec::RandomOrder);
-    }
-    else {
-        quizSpec.setQuestionOrder (QuizSpec::AlphabeticalOrder);
-    }
+    quizSpec.setQuestionOrder (Auxil::stringToQuizQuestionOrder
+                               (questionOrderCombo->currentText()));
 
     QuizTimerSpec timerSpec;
     if (timerCbox->isChecked()) {
@@ -255,10 +264,9 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
         (typeCombo->findText (Auxil::quizTypeToString (spec.getType())));
     typeActivated (typeCombo->currentText());
     specForm->setSearchSpec (spec.getSearchSpec());
-
-    // FIXME: fix this when the checkbox is replaced by a combo box
-    randomCbox->setChecked (spec.getQuestionOrder() == QuizSpec::RandomOrder);
-
+    questionOrderCombo->setCurrentIndex
+        (questionOrderCombo->findText (Auxil::quizQuestionOrderToString
+                                       (spec.getQuestionOrder())));
     timerCbox->setChecked (false);
     timerSbox->setValue (0);
     timerCombo->setCurrentIndex (timerCombo->findText (TIMER_PER_RESPONSE));
@@ -357,14 +365,14 @@ NewQuizDialog::searchContentsChanged()
 }
 
 //---------------------------------------------------------------------------
-//  randomToggled
+//  questionOrderActivated
 //
-//! Called when the Randomize Order checkbox is toggled.
+//! Called when the contents of the Question Order combo box are changed.
 //
-//! @param on whether the checkbox is checked
+//! @param text the new contents of the combo box
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::randomToggled (bool)
+NewQuizDialog::questionOrderActivated (const QString&)
 {
     disableProgress();
     clearFilename();
@@ -519,17 +527,19 @@ NewQuizDialog::updateForm()
     if (method == QuizSpec::CardboxQuizMethod) {
         progressCbox->setEnabled (false);
         progressCbox->setChecked (false);
-        randomCbox->setEnabled (false);
-        randomCbox->setChecked (false);
+        questionOrderCombo->setEnabled (false);
+        questionOrderCombo->setCurrentIndex (questionOrderCombo->findText
+            (Auxil::quizQuestionOrderToString (QuizSpec::ScheduleOrder)));
     }
 
     else if (type == QuizSpec::QuizWordListRecall) {
-        randomCbox->setEnabled (false);
-        randomCbox->setChecked (false);
+        questionOrderCombo->setEnabled (false);
+        questionOrderCombo->setCurrentIndex (questionOrderCombo->findText
+            (Auxil::quizQuestionOrderToString (QuizSpec::RandomOrder)));
     }
 
     else {
         progressCbox->setEnabled (true);
-        randomCbox->setEnabled (true);
+        questionOrderCombo->setEnabled (true);
     }
 }
