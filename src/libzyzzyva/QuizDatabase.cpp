@@ -30,8 +30,6 @@
 #include <QVariant>
 #include <ctime>
 
-#include <QtDebug>
-
 const QString SQL_CREATE_QUESTIONS_TABLE_0_14_0 =
     "CREATE TABLE questions (question varchar(16), correct integer, "
     "incorrect integer, streak integer, last_correct integer, "
@@ -220,4 +218,46 @@ QuizDatabase::recordResponse (const QString& question, bool correct)
         query.bindValue (5, difficulty);
         query.exec();
     }
+}
+
+//---------------------------------------------------------------------------
+//  getReadyQuestions
+//
+//! Get a list of questions that are ready for review, from a subset of
+//! possible questions.  The questions are returned in their scheduled order.
+//
+//! @param questions the list of possible questions
+//! @return the list of ready questions, in scheduled order
+//---------------------------------------------------------------------------
+QStringList
+QuizDatabase::getReadyQuestions (const QStringList& questions)
+{
+    QStringList readyQuestions;
+
+    unsigned int now = std::time (0);
+
+    QString inString;
+    QString question;
+    foreach (question, questions) {
+        if (inString.isEmpty())
+            inString += "(";
+        else
+            inString += ",";
+        inString += "'" + question + "'";
+    }
+    inString += ")";
+
+    QString queryStr = "SELECT question FROM questions WHERE "
+        "next_scheduled >= " + QString::number (now) + " AND "
+        "question IN " + inString + " ORDER BY next_scheduled";
+
+    QSqlQuery query (*db);
+    query.prepare (queryStr);
+    query.exec();
+
+    while (query.next()) {
+        readyQuestions.append (query.value (0).toString());
+    }
+
+    return readyQuestions;
 }

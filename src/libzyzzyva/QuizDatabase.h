@@ -37,6 +37,7 @@ class QuizDatabase
     bool isValid() const;
     bool updateSchema();
     void recordResponse (const QString& question, bool correct);
+    QStringList getReadyQuestions (const QStringList& questions);
 
     private:
     QString dbConnectionName;

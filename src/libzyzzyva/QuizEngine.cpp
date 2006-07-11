@@ -24,6 +24,7 @@
 //---------------------------------------------------------------------------
 
 #include "QuizEngine.h"
+#include "QuizDatabase.h"
 #include "LetterBag.h"
 #include "WordEngine.h"
 #include "Auxil.h"
@@ -142,12 +143,33 @@ QuizEngine::newQuiz (const QuizSpec& spec)
             qSort (quizQuestions.begin(), quizQuestions.end(),
                    probabilityCmp);
         }
+        break;
+
+        case QuizSpec::ScheduleOrder: {
+            QString lexicon = spec.getLexicon();
+            QString quizType = Auxil::quizTypeToString (spec.getType());
+            QuizDatabase* db = new QuizDatabase (lexicon, quizType);
+            if (!db->isValid()) {
+                delete db;
+                return false;
+            }
+
+            quizQuestions = db->getReadyQuestions (quizQuestions);
+            if (quizQuestions.isEmpty())
+                return false;
+
+            delete db;
+        }
+        break;
 
         default: break;
     }
 
     // Restore quiz progress
-    QuizProgress progress = spec.getProgress();
+    QuizProgress progress;
+    if (spec.getMethod() != QuizSpec::CardboxQuizMethod)
+        progress = spec.getProgress();
+
     questionIndex = progress.getQuestion();
     quizCorrect = progress.getNumCorrect();
     quizIncorrect = progress.getNumIncorrect();
