@@ -124,7 +124,8 @@ QuizSpec::asDomElement() const
     if (timerSpec.getType() != NoTimer)
         topElement.appendChild (timerSpec.asDomElement());
 
-    topElement.appendChild (progress.asDomElement());
+    if (method != CardboxQuizMethod)
+        topElement.appendChild (progress.asDomElement());
 
     return topElement;
 }
