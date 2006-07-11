@@ -128,14 +128,9 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     questionOrderHlay->addWidget (questionOrderLabel);
 
     questionOrderCombo = new QComboBox;
-    questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
-                                 (QuizSpec::RandomOrder));
-    questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
-                                 (QuizSpec::AlphabeticalOrder));
-    questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
-                                 (QuizSpec::ProbabilityOrder));
-    questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
-                                 (QuizSpec::ScheduleOrder));
+    fillQuestionOrderCombo (methodCombo->currentText());
+    questionOrderCombo->setCurrentIndex (questionOrderCombo->findText
+        (Auxil::quizQuestionOrderToString (QuizSpec::RandomOrder)));
     connect (questionOrderCombo, SIGNAL (activated (const QString&)),
              SLOT (questionOrderActivated (const QString&)));
     questionOrderHlay->addWidget (questionOrderCombo);
@@ -331,8 +326,9 @@ NewQuizDialog::typeActivated (const QString& text)
 //! @param text the text in the combo box
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::methodActivated (const QString&)
+NewQuizDialog::methodActivated (const QString& text)
 {
+    fillQuestionOrderCombo (text);
     updateForm();
     disableProgress();
     clearFilename();
@@ -542,4 +538,43 @@ NewQuizDialog::updateForm()
         progressCbox->setEnabled (true);
         questionOrderCombo->setEnabled (true);
     }
+}
+
+//---------------------------------------------------------------------------
+//  fillQuestionOrderCombo
+//
+//! Fill the Question Order combo box with allowed values associated with a
+//! quiz method.  For example, the Schedule question order is only valid with
+//! in association with the Cardbox quiz method.
+//
+//! @param method the quiz method string
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::fillQuestionOrderCombo (const QString& method)
+{
+    QString prevText = questionOrderCombo->currentText();
+    QuizSpec::QuizMethod meth = Auxil::stringToQuizMethod (method);
+
+    switch (meth) {
+        case QuizSpec::StandardQuizMethod:
+        questionOrderCombo->clear();
+        questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
+                                    (QuizSpec::RandomOrder));
+        questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
+                                    (QuizSpec::AlphabeticalOrder));
+        questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
+                                    (QuizSpec::ProbabilityOrder));
+        break;
+
+        case QuizSpec::CardboxQuizMethod:
+        questionOrderCombo->clear();
+        questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
+                                    (QuizSpec::ScheduleOrder));
+        break;
+
+        default: break;
+    }
+
+    int index = questionOrderCombo->findText (prevText);
+    questionOrderCombo->setCurrentIndex (index >= 0 ? index : 0);
 }
