@@ -24,10 +24,36 @@
 //---------------------------------------------------------------------------
 
 #include "QuizEngine.h"
+#include "LetterBag.h"
 #include "WordEngine.h"
 #include "Auxil.h"
 #include <cstdlib>
 #include <ctime>
+
+//---------------------------------------------------------------------------
+//  probabilityCmp
+//
+//! A comparison function that sorts strings based on probability as a primary
+//! key, and alphabetically as a secondary key.
+//
+//! @param a a string
+//! @param b another string
+//---------------------------------------------------------------------------
+bool
+probabilityCmp (const QString& a, const QString& b)
+{
+    // FIXME: There has to be a more efficient way than this!
+    LetterBag letterBag;
+    double ca = letterBag.getNumCombinations (a);
+    double cb = letterBag.getNumCombinations (b);
+
+    if (ca > cb)
+        return true;
+    else if (cb > ca)
+        return false;
+    else
+        return (a < b);
+}
 
 //---------------------------------------------------------------------------
 //  QuizEngine
@@ -79,9 +105,11 @@ QuizEngine::newQuiz (const QuizSpec& spec)
     quizSpec = spec;
     quizQuestions = questions;
 
-    // FIXME: Implement other orderings
-
     switch (quizSpec.getQuestionOrder()) {
+        case QuizSpec::AlphabeticalOrder:
+        // do nothing - the questions are already in alphabetical order
+        break;
+
         case QuizSpec::RandomOrder: {
             unsigned int seed = spec.getRandomSeed();
             if (!seed)
@@ -109,6 +137,11 @@ QuizEngine::newQuiz (const QuizSpec& spec)
             }
         }
         break;
+
+        case QuizSpec::ProbabilityOrder: {
+            qSort (quizQuestions.begin(), quizQuestions.end(),
+                   probabilityCmp);
+        }
 
         default: break;
     }
