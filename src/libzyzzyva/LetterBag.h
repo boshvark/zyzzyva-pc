@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_LETTER_BAG_H
 #define ZYZZYVA_LETTER_BAG_H
 
+#include "Rand.h"
 #include <QChar>
 #include <QMap>
 #include <QList>
@@ -44,7 +45,7 @@ class LetterBag
 
     void insertLetter (const QChar& letter);
     bool drawLetter (const QChar& letter);
-    QChar drawRandomLetter();
+    QString drawRandomLetters (int num);
 
     QString getLetters() const;
     int getNumLetters() const;
@@ -56,6 +57,7 @@ class LetterBag
 
     QList<double> fullChooseCombos;
     QList<QList<double> > subChooseCombos;
+    Rand rng;
 
     public:
     static const QChar BLANK_CHAR;

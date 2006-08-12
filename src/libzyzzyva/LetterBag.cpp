@@ -274,20 +274,44 @@ LetterBag::drawLetter (const QChar& letter)
 }
 
 //---------------------------------------------------------------------------
-//  drawRandomLetter
+//  drawRandomLetters
 //
-//! Draw a random letter from the bag.
+//! Draw random letters from the bag.
 //
-//! @return the letter, or an empty character of the bag is empty
+//! @return the letters, or an empty character of the bag is empty
 //---------------------------------------------------------------------------
-QChar
-LetterBag::drawRandomLetter()
+QString
+LetterBag::drawRandomLetters (int num)
 {
-    if (totalLetters == 0)
-        return QChar();
+    if (totalLetters < num)
+        return QString();
 
-    // FIXME: implement this!
-    return QChar();
+    QString letters;
+    unsigned int choose = num;
+    unsigned int chooseFrom = totalLetters;
+
+    QMapIterator<QChar, int> it (letterFrequencies);
+    while (it.hasNext()) {
+        it.next();
+        int frequency = it.value();
+        for (int i = 0; i < frequency; ++i, --chooseFrom) {
+            unsigned int r = chooseFrom > 1 ? rng.rand (chooseFrom - 1) : 0;
+            if (r >= choose)
+                continue;
+
+            QChar letter = it.key();
+            if (drawLetter (letter)) {
+                letters += letter;
+                --choose;
+                if (!choose)
+                    return letters;
+            }
+            else
+                return QString();
+        }
+    }
+
+    return QString();
 }
 
 //---------------------------------------------------------------------------
