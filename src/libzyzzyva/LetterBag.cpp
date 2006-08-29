@@ -24,6 +24,7 @@
 
 #include "LetterBag.h"
 #include "MainSettings.h"
+#include "Auxil.h"
 #include "Defs.h"
 
 using namespace Defs;
@@ -71,6 +72,7 @@ LetterBag::LetterBag (const QString& distribution)
     letterValues['Y'] = 4;
     letterValues['Z'] = 10;
 
+    rng.srand (std::time (0), Auxil::getPid());
     resetContents (distribution);
 }
 
