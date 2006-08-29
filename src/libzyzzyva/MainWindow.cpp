@@ -55,6 +55,9 @@
 #include <QStatusBar>
 #include <QToolBar>
 
+#include <QtDebug>
+#include "LetterBag.h"
+
 MainWindow* MainWindow::instance = 0;
 
 const QString APPLICATION_TITLE = "Zyzzyva";
@@ -100,6 +103,12 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     // File Menu
     QMenu* fileMenu = menuBar()->addMenu ("&File");
     Q_CHECK_PTR (fileMenu);
+
+    // Test action (only for testing things out)
+    QAction* testAction = new QAction ("&Test", this);
+    Q_CHECK_PTR (testAction);
+    connect (testAction, SIGNAL (triggered()), SLOT (doTest()));
+    fileMenu->addAction (testAction);
 
     // New Introduction
     QAction* newIntroAction = new QAction ("&Welcome", this);
@@ -1335,4 +1344,16 @@ MainWindow::importStems()
     QApplication::restoreOverrideCursor();
 
     return totalImported;
+}
+
+//---------------------------------------------------------------------------
+//  doTest
+//
+//! Test something out.
+//---------------------------------------------------------------------------
+void
+MainWindow::doTest()
+{
+    LetterBag letterBag;
+    qDebug() << "*** doTest!";
 }

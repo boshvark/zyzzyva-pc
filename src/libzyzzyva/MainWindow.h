@@ -75,6 +75,8 @@ class MainWindow : public QMainWindow
     void currentTabChanged (int index);
     void tabStatusChanged (const QString& status);
 
+    void doTest();
+
     public:
     QString getLexiconPrefix (const QString& lexicon);
     QString getDatabaseFilename();
