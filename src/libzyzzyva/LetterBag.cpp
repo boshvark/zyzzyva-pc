@@ -41,44 +41,6 @@ const QChar LetterBag::BLANK_CHAR = '_';
 LetterBag::LetterBag (const QString& distribution)
     : totalLetters (0)
 {
-    QString dist (distribution);
-    if (dist.isEmpty())
-        dist = MainSettings::getLetterDistribution();
-    QStringList strList = dist.split (" ");
-
-    int maxFrequency = MAX_WORD_LEN;
-
-    QString str;
-    foreach (str, strList) {
-        QChar letter = str.section (":", 0, 0)[0];
-        int frequency = str.section (":", 1, 1).toInt();
-        letterFrequencies.insert (letter, frequency);
-        totalLetters += frequency;
-        if (frequency > maxFrequency)
-            maxFrequency = frequency;
-    }
-
-    // Precalculate M choose N combinations - use doubles because the numbers
-    // get very large
-    double a = 1;
-    double r = 1;
-    for (int i = 0; i <= maxFrequency; ++i, ++r) {
-        fullChooseCombos.append (a);
-        a *= (totalLetters + 1.0 - r) / r;
-
-        QList<double> subList;
-        for (int j = 0; j <= maxFrequency; ++j) {
-            if ((i == j) || (j == 0))
-                subList.append (1.0);
-            else if (i == 0)
-                subList.append (0.0);
-            else
-                subList.append (subChooseCombos[i-1][j-1] +
-                                subChooseCombos[i-1][j]);
-        }
-        subChooseCombos.append (subList);
-    }
-
     // Set letter values
     // FIXME: this should be able to be passed in as a parameter
     letterValues[BLANK_CHAR] = 0;
@@ -108,6 +70,8 @@ LetterBag::LetterBag (const QString& distribution)
     letterValues['X'] = 8;
     letterValues['Y'] = 4;
     letterValues['Z'] = 10;
+
+    resetContents (distribution);
 }
 
 //---------------------------------------------------------------------------
@@ -231,6 +195,61 @@ void
 LetterBag::setLetterValue (const QChar& letter, int value)
 {
     letterValues[letter] = value;
+}
+
+//---------------------------------------------------------------------------
+//  resetContents
+//
+//! Reset the contents of the bag.  If no letter distribution is specified,
+//! the default distribution is used.
+//
+//! @param distribution the letter distribution
+//---------------------------------------------------------------------------
+void
+LetterBag::resetContents (const QString& distribution)
+{
+    QString dist (distribution);
+    if (dist.isEmpty())
+        dist = MainSettings::getLetterDistribution();
+    QStringList strList = dist.split (" ");
+
+    int maxFrequency = MAX_WORD_LEN;
+
+    totalLetters = 0;
+    letterFrequencies.clear();
+    letterValues.clear();
+
+    QString str;
+    foreach (str, strList) {
+        QChar letter = str.section (":", 0, 0)[0];
+        int frequency = str.section (":", 1, 1).toInt();
+        letterFrequencies.insert (letter, frequency);
+        totalLetters += frequency;
+        if (frequency > maxFrequency)
+            maxFrequency = frequency;
+    }
+
+    // Precalculate M choose N combinations - use doubles because the numbers
+    // get very large
+    double a = 1;
+    double r = 1;
+    for (int i = 0; i <= maxFrequency; ++i, ++r) {
+        fullChooseCombos.append (a);
+        a *= (totalLetters + 1.0 - r) / r;
+
+        QList<double> subList;
+        for (int j = 0; j <= maxFrequency; ++j) {
+            if ((i == j) || (j == 0))
+                subList.append (1.0);
+            else if (i == 0)
+                subList.append (0.0);
+            else
+                subList.append (subChooseCombos[i-1][j-1] +
+                                subChooseCombos[i-1][j]);
+        }
+        subChooseCombos.append (subList);
+    }
+
 }
 
 //---------------------------------------------------------------------------
