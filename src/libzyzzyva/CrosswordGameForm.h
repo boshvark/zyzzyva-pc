@@ -74,6 +74,7 @@ class CrosswordGameForm : public ActionForm
     //void processGameAction (const QString& string);
     void processCommand (const QString& string);
     void processObserve (const QString& string);
+    void processAccept (const QString& string);
     void processMove (const QString& string);
     void processLogin (const QString& string);
     void processResign (const QString& string);

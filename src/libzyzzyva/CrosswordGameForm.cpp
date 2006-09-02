@@ -476,6 +476,10 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
         processObserve (args);
     }
 
+    else if (command == "ACCEPT") {
+        processAccept (args);
+    }
+
     else if (command == "MOVE") {
         processMove (message);
     }
@@ -715,6 +719,10 @@ CrosswordGameForm::processCommand (const QString& string)
         gameStatus = NoGame;
     }
 
+    else if (action == "MOVE") {
+        processMove (command);
+    }
+
     messageAppendHtml (command, QColor (0x00, 0x00, 0xff));
     iscThread->sendMessage (command);
 }
@@ -754,6 +762,9 @@ CrosswordGameForm::processObserve (const QString& string)
     // OBSERVE CHALLENGE Yes Yes Yes
     // OBSERVE PAS 17 24 ---
     // OBSERVE RESIGN nunavut 4
+
+    // What produces this message?  It happened just after a time forfeit.
+    // Game aborted because was too short.
 
     // successful challenge - need to remove tiles from board, revert to
     // previous rack
@@ -861,6 +872,37 @@ CrosswordGameForm::processObserve (const QString& string)
     else {
         messageAppendHtml (string, QColor (0x00, 0x00, 0x00));
     }
+}
+
+//---------------------------------------------------------------------------
+//  processAccept
+//
+//! Process an ACCEPT message from the ISC server.
+//
+//! @param string the message
+//---------------------------------------------------------------------------
+void
+CrosswordGameForm::processAccept (const QString& string)
+{
+    QStringList split = string.simplified().split (" ");
+    int rating = split[0].toInt();
+    QString opponent = split[1];
+    int lexicon = split[2].toInt();
+    QString lexiconName = IscConverter::intToLexicon (lexicon);
+    int minutes = split[3].toInt();
+    int increment = split[4].toInt();
+    int rated = split[5].toInt();
+    int noescape = split[6].toInt();
+    int challenge = split[7].toInt();
+    QString challengeName = IscConverter::intToChallenge (challenge);
+    // if 1, then opponent is first; if 2, then I am first
+    QString firstPlayer = split[8];
+    QString opponentRack = split[9];
+    QString myRack = split[10];
+
+
+
+
 }
 
 //---------------------------------------------------------------------------
@@ -1202,6 +1244,7 @@ CrosswordGameForm::makeMove (CrosswordGameMove& move)
     int playerToMove = move.getPlayerNum();
     QString playerName = playerToMove == 1 ? aPlayerLabel->text()
         : bPlayerLabel->text();
+    game->makeMove (move);
 
     switch (move.getType()) {
         case CrosswordGameMove::Move: {
@@ -1229,7 +1272,6 @@ CrosswordGameForm::makeMove (CrosswordGameMove& move)
         default: break;
     }
 
-    game->makeMove (move);
     stopClock (playerToMove);
     setClock (playerToMove, move.getSecondsLeft());
     startClock (playerToMove == 1 ? 2 : 1);
