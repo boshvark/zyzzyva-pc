@@ -39,7 +39,7 @@ class CrosswordGameGame : public QObject
     public:
     CrosswordGameGame();
     void clear();
-    bool makeMove (const CrosswordGameMove& move);
+    bool makeMove (CrosswordGameMove& move);
     bool challengeLastMove();
 
     int getRackValue (const QString& rack) const;

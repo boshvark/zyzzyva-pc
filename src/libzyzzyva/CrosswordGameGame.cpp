@@ -70,13 +70,13 @@ CrosswordGameGame::init()
 //---------------------------------------------------------------------------
 //  makeMove
 //
-//! Make a move in the game.
+//! Make a move in the game.  May need to calculate score, new rack, etc.
 //
 //! @param move the move to be played
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-CrosswordGameGame::makeMove (const CrosswordGameMove& move)
+CrosswordGameGame::makeMove (CrosswordGameMove& move)
 {
     if (move.getType() == CrosswordGameMove::TakeBack)
         return challengeLastMove();
@@ -153,23 +153,50 @@ CrosswordGameGame::makeMove (const CrosswordGameMove& move)
 
         qDebug() << "Letters left were: " << lettersLeft;
 
-        newRack = Auxil::getAlphagram (newRack);
-        int q = 0;
-        for (int i = 0; i < newRack.length(); ++i) {
-            if ((q == lettersLeft.length()) ||
-                (newRack[i] != lettersLeft[q]))
-            {
-                QChar c = newRack[i];
-                if (c == '?')
-                    c = LetterBag::BLANK_CHAR;
-                letterBag.drawLetter (c);
+        // Choose random tiles unless specified
+        if (newRack.isEmpty()) {
+
+            int numInBag = letterBag.getNumLetters();
+            int numToDraw = 7 - lettersLeft.length();
+            if (numToDraw > numInBag)
+                numToDraw = numInBag;
+
+            QString newLetters = letterBag.drawRandomLetters (numToDraw);
+            qDebug() << "Draw random letters: " << newLetters;
+
+            newRack = Auxil::getAlphagram (lettersLeft + newLetters);
+            qDebug() << "New rack is: " << newRack;
+
+            switch (newMove.getPlayerNum()) {
+                case 1: aPlayerRack = newRack; break;
+                case 2: bPlayerRack = newRack; break;
+                default: break;
             }
-            else
-                ++q;
+        }
+
+        else {
+            newRack = Auxil::getAlphagram (newRack);
+            int q = 0;
+            for (int i = 0; i < newRack.length(); ++i) {
+                if ((q == lettersLeft.length()) ||
+                    (newRack[i] != lettersLeft[q]))
+                {
+                    QChar c = newRack[i];
+                    if (c == '?')
+                        c = LetterBag::BLANK_CHAR;
+                    letterBag.drawLetter (c);
+                }
+                else
+                    ++q;
+            }
         }
     }
 
     else if (newMove.getType() == CrosswordGameMove::DrawTiles) {
+        // Choose random tiles unless specified
+        if (newRack.isEmpty())
+            newRack = letterBag.lookRandomLetters (7);
+
         for (int i = 0; i < newRack.length(); ++i) {
             QChar c = newRack[i].toUpper();
             if (c == '?')
@@ -179,17 +206,28 @@ CrosswordGameGame::makeMove (const CrosswordGameMove& move)
     }
 
     else if (newMove.getType() == CrosswordGameMove::Exchange) {
-        for (int i = 0; i < oldRack.length(); ++i) {
-            QChar c = oldRack[i].toUpper();
-            if (c == '?')
-                c = LetterBag::BLANK_CHAR;
-            letterBag.insertLetter (c);
+        // Choose random tiles unless specified
+        if (newRack.isEmpty()) {
+            QString exchanged = newMove.getExchangedLetters();
+
+            // FIXME: do something here to effect the exchange
+
+
         }
-        for (int i = 0; i < newRack.length(); ++i) {
-            QChar c = newRack[i].toUpper();
-            if (c == '?')
-                c = LetterBag::BLANK_CHAR;
-            letterBag.drawLetter (c);
+
+        else {
+            for (int i = 0; i < oldRack.length(); ++i) {
+                QChar c = oldRack[i].toUpper();
+                if (c == '?')
+                    c = LetterBag::BLANK_CHAR;
+                letterBag.insertLetter (c);
+            }
+            for (int i = 0; i < newRack.length(); ++i) {
+                QChar c = newRack[i].toUpper();
+                if (c == '?')
+                    c = LetterBag::BLANK_CHAR;
+                letterBag.drawLetter (c);
+            }
         }
     }
 
