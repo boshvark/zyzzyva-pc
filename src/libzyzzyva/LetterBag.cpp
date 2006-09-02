@@ -295,14 +295,14 @@ LetterBag::drawLetter (const QChar& letter)
 }
 
 //---------------------------------------------------------------------------
-//  drawRandomLetters
+//  lookRandomLetters
 //
-//! Draw random letters from the bag.
+//! Look at random letters from the bag, but do not draw them.
 //
 //! @return the letters, or an empty character of the bag is empty
 //---------------------------------------------------------------------------
 QString
-LetterBag::drawRandomLetters (int num)
+LetterBag::lookRandomLetters (int num)
 {
     if (totalLetters < num)
         return QString();
@@ -321,18 +321,31 @@ LetterBag::drawRandomLetters (int num)
                 continue;
 
             QChar letter = it.key();
-            if (drawLetter (letter)) {
-                letters += letter;
-                --choose;
-                if (!choose)
-                    return letters;
-            }
-            else
-                return QString();
+            letters += letter;
+            --choose;
+            if (!choose)
+                return letters;
         }
     }
 
     return QString();
+}
+
+//---------------------------------------------------------------------------
+//  drawRandomLetters
+//
+//! Draw random letters from the bag.
+//
+//! @return the letters, or an empty string if the bag is empty
+//---------------------------------------------------------------------------
+QString
+LetterBag::drawRandomLetters (int num)
+{
+    QString letters = lookRandomLetters (num);
+    for (int i = 0; i < letters.length(); ++i) {
+        drawLetter (letters[i]);
+    }
+    return letters;
 }
 
 //---------------------------------------------------------------------------

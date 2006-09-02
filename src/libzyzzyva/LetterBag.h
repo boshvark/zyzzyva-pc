@@ -46,6 +46,7 @@ class LetterBag
     void resetContents (const QString& distribution = QString::null);
     void insertLetter (const QChar& letter);
     bool drawLetter (const QChar& letter);
+    QString lookRandomLetters (int num);
     QString drawRandomLetters (int num);
 
     QString getLetters() const;
