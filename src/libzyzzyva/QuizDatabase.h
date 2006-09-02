@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_QUIZ_DATABASE_H
 #define ZYZZYVA_QUIZ_DATABASE_H
 
+#include "Rand.h"
 #include <QSqlDatabase>
 #include <QString>
 
@@ -36,12 +37,17 @@ class QuizDatabase
 
     bool isValid() const;
     bool updateSchema();
-    void recordResponse (const QString& question, bool correct);
+    void recordResponse (const QString& question, bool correct,
+                         bool updateCardbox);
     QStringList getReadyQuestions (const QStringList& questions);
+
+    private:
+    int calculateNextScheduled (int cardbox);
 
     private:
     QString dbConnectionName;
     QSqlDatabase* db;
+    Rand rng;
 };
 
 #endif // ZYZZYVA_QUIZ_DATABASE_H

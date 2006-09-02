@@ -1527,7 +1527,12 @@ QuizForm::recordQuestionStats (bool correct)
     if (!db || !db->isValid())
         return;
 
-    db->recordResponse (quizEngine->getQuestion(), correct);
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+        setUnsavedChanges (true);
+
+    QuizSpec::QuizMethod method = quizEngine->getQuizSpec().getMethod();
+    bool updateCardbox = (method == QuizSpec::CardboxQuizMethod);
+    db->recordResponse (quizEngine->getQuestion(), correct, updateCardbox);
 }
 
 //---------------------------------------------------------------------------
