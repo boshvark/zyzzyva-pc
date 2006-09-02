@@ -190,6 +190,44 @@ WordTableView::createQuizRequested()
 }
 
 //---------------------------------------------------------------------------
+//  addToCardboxRequested
+//
+//! Called when the user indicates that the word list should be added to the
+//! cardbox system.
+//---------------------------------------------------------------------------
+void
+WordTableView::addToCardboxRequested()
+{
+    int numWords = model()->rowCount();
+    if (numWords == 0) {
+        QMessageBox::warning (this, "Error Adding Words to Cardbox",
+                              "Cannot add words to cardbox:\n"
+                              "No words in the list.");
+    }
+
+    QMessageBox::information (this, "Adding Words to Cardbox",
+                              "Adding words to cardbox!");
+
+    //QuizSpec quizSpec;
+    //SearchSpec searchSpec;
+    //SearchCondition searchCondition;
+    //QString searchString;
+    //QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
+    //for (int i = 0; i < numWords; ) {
+    //    if (!searchString.isEmpty())
+    //        searchString += " ";
+    //    searchString += model()->data (index, Qt::EditRole).toString();
+    //    index = index.sibling (++i, WordTableModel::WORD_COLUMN);
+    //}
+
+    //searchCondition.type = SearchCondition::InWordList;
+    //searchCondition.stringValue = searchString;
+    //searchSpec.conditions.push_back (searchCondition);
+    //quizSpec.setSearchSpec (searchSpec);
+    //MainWindow::getInstance()->newQuizFormInteractive (quizSpec);
+}
+
+//---------------------------------------------------------------------------
 //  exportFile
 //
 //! Export the words in the list to a file, one word per line.
@@ -373,6 +411,13 @@ WordTableView::contextMenuEvent (QContextMenuEvent* e)
     connect (createQuizAction, SIGNAL (triggered()),
              SLOT (createQuizRequested()));
     popupMenu->addAction (createQuizAction);
+
+    QAction* addToCardboxAction = new QAction ("Add list to Cardbox...",
+                                               popupMenu);
+    Q_CHECK_PTR (addToCardboxAction);
+    connect (addToCardboxAction, SIGNAL (triggered()),
+             SLOT (addToCardboxRequested()));
+    popupMenu->addAction (addToCardboxAction);
 
     popupMenu->exec (QCursor::pos());
     delete popupMenu;

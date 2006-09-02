@@ -51,6 +51,7 @@ class WordTableView : public QTreeView
     void viewVariation (int variation);
     void exportRequested();
     void createQuizRequested();
+    void addToCardboxRequested();
 
     private:
     bool exportFile (const QString& filename, QString* err) const;
