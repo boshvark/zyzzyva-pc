@@ -208,7 +208,6 @@ WordTableView::addToCardboxRequested()
 
     CardboxAddDialog* dialog = new CardboxAddDialog (this);
     Q_CHECK_PTR (dialog);
-    dialog->setAttribute (Qt::WA_DeleteOnClose);
 
     QStringList words;
     QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
@@ -218,7 +217,16 @@ WordTableView::addToCardboxRequested()
     }
 
     dialog->setWords (words);
-    dialog->show();
+
+    int code = dialog->exec();
+    if (code == QDialog::Accepted) {
+        QStringList words = dialog->getWords();
+
+        // DO SOMETHING NICE WITH THE WORDS HERE
+
+    }
+
+    delete dialog;
 }
 
 //---------------------------------------------------------------------------

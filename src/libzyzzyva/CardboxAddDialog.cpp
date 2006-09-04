@@ -110,3 +110,46 @@ CardboxAddDialog::setWords (const QStringList& words)
         new QListWidgetItem (it.next(), questionList);
     }
 }
+
+//---------------------------------------------------------------------------
+//  getQuizType
+//
+//! Determine the currently chosen quiz type.
+//
+//! @return a string representation of the quiz type
+//---------------------------------------------------------------------------
+QString
+CardboxAddDialog::getQuizType() const
+{
+    return quizTypeCombo->currentText();
+}
+
+//---------------------------------------------------------------------------
+//  getEstimateCardbox
+//
+//! Determine whether cardboxes should be estimated based on past performance.
+//
+//! @return true if estimates should be used, false otherwise
+//---------------------------------------------------------------------------
+bool
+CardboxAddDialog::getEstimateCardbox() const
+{
+    return (estimateCbox->checkState() == Qt::Checked);
+}
+
+//---------------------------------------------------------------------------
+//  getWords
+//
+//! Return the list of words to be added to cardboxes.
+//
+//! @return the list of words
+//---------------------------------------------------------------------------
+QStringList
+CardboxAddDialog::getWords() const
+{
+    QStringList words;
+    for (int i = 0; i < questionList->count(); ++i) {
+        words.append (questionList->item (i)->text());
+    }
+    return words;
+}

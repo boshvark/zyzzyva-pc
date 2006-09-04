@@ -39,6 +39,9 @@ class CardboxAddDialog : public QDialog
 
     public:
     void setWords (const QStringList& words);
+    QString getQuizType() const;
+    bool getEstimateCardbox() const;
+    QStringList getWords() const;
 
     private:
     QComboBox* quizTypeCombo;
