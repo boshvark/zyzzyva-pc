@@ -26,7 +26,9 @@
 #define ZYZZYVA_CARDBOX_ADD_DIALOG_H
 
 #include <QDialog>
-#include <QLabel>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QListWidget>
 
 class CardboxAddDialog : public QDialog
 {
@@ -35,8 +37,13 @@ class CardboxAddDialog : public QDialog
     CardboxAddDialog (QWidget* parent = 0, Qt::WFlags f = 0);
     ~CardboxAddDialog() { }
 
+    public:
+    void setWords (const QStringList& words);
+
     private:
-    QLabel* helloLabel;
+    QComboBox* quizTypeCombo;
+    QCheckBox* estimateCbox;
+    QListWidget* questionList;
 };
 
 #endif // ZYZZYVA_CARDBOX_ADD_DIALOG_H

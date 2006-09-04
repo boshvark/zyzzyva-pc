@@ -24,6 +24,8 @@
 
 #include "CardboxAddDialog.h"
 #include "Defs.h"
+#include "ZPushButton.h"
+#include <QLabel>
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Add Words to Cardbox";
@@ -46,12 +48,65 @@ CardboxAddDialog::CardboxAddDialog (QWidget* parent, Qt::WFlags f)
     mainVlay->setSpacing (SPACING);
     Q_CHECK_PTR (mainVlay);
 
-    helloLabel = new QLabel;
-    Q_CHECK_PTR (helloLabel);
-    helloLabel->setAlignment (Qt::AlignHCenter);
-    helloLabel->setText ("Hello!");
-    mainVlay->addWidget (helloLabel);
+    QHBoxLayout* quizTypeHlay = new QHBoxLayout;
+    Q_CHECK_PTR (quizTypeHlay);
+    mainVlay->addLayout (quizTypeHlay);
+
+    QLabel* quizTypeLabel = new QLabel (this);
+    Q_CHECK_PTR (quizTypeLabel);
+    quizTypeLabel->setText ("Add words to cardbox for quiz type:");
+    quizTypeHlay->addWidget (quizTypeLabel);
+
+    quizTypeCombo = new QComboBox (this);
+    Q_CHECK_PTR (quizTypeCombo);
+    quizTypeCombo->addItem ("Anagrams");
+    quizTypeHlay->addWidget (quizTypeCombo);
+
+    estimateCbox = new QCheckBox ("Estimate cardbox based on past performance",
+                                  this);
+    Q_CHECK_PTR (estimateCbox);
+    estimateCbox->setCheckState (Qt::Checked);
+    mainVlay->addWidget (estimateCbox);
+
+    questionList = new QListWidget (this);
+    Q_CHECK_PTR (questionList);
+    mainVlay->addWidget (questionList);
+
+    QHBoxLayout* buttonHlay = new QHBoxLayout;
+    buttonHlay->setSpacing (SPACING);
+    Q_CHECK_PTR (buttonHlay);
+    mainVlay->addLayout (buttonHlay);
+
+    ZPushButton* okButton = new ZPushButton ("&OK");
+    Q_CHECK_PTR (okButton);
+    okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    okButton->setDefault (true);
+    connect (okButton, SIGNAL (clicked()), SLOT (accept()));
+    buttonHlay->addWidget (okButton);
+
+    ZPushButton* cancelButton = new ZPushButton ("Cancel");
+    Q_CHECK_PTR (cancelButton);
+    cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
+    buttonHlay->addWidget (cancelButton);
 
     resize (700, 500);
     setWindowTitle (DIALOG_CAPTION);
+}
+
+//---------------------------------------------------------------------------
+//  setWords
+//
+//! Set the contents of the word list to be the words in a space-separated
+//! string of words.
+//
+//! @param string the word list string
+//---------------------------------------------------------------------------
+void
+CardboxAddDialog::setWords (const QStringList& words)
+{
+    QStringListIterator it (words);
+    while (it.hasNext()) {
+        new QListWidgetItem (it.next(), questionList);
+    }
 }

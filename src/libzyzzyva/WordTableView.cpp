@@ -209,28 +209,16 @@ WordTableView::addToCardboxRequested()
     CardboxAddDialog* dialog = new CardboxAddDialog (this);
     Q_CHECK_PTR (dialog);
     dialog->setAttribute (Qt::WA_DeleteOnClose);
+
+    QStringList words;
+    QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
+    for (int i = 0; i < numWords; ) {
+        words.append (model()->data (index, Qt::EditRole).toString());
+        index = index.sibling (++i, WordTableModel::WORD_COLUMN);
+    }
+
+    dialog->setWords (words);
     dialog->show();
-
-    //QMessageBox::information (this, "Adding Words to Cardbox",
-                              //"Adding words to cardbox!");
-
-    //QuizSpec quizSpec;
-    //SearchSpec searchSpec;
-    //SearchCondition searchCondition;
-    //QString searchString;
-    //QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
-    //for (int i = 0; i < numWords; ) {
-    //    if (!searchString.isEmpty())
-    //        searchString += " ";
-    //    searchString += model()->data (index, Qt::EditRole).toString();
-    //    index = index.sibling (++i, WordTableModel::WORD_COLUMN);
-    //}
-
-    //searchCondition.type = SearchCondition::InWordList;
-    //searchCondition.stringValue = searchString;
-    //searchSpec.conditions.push_back (searchCondition);
-    //quizSpec.setSearchSpec (searchSpec);
-    //MainWindow::getInstance()->newQuizFormInteractive (quizSpec);
 }
 
 //---------------------------------------------------------------------------
