@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "WordTableView.h"
+#include "CardboxAddDialog.h"
 #include "DefinitionDialog.h"
 #include "MainWindow.h"
 #include "QuizSpec.h"
@@ -205,8 +206,13 @@ WordTableView::addToCardboxRequested()
                               "No words in the list.");
     }
 
-    QMessageBox::information (this, "Adding Words to Cardbox",
-                              "Adding words to cardbox!");
+    CardboxAddDialog* dialog = new CardboxAddDialog (this);
+    Q_CHECK_PTR (dialog);
+    dialog->setAttribute (Qt::WA_DeleteOnClose);
+    dialog->show();
+
+    //QMessageBox::information (this, "Adding Words to Cardbox",
+                              //"Adding words to cardbox!");
 
     //QuizSpec quizSpec;
     //SearchSpec searchSpec;

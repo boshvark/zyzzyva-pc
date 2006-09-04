@@ -48,6 +48,7 @@ SOURCES = \
     AboutDialog.cpp \
     AnalyzeQuizDialog.cpp \
     Auxil.cpp \
+    CardboxAddDialog.cpp \
     CreateDatabaseThread.cpp \
     CrosswordGameBoard.cpp \
     CrosswordGameBoardWidget.cpp \
@@ -99,6 +100,7 @@ HEADERS = \
     AboutDialog.h \
     ActionForm.h \
     AnalyzeQuizDialog.h \
+    CardboxAddDialog.h \
     CreateDatabaseThread.h \
     CrosswordGameBoardWidget.h \
     CrosswordGameForm.h \
