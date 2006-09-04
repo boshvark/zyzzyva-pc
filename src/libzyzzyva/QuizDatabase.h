@@ -39,10 +39,30 @@ class QuizDatabase
     bool updateSchema();
     void recordResponse (const QString& question, bool correct,
                          bool updateCardbox);
+    void addToCardbox (const QString& question, bool estimateCardbox);
     QStringList getReadyQuestions (const QStringList& questions);
 
     private:
+    class QuestionData {
+        public:
+        QuestionData() : valid (false), numCorrect (0), numIncorrect (0),
+                         streak (0), lastCorrect (0), difficulty (0),
+                         cardbox (0), nextScheduled (0) { }
+        bool valid;
+        int numCorrect;
+        int numIncorrect;
+        int streak;
+        int lastCorrect;
+        int difficulty;
+        int cardbox;
+        int nextScheduled;
+    };
+
+    private:
     int calculateNextScheduled (int cardbox);
+    QuestionData getQuestionData (const QString& question);
+    void setQuestionData (const QString& question, const QuestionData& data,
+                          bool updateCardbox);
 
     private:
     QString dbConnectionName;

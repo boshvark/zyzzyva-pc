@@ -30,6 +30,8 @@
 #include <QVariant>
 #include <ctime>
 
+#include <QtDebug>
+
 const QString SQL_CREATE_QUESTIONS_TABLE_0_14_0 =
     "CREATE TABLE questions (question varchar(16), correct integer, "
     "incorrect integer, streak integer, last_correct integer, "
@@ -160,97 +162,58 @@ void
 QuizDatabase::recordResponse (const QString& question, bool correct,
                               bool updateCardbox)
 {
-    QSqlQuery query (*db);
-    query.prepare ("SELECT correct, incorrect, streak, last_correct, "
-                   "difficulty, cardbox FROM questions WHERE question=?");
-    query.bindValue (0, question);
-    query.exec();
+    QuestionData data = getQuestionData (question);
 
-    if (query.next()) {
-        int numCorrect = query.value (0).toInt();
-        int numIncorrect = query.value (1).toInt();
-        int streak = query.value (2).toInt();
-        int lastCorrect = query.value (3).toInt();
-        int difficulty = query.value (4).toInt();
-        int cardbox = query.value (5).toInt();
-
+    if (data.valid) {
         if (correct) {
-            ++numCorrect;
-            if (streak < 0)
-                streak = 1;
+            ++data.numCorrect;
+            if (data.streak < 0)
+                data.streak = 1;
             else
-                ++streak;
-            lastCorrect = std::time (0);
+                ++data.streak;
+            data.lastCorrect = std::time (0);
         }
         else {
-            ++numIncorrect;
-            if (streak > 0)
-                streak = -1;
+            ++data.numIncorrect;
+            if (data.streak > 0)
+                data.streak = -1;
             else
-                --streak;
+                --data.streak;
         }
-
-        int questionBindNum = 5;
-        QString queryStr = "UPDATE questions SET correct=?, incorrect=?, "
-                           "streak=?, last_correct=?, difficulty=? ";
-        if (updateCardbox) {
-            queryStr += ", cardbox=?, next_scheduled=? ";
-            questionBindNum = 7;
-        }
-        queryStr += "WHERE question=?";
-
-        query.prepare (queryStr);
-        query.bindValue (0, numCorrect);
-        query.bindValue (1, numIncorrect);
-        query.bindValue (2, streak);
-        query.bindValue (3, lastCorrect);
-        // XXX: Fix difficulty ratings!
-        query.bindValue (4, difficulty);
-
-
-        if (updateCardbox) {
-            cardbox = correct ? cardbox + 1 : 0;
-            query.bindValue (5, cardbox);
-            query.bindValue (6, calculateNextScheduled (cardbox));
-        }
-
-        query.bindValue (questionBindNum, question);
-        query.exec();
     }
 
     else {
-        int numCorrect = (correct ? 1 : 0);
-        int numIncorrect = (correct ? 0 : 1);
-        int streak = (correct ? 1 : -1);
-        int lastCorrect = (correct ? std::time (0) : 0);
+        data = QuestionData();
+        data.numCorrect = (correct ? 1 : 0);
+        data.numIncorrect = (correct ? 0 : 1);
+        data.streak = (correct ? 1 : -1);
+        data.lastCorrect = (correct ? std::time (0) : 0);
         // XXX: Fix difficulty ratings!
-        int difficulty = 50;
-
-        QString queryStr = "INSERT INTO questions (question, correct, "
-                           "incorrect, streak, last_correct, difficulty";
-        if (updateCardbox) {
-            queryStr += ", cardbox, next_scheduled";
-        }
-        queryStr += ") VALUES (?, ?, ?, ?, ?, ?";
-        if (updateCardbox) {
-            queryStr += ", ?, ?";
-        }
-        queryStr += ")";
-
-        query.prepare (queryStr);
-        query.bindValue (0, question);
-        query.bindValue (1, numCorrect);
-        query.bindValue (2, numIncorrect);
-        query.bindValue (3, streak);
-        query.bindValue (4, lastCorrect);
-        query.bindValue (5, difficulty);
-        if (updateCardbox) {
-            int cardbox = correct ? 1 : 0;
-            query.bindValue (6, cardbox);
-            query.bindValue (7, calculateNextScheduled (cardbox));
-        }
-        query.exec();
+        data.difficulty = 50;
     }
+
+    if (updateCardbox) {
+        data.cardbox = correct ? data.cardbox + 1 : 0;
+        data.nextScheduled = calculateNextScheduled (data.cardbox);
+    }
+
+    setQuestionData (question, data, updateCardbox);
+}
+
+//---------------------------------------------------------------------------
+//  addToCardbox
+//
+//! Add a question to the cardbox system, possibly estimating the cardbox it
+//! should be in based on past performance.
+//
+//! @param question the question to add to the cardbox system
+//! @param estimateCardbox whether to estimate a cardbox based on past
+//! performance
+//---------------------------------------------------------------------------
+void
+QuizDatabase::addToCardbox (const QString& question, bool estimateCardbox)
+{
+    qDebug() << "QuizDatabase::addToCardbox: " << question;
 }
 
 //---------------------------------------------------------------------------
@@ -331,4 +294,136 @@ QuizDatabase::calculateNextScheduled (int cardbox)
     int randSeconds = rng.rand (7200) - 3600;
     int nextScheduled = now + nextSeconds + randSeconds;
     return nextScheduled;
+}
+
+//---------------------------------------------------------------------------
+//  getQuestionData
+//
+//! Retrieve information about a question from the database.
+//
+//! @param question the question
+//! @return the associated data
+//---------------------------------------------------------------------------
+QuizDatabase::QuestionData
+QuizDatabase::getQuestionData (const QString& question)
+{
+    QuestionData data;
+
+    QSqlQuery query (*db);
+    query.prepare ("SELECT correct, incorrect, streak, last_correct, "
+                   "difficulty, cardbox, next_scheduled "
+                   "FROM questions WHERE question=?");
+    query.bindValue (0, question);
+    query.exec();
+
+    if (query.next()) {
+        QVariant variant = query.value (0);
+        if (!variant.isNull())
+            data.numCorrect = variant.toInt();
+
+        variant = query.value (1);
+        if (!variant.isNull())
+            data.numIncorrect = variant.toInt();
+
+        variant = query.value (2);
+        if (!variant.isNull())
+            data.streak = variant.toInt();
+
+        variant = query.value (3);
+        if (!variant.isNull())
+            data.lastCorrect = variant.toInt();
+
+        variant = query.value (4);
+        if (!variant.isNull())
+            data.difficulty = variant.toInt();
+
+        variant = query.value (5);
+        if (!variant.isNull())
+            data.cardbox = variant.toInt();
+
+        variant = query.value (6);
+        if (!variant.isNull())
+            data.nextScheduled = variant.toInt();
+
+        data.valid = true;
+    }
+
+    return data;
+}
+
+//---------------------------------------------------------------------------
+//  setQuestionData
+//
+//! Update information about a question in the database.
+//
+//! @param question the question
+//! @param data the new data
+//! @param updateCardbox whether to update the cardbox information
+//---------------------------------------------------------------------------
+void
+QuizDatabase::setQuestionData (const QString& question, const QuestionData&
+                               data, bool updateCardbox)
+{
+    QSqlQuery query (*db);
+    query.prepare ("SELECT question FROM questions WHERE question=?");
+    query.bindValue (0, question);
+    query.exec();
+
+    // Question data already exists, so update it
+    if (query.next()) {
+        int questionBindNum = 5;
+        QString queryStr = "UPDATE questions SET correct=?, incorrect=?, "
+            "streak=?, last_correct=?, difficulty=? ";
+        if (updateCardbox) {
+            queryStr += ", cardbox=?, next_scheduled=? ";
+            questionBindNum = 7;
+        }
+        queryStr += "WHERE question=?";
+
+        query.prepare (queryStr);
+        query.bindValue (0, data.numCorrect);
+        query.bindValue (1, data.numIncorrect);
+        query.bindValue (2, data.streak);
+        query.bindValue (3, data.lastCorrect);
+        // XXX: Fix difficulty ratings!
+        query.bindValue (4, data.difficulty);
+
+        if (updateCardbox) {
+            query.bindValue (5, data.cardbox);
+            query.bindValue (6, data.nextScheduled);
+            questionBindNum = 7;
+        }
+
+        query.bindValue (questionBindNum, question);
+        query.exec();
+    }
+
+    // Question data does not exist, so insert it
+    else {
+        QString queryStr = "INSERT INTO questions (question, correct, "
+                           "incorrect, streak, last_correct, difficulty";
+        if (updateCardbox) {
+            queryStr += ", cardbox, next_scheduled";
+        }
+        queryStr += ") VALUES (?, ?, ?, ?, ?, ?";
+        if (updateCardbox) {
+            queryStr += ", ?, ?";
+        }
+        queryStr += ")";
+
+        query.prepare (queryStr);
+        query.bindValue (0, question);
+        query.bindValue (1, data.numCorrect);
+        query.bindValue (2, data.numIncorrect);
+        query.bindValue (3, data.streak);
+        query.bindValue (4, data.lastCorrect);
+        query.bindValue (5, data.difficulty);
+
+        if (updateCardbox) {
+            query.bindValue (6, data.cardbox);
+            query.bindValue (7, data.nextScheduled);
+        }
+
+        query.exec();
+    }
 }

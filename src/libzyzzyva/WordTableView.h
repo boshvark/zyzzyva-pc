@@ -54,7 +54,11 @@ class WordTableView : public QTreeView
     void addToCardboxRequested();
 
     private:
+    // XXX: Hmm, these methods probably don't belong in WordTableView
     bool exportFile (const QString& filename, QString* err) const;
+    bool addToCardbox (const QStringList& words, const QString& lexicon,
+                       const QString& quizType, bool estimateCardbox) const;
+
     QString hookToolTipText (const QString& word, const QString& hooks,
                              bool front) const;
 

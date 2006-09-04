@@ -25,7 +25,9 @@
 #include "WordTableView.h"
 #include "CardboxAddDialog.h"
 #include "DefinitionDialog.h"
+#include "MainSettings.h"
 #include "MainWindow.h"
+#include "QuizDatabase.h"
 #include "QuizSpec.h"
 #include "SearchSpec.h"
 #include "WordEngine.h"
@@ -221,8 +223,16 @@ WordTableView::addToCardboxRequested()
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
         QStringList words = dialog->getWords();
+        QString lexicon = MainSettings::getAutoImportLexicon();
+        QString quizType = dialog->getQuizType();
+        bool estimateCardbox = dialog->getEstimateCardbox();
+        bool ok = addToCardbox (words, lexicon, quizType, estimateCardbox);
 
-        // DO SOMETHING NICE WITH THE WORDS HERE
+        if (!ok) {
+            QMessageBox::warning (this, "Error Adding Words to Cardbox",
+                                  "An error occurred while adding words "
+                                  "to the cardbox system.");
+        }
 
     }
 
@@ -261,6 +271,62 @@ WordTableView::exportFile (const QString& filename, QString* err) const
         stream << word;
         endl (stream);
         index = index.sibling (++i, WordTableModel::WORD_COLUMN);
+    }
+
+    return true;
+}
+
+//---------------------------------------------------------------------------
+//  addToCardbox
+//
+//! Add a list of words to the cardbox system.
+//
+//! @param words the words to add
+//! @param lexicon the lexicon to use
+//! @param quizType the quiz type to use
+//! @param estimateCardbox whether to estimate cardboxes based on past
+//! performance
+//
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordTableView::addToCardbox (const QStringList& words, const QString& lexicon,
+                             const QString& quizType, bool estimateCardbox)
+const
+{
+    QuizSpec::QuizType type = Auxil::stringToQuizType (quizType);
+    if (type == QuizSpec::UnknownQuizType)
+        return false;
+
+    QStringList questions;
+
+    switch (type) {
+        case QuizSpec::QuizAnagrams:
+        case QuizSpec::QuizAnagramsWithHooks:
+        case QuizSpec::QuizSubanagrams:
+        case QuizSpec::QuizAnagramJumble:
+        case QuizSpec::QuizSubanagramJumble: {
+
+            QSet<QString> alphagramSet;
+            QStringListIterator it (words);
+            while (it.hasNext()) {
+                alphagramSet.insert (Auxil::getAlphagram (it.next()));
+            }
+            questions = QStringList::fromSet (alphagramSet);
+        }
+        break;
+
+        default:
+        questions = words;
+    }
+
+    QuizDatabase db (lexicon, quizType);
+    if (!db.isValid())
+        return false;
+
+    QStringListIterator it (questions);
+    while (it.hasNext()) {
+        db.addToCardbox (it.next(), estimateCardbox);
     }
 
     return true;
