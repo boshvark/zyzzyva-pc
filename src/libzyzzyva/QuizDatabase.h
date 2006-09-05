@@ -47,7 +47,7 @@ class QuizDatabase
         public:
         QuestionData() : valid (false), numCorrect (0), numIncorrect (0),
                          streak (0), lastCorrect (0), difficulty (0),
-                         cardbox (0), nextScheduled (0) { }
+                         cardbox (-1), nextScheduled (0) { }
         bool valid;
         int numCorrect;
         int numIncorrect;

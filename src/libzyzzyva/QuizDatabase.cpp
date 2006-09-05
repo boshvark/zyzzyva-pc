@@ -30,8 +30,6 @@
 #include <QVariant>
 #include <ctime>
 
-#include <QtDebug>
-
 const QString SQL_CREATE_QUESTIONS_TABLE_0_14_0 =
     "CREATE TABLE questions (question varchar(16), correct integer, "
     "incorrect integer, streak integer, last_correct integer, "
@@ -180,21 +178,25 @@ QuizDatabase::recordResponse (const QString& question, bool correct,
             else
                 --data.streak;
         }
+        if (updateCardbox) {
+            data.cardbox = correct ? data.cardbox + 1 : 0;
+            data.nextScheduled = calculateNextScheduled (data.cardbox);
+        }
     }
 
     else {
         data = QuestionData();
+        data.valid = true;
         data.numCorrect = (correct ? 1 : 0);
         data.numIncorrect = (correct ? 0 : 1);
         data.streak = (correct ? 1 : -1);
         data.lastCorrect = (correct ? std::time (0) : 0);
         // XXX: Fix difficulty ratings!
         data.difficulty = 50;
-    }
-
-    if (updateCardbox) {
-        data.cardbox = correct ? data.cardbox + 1 : 0;
-        data.nextScheduled = calculateNextScheduled (data.cardbox);
+        if (updateCardbox) {
+            data.cardbox = correct ? 1 : 0;
+            data.nextScheduled = calculateNextScheduled (data.cardbox);
+        }
     }
 
     setQuestionData (question, data, updateCardbox);
@@ -213,7 +215,32 @@ QuizDatabase::recordResponse (const QString& question, bool correct,
 void
 QuizDatabase::addToCardbox (const QString& question, bool estimateCardbox)
 {
-    qDebug() << "QuizDatabase::addToCardbox: " << question;
+    QuestionData data = getQuestionData (question);
+
+    if (data.valid) {
+        // Question is already in the cardbox system, so leave it alone
+        if (data.cardbox >= 0) {
+            return;
+        }
+
+        if (estimateCardbox && (data.streak > 0))
+            data.cardbox = data.streak;
+        else
+            data.cardbox = 0;
+    }
+
+    else {
+        data = QuestionData();
+        data.valid = true;
+        data.cardbox = 0;
+    }
+
+    // Move scheduled time back by 13 hours, so questions in cardbox 0 will be
+    // available immediately
+    data.nextScheduled = calculateNextScheduled (data.cardbox);
+    data.nextScheduled -= 60 * 60 * 13;
+
+    setQuestionData (question, data, true);
 }
 
 //---------------------------------------------------------------------------
