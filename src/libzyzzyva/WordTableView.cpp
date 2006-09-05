@@ -37,6 +37,7 @@
 #include "WordVariationType.h"
 #include "Auxil.h"
 #include <QAction>
+#include <QApplication>
 #include <QContextMenuEvent>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -206,6 +207,7 @@ WordTableView::addToCardboxRequested()
         QMessageBox::warning (this, "Error Adding Words to Cardbox",
                               "Cannot add words to cardbox:\n"
                               "No words in the list.");
+        return;
     }
 
     CardboxAddDialog* dialog = new CardboxAddDialog (this);
@@ -226,7 +228,10 @@ WordTableView::addToCardboxRequested()
         QString lexicon = MainSettings::getAutoImportLexicon();
         QString quizType = dialog->getQuizType();
         bool estimateCardbox = dialog->getEstimateCardbox();
+
+        QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
         bool ok = addToCardbox (words, lexicon, quizType, estimateCardbox);
+        QApplication::restoreOverrideCursor();
 
         if (!ok) {
             QMessageBox::warning (this, "Error Adding Words to Cardbox",
