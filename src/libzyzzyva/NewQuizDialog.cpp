@@ -39,6 +39,8 @@
 #include <QTextStream>
 #include <QVBoxLayout>
 
+#include <QtDebug>
+
 const QString DIALOG_CAPTION = "New Quiz";
 const QString TIMER_PER_QUESTION = "per question";
 const QString TIMER_PER_RESPONSE = "per response";
@@ -214,10 +216,12 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
 QuizSpec
 NewQuizDialog::getQuizSpec()
 {
+    QuizSpec::QuizMethod quizMethod =
+        Auxil::stringToQuizMethod (methodCombo->currentText());
+
     quizSpec.setLexicon (wordEngine->getLexiconName());
     quizSpec.setType (Auxil::stringToQuizType (typeCombo->currentText()));
-    quizSpec.setMethod (Auxil::stringToQuizMethod
-                        (methodCombo->currentText()));
+    quizSpec.setMethod (quizMethod);
     quizSpec.setSearchSpec (specForm->getSearchSpec());
     quizSpec.setQuestionOrder (Auxil::stringToQuizQuestionOrder
                                (questionOrderCombo->currentText()));
@@ -233,7 +237,9 @@ NewQuizDialog::getQuizSpec()
     }
     quizSpec.setTimerSpec (timerSpec);
 
-    if (!progressCbox->isChecked()) {
+    if (!progressCbox->isChecked() &&
+        (quizMethod != QuizSpec::CardboxQuizMethod))
+    {
         quizSpec.setProgress (QuizProgress());
         quizSpec.setFilename (QString::null);
     }
