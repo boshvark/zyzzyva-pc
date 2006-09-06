@@ -535,6 +535,7 @@ MainWindow::newQuizForm (const QuizSpec& quizSpec)
     newTab (form, QIcon (":/quiz-icon"), QUIZ_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    currentTabChanged (0);
 }
 
 //---------------------------------------------------------------------------
@@ -550,6 +551,7 @@ MainWindow::newSearchForm()
     newTab (form, QIcon (":/search-icon"), SEARCH_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    currentTabChanged (0);
 }
 
 //---------------------------------------------------------------------------
@@ -565,6 +567,7 @@ MainWindow::newCrosswordGameForm()
     newTab (form, QIcon (":/define-icon"), CROSSWORD_GAME_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    currentTabChanged (0);
 }
 
 //---------------------------------------------------------------------------
@@ -580,6 +583,7 @@ MainWindow::newDefineForm()
     newTab (form, QIcon (":/define-icon"), DEFINE_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    currentTabChanged (0);
 }
 
 //---------------------------------------------------------------------------
@@ -595,6 +599,7 @@ MainWindow::newJudgeForm()
     newTab (form, QIcon (":/judge-icon"), JUDGE_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    currentTabChanged (0);
 }
 
 //---------------------------------------------------------------------------
@@ -610,6 +615,7 @@ MainWindow::newIntroForm()
     newTab (form, QIcon (":/help-icon"), INTRO_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    currentTabChanged (0);
 }
 
 //---------------------------------------------------------------------------
