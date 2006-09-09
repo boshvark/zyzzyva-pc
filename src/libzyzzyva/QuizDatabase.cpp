@@ -300,25 +300,31 @@ QuizDatabase::calculateNextScheduled (int cardbox)
     int daySeconds = 60 * 60 * 24;
     int halfDaySeconds = daySeconds / 2;
     int numDays = 0;
+    int randDays = 0;
     switch (cardbox) {
-        case 0: numDays = 1; break;
-        case 1: numDays = 4; break;
-        case 2: numDays = 7; break;
-        case 3: numDays = 12; break;
-        case 4: numDays = 20; break;
-        case 5: numDays = 30; break;
-        case 6: numDays = 60; break;
-        case 7: numDays = 90; break;
-        case 8: numDays = 150; break;
-        case 9: numDays = 270; break;
+        case 0: numDays = 1; randDays = 0; break;
+        case 1: numDays = 4; randDays = 1; break;
+        case 2: numDays = 7; randDays = 2; break;
+        case 3: numDays = 12; randDays = 3; break;
+        case 4: numDays = 20; randDays = 5; break;
+        case 5: numDays = 30; randDays = 7; break;
+        case 6: numDays = 60; randDays = 10; break;
+        case 7: numDays = 90; randDays = 15; break;
+        case 8: numDays = 150; randDays = 20; break;
+        case 9: numDays = 270; randDays = 30; break;
         case 10:
-        default: numDays = 480; break;
+        default: numDays = 480; randDays = 50; break;
     }
 
-    // Get the next scheduled time and perturb it by a random amount
+    // Get the next scheduled time and perturb it randomly.  First, add or
+    // subtract a random number of days so we don't get a bunch of questions
+    // all at once on some future date.  Then add or subtract a random number
+    // of seconds within two hours, so the future question order is somewhat
+    // randomized.
+    numDays += rng.rand (randDays * 2) - randDays;
     unsigned int now = std::time (0);
     int nextSeconds = (daySeconds * numDays) - halfDaySeconds;
-    int randSeconds = rng.rand (7200) - 3600;
+    int randSeconds = rng.rand (14400) - 7200;
     int nextScheduled = now + nextSeconds + randSeconds;
     return nextScheduled;
 }
