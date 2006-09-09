@@ -32,17 +32,6 @@
 class QuizDatabase
 {
     public:
-    QuizDatabase (const QString& lexicon, const QString& quizType);
-    ~QuizDatabase();
-
-    bool isValid() const;
-    bool updateSchema();
-    void recordResponse (const QString& question, bool correct,
-                         bool updateCardbox);
-    void addToCardbox (const QString& question, bool estimateCardbox);
-    QStringList getReadyQuestions (const QStringList& questions);
-
-    private:
     class QuestionData {
         public:
         QuestionData() : valid (false), numCorrect (0), numIncorrect (0),
@@ -58,9 +47,19 @@ class QuizDatabase
         int nextScheduled;
     };
 
+    QuizDatabase (const QString& lexicon, const QString& quizType);
+    ~QuizDatabase();
+
+    bool isValid() const;
+    bool updateSchema();
+    void recordResponse (const QString& question, bool correct,
+                         bool updateCardbox);
+    void addToCardbox (const QString& question, bool estimateCardbox);
+    QStringList getReadyQuestions (const QStringList& questions);
+    QuestionData getQuestionData (const QString& question);
+
     private:
     int calculateNextScheduled (int cardbox);
-    QuestionData getQuestionData (const QString& question);
     void setQuestionData (const QString& question, const QuestionData& data,
                           bool updateCardbox);
 
