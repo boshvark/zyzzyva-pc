@@ -221,19 +221,29 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
              responseView, SLOT (resizeItemsToContents()));
     responseView->setModel (responseModel);
 
-    // Question status
-    QHBoxLayout* statusHlay = new QHBoxLayout;
-    statusHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (statusHlay);
-    mainVlay->addLayout (statusHlay);
+    // Correct status
+    QHBoxLayout* correctStatusHlay = new QHBoxLayout;
+    correctStatusHlay->setSpacing (SPACING);
+    Q_CHECK_PTR (correctStatusHlay);
+    mainVlay->addLayout (correctStatusHlay);
 
     responseStatusLabel = new DefinitionLabel;
     Q_CHECK_PTR (responseStatusLabel);
-    statusHlay->addWidget (responseStatusLabel);
+    correctStatusHlay->addWidget (responseStatusLabel);
+
+    correctStatusLabel = new DefinitionLabel;
+    Q_CHECK_PTR (correctStatusLabel);
+    correctStatusHlay->addWidget (correctStatusLabel);
+
+    // Question status
+    QHBoxLayout* questionStatusHlay = new QHBoxLayout;
+    questionStatusHlay->setSpacing (SPACING);
+    Q_CHECK_PTR (questionStatusHlay);
+    mainVlay->addLayout (questionStatusHlay);
 
     questionStatusLabel = new DefinitionLabel;
     Q_CHECK_PTR (questionStatusLabel);
-    statusHlay->addWidget (questionStatusLabel);
+    questionStatusHlay->addWidget (questionStatusLabel);
 
     // Input line
     inputLine = new WordLineEdit;
@@ -407,7 +417,7 @@ QuizForm::responseEntered()
     }
 
     // Update the stats if the stats are already shown
-    if (!questionStatusLabel->text().isEmpty())
+    if (!correctStatusLabel->text().isEmpty())
         updateStats();
 
     // Update the response status label
@@ -498,6 +508,11 @@ QuizForm::newQuiz (const QuizSpec& spec)
                               message);
         return false;
     }
+
+    if (spec.getMethod() == QuizSpec::CardboxQuizMethod)
+        questionStatusLabel->show();
+    else
+        questionStatusLabel->hide();
 
     quizTypeLabel->setText (Auxil::quizTypeToString
                             (quizEngine->getQuizSpec().getType()));
@@ -812,6 +827,16 @@ QuizForm::checkResponseClicked()
     if (MainSettings::getQuizRecordStats() && !recordStatsBlocked)
         recordQuestionStats (questionCorrect);
 
+
+    if (db && db->isValid() &&
+       (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod))
+    {
+        QString question = quizEngine->getQuestion();
+        QuizDatabase::QuestionData data = db->getQuestionData (question);
+        if (data.valid)
+            setQuestionStatus (data);
+    }
+
     QApplication::restoreOverrideCursor();
 }
 
@@ -878,7 +903,7 @@ QuizForm::flashcardStateChanged (int state)
         inputLine->clear();
         inputLine->hide();
         responseStatusLabel->hide();
-        questionStatusLabel->hide();
+        correctStatusLabel->hide();
         if (checkResponseButton->isEnabled())
             checkResponseButton->setFocus();
         else
@@ -888,7 +913,7 @@ QuizForm::flashcardStateChanged (int state)
         checkBringsJudgment = true;
         inputLine->show();
         responseStatusLabel->show();
-        questionStatusLabel->show();
+        correctStatusLabel->show();
         inputLine->setFocus();
     }
 }
@@ -986,8 +1011,8 @@ QuizForm::killActiveTimer()
 void
 QuizForm::updateStats()
 {
-    setQuestionStatus (quizEngine->getQuestionCorrect(),
-                       quizEngine->getQuestionTotal());
+    setCorrectStatus (quizEngine->getQuestionCorrect(),
+                      quizEngine->getQuestionTotal());
 }
 
 //---------------------------------------------------------------------------
@@ -998,6 +1023,7 @@ QuizForm::updateStats()
 void
 QuizForm::clearStats()
 {
+    correctStatusLabel->setText ("");
     questionStatusLabel->setText ("");
 }
 
@@ -1117,18 +1143,46 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
 }
 
 //---------------------------------------------------------------------------
-//  setQuestionStatus
+//  setCorrectStatus
 //
-//! Set the status of the question after the user clicks the Check button.
+//! Set the correctness status of the question after the user clicks the Check
+//! button.
 //
 //! @param correct the number of correct responses
 //! @param total the total number of correct answers
 //---------------------------------------------------------------------------
 void
-QuizForm::setQuestionStatus (int correct, int total)
+QuizForm::setCorrectStatus (int correct, int total)
 {
-    questionStatusLabel->setText ("Correct: " + QString::number (correct)
-                          + " of " + QString::number (total));
+    correctStatusLabel->setText ("Correct: " + QString::number (correct) +
+                                 " of " + QString::number (total));
+}
+
+//---------------------------------------------------------------------------
+//  setQuestionStatus
+//
+//! Set the status of the question.
+//
+//! @param correct the number of correct responses
+//! @param total the total number of correct answers
+//---------------------------------------------------------------------------
+void
+QuizForm::setQuestionStatus (const QuizDatabase::QuestionData& data)
+{
+    if (!data.valid)
+        return;
+
+    QDateTime nextDate;
+    nextDate.setTime_t (data.nextScheduled);
+    QDateTime now = QDateTime::currentDateTime();
+    int numDays = now.daysTo (nextDate);
+
+    QString format = "yyyy-MM-dd hh:mm:ss";
+    QString text = "Cardbox: " + QString::number (data.cardbox) +
+                   ", Next Scheduled: " + nextDate.toString (format) +
+                   " (" + QString::number (numDays) + " day" +
+                   (numDays == 1 ? QString() : QString ("s")) + ")";
+    questionStatusLabel->setText (text);
 }
 
 //---------------------------------------------------------------------------
@@ -1434,9 +1488,9 @@ QuizForm::setTileTheme (const QString& theme)
 void
 QuizForm::reflowLayout()
 {
-    QString text = questionStatusLabel->text();
-    questionStatusLabel->setText ("foo blah blah");
-    questionStatusLabel->setText (text);
+    QString text = correctStatusLabel->text();
+    correctStatusLabel->setText ("foo blah blah");
+    correctStatusLabel->setText (text);
     questionCanvas->update();
 }
 

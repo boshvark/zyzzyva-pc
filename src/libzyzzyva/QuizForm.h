@@ -27,6 +27,7 @@
 
 #include "ActionForm.h"
 #include "QuizTimerSpec.h"
+#include "QuizDatabase.h"
 #include <QCheckBox>
 #include <QImage>
 #include <QKeyEvent>
@@ -100,7 +101,8 @@ class QuizForm : public ActionForm
     void setNumCanvasTiles (int num);
     void setQuestionLabel (const QString& question, const QString& order =
                            QString::null);
-    void setQuestionStatus (int correct, int total);
+    void setCorrectStatus (int correct, int total);
+    void setQuestionStatus (const QuizDatabase::QuestionData& data);
     void setStatusString (const QString& status);
     void setTimerDisplay (int seconds);
     void setQuizName (const QString& name);
@@ -130,6 +132,7 @@ class QuizForm : public ActionForm
     WordTableView* responseView;
     WordTableModel* responseModel;
     DefinitionLabel* responseStatusLabel;
+    DefinitionLabel* correctStatusLabel;
     DefinitionLabel* questionStatusLabel;
     QLabel*       letterOrderLabel;
     ZPushButton*  alphaOrderButton;
