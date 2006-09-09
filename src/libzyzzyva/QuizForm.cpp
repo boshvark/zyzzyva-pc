@@ -59,6 +59,21 @@ const QString UNPAUSE_BUTTON = "Un&pause";
 const int TITLE_FONT_PIXEL_SIZE = 20;
 
 //---------------------------------------------------------------------------
+//  alphabeticalCmp
+//
+//! A character comparison function that sorts alphabetically.  For some
+//! reason, qSort doesn't seem to do this correctly?
+//
+//! @param a a character
+//! @param b another character
+//---------------------------------------------------------------------------
+bool
+alphabeticalCmp (const QChar& a, const QChar& b)
+{
+    return (a < b);
+}
+
+//---------------------------------------------------------------------------
 //  vowelsFirstCmp
 //
 //! A character comparison function that sorts vowels before consonants as a
@@ -1106,7 +1121,7 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
                 qSort (qchars.begin(), qchars.end(), consonantsFirstCmp);
             }
             else if (letterOrder == Defs::QUIZ_LETTERS_ALPHA) {
-                qSort (qchars.begin(), qchars.end());
+                qSort (qchars.begin(), qchars.end(), alphabeticalCmp);
             }
 
             char chars[MAX_WORD_LEN + 1];
