@@ -235,10 +235,10 @@ QuizDatabase::addToCardbox (const QString& question, bool estimateCardbox)
         data.cardbox = 0;
     }
 
-    // Move scheduled time back by 13 hours, so questions in cardbox 0 will be
+    // Move scheduled time back by 14 hours, so questions in cardbox 0 will be
     // available immediately
     data.nextScheduled = calculateNextScheduled (data.cardbox);
-    data.nextScheduled -= 60 * 60 * 13;
+    data.nextScheduled -= 60 * 60 * 14;
 
     setQuestionData (question, data, true);
 }
