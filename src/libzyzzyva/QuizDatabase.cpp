@@ -376,7 +376,8 @@ QuizDatabase::calculateNextScheduled (int cardbox)
     // all at once on some future date.  Then add or subtract a random number
     // of seconds within two hours, so the future question order is somewhat
     // randomized.
-    numDays += rng.rand (randDays * 2) - randDays;
+    if (randDays)
+        numDays += rng.rand (randDays * 2) - randDays;
     unsigned int now = std::time (0);
     int nextSeconds = (daySeconds * numDays) - halfDaySeconds;
     int randSeconds = rng.rand (14400) - 7200;
