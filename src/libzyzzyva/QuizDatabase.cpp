@@ -374,13 +374,16 @@ QuizDatabase::calculateNextScheduled (int cardbox)
     // Get the next scheduled time and perturb it randomly.  First, add or
     // subtract a random number of days so we don't get a bunch of questions
     // all at once on some future date.  Then add or subtract a random number
-    // of seconds within two hours, so the future question order is somewhat
-    // randomized.
+    // of seconds within 12 hours, so the future question order is somewhat
+    // randomized, and each question is equally likely to occur anytime during
+    // the day.  For cardbox 0, the window is only 4 hours, so the question is
+    // scheduled between 8 and 16 hours in the future.
     if (randDays)
         numDays += rng.rand (randDays * 2) - randDays;
     unsigned int now = std::time (0);
     int nextSeconds = (daySeconds * numDays) - halfDaySeconds;
-    int randSeconds = rng.rand (14400) - 7200;
+    int halfWindow = cardbox ? halfDaySeconds : 60 * 60 * 4;
+    int randSeconds = rng.rand (2 * halfWindow) - halfWindow;
     int nextScheduled = now + nextSeconds + randSeconds;
     return nextScheduled;
 }
