@@ -205,6 +205,28 @@ QuizDatabase::recordResponse (const QString& question, bool correct,
 //---------------------------------------------------------------------------
 //  addToCardbox
 //
+//! Add a list of questions to the cardbox system, possibly estimating the
+//! cardboxes they should be in based on past performance.
+//
+//! @param question the question to add to the cardbox system
+//! @param estimateCardbox whether to estimate a cardbox based on past
+//! performance
+//---------------------------------------------------------------------------
+void
+QuizDatabase::addToCardbox (const QStringList& questions, bool estimateCardbox)
+{
+    QSqlQuery query (*db);
+    query.exec ("BEGIN TRANSACTION");
+    QStringListIterator it (questions);
+    while (it.hasNext()) {
+        addToCardbox (it.next(), estimateCardbox);
+    }
+    query.exec ("COMMIT TRANSACTION");
+}
+
+//---------------------------------------------------------------------------
+//  addToCardbox
+//
 //! Add a question to the cardbox system, possibly estimating the cardbox it
 //! should be in based on past performance.
 //

@@ -54,6 +54,7 @@ class QuizDatabase
     bool updateSchema();
     void recordResponse (const QString& question, bool correct,
                          bool updateCardbox);
+    void addToCardbox (const QStringList& questions, bool estimateCardbox);
     void addToCardbox (const QString& question, bool estimateCardbox);
     QStringList getReadyQuestions (const QStringList& questions);
     QuestionData getQuestionData (const QString& question);

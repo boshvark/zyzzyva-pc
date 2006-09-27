@@ -329,11 +329,7 @@ const
     if (!db.isValid())
         return false;
 
-    QStringListIterator it (questions);
-    while (it.hasNext()) {
-        db.addToCardbox (it.next(), estimateCardbox);
-    }
-
+    db.addToCardbox (questions, estimateCardbox);
     return true;
 }
 
