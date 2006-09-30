@@ -1472,6 +1472,7 @@ QuizForm::setUnsavedChanges (bool b)
 {
     unsavedChanges = b;
     saveQuizButton->setEnabled (b);
+    emit saveEnabledChanged (b);
 }
 
 //---------------------------------------------------------------------------

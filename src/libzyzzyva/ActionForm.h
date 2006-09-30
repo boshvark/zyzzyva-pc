@@ -53,6 +53,7 @@ class ActionForm : public QFrame
 
     signals:
     void statusChanged (const QString& status);
+    void saveEnabledChanged (bool saveEnabled);
 
     private:
     ActionFormType type;

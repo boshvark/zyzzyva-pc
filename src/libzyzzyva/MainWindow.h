@@ -75,6 +75,7 @@ class MainWindow : public QMainWindow
     void closeCurrentTab();
     void currentTabChanged (int index);
     void tabStatusChanged (const QString& status);
+    void tabSaveEnabledChanged (bool saveEnabled);
 
     void doTest();
 

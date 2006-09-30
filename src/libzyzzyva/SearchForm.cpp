@@ -223,6 +223,7 @@ SearchForm::search()
     }
 
     updateResultTotal (wordList.size());
+    emit saveEnabledChanged (!wordList.empty());
 
     QWidget* focusWidget = QApplication::focusWidget();
     QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(focusWidget);

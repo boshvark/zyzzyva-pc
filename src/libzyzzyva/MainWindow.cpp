@@ -545,6 +545,8 @@ MainWindow::newQuizForm (const QuizSpec& quizSpec)
     newTab (form, QIcon (":/quiz-icon"), QUIZ_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    connect (form, SIGNAL (saveEnabledChanged (bool)),
+             SLOT (tabSaveEnabledChanged (bool)));
     currentTabChanged (0);
 }
 
@@ -561,6 +563,8 @@ MainWindow::newSearchForm()
     newTab (form, QIcon (":/search-icon"), SEARCH_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    connect (form, SIGNAL (saveEnabledChanged (bool)),
+             SLOT (tabSaveEnabledChanged (bool)));
     currentTabChanged (0);
 }
 
@@ -577,6 +581,8 @@ MainWindow::newCrosswordGameForm()
     newTab (form, QIcon (":/define-icon"), CROSSWORD_GAME_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    connect (form, SIGNAL (saveEnabledChanged (bool)),
+             SLOT (tabSaveEnabledChanged (bool)));
     currentTabChanged (0);
 }
 
@@ -593,6 +599,8 @@ MainWindow::newDefineForm()
     newTab (form, QIcon (":/define-icon"), DEFINE_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    connect (form, SIGNAL (saveEnabledChanged (bool)),
+             SLOT (tabSaveEnabledChanged (bool)));
     currentTabChanged (0);
 }
 
@@ -609,6 +617,8 @@ MainWindow::newJudgeForm()
     newTab (form, QIcon (":/judge-icon"), JUDGE_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    connect (form, SIGNAL (saveEnabledChanged (bool)),
+             SLOT (tabSaveEnabledChanged (bool)));
     currentTabChanged (0);
 }
 
@@ -625,6 +635,8 @@ MainWindow::newIntroForm()
     newTab (form, QIcon (":/help-icon"), INTRO_TAB_TITLE);
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
+    connect (form, SIGNAL (saveEnabledChanged (bool)),
+             SLOT (tabSaveEnabledChanged (bool)));
     currentTabChanged (0);
 }
 
@@ -854,6 +866,26 @@ MainWindow::tabStatusChanged (const QString& status)
     if (index == tabStack->currentIndex()) {
         messageLabel->setText (status);
         qApp->processEvents();
+    }
+}
+
+//---------------------------------------------------------------------------
+//  tabSaveEnabledChanged
+//
+//! Called when the save enabled status for a tab changes.
+//
+//! @param the new save enabled status
+//---------------------------------------------------------------------------
+void
+MainWindow::tabSaveEnabledChanged (bool saveEnabled)
+{
+    QObject* object = sender();
+    if (!object)
+        return;
+    ActionForm* form = static_cast<ActionForm*>(object);
+    int index = tabStack->indexOf (form);
+    if (index == tabStack->currentIndex()) {
+        saveAction->setEnabled (saveEnabled);
     }
 }
 
