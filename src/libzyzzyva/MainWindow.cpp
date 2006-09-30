@@ -115,6 +115,7 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     Q_CHECK_PTR (saveAction);
     saveAction->setIcon (QIcon (":/save-icon"));
     saveAction->setEnabled (false);
+    saveAction->setShortcut (QString ("Ctrl+S"));
     connect (saveAction, SIGNAL (triggered()), SLOT (doSaveAction()));
     fileMenu->addAction (saveAction);
 
