@@ -108,6 +108,8 @@ class MainWindow : public QMainWindow
     QLabel*      messageLabel;
     QLabel*      lexiconLabel;
 
+    QAction*     saveAction;
+
     SettingsDialog* settingsDialog;
     AboutDialog*    aboutDialog;
     HelpDialog*     helpDialog;

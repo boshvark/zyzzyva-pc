@@ -59,7 +59,7 @@ class QuizForm : public ActionForm
     QuizForm (WordEngine* we, QWidget* parent = 0, Qt::WFlags f = 0);
     ~QuizForm();
     QString getStatusString() const;
-    bool hasUnsavedChanges() const { return unsavedChanges; }
+    bool isSaveEnabled() const;
 
     public slots:
     bool newQuiz (const QuizSpec& spec);

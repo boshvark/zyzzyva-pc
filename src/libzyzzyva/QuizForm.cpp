@@ -371,6 +371,19 @@ QuizForm::getStatusString() const
 }
 
 //---------------------------------------------------------------------------
+//  isSaveEnabled
+//
+//! Determine whether the save action should be enabled for this form.
+//
+//! @return true if save should be enabled, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizForm::isSaveEnabled() const
+{
+    return unsavedChanges;
+}
+
+//---------------------------------------------------------------------------
 //  responseEntered
 //
 //! Called when a response is entered into the input line.

@@ -111,9 +111,10 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     fileMenu->addAction (testAction);
 
     // Save
-    QAction* saveAction = new QAction ("&Save", this);
+    saveAction = new QAction ("&Save", this);
     Q_CHECK_PTR (saveAction);
     saveAction->setIcon (QIcon (":/save-icon"));
+    saveAction->setEnabled (false);
     connect (saveAction, SIGNAL (triggered()), SLOT (doSaveAction()));
     fileMenu->addAction (saveAction);
 
@@ -292,6 +293,8 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     QToolBar* toolbar = new QToolBar;
     Q_CHECK_PTR (toolbar);
     toolbar->setIconSize (QSize (22, 22));
+    toolbar->addAction (saveAction);
+    toolbar->addSeparator();
     toolbar->addAction (newQuizAction);
     toolbar->addAction (newSearchAction);
     toolbar->addAction (newDefinitionAction);
@@ -792,7 +795,7 @@ MainWindow::closeCurrentTab()
     ActionForm::ActionFormType type = form->getType();
     if (type == ActionForm::QuizFormType) {
         QuizForm* quizForm = static_cast<QuizForm*> (form);
-        if (quizForm->hasUnsavedChanges()) {
+        if (quizForm->isSaveEnabled()) {
             bool ok = quizForm->promptToSaveChanges();
             if (!ok)
                 return;
@@ -818,6 +821,7 @@ MainWindow::currentTabChanged (int)
 {
     QWidget* w = tabStack->currentWidget();
     QString status;
+    bool saveEnabled = false;
     if (w) {
         ActionForm* form = static_cast<ActionForm*>(w);
         ActionForm::ActionFormType type = form->getType();
@@ -826,8 +830,10 @@ MainWindow::currentTabChanged (int)
             defineForm->selectInputArea();
         }
         status = form->getStatusString();
+        saveEnabled = form->isSaveEnabled();
     }
     messageLabel->setText (status);
+    saveAction->setEnabled (saveEnabled);
 }
 
 //---------------------------------------------------------------------------
@@ -1004,7 +1010,7 @@ MainWindow::closeEvent (QCloseEvent* event)
         ActionForm::ActionFormType type = form->getType();
         if (type == ActionForm::QuizFormType) {
             QuizForm* quizForm = static_cast<QuizForm*> (form);
-            if (quizForm->hasUnsavedChanges()) {
+            if (quizForm->isSaveEnabled()) {
                 tabStack->setCurrentWidget (quizForm);
                 bool ok = quizForm->promptToSaveChanges();
                 if (!ok) {

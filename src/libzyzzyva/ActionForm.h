@@ -49,6 +49,7 @@ class ActionForm : public QFrame
     virtual ~ActionForm() { }
     virtual ActionFormType getType() const { return type; }
     virtual QString getStatusString() const { return QString::null; }
+    virtual bool isSaveEnabled() const { return false; }
 
     signals:
     void statusChanged (const QString& status);

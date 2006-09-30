@@ -41,6 +41,7 @@ class SearchForm : public ActionForm
     public:
     SearchForm (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
     QString getStatusString() const;
+    bool isSaveEnabled() const;
 
     public slots:
     void search();

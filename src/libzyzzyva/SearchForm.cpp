@@ -112,6 +112,19 @@ SearchForm::getStatusString() const
 }
 
 //---------------------------------------------------------------------------
+//  isSaveEnabled
+//
+//! Determine whether the save action should be enabled for this form.
+//
+//! @return true if save should be enabled, false otherwise
+//---------------------------------------------------------------------------
+bool
+SearchForm::isSaveEnabled() const
+{
+    return (resultModel->rowCount() > 0);
+}
+
+//---------------------------------------------------------------------------
 //  search
 //
 //! Search for the word or pattern in the edit area, and display the results
