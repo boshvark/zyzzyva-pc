@@ -64,6 +64,7 @@ class MainWindow : public QMainWindow
     void newDefineForm();
     void newJudgeForm();
     void newIntroForm();
+    void doSaveAction();
     void editSettings();
     void viewDefinition();
     void viewVariation (int variation);

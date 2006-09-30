@@ -110,6 +110,13 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     connect (testAction, SIGNAL (triggered()), SLOT (doTest()));
     fileMenu->addAction (testAction);
 
+    // Save
+    QAction* saveAction = new QAction ("&Save", this);
+    Q_CHECK_PTR (saveAction);
+    saveAction->setIcon (QIcon (":/save-icon"));
+    connect (saveAction, SIGNAL (triggered()), SLOT (doSaveAction()));
+    fileMenu->addAction (saveAction);
+
     // New Introduction
     QAction* newIntroAction = new QAction ("&Welcome", this);
     Q_CHECK_PTR (newIntroAction);
@@ -616,6 +623,17 @@ MainWindow::newIntroForm()
     connect (form, SIGNAL (statusChanged (const QString&)),
              SLOT (tabStatusChanged (const QString&)));
     currentTabChanged (0);
+}
+
+//---------------------------------------------------------------------------
+//  doSaveAction
+//
+//! Open a save dialog for the current tab.
+//---------------------------------------------------------------------------
+void
+MainWindow::doSaveAction()
+{
+    QMessageBox::information (this, "Save Action", "Save action!");
 }
 
 //---------------------------------------------------------------------------
