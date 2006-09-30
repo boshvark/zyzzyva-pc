@@ -1338,6 +1338,8 @@ QuizForm::promptToSaveChanges()
     if (!unsavedChanges)
         return true;
 
+    pauseTimer();
+
     QString quizName = quizNameLabel->text();
     if (!quizName.isEmpty())
         quizName = "(\"" + quizName + "\") ";
@@ -1349,19 +1351,26 @@ QuizForm::promptToSaveChanges()
                                      QMessageBox::Yes, QMessageBox::No,
                                      QMessageBox::Cancel);
 
+    bool ok = false;
     switch (code) {
         case QMessageBox::No:
-        return true;
+        ok = true;
+        break;
 
         case QMessageBox::Yes:
         saveRequested();
 
         // If the quiz spec does not have a filename, the save was cancelled
-        return !quizEngine->getQuizSpec().getFilename().isEmpty();
+        ok = !quizEngine->getQuizSpec().getFilename().isEmpty();
+        break;
 
         default:
-        return false;
+        ok = false;
+        break;
     }
+
+    unpauseTimer();
+    return ok;
 }
 
 //---------------------------------------------------------------------------
