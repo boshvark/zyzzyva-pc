@@ -118,6 +118,8 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     connect (saveAction, SIGNAL (triggered()), SLOT (doSaveAction()));
     fileMenu->addAction (saveAction);
 
+    fileMenu->addSeparator();
+
     // New Introduction
     QAction* newIntroAction = new QAction ("&Welcome", this);
     Q_CHECK_PTR (newIntroAction);
