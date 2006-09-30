@@ -30,7 +30,7 @@
 #include "DefineForm.h"
 #include "HelpDialog.h"
 #include "IntroForm.h"
-#include "JudgeForm.h"
+#include "JudgeDialog.h"
 #include "MainSettings.h"
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
@@ -163,7 +163,7 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     QAction* newJudgeAction = new QAction ("Word &Judge", this);
     Q_CHECK_PTR (newJudgeAction);
     newJudgeAction->setIcon (QIcon (":/judge-icon"));
-    connect (newJudgeAction, SIGNAL (triggered()), SLOT (newJudgeForm()));
+    connect (newJudgeAction, SIGNAL (triggered()), SLOT (doJudgeAction()));
     fileMenu->addAction (newJudgeAction);
 
     fileMenu->addSeparator();
@@ -608,24 +608,6 @@ MainWindow::newDefineForm()
 }
 
 //---------------------------------------------------------------------------
-//  newJudgeForm
-//
-//! Create a new word judgment form.
-//---------------------------------------------------------------------------
-void
-MainWindow::newJudgeForm()
-{
-    JudgeForm* form = new JudgeForm (wordEngine);
-    Q_CHECK_PTR (form);
-    newTab (form, QIcon (":/judge-icon"), JUDGE_TAB_TITLE);
-    connect (form, SIGNAL (statusChanged (const QString&)),
-             SLOT (tabStatusChanged (const QString&)));
-    connect (form, SIGNAL (saveEnabledChanged (bool)),
-             SLOT (tabSaveEnabledChanged (bool)));
-    currentTabChanged (0);
-}
-
-//---------------------------------------------------------------------------
 //  newIntroForm
 //
 //! Create a new introduction form.
@@ -658,6 +640,33 @@ MainWindow::doSaveAction()
     // Prompt to save changes if this is a Quiz tab
     ActionForm* form = static_cast<ActionForm*>(w);
     form->saveRequested();
+}
+
+//---------------------------------------------------------------------------
+//  doJudgeAction
+//
+//! Open a word judge window.
+//---------------------------------------------------------------------------
+void
+MainWindow::doJudgeAction()
+{
+    int code = QMessageBox::information (this,
+                                         "Entering Full Screen Word Judge",
+                                         "You are now entering the full "
+                                         "screen Word Judge mode.\n"
+                                         "To exit full screen mode, press "
+                                         "ESC while holding the Shift key.",
+                                         QMessageBox::Ok,
+                                         QMessageBox::Cancel);
+
+    if (code != QMessageBox::Ok)
+        return;
+
+    QApplication::setOverrideCursor (Qt::BlankCursor);
+    JudgeDialog* dialog = new JudgeDialog (wordEngine, this);
+    Q_CHECK_PTR (dialog);
+    dialog->exec();
+    delete dialog;
 }
 
 //---------------------------------------------------------------------------

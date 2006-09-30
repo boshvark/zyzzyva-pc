@@ -62,9 +62,9 @@ class MainWindow : public QMainWindow
     void newSearchForm();
     void newCrosswordGameForm();
     void newDefineForm();
-    void newJudgeForm();
     void newIntroForm();
     void doSaveAction();
+    void doJudgeAction();
     void editSettings();
     void viewDefinition();
     void viewVariation (int variation);

@@ -38,7 +38,6 @@ class ActionForm : public QFrame
         QuizFormType,
         SearchFormType,
         DefineFormType,
-        JudgeFormType,
         IntroFormType,
         CrosswordGameFormType
     };

@@ -63,7 +63,6 @@ SOURCES = \
     IntroForm.cpp \
     IscConnectionThread.cpp \
     IscConverter.cpp \
-    JudgeForm.cpp \
     JudgeDialog.cpp \
     LetterBag.cpp \
     MainSettings.cpp \
@@ -113,7 +112,6 @@ HEADERS = \
     HelpDialog.h \
     IntroForm.h \
     IscConnectionThread.h \
-    JudgeForm.h \
     JudgeDialog.h \
     MainWindow.h \
     NewQuizDialog.h \
