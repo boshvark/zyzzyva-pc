@@ -648,7 +648,13 @@ MainWindow::newIntroForm()
 void
 MainWindow::doSaveAction()
 {
-    QMessageBox::information (this, "Save Action", "Save action!");
+    QWidget* w = tabStack->currentWidget();
+    if (!w)
+        return;
+
+    // Prompt to save changes if this is a Quiz tab
+    ActionForm* form = static_cast<ActionForm*>(w);
+    form->saveRequested();
 }
 
 //---------------------------------------------------------------------------

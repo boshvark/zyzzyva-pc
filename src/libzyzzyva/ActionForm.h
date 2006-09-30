@@ -51,6 +51,9 @@ class ActionForm : public QFrame
     virtual QString getStatusString() const { return QString::null; }
     virtual bool isSaveEnabled() const { return false; }
 
+    public slots:
+    virtual void saveRequested() { }
+
     signals:
     void statusChanged (const QString& status);
     void saveEnabledChanged (bool saveEnabled);

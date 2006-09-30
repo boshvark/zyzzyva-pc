@@ -61,13 +61,16 @@ class QuizForm : public ActionForm
     QString getStatusString() const;
     bool isSaveEnabled() const;
 
+    // Reimplemented virtual methods
+    public slots:
+    void saveRequested();
+
     public slots:
     bool newQuiz (const QuizSpec& spec);
     void responseEntered();
     void alphaOrderClicked();
     void randomOrderClicked();
     void newQuizClicked();
-    void saveQuizClicked();
     void nextQuestionClicked();
     void checkResponseClicked();
     void markMissedClicked();

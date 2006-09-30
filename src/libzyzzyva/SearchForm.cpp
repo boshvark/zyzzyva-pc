@@ -125,6 +125,17 @@ SearchForm::isSaveEnabled() const
 }
 
 //---------------------------------------------------------------------------
+//  saveRequested
+//
+//! Called when a save action is requested.
+//---------------------------------------------------------------------------
+void
+SearchForm::saveRequested()
+{
+    resultView->exportRequested();
+}
+
+//---------------------------------------------------------------------------
 //  search
 //
 //! Search for the word or pattern in the edit area, and display the results

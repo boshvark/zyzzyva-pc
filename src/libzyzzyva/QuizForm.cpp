@@ -329,7 +329,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     saveQuizButton = new ZPushButton ("&Save Quiz");
     Q_CHECK_PTR (saveQuizButton);
     saveQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuizClicked()));
+    connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveRequested()));
     buttonGlay->addWidget (saveQuizButton, 1, 2, Qt::AlignHCenter);
 
     analyzeButton = new ZPushButton ("Analy&ze Quiz...");
@@ -574,12 +574,12 @@ QuizForm::newQuiz (const QuizSpec& spec)
 }
 
 //---------------------------------------------------------------------------
-//  saveQuizClicked
+//  saveRequested
 //
 //! Called when the New Quiz button is clicked.
 //---------------------------------------------------------------------------
 void
-QuizForm::saveQuizClicked()
+QuizForm::saveRequested()
 {
     pauseTimer();
 
@@ -1354,7 +1354,7 @@ QuizForm::promptToSaveChanges()
         return true;
 
         case QMessageBox::Yes:
-        saveQuizClicked();
+        saveRequested();
 
         // If the quiz spec does not have a filename, the save was cancelled
         return !quizEngine->getQuizSpec().getFilename().isEmpty();

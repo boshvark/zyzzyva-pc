@@ -44,6 +44,7 @@ class SearchForm : public ActionForm
     bool isSaveEnabled() const;
 
     public slots:
+    void saveRequested();
     void search();
     void updateResultTotal (int num);
     void specChanged();

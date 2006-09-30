@@ -39,6 +39,9 @@ class WordTableView : public QTreeView
 
     public slots:
     virtual void resizeItemsToContents();
+    void exportRequested();
+    void createQuizRequested();
+    void addToCardboxRequested();
 
     protected:
     virtual void contextMenuEvent (QContextMenuEvent* e);
@@ -49,9 +52,6 @@ class WordTableView : public QTreeView
     private slots:
     void viewDefinition();
     void viewVariation (int variation);
-    void exportRequested();
-    void createQuizRequested();
-    void addToCardboxRequested();
 
     private:
     // XXX: Hmm, these methods probably don't belong in WordTableView
