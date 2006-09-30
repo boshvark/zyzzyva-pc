@@ -667,6 +667,7 @@ MainWindow::doJudgeAction()
     Q_CHECK_PTR (dialog);
     dialog->exec();
     delete dialog;
+    QApplication::restoreOverrideCursor();
 }
 
 //---------------------------------------------------------------------------
