@@ -83,6 +83,10 @@ class MainSettings
         return instance->quizAutoEndAfterIncorrect; }
     static void setQuizAutoEndAfterIncorrect (bool b) {
         instance->quizAutoEndAfterIncorrect = b; }
+    static bool getQuizMarkMissedAfterIncorrect() {
+        return instance->quizMarkMissedAfterIncorrect; }
+    static void setQuizMarkMissedAfterIncorrect (bool b) {
+        instance->quizMarkMissedAfterIncorrect = b; }
     static bool getQuizCycleAnswers() {
         return instance->quizCycleAnswers; }
     static void setQuizCycleAnswers (bool b) {
@@ -175,6 +179,7 @@ class MainSettings
     bool quizAutoCheck;
     bool quizAutoAdvance;
     bool quizAutoEndAfterIncorrect;
+    bool quizMarkMissedAfterIncorrect;
     bool quizCycleAnswers;
     bool quizRecordStats;
     QString mainFont;

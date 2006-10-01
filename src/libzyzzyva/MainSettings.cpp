@@ -59,6 +59,8 @@ const QString SETTINGS_QUIZ_AUTO_CHECK = "quiz_auto_check";
 const QString SETTINGS_QUIZ_AUTO_ADVANCE = "quiz_auto_advance";
 const QString SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT
     = "quiz_auto_end_after_incorrect";
+const QString SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT
+    = "quiz_mark_missed_after_incorrect";
 const QString SETTINGS_QUIZ_CYCLE_ANSWERS = "quiz_cycle_answers";
 const QString SETTINGS_QUIZ_RECORD_STATS = "quiz_record_stats";
 const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
@@ -135,6 +137,9 @@ MainSettings::readSettings()
     instance->quizAutoEndAfterIncorrect
         = settings.value (SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT,
                           false).toBool();
+    instance->quizMarkMissedAfterIncorrect
+        = settings.value (SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT,
+                          true).toBool();
     instance->quizCycleAnswers
         = settings.value (SETTINGS_QUIZ_CYCLE_ANSWERS, true).toBool();
     instance->quizRecordStats
@@ -210,6 +215,8 @@ MainSettings::writeSettings()
                        instance->quizAutoAdvance);
     settings.setValue (SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT,
                        instance->quizAutoEndAfterIncorrect);
+    settings.setValue (SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT,
+                       instance->quizMarkMissedAfterIncorrect);
     settings.setValue (SETTINGS_QUIZ_CYCLE_ANSWERS,
                        instance->quizCycleAnswers);
     settings.setValue (SETTINGS_QUIZ_RECORD_STATS,

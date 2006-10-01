@@ -763,9 +763,20 @@ QuizForm::nextQuestionClicked()
 void
 QuizForm::checkResponseClicked()
 {
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-
     QuizSpec::QuizType quizType = quizEngine->getQuizSpec().getType();
+
+    // Mark question missed if all correct answers were given, but an
+    // incorrect answer was also given
+    if (MainSettings::getQuizMarkMissedAfterIncorrect() &&
+        (quizType != QuizSpec::QuizWordListRecall) &&
+        (quizEngine->getQuestionIncorrect() > 0) &&
+        (quizEngine->getQuestionCorrect() == quizEngine->getQuestionTotal()))
+    {
+        markMissedClicked();
+        return;
+    }
+
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
 
     // If checking responses does not bring judgment, then feed all correct
     // responses to the quiz engine

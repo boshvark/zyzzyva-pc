@@ -88,6 +88,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   quizAutoCheckCbox;
     QCheckBox*   quizAutoAdvanceCbox;
     QCheckBox*   quizAutoEndAfterIncorrectCbox;
+    QCheckBox*   quizMarkMissedAfterIncorrectCbox;
     QCheckBox*   quizCycleAnswersCbox;
     QCheckBox*   judgeSaveLogCbox;
     QWidget*     judgeLogDirWidget;

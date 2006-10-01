@@ -334,6 +334,11 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (quizAutoEndAfterIncorrectCbox);
     quizBehaviorVlay->addWidget (quizAutoEndAfterIncorrectCbox);
 
+    quizMarkMissedAfterIncorrectCbox = new QCheckBox
+        ("Mark question as missed after an incorrect response");
+    Q_CHECK_PTR (quizMarkMissedAfterIncorrectCbox);
+    quizBehaviorVlay->addWidget (quizMarkMissedAfterIncorrectCbox);
+
     quizCycleAnswersCbox = new QCheckBox
         ("Cycle answers after ending a question");
     Q_CHECK_PTR (quizCycleAnswersCbox);
@@ -704,6 +709,8 @@ SettingsDialog::readSettings()
     quizAutoAdvanceCbox->setChecked (MainSettings::getQuizAutoAdvance());
     quizAutoEndAfterIncorrectCbox->setChecked
         (MainSettings::getQuizAutoEndAfterIncorrect());
+    quizMarkMissedAfterIncorrectCbox->setChecked
+        (MainSettings::getQuizMarkMissedAfterIncorrect());
     quizCycleAnswersCbox->setChecked (MainSettings::getQuizCycleAnswers());
     autoCheckCboxToggled (autoCheck);
 
@@ -768,6 +775,8 @@ SettingsDialog::writeSettings()
     MainSettings::setQuizAutoAdvance (quizAutoAdvanceCbox->isChecked());
     MainSettings::setQuizAutoEndAfterIncorrect
         (quizAutoEndAfterIncorrectCbox->isChecked());
+    MainSettings::setQuizMarkMissedAfterIncorrect
+        (quizMarkMissedAfterIncorrectCbox->isChecked());
     MainSettings::setQuizCycleAnswers (quizCycleAnswersCbox->isChecked());
     MainSettings::setJudgeSaveLog (judgeSaveLogCbox->isChecked());
     MainSettings::setJudgeLogDir (judgeLogDirLine->text());
