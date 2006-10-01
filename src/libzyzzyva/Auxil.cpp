@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "Auxil.h"
+#include "MainSettings.h"
 #include "Defs.h"
 #include <QApplication>
 #include <QDir>
@@ -204,6 +205,21 @@ Auxil::getHelpDir()
 }
 
 //---------------------------------------------------------------------------
+//  getHomeDir
+//
+//! Return the user's home directory.
+//
+//! @return the directory name
+//---------------------------------------------------------------------------
+QString
+Auxil::getHomeDir()
+{
+    QString home = QDir::homePath();
+    home.replace (QRegExp ("/+$"), "");
+    return home;
+}
+
+//---------------------------------------------------------------------------
 //  getQuizDir
 //
 //! Return the top-level directory containing subdirectories with quiz
@@ -281,9 +297,7 @@ Auxil::getUserWordsDir()
 QString
 Auxil::getUserDir()
 {
-    QString home = QDir::homePath();
-    home.replace (QRegExp ("/+$"), "");
-    return (home + "/.zyzzyva");
+    return MainSettings::getUserDataDir();
 }
 
 //---------------------------------------------------------------------------

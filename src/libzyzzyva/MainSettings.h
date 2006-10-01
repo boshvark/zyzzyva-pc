@@ -52,6 +52,9 @@ class MainSettings
         instance->autoImportFile = str; }
     static bool getDisplayWelcome() { return instance->displayWelcome; }
     static void setDisplayWelcome (bool b) { instance->displayWelcome = b; }
+    static QString getUserDataDir() { return instance->userDataDir; }
+    static void setUserDataDir (const QString& str) {
+        instance->userDataDir = str; }
     static bool getUseTileTheme() { return instance->useTileTheme; }
     static void setUseTileTheme (bool b) { instance->useTileTheme = b; }
     static QString getTileTheme() { return instance->tileTheme; }
@@ -162,6 +165,7 @@ class MainSettings
     QString autoImportLexicon;
     QString autoImportFile;
     bool displayWelcome;
+    QString userDataDir;
     bool useTileTheme;
     QString tileTheme;
     QString quizLetterOrder;

@@ -49,6 +49,8 @@ class SettingsDialog : public QDialog
     void autoImportBrowseButtonClicked();
     void autoImportCboxToggled (bool on);
     void autoImportLexiconActivated (const QString& text);
+    void userDataDirBrowseButtonClicked();
+    void userDataDirChanged (const QString& text);
     void themeCboxToggled (bool on);
     void autoCheckCboxToggled (bool on);
     void judgeLogBrowseButtonClicked();
@@ -74,6 +76,8 @@ class SettingsDialog : public QDialog
     QWidget*     autoImportCustomWidget;
     QLineEdit*   autoImportCustomLine;
     QCheckBox*   displayWelcomeCbox;
+    QLineEdit*   userDataDirLine;
+    QCheckBox*   userDataDirMoveCbox;
     QCheckBox*   themeCbox;
     QLabel*      themeLabel;
     QComboBox*   themeCombo;
@@ -101,6 +105,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   showDefinitionCbox;
 
     QColor       quizBackgroundColor;
+    QString      origUserDataDir;
 
 };
 

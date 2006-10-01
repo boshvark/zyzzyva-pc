@@ -40,6 +40,7 @@
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Preferences";
+const QString USER_DATA_DIR_CHOOSER_TITLE = "Choose a Data Directory";
 const QString JUDGE_LOG_CHOOSER_TITLE = "Choose a Log Directory";
 
 const QString GENERAL_PREFS_ITEM = "General";
@@ -157,6 +158,43 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     connect (autoImportBrowseButton, SIGNAL (clicked()),
              SLOT (autoImportBrowseButtonClicked()));
     autoImportCustomHlay->addWidget (autoImportBrowseButton);
+
+    QGroupBox* userDataDirGbox = new QGroupBox ("Lexicon");
+    Q_CHECK_PTR (userDataDirGbox);
+    generalPrefVlay->addWidget (userDataDirGbox);
+    generalPrefVlay->setStretchFactor (userDataDirGbox, 1);
+
+    QVBoxLayout* userDataDirVlay = new QVBoxLayout (userDataDirGbox);
+    Q_CHECK_PTR (userDataDirVlay);
+    userDataDirVlay->setMargin (MARGIN);
+    userDataDirVlay->setSpacing (SPACING);
+
+    QHBoxLayout* userDataDirHlay = new QHBoxLayout;
+    Q_CHECK_PTR (userDataDirHlay);
+    userDataDirHlay->setSpacing (SPACING);
+    userDataDirVlay->addLayout (userDataDirHlay);
+
+    QLabel* userDataDirLabel = new QLabel ("Location:");
+    Q_CHECK_PTR (userDataDirLabel);
+    userDataDirHlay->addWidget (userDataDirLabel);
+
+    userDataDirLine = new QLineEdit;
+    Q_CHECK_PTR (userDataDirLine);
+    connect (userDataDirLine, SIGNAL (textChanged (const QString&)),
+             SLOT (userDataDirChanged (const QString&)));
+    userDataDirHlay->addWidget (userDataDirLine);
+
+    ZPushButton* userDataDirBrowseButton = new ZPushButton ("Browse...");
+    Q_CHECK_PTR (userDataDirBrowseButton);
+    connect (userDataDirBrowseButton, SIGNAL (clicked()),
+             SLOT (userDataDirBrowseButtonClicked()));
+    userDataDirHlay->addWidget (userDataDirBrowseButton);
+
+    userDataDirMoveCbox = new QCheckBox ("Move data directory after saving "
+                                         "preferences");
+    Q_CHECK_PTR (userDataDirMoveCbox);
+    userDataDirMoveCbox->setEnabled (false);
+    userDataDirVlay->addWidget (userDataDirMoveCbox);
 
     QGroupBox* displayWelcomeGbox = new QGroupBox ("Welcome");
     Q_CHECK_PTR (displayWelcomeGbox);
@@ -618,6 +656,9 @@ SettingsDialog::readSettings()
     QString autoImportFile = MainSettings::getAutoImportFile();
     autoImportCustomLine->setText (autoImportFile);
 
+    origUserDataDir = MainSettings::getUserDataDir();
+    userDataDirLine->setText (origUserDataDir);
+
     displayWelcomeCbox->setChecked (MainSettings::getDisplayWelcome());
 
     fillThemeCombo();
@@ -711,6 +752,7 @@ SettingsDialog::writeSettings()
         (autoImportLexiconCombo->currentText());
     MainSettings::setAutoImportFile (autoImportCustomLine->text());
     MainSettings::setDisplayWelcome (displayWelcomeCbox->isChecked());
+    MainSettings::setUserDataDir (userDataDirLine->text());
     MainSettings::setUseTileTheme (themeCbox->isChecked());
     MainSettings::setTileTheme (themeCombo->currentText());
     MainSettings::setQuizLetterOrder (letterOrderCombo->currentText());
@@ -815,6 +857,44 @@ SettingsDialog::autoImportLexiconActivated (const QString& text)
 {
     bool customActive = (text == "Custom");
     autoImportCustomWidget->setEnabled (customActive);
+}
+
+//---------------------------------------------------------------------------
+//  userDataDirBrowseButtonClicked
+//
+//! Slot called when the User Data Directory Browse button is clicked.  Create
+//! a directory chooser dialog and place the name of the chosen directory in
+//! the user data directory line edit.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::userDataDirBrowseButtonClicked()
+{
+    QString dir = QFileDialog::getExistingDirectory
+        (this, USER_DATA_DIR_CHOOSER_TITLE, Auxil::getUserDir());
+
+    if (!dir.isNull())
+        userDataDirLine->setText (dir);
+}
+
+//---------------------------------------------------------------------------
+//  userDataDirChanged
+//
+//! Slot called when the User Data Directory preference is changed.  Enable
+//! the checkbox that determines whether the data directory should be moved
+//! immediately.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::userDataDirChanged (const QString& text)
+{
+    if (text == origUserDataDir) {
+        userDataDirMoveCbox->setCheckState (Qt::Unchecked);
+        userDataDirMoveCbox->setEnabled (false);
+    }
+
+    else if (!userDataDirMoveCbox->isEnabled()) {
+        userDataDirMoveCbox->setEnabled (true);
+        userDataDirMoveCbox->setCheckState (Qt::Checked);
+    }
 }
 
 //---------------------------------------------------------------------------
