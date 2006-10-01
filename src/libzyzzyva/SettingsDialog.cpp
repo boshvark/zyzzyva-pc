@@ -159,7 +159,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
              SLOT (autoImportBrowseButtonClicked()));
     autoImportCustomHlay->addWidget (autoImportBrowseButton);
 
-    QGroupBox* userDataDirGbox = new QGroupBox ("Lexicon");
+    QGroupBox* userDataDirGbox = new QGroupBox ("Data Directory");
     Q_CHECK_PTR (userDataDirGbox);
     generalPrefVlay->addWidget (userDataDirGbox);
     generalPrefVlay->setStretchFactor (userDataDirGbox, 1);
@@ -190,8 +190,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
              SLOT (userDataDirBrowseButtonClicked()));
     userDataDirHlay->addWidget (userDataDirBrowseButton);
 
-    userDataDirMoveCbox = new QCheckBox ("Move data directory after saving "
-                                         "preferences");
+    userDataDirMoveCbox = new QCheckBox ("Move data after saving preferences");
     Q_CHECK_PTR (userDataDirMoveCbox);
     userDataDirMoveCbox->setEnabled (false);
     userDataDirVlay->addWidget (userDataDirMoveCbox);
