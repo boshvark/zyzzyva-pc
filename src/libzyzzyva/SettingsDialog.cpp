@@ -195,6 +195,10 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     userDataDirMoveCbox->setEnabled (false);
     userDataDirVlay->addWidget (userDataDirMoveCbox);
 
+    // FIXME: Come back to this when you figure out how to actually move a
+    // directory!
+    userDataDirMoveCbox->hide();
+
     QGroupBox* displayWelcomeGbox = new QGroupBox ("Welcome");
     Q_CHECK_PTR (displayWelcomeGbox);
     generalPrefVlay->addWidget (displayWelcomeGbox);
