@@ -156,8 +156,7 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
     SearchSpec searchSpec;
     searchSpec.conditions.append (searchCondition);
 
-    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
-
+    QSqlQuery transactionQuery (db);
     QSqlQuery query (db);
 
     QMap<QString, int> numAnagramsMap;
@@ -172,6 +171,8 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
         query.prepare ("INSERT INTO words (word, length, combinations, "
                        "alphagram, front_hooks, back_hooks) "
                        "VALUES (?, ?, ?, ?, ?, ?)");
+
+        transactionQuery.exec ("BEGIN TRANSACTION");
 
         // Insert words with length, combinations, hooks
         QString word;
@@ -202,18 +203,20 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
             query.exec();
 
             if ((stepNum % 1000) == 0) {
-                transactionQuery.exec ("END TRANSACTION");
-                if (cancelled)
+                if (cancelled) {
+                    transactionQuery.exec ("END TRANSACTION");
                     return;
-                transactionQuery.exec ("BEGIN TRANSACTION");
+                }
                 emit progress (stepNum);
             }
             ++stepNum;
         }
+        transactionQuery.exec ("END TRANSACTION");
 
         // Update number of anagrams
         query.prepare ("UPDATE words SET num_anagrams=? WHERE word=?");
 
+        transactionQuery.exec ("BEGIN TRANSACTION");
         foreach (word, words) {
             QString alphagram = Auxil::getAlphagram (word);
             query.bindValue (0, numAnagramsMap[alphagram]);
@@ -221,17 +224,16 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
             query.exec();
 
             if ((stepNum % 1000) == 0) {
-                transactionQuery.exec ("END TRANSACTION");
-                if (cancelled)
+                if (cancelled) {
+                    transactionQuery.exec ("END TRANSACTION");
                     return;
-                transactionQuery.exec ("BEGIN TRANSACTION");
+                }
                 emit progress (stepNum);
             }
             ++stepNum;
         }
+        transactionQuery.exec ("END TRANSACTION");
     }
-
-    transactionQuery.exec ("END TRANSACTION");
 }
 
 //---------------------------------------------------------------------------
