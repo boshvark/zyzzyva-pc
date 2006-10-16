@@ -31,6 +31,7 @@
 #include "QuizSpec.h"
 #include "SearchSpec.h"
 #include "WordEngine.h"
+#include "WordListSaveDialog.h"
 #include "WordTableDelegate.h"
 #include "WordTableModel.h"
 #include "WordVariationDialog.h"
@@ -142,6 +143,18 @@ WordTableView::exportRequested()
         return;
     }
 
+    WordListSaveDialog* dialog = new WordListSaveDialog (this);
+    Q_CHECK_PTR (dialog);
+    int code = dialog->exec();
+    if (code != QDialog::Accepted) {
+        delete dialog;
+        return;
+    }
+
+    // FIXME: Get selected attributes from dialog here!
+
+    delete dialog;
+
     QString filename = QFileDialog::getSaveFileName (this, "Save Word List",
         Auxil::getUserWordsDir() + "/saved", "Text Files (*.txt)");
 
@@ -156,6 +169,7 @@ WordTableView::exportRequested()
         QMessageBox::warning (this, "Error Saving Word List",
                               "Cannot save word list:\n" + error + ".");
     }
+
 }
 
 //---------------------------------------------------------------------------
