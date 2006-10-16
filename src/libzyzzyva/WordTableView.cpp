@@ -169,7 +169,6 @@ WordTableView::exportRequested()
         QMessageBox::warning (this, "Error Saving Word List",
                               "Cannot save word list:\n" + error + ".");
     }
-
 }
 
 //---------------------------------------------------------------------------
