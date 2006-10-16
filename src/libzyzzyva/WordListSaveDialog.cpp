@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
 // WordListSaveDialog.cpp
 //
-// The dialog for editing a list of words.
+// The dialog for saving a list of words.
 //
 // Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
 //
