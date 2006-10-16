@@ -96,6 +96,16 @@ const QString QUIZ_ORDER_ALPHABETICAL = "Alphabetical";
 const QString QUIZ_ORDER_PROBABILITY = "Probability";
 const QString QUIZ_ORDER_SCHEDULE = "Schedule";
 
+const QString WORD_ATTR_WORD = "Word";
+const QString WORD_ATTR_DEFINITION = "Definition";
+const QString WORD_ATTR_FRONT_HOOKS = "Front Hooks";
+const QString WORD_ATTR_BACK_HOOKS = "Back Hooks";
+const QString WORD_ATTR_INNER_HOOKS = "Inner Hooks";
+const QString WORD_ATTR_PROBABILITY_ORDER = "Probability Order";
+const QString WORD_ATTR_FRONT_EXTENSIONS = "Front Extensions";
+const QString WORD_ATTR_BACK_EXTENSIONS = "Back Extensions";
+const QString WORD_ATTR_DOUBLE_EXTENSIONS = "Double Extensions";
+
 using namespace Defs;
 
 //---------------------------------------------------------------------------
@@ -763,6 +773,82 @@ Auxil::stringToQuizQuestionOrder (const QString& s)
         return QuizSpec::ScheduleOrder;
     else
         return QuizSpec::UnknownOrder;
+}
+
+//---------------------------------------------------------------------------
+//  wordAttributeToString
+//
+//! Convert a word attribute to a string representation.
+//
+//! @param attr the word attribute
+//! @return the string representation
+//---------------------------------------------------------------------------
+QString
+Auxil::wordAttributeToString (WordAttribute attr)
+{
+    switch (attr) {
+        case WordAttrWord:
+        return WORD_ATTR_WORD;
+
+        case WordAttrDefinition:
+        return WORD_ATTR_DEFINITION;
+
+        case WordAttrFrontHooks:
+        return WORD_ATTR_FRONT_HOOKS;
+
+        case WordAttrBackHooks:
+        return WORD_ATTR_BACK_HOOKS;
+
+        case WordAttrInnerHooks:
+        return WORD_ATTR_INNER_HOOKS;
+
+        case WordAttrProbabilityOrder:
+        return WORD_ATTR_PROBABILITY_ORDER;
+
+        case WordAttrFrontExtensions:
+        return WORD_ATTR_FRONT_EXTENSIONS;
+
+        case WordAttrBackExtensions:
+        return WORD_ATTR_BACK_EXTENSIONS;
+
+        case WordAttrDoubleExtensions:
+        return WORD_ATTR_DOUBLE_EXTENSIONS;
+
+        default: return QString::null;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  stringToWordAttribute
+//
+//! Convert a string representation to a word attribute.
+//
+//! @param s the string representation
+//! @return the word attribute.
+//---------------------------------------------------------------------------
+WordAttribute
+Auxil::stringToWordAttribute (const QString& s)
+{
+    if (s == WORD_ATTR_WORD)
+        return WordAttrWord;
+    else if (s == WORD_ATTR_DEFINITION)
+        return WordAttrDefinition;
+    else if (s == WORD_ATTR_FRONT_HOOKS)
+        return WordAttrFrontHooks;
+    else if (s == WORD_ATTR_BACK_HOOKS)
+        return WordAttrBackHooks;
+    else if (s == WORD_ATTR_INNER_HOOKS)
+        return WordAttrInnerHooks;
+    else if (s == WORD_ATTR_PROBABILITY_ORDER)
+        return WordAttrProbabilityOrder;
+    else if (s == WORD_ATTR_FRONT_EXTENSIONS)
+        return WordAttrFrontExtensions;
+    else if (s == WORD_ATTR_BACK_EXTENSIONS)
+        return WordAttrBackExtensions;
+    else if (s == WORD_ATTR_DOUBLE_EXTENSIONS)
+        return WordAttrDoubleExtensions;
+    else
+        return WordAttrInvalid;
 }
 
 //---------------------------------------------------------------------------
