@@ -58,6 +58,8 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     unselectedAttrList = new QListWidget (this);
     Q_CHECK_PTR (unselectedAttrList);
     unselectedAttrList->setSelectionMode (QAbstractItemView::ExtendedSelection);
+    //unselectedAttrList->setDragEnabled (true);
+    //unselectedAttrList->setDropIndicatorShown (true);
     connect (unselectedAttrList, SIGNAL (itemSelectionChanged()),
              SLOT (unselectedSelectionChanged()));
     listHlay->addWidget (unselectedAttrList);
@@ -85,6 +87,8 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     selectedAttrList = new QListWidget (this);
     Q_CHECK_PTR (selectedAttrList);
     selectedAttrList->setSelectionMode (QAbstractItemView::ExtendedSelection);
+    //selectedAttrList->setDragEnabled (true);
+    //selectedAttrList->setDropIndicatorShown (true);
     connect (selectedAttrList, SIGNAL (itemSelectionChanged()),
              SLOT (selectedSelectionChanged()));
     listHlay->addWidget (selectedAttrList);
@@ -175,7 +179,6 @@ WordListSaveDialog::deselectClicked()
 void
 WordListSaveDialog::unselectedSelectionChanged()
 {
-    qDebug ("*** WordListSaveDialog::unselectedSelectionChanged");
     selectButton->setEnabled (!unselectedAttrList->selectedItems().empty());
 }
 
@@ -188,7 +191,6 @@ WordListSaveDialog::unselectedSelectionChanged()
 void
 WordListSaveDialog::selectedSelectionChanged()
 {
-    qDebug ("*** WordListSaveDialog::selectedSelectionChanged");
     deselectButton->setEnabled (!selectedAttrList->selectedItems().empty());
 }
 
