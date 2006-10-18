@@ -152,8 +152,11 @@ WordTableView::exportRequested()
     }
 
     // FIXME: Get selected attributes from dialog here!
-
+    QList<WordAttribute> attributes = dialog->getSelectedAttributes();
     delete dialog;
+
+    if (attributes.empty())
+        return;
 
     QString filename = QFileDialog::getSaveFileName (this, "Save Word List",
         Auxil::getUserWordsDir() + "/saved", "Text Files (*.txt)");
@@ -165,7 +168,7 @@ WordTableView::exportRequested()
         filename += ".txt";
 
     QString error;
-    if (!exportFile (filename, &error)) {
+    if (!exportFile (filename, attributes, &error)) {
         QMessageBox::warning (this, "Error Saving Word List",
                               "Cannot save word list:\n" + error + ".");
     }
@@ -263,11 +266,15 @@ WordTableView::addToCardboxRequested()
 //! Export the words in the list to a file, one word per line.
 //
 //! @param filename the name of the file
+//! @param attributes a list of attributes to export
+//! @param err return error string on failure
 //
 //! @return true if successful or if the user cancels, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableView::exportFile (const QString& filename, QString* err) const
+WordTableView::exportFile (const QString& filename,
+                           const QList<WordAttribute>& attributes,
+                           QString* err) const
 {
     if (model()->rowCount() == 0) {
         if (err)
@@ -282,13 +289,73 @@ WordTableView::exportFile (const QString& filename, QString* err) const
         return false;
     }
 
+    bool exportInnerHooks = false;
+    QListIterator<WordAttribute> it (attributes);
+    while (it.hasNext()) {
+        if (it.next() == WordAttrInnerHooks) {
+            exportInnerHooks = true;
+            break;
+        }
+    }
+
     QTextStream stream (&file);
     QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
-    for (int i = 0; i < model()->rowCount(); ) {
-        QString word = model()->data (index, Qt::EditRole).toString();
-        stream << word;
+    for (int i = 0; i < model()->rowCount(); ++i) {
+        bool printSeparator = false;
+        it.toFront();
+        while (it.hasNext()) {
+            WordAttribute attribute = it.next();
+            if (attribute == WordAttrInnerHooks)
+                continue;
+
+            int column = -1;
+            switch (attribute) {
+                case WordAttrWord:
+                column = WordTableModel::WORD_COLUMN;
+                break; 
+
+                case WordAttrDefinition:
+                column = WordTableModel::DEFINITION_COLUMN;
+                break;
+
+                case WordAttrFrontHooks:
+                column = WordTableModel::FRONT_HOOK_COLUMN;
+                break;
+
+                case WordAttrBackHooks:
+                column = WordTableModel::BACK_HOOK_COLUMN;
+                break;
+
+                case WordAttrProbabilityOrder:
+                column = WordTableModel::PROBABILITY_ORDER_COLUMN;
+                break;
+
+                default: break;
+            }
+
+            if (column < 0)
+                continue;
+
+            index = index.sibling (i, column);
+            QString str;
+            if (exportInnerHooks && (attribute == WordAttrWord)) {
+                str = model()->data (index,
+                                     Qt::DisplayRole).toString().toUpper();
+            }
+            else {
+                str = model()->data (index, Qt::EditRole).toString();
+            }
+
+            if (printSeparator)
+                stream << "\t";
+            stream << str;
+            printSeparator = true;
+        }
+
+        //QString word = model()->data (index, Qt::EditRole).toString();
+        //stream << word;
         endl (stream);
-        index = index.sibling (++i, WordTableModel::WORD_COLUMN);
+        //index = index.sibling (++i, WordTableModel::WORD_COLUMN);
     }
 
     return true;
