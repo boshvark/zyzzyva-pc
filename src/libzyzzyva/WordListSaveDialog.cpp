@@ -203,14 +203,12 @@ WordListSaveDialog::moveSelection (QListWidget* src, QListWidget* dest)
     while (it.hasNext()) {
         selectedRows.append (it.next().row());
     }
-    qSort (selectedRows.begin(), selectedRows.end(), qGreater<int>());
 
-    // Move rows in reverse order so row numbers are not messed up
+    // Move rows in reverse sorted order so row numbers are not messed up
+    qSort (selectedRows.begin(), selectedRows.end(), qGreater<int>());
     QListIterator<int> jt (selectedRows);
     int insertRow = dest->count();
     while (jt.hasNext()) {
-        int row = jt.next();
-        QString attrStr = src->item (row)->text();
-        dest->insertItem (insertRow, src->takeItem (row));
+        dest->insertItem (insertRow, src->takeItem (jt.next()));
     }
 }
