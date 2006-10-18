@@ -12,7 +12,7 @@
     <file alias="close-tab-icon">images/close-tab-icon-small.png</file>
     <file alias="help-icon">images/help-icon-medium.png</file>
     <file alias="preferences-icon">images/preferences-icon-medium.png</file>
-    <file alias="left-arrow">images/left-arrow-medium.png</file>
-    <file alias="right-arrow">images/right-arrow-medium.png</file>
+    <file alias="left-arrow-icon">images/left-arrow-large.png</file>
+    <file alias="right-arrow-icon">images/right-arrow-large.png</file>
 </qresource>
 </RCC>
