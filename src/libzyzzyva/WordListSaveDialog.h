@@ -30,6 +30,7 @@
 #include <QDialog>
 #include <QList>
 #include <QListWidget>
+#include <QToolButton>
 
 class WordListSaveDialog : public QDialog
 {
@@ -43,6 +44,8 @@ class WordListSaveDialog : public QDialog
     public slots:
     void selectClicked();
     void deselectClicked();
+    void unselectedSelectionChanged();
+    void selectedSelectionChanged();
 
     private:
     void initializeLists();
@@ -51,6 +54,8 @@ class WordListSaveDialog : public QDialog
     private:
     QListWidget* unselectedAttrList;
     QListWidget* selectedAttrList;
+    QToolButton* selectButton;
+    QToolButton* deselectButton;
 };
 
 #endif // ZYZZYVA_WORD_LIST_SAVE_DIALOG_H

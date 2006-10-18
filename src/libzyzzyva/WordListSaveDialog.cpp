@@ -28,7 +28,6 @@
 #include "Defs.h"
 #include <QHBoxLayout>
 #include <QListWidget>
-#include <QToolButton>
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Save Word List";
@@ -59,6 +58,8 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     unselectedAttrList = new QListWidget (this);
     Q_CHECK_PTR (unselectedAttrList);
     unselectedAttrList->setSelectionMode (QAbstractItemView::ExtendedSelection);
+    connect (unselectedAttrList, SIGNAL (itemSelectionChanged()),
+             SLOT (unselectedSelectionChanged()));
     listHlay->addWidget (unselectedAttrList);
 
     QVBoxLayout* arrowVlay = new QVBoxLayout;
@@ -67,13 +68,13 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
 
     arrowVlay->addStretch (1);
 
-    QToolButton* selectButton = new QToolButton (this);
+    selectButton = new QToolButton (this);
     Q_CHECK_PTR (selectButton);
     selectButton->setIcon (QIcon (":/right-arrow-icon"));
     connect (selectButton, SIGNAL (clicked()), SLOT (selectClicked()));
     arrowVlay->addWidget (selectButton);
 
-    QToolButton* deselectButton = new QToolButton (this);
+    deselectButton = new QToolButton (this);
     Q_CHECK_PTR (deselectButton);
     deselectButton->setIcon (QIcon (":/left-arrow-icon"));
     connect (deselectButton, SIGNAL (clicked()), SLOT (deselectClicked()));
@@ -84,6 +85,8 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     selectedAttrList = new QListWidget (this);
     Q_CHECK_PTR (selectedAttrList);
     selectedAttrList->setSelectionMode (QAbstractItemView::ExtendedSelection);
+    connect (selectedAttrList, SIGNAL (itemSelectionChanged()),
+             SLOT (selectedSelectionChanged()));
     listHlay->addWidget (selectedAttrList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
@@ -106,6 +109,8 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
 
+    selectButton->setEnabled (false);
+    deselectButton->setEnabled (false);
     initializeLists();
     setWindowTitle (DIALOG_CAPTION);
 }
@@ -162,6 +167,32 @@ WordListSaveDialog::deselectClicked()
 }
 
 //---------------------------------------------------------------------------
+//  unselectedSelectionChanged
+//
+//! Called when the selection in the unselected list changes.  Enable or
+//! disable the select button as appropriate.
+//---------------------------------------------------------------------------
+void
+WordListSaveDialog::unselectedSelectionChanged()
+{
+    qDebug ("*** WordListSaveDialog::unselectedSelectionChanged");
+    selectButton->setEnabled (!unselectedAttrList->selectedItems().empty());
+}
+
+//---------------------------------------------------------------------------
+//  selectedSelectionChanged
+//
+//! Called when the selection in the selected list changes.  Enable or
+//! disable the deselect button as appropriate.
+//---------------------------------------------------------------------------
+void
+WordListSaveDialog::selectedSelectionChanged()
+{
+    qDebug ("*** WordListSaveDialog::selectedSelectionChanged");
+    deselectButton->setEnabled (!selectedAttrList->selectedItems().empty());
+}
+
+//---------------------------------------------------------------------------
 //  initializeLists
 //
 //! Initialize the lists of selected and unselected attributes.
@@ -195,6 +226,8 @@ WordListSaveDialog::initializeLists()
 void
 WordListSaveDialog::moveSelection (QListWidget* src, QListWidget* dest)
 {
+    // FIXME: use selectedItems??  May be much easier, if they're sorted.
+
     // Build a sorted list of selected rows
     QItemSelectionModel* selectionModel = src->selectionModel();
     QModelIndexList selectedIndexes = selectionModel->selectedIndexes();
