@@ -26,8 +26,9 @@
 #define ZYZZYVA_WORD_LIST_SAVE_DIALOG_H
 
 #include "WordEngine.h"
+#include "WordAttribute.h"
 #include <QDialog>
-#include <QLabel>
+#include <QList>
 #include <QListWidget>
 
 class WordListSaveDialog : public QDialog
@@ -37,8 +38,18 @@ class WordListSaveDialog : public QDialog
     WordListSaveDialog (QWidget* parent = 0, Qt::WFlags f = 0);
     ~WordListSaveDialog();
 
+    QList<WordAttribute> getSelectedAttributes() const;
+
+    public slots:
+    void selectClicked();
+    void deselectClicked();
+
     private:
-    QListWidget* fullAttrList;
+    void initializeLists();
+    void moveSelection (QListWidget* src, QListWidget* dest);
+
+    private:
+    QListWidget* unselectedAttrList;
     QListWidget* selectedAttrList;
 };
 
