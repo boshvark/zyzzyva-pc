@@ -327,7 +327,7 @@ WordTableView::exportFile (const QString& filename, WordListFormat format,
         QMapIterator<QString, QList<int> > it (alphaIndexes);
         while (it.hasNext()) {
             it.next();
-            stream << "Q. " << it.key();
+            stream << "Q: " << it.key();
             endl (stream);
 
             QListIterator<int> jt (it.value());
@@ -336,7 +336,7 @@ WordTableView::exportFile (const QString& filename, WordListFormat format,
                 index = index.sibling (row, WordTableModel::WORD_COLUMN);
                 QStringList strings = getExportStrings (index, attributes,
                                                         exportInnerHooks);
-                stream << "A. " << strings.join (" ");
+                stream << "A: " << strings.join (" ");
                 endl (stream);
             }
         }
