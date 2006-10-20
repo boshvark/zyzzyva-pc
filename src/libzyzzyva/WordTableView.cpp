@@ -151,8 +151,8 @@ WordTableView::exportRequested()
         return;
     }
 
-    // FIXME: Get selected attributes from dialog here!
     QList<WordAttribute> attributes = dialog->getSelectedAttributes();
+    WordListFormat format = dialog->getWordListFormat();
     delete dialog;
 
     if (attributes.empty())
@@ -168,7 +168,7 @@ WordTableView::exportRequested()
         filename += ".txt";
 
     QString error;
-    if (!exportFile (filename, attributes, &error)) {
+    if (!exportFile (filename, format, attributes, &error)) {
         QMessageBox::warning (this, "Error Saving Word List",
                               "Cannot save word list:\n" + error + ".");
     }
@@ -266,13 +266,14 @@ WordTableView::addToCardboxRequested()
 //! Export the words in the list to a file, one word per line.
 //
 //! @param filename the name of the file
+//! @param format the save file format
 //! @param attributes a list of attributes to export
 //! @param err return error string on failure
 //
 //! @return true if successful or if the user cancels, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableView::exportFile (const QString& filename,
+WordTableView::exportFile (const QString& filename, WordListFormat format,
                            const QList<WordAttribute>& attributes,
                            QString* err) const
 {
@@ -290,75 +291,126 @@ WordTableView::exportFile (const QString& filename,
     }
 
     bool exportInnerHooks = false;
-    QListIterator<WordAttribute> it (attributes);
-    while (it.hasNext()) {
-        if (it.next() == WordAttrInnerHooks) {
+    QListIterator<WordAttribute> attrIt (attributes);
+    while (attrIt.hasNext()) {
+        if (attrIt.next() == WordAttrInnerHooks) {
             exportInnerHooks = true;
             break;
         }
     }
 
     QTextStream stream (&file);
-    QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
-    for (int i = 0; i < model()->rowCount(); ++i) {
-        bool printSeparator = false;
-        it.toFront();
-        while (it.hasNext()) {
-            WordAttribute attribute = it.next();
-            if (attribute == WordAttrInnerHooks)
-                continue;
 
-            int column = -1;
-            switch (attribute) {
-                case WordAttrWord:
-                column = WordTableModel::WORD_COLUMN;
-                break; 
+    if (format == WordListOnePerLine) {
+        QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
+        for (int i = 0; i < model()->rowCount(); ++i) {
+            index = index.sibling (i, WordTableModel::WORD_COLUMN);
+            QStringList strings = getExportStrings (index, attributes,
+                                                    exportInnerHooks);
+            stream << strings.join ("\t");
+            endl (stream);
+        }
+    }
 
-                case WordAttrDefinition:
-                column = WordTableModel::DEFINITION_COLUMN;
-                break;
+    else if (format == WordListAnagramQuestionAnswer) {
 
-                case WordAttrFrontHooks:
-                column = WordTableModel::FRONT_HOOK_COLUMN;
-                break;
-
-                case WordAttrBackHooks:
-                column = WordTableModel::BACK_HOOK_COLUMN;
-                break;
-
-                case WordAttrProbabilityOrder:
-                column = WordTableModel::PROBABILITY_ORDER_COLUMN;
-                break;
-
-                default: break;
-            }
-
-            if (column < 0)
-                continue;
-
-            index = index.sibling (i, column);
-            QString str;
-            if (exportInnerHooks && (attribute == WordAttrWord)) {
-                str = model()->data (index,
-                                     Qt::DisplayRole).toString().toUpper();
-            }
-            else {
-                str = model()->data (index, Qt::EditRole).toString();
-            }
-
-            if (printSeparator)
-                stream << "\t";
-            stream << str;
-            printSeparator = true;
+        // Build map of alphagrams to indexes
+        QMap<QString, QList<int> > alphaIndexes;
+        QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
+        for (int i = 0; i < model()->rowCount(); ++i) {
+            index = index.sibling (i, WordTableModel::WORD_COLUMN);
+            QString word = model()->data (index, Qt::EditRole).toString();
+            QString alphagram = Auxil::getAlphagram (word);
+            alphaIndexes[alphagram].append (i);
         }
 
-        //QString word = model()->data (index, Qt::EditRole).toString();
-        //stream << word;
-        endl (stream);
-        //index = index.sibling (++i, WordTableModel::WORD_COLUMN);
+        QMapIterator<QString, QList<int> > it (alphaIndexes);
+        while (it.hasNext()) {
+            it.next();
+            stream << "Q. " << it.key();
+            endl (stream);
+
+            QListIterator<int> jt (it.value());
+            while (jt.hasNext()) {
+                int row = jt.next();
+                index = index.sibling (row, WordTableModel::WORD_COLUMN);
+                QStringList strings = getExportStrings (index, attributes,
+                                                        exportInnerHooks);
+                stream << "A. " << strings.join (" ");
+                endl (stream);
+            }
+        }
     }
 
     return true;
+}
+
+//---------------------------------------------------------------------------
+//  getExportStrings
+//
+//! Get a list of strings to be exported corresponding to a model index and a
+//! list of word attributes.
+//
+//! @param index the index to use
+//! @param attributes the list of word attributes to export
+//! @param exportInnerHooks whether to add inner hooks to the word
+//
+//! @return an ordered list of strings to be exported
+//---------------------------------------------------------------------------
+QStringList
+WordTableView::getExportStrings (QModelIndex& index, const
+                                 QList<WordAttribute>& attributes, bool
+                                 exportInnerHooks) const
+{
+    QListIterator<WordAttribute> attrIt (attributes);
+    QStringList strings;
+
+    while (attrIt.hasNext()) {
+        WordAttribute attribute = attrIt.next();
+        if (attribute == WordAttrInnerHooks)
+            continue;
+
+        int column = -1;
+        switch (attribute) {
+            case WordAttrWord:
+            column = WordTableModel::WORD_COLUMN;
+            break; 
+
+            case WordAttrDefinition:
+            column = WordTableModel::DEFINITION_COLUMN;
+            break;
+
+            case WordAttrFrontHooks:
+            column = WordTableModel::FRONT_HOOK_COLUMN;
+            break;
+
+            case WordAttrBackHooks:
+            column = WordTableModel::BACK_HOOK_COLUMN;
+            break;
+
+            case WordAttrProbabilityOrder:
+            column = WordTableModel::PROBABILITY_ORDER_COLUMN;
+            break;
+
+            default: break;
+        }
+
+        if (column < 0)
+            continue;
+
+        index = index.sibling (index.row(), column);
+        QString str;
+        if (exportInnerHooks && (attribute == WordAttrWord)) {
+            str = model()->data (index,
+                                 Qt::DisplayRole).toString().toUpper();
+        }
+        else {
+            str = model()->data (index, Qt::EditRole).toString();
+        }
+        strings.append (str);
+    }
+
+    return strings;
 }
 
 //---------------------------------------------------------------------------
