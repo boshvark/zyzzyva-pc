@@ -29,6 +29,7 @@
 #include "SearchCondition.h"
 #include "SearchSet.h"
 #include "WordAttribute.h"
+#include "WordListFormat.h"
 #include <QDate>
 #include <QString>
 
@@ -61,6 +62,8 @@ namespace Auxil {
     QuizSpec::QuestionOrder stringToQuizQuestionOrder (const QString& string);
     QString wordAttributeToString (WordAttribute attr);
     WordAttribute stringToWordAttribute (const QString& string);
+    QString wordListFormatToString (WordListFormat format);
+    WordListFormat stringToWordListFormat (const QString& string);
     QDate lexiconToDate (const QString& lexicon);
 }
 

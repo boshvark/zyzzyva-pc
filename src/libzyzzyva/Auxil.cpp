@@ -106,6 +106,9 @@ const QString WORD_ATTR_FRONT_EXTENSIONS = "Front Extensions";
 const QString WORD_ATTR_BACK_EXTENSIONS = "Back Extensions";
 const QString WORD_ATTR_DOUBLE_EXTENSIONS = "Double Extensions";
 
+const QString WORD_LIST_FORMAT_ONE_PER_LINE = "One Word Per Line";
+const QString WORD_LIST_FORMAT_QUESTION_ANSWER = "Anagram Question/Answer";
+
 using namespace Defs;
 
 //---------------------------------------------------------------------------
@@ -824,7 +827,7 @@ Auxil::wordAttributeToString (WordAttribute attr)
 //! Convert a string representation to a word attribute.
 //
 //! @param s the string representation
-//! @return the word attribute.
+//! @return the word attribute
 //---------------------------------------------------------------------------
 WordAttribute
 Auxil::stringToWordAttribute (const QString& s)
@@ -849,6 +852,47 @@ Auxil::stringToWordAttribute (const QString& s)
         return WordAttrDoubleExtensions;
     else
         return WordAttrInvalid;
+}
+
+//---------------------------------------------------------------------------
+//  wordListFormatToString
+//
+//! Convert a word list file format to a string representation.
+//
+//! @param format the word list file format
+//! @return the string representation
+//---------------------------------------------------------------------------
+QString
+Auxil::wordListFormatToString (WordListFormat format)
+{
+    switch (format) {
+        case WordListOnePerLine:
+        return WORD_LIST_FORMAT_ONE_PER_LINE;
+
+        case WordListAnagramQuestionAnswer:
+        return WORD_LIST_FORMAT_QUESTION_ANSWER;
+
+        default: return QString::null;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  stringToWordListFormat
+//
+//! Convert a string representation to a word attribute.
+//
+//! @param s the string representation
+//! @return the word list format
+//---------------------------------------------------------------------------
+WordListFormat
+Auxil::stringToWordListFormat (const QString& s)
+{
+    if (s == WORD_LIST_FORMAT_ONE_PER_LINE)
+        return WordListOnePerLine;
+    else if (s == WORD_LIST_FORMAT_QUESTION_ANSWER)
+        return WordListAnagramQuestionAnswer;
+    else
+        return WordListInvalid;
 }
 
 //---------------------------------------------------------------------------
