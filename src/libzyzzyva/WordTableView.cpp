@@ -167,8 +167,11 @@ WordTableView::exportRequested()
     if (!filename.endsWith (".txt", Qt::CaseInsensitive))
         filename += ".txt";
 
+    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
     QString error;
-    if (!exportFile (filename, format, attributes, &error)) {
+    bool ok = exportFile (filename, format, attributes, &error);
+    QApplication::restoreOverrideCursor();
+    if (!ok) {
         QMessageBox::warning (this, "Error Saving Word List",
                               "Cannot save word list:\n" + error + ".");
     }
