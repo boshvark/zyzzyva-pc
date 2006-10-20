@@ -27,6 +27,7 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QListWidget>
 #include <QVBoxLayout>
 
@@ -55,6 +56,15 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     listHlay->setSpacing (SPACING);
     mainVlay->addLayout (listHlay);
 
+    QVBoxLayout* unselectedVlay = new QVBoxLayout;
+    Q_CHECK_PTR (unselectedVlay);
+    unselectedVlay->setSpacing (SPACING);
+    listHlay->addLayout (unselectedVlay);
+
+    QLabel* unselectedLabel = new QLabel ("Available attributes:");
+    Q_CHECK_PTR (unselectedLabel);
+    unselectedVlay->addWidget (unselectedLabel);
+
     unselectedAttrList = new QListWidget (this);
     Q_CHECK_PTR (unselectedAttrList);
     unselectedAttrList->setSelectionMode (QAbstractItemView::ExtendedSelection);
@@ -62,7 +72,7 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     //unselectedAttrList->setDropIndicatorShown (true);
     connect (unselectedAttrList, SIGNAL (itemSelectionChanged()),
              SLOT (unselectedSelectionChanged()));
-    listHlay->addWidget (unselectedAttrList);
+    unselectedVlay->addWidget (unselectedAttrList);
 
     QVBoxLayout* arrowVlay = new QVBoxLayout;
     Q_CHECK_PTR (arrowVlay);
@@ -84,6 +94,15 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
 
     arrowVlay->addStretch (1);
 
+    QVBoxLayout* selectedVlay = new QVBoxLayout;
+    Q_CHECK_PTR (selectedVlay);
+    selectedVlay->setSpacing (SPACING);
+    listHlay->addLayout (selectedVlay);
+
+    QLabel* selectedLabel = new QLabel ("Selected attributes:");
+    Q_CHECK_PTR (selectedLabel);
+    selectedVlay->addWidget (selectedLabel);
+
     selectedAttrList = new QListWidget (this);
     Q_CHECK_PTR (selectedAttrList);
     selectedAttrList->setSelectionMode (QAbstractItemView::ExtendedSelection);
@@ -91,7 +110,7 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     //selectedAttrList->setDropIndicatorShown (true);
     connect (selectedAttrList, SIGNAL (itemSelectionChanged()),
              SLOT (selectedSelectionChanged()));
-    listHlay->addWidget (selectedAttrList);
+    selectedVlay->addWidget (selectedAttrList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     Q_CHECK_PTR (buttonHlay);
