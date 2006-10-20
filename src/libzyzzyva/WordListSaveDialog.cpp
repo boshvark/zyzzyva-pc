@@ -46,13 +46,13 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this);
+    Q_CHECK_PTR (mainVlay);
     mainVlay->setMargin (MARGIN);
     mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
 
     QHBoxLayout* listHlay = new QHBoxLayout;
-    listHlay->setSpacing (SPACING);
     Q_CHECK_PTR (listHlay);
+    listHlay->setSpacing (SPACING);
     mainVlay->addLayout (listHlay);
 
     unselectedAttrList = new QListWidget (this);
@@ -94,8 +94,8 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     listHlay->addWidget (selectedAttrList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing (SPACING);
     Q_CHECK_PTR (buttonHlay);
+    buttonHlay->setSpacing (SPACING);
     mainVlay->addLayout (buttonHlay);
 
     buttonHlay->addStretch (1);
