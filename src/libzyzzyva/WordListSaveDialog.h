@@ -25,8 +25,9 @@
 #ifndef ZYZZYVA_WORD_LIST_SAVE_DIALOG_H
 #define ZYZZYVA_WORD_LIST_SAVE_DIALOG_H
 
-#include "WordEngine.h"
 #include "WordAttribute.h"
+#include "WordListFormat.h"
+#include <QComboBox>
 #include <QDialog>
 #include <QList>
 #include <QListWidget>
@@ -40,6 +41,7 @@ class WordListSaveDialog : public QDialog
     ~WordListSaveDialog();
 
     QList<WordAttribute> getSelectedAttributes() const;
+    WordListFormat getWordListFormat() const;
 
     public slots:
     void selectClicked();
@@ -56,6 +58,7 @@ class WordListSaveDialog : public QDialog
     QListWidget* selectedAttrList;
     QToolButton* selectButton;
     QToolButton* deselectButton;
+    QComboBox*   formatCombo;
 };
 
 #endif // ZYZZYVA_WORD_LIST_SAVE_DIALOG_H

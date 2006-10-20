@@ -51,6 +51,22 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     mainVlay->setMargin (MARGIN);
     mainVlay->setSpacing (SPACING);
 
+    QHBoxLayout* formatHlay = new QHBoxLayout;
+    Q_CHECK_PTR (formatHlay);
+    formatHlay->setSpacing (SPACING);
+    mainVlay->addLayout (formatHlay);
+
+    QLabel* formatLabel = new QLabel ("Format:");
+    Q_CHECK_PTR (formatLabel);
+    formatHlay->addWidget (formatLabel);
+
+    formatCombo = new QComboBox (this);
+    Q_CHECK_PTR (formatCombo);
+    formatCombo->addItem (Auxil::wordListFormatToString (WordListOnePerLine));
+    formatCombo->addItem (Auxil::wordListFormatToString
+                          (WordListAnagramQuestionAnswer));
+    formatHlay->addWidget (formatCombo);
+
     QHBoxLayout* listHlay = new QHBoxLayout;
     Q_CHECK_PTR (listHlay);
     listHlay->setSpacing (SPACING);
@@ -165,6 +181,19 @@ WordListSaveDialog::getSelectedAttributes() const
             attributes.append (attr);
     }
     return attributes;
+}
+
+//---------------------------------------------------------------------------
+//  getWordListFormat
+//
+//! Get the selected word list format.
+//
+//! @return the word list format
+//---------------------------------------------------------------------------
+WordListFormat
+WordListSaveDialog::getWordListFormat() const
+{
+    return Auxil::stringToWordListFormat (formatCombo->currentText());
 }
 
 //---------------------------------------------------------------------------
