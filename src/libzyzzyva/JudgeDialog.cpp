@@ -45,6 +45,7 @@ const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
 const int EXIT_FONT_PIXEL_SIZE = 30;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 30;
+const int CLEAR_INPUT_DELAY = 15000;
 const int CLEAR_RESULTS_DELAY = 10000;
 const int CLEAR_RESULTS_MIN_DELAY = 500;
 const int EXIT_TIMEOUT = 5000;
@@ -157,15 +158,19 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     lexiconLabel->setAlignment (Qt::AlignRight);
     titleHlay->addWidget (lexiconLabel);
 
+    inputTimer = new QTimer (this);
+    Q_CHECK_PTR (inputTimer);
+    connect (inputTimer, SIGNAL (timeout()), SLOT (clearInput()));
+
     resultTimer = new QTimer (this);
     Q_CHECK_PTR (resultTimer);
-    connect (resultTimer, SIGNAL (timeout()), SLOT (clear()));
+    connect (resultTimer, SIGNAL (timeout()), SLOT (clearResults()));
 
     exitTimer = new QTimer (this);
     Q_CHECK_PTR (exitTimer);
     connect (exitTimer, SIGNAL (timeout()), SLOT (clearExit()));
 
-    clear();
+    clearResults();
     showFullScreen();
 }
 
@@ -239,17 +244,21 @@ JudgeDialog::textChanged()
     inputArea->setTextCursor (cursor);
     inputArea->blockSignals (false);
 
-    if (doJudge && !text.isEmpty())
-        judgeWord();
+    if (!text.isEmpty()) {
+        if (doJudge)
+            judgeWord();
+        else
+            inputTimer->start (CLEAR_INPUT_DELAY);
+    }
 }
 
 //---------------------------------------------------------------------------
-//  clear
+//  clearResults
 //
 //! Clear the input area and the result area.
 //---------------------------------------------------------------------------
 void
-JudgeDialog::clear()
+JudgeDialog::clearResults()
 {
     resultTimer->stop();
     exitTimer->stop();
@@ -388,6 +397,18 @@ JudgeDialog::displayExit()
 }
 
 //---------------------------------------------------------------------------
+//  clearInput
+//
+//! Clear the input area.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::clearInput()
+{
+    inputTimer->stop();
+    inputArea->clear();
+}
+
+//---------------------------------------------------------------------------
 //  clearExit
 //
 //! Clear instructions for exiting full screen mode.
@@ -413,7 +434,7 @@ JudgeDialog::keyPressEvent (QKeyEvent* event)
 
     bool cleared = false;
     if ((widgetStack->currentWidget() == resultWidget) && !clearResultsHold) {
-        clear();
+        clearResults();
         cleared = true;
     }
 
