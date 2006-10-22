@@ -164,8 +164,20 @@ WordTableView::exportRequested()
     if (filename.isEmpty())
         return;
 
-    if (!filename.endsWith (".txt", Qt::CaseInsensitive))
+    if (!filename.endsWith (".txt", Qt::CaseInsensitive)) {
         filename += ".txt";
+        if (QFile::exists (filename)) {
+            QFileInfo fileInfo (filename);
+            int code = QMessageBox::warning (this, "File Exists",
+                                  "An item named \"" + fileInfo.fileName() +
+                                  "\" already exists in this location.\n"
+                                  "Do you want to replace it with the one "
+                                  "you are saving?",
+                                  QMessageBox::Ok, QMessageBox::Cancel);
+            if (code != QMessageBox::Ok)
+                return;
+        }
+    }
 
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
     QString error;
