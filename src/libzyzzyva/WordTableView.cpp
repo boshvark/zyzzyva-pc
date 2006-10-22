@@ -354,6 +354,7 @@ WordTableView::exportFile (const QString& filename, WordListFormat format,
                 stream << "A: " << strings.join (" ");
                 endl (stream);
             }
+            endl (stream);
         }
     }
 
