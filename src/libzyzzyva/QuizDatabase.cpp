@@ -266,6 +266,25 @@ QuizDatabase::addToCardbox (const QString& question, bool estimateCardbox)
 }
 
 //---------------------------------------------------------------------------
+//  setCardbox
+//
+//! Place a question into a cardbox.  Add it to the cardbox system if
+//! necessary.
+//
+//! @param question the question
+//! @param cardbox the cardbox to place the question in
+//---------------------------------------------------------------------------
+void
+QuizDatabase::setCardbox (const QString& question, int cardbox)
+{
+    QuestionData data = getQuestionData (question);
+    data.valid = true;
+    data.cardbox = cardbox;
+    data.nextScheduled = calculateNextScheduled (data.cardbox);
+    setQuestionData (question, data, true);
+}
+
+//---------------------------------------------------------------------------
 //  getReadyQuestions
 //
 //! Get a list of questions that are ready for review, from a subset of

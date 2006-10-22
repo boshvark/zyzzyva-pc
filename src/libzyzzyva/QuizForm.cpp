@@ -866,14 +866,10 @@ QuizForm::checkResponseClicked()
     if (MainSettings::getQuizRecordStats() && !recordStatsBlocked)
         recordQuestionStats (questionCorrect);
 
-
     if (db && db->isValid() &&
        (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod))
     {
-        QString question = quizEngine->getQuestion();
-        QuizDatabase::QuestionData data = db->getQuestionData (question);
-        if (data.valid)
-            setQuestionStatus (data);
+        updateQuestionStatus();
     }
 
     QApplication::restoreOverrideCursor();
@@ -1267,6 +1263,20 @@ QuizForm::updateQuestionDisplay()
 }
 
 //---------------------------------------------------------------------------
+//  updateQuestionStatus
+//
+//! Update the display of the current question's status.
+//---------------------------------------------------------------------------
+void
+QuizForm::updateQuestionStatus()
+{
+    QString question = quizEngine->getQuestion();
+    QuizDatabase::QuestionData data = db->getQuestionData (question);
+    if (data.valid)
+        setQuestionStatus (data);
+}
+
+//---------------------------------------------------------------------------
 //  startDisplayingCorrectAnswers
 //
 //! Start displaying correct answers in the quiz question display area.
@@ -1404,6 +1414,38 @@ QuizForm::keyPressEvent (QKeyEvent* event)
             case Qt::Key_O: flashcardCbox->toggle(); return;
             default: break;
         }
+    }
+    else if (event->modifiers() & Qt::ControlModifier) {
+        int cardbox = 0;
+        switch (event->key()) {
+            case Qt::Key_1: cardbox = 1; break;
+            case Qt::Key_2: cardbox = 2; break;
+            case Qt::Key_3: cardbox = 3; break;
+            case Qt::Key_4: cardbox = 4; break;
+            case Qt::Key_5: cardbox = 5; break;
+            case Qt::Key_6: cardbox = 6; break;
+            case Qt::Key_7: cardbox = 7; break;
+            case Qt::Key_8: cardbox = 8; break;
+            case Qt::Key_9: cardbox = 9; break;
+            case Qt::Key_0: cardbox = 10; break;
+        }
+
+        if (cardbox) {
+            QuizSpec quizSpec = quizEngine->getQuizSpec();
+            if (quizSpec.getMethod() == QuizSpec::CardboxQuizMethod) {
+                bool old = checkBringsJudgment;
+                checkBringsJudgment = false;
+                if (checkResponseButton->isEnabled())
+                    checkResponseClicked();
+
+                QString question = quizEngine->getQuestion();
+                db->setCardbox (question, cardbox);
+                updateQuestionStatus();
+
+                checkBringsJudgment = old;
+            }
+        }
+
     }
     event->ignore();
 }

@@ -81,6 +81,7 @@ class QuizForm : public ActionForm
     void setBackgroundColor (const QColor& color);
     void updateStatusString();
     void updateQuestionDisplay();
+    void updateQuestionStatus();
     void startDisplayingCorrectAnswers();
     void stopDisplayingCorrectAnswers();
     void displayNextCorrectAnswer();
