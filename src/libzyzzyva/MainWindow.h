@@ -35,6 +35,7 @@
 #include <QToolButton>
 
 class AboutDialog;
+class ActionForm;
 class HelpDialog;
 class QuizSpec;
 class QuizEngine;
@@ -74,6 +75,7 @@ class MainWindow : public QMainWindow
     void helpDialogError (const QString& message);
     void closeCurrentTab();
     void currentTabChanged (int index);
+    void tabTitleChanged (const QString& title);
     void tabStatusChanged (const QString& status);
     void tabSaveEnabledChanged (bool saveEnabled);
 
@@ -98,7 +100,7 @@ class MainWindow : public QMainWindow
     void setNumWords (int num);
     void readSettings (bool useGeometry);
     void writeSettings();
-    void newTab (QWidget* widget, const QIcon& icon, const QString& title);
+    void newTab (ActionForm* form);
     void newQuizFromQuizFile (const QString& filename);
     void newQuizFromWordFile (const QString& filename);
 

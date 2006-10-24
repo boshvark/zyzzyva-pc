@@ -40,6 +40,8 @@
 
 using namespace Defs;
 
+const QString TITLE_PREFIX = "Search";
+
 //---------------------------------------------------------------------------
 //  SearchForm
 //
@@ -96,6 +98,32 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     specChanged();
     QTimer::singleShot (0, specForm, SLOT (selectInputArea()));
+}
+
+//---------------------------------------------------------------------------
+//  getIcon
+//
+//! Returns the current icon.
+//
+//! @return the current icon
+//---------------------------------------------------------------------------
+QIcon
+SearchForm::getIcon() const
+{
+    return QIcon (":/search-icon");
+}
+
+//---------------------------------------------------------------------------
+//  getTitle
+//
+//! Returns the current title string.
+//
+//! @return the current title string
+//---------------------------------------------------------------------------
+QString
+SearchForm::getTitle() const
+{
+    return TITLE_PREFIX;
 }
 
 //---------------------------------------------------------------------------

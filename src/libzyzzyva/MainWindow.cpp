@@ -64,12 +64,6 @@ const QString APPLICATION_TITLE = "Zyzzyva";
 
 const QString IMPORT_FAILURE_TITLE = "Load Failed";
 const QString IMPORT_COMPLETE_TITLE = "Load Complete";
-const QString CROSSWORD_GAME_TAB_TITLE = "Crossword Game";
-const QString DEFINE_TAB_TITLE = "Definition";
-const QString INTRO_TAB_TITLE = "Welcome";
-const QString JUDGE_TAB_TITLE = "Word Judge";
-const QString QUIZ_TAB_TITLE = "Quiz";
-const QString SEARCH_TAB_TITLE = "Search";
 
 const QString SETTINGS_MAIN = "/Zyzzyva";
 const QString SETTINGS_GEOMETRY = "/geometry";
@@ -545,12 +539,7 @@ MainWindow::newQuizForm (const QuizSpec& quizSpec)
         delete form;
         return;
     }
-    newTab (form, QIcon (":/quiz-icon"), QUIZ_TAB_TITLE);
-    connect (form, SIGNAL (statusChanged (const QString&)),
-             SLOT (tabStatusChanged (const QString&)));
-    connect (form, SIGNAL (saveEnabledChanged (bool)),
-             SLOT (tabSaveEnabledChanged (bool)));
-    currentTabChanged (0);
+    newTab (form);
 }
 
 //---------------------------------------------------------------------------
@@ -563,12 +552,7 @@ MainWindow::newSearchForm()
 {
     SearchForm* form = new SearchForm (wordEngine);
     Q_CHECK_PTR (form);
-    newTab (form, QIcon (":/search-icon"), SEARCH_TAB_TITLE);
-    connect (form, SIGNAL (statusChanged (const QString&)),
-             SLOT (tabStatusChanged (const QString&)));
-    connect (form, SIGNAL (saveEnabledChanged (bool)),
-             SLOT (tabSaveEnabledChanged (bool)));
-    currentTabChanged (0);
+    newTab (form);
 }
 
 //---------------------------------------------------------------------------
@@ -581,12 +565,7 @@ MainWindow::newCrosswordGameForm()
 {
     CrosswordGameForm* form = new CrosswordGameForm;
     Q_CHECK_PTR (form);
-    newTab (form, QIcon (":/define-icon"), CROSSWORD_GAME_TAB_TITLE);
-    connect (form, SIGNAL (statusChanged (const QString&)),
-             SLOT (tabStatusChanged (const QString&)));
-    connect (form, SIGNAL (saveEnabledChanged (bool)),
-             SLOT (tabSaveEnabledChanged (bool)));
-    currentTabChanged (0);
+    newTab (form);
 }
 
 //---------------------------------------------------------------------------
@@ -599,12 +578,7 @@ MainWindow::newDefineForm()
 {
     DefineForm* form = new DefineForm (wordEngine);
     Q_CHECK_PTR (form);
-    newTab (form, QIcon (":/define-icon"), DEFINE_TAB_TITLE);
-    connect (form, SIGNAL (statusChanged (const QString&)),
-             SLOT (tabStatusChanged (const QString&)));
-    connect (form, SIGNAL (saveEnabledChanged (bool)),
-             SLOT (tabSaveEnabledChanged (bool)));
-    currentTabChanged (0);
+    newTab (form);
 }
 
 //---------------------------------------------------------------------------
@@ -617,12 +591,7 @@ MainWindow::newIntroForm()
 {
     IntroForm* form = new IntroForm;
     Q_CHECK_PTR (form);
-    newTab (form, QIcon (":/help-icon"), INTRO_TAB_TITLE);
-    connect (form, SIGNAL (statusChanged (const QString&)),
-             SLOT (tabStatusChanged (const QString&)));
-    connect (form, SIGNAL (saveEnabledChanged (bool)),
-             SLOT (tabSaveEnabledChanged (bool)));
-    currentTabChanged (0);
+    newTab (form);
 }
 
 //---------------------------------------------------------------------------
@@ -865,6 +834,24 @@ MainWindow::currentTabChanged (int)
     }
     messageLabel->setText (status);
     saveAction->setEnabled (saveEnabled);
+}
+
+//---------------------------------------------------------------------------
+//  tabTitleChanged
+//
+//! Called when the title string for a tab changes.
+//
+//! @param the new title status string
+//---------------------------------------------------------------------------
+void
+MainWindow::tabTitleChanged (const QString& title)
+{
+    QObject* object = sender();
+    if (!object)
+        return;
+    ActionForm* form = static_cast<ActionForm*>(object);
+    int index = tabStack->indexOf (form);
+    tabStack->setTabText (index, title);
 }
 
 //---------------------------------------------------------------------------
@@ -1211,16 +1198,22 @@ MainWindow::writeSettings()
 //
 //! Create and display a new tab.
 //
-//! @param widget the widget to display
-//! @param icon the icon of the tab
-//! @param title the title of the tab
+//! @param form the form to display
 //---------------------------------------------------------------------------
 void
-MainWindow::newTab (QWidget* widget, const QIcon& icon, const QString& title)
+MainWindow::newTab (ActionForm* form)
 {
-    tabStack->addTab (widget, icon, title);
-    tabStack->setCurrentWidget (widget);
+    connect (form, SIGNAL (titleChanged (const QString&)),
+             SLOT (tabTitleChanged (const QString&)));
+    connect (form, SIGNAL (statusChanged (const QString&)),
+             SLOT (tabStatusChanged (const QString&)));
+    connect (form, SIGNAL (saveEnabledChanged (bool)),
+             SLOT (tabSaveEnabledChanged (bool)));
+
+    tabStack->addTab (form, form->getIcon(), form->getTitle());
+    tabStack->setCurrentWidget (form);
     closeButton->show();
+    currentTabChanged (0);
 }
 
 //---------------------------------------------------------------------------

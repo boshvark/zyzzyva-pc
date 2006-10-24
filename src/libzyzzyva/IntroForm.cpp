@@ -25,6 +25,8 @@
 #include <QTextBrowser>
 #include <QVBoxLayout>
 
+const QString TITLE_PREFIX = "Welcome";
+
 //---------------------------------------------------------------------------
 //  IntroForm
 //
@@ -45,4 +47,43 @@ IntroForm::IntroForm (QWidget* parent, Qt::WFlags f)
 
     QString mainPage = Auxil::getHelpDir() + "/index.html";
     browser->setSource (QUrl::fromLocalFile (mainPage));
+}
+
+//---------------------------------------------------------------------------
+//  getIcon
+//
+//! Returns the current icon.
+//
+//! @return the current icon
+//---------------------------------------------------------------------------
+QIcon
+IntroForm::getIcon() const
+{
+    return QIcon (":/help-icon");
+}
+
+//---------------------------------------------------------------------------
+//  getTitle
+//
+//! Returns the current title string.
+//
+//! @return the current title string
+//---------------------------------------------------------------------------
+QString
+IntroForm::getTitle() const
+{
+    return TITLE_PREFIX;
+}
+
+//---------------------------------------------------------------------------
+//  getStatusString
+//
+//! Returns the current status string.
+//
+//! @return the current status string
+//---------------------------------------------------------------------------
+QString
+IntroForm::getStatusString() const
+{
+    return QString::null;
 }

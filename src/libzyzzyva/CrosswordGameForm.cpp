@@ -41,6 +41,7 @@
 
 using namespace Defs;
 
+const QString TITLE_PREFIX = "Crossword Game";
 const int BOARD_COLUMN_WIDTH = 30;
 const int BOARD_ROW_HEIGHT = 30;
 const int PLAYER_FONT_PIXEL_SIZE = 15;
@@ -245,6 +246,33 @@ CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
 //---------------------------------------------------------------------------
 CrosswordGameForm::~CrosswordGameForm()
 {
+}
+
+//---------------------------------------------------------------------------
+//  getIcon
+//
+//! Returns the current icon.
+//
+//! @return the current icon
+//---------------------------------------------------------------------------
+QIcon
+CrosswordGameForm::getIcon() const
+{
+    // FIXME: need a real crossword game icon
+    return QIcon ("/define-icon");
+}
+
+//---------------------------------------------------------------------------
+//  getTitle
+//
+//! Returns the current title string.
+//
+//! @return the current title string
+//---------------------------------------------------------------------------
+QString
+CrosswordGameForm::getTitle() const
+{
+    return TITLE_PREFIX;
 }
 
 //---------------------------------------------------------------------------

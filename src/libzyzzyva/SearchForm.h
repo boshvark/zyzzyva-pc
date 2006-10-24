@@ -40,6 +40,8 @@ class SearchForm : public ActionForm
     Q_OBJECT
     public:
     SearchForm (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
+    QIcon getIcon() const;
+    QString getTitle() const;
     QString getStatusString() const;
     bool isSaveEnabled() const;
 

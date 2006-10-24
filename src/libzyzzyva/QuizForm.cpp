@@ -54,6 +54,7 @@
 
 using namespace Defs;
 
+const QString TITLE_PREFIX = "Quiz";
 const QString PAUSE_BUTTON = "&Pause";
 const QString UNPAUSE_BUTTON = "Un&pause";
 const int TITLE_FONT_PIXEL_SIZE = 20;
@@ -355,6 +356,36 @@ QuizForm::~QuizForm()
 {
     disconnectDatabase();
     delete quizEngine;
+}
+
+//---------------------------------------------------------------------------
+//  getIcon
+//
+//! Returns the current icon.
+//
+//! @return the current icon
+//---------------------------------------------------------------------------
+QIcon
+QuizForm::getIcon() const
+{
+    return QIcon (":/quiz-icon");
+}
+
+//---------------------------------------------------------------------------
+//  getTitle
+//
+//! Returns the current title.
+//
+//! @return the current title
+//---------------------------------------------------------------------------
+QString
+QuizForm::getTitle() const
+{
+    QString title = TITLE_PREFIX;
+    QString quizName = quizNameLabel->text();
+    if (!quizName.isEmpty())
+        title += " : " + quizName;
+    return title;
 }
 
 //---------------------------------------------------------------------------
@@ -1504,6 +1535,7 @@ void
 QuizForm::setQuizName (const QString& name)
 {
     quizNameLabel->setText (name);
+    emit titleChanged (getTitle());
 }
 
 //---------------------------------------------------------------------------

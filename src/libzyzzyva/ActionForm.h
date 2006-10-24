@@ -26,6 +26,7 @@
 #define ZYZZYVA_ACTION_FORM_H
 
 #include <QFrame>
+#include <QIcon>
 #include <QString>
 
 class ActionForm : public QFrame
@@ -47,6 +48,8 @@ class ActionForm : public QFrame
         : QFrame (parent, f), type (t) { }
     virtual ~ActionForm() { }
     virtual ActionFormType getType() const { return type; }
+    virtual QIcon getIcon() const { return QIcon(); }
+    virtual QString getTitle() const { return QString::null; }
     virtual QString getStatusString() const { return QString::null; }
     virtual bool isSaveEnabled() const { return false; }
 
@@ -54,6 +57,7 @@ class ActionForm : public QFrame
     virtual void saveRequested() { }
 
     signals:
+    void titleChanged (const QString& title);
     void statusChanged (const QString& status);
     void saveEnabledChanged (bool saveEnabled);
 

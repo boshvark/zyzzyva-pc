@@ -34,6 +34,8 @@
 
 using namespace Defs;
 
+const QString TITLE_PREFIX = "Definition";
+
 //---------------------------------------------------------------------------
 //  DefineForm
 //
@@ -86,6 +88,32 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     defineButton->setEnabled (false);
     resultBox->hide();
+}
+
+//---------------------------------------------------------------------------
+//  getIcon
+//
+//! Returns the current icon.
+//
+//! @return the current icon
+//---------------------------------------------------------------------------
+QIcon
+DefineForm::getIcon() const
+{
+    return QIcon (":/define-icon");
+}
+
+//---------------------------------------------------------------------------
+//  getTitle
+//
+//! Returns the current title string.
+//
+//! @return the current title string
+//---------------------------------------------------------------------------
+QString
+DefineForm::getTitle() const
+{
+    return TITLE_PREFIX;
 }
 
 //---------------------------------------------------------------------------

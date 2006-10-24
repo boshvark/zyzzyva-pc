@@ -35,7 +35,9 @@ class IntroForm : public ActionForm
     public:
     IntroForm (QWidget* parent = 0, Qt::WFlags f = 0);
     ~IntroForm() { }
-    QString getStatusString() const { return QString::null; }
+    QIcon getIcon() const;
+    QString getTitle() const;
+    QString getStatusString() const;
 };
 
 #endif // ZYZZYVA_INTRO_FORM_H
