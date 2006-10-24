@@ -68,7 +68,7 @@ install_name_tool -change \
     zyzzyva.app/Contents/MacOS/zyzzyva
 
 # Copy Qt frameworks into bundle and tell the executable to link to them
-for i in QtGui QtNetwork QtSql QtXml QtCore ; do
+for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistantClient ; do
 
     # Copy Qt framework into bundle
     echo "Copying $i.framework into bundle..."
@@ -88,104 +88,51 @@ for i in QtGui QtNetwork QtSql QtXml QtCore ; do
         -id @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
         zyzzyva.app/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
 
-    # Change link locations for framework in executable - ORIG
+    # Change reference to framework in libzyzzyva
+    echo "Changing link location for $i.framework in libzyzzyva..."
+    install_name_tool -change \
+        $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
+        @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
+        zyzzyva.app/Contents/Frameworks/libzyzzyva.0.dylib
+
+    # Change link locations for framework in executable
     echo "Changing link location for $i.framework in Zyzzyva executable..."
     install_name_tool -change \
         $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
         @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
         zyzzyva.app/Contents/MacOS/zyzzyva
+
+    #  Change reference to QtCore in frameworks
+    if [ "$i" != "QtCore" ]; then
+        echo "Changing link location for $i.framework in QtGui.framework..."
+        install_name_tool -change \
+            $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
+            @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
+            zyzzyva.app/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+    fi
+
 done
 
-# Change reference to QtCore in QtGui framework
-echo "Changing link location for QtCore.framework in QtGui.framework..."
-install_name_tool -change \
-    $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
-    @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    zyzzyva.app/Contents/Frameworks/QtGui.framework/Versions/$QTVER/QtGui
-
-# Change reference to QtCore in QtNetwork framework
-echo "Changing link location for QtCore.framework in QtNetwork.framework..."
-install_name_tool -change \
-    $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
-    @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    zyzzyva.app/Contents/Frameworks/QtNetwork.framework/Versions/$QTVER/QtNetwork
-
-# Change reference to QtCore in QtSql framework
-echo "Changing link location for QtCore.framework in QtSql.framework..."
-install_name_tool -change \
-    $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
-    @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    zyzzyva.app/Contents/Frameworks/QtSql.framework/Versions/$QTVER/QtSql
-
-# Change reference to QtCore in QtXml framework
-echo "Changing link location for QtCore.framework in QtXml.framework..."
-install_name_tool -change \
-    $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
-    @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    zyzzyva.app/Contents/Frameworks/QtXml.framework/Versions/$QTVER/QtXml
-
-# Change reference to QtCore in Assistant client
-echo "Changing link location for QtCore.framework in Assistant client..."
-install_name_tool -change \
-    $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
-    @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    zyzzyva.app/Contents/MacOS/assistant
-
 # Change reference to QtGui in Assistant client
-echo "Changing link location for QtGui.framework in Assistant client..."
+echo "Changing link location for QtGui.framework in QtAssistantClient.framework..."
 install_name_tool -change \
     $QTDIR/lib/QtGui.framework/Versions/$QTVER/QtGui \
     @executable_path/../Frameworks/QtGui.framework/Versions/$QTVER/QtGui \
-    zyzzyva.app/Contents/MacOS/assistant
+    zyzzyva.app/Contents/Frameworks/QtAssistantClient.framework/Versions/$QTVER/QtAssistantClient
 
 # Change reference to QtNetwork in Assistant client
-echo "Changing link location for QtNetwork.framework in Assistant client..."
+echo "Changing link location for QtNetwork.framework in QtAssistantClient.framework..."
 install_name_tool -change \
     $QTDIR/lib/QtNetwork.framework/Versions/$QTVER/QtNetwork \
     @executable_path/../Frameworks/QtNetwork.framework/Versions/$QTVER/QtNetwork \
-    zyzzyva.app/Contents/MacOS/assistant
+    zyzzyva.app/Contents/Frameworks/QtAssistantClient.framework/Versions/$QTVER/QtAssistantClient
 
-# Change reference to QtXml in Assistant client
-echo "Changing link location for QtXml.framework in Assistant client..."
-install_name_tool -change \
-    $QTDIR/lib/QtXml.framework/Versions/$QTVER/QtXml \
-    @executable_path/../Frameworks/QtXml.framework/Versions/$QTVER/QtXml \
-    zyzzyva.app/Contents/MacOS/assistant
-
-# Change reference to QtCore in libzyzzyva
-echo "Changing link location for QtCore.framework in libzyzzyva..."
+# Change reference to QtCore in Assistant client
+echo "Changing link location for QtCore.framework in QtAssistantClient.framework..."
 install_name_tool -change \
     $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
     @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    zyzzyva.app/Contents/Frameworks/libzyzzyva.0.dylib
-
-# Change reference to QtGui in libzyzzyva
-echo "Changing link location for QtGui.framework in libzyzzyva..."
-install_name_tool -change \
-    $QTDIR/lib/QtGui.framework/Versions/$QTVER/QtGui \
-    @executable_path/../Frameworks/QtGui.framework/Versions/$QTVER/QtGui \
-    zyzzyva.app/Contents/Frameworks/libzyzzyva.0.dylib
-
-# Change reference to QtNetwork in libzyzzyva
-echo "Changing link location for QtNetwork.framework in libzyzzyva..."
-install_name_tool -change \
-    $QTDIR/lib/QtNetwork.framework/Versions/$QTVER/QtNetwork \
-    @executable_path/../Frameworks/QtNetwork.framework/Versions/$QTVER/QtNetwork \
-    zyzzyva.app/Contents/Frameworks/libzyzzyva.0.dylib
-
-# Change reference to QtSql in libzyzzyva
-echo "Changing link location for QtSql.framework in libzyzzyva..."
-install_name_tool -change \
-    $QTDIR/lib/QtSql.framework/Versions/$QTVER/QtSql \
-    @executable_path/../Frameworks/QtSql.framework/Versions/$QTVER/QtSql \
-    zyzzyva.app/Contents/Frameworks/libzyzzyva.0.dylib
-
-# Change reference to QtXml in libzyzzyva
-echo "Changing link location for QtXml.framework in libzyzzyva..."
-install_name_tool -change \
-    $QTDIR/lib/QtXml.framework/Versions/$QTVER/QtXml \
-    @executable_path/../Frameworks/QtXml.framework/Versions/$QTVER/QtXml \
-    zyzzyva.app/Contents/Frameworks/libzyzzyva.0.dylib
+    zyzzyva.app/Contents/Frameworks/QtAssistantClient.framework/Versions/$QTVER/QtAssistantClient
 
 # Create disk image
 echo "Creating disk image..."
