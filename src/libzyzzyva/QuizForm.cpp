@@ -770,6 +770,7 @@ QuizForm::checkResponseClicked()
     if (MainSettings::getQuizMarkMissedAfterIncorrect() &&
         (quizType != QuizSpec::QuizWordListRecall) &&
         (quizEngine->getQuestionIncorrect() > 0) &&
+        (quizEngine->getQuestionTotal() > 0) &&
         (quizEngine->getQuestionCorrect() == quizEngine->getQuestionTotal()))
     {
         markMissedClicked();
