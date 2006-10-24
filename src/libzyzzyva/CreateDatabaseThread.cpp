@@ -106,7 +106,8 @@ CreateDatabaseThread::createTables (QSqlDatabase& db)
         "definition varchar(256))");
 
     query.exec ("CREATE TABLE db_version (version integer)");
-    query.exec ("INSERT into db_version (version) VALUES (1)");
+    query.exec ("INSERT into db_version (version) VALUES (" +
+                QString::number (CURRENT_DATABASE_VERSION) + ")");
 
     query.exec ("CREATE TABLE lexicon_date (date date)");
     query.prepare ("INSERT into lexicon_date (date) VALUES (?)");

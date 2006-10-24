@@ -53,6 +53,8 @@
 #include <QProgressDialog>
 #include <QSignalMapper>
 #include <QStatusBar>
+#include <QSqlDatabase>
+#include <QSqlQuery>
 #include <QToolBar>
 
 #include <QtDebug>
@@ -954,8 +956,50 @@ MainWindow::connectToDatabase()
     bool createDatabase = false;
     QFile dbFile (dbFilename);
 
-    if (!dbFile.exists()) {
-        QString message =
+    QString dialogMessage;
+    QString dialogTitle;
+
+    if (dbFile.exists()) {
+        QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE");
+        db.setDatabaseName (dbFilename);
+        bool ok = db.open();
+
+        if (ok) {
+            QString qstr = "SELECT version FROM db_version";
+            QSqlQuery query (qstr, db);
+            int dbVersion = 0;
+            if (query.next())
+                dbVersion = query.value (0).toInt();
+
+            if (dbVersion < CURRENT_DATABASE_VERSION) {
+                dialogTitle = "Update database?";
+                dialogMessage =
+                    "The database exists but is out of date.  "
+                    "For certain searches and quizzes to work correctly,\n"
+                    "Zyzzyva must create an updated database of information "
+                    "about the current lexicon (" + lexicon + ").\n"
+                    "This may take several minutes, but "
+                    "it will only need to be done once.\n\n"
+                    "Update the database now?";
+            }
+
+        }
+
+        else {
+            dialogTitle = "Recreate database?";
+            dialogMessage =
+                "The database exists but Zyzzyva cannot connect to it.\n"
+                "For certain searches and quizzes to work correctly, Zyzzyva\n"
+                "must create a database of information about the current\n"
+                "lexicon (" + lexicon + ").  This may take several minutes,\n"
+                "but it will only need to be done once.\n\n"
+                "Recreate the database now?";
+        }
+    }
+
+    else {
+        dialogTitle = "Create database?";
+        dialogMessage =
             "For certain searches and quizzes to work correctly, Zyzzyva\n"
             "must create a database of information about the current\n"
             "lexicon (" + lexicon + ").  This may take several minutes,\n"
@@ -963,21 +1007,22 @@ MainWindow::connectToDatabase()
             "This database is not needed if you only want to use the\n"
             "Word Judge mode.\n\n"
             "Create the database now?";
+    }
 
-        int code = QMessageBox::question (this, "Create database file?",
-                                          message, QMessageBox::Yes,
-                                          QMessageBox::No);
-
+    if (!dialogMessage.isEmpty()) {
+        int code = QMessageBox::question (this, dialogTitle, dialogMessage,
+                                          QMessageBox::Yes, QMessageBox::No);
         if (code != QMessageBox::Yes) {
             return;
         }
-
         createDatabase = true;
     }
 
     bool useDb = true;
 
     if (createDatabase) {
+        dbFile.remove();
+
         QProgressDialog* dialog = new QProgressDialog (this);
 
         QLabel* dialogLabel = new QLabel ("Creating " + lexicon +

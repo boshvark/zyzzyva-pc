@@ -29,6 +29,7 @@
 #include <QString>
 
 namespace Defs {
+    const int CURRENT_DATABASE_VERSION = 1;
     const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
     const QString EMPTY_DEFINITION = "(no definition)";
     const int DEFINITION_WRAP_LENGTH = 80;
