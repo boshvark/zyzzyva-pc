@@ -36,20 +36,13 @@ DEPENDPATH += build/moc
 
 unix {
     VERSION = $$system(cat $$ROOT/VERSION)
-
-    # Get ZYZZYVA_VERSION defined as a string - qmake changed how this is done
-    # between 4.1 and 4.2
-    lessThan(QT_MINOR_VERSION, 2) {
-        DEFINES += ZYZZYVA_VERSION=\"$$VERSION\"
-    }
-    else {
-        DEFINES += ZYZZYVA_VERSION=\\\"$$VERSION\\\"
-    }
 }
 win32 {
     VERSION = $$system(type ..\..\VERSION)
     DEFINES += ZYZZYVA_VERSION=\"$$VERSION\"
 }
+
+DEFINES += ZYZZYVA_VERSION=\\\"$$VERSION\\\"
 
 # Source files
 SOURCES = \
