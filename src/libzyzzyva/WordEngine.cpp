@@ -278,7 +278,6 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     // New in OWL2 conditions with Must Be in Word List conditions.
     bool mustSearchGraph = false;
     bool wordListCondition = false;
-    bool numAnagramsCondition = false;
     bool probLimitRangeCondition = false;
     bool legacyProbCondition = false;
     int probLimitRangeMin = 0;
@@ -294,10 +293,6 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             wordListCondition = true;
             if (condition.negated)
                 mustSearchGraph = true;
-            break;
-
-            case SearchCondition::NumAnagrams:
-            numAnagramsCondition = true;
             break;
 
             case SearchCondition::BelongToGroup: {
