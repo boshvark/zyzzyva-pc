@@ -44,33 +44,33 @@ LetterBag::LetterBag (const QString& distribution)
 {
     // Set letter values
     // FIXME: this should be able to be passed in as a parameter
-    letterValues[BLANK_CHAR] = 0;
-    letterValues['A'] = 1;
-    letterValues['B'] = 3;
-    letterValues['C'] = 3;
-    letterValues['D'] = 2;
-    letterValues['E'] = 1;
-    letterValues['F'] = 4;
-    letterValues['G'] = 2;
-    letterValues['H'] = 4;
-    letterValues['I'] = 1;
-    letterValues['J'] = 8;
-    letterValues['K'] = 5;
-    letterValues['L'] = 1;
-    letterValues['M'] = 3;
-    letterValues['N'] = 1;
-    letterValues['O'] = 1;
-    letterValues['P'] = 3;
-    letterValues['Q'] = 10;
-    letterValues['R'] = 1;
-    letterValues['S'] = 1;
-    letterValues['T'] = 1;
-    letterValues['U'] = 1;
-    letterValues['V'] = 4;
-    letterValues['W'] = 4;
-    letterValues['X'] = 8;
-    letterValues['Y'] = 4;
-    letterValues['Z'] = 10;
+    letterValues[QChar (BLANK_CHAR)] = 0;
+    letterValues[QChar ('A')] = 1;
+    letterValues[QChar ('B')] = 3;
+    letterValues[QChar ('C')] = 3;
+    letterValues[QChar ('D')] = 2;
+    letterValues[QChar ('E')] = 1;
+    letterValues[QChar ('F')] = 4;
+    letterValues[QChar ('G')] = 2;
+    letterValues[QChar ('H')] = 4;
+    letterValues[QChar ('I')] = 1;
+    letterValues[QChar ('J')] = 8;
+    letterValues[QChar ('K')] = 5;
+    letterValues[QChar ('L')] = 1;
+    letterValues[QChar ('M')] = 3;
+    letterValues[QChar ('N')] = 1;
+    letterValues[QChar ('O')] = 1;
+    letterValues[QChar ('P')] = 3;
+    letterValues[QChar ('Q')] = 10;
+    letterValues[QChar ('R')] = 1;
+    letterValues[QChar ('S')] = 1;
+    letterValues[QChar ('T')] = 1;
+    letterValues[QChar ('U')] = 1;
+    letterValues[QChar ('V')] = 4;
+    letterValues[QChar ('W')] = 4;
+    letterValues[QChar ('X')] = 8;
+    letterValues[QChar ('Y')] = 4;
+    letterValues[QChar ('Z')] = 10;
 
     rng.srand (std::time (0), Auxil::getPid());
     resetContents (distribution);
@@ -219,7 +219,6 @@ LetterBag::resetContents (const QString& distribution)
 
     totalLetters = 0;
     letterFrequencies.clear();
-    letterValues.clear();
 
     QString str;
     foreach (str, strList) {

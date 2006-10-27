@@ -70,14 +70,17 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
           << Auxil::searchTypeToString (SearchCondition::PatternMatch)
           << Auxil::searchTypeToString (SearchCondition::SubanagramMatch)
           << Auxil::searchTypeToString (SearchCondition::Length)
+          << Auxil::searchTypeToString (SearchCondition::ProbabilityOrder)
+          << Auxil::searchTypeToString (SearchCondition::InWordList)
+          << Auxil::searchTypeToString (SearchCondition::BelongToGroup)
+          << Auxil::searchTypeToString (SearchCondition::NumVowels)
+          << Auxil::searchTypeToString (SearchCondition::NumUniqueLetters)
+          << Auxil::searchTypeToString (SearchCondition::PointValue)
           << Auxil::searchTypeToString (SearchCondition::Prefix)
           << Auxil::searchTypeToString (SearchCondition::Suffix)
           << Auxil::searchTypeToString (SearchCondition::IncludeLetters)
           << Auxil::searchTypeToString (SearchCondition::ConsistOf)
-          << Auxil::searchTypeToString (SearchCondition::BelongToGroup)
-          << Auxil::searchTypeToString (SearchCondition::InWordList)
           << Auxil::searchTypeToString (SearchCondition::NumAnagrams)
-          << Auxil::searchTypeToString (SearchCondition::ProbabilityOrder)
           << Auxil::searchTypeToString
              (SearchCondition::LimitByProbabilityOrder);
 
@@ -264,6 +267,9 @@ SearchConditionForm::getSearchCondition() const
         case SearchCondition::Length:
         case SearchCondition::NumAnagrams:
         case SearchCondition::Probability:
+        case SearchCondition::NumVowels:
+        case SearchCondition::NumUniqueLetters:
+        case SearchCondition::PointValue:
         condition.minValue = paramMinSbox->value();
         condition.maxValue = paramMaxSbox->value();
         break;
@@ -329,6 +335,9 @@ SearchConditionForm::setSearchCondition (const SearchCondition& condition)
         case SearchCondition::Length:
         case SearchCondition::NumAnagrams:
         case SearchCondition::Probability:
+        case SearchCondition::NumVowels:
+        case SearchCondition::NumUniqueLetters:
+        case SearchCondition::PointValue:
         paramMinSbox->setValue (condition.minValue);
         paramMaxSbox->setValue (condition.maxValue);
         break;
@@ -385,8 +394,15 @@ SearchConditionForm::isValid() const
         return !paramLine->text().isEmpty();
 
         case SearchCondition::Length:
+        case SearchCondition::NumVowels:
+        case SearchCondition::NumUniqueLetters:
         return ((paramMinSbox->value() > 0) ||
                 (paramMaxSbox->value() < MAX_WORD_LEN)) &&
+               (paramMinSbox->value() <= paramMaxSbox->value());
+
+        case SearchCondition::PointValue:
+        return ((paramMinSbox->value() > 0) ||
+                (paramMaxSbox->value() < (10 * MAX_WORD_LEN))) &&
                (paramMinSbox->value() <= paramMaxSbox->value());
 
         case SearchCondition::NumAnagrams:
@@ -441,12 +457,25 @@ SearchConditionForm::typeChanged (const QString& string)
         break;
 
         case SearchCondition::Length:
+        case SearchCondition::NumVowels:
+        case SearchCondition::NumUniqueLetters:
         negationCbox->setCheckState (Qt::Unchecked);
         negationCbox->setEnabled (false);
         paramMinSbox->setMaximum (MAX_WORD_LEN);
         paramMinSbox->setValue (0);
         paramMaxSbox->setMaximum (MAX_WORD_LEN);
         paramMaxSbox->setValue (MAX_WORD_LEN);
+        paramProbCbox->hide();
+        paramStack->setCurrentWidget (paramSboxWidget);
+        break;
+
+        case SearchCondition::PointValue:
+        negationCbox->setCheckState (Qt::Unchecked);
+        negationCbox->setEnabled (false);
+        paramMinSbox->setMaximum (10 * MAX_WORD_LEN);
+        paramMinSbox->setValue (0);
+        paramMaxSbox->setMaximum (10 * MAX_WORD_LEN);
+        paramMaxSbox->setValue (10 * MAX_WORD_LEN);
         paramProbCbox->hide();
         paramStack->setCurrentWidget (paramSboxWidget);
         break;
@@ -461,10 +490,11 @@ SearchConditionForm::typeChanged (const QString& string)
         paramMaxSbox->setMaximum (MAX_MAX_INT_VALUE);
         paramMaxSbox->setValue (MAX_MAX_INT_VALUE);
         paramProbCbox->setCheckState (Qt::Checked);
-        if (type == SearchCondition::NumAnagrams)
-            paramProbCbox->hide();
-        else
+        if ((type == SearchCondition::ProbabilityOrder) ||
+            (type == SearchCondition::LimitByProbabilityOrder))
             paramProbCbox->show();
+        else
+            paramProbCbox->hide();
         paramStack->setCurrentWidget (paramSboxWidget);
         break;
 

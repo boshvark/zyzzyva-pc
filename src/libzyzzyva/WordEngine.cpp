@@ -642,6 +642,12 @@ bool
 WordEngine::matchesConditions (const QString& word, const
                                QList<SearchCondition>& conditions) const
 {
+    // FIXME: For conditions that can be tested by querying the database, a
+    // query should be constructed that tests all the conditions as part of a
+    // single WHERE clause.  This should be much more efficient than testing
+    // each condition on each word individually, which requires several
+    // queries.
+
     QString wordUpper = word.toUpper();
     QListIterator<SearchCondition> it (conditions);
     while (it.hasNext()) {
@@ -679,7 +685,28 @@ WordEngine::matchesConditions (const QString& word, const
             break;
 
             case SearchCondition::NumAnagrams: {
-                int num = numAnagrams (wordUpper); 
+                int num = getNumAnagrams (wordUpper); 
+                if ((num < condition.minValue) || (num > condition.maxValue))
+                    return false;
+            }
+            break;
+
+            case SearchCondition::NumVowels: {
+                int num = getNumVowels (wordUpper); 
+                if ((num < condition.minValue) || (num > condition.maxValue))
+                    return false;
+            }
+            break;
+
+            case SearchCondition::NumUniqueLetters: {
+                int num = getNumUniqueLetters (wordUpper); 
+                if ((num < condition.minValue) || (num > condition.maxValue))
+                    return false;
+            }
+            break;
+
+            case SearchCondition::PointValue: {
+                int num = getPointValue (wordUpper); 
                 if ((num < condition.minValue) || (num > condition.maxValue))
                     return false;
             }
@@ -876,7 +903,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 }
 
 //---------------------------------------------------------------------------
-//  numAnagrams
+//  getNumAnagrams
 //
 //! Determine the number of valid anagrams of a word.
 //
@@ -884,7 +911,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 //! @return the number of valid anagrams
 //---------------------------------------------------------------------------
 int
-WordEngine::numAnagrams (const QString& word) const
+WordEngine::getNumAnagrams (const QString& word) const
 {
     if (db.isOpen()) {
         QString qstr = "SELECT num_anagrams FROM words WHERE word='" +
@@ -966,6 +993,69 @@ WordEngine::getMaxProbabilityOrder (const QString& word) const
 }
 
 //---------------------------------------------------------------------------
+//  getNumVowels
+//
+//! Get the number of vowels in a word.
+//
+//! @param word the word
+//! @return the number of vowels
+//---------------------------------------------------------------------------
+int
+WordEngine::getNumVowels (const QString& word) const
+{
+    if (db.isOpen()) {
+        QString qstr = "SELECT num_vowels FROM words WHERE word='" +
+            word + "'";
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            return query.value (0).toInt();
+    }
+    return Auxil::getNumVowels (word);
+}
+
+//---------------------------------------------------------------------------
+//  genNumUniqueLetters
+//
+//! Get the number of unique letters in a word.
+//
+//! @param word the word
+//! @return the number of unique letters
+//---------------------------------------------------------------------------
+int
+WordEngine::getNumUniqueLetters (const QString& word) const
+{
+    if (db.isOpen()) {
+        QString qstr = "SELECT num_unique_letters FROM words WHERE word='" +
+            word + "'";
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            return query.value (0).toInt();
+    }
+    return Auxil::getNumUniqueLetters (word);
+}
+
+//---------------------------------------------------------------------------
+//  genPointValue
+//
+//! Get the point value for a word.
+//
+//! @param word the word
+//! @return the point value
+//---------------------------------------------------------------------------
+int
+WordEngine::getPointValue (const QString& word) const
+{
+    if (db.isOpen()) {
+        QString qstr = "SELECT point_value FROM words WHERE word='" +
+            word + "'";
+        QSqlQuery query (qstr, db);
+        if (query.next())
+            return query.value (0).toInt();
+    }
+    return 0;
+}
+
+//---------------------------------------------------------------------------
 //  nonGraphSearch
 //
 //! Search for valid words matching conditions that can be matched without
@@ -986,6 +1076,12 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
     const int MAX_ANAGRAMS = 65535;
     int minAnagrams = 0;
     int maxAnagrams = MAX_ANAGRAMS;
+    int minNumVowels = 0;
+    int maxNumVowels = MAX_WORD_LEN;
+    int minNumUniqueLetters = 0;
+    int maxNumUniqueLetters = MAX_WORD_LEN;
+    int minPointValue = 0;
+    int maxPointValue = 10 * MAX_WORD_LEN;
 
     // Look for InWordList conditions first, to narrow the search as much as
     // possible
@@ -999,8 +1095,46 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
             if ((condition.minValue > maxAnagrams) ||
                 (condition.maxValue < minAnagrams))
                 return wordList;
-            minAnagrams = condition.minValue;
-            maxAnagrams = condition.maxValue;
+            if (condition.minValue > minAnagrams)
+                minAnagrams = condition.minValue;
+            if (condition.maxValue < maxAnagrams)
+                maxAnagrams = condition.maxValue;
+        }
+
+        // Note the minimum and maximum number of vowels from any Number of
+        // Vowels conditions
+        else if (condition.type == SearchCondition::NumVowels) {
+            if ((condition.minValue > maxNumVowels) ||
+                (condition.maxValue < minNumVowels))
+                return wordList;
+            if (condition.minValue > minNumVowels)
+                minNumVowels = condition.minValue;
+            if (condition.maxValue < maxNumVowels)
+                maxNumVowels = condition.maxValue;
+        }
+
+        // Note the minimum and maximum number of unique letters from any
+        // Number of Unique Letters conditions
+        else if (condition.type == SearchCondition::NumUniqueLetters) {
+            if ((condition.minValue > maxNumUniqueLetters) ||
+                (condition.maxValue < minNumUniqueLetters))
+                return wordList;
+            if (condition.minValue > minNumUniqueLetters)
+                minNumUniqueLetters = condition.minValue;
+            if (condition.maxValue < maxNumUniqueLetters)
+                maxNumUniqueLetters = condition.maxValue;
+        }
+
+        // Note the minimum and maximum point value from any Point Value
+        // conditions
+        else if (condition.type == SearchCondition::PointValue) {
+            if ((condition.minValue > maxPointValue) ||
+                (condition.maxValue < minPointValue))
+                return wordList;
+            if (condition.minValue > minPointValue)
+                minPointValue = condition.minValue;
+            if (condition.maxValue < maxPointValue)
+                maxPointValue = condition.maxValue;
         }
 
         // Only InWordList conditions allowed beyond this point - look up
@@ -1046,18 +1180,53 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
     // test those words.  Otherwise, run through the map of number of anagrams
     // and pull out all words matching the conditions.
     if (!finalWordSet.empty() &&
-        ((minAnagrams > 0) || (maxAnagrams < MAX_ANAGRAMS)))
+        ((minAnagrams > 0) || (maxAnagrams < MAX_ANAGRAMS)) ||
+        ((minNumVowels > 0) || (maxNumVowels < MAX_WORD_LEN)) ||
+        ((minNumUniqueLetters > 0) || (maxNumUniqueLetters < MAX_WORD_LEN)) ||
+        ((minPointValue > 0) || (minPointValue < 10 * MAX_WORD_LEN)))
     {
+        bool testAnagrams = ((minAnagrams > 0) ||
+                             (maxAnagrams < MAX_ANAGRAMS));
+        bool testNumVowels = ((minNumVowels > 0) ||
+                              (maxNumVowels < MAX_WORD_LEN));
+        bool testNumUniqueLetters = ((minNumUniqueLetters > 0) ||
+                                     (maxNumUniqueLetters < MAX_WORD_LEN));
+        bool testPointValue = ((minPointValue > 0) ||
+                               (minPointValue < 10 * MAX_WORD_LEN));
+
         set<QString> wordSet;
         for (sit = finalWordSet.begin(); sit != finalWordSet.end();
                 ++sit)
         {
-            int numAnagrams = numAnagramsMap[ Auxil::getAlphagram (*sit) ];
-            if ((numAnagrams >= minAnagrams) &&
-                (numAnagrams <= maxAnagrams))
-            {
-                wordSet.insert (*sit);
+            QString word = *sit;
+
+            if (testAnagrams) {
+                int numAnagrams = getNumAnagrams (word);
+                if ((numAnagrams < minAnagrams) || (numAnagrams > maxAnagrams))
+                    continue;
             }
+
+            if (testNumVowels) {
+                int numVowels = getNumVowels (word);
+                if ((numVowels < minNumVowels) || (numVowels > maxNumVowels))
+                    continue;
+            }
+
+            if (testNumUniqueLetters) {
+                int numUniqueLetters = getNumUniqueLetters (word);
+                if ((numUniqueLetters < minNumUniqueLetters) ||
+                    (numUniqueLetters > maxNumUniqueLetters))
+                    continue;
+            }
+
+            if (testPointValue) {
+                int pointValue = getPointValue (word);
+                if ((pointValue < minPointValue) ||
+                    (pointValue > maxPointValue))
+                    continue;
+            }
+
+            wordSet.insert (word);
         }
         finalWordSet = wordSet;
     }

@@ -55,6 +55,9 @@ const QString SEARCH_TYPE_CONSIST_OF = "Consists of";
 const QString SEARCH_TYPE_BELONG_TO_GROUP = "Belongs to Group";
 const QString SEARCH_TYPE_IN_WORD_LIST = "In Word List";
 const QString SEARCH_TYPE_NUM_ANAGRAMS = "Number of Anagrams";
+const QString SEARCH_TYPE_NUM_VOWELS = "Number of Vowels";
+const QString SEARCH_TYPE_NUM_UNIQUE_LETTERS = "Number of Unique Letters";
+const QString SEARCH_TYPE_POINT_VALUE = "Point Value";
 const QString SEARCH_TYPE_PROBABILITY = "Probability";
 const QString SEARCH_TYPE_PROBABILITY_ORDER = "Probability Order";
 const QString SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER =
@@ -376,6 +379,7 @@ Auxil::isVowel (QChar c)
             (c == 'O') || (c == 'U'));
 }
 
+
 //---------------------------------------------------------------------------
 //  getAlphagram
 //
@@ -404,6 +408,48 @@ Auxil::getAlphagram (const QString& word)
     chars[charsPlaced] = 0;
 
     return QString (chars);
+}
+
+//---------------------------------------------------------------------------
+//  getNumUniqueLetters
+//
+//! Determine the number of unique letters in a word.
+//
+//! @param word the word
+//! @return the number of unique letters
+//---------------------------------------------------------------------------
+int
+Auxil::getNumUniqueLetters (const QString& word)
+{
+    int numUniqueLetters = 0;
+    QString alphagram = getAlphagram (word);
+    QChar c;
+    for (int i = 0; i < alphagram.length(); ++i) {
+        QChar d = alphagram.at (i);
+        if (d != c)
+            ++numUniqueLetters;
+        c = d;
+    }
+    return numUniqueLetters;
+}
+
+//---------------------------------------------------------------------------
+//  getNumVowels
+//
+//! Determine the number of vowels in a word.
+//
+//! @param word the word
+//! @return the number of vowels
+//---------------------------------------------------------------------------
+int
+Auxil::getNumVowels (const QString& word)
+{
+    int numVowels = 0;
+    for (int i = 0; i < word.length(); ++i) {
+        if (isVowel (word.at (i)))
+            ++numVowels;
+    }
+    return numVowels;
 }
 
 //---------------------------------------------------------------------------
@@ -504,6 +550,12 @@ Auxil::stringToSearchType (const QString& string)
         return SearchCondition::InWordList;
     else if (string == SEARCH_TYPE_NUM_ANAGRAMS)
         return SearchCondition::NumAnagrams;
+    else if (string == SEARCH_TYPE_NUM_VOWELS)
+        return SearchCondition::NumVowels;
+    else if (string == SEARCH_TYPE_NUM_UNIQUE_LETTERS)
+        return SearchCondition::NumUniqueLetters;
+    else if (string == SEARCH_TYPE_POINT_VALUE)
+        return SearchCondition::PointValue;
     else if (string == SEARCH_TYPE_PROBABILITY)
         return SearchCondition::Probability;
     else if (string == SEARCH_TYPE_PROBABILITY_ORDER)
@@ -588,6 +640,15 @@ Auxil::searchTypeToString (SearchCondition::SearchType type)
 
         case SearchCondition::NumAnagrams:
         return SEARCH_TYPE_NUM_ANAGRAMS;
+
+        case SearchCondition::NumVowels:
+        return SEARCH_TYPE_NUM_VOWELS;
+
+        case SearchCondition::NumUniqueLetters:
+        return SEARCH_TYPE_NUM_UNIQUE_LETTERS;
+
+        case SearchCondition::PointValue:
+        return SEARCH_TYPE_POINT_VALUE;
 
         case SearchCondition::Probability:
         return SEARCH_TYPE_PROBABILITY;

@@ -102,8 +102,9 @@ CreateDatabaseThread::createTables (QSqlDatabase& db)
         "length integer, combinations integer, probability_order integer, "
         "min_probability_order integer, max_probability_order integer, "
         "alphagram varchar(16), num_anagrams integer, "
-        "front_hooks varchar(32), back_hooks varchar(32), "
-        "definition varchar(256))");
+        "num_unique_letters integer, num_vowels integer, "
+        "point_value integer, front_hooks varchar(32), "
+        "back_hooks varchar(32), definition varchar(256))");
 
     query.exec ("CREATE TABLE db_version (version integer)");
     query.exec ("INSERT into db_version (version) VALUES (" +
@@ -170,8 +171,9 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
         QStringList words = wordEngine->search (searchSpec, true);
 
         query.prepare ("INSERT INTO words (word, length, combinations, "
-                       "alphagram, front_hooks, back_hooks) "
-                       "VALUES (?, ?, ?, ?, ?, ?)");
+                       "alphagram, num_unique_letters, num_vowels, "
+                       "point_value, front_hooks, back_hooks) "
+                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         transactionQuery.exec ("BEGIN TRANSACTION");
 
@@ -179,6 +181,13 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
         QString word;
         foreach (word, words) {
             double combinations = letterBag.getNumCombinations (word);
+            int numUniqueLetters = Auxil::getNumUniqueLetters (word);
+            int numVowels = Auxil::getNumVowels (word);
+
+            int pointValue = 0;
+            for (int i = 0; i < word.length(); ++i) {
+                pointValue += letterBag.getLetterValue (word.at (i));
+            }
 
             QString alphagram = Auxil::getAlphagram (word);
             if (numAnagramsMap.contains (alphagram))
@@ -199,8 +208,11 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
             query.bindValue (1, length);
             query.bindValue (2, combinations);
             query.bindValue (3, alphagram);
-            query.bindValue (4, front.toLower());
-            query.bindValue (5, back.toLower());
+            query.bindValue (4, numUniqueLetters);
+            query.bindValue (5, numVowels);
+            query.bindValue (6, pointValue);
+            query.bindValue (7, front.toLower());
+            query.bindValue (8, back.toLower());
             query.exec();
 
             if ((stepNum % 1000) == 0) {

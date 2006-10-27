@@ -164,6 +164,12 @@ SearchSpec::optimize()
     int maxLength = MAX_WORD_LEN + 1;
     int minAnagrams = 0;
     int maxAnagrams = MAX_ANAGRAMS;
+    int minNumVowels = 0;
+    int maxNumVowels = MAX_WORD_LEN + 1;
+    int minNumUniqueLetters = 0;
+    int maxNumUniqueLetters = MAX_WORD_LEN + 1;
+    int minPointValue = 0;
+    int maxPointValue = 10 * MAX_WORD_LEN + 1;
 
     QListIterator<SearchCondition> it (conditions);
     while (it.hasNext()) {
@@ -318,15 +324,63 @@ SearchSpec::optimize()
             }
             break;
 
+            case SearchCondition::NumVowels:
+            if (minValue > minNumVowels)
+                minNumVowels = minValue;
+            if (maxValue < maxNumVowels)
+                maxNumVowels = maxValue;
+            if ((minNumVowels > MAX_WORD_LEN) || (maxNumVowels <= 0) ||
+                (minNumVowels > maxNumVowels))
+            {
+                conditions.clear();
+                return;
+            }
+            break;
+
+            case SearchCondition::NumUniqueLetters:
+            if (minValue > minNumUniqueLetters)
+                minNumUniqueLetters = minValue;
+            if (maxValue < maxNumUniqueLetters)
+                maxNumUniqueLetters = maxValue;
+            if ((minNumUniqueLetters > MAX_WORD_LEN) ||
+                (maxNumUniqueLetters <= 0) ||
+                (minNumUniqueLetters > maxNumUniqueLetters))
+            {
+                conditions.clear();
+                return;
+            }
+            break;
+
+            case SearchCondition::PointValue:
+            if (minValue > minPointValue)
+                minPointValue = minValue;
+            if (maxValue < maxPointValue)
+                maxPointValue = maxValue;
+            if ((minPointValue > 10 * MAX_WORD_LEN) || (maxPointValue <= 0) ||
+                (minPointValue > maxPointValue))
+            {
+                conditions.clear();
+                return;
+            }
+            break;
+
             default:
             newConditions.append (condition);
             break;
         }
     }
 
+    // Sanity checks for impossible conditions
+    if ((minNumVowels > maxLength) || (minNumUniqueLetters > maxLength) ||
+        (minPointValue > (10 * maxLength)) || (maxPointValue < minLength))
+    {
+        conditions.clear();
+        return;
+    }
+
     SearchCondition condition;
 
-    // Add Number of Anagram conditions
+    // Add Number of Anagrams conditions
     if ((minAnagrams > 0) || (maxAnagrams < MAX_ANAGRAMS)) {
         condition.type = SearchCondition::NumAnagrams;
         condition.minValue = minAnagrams;
@@ -334,8 +388,34 @@ SearchSpec::optimize()
         newConditions.push_front (condition);
     }
 
+    // Add Point Value conditions
+    if ((minPointValue > 0) || (maxPointValue < (10 * MAX_WORD_LEN + 1))) {
+        condition.type = SearchCondition::PointValue;
+        condition.minValue = minPointValue;
+        condition.maxValue = maxPointValue;
+        newConditions.push_front (condition);
+    }
+
+    // Add Number of Unique Letters conditions
+    if ((minNumUniqueLetters > 0) ||
+        (maxNumUniqueLetters < (MAX_WORD_LEN + 1)))
+    {
+        condition.type = SearchCondition::NumUniqueLetters;
+        condition.minValue = minNumUniqueLetters;
+        condition.maxValue = maxNumUniqueLetters;
+        newConditions.push_front (condition);
+    }
+
+    // Add Number of Vowels conditions
+    if ((minNumVowels > 0) || (maxNumVowels < (MAX_WORD_LEN + 1))) {
+        condition.type = SearchCondition::NumVowels;
+        condition.minValue = minNumVowels;
+        condition.maxValue = maxNumVowels;
+        newConditions.push_front (condition);
+    }
+
     // Add Length conditions
-    if ((minLength > 0) || (maxLength < MAX_WORD_LEN + 1)) {
+    if ((minLength > 0) || (maxLength < (MAX_WORD_LEN + 1))) {
         condition.type = SearchCondition::Length;
         condition.minValue = minLength;
         condition.maxValue = maxLength;

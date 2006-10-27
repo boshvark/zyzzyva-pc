@@ -74,6 +74,9 @@ SearchCondition::asString() const
 
         case Length:
         case NumAnagrams:
+        case NumVowels:
+        case NumUniqueLetters:
+        case PointValue:
         case ProbabilityOrder:
         case LimitByProbabilityOrder:
         str += "Min " + QString::number (minValue) + ", Max "
@@ -135,6 +138,9 @@ SearchCondition::asDomElement() const
 
         case Length:
         case NumAnagrams:
+        case NumVowels:
+        case NumUniqueLetters:
+        case PointValue:
         case ProbabilityOrder:
         case LimitByProbabilityOrder:
         topElement.setAttribute (XML_MIN_ATTR, minValue);
@@ -222,6 +228,9 @@ SearchCondition::fromDomElement (const QDomElement& element)
 
         case Length:
         case NumAnagrams:
+        case NumVowels:
+        case NumUniqueLetters:
+        case PointValue:
         if (!element.hasAttribute (XML_MIN_ATTR) ||
             !element.hasAttribute (XML_MAX_ATTR))
             return false;
