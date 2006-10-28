@@ -423,9 +423,9 @@ NewQuizDialog::loadQuiz()
 
         QString message = "The lexicon associated with the quiz is "
                           + quizLexicon + ", but the current lexicon is "
-                          + currentLexicon + ".\n"
+                          + currentLexicon + ".  "
                           "If a different lexicon is used, the quiz may "
-                          "encounter problems.\n"
+                          "encounter problems.\n\n"
                           "Are you sure you want to proceed?";
 
         int code = QMessageBox::warning (this, "Lexicon Mismatch", message,

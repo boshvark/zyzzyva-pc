@@ -554,12 +554,12 @@ QuizForm::newQuiz (const QuizSpec& spec)
     if (!ok) {
         QString message;
         if (spec.getMethod() == QuizSpec::CardboxQuizMethod) {
-            message = "No matching questions are ready for review.\n"
-                      "Please modify your search criteria,\n"
+            message = "No matching questions are ready for review.  "
+                      "Please modify your search criteria, "
                       "or add more words to the Cardbox system.";
         }
         else {
-            message = "No matching questions were found.\n"
+            message = "No matching questions were found.  "
                       "Please modify your search criteria.";
         }
 
@@ -1400,7 +1400,7 @@ QuizForm::promptToSaveChanges()
 
     int code = QMessageBox::warning (this, "Save Quiz?",
                                      "This quiz " + quizName
-                                     + "has unsaved changes.\n"
+                                     + "has unsaved changes.  "
                                      "Would you like to save it?",
                                      QMessageBox::Yes | QMessageBox::No |
                                      QMessageBox::Cancel,

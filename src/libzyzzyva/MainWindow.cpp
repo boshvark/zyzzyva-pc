@@ -624,7 +624,7 @@ MainWindow::doJudgeAction()
     int code = QMessageBox::information (this,
                                          "Entering Full Screen Word Judge",
                                          "You are now entering the full "
-                                         "screen Word Judge mode.\n"
+                                         "screen Word Judge mode.  "
                                          "To exit full screen mode, press "
                                          "ESC while holding the Shift key.",
                                          QMessageBox::Ok,
@@ -760,7 +760,7 @@ MainWindow::displayLexiconError()
         return;
 
     int code = QMessageBox::warning (this, "Lexicon Warning",
-                                     lexiconError + "\nProceed anyway?",
+                                     lexiconError + "\n\nProceed anyway?",
                                      QMessageBox::Yes | QMessageBox::No,
                                      QMessageBox::No);
     if (code != QMessageBox::Yes)
@@ -976,9 +976,9 @@ MainWindow::connectToDatabase()
                 dialogTitle = "Update database?";
                 dialogMessage =
                     "The database exists but is out of date.  "
-                    "For certain searches and quizzes to work correctly,\n"
+                    "For certain searches and quizzes to work correctly, "
                     "Zyzzyva must create an updated database of information "
-                    "about the current lexicon (" + lexicon + ").\n"
+                    "about the current lexicon (" + lexicon + ")."
                     "This may take several minutes, but "
                     "it will only need to be done once.\n\n"
                     "Update the database now?";
@@ -989,10 +989,10 @@ MainWindow::connectToDatabase()
         else {
             dialogTitle = "Recreate database?";
             dialogMessage =
-                "The database exists but Zyzzyva cannot connect to it.\n"
-                "For certain searches and quizzes to work correctly, Zyzzyva\n"
-                "must create a database of information about the current\n"
-                "lexicon (" + lexicon + ").  This may take several minutes,\n"
+                "The database exists but Zyzzyva cannot connect to it.  "
+                "For certain searches and quizzes to work correctly, Zyzzyva "
+                "must create a database of information about the current "
+                "lexicon (" + lexicon + ").  This may take several minutes, "
                 "but it will only need to be done once.\n\n"
                 "Recreate the database now?";
         }
@@ -1001,11 +1001,11 @@ MainWindow::connectToDatabase()
     else {
         dialogTitle = "Create database?";
         dialogMessage =
-            "For certain searches and quizzes to work correctly, Zyzzyva\n"
-            "must create a database of information about the current\n"
-            "lexicon (" + lexicon + ").  This may take several minutes,\n"
+            "For certain searches and quizzes to work correctly, Zyzzyva "
+            "must create a database of information about the current "
+            "lexicon (" + lexicon + ").  This may take several minutes, "
             "but it will only need to be done once.\n\n"
-            "This database is not needed if you only want to use the\n"
+            "This database is not needed if you only want to use the "
             "Word Judge mode.\n\n"
             "Create the database now?";
     }

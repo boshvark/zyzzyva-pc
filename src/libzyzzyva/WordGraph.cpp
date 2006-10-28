@@ -137,8 +137,8 @@ WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
         char* cp = (char*) p;
         if (*expectedChecksum != qChecksum (cp, numEdges)) {
             *errString =
-                "The lexicon checksum does not match the expected checksum.\n"
-                "It is possible the lexicon has been corrupted.\n";
+                "The lexicon checksum does not match the expected checksum.  "
+                "It is possible the lexicon has been corrupted.";
         }
     }
 
