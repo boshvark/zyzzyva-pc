@@ -331,9 +331,9 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
         qApp->processEvents();
     }
 
-    makeUserDirs();
-
     readSettings (true);
+
+    makeUserDirs();
 
     setWindowTitle (APPLICATION_TITLE);
     setWindowIcon (QIcon (":/zyzzyva-32x32"));
@@ -1243,6 +1243,7 @@ MainWindow::writeSettings()
 {
     MainSettings::setMainWindowPos (pos());
     MainSettings::setMainWindowSize (size());
+    MainSettings::setProgramVersion (ZYZZYVA_VERSION);
     MainSettings::writeSettings();
 }
 
@@ -1412,10 +1413,13 @@ MainWindow::importChecksums (const QString& filename)
 void
 MainWindow::makeUserDirs()
 {
-    Auxil::copyDir (Auxil::getRootDir() + "/data/quiz",
-                    Auxil::getQuizDir());
-    Auxil::copyDir (Auxil::getRootDir() + "/data/search",
-                    Auxil::getSearchDir());
+    // Copy predefined quizzes and searches if program version has changed
+    if (MainSettings::getProgramVersion() != ZYZZYVA_VERSION) {
+        Auxil::copyDir (Auxil::getRootDir() + "/data/quiz",
+                        Auxil::getQuizDir());
+        Auxil::copyDir (Auxil::getRootDir() + "/data/search",
+                        Auxil::getSearchDir());
+    }
 
     renameLexicon ("OWL", "OWL+LWL");
     renameLexicon ("OWL2", "OWL2+LWL");
@@ -1445,8 +1449,6 @@ MainWindow::renameLexicon (const QString& oldName, const QString& newName)
     QString oldDir = Auxil::getQuizDir() + "/data/" + oldName;
     QString newDir = Auxil::getQuizDir() + "/data/" + newName;
     if (dir.exists (oldDir) && !dir.exists (newDir)) {
-        qDebug ("Renaming %s to %s", oldDir.toUtf8().data(),
-                newDir.toUtf8().data());
         dir.rename (oldDir, newDir);
     }
 
@@ -1454,8 +1456,6 @@ MainWindow::renameLexicon (const QString& oldName, const QString& newName)
     QString oldDb = Auxil::getUserDir() + "/lexicons/" + oldName + ".db";
     QString newDb = Auxil::getUserDir() + "/lexicons/" + newName + ".db";
     if (QFile::exists (oldDb) && !QFile::exists (newDb)) {
-        qDebug ("Renaming %s to %s", oldDb.toUtf8().data(),
-                newDb.toUtf8().data());
         QFile::rename (oldDb, newDb);
     }
 }

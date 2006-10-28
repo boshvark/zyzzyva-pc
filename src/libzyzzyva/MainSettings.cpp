@@ -30,6 +30,7 @@
 MainSettings* MainSettings::instance = new MainSettings();
 
 const QString SETTINGS_MAIN = "Zyzzyva";
+const QString SETTINGS_PROGRAM_VERSION = "program_version";
 const QString SETTINGS_MAIN_WINDOW_POS = "main_window_pos";
 const QString SETTINGS_MAIN_WINDOW_SIZE = "main_window_size";
 const QString SETTINGS_IMPORT = "autoimport";
@@ -90,6 +91,9 @@ MainSettings::readSettings()
     instance->mainWindowSize
         = settings.value (SETTINGS_MAIN_WINDOW_SIZE,
                           QSize (640, 480)).toSize();
+
+    instance->programVersion
+        = settings.value (SETTINGS_PROGRAM_VERSION).toString();
 
     instance->useAutoImport = settings.value (SETTINGS_IMPORT, true).toBool();
     instance->autoImportLexicon
@@ -197,6 +201,7 @@ MainSettings::writeSettings()
     settings.setValue (SETTINGS_MAIN_WINDOW_POS, instance->mainWindowPos);
     settings.setValue (SETTINGS_MAIN_WINDOW_SIZE, instance->mainWindowSize);
 
+    settings.setValue (SETTINGS_PROGRAM_VERSION, instance->programVersion);
     settings.setValue (SETTINGS_IMPORT, instance->useAutoImport);
     settings.setValue (SETTINGS_IMPORT_LEXICON, instance->autoImportLexicon);
     settings.setValue (SETTINGS_IMPORT_FILE, instance->autoImportFile);

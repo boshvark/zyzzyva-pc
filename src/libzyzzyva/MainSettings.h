@@ -36,6 +36,10 @@ class MainSettings
     static void readSettings();
     static void writeSettings();
 
+    static QString getProgramVersion() {
+        return instance->programVersion; }
+    static void setProgramVersion (const QString& str) {
+        instance->programVersion = str; }
     static QPoint getMainWindowPos() { return instance->mainWindowPos; }
     static void setMainWindowPos (QPoint p) { instance->mainWindowPos = p; }
     static QSize getMainWindowSize() { return instance->mainWindowSize; }
@@ -163,6 +167,7 @@ class MainSettings
 
     static MainSettings* instance;
 
+    QString programVersion;
     QPoint mainWindowPos;
     QSize mainWindowSize;
     bool useAutoImport;
