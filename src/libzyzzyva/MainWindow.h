@@ -91,6 +91,7 @@ class MainWindow : public QMainWindow
 
     private:
     void makeUserDirs();
+    void renameLexicon(const QString& oldName, const QString& newName);
     int  importText (const QString& file, const QString& lexiconName);
     bool importDawg (const QString& file, const QString& lexiconName,
                      bool reverse = false, QString* errString = 0,

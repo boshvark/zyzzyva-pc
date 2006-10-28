@@ -413,7 +413,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
         QMap<QString, QString> prefixMap;
         prefixMap["OWL+LWL"] = "/north-american/owl-lwl";
         prefixMap["OWL2+LWL"] = "/north-american/owl2-lwl";
-        prefixMap["SOWPODS"] = "/british/sowpods";
+        prefixMap["OSWI"] = "/british/oswi";
         prefixMap["ODS"] = "/french/ods4";
 
         if (prefixMap.contains (lexicon)) {
@@ -912,7 +912,7 @@ MainWindow::getLexiconPrefix (const QString& lexicon)
     QMap<QString, QString> pmap;
     pmap["OWL+LWL"] = "/north-american/owl-lwl";
     pmap["OWL2+LWL"] = "/north-american/owl2-lwl";
-    pmap["SOWPODS"] = "/british/sowpods";
+    pmap["OSWI"] = "/british/oswi";
     pmap["ODS"] = "/french/ods4";
     return pmap.contains (lexicon) ? pmap.value (lexicon) : QString::null;
 }
@@ -1399,13 +1399,9 @@ MainWindow::importChecksums (const QString& filename)
 }
 
 //---------------------------------------------------------------------------
-//  importText
+//  makeUserDirs
 //
-//! Import words from a text file.
-//
-//! @param file the file to import words from
-//! @param lexiconName the name of the lexicon
-//! @return the number of imported words
+//! Create directories for user data.
 //---------------------------------------------------------------------------
 void
 MainWindow::makeUserDirs()
@@ -1415,6 +1411,42 @@ MainWindow::makeUserDirs()
     dir.mkpath (Auxil::getSearchDir() + "/saved");
     dir.mkpath (Auxil::getUserWordsDir() + "/saved");
     dir.mkpath (Auxil::getUserDir() + "/judge");
+
+    renameLexicon ("OWL", "OWL+LWL");
+    renameLexicon ("OWL2", "OWL2+LWL");
+    renameLexicon ("SOWPODS", "OSWI");
+}
+
+//---------------------------------------------------------------------------
+//  renameLexicon
+//
+//! Take care of things that need to be done when a lexicon has been renamed.
+//
+//! @param oldName the old lexicon name
+//! @param newName the new lexicon name
+//---------------------------------------------------------------------------
+void
+MainWindow::renameLexicon (const QString& oldName, const QString& newName)
+{
+    QDir dir;
+
+    // Move quiz database
+    QString oldDir = Auxil::getQuizDir() + "/data/" + oldName;
+    QString newDir = Auxil::getQuizDir() + "/data/" + newName;
+    if (dir.exists (oldDir) && !dir.exists (newDir)) {
+        qDebug ("Renaming %s to %s", oldDir.toUtf8().data(),
+                newDir.toUtf8().data());
+        dir.rename (oldDir, newDir);
+    }
+
+    // Move lexicon database
+    QString oldDb = Auxil::getUserDir() + "/lexicons/" + oldName + ".db";
+    QString newDb = Auxil::getUserDir() + "/lexicons/" + newName + ".db";
+    if (QFile::exists (oldDb) && !QFile::exists (newDb)) {
+        qDebug ("Renaming %s to %s", oldDb.toUtf8().data(),
+                newDb.toUtf8().data());
+        QFile::rename (oldDb, newDb);
+    }
 }
 
 //---------------------------------------------------------------------------

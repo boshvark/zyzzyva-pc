@@ -96,11 +96,13 @@ MainSettings::readSettings()
         = settings.value (SETTINGS_IMPORT_LEXICON,
                           DEFAULT_AUTO_IMPORT_LEXICON).toString();
 
-    // Kludge to update the names of the OWL and OWL2 lexicons to have +LWL
+    // Kludge to update the names of renamed lexicons
     if (instance->autoImportLexicon == "OWL")
         instance->autoImportLexicon = "OWL+LWL";
     else if (instance->autoImportLexicon == "OWL2")
         instance->autoImportLexicon = "OWL2+LWL";
+    else if (instance->autoImportLexicon == "SOWPODS")
+        instance->autoImportLexicon = "OSWI";
 
     instance->autoImportFile
         = settings.value (SETTINGS_IMPORT_FILE).toString();

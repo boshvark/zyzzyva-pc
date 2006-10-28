@@ -126,7 +126,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (autoImportLexiconCombo);
     autoImportLexiconCombo->addItem ("OWL+LWL");
     autoImportLexiconCombo->addItem ("OWL2+LWL");
-    autoImportLexiconCombo->addItem ("SOWPODS");
+    autoImportLexiconCombo->addItem ("OSWI");
     autoImportLexiconCombo->addItem ("ODS");
     autoImportLexiconCombo->addItem ("Custom");
     autoImportLexiconCombo->setCurrentIndex
