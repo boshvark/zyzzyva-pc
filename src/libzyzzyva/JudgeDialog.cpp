@@ -311,7 +311,7 @@ JudgeDialog::judgeWord()
                     "<b>UNACCEPTABLE</b></font>";
         resultColor = Qt::red;
     }
-    resultStr += "<br><br>" + wordStr;
+    resultStr += "<br><br><font color=\"black\">" + wordStr + "</font>";
 
     QPalette pal = resultLabel->palette();
     pal.setColor (QPalette::Foreground, resultColor);
