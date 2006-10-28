@@ -90,7 +90,6 @@ CardboxAddDialog::CardboxAddDialog (QWidget* parent, Qt::WFlags f)
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
 
-    resize (700, 500);
     setWindowTitle (DIALOG_CAPTION);
 }
 
