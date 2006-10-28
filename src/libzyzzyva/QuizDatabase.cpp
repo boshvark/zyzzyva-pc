@@ -266,6 +266,45 @@ QuizDatabase::addToCardbox (const QString& question, bool estimateCardbox)
 }
 
 //---------------------------------------------------------------------------
+//  removeFromCardbox
+//
+//! Remove a list of questions from the cardbox system.
+//
+//! @param questions the questions to remove from the cardbox system
+//---------------------------------------------------------------------------
+void
+QuizDatabase::removeFromCardbox (const QStringList& questions)
+{
+    QStringList qlist;
+    QStringListIterator it (questions);
+    while (it.hasNext()) {
+        qlist.append ("'" + it.next() + "'");
+    }
+    QString queryStr = "UPDATE questions SET cardbox=NULL, "
+        "next_scheduled=NULL WHERE question IN (" +
+        qlist.join (", ") + ")";
+
+    QSqlQuery query (*db);
+    query.prepare (queryStr);
+    query.exec();
+}
+
+//---------------------------------------------------------------------------
+//  removeFromCardbox
+//
+//! Remove a question from the cardbox system.
+//
+//! @param question the question to remove from the cardbox system
+//---------------------------------------------------------------------------
+void
+QuizDatabase::removeFromCardbox (const QString& question)
+{
+    QStringList qlist;
+    qlist.append (question);
+    removeFromCardbox (qlist);
+}
+
+//---------------------------------------------------------------------------
 //  setCardbox
 //
 //! Place a question into a cardbox.  Add it to the cardbox system if
@@ -467,8 +506,14 @@ QuizDatabase::setQuestionData (const QString& question, const QuestionData&
         query.bindValue (4, data.difficulty);
 
         if (updateCardbox) {
-            query.bindValue (5, data.cardbox);
-            query.bindValue (6, data.nextScheduled);
+            if (data.cardbox >= 0) {
+                query.bindValue (5, data.cardbox);
+                query.bindValue (6, data.nextScheduled);
+            }
+            else {
+                query.bindValue (5, QVariant());
+                query.bindValue (6, QVariant());
+            }
             questionBindNum = 7;
         }
 

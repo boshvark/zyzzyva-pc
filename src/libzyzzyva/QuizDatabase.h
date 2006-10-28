@@ -56,6 +56,8 @@ class QuizDatabase
                          bool updateCardbox);
     void addToCardbox (const QStringList& questions, bool estimateCardbox);
     void addToCardbox (const QString& question, bool estimateCardbox);
+    void removeFromCardbox (const QStringList& questions);
+    void removeFromCardbox (const QString& question);
     void setCardbox (const QString& question, int cardbox);
     QStringList getReadyQuestions (const QStringList& questions);
     QuestionData getQuestionData (const QString& question);

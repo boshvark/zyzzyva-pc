@@ -44,6 +44,7 @@ class WordTableView : public QTreeView
     void exportRequested();
     void createQuizRequested();
     void addToCardboxRequested();
+    void removeFromCardboxRequested();
 
     protected:
     virtual void contextMenuEvent (QContextMenuEvent* e);
@@ -65,6 +66,8 @@ class WordTableView : public QTreeView
                                   bool exportInnerHooks) const;
     bool addToCardbox (const QStringList& words, const QString& lexicon,
                        const QString& quizType, bool estimateCardbox) const;
+    bool removeFromCardbox (const QStringList& words, const QString& lexicon,
+                            const QString& quizType) const;
 
     QString hookToolTipText (const QString& word, const QString& hooks,
                              bool front) const;

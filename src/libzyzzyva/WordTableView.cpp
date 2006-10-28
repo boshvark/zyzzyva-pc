@@ -24,6 +24,7 @@
 
 #include "WordTableView.h"
 #include "CardboxAddDialog.h"
+#include "CardboxRemoveDialog.h"
 #include "DefinitionDialog.h"
 #include "MainSettings.h"
 #include "MainWindow.h"
@@ -269,7 +270,55 @@ WordTableView::addToCardboxRequested()
                                   "An error occurred while adding words "
                                   "to the cardbox system.");
         }
+    }
 
+    delete dialog;
+}
+
+//---------------------------------------------------------------------------
+//  removeFromCardboxRequested
+//
+//! Called when the user indicates that the word list should be added to the
+//! cardbox system.
+//---------------------------------------------------------------------------
+void
+WordTableView::removeFromCardboxRequested()
+{
+    int numWords = model()->rowCount();
+    if (numWords == 0) {
+        QMessageBox::warning (this, "Error Removing Words from Cardbox",
+                              "Cannot remove words from cardbox:\n"
+                              "No words in the list.");
+        return;
+    }
+
+    CardboxRemoveDialog* dialog = new CardboxRemoveDialog (this);
+    Q_CHECK_PTR (dialog);
+
+    QStringList words;
+    QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
+    for (int i = 0; i < numWords; ) {
+        words.append (model()->data (index, Qt::EditRole).toString());
+        index = index.sibling (++i, WordTableModel::WORD_COLUMN);
+    }
+
+    dialog->setWords (words);
+
+    int code = dialog->exec();
+    if (code == QDialog::Accepted) {
+        QStringList words = dialog->getWords();
+        QString lexicon = MainSettings::getAutoImportLexicon();
+        QString quizType = dialog->getQuizType();
+
+        QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+        bool ok = removeFromCardbox (words, lexicon, quizType);
+        QApplication::restoreOverrideCursor();
+
+        if (!ok) {
+            QMessageBox::warning (this, "Error Removing Words from Cardbox",
+                                  "An error occurred while removing words "
+                                  "from the cardbox system.");
+        }
     }
 
     delete dialog;
@@ -459,7 +508,6 @@ const
         case QuizSpec::QuizSubanagrams:
         case QuizSpec::QuizAnagramJumble:
         case QuizSpec::QuizSubanagramJumble: {
-
             QSet<QString> alphagramSet;
             QStringListIterator it (words);
             while (it.hasNext()) {
@@ -478,6 +526,54 @@ const
         return false;
 
     db.addToCardbox (questions, estimateCardbox);
+    return true;
+}
+
+//---------------------------------------------------------------------------
+//  removeFromCardbox
+//
+//! Remove a list of words from the cardbox system.
+//
+//! @param words the words to remove
+//! @param lexicon the lexicon to use
+//! @param quizType the quiz type to use
+//
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordTableView::removeFromCardbox (const QStringList& words, const QString&
+                                  lexicon, const QString& quizType) const
+{
+    QuizSpec::QuizType type = Auxil::stringToQuizType (quizType);
+    if (type == QuizSpec::UnknownQuizType)
+        return false;
+
+    QStringList questions;
+
+    switch (type) {
+        case QuizSpec::QuizAnagrams:
+        case QuizSpec::QuizAnagramsWithHooks:
+        case QuizSpec::QuizSubanagrams:
+        case QuizSpec::QuizAnagramJumble:
+        case QuizSpec::QuizSubanagramJumble: {
+            QSet<QString> alphagramSet;
+            QStringListIterator it (words);
+            while (it.hasNext()) {
+                alphagramSet.insert (Auxil::getAlphagram (it.next()));
+            }
+            questions = QStringList::fromSet (alphagramSet);
+        }
+        break;
+
+        default:
+        questions = words;
+    }
+
+    QuizDatabase db (lexicon, quizType);
+    if (!db.isValid())
+        return false;
+
+    db.removeFromCardbox (questions);
     return true;
 }
 
@@ -635,6 +731,13 @@ WordTableView::contextMenuEvent (QContextMenuEvent* e)
     connect (addToCardboxAction, SIGNAL (triggered()),
              SLOT (addToCardboxRequested()));
     popupMenu->addAction (addToCardboxAction);
+
+    QAction* removeFromCardboxAction =
+        new QAction ("Remove list from Cardbox...", popupMenu);
+    Q_CHECK_PTR (removeFromCardboxAction);
+    connect (removeFromCardboxAction, SIGNAL (triggered()),
+             SLOT (removeFromCardboxRequested()));
+    popupMenu->addAction (removeFromCardboxAction);
 
     popupMenu->exec (QCursor::pos());
     delete popupMenu;
