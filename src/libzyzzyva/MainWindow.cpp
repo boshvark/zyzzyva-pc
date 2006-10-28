@@ -325,6 +325,12 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     Q_CHECK_PTR (lexiconLabel);
     statusBar()->addWidget (lexiconLabel, 1);
 
+    if (splash) {
+        splash->showMessage ("Creating data files...",
+                             Qt::AlignHCenter | Qt::AlignBottom);
+        qApp->processEvents();
+    }
+
     makeUserDirs();
 
     readSettings (true);
@@ -1406,15 +1412,20 @@ MainWindow::importChecksums (const QString& filename)
 void
 MainWindow::makeUserDirs()
 {
+    Auxil::copyDir (Auxil::getRootDir() + "/data/quiz",
+                    Auxil::getQuizDir());
+    Auxil::copyDir (Auxil::getRootDir() + "/data/search",
+                    Auxil::getSearchDir());
+
+    renameLexicon ("OWL", "OWL+LWL");
+    renameLexicon ("OWL2", "OWL2+LWL");
+    renameLexicon ("SOWPODS", "OSWI");
+
     QDir dir;
     dir.mkpath (Auxil::getQuizDir() + "/saved");
     dir.mkpath (Auxil::getSearchDir() + "/saved");
     dir.mkpath (Auxil::getUserWordsDir() + "/saved");
     dir.mkpath (Auxil::getUserDir() + "/judge");
-
-    renameLexicon ("OWL", "OWL+LWL");
-    renameLexicon ("OWL2", "OWL2+LWL");
-    renameLexicon ("SOWPODS", "OSWI");
 }
 
 //---------------------------------------------------------------------------

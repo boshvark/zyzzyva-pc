@@ -34,6 +34,7 @@
 #include <QString>
 
 namespace Auxil {
+    bool copyDir (const QString& src, const QString& dest);
     unsigned int getPid();
     QString getAboutString();
     QString getThanksString();

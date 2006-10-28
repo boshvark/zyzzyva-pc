@@ -115,6 +115,44 @@ const QString WORD_LIST_FORMAT_QUESTION_ANSWER = "Anagram Question/Answer";
 using namespace Defs;
 
 //---------------------------------------------------------------------------
+//  copyDir
+//
+//! Copy a directory from one location to another.
+//
+//! @poram src the source directory
+//! @param dest the destination directory
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+Auxil::copyDir (const QString& src, const QString& dest)
+{
+    QDir srcDir (src);
+    QDir destDir (dest);
+    if (!srcDir.isReadable())
+        return false;
+
+    destDir.mkpath (dest);
+    QFileInfoList entries = srcDir.entryInfoList();
+    QListIterator<QFileInfo> it (entries);
+    while (it.hasNext()) {
+        const QFileInfo& finfo = it.next();
+        if ((finfo.fileName() == ".") || (finfo.fileName() == ".."))
+            continue;
+        else if (finfo.isDir()) {
+            copyDir (finfo.filePath(),
+                     destDir.absoluteFilePath (finfo.fileName()));
+        }
+        else if (finfo.isFile() && finfo.isReadable()) {
+            QFile file (finfo.filePath());
+            file.copy (destDir.absoluteFilePath (finfo.fileName()));
+        }
+        else
+            return false;
+    }
+    return true;
+}
+
+//---------------------------------------------------------------------------
 //  getPid
 //
 //! Return the process ID of the current process.
