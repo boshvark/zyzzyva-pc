@@ -1413,19 +1413,22 @@ MainWindow::importChecksums (const QString& filename)
 void
 MainWindow::makeUserDirs()
 {
-    // Copy predefined quizzes and searches if program version has changed
-    if (MainSettings::getProgramVersion() != ZYZZYVA_VERSION) {
-        Auxil::copyDir (Auxil::getRootDir() + "/data/quiz",
-                        Auxil::getQuizDir());
-        Auxil::copyDir (Auxil::getRootDir() + "/data/search",
-                        Auxil::getSearchDir());
+    QDir dir;
+
+    // Copy predefined quizzes and searches into user data directory
+    if (!dir.exists (Auxil::getQuizDir() + "/predefined")) {
+        Auxil::copyDir (Auxil::getRootDir() + "/data/quiz/predefined",
+                        Auxil::getQuizDir() + "/predefined");
+    }
+    if (!dir.exists (Auxil::getSearchDir() + "/predefined")) {
+        Auxil::copyDir (Auxil::getRootDir() + "/data/search/predefined",
+                        Auxil::getSearchDir() + "/predefined");
     }
 
     renameLexicon ("OWL", "OWL+LWL");
     renameLexicon ("OWL2", "OWL2+LWL");
     renameLexicon ("SOWPODS", "OSWI");
 
-    QDir dir;
     dir.mkpath (Auxil::getQuizDir() + "/saved");
     dir.mkpath (Auxil::getSearchDir() + "/saved");
     dir.mkpath (Auxil::getUserWordsDir() + "/saved");
