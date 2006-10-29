@@ -53,13 +53,13 @@ class SettingsDialog : public QDialog
     void userDataDirChanged (const QString& text);
     void themeCboxToggled (bool on);
     void autoCheckCboxToggled (bool on);
-    void judgeLogBrowseButtonClicked();
     void judgeSaveLogCboxToggled (bool on);
     void chooseFontButtonClicked (int button);
     void chooseQuizBackgroundColorButtonClicked();
 
     private:
     void fillThemeCombo();
+    void updateJudgeLogDirLabel();
 
     private:
     QListWidget*    navList;
@@ -92,7 +92,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   quizCycleAnswersCbox;
     QCheckBox*   judgeSaveLogCbox;
     QWidget*     judgeLogDirWidget;
-    QLineEdit*   judgeLogDirLine;
+    QLabel*      judgeLogDirLabel;
     QLineEdit*   fontMainLine;
     QLineEdit*   fontWordListLine;
     QLineEdit*   fontQuizLabelLine;

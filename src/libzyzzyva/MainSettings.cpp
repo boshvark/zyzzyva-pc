@@ -25,6 +25,7 @@
 #include "MainSettings.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <QDir>
 #include <QSettings>
 
 MainSettings* MainSettings::instance = new MainSettings();
@@ -66,7 +67,6 @@ const QString SETTINGS_QUIZ_CYCLE_ANSWERS = "quiz_cycle_answers";
 const QString SETTINGS_QUIZ_RECORD_STATS = "quiz_record_stats";
 const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
 const QString SETTINGS_JUDGE_SAVE_LOG = "judge_save_log";
-const QString SETTINGS_JUDGE_LOG_DIR = "judge_log_dir";
 const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL2+LWL";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
@@ -115,8 +115,8 @@ MainSettings::readSettings()
         = settings.value (SETTINGS_DISPLAY_WELCOME, true).toBool();
 
     QString defaultUserDir = Auxil::getHomeDir() + "/.zyzzyva";
-    instance->userDataDir
-        = settings.value (SETTINGS_USER_DATA_DIR, defaultUserDir).toString();
+    instance->userDataDir = QDir::cleanPath (
+        settings.value (SETTINGS_USER_DATA_DIR, defaultUserDir).toString());
 
     instance->useTileTheme
         = settings.value (SETTINGS_USE_TILE_THEME, true).toBool();
@@ -182,9 +182,7 @@ MainSettings::readSettings()
 
     instance->judgeSaveLog
         = settings.value (SETTINGS_JUDGE_SAVE_LOG, true).toBool();
-    instance->judgeLogDir
-        = settings.value (SETTINGS_JUDGE_LOG_DIR,
-                          Auxil::getUserDir() + "/judge").toString();
+
     settings.endGroup();
 }
 
@@ -247,6 +245,5 @@ MainSettings::writeSettings()
     settings.setValue (SETTINGS_LETTER_DISTRIBUTION,
                        instance->letterDistribution);
     settings.setValue (SETTINGS_JUDGE_SAVE_LOG, instance->judgeSaveLog);
-    settings.setValue (SETTINGS_JUDGE_LOG_DIR, instance->judgeLogDir);
     settings.endGroup();
 }

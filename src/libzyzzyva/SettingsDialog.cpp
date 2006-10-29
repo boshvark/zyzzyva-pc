@@ -28,6 +28,7 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include <QColorDialog>
+#include <QDir>
 #include <QFileDialog>
 #include <QFont>
 #include <QFontDialog>
@@ -385,19 +386,9 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     judgeLogDirHlay->setMargin (0);
     judgeLogDirHlay->setSpacing (SPACING);
 
-    QLabel* judgeLogDirLabel = new QLabel ("Log directory:");
+    judgeLogDirLabel = new QLabel;
     Q_CHECK_PTR (judgeLogDirLabel);
     judgeLogDirHlay->addWidget (judgeLogDirLabel);
-
-    judgeLogDirLine = new QLineEdit;
-    Q_CHECK_PTR (judgeLogDirLine);
-    judgeLogDirHlay->addWidget (judgeLogDirLine);
-
-    ZPushButton* judgeLogBrowseButton = new ZPushButton ("Browse...");
-    Q_CHECK_PTR (judgeLogBrowseButton);
-    connect (judgeLogBrowseButton, SIGNAL (clicked()),
-             SLOT (judgeLogBrowseButtonClicked()));
-    judgeLogDirHlay->addWidget (judgeLogBrowseButton);
 
     judgePrefVlay->addStretch (2);
 
@@ -715,7 +706,6 @@ SettingsDialog::readSettings()
     autoCheckCboxToggled (autoCheck);
 
     judgeSaveLogCbox->setChecked (MainSettings::getJudgeSaveLog());
-    judgeLogDirLine->setText (MainSettings::getJudgeLogDir());
 
     // Main font
     fontMainLine->setText (MainSettings::getMainFont());
@@ -747,6 +737,8 @@ SettingsDialog::readSettings()
         (MainSettings::getWordListShowHookParents());
     showDefinitionCbox->setChecked
         (MainSettings::getWordListShowDefinitions());
+
+    updateJudgeLogDirLabel();
 }
 
 //---------------------------------------------------------------------------
@@ -779,7 +771,6 @@ SettingsDialog::writeSettings()
         (quizMarkMissedAfterIncorrectCbox->isChecked());
     MainSettings::setQuizCycleAnswers (quizCycleAnswersCbox->isChecked());
     MainSettings::setJudgeSaveLog (judgeSaveLogCbox->isChecked());
-    MainSettings::setJudgeLogDir (judgeLogDirLine->text());
     MainSettings::setMainFont (fontMainLine->text());
     MainSettings::setWordListFont (fontWordListLine->text());
     MainSettings::setQuizLabelFont (fontQuizLabelLine->text());
@@ -907,6 +898,8 @@ SettingsDialog::userDataDirChanged (const QString& text)
         userDataDirMoveCbox->setEnabled (true);
         userDataDirMoveCbox->setCheckState (Qt::Checked);
     }
+
+    updateJudgeLogDirLabel();
 }
 
 //---------------------------------------------------------------------------
@@ -936,26 +929,6 @@ SettingsDialog::themeCboxToggled (bool on)
 {
     themeLabel->setEnabled (on);
     themeCombo->setEnabled (on);
-}
-
-//---------------------------------------------------------------------------
-//  judgeLogBrowseButtonClicked
-//
-//! Slot called when the Judge Log Browse button is clicked.  Create a
-//! directory chooser dialog and place the name of the chosen directory in the
-//! judge log line edit.
-//---------------------------------------------------------------------------
-void
-SettingsDialog::judgeLogBrowseButtonClicked()
-{
-    QString dir = QFileDialog::getExistingDirectory (this,
-                                                     JUDGE_LOG_CHOOSER_TITLE,
-                                                     Auxil::getRootDir() +
-                                                     "/data/judge");
-    if (!dir.isEmpty()) {
-        dir = dir.replace (QRegExp ("/+$"), "");
-        judgeLogDirLine->setText (dir);
-    }
 }
 
 //---------------------------------------------------------------------------
@@ -1047,4 +1020,17 @@ SettingsDialog::fillThemeCombo()
         themeLabel->setEnabled (false);
         themeCombo->setEnabled (false);
     }
+}
+
+//---------------------------------------------------------------------------
+//  updateJudgeLogDirLabel
+//
+//! Update the Judge Log Directory label based on the latest setting for the
+//! local user directory.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::updateJudgeLogDirLabel()
+{
+    judgeLogDirLabel->setText ("Log directory: " +
+        QDir::cleanPath (userDataDirLine->text()) + "/judge");
 }

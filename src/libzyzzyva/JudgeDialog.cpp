@@ -330,7 +330,7 @@ JudgeDialog::judgeWord()
     if (!MainSettings::getJudgeSaveLog())
         return;
 
-    QString logDirName = MainSettings::getJudgeLogDir() + "/" +
+    QString logDirName = MainSettings::getUserDataDir() + "/judge/" +
         engine->getLexiconName();
     QDir logDir (logDirName);
 
