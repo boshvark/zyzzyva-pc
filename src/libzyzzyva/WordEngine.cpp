@@ -54,16 +54,41 @@ using std::multimap;
 bool
 WordEngine::connectToDatabase (const QString& filename, QString* errString)
 {
-    db = QSqlDatabase::addDatabase ("QSQLITE");
+    Rand rng;
+    rng.srand (std::time (0), Auxil::getPid());
+    unsigned int r = rng.rand();
+    dbConnectionName = "WordEngine" + QString::number (r);
+
+    db = QSqlDatabase::addDatabase ("QSQLITE", dbConnectionName);
     db.setDatabaseName (filename);
     bool ok = db.open();
 
     if (!ok) {
+        dbConnectionName = QString();
         if (errString)
             *errString = db.lastError().text();
         return false;
     }
 
+    return true;
+}
+
+//---------------------------------------------------------------------------
+//  disconnectFromDatabase
+//
+//! Remove the database connection.
+//
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::disconnectFromDatabase()
+{
+    if (!db.isOpen() || dbConnectionName.isEmpty())
+        return true;
+
+    db.close();
+    QSqlDatabase::removeDatabase (dbConnectionName);
+    dbConnectionName = QString();
     return true;
 }
 

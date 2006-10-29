@@ -43,6 +43,7 @@ class WordEngine : public QObject
 
     void clearLexicon();
     bool connectToDatabase (const QString& filename, QString* errString = 0);
+    bool disconnectFromDatabase();
     int importTextFile (const QString& filename, const QString& lexName, bool
                         loadDefinitions = true, QString* errString = 0);
     bool importDawgFile (const QString& filename, const QString& lexName, bool
@@ -84,6 +85,7 @@ class WordEngine : public QObject
     std::map< int, std::set<QString> > stemAlphagrams;
 
     QSqlDatabase db;
+    QString dbConnectionName;
 };
 
 #endif // ZYZZYVA_WORD_ENGINE_H
