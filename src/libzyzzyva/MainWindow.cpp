@@ -1013,13 +1013,6 @@ MainWindow::connectToDatabase()
             if (query.next())
                 dbVersion = query.value (0).toInt();
 
-            // FIXME: remove this before releasing!
-            QMessageBox::information (this, "", "DB version is: " +
-                                      QString::number (dbVersion) +
-                                      "\nCurrent version is: " +
-                                      QString::number
-                                      (CURRENT_DATABASE_VERSION));
-
             if (dbVersion < CURRENT_DATABASE_VERSION) {
                 dialogTitle = "Update database?";
                 dialogMessage =
