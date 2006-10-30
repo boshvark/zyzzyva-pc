@@ -270,72 +270,196 @@ WordEngine::getNewInOwl2String() const
 }
 
 //---------------------------------------------------------------------------
-//  isAcceptable
+//  databaseSearch
 //
-//! Determine whether a word is acceptable.
+//! Search the database for words matching the conditions in a search spec.
+//! If a word list is provided, also ensure that result words are in that
+//! list.
 //
-//! @param word the word to look up
-//! @return true if acceptable, false otherwise
+//! @param optimizedSpec the search spec
+//! @param wordList optional list of words that results must be in
+//! @return a list of words matching the search spec
 //---------------------------------------------------------------------------
-bool
-WordEngine::isAcceptable (const QString& word) const
+QStringList
+WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
+                            const QStringList* wordList) const
 {
-    return graph.containsWord (word);
+    // Build SQL query string
+    QString queryStr = "SELECT word FROM words WHERE";
+    bool foundCondition = false;
+    QListIterator<SearchCondition> cit (optimizedSpec.conditions);
+    while (cit.hasNext()) {
+        SearchCondition condition = cit.next();
+        switch (condition.type) {
+            case SearchCondition::Length:
+            case SearchCondition::InWordList:
+            case SearchCondition::NumVowels:
+            case SearchCondition::IncludeLetters:
+            case SearchCondition::ProbabilityOrder:
+            case SearchCondition::NumUniqueLetters:
+            case SearchCondition::PointValue:
+            case SearchCondition::NumAnagrams:
+            if (foundCondition)
+                queryStr += " AND";
+            foundCondition = true;
+            break;
+
+            default:
+            break;
+        }
+
+        switch (condition.type) {
+            case SearchCondition::ProbabilityOrder: {
+                // Lax boundaries
+                if (condition.boolValue) {
+                    queryStr += " max_probability_order>=" +
+                        QString::number (condition.minValue)
+                        + " AND min_probability_order<=" +
+                        QString::number (condition.maxValue);
+                }
+                // Strict boundaries
+                else {
+                    queryStr += " probability_order";
+                    if (condition.minValue == condition.maxValue) {
+                        queryStr += "=" + QString::number (condition.minValue);
+                    }
+                    else {
+                        queryStr += ">=" + QString::number (condition.minValue)
+                            + " AND probability_order<=" +
+                            QString::number (condition.maxValue);
+                    }
+                }
+            }
+            break;
+
+            case SearchCondition::Length:
+            case SearchCondition::NumVowels:
+            case SearchCondition::NumUniqueLetters:
+            case SearchCondition::PointValue:
+            case SearchCondition::NumAnagrams: {
+                QString column;
+                if (condition.type == SearchCondition::Length)
+                    column = "length";
+                if (condition.type == SearchCondition::NumVowels)
+                    column = "num_vowels";
+                if (condition.type == SearchCondition::NumUniqueLetters)
+                    column = "num_unique_letters";
+                if (condition.type == SearchCondition::PointValue)
+                    column = "point_value";
+                if (condition.type == SearchCondition::NumAnagrams)
+                    column = "num_anagrams";
+
+                queryStr += " " + column;
+                if (condition.minValue == condition.maxValue) {
+                    queryStr += "=" + QString::number (condition.minValue);
+                }
+                else {
+                    queryStr += ">=" + QString::number (condition.minValue) +
+                        " AND " + column + "<=" +
+                        QString::number (condition.maxValue);
+                }
+            }
+            break;
+
+            case SearchCondition::IncludeLetters: {
+                QString str = condition.stringValue;
+                for (int i = 0; i < str.length(); ++i) {
+                    QChar c = str.at (i);
+                    if (i)
+                        queryStr += " AND";
+                    queryStr += " word";
+                    if (condition.negated)
+                        queryStr += " NOT";
+                    queryStr += " LIKE '%" + QString (c) + "%'";
+                }
+            }
+            break;
+
+            case SearchCondition::InWordList: {
+                queryStr += " word";
+                if (condition.negated)
+                    queryStr += " NOT";
+                queryStr += " IN (";
+                QStringList words = condition.stringValue.split (QChar (' '));
+                QStringListIterator it (words);
+                bool firstWord = true;
+                while (it.hasNext()) {
+                    QString word = it.next();
+                    if (!firstWord)
+                        queryStr += ",";
+                    firstWord = false;
+                    queryStr += "'" + word + "'";
+                }
+                queryStr += ")";
+            }
+            break;
+
+            default:
+            break;
+        }
+
+    }
+
+    // Make sure results are in the provided word list
+    if (wordList) {
+        queryStr += " AND word IN (";
+        QStringListIterator it (*wordList);
+        bool firstWord = true;
+        while (it.hasNext()) {
+            QString word = it.next();
+            if (!firstWord)
+                queryStr += ",";
+            firstWord = false;
+            queryStr += "'" + word + "'";
+        }
+        queryStr += ")";
+    }
+
+    // Query the database
+    QStringList resultList;
+    QSqlQuery query (queryStr, db);
+    while (query.next())
+        resultList.append (query.value (0).toString());
+
+    return resultList;
 }
 
 //---------------------------------------------------------------------------
-//  search
+//  applyPostConditions
 //
-//! Search for acceptable words matching a search specification.
+//! Limit search results by search conditions that cannot be easily used to
+//! limit word graph or database searches.
 //
-//! @param spec the search specification
-//! @param allCaps whether to ensure the words in the list are all caps
-//! @return a list of acceptable words
+//! @param optimizedSpec the search spec
+//! @param wordList optional list of words that results must be in
+//! @return a list of words matching the search spec
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::search (const SearchSpec& spec, bool allCaps) const
+WordEngine::applyPostConditions (const SearchSpec& optimizedSpec, const
+                                 QStringList& wordList) const
 {
-    SearchSpec optimizedSpec = spec;
-    optimizedSpec.optimize();
+    QStringList returnList = wordList;
 
-    // Big optimization if the only conditions are conditions that can be
-    // matched without searching the word graph.  Also, replace Must Belong To
-    // New in OWL2 conditions with Must Be in Word List conditions.
-    bool mustSearchGraph = false;
-    bool wordListCondition = false;
+    // Check special postconditions
+    QStringList::iterator wit;
+    for (wit = returnList.begin(); wit != returnList.end();) {
+        if (matchesConditions (*wit, optimizedSpec.conditions))
+            ++wit;
+        else
+            wit = returnList.erase (wit);
+    }
+
+    // Handle Limit by Probability Order conditions
     bool probLimitRangeCondition = false;
     bool legacyProbCondition = false;
     int probLimitRangeMin = 0;
     int probLimitRangeMax = 999999;
     int probLimitRangeMinLax = 0;
     int probLimitRangeMaxLax = 999999;
-    int i = 0;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
         SearchCondition condition = cit.next();
-        switch (condition.type) {
-            case SearchCondition::InWordList:
-            wordListCondition = true;
-            if (condition.negated)
-                mustSearchGraph = true;
-            break;
-
-            case SearchCondition::BelongToGroup: {
-                SearchSet searchSet = Auxil::stringToSearchSet
-                    (condition.stringValue);
-                if (searchSet == SetNewInOwl2) {
-                    condition.type = SearchCondition::InWordList;
-                    condition.stringValue = getNewInOwl2String();
-                    optimizedSpec.conditions.replace (i, condition);
-                    wordListCondition = true;
-                }
-                else {
-                    mustSearchGraph = true;
-                }
-            }
-            break;
-
-            case SearchCondition::LimitByProbabilityOrder:
+        if (condition.type == SearchCondition::LimitByProbabilityOrder) {
             probLimitRangeCondition = true;
             if (condition.boolValue) {
                 if (condition.minValue > probLimitRangeMinLax)
@@ -351,41 +475,17 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             }
             if (condition.legacy)
                 legacyProbCondition = true;
-            break;
-
-            default:
-            mustSearchGraph = true;
-            break;
         }
-        ++i;
-    }
-
-    if (db.isOpen()) {
-        QSqlQuery query ("BEGIN TRANSACTION", db);
-    }
-
-    if (wordListCondition && !mustSearchGraph)
-        return nonGraphSearch (optimizedSpec);
-
-    QStringList wordList = graph.search (optimizedSpec);
-
-    // Check special postconditions
-    QStringList::iterator wit;
-    for (wit = wordList.begin(); wit != wordList.end();) {
-        if (matchesConditions (*wit, optimizedSpec.conditions))
-            ++wit;
-        else
-            wit = wordList.erase (wit);
     }
 
     // Keep only words in the probability order range
     if (probLimitRangeCondition) {
 
-        if ((probLimitRangeMin > wordList.size()) ||
-            (probLimitRangeMinLax > wordList.size()))
+        if ((probLimitRangeMin > returnList.size()) ||
+            (probLimitRangeMinLax > returnList.size()))
         {
-            wordList.clear();
-            return wordList;
+            returnList.clear();
+            return returnList;
         }
 
         // Convert from 1-based to 0-based offset
@@ -398,10 +498,10 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             probLimitRangeMin = 0;
         if (probLimitRangeMinLax < 0)
             probLimitRangeMinLax = 0;
-        if (probLimitRangeMax > wordList.size() - 1)
-            probLimitRangeMax = wordList.size() - 1;
-        if (probLimitRangeMaxLax > wordList.size() - 1)
-            probLimitRangeMaxLax = wordList.size() - 1;
+        if (probLimitRangeMax > returnList.size() - 1)
+            probLimitRangeMax = returnList.size() - 1;
+        if (probLimitRangeMaxLax > returnList.size() - 1)
+            probLimitRangeMaxLax = returnList.size() - 1;
 
         // Use the higher of the min values as working min
         int min = ((probLimitRangeMin > probLimitRangeMinLax)
@@ -416,7 +516,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
         QMap<QString, QString> probMap;
 
         QString word;
-        foreach (word, wordList) {
+        foreach (word, returnList) {
             // FIXME: change this radix for new probability sorting - leave
             // alone for old probability sorting
             QString radix;
@@ -449,21 +549,123 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             ++max;
         }
 
-        wordList = probMap.values().mid (min, max - min + 1);
+        returnList = probMap.values().mid (min, max - min + 1);
     }
 
-    // Convert to all caps if necessary
-    if (allCaps) {
-        QStringList::iterator it;
-        for (it = wordList.begin(); it != wordList.end(); ++it)
-            *it = (*it).toUpper();
+    return returnList;
+}
+
+//---------------------------------------------------------------------------
+//  isAcceptable
+//
+//! Determine whether a word is acceptable.
+//
+//! @param word the word to look up
+//! @return true if acceptable, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::isAcceptable (const QString& word) const
+{
+    return graph.containsWord (word);
+}
+
+//---------------------------------------------------------------------------
+//  search
+//
+//! Search for acceptable words matching a search specification.
+//
+//! @param spec the search specification
+//! @param allCaps whether to ensure the words in the list are all caps
+//! @return a list of acceptable words
+//---------------------------------------------------------------------------
+QStringList
+WordEngine::search (const SearchSpec& spec, bool) const
+{
+    SearchSpec optimizedSpec = spec;
+    optimizedSpec.optimize();
+
+    // Discover which kinds of search conditions are present
+    int postConditions = 0;
+    int wordGraphConditions = 0;
+    int databaseConditions = 0;
+    int wildcardConditions = 0;
+    int nonWildcardConditions = 0;
+    int lengthConditions = 0;
+    QListIterator<SearchCondition> cit (optimizedSpec.conditions);
+    while (cit.hasNext()) {
+        SearchCondition condition = cit.next();
+        switch (condition.type) {
+            case SearchCondition::BelongToGroup:
+            case SearchCondition::Prefix:
+            case SearchCondition::Suffix:
+            case SearchCondition::LimitByProbabilityOrder:
+            ++postConditions;
+            break;
+
+            case SearchCondition::AnagramMatch:
+            case SearchCondition::PatternMatch:
+            if (condition.stringValue.contains ("*"))
+                ++wildcardConditions;
+            else
+                ++nonWildcardConditions;
+            ++wordGraphConditions;
+            break;
+
+            case SearchCondition::SubanagramMatch:
+            case SearchCondition::ConsistOf:
+            ++wordGraphConditions;
+            break;
+
+            case SearchCondition::Length:
+            ++lengthConditions;
+            ++databaseConditions;
+            break;
+
+            case SearchCondition::InWordList:
+            case SearchCondition::NumVowels:
+            case SearchCondition::IncludeLetters:
+            case SearchCondition::ProbabilityOrder:
+            case SearchCondition::NumUniqueLetters:
+            case SearchCondition::PointValue:
+            case SearchCondition::NumAnagrams:
+            ++databaseConditions;
+            break;
+
+            default:
+            break;
+        }
     }
 
-    if (db.isOpen()) {
-        QSqlQuery query ("END TRANSACTION", db);
+    // Do not search the database based on Length conditions that were only
+    // added by SearchSpec::optimize to optimize word graph searches
+    if ((wordGraphConditions) &&
+        (databaseConditions >= 1) && (lengthConditions == databaseConditions))
+    {
+        --databaseConditions;
     }
 
-    return wordList;
+    // Search the word graph if necessary
+    QStringList resultList;
+    if (wordGraphConditions || !databaseConditions) {
+       resultList = graph.search (optimizedSpec);
+       if (resultList.isEmpty())
+           return resultList;
+    }
+
+    // Search the database if necessary, passing word graph results
+    if (databaseConditions) {
+        resultList = databaseSearch (optimizedSpec,
+                                     wordGraphConditions ? &resultList : 0);
+        if (resultList.isEmpty())
+            return resultList;
+    }
+
+    // Check post conditions if necessary
+    if (postConditions) {
+        resultList = applyPostConditions (optimizedSpec, resultList);
+    }
+
+    return resultList;
 }
 
 //---------------------------------------------------------------------------
@@ -698,60 +900,6 @@ WordEngine::matchesConditions (const QString& word, const
                 if (searchSet == UnknownSearchSet)
                     continue;
                 if (!isSetMember (wordUpper, searchSet) ^ condition.negated)
-                    return false;
-            }
-            break;
-
-            case SearchCondition::InWordList:
-            if ((!condition.stringValue.contains
-                (QRegExp ("\\b" + wordUpper + "\\b")))
-                ^ condition.negated)
-                return false;
-            break;
-
-            case SearchCondition::NumAnagrams: {
-                int num = getNumAnagrams (wordUpper); 
-                if ((num < condition.minValue) || (num > condition.maxValue))
-                    return false;
-            }
-            break;
-
-            case SearchCondition::NumVowels: {
-                int num = getNumVowels (wordUpper); 
-                if ((num < condition.minValue) || (num > condition.maxValue))
-                    return false;
-            }
-            break;
-
-            case SearchCondition::NumUniqueLetters: {
-                int num = getNumUniqueLetters (wordUpper); 
-                if ((num < condition.minValue) || (num > condition.maxValue))
-                    return false;
-            }
-            break;
-
-            case SearchCondition::PointValue: {
-                int num = getPointValue (wordUpper); 
-                if ((num < condition.minValue) || (num > condition.maxValue))
-                    return false;
-            }
-            break;
-
-            case SearchCondition::ProbabilityOrder: {
-                // Lax probability order
-                if (condition.boolValue) {
-                    int min = getMinProbabilityOrder (wordUpper);
-                    if ((min >= condition.minValue) &&
-                        (min <= condition.maxValue))
-                        break;
-                    int max = getMaxProbabilityOrder (wordUpper);
-                    if ((max >= condition.minValue) &&
-                        (max <= condition.maxValue))
-                        break;
-                    return false;
-                }
-                int num = getProbabilityOrder (wordUpper); 
-                if ((num < condition.minValue) || (num > condition.maxValue))
                     return false;
             }
             break;

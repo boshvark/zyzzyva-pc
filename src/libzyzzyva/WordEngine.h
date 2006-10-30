@@ -76,6 +76,10 @@ class WordEngine : public QObject
                                     bool useFollow = false) const;
     QString getSubDefinition (const QString& word, const QString& pos) const;
     QString getNewInOwl2String() const;
+    QStringList databaseSearch (const SearchSpec& optimizedSpec, const
+                                QStringList* wordList = 0) const;
+    QStringList applyPostConditions (const SearchSpec& optimizedSpec, const
+                                     QStringList& wordList) const;
 
     QString lexiconName;
     WordGraph graph;
