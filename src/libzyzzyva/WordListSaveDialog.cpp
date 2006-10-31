@@ -87,8 +87,7 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     unselectedAttrList->setDragEnabled (true);
     unselectedAttrList->setAcceptDrops (true);
     unselectedAttrList->setDropIndicatorShown (true);
-    // FIXME: This should work in Qt 4.2
-    //unselectedAttrList->setDragDropMode (QAbstractItemView::InternalMove);
+    unselectedAttrList->setDragDropMode (QAbstractItemView::InternalMove);
     connect (unselectedAttrList, SIGNAL (itemSelectionChanged()),
              SLOT (unselectedSelectionChanged()));
     unselectedVlay->addWidget (unselectedAttrList);
@@ -128,8 +127,7 @@ WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
     selectedAttrList->setDragEnabled (true);
     selectedAttrList->setAcceptDrops (true);
     selectedAttrList->setDropIndicatorShown (true);
-    // FIXME: This should work in Qt 4.2
-    //selectedAttrList->setDragDropMode (QAbstractItemView::InternalMove);
+    selectedAttrList->setDragDropMode (QAbstractItemView::InternalMove);
     connect (selectedAttrList, SIGNAL (itemSelectionChanged()),
              SLOT (selectedSelectionChanged()));
     selectedVlay->addWidget (selectedAttrList);

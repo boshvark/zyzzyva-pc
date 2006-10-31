@@ -174,7 +174,8 @@ WordTableView::exportRequested()
                                   "\" already exists in this location.\n"
                                   "Do you want to replace it with the one "
                                   "you are saving?",
-                                  QMessageBox::Ok, QMessageBox::Cancel);
+                                  QMessageBox::Ok | QMessageBox::Cancel,
+                                  QMessageBox::Cancel);
             if (code != QMessageBox::Ok)
                 return;
         }
