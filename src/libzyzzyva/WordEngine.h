@@ -52,6 +52,7 @@ class WordEngine : public QObject
     int importStems (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;
+    QStringList wordGraphSearch (const SearchSpec& spec) const;
     QStringList alphagrams (const QStringList& list) const;
     int getNumWords() const;
     QString getDefinition (const QString& word) const;
@@ -76,6 +77,10 @@ class WordEngine : public QObject
                                     bool useFollow = false) const;
     QString getSubDefinition (const QString& word, const QString& pos) const;
     QString getNewInOwl2String() const;
+    QStringList databaseSearch (const SearchSpec& optimizedSpec, const
+                                QStringList* wordList = 0) const;
+    QStringList applyPostConditions (const SearchSpec& optimizedSpec, const
+                                     QStringList& wordList) const;
 
     QString lexiconName;
     WordGraph graph;
