@@ -759,8 +759,7 @@ MainWindow::rebuildDatabaseRequested()
         "Rebuild the database now?";
 
     int code = QMessageBox::question (this, dialogTitle, dialogMessage,
-                                      QMessageBox::Yes | QMessageBox::No,
-                                      QMessageBox::Yes);
+                                      QMessageBox::Yes, QMessageBox::No);
     if (code != QMessageBox::Yes) {
         return;
     }
