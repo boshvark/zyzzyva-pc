@@ -805,8 +805,7 @@ MainWindow::displayLexiconError()
 
     int code = QMessageBox::warning (this, "Lexicon Warning",
                                      lexiconError + "\n\nProceed anyway?",
-                                     QMessageBox::Yes | QMessageBox::No,
-                                     QMessageBox::No);
+                                     QMessageBox::Yes, QMessageBox::No);
     if (code != QMessageBox::Yes)
         qApp->quit();
 }
@@ -1053,8 +1052,7 @@ MainWindow::connectToDatabase()
 
     if (!dialogMessage.isEmpty()) {
         int code = QMessageBox::question (this, dialogTitle, dialogMessage,
-                                          QMessageBox::Yes | QMessageBox::No,
-                                          QMessageBox::Yes);
+                                          QMessageBox::Yes, QMessageBox::No);
         if (code != QMessageBox::Yes) {
             return;
         }

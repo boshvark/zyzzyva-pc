@@ -331,8 +331,7 @@ SearchSpecForm::saveSearch()
     if (filenameEdited && file.exists()) {
         int code = QMessageBox::warning (0, "Overwrite Existing File?",
                                          "The file already exists.  "
-                                         "Overwrite it?",
-                                         QMessageBox::Yes | QMessageBox::No,
+                                         "Overwrite it?", QMessageBox::Yes,
                                          QMessageBox::No);
         if (code != QMessageBox::Yes)
             return;
