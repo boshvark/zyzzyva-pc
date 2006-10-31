@@ -587,7 +587,7 @@ WordEngine::isAcceptable (const QString& word) const
 //! @return a list of acceptable words
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::search (const SearchSpec& spec, bool) const
+WordEngine::search (const SearchSpec& spec, bool allCaps) const
 {
     SearchSpec optimizedSpec = spec;
     optimizedSpec.optimize();
@@ -671,6 +671,13 @@ WordEngine::search (const SearchSpec& spec, bool) const
     // Check post conditions if necessary
     if (postConditions) {
         resultList = applyPostConditions (optimizedSpec, resultList);
+    }
+
+    // Convert to all caps if necessary
+    if (allCaps) {
+        QStringList::iterator it;
+        for (it = resultList.begin(); it != resultList.end(); ++it)
+            *it = (*it).toUpper();
     }
 
     return resultList;
