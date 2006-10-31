@@ -401,16 +401,19 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
     }
 
     // Make sure results are in the provided word list
+    QMap<QString, QString> upperToLower;
     if (wordList) {
         queryStr += " AND word IN (";
         QStringListIterator it (*wordList);
         bool firstWord = true;
         while (it.hasNext()) {
             QString word = it.next();
+            QString wordUpper = word.toUpper();
+            upperToLower[wordUpper] = word;
             if (!firstWord)
                 queryStr += ",";
             firstWord = false;
-            queryStr += "'" + word + "'";
+            queryStr += "'" + wordUpper + "'";
         }
         queryStr += ")";
     }
@@ -418,8 +421,13 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
     // Query the database
     QStringList resultList;
     QSqlQuery query (queryStr, db);
-    while (query.next())
-        resultList.append (query.value (0).toString());
+    while (query.next()) {
+        QString word = query.value (0).toString();
+        if (!upperToLower.isEmpty() && upperToLower.contains (word)) {
+            word = upperToLower[word];
+        }
+        resultList.append (word);
+    }
 
     return resultList;
 }

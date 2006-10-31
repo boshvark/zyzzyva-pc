@@ -266,7 +266,7 @@ WordGraph::search (const SearchSpec& spec) const
     // XXX: Commented out because it may be a reasonable default to use the
     // lower case lettering as matched by the first such condition
     //bool wildcardLower = (numWildcardConditions == 1);
-    bool wildcardLower = false;
+    bool wildcardLower = true;
 
     // If no match condition was specified, search for all words matching the
     // other conditions
