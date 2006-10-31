@@ -644,8 +644,8 @@ MainWindow::doJudgeAction()
                                          "screen Word Judge mode.  "
                                          "To exit full screen mode, press "
                                          "ESC while holding the Shift key.",
-                                         QMessageBox::Ok | QMessageBox::Cancel,
-                                         QMessageBox::Ok);
+                                         QMessageBox::Ok,
+                                         QMessageBox::Cancel);
 
     if (code != QMessageBox::Ok)
         return;
