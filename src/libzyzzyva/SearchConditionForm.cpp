@@ -70,19 +70,19 @@ SearchConditionForm::SearchConditionForm (QWidget* parent, Qt::WFlags f)
           << Auxil::searchTypeToString (SearchCondition::PatternMatch)
           << Auxil::searchTypeToString (SearchCondition::SubanagramMatch)
           << Auxil::searchTypeToString (SearchCondition::Length)
+          << Auxil::searchTypeToString (SearchCondition::ProbabilityOrder)
           << Auxil::searchTypeToString (SearchCondition::InWordList)
           << Auxil::searchTypeToString (SearchCondition::BelongToGroup)
           << Auxil::searchTypeToString (SearchCondition::NumVowels)
-          << Auxil::searchTypeToString (SearchCondition::IncludeLetters)
-          << Auxil::searchTypeToString (SearchCondition::ProbabilityOrder)
-          << Auxil::searchTypeToString
-             (SearchCondition::LimitByProbabilityOrder)
           << Auxil::searchTypeToString (SearchCondition::NumUniqueLetters)
           << Auxil::searchTypeToString (SearchCondition::PointValue)
           << Auxil::searchTypeToString (SearchCondition::Prefix)
           << Auxil::searchTypeToString (SearchCondition::Suffix)
+          << Auxil::searchTypeToString (SearchCondition::IncludeLetters)
           << Auxil::searchTypeToString (SearchCondition::ConsistOf)
-          << Auxil::searchTypeToString (SearchCondition::NumAnagrams);
+          << Auxil::searchTypeToString (SearchCondition::NumAnagrams)
+          << Auxil::searchTypeToString
+             (SearchCondition::LimitByProbabilityOrder);
 
     typeCbox = new QComboBox;
     Q_CHECK_PTR (typeCbox);

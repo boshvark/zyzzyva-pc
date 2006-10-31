@@ -69,6 +69,7 @@ class MainWindow : public QMainWindow
     void editSettings();
     void viewDefinition();
     void viewVariation (int variation);
+    void rebuildDatabaseRequested();
     void displayAbout();
     void displayHelp();
     void displayLexiconError();
@@ -85,6 +86,7 @@ class MainWindow : public QMainWindow
     QString getLexiconPrefix (const QString& lexicon);
     QString getDatabaseFilename();
     void connectToDatabase();
+    bool rebuildDatabase();
 
     protected:
     virtual void closeEvent (QCloseEvent* event);

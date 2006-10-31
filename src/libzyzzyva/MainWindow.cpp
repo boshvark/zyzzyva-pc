@@ -271,6 +271,17 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     // Connect Word signal mappings to viewVariation
     connect (wordMapper, SIGNAL (mapped (int)), SLOT (viewVariation (int)));
 
+    // Tools Menu
+    QMenu* toolsMenu = menuBar()->addMenu ("&Tools");
+    Q_CHECK_PTR (toolsMenu);
+
+    QAction* rebuildDatabaseAction = new QAction ("Rebuild &Database...",
+                                                  this);
+    Q_CHECK_PTR (rebuildDatabaseAction);
+    connect (rebuildDatabaseAction, SIGNAL (triggered()),
+             SLOT (rebuildDatabaseRequested()));
+    toolsMenu->addAction (rebuildDatabaseAction);
+
     // Help Menu
     QMenu* helpMenu = menuBar()->addMenu ("&Help");
     Q_CHECK_PTR (helpMenu);
@@ -633,8 +644,8 @@ MainWindow::doJudgeAction()
                                          "screen Word Judge mode.  "
                                          "To exit full screen mode, press "
                                          "ESC while holding the Shift key.",
-                                         QMessageBox::Ok | QMessageBox::Cancel,
-                                         QMessageBox::Ok);
+                                         QMessageBox::Ok,
+                                         QMessageBox::Cancel);
 
     if (code != QMessageBox::Ok)
         return;
@@ -732,6 +743,32 @@ MainWindow::viewVariation (int variation)
 }
 
 //---------------------------------------------------------------------------
+//  rebuildDatabaseRequested
+//
+//! Called when the user requests a database rebuild.
+//---------------------------------------------------------------------------
+void
+MainWindow::rebuildDatabaseRequested()
+{
+    QString lexicon = wordEngine->getLexiconName();
+    QString dialogTitle = "Rebuild Database";
+    QString dialogMessage =
+        "You have requested that Zyzzyva rebuild its database for "
+        "the current lexicon (" + lexicon + ").  This may take several "
+        "minutes.\n\n"
+        "Rebuild the database now?";
+
+    int code = QMessageBox::question (this, dialogTitle, dialogMessage,
+                                      QMessageBox::Yes, QMessageBox::No);
+    if (code != QMessageBox::Yes) {
+        return;
+    }
+
+    rebuildDatabase();
+    connectToDatabase();
+}
+
+//---------------------------------------------------------------------------
 //  displayAbout
 //
 //! Display an About screen.
@@ -767,8 +804,7 @@ MainWindow::displayLexiconError()
 
     int code = QMessageBox::warning (this, "Lexicon Warning",
                                      lexiconError + "\n\nProceed anyway?",
-                                     QMessageBox::Yes | QMessageBox::No,
-                                     QMessageBox::No);
+                                     QMessageBox::Yes, QMessageBox::No);
     if (code != QMessageBox::Yes)
         qApp->quit();
 }
@@ -956,10 +992,7 @@ MainWindow::connectToDatabase()
 {
     QString dbFilename = getDatabaseFilename();
     QString lexicon = wordEngine->getLexiconName();
-    QString lexiconPrefix = getLexiconPrefix (lexicon);
-    QString definitionFilename = Auxil::getWordsDir() + lexiconPrefix + ".txt";
 
-    QString dbError;
     bool createDatabase = false;
     QFile dbFile (dbFilename);
 
@@ -993,14 +1026,14 @@ MainWindow::connectToDatabase()
         }
 
         else {
-            dialogTitle = "Recreate database?";
+            dialogTitle = "Rebuild database?";
             dialogMessage =
                 "The database exists but Zyzzyva cannot connect to it.  "
                 "For certain searches and quizzes to work correctly, Zyzzyva "
                 "must create a database of information about the current "
                 "lexicon (" + lexicon + ").  This may take several minutes, "
                 "but it will only need to be done once.\n\n"
-                "Recreate the database now?";
+                "Rebuild the database now?";
         }
     }
 
@@ -1018,59 +1051,15 @@ MainWindow::connectToDatabase()
 
     if (!dialogMessage.isEmpty()) {
         int code = QMessageBox::question (this, dialogTitle, dialogMessage,
-                                          QMessageBox::Yes | QMessageBox::No,
-                                          QMessageBox::Yes);
+                                          QMessageBox::Yes, QMessageBox::No);
         if (code != QMessageBox::Yes) {
             return;
         }
         createDatabase = true;
     }
 
-    bool useDb = true;
-
-    if (createDatabase) {
-        dbFile.remove();
-
-        QProgressDialog* dialog = new QProgressDialog (this);
-
-        QLabel* dialogLabel = new QLabel ("Creating " + lexicon +
-                                          " database...");
-        dialog->setWindowTitle ("Creating " + lexicon + " Database");
-        dialog->setLabel (dialogLabel);
-
-        CreateDatabaseThread* thread = new CreateDatabaseThread
-            (wordEngine, lexicon, dbFilename, definitionFilename, this);
-        connect (thread, SIGNAL (steps (int)),
-                 dialog, SLOT (setMaximum (int)));
-        connect (thread, SIGNAL (progress (int)),
-                 dialog, SLOT (setValue (int)));
-        connect (dialog, SIGNAL (canceled()), thread, SLOT (cancel()));
-
-        QApplication::setOverrideCursor (Qt::WaitCursor);
-
-        thread->start();
-        dialog->exec();
-        thread->quit();
-
-        QApplication::restoreOverrideCursor();
-
-        if (thread->getCancelled()) {
-            QMessageBox::information (this, "Database Not Created",
-                                      "Database creation cancelled.");
-            QFile dbFile (dbFilename);
-            dbFile.remove();
-            useDb = false;
-        }
-        else {
-            QMessageBox::information (this, "Database Created",
-                                      "The " + lexicon + " database was "
-                                      "successfully created.");
-        }
-
-        delete thread;
-        delete dialog;
-    }
-
+    bool useDb = !createDatabase || rebuildDatabase();
+    QString dbError;
     if (useDb) {
         bool ok = wordEngine->connectToDatabase (dbFilename, &dbError);
         if (!ok) {
@@ -1081,6 +1070,70 @@ MainWindow::connectToDatabase()
     }
 
     setNumWords (wordEngine->getNumWords());
+}
+
+//---------------------------------------------------------------------------
+//  rebuildDatabase
+//
+//! Rebuild the database for the current lexicon.  Also display a progress
+//! dialog.
+//
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+MainWindow::rebuildDatabase()
+{
+    QString dbFilename = getDatabaseFilename();
+    QString lexicon = wordEngine->getLexiconName();
+    QString lexiconPrefix = getLexiconPrefix (lexicon);
+    QString definitionFilename = Auxil::getWordsDir() + lexiconPrefix + ".txt";
+
+    wordEngine->disconnectFromDatabase();
+    QFile dbFile (dbFilename);
+    dbFile.remove();
+
+    QProgressDialog* dialog = new QProgressDialog (this);
+
+    QLabel* dialogLabel = new QLabel ("Creating " + lexicon +
+                                      " database...");
+    dialog->setWindowTitle ("Creating " + lexicon + " Database");
+    dialog->setLabel (dialogLabel);
+
+    CreateDatabaseThread* thread = new CreateDatabaseThread
+        (wordEngine, lexicon, dbFilename, definitionFilename, this);
+    connect (thread, SIGNAL (steps (int)),
+             dialog, SLOT (setMaximum (int)));
+    connect (thread, SIGNAL (progress (int)),
+             dialog, SLOT (setValue (int)));
+    connect (dialog, SIGNAL (canceled()), thread, SLOT (cancel()));
+
+    QApplication::setOverrideCursor (Qt::WaitCursor);
+
+    // FIXME: return an error if something actually goes wrong!
+
+    thread->start();
+    dialog->exec();
+    thread->quit();
+
+    QApplication::restoreOverrideCursor();
+
+    if (thread->getCancelled()) {
+        QMessageBox::information (this, "Database Not Created",
+                                  "Database creation cancelled.");
+        QFile dbFile (dbFilename);
+        dbFile.remove();
+        return false;
+    }
+    else {
+        QMessageBox::information (this, "Database Created",
+                                  "The " + lexicon + " database was "
+                                  "successfully created.");
+    }
+
+    delete thread;
+    delete dialog;
+
+    return true;
 }
 
 //---------------------------------------------------------------------------
@@ -1243,7 +1296,7 @@ MainWindow::writeSettings()
 {
     MainSettings::setMainWindowPos (pos());
     MainSettings::setMainWindowSize (size());
-    MainSettings::setProgramVersion (ZYZZYVA_VERSION);
+    MainSettings::setProgramVersion ("ZYZZYVA_VERSION");
     MainSettings::writeSettings();
 }
 

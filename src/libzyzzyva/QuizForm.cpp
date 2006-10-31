@@ -646,8 +646,7 @@ QuizForm::saveRequested()
     if (filenameEdited && file.exists()) {
         int code = QMessageBox::warning (0, "Overwrite Existing File?",
                                          "The file already exists.  "
-                                         "Overwrite it?",
-                                         QMessageBox::Yes | QMessageBox::No,
+                                         "Overwrite it?", QMessageBox::Yes,
                                          QMessageBox::No);
         if (code != QMessageBox::Yes) {
             unpauseTimer();
@@ -1402,9 +1401,8 @@ QuizForm::promptToSaveChanges()
                                      "This quiz " + quizName
                                      + "has unsaved changes.  "
                                      "Would you like to save it?",
-                                     QMessageBox::Yes | QMessageBox::No |
-                                     QMessageBox::Cancel,
-                                     QMessageBox::Yes);
+                                     QMessageBox::Yes, QMessageBox::No,
+                                     QMessageBox::Cancel);
 
     bool ok = false;
     switch (code) {
