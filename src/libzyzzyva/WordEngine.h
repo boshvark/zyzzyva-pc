@@ -52,6 +52,7 @@ class WordEngine : public QObject
     int importStems (const QString& filename, QString* errString = 0);
     bool isAcceptable (const QString& word) const;
     QStringList search (const SearchSpec& spec, bool allCaps) const;
+    QStringList wordGraphSearch (const SearchSpec& spec) const;
     QStringList alphagrams (const QStringList& list) const;
     int getNumWords() const;
     QString getDefinition (const QString& word) const;

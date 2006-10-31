@@ -168,7 +168,8 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
         searchSpec.conditions[0].minValue = length;
         searchSpec.conditions[0].maxValue = length;
 
-        QStringList words = wordEngine->search (searchSpec, true);
+        // Do a word graph search because we're still building the database!
+        QStringList words = wordEngine->wordGraphSearch (searchSpec);
 
         query.prepare ("INSERT INTO words (word, length, combinations, "
                        "alphagram, num_unique_letters, num_vowels, "

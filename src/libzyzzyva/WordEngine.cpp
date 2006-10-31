@@ -655,9 +655,9 @@ WordEngine::search (const SearchSpec& spec, bool) const
     // Search the word graph if necessary
     QStringList resultList;
     if (wordGraphConditions || !databaseConditions) {
-       resultList = graph.search (optimizedSpec);
-       if (resultList.isEmpty())
-           return resultList;
+        resultList = wordGraphSearch (optimizedSpec);
+        if (resultList.isEmpty())
+            return resultList;
     }
 
     // Search the database if necessary, passing word graph results
@@ -674,6 +674,20 @@ WordEngine::search (const SearchSpec& spec, bool) const
     }
 
     return resultList;
+}
+
+//---------------------------------------------------------------------------
+//  wordGraphSearch
+//
+//! Search the word graph for words matching the conditions in a search spec.
+//
+//! @param optimizedSpec the search spec
+//! @return a list of words
+//---------------------------------------------------------------------------
+QStringList
+WordEngine::wordGraphSearch (const SearchSpec& optimizedSpec) const
+{
+    return graph.search (optimizedSpec);
 }
 
 //---------------------------------------------------------------------------
