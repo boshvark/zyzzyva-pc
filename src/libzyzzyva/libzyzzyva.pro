@@ -41,8 +41,6 @@ win32 {
     VERSION = $$system(type ..\..\VERSION)
 }
 
-DEFINES += ZYZZYVA_VERSION=$$VERSION
-
 # Source files
 SOURCES = \
     AboutDialog.cpp \
