@@ -70,6 +70,7 @@ class MainWindow : public QMainWindow
     void viewDefinition();
     void viewVariation (int variation);
     void rebuildDatabaseRequested();
+    void rescheduleCardboxRequested();
     void displayAbout();
     void displayHelp();
     void displayLexiconError();
