@@ -59,6 +59,7 @@ class QuizDatabase
     void removeFromCardbox (const QStringList& questions);
     void removeFromCardbox (const QString& question);
     void setCardbox (const QString& question, int cardbox);
+    int rescheduleCardbox (const QStringList& questions);
     QStringList getReadyQuestions (const QStringList& questions);
     QuestionData getQuestionData (const QString& question);
 

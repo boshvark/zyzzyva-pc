@@ -789,8 +789,27 @@ MainWindow::rescheduleCardboxRequested()
 
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
+        QString quizType = dialog->getQuizType();
+        bool rescheduleAll = dialog->getRescheduleAll();
+        SearchSpec searchSpec = dialog->getSearchSpec();
+        QString lexicon = wordEngine->getLexiconName();
 
+        QStringList words;
+        if (!rescheduleAll) {
+            words = wordEngine->search (searchSpec, true);
+            if (words.isEmpty())
+                return;
+        }
 
+        QApplication::setOverrideCursor (Qt::WaitCursor);
+        int numRescheduled = rescheduleCardbox (words, lexicon, quizType);
+        QApplication::restoreOverrideCursor();
+
+        QString questionStr = numRescheduled == 1 ? QString ("question")
+                                                  : QString ("questions");
+        QMessageBox::information (this, "Cardbox Questions Rescheduled",
+                                  QString::number (numRescheduled) + " " +
+                                  questionStr + " rescheduled.");
     }
 
     delete dialog;
@@ -1162,6 +1181,53 @@ MainWindow::rebuildDatabase()
     delete dialog;
 
     return true;
+}
+
+//---------------------------------------------------------------------------
+//  rescheduleCardbox
+//
+//! Reschedule quiz questions in the cardbox system.
+//
+//! @param words a list of words to reschedule
+//! @param lexicon the lexicon
+//! @param quizType the quiz type
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+int
+MainWindow::rescheduleCardbox (const QStringList& words, const QString&
+                               lexicon, const QString& quizType) const
+{
+    QuizSpec::QuizType type = Auxil::stringToQuizType (quizType);
+    if (type == QuizSpec::UnknownQuizType)
+        return false;
+
+    QStringList questions;
+    if (!words.isEmpty()) {
+        switch (type) {
+            case QuizSpec::QuizAnagrams:
+            case QuizSpec::QuizAnagramsWithHooks:
+            case QuizSpec::QuizSubanagrams:
+            case QuizSpec::QuizAnagramJumble:
+            case QuizSpec::QuizSubanagramJumble: {
+                QSet<QString> alphagramSet;
+                QStringListIterator it (words);
+                while (it.hasNext()) {
+                    alphagramSet.insert (Auxil::getAlphagram (it.next()));
+                }
+                questions = QStringList::fromSet (alphagramSet);
+            }
+            break;
+
+            default:
+            questions = words;
+        }
+    }
+
+    QuizDatabase db (lexicon, quizType);
+    if (!db.isValid())
+        return false;
+
+    return db.rescheduleCardbox (questions);
 }
 
 //---------------------------------------------------------------------------

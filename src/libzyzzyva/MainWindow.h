@@ -87,7 +87,12 @@ class MainWindow : public QMainWindow
     QString getLexiconPrefix (const QString& lexicon);
     QString getDatabaseFilename();
     void connectToDatabase();
+    // FIXME: these probably belong with WordTableView::addToCardbox in a
+    // separate class for manipulating quiz databases.  Hm, how about the
+    // QuizDatabase class?
     bool rebuildDatabase();
+    int rescheduleCardbox (const QStringList& words, const QString& lexicon,
+                           const QString& quizType) const;
 
     protected:
     virtual void closeEvent (QCloseEvent* event);

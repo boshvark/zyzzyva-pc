@@ -25,7 +25,6 @@
 #ifndef ZYZZYVA_CARDBOX_RESCHEDULE_DIALOG_H
 #define ZYZZYVA_CARDBOX_RESCHEDULE_DIALOG_H
 
-#include "QuizSpec.h"
 #include "SearchSpec.h"
 #include <QDialog>
 #include <QComboBox>
@@ -43,7 +42,7 @@ class CardboxRescheduleDialog : public QDialog
     ~CardboxRescheduleDialog() { }
 
     public:
-    QuizSpec::QuizType getQuizType() const;
+    QString getQuizType() const;
     bool getRescheduleAll() const;
     SearchSpec getSearchSpec() const;
 
