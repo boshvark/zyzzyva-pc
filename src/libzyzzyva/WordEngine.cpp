@@ -1517,10 +1517,13 @@ WordEngine::replaceDefinitionLinks (const QString& definition, int maxDepth,
     }
     else {
         QString upper = word.toUpper();
-        if (useFollow) {
+        QString subdef = getSubDefinition (upper, pos);
+        if (subdef.isEmpty()) {
+            replacement = useFollow ? word : upper;
+        }
+        else if (useFollow) {
             replacement = (matchedRegex == &followRegex) ?
-                word + " (" + getSubDefinition (upper, pos) + ")" :
-                getSubDefinition (upper, pos);
+                word + " (" + subdef + ")" : subdef;
         }
         else {
             replacement = upper + ", " + getSubDefinition (upper, pos);
@@ -1562,10 +1565,12 @@ WordEngine::getSubDefinition (const QString& word, const QString& pos) const
         QStringList defs = definition.split (" / ");
         QString def;
         foreach (def, defs) {
-            if ((posRegex.indexIn (def, 0) >= 0) &&
+            if ((posRegex.indexIn (def, 0) > 0) &&
                 (posRegex.cap (1) == pos))
             {
-                return def.left (def.indexOf (" ["));
+                QString str = def.left (def.indexOf ("[")).simplified();
+                if (!str.isEmpty())
+                    return str;
             }
         }
     }
