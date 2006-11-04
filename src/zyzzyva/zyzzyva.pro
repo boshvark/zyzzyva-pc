@@ -35,6 +35,7 @@ INCLUDEPATH += build/moc $$ROOT/src/libzyzzyva
 DEPENDPATH += build/moc
 RESOURCES = $$ROOT/zyzzyva.qrc
 macx {
+    TARGET = Zyzzyva
     RC_FILE = $$ROOT/images/zyzzyva.icns
 }
 
