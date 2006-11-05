@@ -64,6 +64,7 @@ CardboxRescheduleDialog::CardboxRescheduleDialog (QWidget* parent, Qt::WFlags f)
     quizTypeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
     quizTypeCombo->addItem (Auxil::quizTypeToString
                             (QuizSpec::QuizAnagramsWithHooks));
+    quizTypeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizHooks));
     quizTypeHlay->addWidget (quizTypeCombo);
 
     rescheduleAllButton = new QRadioButton;

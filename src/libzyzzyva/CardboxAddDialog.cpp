@@ -63,6 +63,7 @@ CardboxAddDialog::CardboxAddDialog (QWidget* parent, Qt::WFlags f)
     quizTypeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
     quizTypeCombo->addItem (Auxil::quizTypeToString
                             (QuizSpec::QuizAnagramsWithHooks));
+    quizTypeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizHooks));
     quizTypeHlay->addWidget (quizTypeCombo);
 
     estimateCbox = new QCheckBox ("Estimate cardbox based on past performance",
