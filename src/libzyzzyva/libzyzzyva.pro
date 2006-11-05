@@ -48,6 +48,7 @@ SOURCES = \
     Auxil.cpp \
     CardboxAddDialog.cpp \
     CardboxRemoveDialog.cpp \
+    CardboxRescheduleDialog.cpp \
     CreateDatabaseThread.cpp \
     CrosswordGameBoard.cpp \
     CrosswordGameBoardWidget.cpp \
@@ -101,6 +102,7 @@ HEADERS = \
     AnalyzeQuizDialog.h \
     CardboxAddDialog.h \
     CardboxRemoveDialog.h \
+    CardboxRescheduleDialog.h \
     CreateDatabaseThread.h \
     CrosswordGameBoardWidget.h \
     CrosswordGameForm.h \

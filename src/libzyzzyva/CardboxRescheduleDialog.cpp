@@ -1,7 +1,7 @@
 //---------------------------------------------------------------------------
-// CardboxAddDialog.cpp
+// CardboxRescheduleDialog.cpp
 //
-// A dialog for adding words to the cardbox system.
+// A dialog for rescheduling words within the cardbox system.
 //
 // Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
 //
@@ -22,26 +22,27 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include "CardboxAddDialog.h"
+#include "CardboxRescheduleDialog.h"
+#include "SearchSpecForm.h"
+#include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include "ZPushButton.h"
 #include <QLabel>
 #include <QVBoxLayout>
 
-const QString DIALOG_CAPTION = "Add Words to Cardbox";
+const QString DIALOG_CAPTION = "Reschedule Words in Cardbox";
 
 using namespace Defs;
 
 //---------------------------------------------------------------------------
-//  CardboxAddDialog
+//  CardboxRescheduleDialog
 //
 //! Constructor.
 //
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-CardboxAddDialog::CardboxAddDialog (QWidget* parent, Qt::WFlags f)
+CardboxRescheduleDialog::CardboxRescheduleDialog (QWidget* parent, Qt::WFlags f)
     : QDialog (parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this);
@@ -53,25 +54,39 @@ CardboxAddDialog::CardboxAddDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (quizTypeHlay);
     mainVlay->addLayout (quizTypeHlay);
 
-    QLabel* quizTypeLabel = new QLabel (this);
+    QLabel* quizTypeLabel = new QLabel;
     Q_CHECK_PTR (quizTypeLabel);
-    quizTypeLabel->setText ("Add words to cardbox for quiz type:");
+    quizTypeLabel->setText ("Reschedule words for quiz type:");
     quizTypeHlay->addWidget (quizTypeLabel);
 
-    quizTypeCombo = new QComboBox (this);
+    quizTypeCombo = new QComboBox;
     Q_CHECK_PTR (quizTypeCombo);
     quizTypeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
     quizTypeHlay->addWidget (quizTypeCombo);
 
-    estimateCbox = new QCheckBox ("Estimate cardbox based on past performance",
-                                  this);
-    Q_CHECK_PTR (estimateCbox);
-    estimateCbox->setCheckState (Qt::Checked);
-    mainVlay->addWidget (estimateCbox);
+    rescheduleAllButton = new QRadioButton;
+    Q_CHECK_PTR (rescheduleAllButton);
+    rescheduleAllButton->setText ("Reschedule all words");
+    mainVlay->addWidget (rescheduleAllButton);
 
-    questionList = new QListWidget (this);
-    Q_CHECK_PTR (questionList);
-    mainVlay->addWidget (questionList);
+    rescheduleSearchButton = new QRadioButton;
+    Q_CHECK_PTR (rescheduleSearchButton);
+    connect (rescheduleSearchButton, SIGNAL (toggled (bool)),
+             SLOT (useSearchButtonToggled (bool)));
+    rescheduleSearchButton->setText ("Reschedule words matching search "
+                                     "specification");
+    mainVlay->addWidget (rescheduleSearchButton);
+
+    searchSpecGbox = new QGroupBox ("Search Specification");
+    Q_CHECK_PTR (searchSpecGbox);
+    mainVlay->addWidget (searchSpecGbox);
+
+    QHBoxLayout* specHlay = new QHBoxLayout (searchSpecGbox);
+    Q_CHECK_PTR (specHlay);
+
+    searchSpecForm = new SearchSpecForm;
+    Q_CHECK_PTR (searchSpecForm);
+    specHlay->addWidget (searchSpecForm);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing (SPACING);
@@ -92,64 +107,59 @@ CardboxAddDialog::CardboxAddDialog (QWidget* parent, Qt::WFlags f)
     buttonHlay->addWidget (cancelButton);
 
     setWindowTitle (DIALOG_CAPTION);
-}
-
-//---------------------------------------------------------------------------
-//  setWords
-//
-//! Set the contents of the word list to be the words in a space-separated
-//! string of words.
-//
-//! @param string the word list string
-//---------------------------------------------------------------------------
-void
-CardboxAddDialog::setWords (const QStringList& words)
-{
-    QStringListIterator it (words);
-    while (it.hasNext()) {
-        new QListWidgetItem (it.next(), questionList);
-    }
+    rescheduleAllButton->setChecked (true);
+    searchSpecGbox->setEnabled (false);
 }
 
 //---------------------------------------------------------------------------
 //  getQuizType
 //
-//! Determine the currently chosen quiz type.
+//! Return the quiz type chosen by the user.
 //
-//! @return a string representation of the quiz type
+//! @return the quiz type
 //---------------------------------------------------------------------------
-QString
-CardboxAddDialog::getQuizType() const
+QuizSpec::QuizType
+CardboxRescheduleDialog::getQuizType() const
 {
-    return quizTypeCombo->currentText();
+    return Auxil::stringToQuizType (quizTypeCombo->currentText());
 }
 
 //---------------------------------------------------------------------------
-//  getEstimateCardbox
+//  getRescheduleAll
 //
-//! Determine whether cardboxes should be estimated based on past performance.
+//! Determine whether all questions are to be rescheduled
 //
-//! @return true if estimates should be used, false otherwise
+//! @return true if all questions should be rescheduled
 //---------------------------------------------------------------------------
 bool
-CardboxAddDialog::getEstimateCardbox() const
+CardboxRescheduleDialog::getRescheduleAll() const
 {
-    return (estimateCbox->checkState() == Qt::Checked);
+    return rescheduleAllButton->isChecked();
 }
 
 //---------------------------------------------------------------------------
-//  getWords
+//  getSearchSpec
 //
-//! Return the list of words to be added to cardboxes.
+//! Determine whether all questions are to be rescheduled
 //
-//! @return the list of words
+//! @return true if all questions should be rescheduled
 //---------------------------------------------------------------------------
-QStringList
-CardboxAddDialog::getWords() const
+SearchSpec
+CardboxRescheduleDialog::getSearchSpec() const
 {
-    QStringList words;
-    for (int i = 0; i < questionList->count(); ++i) {
-        words.append (questionList->item (i)->text());
-    }
-    return words;
+    return searchSpecForm->getSearchSpec();
+}
+
+//---------------------------------------------------------------------------
+//  useSearchButtonToggled
+//
+//! Called when the state of the Use Search button is toggled.  Enable or
+//! disable the search specification form.
+//
+//! @param checked true if the button is checked
+//---------------------------------------------------------------------------
+void
+CardboxRescheduleDialog::useSearchButtonToggled (bool checked)
+{
+    searchSpecGbox->setEnabled (checked);
 }

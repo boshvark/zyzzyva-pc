@@ -24,6 +24,7 @@
 
 #include "MainWindow.h"
 #include "AboutDialog.h"
+#include "CardboxRescheduleDialog.h"
 #include "CreateDatabaseThread.h"
 #include "CrosswordGameForm.h"
 #include "DefinitionDialog.h"
@@ -281,6 +282,13 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     connect (rebuildDatabaseAction, SIGNAL (triggered()),
              SLOT (rebuildDatabaseRequested()));
     toolsMenu->addAction (rebuildDatabaseAction);
+
+    QAction* rescheduleCardboxAction = new QAction ("Reschedule &Cardbox "
+                                                    "Contents...", this);
+    Q_CHECK_PTR (rescheduleCardboxAction);
+    connect (rescheduleCardboxAction, SIGNAL (triggered()),
+             SLOT (rescheduleCardboxRequested()));
+    toolsMenu->addAction (rescheduleCardboxAction);
 
     // Help Menu
     QMenu* helpMenu = menuBar()->addMenu ("&Help");
@@ -767,6 +775,26 @@ MainWindow::rebuildDatabaseRequested()
 
     rebuildDatabase();
     connectToDatabase();
+}
+
+//---------------------------------------------------------------------------
+//  rescheduleCardboxRequested
+//
+//! Called when the user requests to reschedule cardbox items.
+//---------------------------------------------------------------------------
+void
+MainWindow::rescheduleCardboxRequested()
+{
+    CardboxRescheduleDialog* dialog = new CardboxRescheduleDialog (this);
+    Q_CHECK_PTR (dialog);
+
+    int code = dialog->exec();
+    if (code == QDialog::Accepted) {
+
+
+    }
+
+    delete dialog;
 }
 
 //---------------------------------------------------------------------------
