@@ -58,13 +58,13 @@ mkdir -p zyzzyva.app/Contents/Frameworks
 
 # Copy Zyzzyva libs to Frameworks directory
 echo "Copying libzyzzyva into bundle..."
-cp bin/libzyzzyva.0.dylib zyzzyva.app/Contents/Frameworks
+cp bin/libzyzzyva.1.dylib zyzzyva.app/Contents/Frameworks
 
 # Change link location for libzyzzyva in executable
 echo "Changing link location for libzyzzyva in Zyzzyva executable..."
 install_name_tool -change \
-    libzyzzyva.0.dylib \
-    @executable_path/../Frameworks/libzyzzyva.0.dylib \
+    libzyzzyva.1.dylib \
+    @executable_path/../Frameworks/libzyzzyva.1.dylib \
     zyzzyva.app/Contents/MacOS/zyzzyva
 
 # Copy Qt frameworks into bundle and tell the executable to link to them
