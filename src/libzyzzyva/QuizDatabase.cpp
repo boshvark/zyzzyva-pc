@@ -30,6 +30,8 @@
 #include <QVariant>
 #include <ctime>
 
+#include <QSqlError>
+
 const QString SQL_CREATE_QUESTIONS_TABLE_0_14_0 =
     "CREATE TABLE questions (question varchar(16), correct integer, "
     "incorrect integer, streak integer, last_correct integer, "
@@ -321,6 +323,70 @@ QuizDatabase::setCardbox (const QString& question, int cardbox)
     data.cardbox = cardbox;
     data.nextScheduled = calculateNextScheduled (data.cardbox);
     setQuestionData (question, data, true);
+}
+
+//---------------------------------------------------------------------------
+//  rescheduleCardboxAll
+//
+//! Reschedule questions in the cardbox system.  If no questions are
+//! specified, then all questions are rescheduled.
+//
+//! @param questions the list of questions to reschedule
+//---------------------------------------------------------------------------
+int
+QuizDatabase::rescheduleCardbox (const QStringList& questions)
+{
+    QString queryStr = "SELECT question, cardbox, next_scheduled "
+        "FROM questions WHERE cardbox NOT NULL";
+
+    if (!questions.isEmpty()) {
+        queryStr += " AND question IN (";
+        QStringListIterator it (questions);
+        bool firstItem = true;
+        while (it.hasNext()) {
+            QString question = it.next();
+            if (!firstItem)
+                queryStr += ", ";
+            queryStr += "'" + question + "'";
+            firstItem = false;
+        }
+        queryStr += ")";
+    }
+
+    QSqlQuery query (*db);
+    query.prepare (queryStr);
+    query.exec();
+
+    QList<QString> selectedQuestions;
+    QList<int> selectedCardboxes;
+
+    while (query.next()) {
+        selectedQuestions.append (query.value (0).toString());
+        selectedCardboxes.append (query.value (1).toInt());
+    }
+
+    QSqlQuery updateQuery (*db);
+    updateQuery.prepare ("UPDATE questions SET next_scheduled=? "
+                         "WHERE question=?");
+
+    QSqlQuery transactionQuery ("BEGIN TRANSACTION", *db);
+
+    QListIterator<QString> it (selectedQuestions);
+    QListIterator<int> jt (selectedCardboxes);
+    while (it.hasNext()) {
+        QString question = it.next();
+        int cardbox = jt.next();
+        int nextScheduled = calculateNextScheduled (cardbox);
+        nextScheduled -= 60 * 60 * 16;
+
+        updateQuery.bindValue (0, nextScheduled);
+        updateQuery.bindValue (1, question);
+        updateQuery.exec();
+    }
+
+    transactionQuery.exec ("END TRANSACTION");
+
+    return selectedQuestions.size();
 }
 
 //---------------------------------------------------------------------------

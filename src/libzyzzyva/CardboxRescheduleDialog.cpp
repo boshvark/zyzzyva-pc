@@ -118,10 +118,10 @@ CardboxRescheduleDialog::CardboxRescheduleDialog (QWidget* parent, Qt::WFlags f)
 //
 //! @return the quiz type
 //---------------------------------------------------------------------------
-QuizSpec::QuizType
+QString
 CardboxRescheduleDialog::getQuizType() const
 {
-    return Auxil::stringToQuizType (quizTypeCombo->currentText());
+    return quizTypeCombo->currentText();
 }
 
 //---------------------------------------------------------------------------
