@@ -139,7 +139,7 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     inputVlay->addLayout (titleHlay);
 
     QLabel* programLabel = new QLabel ("Zyzzyva Word Judge\n"
-                                       "Version ZYZZYVA_VERSION");
+                                       "Version " + ZYZZYVA_VERSION);
     Q_CHECK_PTR (programLabel);
     programLabel->setFont (titleFont);
     titleHlay->addWidget (programLabel);

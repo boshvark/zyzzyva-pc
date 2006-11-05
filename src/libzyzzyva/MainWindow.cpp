@@ -1299,7 +1299,7 @@ MainWindow::writeSettings()
 {
     MainSettings::setMainWindowPos (pos());
     MainSettings::setMainWindowSize (size());
-    MainSettings::setProgramVersion ("ZYZZYVA_VERSION");
+    MainSettings::setProgramVersion (ZYZZYVA_VERSION);
     MainSettings::writeSettings();
 }
 
