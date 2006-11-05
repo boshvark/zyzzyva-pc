@@ -25,9 +25,10 @@
 #ifndef ZYZZYVA_CREATE_DATABASE_THREAD_H
 #define ZYZZYVA_CREATE_DATABASE_THREAD_H
 
+#include <QMap>
+#include <QString>
 #include <QSqlDatabase>
 #include <QThread>
-#include <QString>
 #include <map>
 
 class WordEngine;
@@ -63,12 +64,19 @@ class CreateDatabaseThread : public QThread
     void insertWords (QSqlDatabase& db, int& stepNum);
     void updateProbabilityOrder (QSqlDatabase& db, int& stepNum);
     void updateDefinitions (QSqlDatabase& db, int& stepNum);
+    void updateDefinitionLinks (QSqlDatabase& db, int& stepNum);
+
+    void getDefinitions (QSqlDatabase& db, int& stepNum);
+    QString replaceDefinitionLinks (const QString& definition, int maxDepth,
+                                    bool useFollow = false) const;
+    QString getSubDefinition (const QString& word, const QString& pos) const;
 
     WordEngine* wordEngine;
     QString lexiconName;
     QString dbFilename;
     QString definitionFilename;
     bool cancelled;
+    QMap<QString, QString> definitions;
 };
 
 #endif // ZYZZYVA_CREATE_DATABASE_THREAD_H
