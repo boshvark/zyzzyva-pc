@@ -105,7 +105,7 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     QAction* testAction = new QAction ("&Test", this);
     Q_CHECK_PTR (testAction);
     connect (testAction, SIGNAL (triggered()), SLOT (doTest()));
-    fileMenu->addAction (testAction);
+    //fileMenu->addAction (testAction);
 
     // Save
     saveAction = new QAction ("&Save", this);
@@ -146,7 +146,7 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     newCrosswordGameAction->setIcon (QIcon (":/define-icon"));
     connect (newCrosswordGameAction, SIGNAL (triggered()),
              SLOT (newCrosswordGameForm()));
-    fileMenu->addAction (newCrosswordGameAction);
+    //fileMenu->addAction (newCrosswordGameAction);
 
     // New Definition
     QAction* newDefinitionAction = new QAction ("&Definition", this);
