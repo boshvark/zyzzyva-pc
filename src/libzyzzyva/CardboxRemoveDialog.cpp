@@ -23,8 +23,9 @@
 //---------------------------------------------------------------------------
 
 #include "CardboxRemoveDialog.h"
-#include "Defs.h"
 #include "ZPushButton.h"
+#include "Auxil.h"
+#include "Defs.h"
 #include <QLabel>
 #include <QVBoxLayout>
 
@@ -59,7 +60,9 @@ CardboxRemoveDialog::CardboxRemoveDialog (QWidget* parent, Qt::WFlags f)
 
     quizTypeCombo = new QComboBox (this);
     Q_CHECK_PTR (quizTypeCombo);
-    quizTypeCombo->addItem ("Anagrams");
+    quizTypeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
+    quizTypeCombo->addItem (Auxil::quizTypeToString
+                            (QuizSpec::QuizAnagramsWithHooks));
     quizTypeHlay->addWidget (quizTypeCombo);
 
     questionList = new QListWidget (this);
