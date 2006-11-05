@@ -37,11 +37,35 @@ class WordEngine : public QObject
 {
     Q_OBJECT
     public:
+    class WordInfo {
+        public:
+        WordInfo() : probabilityOrder (0), minProbabilityOrder (0),
+            maxProbabilityOrder (0), numVowels (0), numUniqueLetters (0),
+            numAnagrams (0), pointValue (0) { }
+        ~WordInfo() { }
+
+        bool isValid() const { return !word.isEmpty(); }
+
+        public:
+        QString word;
+        int probabilityOrder;
+        int minProbabilityOrder;
+        int maxProbabilityOrder;
+        int numVowels;
+        int numUniqueLetters;
+        int numAnagrams;
+        int pointValue;
+        QString frontHooks;
+        QString backHooks;
+        QString definition;
+    };
+
+    public:
     WordEngine (QObject* parent = 0)
         : QObject (parent) { }
     ~WordEngine() { }
 
-    void clearLexicon();
+    void clearCache() const;
     bool connectToDatabase (const QString& filename, QString* errString = 0);
     bool disconnectFromDatabase();
     int importTextFile (const QString& filename, const QString& lexName, bool
@@ -55,7 +79,8 @@ class WordEngine : public QObject
     QStringList wordGraphSearch (const SearchSpec& spec) const;
     QStringList alphagrams (const QStringList& list) const;
     int getNumWords() const;
-    QString getDefinition (const QString& word) const;
+    WordInfo getWordInfo (const QString& word) const;
+    QString getDefinition (const QString& word, bool replaceLinks = true) const;
     QString getLexiconName() const { return lexiconName; }
     QString getFrontHookLetters (const QString& word) const;
     QString getBackHookLetters (const QString& word) const;
@@ -67,6 +92,7 @@ class WordEngine : public QObject
     int getPointValue (const QString& word) const;
 
     private:
+    void addToCache (const QStringList& words) const;
     bool matchesConditions (const QString& word, const QList<SearchCondition>&
                             conditions) const;
     bool isSetMember (const QString& word, SearchSet ss) const;
@@ -82,12 +108,14 @@ class WordEngine : public QObject
     QStringList applyPostConditions (const SearchSpec& optimizedSpec, const
                                      QStringList& wordList) const;
 
+    private:
     QString lexiconName;
     WordGraph graph;
     std::map<QString, std::multimap<QString, QString> > definitions;
     std::map<int, QStringList> stems;
     QMap<QString, int> numAnagramsMap;
     std::map< int, std::set<QString> > stemAlphagrams;
+    mutable QMap<QString, WordInfo> wordCache;
 
     QSqlDatabase db;
     QString dbConnectionName;

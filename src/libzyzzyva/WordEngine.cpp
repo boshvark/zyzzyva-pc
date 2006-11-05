@@ -43,6 +43,18 @@ using std::make_pair;
 using std::multimap;
 
 //---------------------------------------------------------------------------
+//  clearCache
+//
+//! Clear the word information cache.
+//---------------------------------------------------------------------------
+void
+WordEngine::clearCache() const
+{
+    //qDebug ("Clearing the cache...");
+    wordCache.clear();
+}
+
+//---------------------------------------------------------------------------
 //  connectToDatabase
 //
 //! Initialize the database connection.
@@ -680,6 +692,11 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
             *it = (*it).toUpper();
     }
 
+    if (!resultList.isEmpty()) {
+        clearCache();
+        addToCache (resultList);
+    }
+
     return resultList;
 }
 
@@ -726,6 +743,59 @@ WordEngine::alphagrams (const QStringList& list) const
 }
 
 //---------------------------------------------------------------------------
+//  getWordInfo
+//
+//! Get information about a word from the database.  Also cache the
+//! information for future queries.  Fail if the information is not in the
+//! cache and the database is not open.
+//
+//! @param word the word
+//! @return information about the word from the database
+//---------------------------------------------------------------------------
+WordEngine::WordInfo
+WordEngine::getWordInfo (const QString& word) const
+{
+    if (word.isEmpty())
+        return WordInfo();
+
+    if (wordCache.contains (word)) {
+        //qDebug ("Cache HIT: |%s|", word.toUtf8().data());
+        return wordCache[word];
+    }
+    //qDebug ("Cache MISS: |%s|", word.toUtf8().data());
+
+    WordInfo info;
+    if (!db.isOpen())
+        return info;
+
+    QString qstr = "SELECT probability_order, min_probability_order, "
+        "max_probability_order, num_vowels, num_unique_letters, num_anagrams, "
+        "point_value, front_hooks, back_hooks, definition FROM words "
+        "WHERE word=?";
+    QSqlQuery query (db);
+    query.prepare (qstr);
+    query.bindValue (0, word);
+    query.exec();
+ 
+    if (query.next()) {
+        info.word = word;
+        info.probabilityOrder    = query.value (0).toInt();
+        info.minProbabilityOrder = query.value (1).toInt();
+        info.maxProbabilityOrder = query.value (2).toInt();
+        info.numVowels           = query.value (3).toInt();
+        info.numUniqueLetters    = query.value (4).toInt();
+        info.numAnagrams         = query.value (5).toInt();
+        info.pointValue          = query.value (6).toInt();
+        info.frontHooks          = query.value (7).toString();
+        info.backHooks           = query.value (8).toString();
+        info.definition          = query.value (9).toString();
+        wordCache[word] = info;
+    }
+
+    return info;
+}
+
+//---------------------------------------------------------------------------
 //  getNumWords
 //
 //! Return a word count for the current lexicon.
@@ -752,27 +822,31 @@ WordEngine::getNumWords() const
 //! Return the definition associated with a word.
 //
 //! @param word the word whose definition to look up
+//! @param replaceLinks whether to resolve links to other definitions
 //! @return the definition, or QString::null if no definition
 //---------------------------------------------------------------------------
 QString
-WordEngine::getDefinition (const QString& word) const
+WordEngine::getDefinition (const QString& word, bool replaceLinks) const
 {
     QString definition;
 
-    if (db.isOpen()) {
-        QString qstr = "SELECT definition FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        if (query.next())
-            definition = query.value (0).toString();
-
-        QStringList defs = definition.split (" / ");
-        definition = "";
-        QString def;
-        foreach (def, defs) {
-            if (!definition.isEmpty())
-                definition += "\n";
-            definition += replaceDefinitionLinks (def, MAX_DEFINITION_LINKS);
+    WordInfo info = getWordInfo (word);
+    if (info.isValid()) {
+        if (replaceLinks) {
+            QStringList defs = info.definition.split (" / ");
+            definition = "";
+            QString def;
+            foreach (def, defs) {
+                if (!definition.isEmpty())
+                    definition += "\n";
+                //definition += def;
+                definition += replaceDefinitionLinks (def,
+                                                      MAX_DEFINITION_LINKS);
+            }
+            return definition;
+        }
+        else {
+            return info.definition;
         }
     }
 
@@ -785,14 +859,19 @@ WordEngine::getDefinition (const QString& word) const
         const multimap<QString, QString>& mmap = it->second;
         multimap<QString, QString>::const_iterator mit;
         for (mit = mmap.begin(); mit != mmap.end(); ++mit) {
-            if (!definition.isEmpty())
-                definition += "\n";
-            definition += replaceDefinitionLinks (mit->second,
-                                                  MAX_DEFINITION_LINKS);
+            if (!definition.isEmpty()) {
+                if (replaceLinks)
+                    definition += "\n";
+                else
+                    definition += " / ";
+            }
+            //definition += mit->second;
+            definition += replaceLinks
+                ? replaceDefinitionLinks (mit->second, MAX_DEFINITION_LINKS)
+                : mit->second;
         }
+        return definition;
     }
-
-    return definition;
 }
 
 //---------------------------------------------------------------------------
@@ -809,12 +888,9 @@ WordEngine::getFrontHookLetters (const QString& word) const
 {
     QString ret;
 
-    if (db.isOpen()) {
-        QString qstr = "SELECT front_hooks FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        if (query.next())
-            ret = query.value (0).toString();
+    WordInfo info = getWordInfo (word);
+    if (info.isValid()) {
+        ret = info.frontHooks;
     }
 
     else {
@@ -853,12 +929,9 @@ WordEngine::getBackHookLetters (const QString& word) const
 {
     QString ret;
 
-    if (db.isOpen()) {
-        QString qstr = "SELECT back_hooks FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        if (query.next())
-            ret = query.value (0).toString();
+    WordInfo info = getWordInfo (word);
+    if (info.isValid()) {
+        ret = info.backHooks;
     }
 
     else {
@@ -881,6 +954,53 @@ WordEngine::getBackHookLetters (const QString& word) const
     }
 
     return ret;
+}
+
+//---------------------------------------------------------------------------
+//  addToCache
+//
+//! Add information about a list of words to the cache.
+//
+//! @param words the list of words
+//---------------------------------------------------------------------------
+void
+WordEngine::addToCache (const QStringList& words) const
+{
+    if (words.isEmpty() || !db.isOpen())
+        return;
+
+    QString qstr = "SELECT word, probability_order, min_probability_order, "
+        "max_probability_order, num_vowels, num_unique_letters, num_anagrams, "
+        "point_value, front_hooks, back_hooks, definition FROM words "
+        "WHERE word IN (";
+
+    QStringListIterator it (words);
+    for (int i = 0; it.hasNext(); ++i) {
+        if (i)
+            qstr += ", ";
+        qstr += "'" + it.next() + "'";
+    }
+    qstr += ")";
+
+    QSqlQuery query (db);
+    query.prepare (qstr);
+    query.exec();
+
+    while (query.next()) {
+        WordInfo info;
+        info.word                = query.value (0).toString();
+        info.probabilityOrder    = query.value (1).toInt();
+        info.minProbabilityOrder = query.value (2).toInt();
+        info.maxProbabilityOrder = query.value (3).toInt();
+        info.numVowels           = query.value (4).toInt();
+        info.numUniqueLetters    = query.value (5).toInt();
+        info.numAnagrams         = query.value (6).toInt();
+        info.pointValue          = query.value (7).toInt();
+        info.frontHooks          = query.value (8).toString();
+        info.backHooks           = query.value (9).toString();
+        info.definition          = query.value (10).toString();
+        wordCache[info.word] = info;
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -1115,20 +1235,15 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 int
 WordEngine::getNumAnagrams (const QString& word) const
 {
-    if (db.isOpen()) {
-        QString qstr = "SELECT num_anagrams FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        if (query.next())
-            return query.value (0).toInt();
+    WordInfo info = getWordInfo (word);
+    if (info.isValid()) {
+        return info.numAnagrams;
     }
 
     else {
         QString alpha = Auxil::getAlphagram (word);
         return numAnagramsMap.contains (alpha) ? numAnagramsMap[alpha] : 0;
     }
-
-    return 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1142,14 +1257,8 @@ WordEngine::getNumAnagrams (const QString& word) const
 int
 WordEngine::getProbabilityOrder (const QString& word) const
 {
-    if (db.isOpen()) {
-        QString qstr = "SELECT probability_order FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        if (query.next())
-            return query.value (0).toInt();
-    }
-    return 0;
+    WordInfo info = getWordInfo (word);
+    return info.isValid() ? info.probabilityOrder : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1163,14 +1272,8 @@ WordEngine::getProbabilityOrder (const QString& word) const
 int
 WordEngine::getMinProbabilityOrder (const QString& word) const
 {
-    if (db.isOpen()) {
-        QString qstr = "SELECT min_probability_order FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        if (query.next())
-            return query.value (0).toInt();
-    }
-    return 0;
+    WordInfo info = getWordInfo (word);
+    return info.isValid() ? info.minProbabilityOrder : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1184,14 +1287,8 @@ WordEngine::getMinProbabilityOrder (const QString& word) const
 int
 WordEngine::getMaxProbabilityOrder (const QString& word) const
 {
-    if (db.isOpen()) {
-        QString qstr = "SELECT max_probability_order FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        if (query.next())
-            return query.value (0).toInt();
-    }
-    return 0;
+    WordInfo info = getWordInfo (word);
+    return info.isValid() ? info.maxProbabilityOrder : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1205,18 +1302,12 @@ WordEngine::getMaxProbabilityOrder (const QString& word) const
 int
 WordEngine::getNumVowels (const QString& word) const
 {
-    if (db.isOpen()) {
-        QString qstr = "SELECT num_vowels FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        if (query.next())
-            return query.value (0).toInt();
-    }
-    return Auxil::getNumVowels (word);
+    WordInfo info = getWordInfo (word);
+    return info.isValid() ? info.numVowels : Auxil::getNumVowels (word);
 }
 
 //---------------------------------------------------------------------------
-//  genNumUniqueLetters
+//  getNumUniqueLetters
 //
 //! Get the number of unique letters in a word.
 //
@@ -1226,18 +1317,13 @@ WordEngine::getNumVowels (const QString& word) const
 int
 WordEngine::getNumUniqueLetters (const QString& word) const
 {
-    if (db.isOpen()) {
-        QString qstr = "SELECT num_unique_letters FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        if (query.next())
-            return query.value (0).toInt();
-    }
-    return Auxil::getNumUniqueLetters (word);
+    WordInfo info = getWordInfo (word);
+    return info.isValid() ? info.numUniqueLetters
+                          : Auxil::getNumUniqueLetters (word);
 }
 
 //---------------------------------------------------------------------------
-//  genPointValue
+//  getPointValue
 //
 //! Get the point value for a word.
 //
@@ -1247,14 +1333,8 @@ WordEngine::getNumUniqueLetters (const QString& word) const
 int
 WordEngine::getPointValue (const QString& word) const
 {
-    if (db.isOpen()) {
-        QString qstr = "SELECT point_value FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        if (query.next())
-            return query.value (0).toInt();
-    }
-    return 0;
+    WordInfo info = getWordInfo (word);
+    return info.isValid() ? info.pointValue : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1551,13 +1631,7 @@ QString
 WordEngine::getSubDefinition (const QString& word, const QString& pos) const
 {
     if (db.isOpen()) {
-        QString qstr = "SELECT definition FROM words WHERE word='" +
-            word + "'";
-        QSqlQuery query (qstr, db);
-        QString definition;
-        if (query.next())
-            definition = query.value (0).toString();
-
+        QString definition = getDefinition (word, false);
         if (definition.isEmpty())
             return QString::null;
 
