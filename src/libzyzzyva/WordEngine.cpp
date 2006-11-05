@@ -34,8 +34,6 @@
 #include <QVariant>
 #include <set>
 
-const int MAX_DEFINITION_LINKS = 3;
-
 using namespace Defs;
 using std::set;
 using std::map;
@@ -839,9 +837,9 @@ WordEngine::getDefinition (const QString& word, bool replaceLinks) const
             foreach (def, defs) {
                 if (!definition.isEmpty())
                     definition += "\n";
-                //definition += def;
-                definition += replaceDefinitionLinks (def,
-                                                      MAX_DEFINITION_LINKS);
+                definition += def;
+                //definition += replaceDefinitionLinks (def,
+                                                      //MAX_DEFINITION_LINKS);
             }
             return definition;
         }
@@ -865,10 +863,10 @@ WordEngine::getDefinition (const QString& word, bool replaceLinks) const
                 else
                     definition += " / ";
             }
-            //definition += mit->second;
-            definition += replaceLinks
-                ? replaceDefinitionLinks (mit->second, MAX_DEFINITION_LINKS)
-                : mit->second;
+            definition += mit->second;
+            //definition += replaceLinks
+                //? replaceDefinitionLinks (mit->second, MAX_DEFINITION_LINKS)
+                //: mit->second;
         }
         return definition;
     }
@@ -1548,121 +1546,4 @@ WordEngine::addDefinition (const QString& word, const QString& definition)
         defMap.insert (make_pair (pos, def));
     }
     definitions.insert (make_pair (word, defMap));
-}
-
-//---------------------------------------------------------------------------
-//  replaceDefinitionLinks
-//
-//! Replace links in a definition with the definitions of the words they are
-//! linked to.  A string is assumed to have a maximum of one link.  Links may
-//! be followed recursively to the maximum depth specified.
-//
-//! @param definition the definition with links to be replaced
-//! @param maxDepth the maximum number of recursive links to replace
-//! @param useFollow true if the "follow" replacement should be used
-//
-//! @return a string with links replaced
-//---------------------------------------------------------------------------
-QString
-WordEngine::replaceDefinitionLinks (const QString& definition, int maxDepth,
-                                    bool useFollow) const
-{
-    QRegExp followRegex (QString ("\\{(\\w+)=(\\w+)\\}"));
-    QRegExp replaceRegex (QString ("\\<(\\w+)=(\\w+)\\>"));
-
-    // Try to match the follow regex and the replace regex.  If a follow regex
-    // is ever matched, then the "follow" replacements should always be used,
-    // even if the "replace" regex is matched in a later iteration.
-    QRegExp* matchedRegex = 0;
-    int index = followRegex.indexIn (definition, 0);
-    if (index >= 0) {
-        matchedRegex = &followRegex;
-        useFollow = true;
-    }
-    else {
-        index = replaceRegex.indexIn (definition, 0);
-        matchedRegex = &replaceRegex;
-    }
-
-    if (index < 0)
-        return definition;
-
-    QString modified (definition);
-    QString word = matchedRegex->cap (1);
-    QString pos = matchedRegex->cap (2);
-
-    QString replacement;
-    if (!maxDepth) {
-        replacement = word;
-    }
-    else {
-        QString upper = word.toUpper();
-        QString subdef = getSubDefinition (upper, pos);
-        if (subdef.isEmpty()) {
-            replacement = useFollow ? word : upper;
-        }
-        else if (useFollow) {
-            replacement = (matchedRegex == &followRegex) ?
-                word + " (" + subdef + ")" : subdef;
-        }
-        else {
-            replacement = upper + ", " + getSubDefinition (upper, pos);
-        }
-    }
-
-    modified.replace (index, matchedRegex->matchedLength(), replacement);
-    return maxDepth ? replaceDefinitionLinks (modified, maxDepth - 1,
-                                              useFollow) : modified;
-}
-
-//---------------------------------------------------------------------------
-//  getSubDefinition
-//
-//! Return the definition associated with a word and a part of speech.  If
-//! more than one definition is given for a part of speech, pick the first
-//! one.
-//
-//! @param word the word
-//! @param pos the part of speech
-//
-//! @return the definition substring
-//---------------------------------------------------------------------------
-QString
-WordEngine::getSubDefinition (const QString& word, const QString& pos) const
-{
-    if (db.isOpen()) {
-        QString definition = getDefinition (word, false);
-        if (definition.isEmpty())
-            return QString::null;
-
-        QRegExp posRegex (QString ("\\[(\\w+)"));
-        QStringList defs = definition.split (" / ");
-        QString def;
-        foreach (def, defs) {
-            if ((posRegex.indexIn (def, 0) > 0) &&
-                (posRegex.cap (1) == pos))
-            {
-                QString str = def.left (def.indexOf ("[")).simplified();
-                if (!str.isEmpty())
-                    return str;
-            }
-        }
-    }
-
-    else {
-        std::map<QString,
-            std::multimap<QString, QString> >::const_iterator it =
-            definitions.find (word);
-        if (it == definitions.end())
-            return QString::null;
-
-        const multimap<QString, QString>& mmap = it->second;
-        multimap<QString, QString>::const_iterator mit = mmap.find (pos);
-        if (mit == mmap.end())
-            return QString::null;
-
-        return mit->second.left (mit->second.indexOf (" ["));
-    }
-
-    return QString::null;
 }

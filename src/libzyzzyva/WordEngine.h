@@ -99,9 +99,6 @@ class WordEngine : public QObject
     int getNumAnagrams (const QString& word) const;
     QStringList nonGraphSearch (const SearchSpec& spec) const;
     void addDefinition (const QString& word, const QString& definition);
-    QString replaceDefinitionLinks (const QString& definition, int maxDepth,
-                                    bool useFollow = false) const;
-    QString getSubDefinition (const QString& word, const QString& pos) const;
     QString getNewInOwl2String() const;
     QStringList databaseSearch (const SearchSpec& optimizedSpec, const
                                 QStringList* wordList = 0) const;
@@ -119,6 +116,10 @@ class WordEngine : public QObject
 
     QSqlDatabase db;
     QString dbConnectionName;
+
+
+
+    QMap<QString, QString> definitionMap;
 };
 
 #endif // ZYZZYVA_WORD_ENGINE_H

@@ -29,6 +29,8 @@
 #include "Defs.h"
 #include <QtSql>
 
+const int MAX_DEFINITION_LINKS = 3;
+
 using namespace Defs;
 
 //---------------------------------------------------------------------------
@@ -67,8 +69,8 @@ CreateDatabaseThread::runPrivate()
     // - Two for inserting each word's values into the database
     // - Two total for creating indexes
     int numWords = wordEngine->getNumWords();
-    int baseProgress = numWords * 4 / 99;
-    int numSteps = numWords * 4 + baseProgress + 1;
+    int baseProgress = numWords * 5 / 99;
+    int numSteps = numWords * 5 + baseProgress + 1;
     emit steps (numSteps);
     int stepNum = baseProgress;
     emit progress (stepNum);
@@ -82,6 +84,8 @@ CreateDatabaseThread::runPrivate()
     updateProbabilityOrder (db, stepNum);
 
     updateDefinitions (db, stepNum);
+
+    updateDefinitionLinks (db, stepNum);
 
     emit progress (numSteps);
 }
@@ -410,3 +414,200 @@ CreateDatabaseThread::cancel()
 {
     cancelled = true;
 }
+
+//---------------------------------------------------------------------------
+//  updateDefinitionLinks
+//
+//! Update links within definitions of words in the database.
+//
+//! @param db the database
+//! @param stepNum the current step number
+//---------------------------------------------------------------------------
+void
+CreateDatabaseThread::updateDefinitionLinks (QSqlDatabase& db, int& stepNum)
+{
+    getDefinitions (db, stepNum);
+
+    if (cancelled)
+        return;
+
+    QSqlQuery updateQuery (db);
+    updateQuery.prepare ("UPDATE words SET definition=? WHERE word=?");
+
+    QSqlQuery transactionQuery (db);
+    transactionQuery.exec ("BEGIN TRANSACTION");
+
+    QMapIterator<QString, QString> it (definitions);
+    while (it.hasNext()) {
+        it.next();
+        QString word = it.key();
+        QString definition = it.value();
+
+        QStringList defs = definition.split (" / ");
+        QString newDefinition;
+        QString def;
+        foreach (def, defs) {
+            if (!newDefinition.isEmpty())
+                newDefinition += "\n";
+            newDefinition += replaceDefinitionLinks (def,
+                                                     MAX_DEFINITION_LINKS);
+        }
+
+        if (definition != newDefinition) {
+            updateQuery.bindValue (0, newDefinition);
+            updateQuery.bindValue (1, word);
+            updateQuery.exec();
+        }
+
+        ++stepNum;
+
+        if ((stepNum % 1000) == 0) {
+            transactionQuery.exec ("END TRANSACTION");
+            if (cancelled)
+                return;
+            transactionQuery.exec ("BEGIN TRANSACTION");
+            emit progress (stepNum);
+        }
+    }
+
+    transactionQuery.exec ("END TRANSACTION");
+}
+
+//---------------------------------------------------------------------------
+//  getDefinitions
+//
+//! Get word definitions from the database and put them in the definitions
+//! map.  Discard any definitions that consist of only part of speech.
+//
+//! @param db the database
+//! @param stepNum the current step number
+//---------------------------------------------------------------------------
+void
+CreateDatabaseThread::getDefinitions (QSqlDatabase& db, int& stepNum)
+{
+    QSqlQuery selectQuery (db);
+    selectQuery.prepare ("SELECT word, definition FROM words");
+    selectQuery.exec();
+
+    QRegExp defRegex (QString ("^[^[]|\\s+/\\s+[^[]"));
+
+    while (selectQuery.next()) {
+        QString word = selectQuery.value (0).toString();
+        QString definition = selectQuery.value (1).toString();
+
+        if (defRegex.indexIn (definition, 0) < 0) {
+            ++stepNum;
+            if ((stepNum % 1000) == 0) {
+                if (cancelled)
+                    return;
+                emit progress (stepNum);
+            }
+            continue;
+        }
+
+        definitions[word] = definition;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  replaceDefinitionLinks
+//
+//! Replace links in a definition with the definitions of the words they are
+//! linked to.  A string is assumed to have a maximum of one link.  Links may
+//! be followed recursively to the maximum depth specified.
+//
+//! @param definition the definition with links to be replaced
+//! @param maxDepth the maximum number of recursive links to replace
+//! @param useFollow true if the "follow" replacement should be used
+//
+//! @return a string with links replaced
+//---------------------------------------------------------------------------
+QString
+CreateDatabaseThread::replaceDefinitionLinks (const QString& definition, int
+                                              maxDepth, bool useFollow) const
+{
+    QRegExp followRegex (QString ("\\{(\\w+)=(\\w+)\\}"));
+    QRegExp replaceRegex (QString ("\\<(\\w+)=(\\w+)\\>"));
+
+    // Try to match the follow regex and the replace regex.  If a follow regex
+    // is ever matched, then the "follow" replacements should always be used,
+    // even if the "replace" regex is matched in a later iteration.
+    QRegExp* matchedRegex = 0;
+    int index = followRegex.indexIn (definition, 0);
+    if (index >= 0) {
+        matchedRegex = &followRegex;
+        useFollow = true;
+    }
+    else {
+        index = replaceRegex.indexIn (definition, 0);
+        matchedRegex = &replaceRegex;
+    }
+
+    if (index < 0)
+        return definition;
+
+    QString modified (definition);
+    QString word = matchedRegex->cap (1);
+    QString pos = matchedRegex->cap (2);
+
+    QString replacement;
+    if (!maxDepth) {
+        replacement = word;
+    }
+    else {
+        QString upper = word.toUpper();
+        QString subdef = getSubDefinition (upper, pos);
+        if (subdef.isEmpty()) {
+            replacement = useFollow ? word : upper;
+        }
+        else if (useFollow) {
+            replacement = (matchedRegex == &followRegex) ?
+                word + " (" + subdef + ")" : subdef;
+        }
+        else {
+            replacement = upper + ", " + getSubDefinition (upper, pos);
+        }
+    }
+
+    modified.replace (index, matchedRegex->matchedLength(), replacement);
+    return maxDepth ? replaceDefinitionLinks (modified, maxDepth - 1,
+                                              useFollow) : modified;
+}
+
+//---------------------------------------------------------------------------
+//  getSubDefinition
+//
+//! Return the definition associated with a word and a part of speech.  If
+//! more than one definition is given for a part of speech, pick the first
+//! one.
+//
+//! @param word the word
+//! @param pos the part of speech
+//
+//! @return the definition substring
+//---------------------------------------------------------------------------
+QString
+CreateDatabaseThread::getSubDefinition (const QString& word, const QString&
+                                        pos) const
+{
+    if (!definitions.contains (word))
+        return QString::null;
+
+    QString definition = definitions[word];
+    QRegExp posRegex (QString ("\\[(\\w+)"));
+    QStringList defs = definition.split (" / ");
+    QString def;
+    foreach (def, defs) {
+        if ((posRegex.indexIn (def, 0) > 0) &&
+            (posRegex.cap (1) == pos))
+        {
+            QString str = def.left (def.indexOf ("[")).simplified();
+            if (!str.isEmpty())
+                return str;
+        }
+    }
+
+    return QString::null;
+}
+
+
