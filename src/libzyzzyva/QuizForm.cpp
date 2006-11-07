@@ -301,7 +301,7 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     checkResponseButton->setEnabled (false);
     buttonGlay->addWidget (checkResponseButton, 0, 1, Qt::AlignHCenter);
 
-    markMissedButton = new ZPushButton ("Mark as &Missed");
+    markMissedButton = new ZPushButton ("&Mark as Missed");
     Q_CHECK_PTR (markMissedButton);
     markMissedButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect (markMissedButton, SIGNAL (clicked()),
@@ -920,6 +920,24 @@ QuizForm::markMissedClicked()
     markMissedButton->setEnabled (false);
     bool old = checkBringsJudgment;
     checkBringsJudgment = true;
+    db->undoLastResponse (quizEngine->getQuestion());
+    checkResponseClicked();
+    checkBringsJudgment = old;
+}
+
+//---------------------------------------------------------------------------
+//  markCorrectClicked
+//
+//! Called when the Mark as Correct button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::markCorrectClicked()
+{
+    //quizEngine->markQuestionAsCorrect();
+    responseModel->clear();
+    bool old = checkBringsJudgment;
+    checkBringsJudgment = false;
+    db->undoLastResponse (quizEngine->getQuestion());
     checkResponseClicked();
     checkBringsJudgment = old;
 }
@@ -1248,13 +1266,13 @@ QuizForm::setQuestionStatus (const QuizDatabase::QuestionData& data)
 
     int origCardbox = origQuestionData.cardbox;
 
-
     QString format = "yyyy-MM-dd hh:mm:ss";
     QString text = "Old Cardbox: " + QString::number (origCardbox) +
                    ", New Cardbox: " + QString::number (data.cardbox) +
                    ", Next Scheduled: " + nextDate.toString (format) +
                    " (" + QString::number (numDays) + " day" +
                    (numDays == 1 ? QString() : QString ("s")) + ")";
+
     questionStatusLabel->setText (text);
 }
 
@@ -1471,16 +1489,9 @@ QuizForm::keyPressEvent (QKeyEvent* event)
         if (cardbox) {
             QuizSpec quizSpec = quizEngine->getQuizSpec();
             if (quizSpec.getMethod() == QuizSpec::CardboxQuizMethod) {
-                bool old = checkBringsJudgment;
-                checkBringsJudgment = false;
-                if (checkResponseButton->isEnabled())
-                    checkResponseClicked();
-
-                QString question = quizEngine->getQuestion();
-                db->setCardbox (question, cardbox);
+                markCorrectClicked();
+                db->setCardbox (quizEngine->getQuestion(), cardbox);
                 updateQuestionStatus();
-
-                checkBringsJudgment = old;
             }
         }
 

@@ -54,6 +54,7 @@ class QuizDatabase
     bool updateSchema();
     void recordResponse (const QString& question, bool correct,
                          bool updateCardbox);
+    void undoLastResponse (const QString& question);
     void addToCardbox (const QStringList& questions, bool estimateCardbox);
     void addToCardbox (const QString& question, bool estimateCardbox);
     void removeFromCardbox (const QStringList& questions);
@@ -72,6 +73,9 @@ class QuizDatabase
     QString dbConnectionName;
     QSqlDatabase* db;
     Rand rng;
+
+    QString undoQuestion;
+    QuestionData undoData;
 };
 
 #endif // ZYZZYVA_QUIZ_DATABASE_H
