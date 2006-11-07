@@ -52,6 +52,7 @@ class QuizEngine
     void completeQuestion();
 
     ResponseStatus respond (const QString& response);
+    void markQuestionAsCorrect();
     void markQuestionAsMissed();
     QString getQuestion() const;
     QStringList getMissed() const;
@@ -66,6 +67,8 @@ class QuizEngine
     int getQuizIncorrect() const { return quizIncorrect; }
     std::set<QString> getQuestionCorrectResponses() const {
         return correctUserResponses; }
+    QStringList getQuestionIncorrectResponses() const {
+        return incorrectUserResponses; }
 
     bool getQuestionComplete() const {
         return quizSpec.getProgress().getQuestionComplete(); }

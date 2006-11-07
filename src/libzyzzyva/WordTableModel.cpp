@@ -171,6 +171,47 @@ WordTableModel::addWords (const QList<WordItem>& words)
 }
 
 //---------------------------------------------------------------------------
+//  removeWord
+//
+//! Add a word to the model.
+//
+//! @param word the word to remove
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordTableModel::removeWord (const QString& word)
+{
+    int count = 0;
+    int start = 0;
+    for (int i = 0; i < rowCount(); ++i) {
+        const WordItem& item = wordList.at (i);
+        if (item.getWord() == word) {
+            if (!count)
+                start = i;
+            ++count;
+
+            if (i < lastAddedIndex)
+                --lastAddedIndex;
+            else if (i == lastAddedIndex)
+                lastAddedIndex = -1;
+        }
+        else if (count) {
+            bool ok = removeRows (start, count);
+            emit wordsChanged();
+            return ok;
+        }
+    }
+
+    if (count) {
+        bool ok = removeRows (start, count);
+        emit wordsChanged();
+        return ok;
+    }
+
+    return false;
+}
+
+//---------------------------------------------------------------------------
 //  rowCount
 //
 //! Return the number of rows under the given parent.  Reimplemented from

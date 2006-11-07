@@ -933,12 +933,26 @@ QuizForm::markMissedClicked()
 void
 QuizForm::markCorrectClicked()
 {
+    QStringList missed = quizEngine->getMissed();
+    QStringListIterator it (missed);
+    while (it.hasNext()) {
+        analyzeDialog->removeMissed (it.next());
+    }
+
+    QStringList incorrect = quizEngine->getQuestionIncorrectResponses();
+    QStringListIterator jt (incorrect);
+    while (jt.hasNext()) {
+        analyzeDialog->removeIncorrect (jt.next());
+    }
+
     responseModel->clear();
     bool old = checkBringsJudgment;
     checkBringsJudgment = false;
     db->undoLastResponse (quizEngine->getQuestion());
     checkResponseClicked();
     checkBringsJudgment = old;
+    quizEngine->markQuestionAsCorrect();
+    analyzeDialog->updateStats();
 }
 
 //---------------------------------------------------------------------------
