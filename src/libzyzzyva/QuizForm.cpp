@@ -933,7 +933,6 @@ QuizForm::markMissedClicked()
 void
 QuizForm::markCorrectClicked()
 {
-    //quizEngine->markQuestionAsCorrect();
     responseModel->clear();
     bool old = checkBringsJudgment;
     checkBringsJudgment = false;
@@ -1489,7 +1488,11 @@ QuizForm::keyPressEvent (QKeyEvent* event)
         if (cardbox) {
             QuizSpec quizSpec = quizEngine->getQuizSpec();
             if (quizSpec.getMethod() == QuizSpec::CardboxQuizMethod) {
-                markCorrectClicked();
+                if (quizEngine->getQuestionCorrect() !=
+                    quizEngine->getQuestionTotal())
+                {
+                    markCorrectClicked();
+                }
                 db->setCardbox (quizEngine->getQuestion(), cardbox);
                 updateQuestionStatus();
             }
