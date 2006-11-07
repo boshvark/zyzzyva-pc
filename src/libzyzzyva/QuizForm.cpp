@@ -998,7 +998,6 @@ QuizForm::startQuestion()
     stopDisplayingCorrectAnswers();
     clearStats();
     updateQuestionDisplay();
-    setQuestionLabel (quizEngine->getQuestion());
     responseModel->clear();
 
     std::set<QString> correct = quizEngine->getQuestionCorrectResponses();
