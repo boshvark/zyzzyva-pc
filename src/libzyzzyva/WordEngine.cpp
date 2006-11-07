@@ -373,14 +373,26 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
 
             case SearchCondition::IncludeLetters: {
                 QString str = condition.stringValue;
+                QMap<QChar, int> letters;
                 for (int i = 0; i < str.length(); ++i) {
-                    QChar c = str.at (i);
+                    ++letters[str.at (i)];
+                }
+
+                QMapIterator<QChar, int> it (letters);
+                for (int i = 0; it.hasNext(); ++i) {
+                    it.next();
+                    QChar c = it.key();
                     if (i)
                         queryStr += " AND";
                     queryStr += " word";
                     if (condition.negated)
                         queryStr += " NOT";
-                    queryStr += " LIKE '%" + QString (c) + "%'";
+                    queryStr += " LIKE '%";
+                    int count = condition.negated ? 1 : it.value();
+                    for (int j = 0; j < count; ++j) {
+                        queryStr += QString (c) + "%";
+                    }
+                    queryStr += "'";
                 }
             }
             break;
