@@ -1000,6 +1000,9 @@ QuizForm::startQuestion()
     updateQuestionDisplay();
     responseModel->clear();
 
+    QString question = quizEngine->getQuestion();
+    origQuestionData = db->getQuestionData (question);
+
     std::set<QString> correct = quizEngine->getQuestionCorrectResponses();
     if (!correct.empty()) {
         std::set<QString>::iterator it;
@@ -1243,8 +1246,12 @@ QuizForm::setQuestionStatus (const QuizDatabase::QuestionData& data)
     QDateTime now = QDateTime::currentDateTime();
     int numDays = now.daysTo (nextDate);
 
+    int origCardbox = origQuestionData.cardbox;
+
+
     QString format = "yyyy-MM-dd hh:mm:ss";
-    QString text = "Cardbox: " + QString::number (data.cardbox) +
+    QString text = "Old Cardbox: " + QString::number (origCardbox) +
+                   ", New Cardbox: " + QString::number (data.cardbox) +
                    ", Next Scheduled: " + nextDate.toString (format) +
                    " (" + QString::number (numDays) + " day" +
                    (numDays == 1 ? QString() : QString ("s")) + ")";

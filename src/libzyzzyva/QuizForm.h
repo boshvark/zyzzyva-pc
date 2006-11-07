@@ -162,6 +162,7 @@ class QuizForm : public ActionForm
     bool unsavedChanges;
 
     QuizDatabase* db;
+    QuizDatabase::QuestionData origQuestionData;
 
     QTimer* displayAnswerTimer;
     int currentDisplayAnswer;
