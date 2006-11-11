@@ -88,6 +88,22 @@ QuizProgress::addIncorrect (const QString& word, int count)
 }
 
 //---------------------------------------------------------------------------
+//  removeIncorrect
+//
+//! Remove a incorrect response.
+//
+//! @param word the response word
+//---------------------------------------------------------------------------
+void
+QuizProgress::removeIncorrect (const QString& word)
+{
+    if (!incorrectWords.contains (word))
+        return;
+    --incorrectWords[word];
+    --incorrect;
+}
+
+//---------------------------------------------------------------------------
 //  addMissed
 //
 //! Add a missed response, incrementing the number of times the response was
@@ -118,6 +134,22 @@ QuizProgress::addMissed (const QString& word, int count)
 {
     missedWords[word] = count;
     missed += count;
+}
+
+//---------------------------------------------------------------------------
+//  removeMissed
+//
+//! Remove a missed response.
+//
+//! @param word the response word
+//---------------------------------------------------------------------------
+void
+QuizProgress::removeMissed (const QString& word)
+{
+    if (!missedWords.contains (word))
+        return;
+    --missedWords[word];
+    --missed;
 }
 
 //---------------------------------------------------------------------------

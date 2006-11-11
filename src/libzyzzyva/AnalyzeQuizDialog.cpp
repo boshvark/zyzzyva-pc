@@ -246,6 +246,22 @@ AnalyzeQuizDialog::addMissed (const QStringList& words, bool update)
 }
 
 //---------------------------------------------------------------------------
+//  removeMissed
+//
+//! Remove a word from the Missed list.
+//
+//! @param word the word
+//! @param update true if visible stats should be updated
+//---------------------------------------------------------------------------
+void
+AnalyzeQuizDialog::removeMissed (const QString& word, bool update)
+{
+    missedModel->removeWord (word);
+    if (update)
+        updateStats();
+}
+
+//---------------------------------------------------------------------------
 //  addIncorrect
 //
 //! Add a word to the Incorrect list.
@@ -295,6 +311,22 @@ AnalyzeQuizDialog::addIncorrect (const QStringList& words, bool update)
     incorrectModel->addWords (wordItems);
     MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
 
+    if (update)
+        updateStats();
+}
+
+//---------------------------------------------------------------------------
+//  removeIncorrect
+//
+//! Remove a word from the Incorrect list.
+//
+//! @param word the word
+//! @param update true if visible stats should be updated
+//---------------------------------------------------------------------------
+void
+AnalyzeQuizDialog::removeIncorrect (const QString& word, bool update)
+{
+    incorrectModel->removeWord (word);
     if (update)
         updateStats();
 }

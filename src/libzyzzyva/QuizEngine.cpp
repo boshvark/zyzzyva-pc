@@ -283,6 +283,39 @@ QuizEngine::respond (const QString& response)
 }
 
 //---------------------------------------------------------------------------
+//  markQuestionAsCorrect
+//
+//! Mark the current question as correct.
+//---------------------------------------------------------------------------
+void
+QuizEngine::markQuestionAsCorrect()
+{
+    // Remove any incorrect answers the user may have already had
+    int numIncorrect = incorrectUserResponses.size();
+    quizIncorrect -= numIncorrect;
+
+    QuizProgress progress = quizSpec.getProgress();
+    QStringListIterator it (incorrectUserResponses);
+    while (it.hasNext()) {
+        progress.removeIncorrect (it.next());
+    }
+    incorrectUserResponses.clear();
+
+    QStringList missed = getMissed();
+    QStringListIterator jt (missed);
+    while (jt.hasNext()) {
+        QString word = jt.next();
+        correctUserResponses.insert (word);
+        progress.addQuestionCorrect (word);
+        if (progress.getQuestionComplete()) {
+            progress.removeMissed (word);
+        }
+    }
+
+    quizSpec.setProgress (progress);
+}
+
+//---------------------------------------------------------------------------
 //  markQuestionAsMissed
 //
 //! Mark the current question as missed.

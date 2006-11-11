@@ -42,8 +42,10 @@ class QuizProgress
     void setCorrect (int c) { correct = c; }
     void addIncorrect (const QString& word);
     void addIncorrect (const QString& word, int count);
+    void removeIncorrect (const QString& word);
     void addMissed (const QString& word);
     void addMissed (const QString& word, int count);
+    void removeMissed (const QString& word);
     void addQuestionCorrect (const QString& word);
     void clearQuestionCorrect() { questionCorrectWords.clear(); }
     void setQuestionComplete (bool b) { questionComplete = b; }
