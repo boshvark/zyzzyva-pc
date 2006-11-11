@@ -214,15 +214,8 @@ QuizDatabase::recordResponse (const QString& question, bool correct,
 void
 QuizDatabase::undoLastResponse (const QString& question)
 {
-    qDebug ("QuizDatabase::undoLastResponse: question |%s|, undoQuestion: |%s|",
-            question.toUtf8().data(), undoQuestion.toUtf8().data());
     if (undoQuestion != question)
         return;
-
-    qDebug ("Setting question data: correct: %d, incorrect: %d, streak: %d\n"
-            "   lastCorrect: %d, cardbox: %d, nextScheduled: %d",
-            undoData.numCorrect, undoData.numIncorrect, undoData.streak,
-            undoData.lastCorrect, undoData.cardbox, undoData.nextScheduled);
 
     setQuestionData (question, undoData, true);
 }
