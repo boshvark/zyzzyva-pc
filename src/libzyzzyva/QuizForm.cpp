@@ -573,8 +573,12 @@ QuizForm::newQuiz (const QuizSpec& spec)
     else
         questionStatusLabel->hide();
 
-    quizTypeLabel->setText (Auxil::quizTypeToString
-                            (quizEngine->getQuizSpec().getType()));
+    // Connect to dotabase before starting the first question
+    QString lexicon = spec.getLexicon();
+    QString quizType = Auxil::quizTypeToString (spec.getType());
+    connectToDatabase (lexicon, quizType);
+
+    quizTypeLabel->setText (quizType);
     startQuestion();
     analyzeDialog->newQuiz (spec);
 
@@ -595,10 +599,6 @@ QuizForm::newQuiz (const QuizSpec& spec)
     setQuizNameFromFilename (spec.getFilename());
 
     QTimer::singleShot (0, this, SLOT (selectInputArea()));
-
-    QString lexicon = quizEngine->getQuizSpec().getLexicon();
-    QString quizType = quizTypeLabel->text();
-    connectToDatabase (lexicon, quizType);
 
     setUnsavedChanges (spec.getFilename().isEmpty());
     return true;
