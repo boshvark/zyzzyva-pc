@@ -1487,8 +1487,10 @@ CrosswordGameForm::threadSocketError (QAbstractSocket::SocketError error)
         break;
     }
 
-    QMessageBox::warning (this, "Network Error",
-                          "A network error occurred:\n" + errorMsg);
+    QString caption = "Network Error";
+    QString message = "A network error occurred:\n" + errorMsg;
+    message = Auxil::dialogWordWrap (message);
+    QMessageBox::warning (this, caption, message);
 
     disconnectClicked();
 }

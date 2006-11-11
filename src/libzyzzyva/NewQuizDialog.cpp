@@ -396,9 +396,11 @@ NewQuizDialog::loadQuiz()
 
     QFile file (filename);
     if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::warning (this, "Error Opening Quiz File",
-                              "Cannot open file '" + filename + "': " +
-                              file.errorString());
+        QString caption = "Error Opening Quiz File";
+        QString message = "Cannot open file '" + filename + "': " +
+            file.errorString();
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 
@@ -409,8 +411,10 @@ NewQuizDialog::loadQuiz()
     QApplication::restoreOverrideCursor();
 
     if (!ok) {
-        QMessageBox::warning (this, "Error in Quiz File",
-                              "Error in quiz file.\n" + errorMsg);
+        QString caption = "Error in Quiz File";
+        QString message = "Error in quiz file.\n" + errorMsg;
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 
@@ -421,14 +425,15 @@ NewQuizDialog::loadQuiz()
         if (quizLexicon.isEmpty())
             quizLexicon = "unspecified";
 
+        QString caption = "Lexicon Mismatch";
         QString message = "The lexicon associated with the quiz is "
                           + quizLexicon + ", but the current lexicon is "
                           + currentLexicon + ".  "
                           "If a different lexicon is used, the quiz may "
                           "encounter problems.\n\n"
                           "Are you sure you want to proceed?";
-
-        int code = QMessageBox::warning (this, "Lexicon Mismatch", message,
+        message = Auxil::dialogWordWrap (message);
+        int code = QMessageBox::warning (this, caption, message,
                                          QMessageBox::Yes, QMessageBox::No);
 
         if (code != QMessageBox::Yes)
@@ -470,18 +475,20 @@ NewQuizDialog::saveQuiz()
 
     QFile file (filename);
     if (filenameEdited && file.exists()) {
-        int code = QMessageBox::warning (0, "Overwrite Existing File?",
-                                         "The file already exists.  "
-                                         "Overwrite it?", QMessageBox::Yes,
-                                         QMessageBox::No);
+        QString caption = "Overwrite Existing File?";
+        QString message = "The file already exists.  Overwrite it?";
+        message = Auxil::dialogWordWrap (message);
+        int code = QMessageBox::warning (0, caption, message,
+                                         QMessageBox::Yes, QMessageBox::No);
         if (code != QMessageBox::Yes)
             return;
     }
 
     if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::warning (this, "Error Saving Quiz",
-                              "Cannot save quiz:\n" + file.errorString() +
-                              ".");
+        QString caption = "Error Saving Quiz";
+        QString message = "Cannot save quiz:\n" + file.errorString() + ".";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 

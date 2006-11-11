@@ -139,8 +139,10 @@ void
 WordTableView::exportRequested()
 {
     if (model()->rowCount() == 0) {
-        QMessageBox::warning (this, "Cannot Save Word List",
-                              "Cannot save word list:\nNo words to save.");
+        QString caption = "Cannot Save Word List";
+        QString message = "Cannot save word list:\nNo words to save.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 
@@ -169,12 +171,14 @@ WordTableView::exportRequested()
         filename += ".txt";
         if (QFile::exists (filename)) {
             QFileInfo fileInfo (filename);
-            int code = QMessageBox::warning (this, "File Exists",
-                                  "An item named \"" + fileInfo.fileName() +
-                                  "\" already exists in this location.\n"
-                                  "Do you want to replace it with the one "
-                                  "you are saving?",
-                                  QMessageBox::Ok, QMessageBox::Cancel);
+            QString caption = "File Exists";
+            QString message = "An item named \"" + fileInfo.fileName() +
+                "\" already exists in this location.  Do you want to replace "
+                "it with the one you are saving?";
+            message = Auxil::dialogWordWrap (message);
+            int code = QMessageBox::warning (this, caption, message,
+                                             QMessageBox::Ok,
+                                             QMessageBox::Cancel);
             if (code != QMessageBox::Ok)
                 return;
         }
@@ -185,8 +189,10 @@ WordTableView::exportRequested()
     bool ok = exportFile (filename, format, attributes, &error);
     QApplication::restoreOverrideCursor();
     if (!ok) {
-        QMessageBox::warning (this, "Error Saving Word List",
-                              "Cannot save word list:\n" + error + ".");
+        QString caption = "Error Saving Word List";
+        QString message = "Cannot save word list:\n" + error + ".";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
     }
 }
 
@@ -202,8 +208,10 @@ WordTableView::createQuizRequested()
 {
     int numWords = model()->rowCount();
     if (numWords == 0) {
-        QMessageBox::warning (this, "Error Creating Quiz",
-                              "Cannot create quiz:\nNo words in the list.");
+        QString caption = "Error Creating Quiz";
+        QString message = "Cannot create quiz:\nNo words in the list.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
     }
 
     QuizSpec quizSpec;
@@ -236,9 +244,11 @@ WordTableView::addToCardboxRequested()
 {
     int numWords = model()->rowCount();
     if (numWords == 0) {
-        QMessageBox::warning (this, "Error Adding Words to Cardbox",
-                              "Cannot add words to cardbox:\n"
-                              "No words in the list.");
+        QString caption = "Error Adding Words to Cardbox";
+        QString message = "Cannot add words to cardbox:\n"
+            "No words in the list.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 
@@ -266,9 +276,11 @@ WordTableView::addToCardboxRequested()
         QApplication::restoreOverrideCursor();
 
         if (!ok) {
-            QMessageBox::warning (this, "Error Adding Words to Cardbox",
-                                  "An error occurred while adding words "
-                                  "to the cardbox system.");
+            QString caption = "Error Adding Words to Cardbox";
+            QString message = "An error occurred while adding words to the "
+                "cardbox system.";
+            message = Auxil::dialogWordWrap (message);
+            QMessageBox::warning (this, caption, message);
         }
     }
 
@@ -286,9 +298,11 @@ WordTableView::removeFromCardboxRequested()
 {
     int numWords = model()->rowCount();
     if (numWords == 0) {
-        QMessageBox::warning (this, "Error Removing Words from Cardbox",
-                              "Cannot remove words from cardbox:\n"
-                              "No words in the list.");
+        QString caption = "Error Removing Words from Cardbox";
+        QString message = "Cannot remove words from cardbox:\n"
+            "No words in the list.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 
@@ -315,9 +329,11 @@ WordTableView::removeFromCardboxRequested()
         QApplication::restoreOverrideCursor();
 
         if (!ok) {
-            QMessageBox::warning (this, "Error Removing Words from Cardbox",
-                                  "An error occurred while removing words "
-                                  "from the cardbox system.");
+            QString caption = "Error Removing Words from Cardbox";
+            QString message = "An error occurred while removing words "
+                "from the cardbox system.";
+            message = Auxil::dialogWordWrap (message);
+            QMessageBox::warning (this, caption, message);
         }
     }
 

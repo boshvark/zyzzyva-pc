@@ -505,10 +505,10 @@ MainWindow::importInteractive()
     if (file.isNull()) return;
     int imported = importText (file, "Custom");
     if (imported < 0) return;
-    QMessageBox::information (this, IMPORT_COMPLETE_TITLE,
-                              "Loaded " + QString::number (imported)
-                              + " words.",
-                              QMessageBox::Ok);
+    QString caption = IMPORT_COMPLETE_TITLE;
+    QString message = "Loaded " + QString::number (imported) + " words.";
+    message = Auxil::dialogWordWrap (message);
+    QMessageBox::information (this, caption, message, QMessageBox::Ok);
 }
 
 //---------------------------------------------------------------------------
@@ -646,14 +646,13 @@ MainWindow::doSaveAction()
 void
 MainWindow::doJudgeAction()
 {
-    int code = QMessageBox::information (this,
-                                         "Entering Full Screen Word Judge",
-                                         "You are now entering the full "
-                                         "screen Word Judge mode.  "
-                                         "To exit full screen mode, press "
-                                         "ESC while holding the Shift key.",
-                                         QMessageBox::Ok,
-                                         QMessageBox::Cancel);
+    QString caption = "Entering Full Screen Word Judge";
+    QString message = "You are now entering the full screen Word Judge mode.  "
+                      "To exit full screen mode, press ESC while holding the "
+                      "Shift key.";
+    message = Auxil::dialogWordWrap (message);
+    int code = QMessageBox::information (this, caption, message,
+                                         QMessageBox::Ok, QMessageBox::Cancel);
 
     if (code != QMessageBox::Ok)
         return;
@@ -759,14 +758,13 @@ void
 MainWindow::rebuildDatabaseRequested()
 {
     QString lexicon = wordEngine->getLexiconName();
-    QString dialogTitle = "Rebuild Database";
-    QString dialogMessage =
-        "You have requested that Zyzzyva rebuild its database for "
-        "the current lexicon (" + lexicon + ").  This may take several "
-        "minutes.\n\n"
-        "Rebuild the database now?";
+    QString caption = "Rebuild Database";
+    QString message = "You have requested that Zyzzyva rebuild its database "
+        "for the current lexicon (" + lexicon + ").  This may take several "
+        "minutes.\n\nRebuild the database now?";
+    message = Auxil::dialogWordWrap (message);
 
-    int code = QMessageBox::question (this, dialogTitle, dialogMessage,
+    int code = QMessageBox::question (this, caption, message,
                                       QMessageBox::Yes, QMessageBox::No);
     if (code != QMessageBox::Yes) {
         return;
@@ -807,9 +805,11 @@ MainWindow::rescheduleCardboxRequested()
 
         QString questionStr = numRescheduled == 1 ? QString ("question")
                                                   : QString ("questions");
-        QMessageBox::information (this, "Cardbox Questions Rescheduled",
-                                  QString::number (numRescheduled) + " " +
-                                  questionStr + " rescheduled.");
+        QString caption = "Cardbox Questions Rescheduled";
+        QString message = QString::number (numRescheduled) + " " +
+            questionStr + " rescheduled.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::information (this, caption, message);
     }
 
     delete dialog;
@@ -849,8 +849,10 @@ MainWindow::displayLexiconError()
     if (lexiconError.isEmpty())
         return;
 
-    int code = QMessageBox::warning (this, "Lexicon Warning",
-                                     lexiconError + "\n\nProceed anyway?",
+    QString caption = "Lexicon Warning";
+    QString message = lexiconError + "\n\nProceed anyway?";
+    message = Auxil::dialogWordWrap (message);
+    int code = QMessageBox::warning (this, caption, message,
                                      QMessageBox::Yes, QMessageBox::No);
     if (code != QMessageBox::Yes)
         qApp->quit();
@@ -866,7 +868,8 @@ MainWindow::displayLexiconError()
 void
 MainWindow::helpDialogError (const QString& message)
 {
-    QMessageBox::warning (this, "Help Display Error", message);
+    QString caption = "Help Display Error";
+    QMessageBox::warning (this, caption, Auxil::dialogWordWrap (message));
 }
 
 //---------------------------------------------------------------------------
@@ -1043,8 +1046,8 @@ MainWindow::connectToDatabase()
     bool createDatabase = false;
     QFile dbFile (dbFilename);
 
-    QString dialogMessage;
-    QString dialogTitle;
+    QString message;
+    QString caption;
 
     if (dbFile.exists()) {
         Rand rng;
@@ -1065,8 +1068,8 @@ MainWindow::connectToDatabase()
                     dbVersion = query.value (0).toInt();
 
                 if (dbVersion < CURRENT_DATABASE_VERSION) {
-                    dialogTitle = "Update database?";
-                    dialogMessage =
+                    caption = "Update database?";
+                    message =
                         "The database exists but is out of date.  "
                         "For certain searches and quizzes to work correctly, "
                         "Zyzzyva must create an updated database of "
@@ -1079,8 +1082,8 @@ MainWindow::connectToDatabase()
             }
 
             else {
-                dialogTitle = "Rebuild database?";
-                dialogMessage =
+                caption = "Rebuild database?";
+                message =
                     "The database exists but Zyzzyva cannot connect to it.  "
                     "For certain searches and quizzes to work correctly, "
                     "Zyzzyva must create a database of information about "
@@ -1094,8 +1097,8 @@ MainWindow::connectToDatabase()
     }
 
     else {
-        dialogTitle = "Create database?";
-        dialogMessage =
+        caption = "Create database?";
+        message =
             "For certain searches and quizzes to work correctly, Zyzzyva "
             "must create a database of information about the current "
             "lexicon (" + lexicon + ").  This may take several minutes, "
@@ -1105,8 +1108,9 @@ MainWindow::connectToDatabase()
             "Create the database now?";
     }
 
-    if (!dialogMessage.isEmpty()) {
-        int code = QMessageBox::question (this, dialogTitle, dialogMessage,
+    if (!message.isEmpty()) {
+        message = Auxil::dialogWordWrap (message);
+        int code = QMessageBox::question (this, caption, message,
                                           QMessageBox::Yes, QMessageBox::No);
         if (code != QMessageBox::Yes) {
             return;
@@ -1119,8 +1123,10 @@ MainWindow::connectToDatabase()
     if (useDb) {
         bool ok = wordEngine->connectToDatabase (dbFilename, &dbError);
         if (!ok) {
-            QMessageBox::warning (this, "Database Connection Error",
-                                "Unable to connect to database:\n" + dbError);
+            QString caption = "Database Connection Error";
+            QString message = "Unable to connect to database:\n" + dbError;
+            message = Auxil::dialogWordWrap (message);
+            QMessageBox::warning (this, caption, message);
             return;
         }
     }

@@ -430,9 +430,10 @@ QuizForm::responseEntered()
 
     if (!responseMatchesQuestion (response)) {
         pauseTimer();
-        QMessageBox::warning (this, "Response does not match question",
-                              "Sorry, your response does not match the "
-                              "question.");
+        QString caption = "Response does not match question";
+        QString message = "Sorry, your response does not match the question.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         unpauseTimer();
         return;
     }
@@ -552,6 +553,7 @@ QuizForm::newQuiz (const QuizSpec& spec)
     QApplication::restoreOverrideCursor();
 
     if (!ok) {
+        QString caption = "No Questions Found";
         QString message;
         if (spec.getMethod() == QuizSpec::CardboxQuizMethod) {
             message = "No matching questions are ready for review.  "
@@ -562,9 +564,9 @@ QuizForm::newQuiz (const QuizSpec& spec)
             message = "No matching questions were found.  "
                       "Please modify your search criteria.";
         }
+        message = Auxil::dialogWordWrap (message);
 
-        QMessageBox::warning (MainWindow::getInstance(), "No Questions Found",
-                              message);
+        QMessageBox::warning (MainWindow::getInstance(), caption, message);
         return false;
     }
 
@@ -644,10 +646,11 @@ QuizForm::saveRequested()
 
     QFile file (filename);
     if (filenameEdited && file.exists()) {
-        int code = QMessageBox::warning (0, "Overwrite Existing File?",
-                                         "The file already exists.  "
-                                         "Overwrite it?", QMessageBox::Yes,
-                                         QMessageBox::No);
+        QString caption = "Overwrite Existing File?";
+        QString message = "The file already exists.  Overwrite it?";
+        message = Auxil::dialogWordWrap (message);
+        int code = QMessageBox::warning (0, caption, message,
+                                         QMessageBox::Yes, QMessageBox::No);
         if (code != QMessageBox::Yes) {
             unpauseTimer();
             return;
@@ -655,9 +658,10 @@ QuizForm::saveRequested()
     }
 
     if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::warning (this, "Error Saving Quiz",
-                              "Cannot save quiz:\n" + file.errorString() +
-                              ".");
+        QString caption = "Error Saving Quiz";
+        QString message = "Cannot save quiz:\n" + file.errorString() + ".";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         unpauseTimer();
         return;
     }
@@ -777,9 +781,12 @@ QuizForm::unpauseTimer()
 void
 QuizForm::nextQuestionClicked()
 {
-    if (!quizEngine->nextQuestion())
-        QMessageBox::warning (this, "Error getting next question",
-                              "Error getting next question.");
+    if (!quizEngine->nextQuestion()) {
+        QString caption = "Error getting next question";
+        QString message = "Error getting next question.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
+    }
     startQuestion();
     analyzeDialog->updateStats();
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
@@ -1434,10 +1441,11 @@ QuizForm::promptToSaveChanges()
     if (!quizName.isEmpty())
         quizName = "(\"" + quizName + "\") ";
 
-    int code = QMessageBox::warning (this, "Save Quiz?",
-                                     "This quiz " + quizName
-                                     + "has unsaved changes.  "
-                                     "Would you like to save it?",
+    QString caption = "Save Quiz?";
+    QString message = "This quiz " + quizName + "has unsaved changes.  "
+        "Would you like to save it?";
+    message = Auxil::dialogWordWrap (message);
+    int code = QMessageBox::warning (this, caption, message,
                                      QMessageBox::Yes, QMessageBox::No,
                                      QMessageBox::Cancel);
 
