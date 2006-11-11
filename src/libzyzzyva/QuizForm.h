@@ -76,6 +76,7 @@ class QuizForm : public ActionForm
     void nextQuestionClicked();
     void checkResponseClicked();
     void markMissedClicked();
+    void markCorrectClicked();
     void pauseClicked();
     void analyzeClicked();
     void flashcardStateChanged (int state);
