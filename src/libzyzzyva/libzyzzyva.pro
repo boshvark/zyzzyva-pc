@@ -24,7 +24,7 @@
 
 TEMPLATE = lib
 TARGET = zyzzyva
-CONFIG += qt release thread warn_on assistant
+CONFIG += qt thread warn_on assistant
 QT += sql xml network
 
 ROOT = ../..
@@ -33,6 +33,8 @@ MOC_DIR = build/moc
 OBJECTS_DIR = build/obj
 INCLUDEPATH += build/moc
 DEPENDPATH += build/moc
+
+include($$ROOT/zyzzyva.pri)
 
 unix {
     VERSION = $$system(cat $$ROOT/VERSION)

@@ -24,7 +24,7 @@
 
 TEMPLATE = app
 TARGET = test_zyzzyva
-CONFIG += qt release thread warn_on qtestlib
+CONFIG += qt thread warn_on qtestlib
 QT += sql xml
 
 ROOT = ../..
@@ -33,6 +33,8 @@ MOC_DIR = build/moc
 OBJECTS_DIR = build/obj
 INCLUDEPATH += build/moc $$ROOT/src/libzyzzyva
 DEPENDPATH += build/moc
+
+include($$ROOT/zyzzyva.pri)
 
 unix {
     LIBS = -lzyzzyva -L$$ROOT/bin
