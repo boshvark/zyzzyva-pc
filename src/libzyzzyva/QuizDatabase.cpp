@@ -87,6 +87,7 @@ QuizDatabase::~QuizDatabase()
         if (db->isOpen())
             db->close();
         delete db;
+        db = 0;
         QSqlDatabase::removeDatabase (dbConnectionName);
     }
 }

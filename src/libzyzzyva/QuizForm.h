@@ -32,7 +32,6 @@
 #include <QImage>
 #include <QKeyEvent>
 #include <QLabel>
-#include <QSqlDatabase>
 #include <QStackedWidget>
 #include <QString>
 #include <QTimer>

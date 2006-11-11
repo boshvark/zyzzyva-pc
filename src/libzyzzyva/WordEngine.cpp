@@ -69,14 +69,15 @@ WordEngine::connectToDatabase (const QString& filename, QString* errString)
     unsigned int r = rng.rand();
     dbConnectionName = "WordEngine" + QString::number (r);
 
-    db = QSqlDatabase::addDatabase ("QSQLITE", dbConnectionName);
-    db.setDatabaseName (filename);
-    bool ok = db.open();
+    db = new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE",
+                                                      dbConnectionName));
+    db->setDatabaseName (filename);
+    bool ok = db->open();
 
     if (!ok) {
         dbConnectionName = QString();
         if (errString)
-            *errString = db.lastError().text();
+            *errString = db->lastError().text();
         return false;
     }
 
@@ -93,12 +94,13 @@ WordEngine::connectToDatabase (const QString& filename, QString* errString)
 bool
 WordEngine::disconnectFromDatabase()
 {
-    if (!db.isOpen() || dbConnectionName.isEmpty())
+    if (!db || !db->isOpen() || dbConnectionName.isEmpty())
         return true;
 
-    db.close();
+    delete db;
+    db = 0;
     QSqlDatabase::removeDatabase (dbConnectionName);
-    dbConnectionName = QString();
+    dbConnectionName.clear();
     return true;
 }
 
@@ -442,7 +444,7 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
 
     // Query the database
     QStringList resultList;
-    QSqlQuery query (queryStr, db);
+    QSqlQuery query (queryStr, *db);
     while (query.next()) {
         QString word = query.value (0).toString();
         if (!upperToLower.isEmpty() && upperToLower.contains (word)) {
@@ -775,14 +777,14 @@ WordEngine::getWordInfo (const QString& word) const
     //qDebug ("Cache MISS: |%s|", word.toUtf8().data());
 
     WordInfo info;
-    if (!db.isOpen())
+    if (!db || !db->isOpen())
         return info;
 
     QString qstr = "SELECT probability_order, min_probability_order, "
         "max_probability_order, num_vowels, num_unique_letters, num_anagrams, "
         "point_value, front_hooks, back_hooks, definition FROM words "
         "WHERE word=?";
-    QSqlQuery query (db);
+    QSqlQuery query (*db);
     query.prepare (qstr);
     query.bindValue (0, word);
     query.exec();
@@ -815,9 +817,9 @@ WordEngine::getWordInfo (const QString& word) const
 int
 WordEngine::getNumWords() const
 {
-    if (db.isOpen()) {
+    if (db && db->isOpen()) {
         QString qstr = "SELECT count(*) FROM words";
-        QSqlQuery query (qstr, db);
+        QSqlQuery query (qstr, *db);
         if (query.next())
             return query.value (0).toInt();
     }
@@ -976,7 +978,7 @@ WordEngine::getBackHookLetters (const QString& word) const
 void
 WordEngine::addToCache (const QStringList& words) const
 {
-    if (words.isEmpty() || !db.isOpen())
+    if (words.isEmpty() || !db || !db->isOpen())
         return;
 
     QString qstr = "SELECT word, probability_order, min_probability_order, "
@@ -992,7 +994,7 @@ WordEngine::addToCache (const QStringList& words) const
     }
     qstr += ")";
 
-    QSqlQuery query (db);
+    QSqlQuery query (*db);
     query.prepare (qstr);
     query.exec();
 
