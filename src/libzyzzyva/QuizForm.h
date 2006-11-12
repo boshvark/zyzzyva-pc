@@ -140,6 +140,7 @@ class QuizForm : public ActionForm
     DefinitionLabel* responseStatusLabel;
     DefinitionLabel* correctStatusLabel;
     DefinitionLabel* cardboxStatusLabel;
+    DefinitionLabel* questionStatsLabel;
     QLabel*       letterOrderLabel;
     ZPushButton*  alphaOrderButton;
     ZPushButton*  randomOrderButton;
