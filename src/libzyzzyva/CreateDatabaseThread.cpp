@@ -557,13 +557,10 @@ CreateDatabaseThread::replaceDefinitionLinks (const QString& definition, int
     QString pos = matchedRegex->cap (2);
 
     QString replacement;
-    if (!maxDepth) {
-        replacement = word;
-    }
-    else {
+    if (maxDepth) {
         QString upper = word.toUpper();
         QString subdef = getSubDefinition (upper, pos);
-        if (subdef.isEmpty()) {
+        if (subdef.isEmpty() || (maxDepth == 1)) {
             replacement = useFollow ? word : upper;
         }
         else if (useFollow) {
