@@ -1155,20 +1155,27 @@ MainWindow::rebuildDatabase()
     QString lexiconPrefix = getLexiconPrefix (lexicon);
     QString definitionFilename = Auxil::getWordsDir() + lexiconPrefix + ".txt";
 
+    QFileInfo fileInfo (dbFilename);
+    QString file = fileInfo.fileName();
+    QString path = fileInfo.path();
+    QString tmpDbFilename = path + "/orig-" + file;
+
     wordEngine->disconnectFromDatabase();
     QFile dbFile (dbFilename);
-    bool ok = dbFile.remove();
+    QFile tmpDbFile (tmpDbFilename);
+    bool ok = dbFile.rename (tmpDbFilename);
     if (!ok) {
         QMessageBox::warning (this, "Cannot remove database file",
                               "Cannot remove original database file: " +
-                              dbFilename + ".\nPlease try closing Zyzzyva, "
-                              "removing the file, and restarting Zyzzyva.");
+                              dbFilename + ".\nPlease close Zyzzyva, remove "
+                              "or rename the file, then restart Zyzzyva.");
+        tmpDbFile.rename (dbFilename);
+        return false;
     }
 
     QProgressDialog* dialog = new QProgressDialog (this);
 
-    QLabel* dialogLabel = new QLabel ("Creating " + lexicon +
-                                      " database...");
+    QLabel* dialogLabel = new QLabel ("Creating " + lexicon + " database...");
     dialog->setWindowTitle ("Creating " + lexicon + " Database");
     dialog->setLabel (dialogLabel);
 
@@ -1193,8 +1200,8 @@ MainWindow::rebuildDatabase()
     if (thread->getCancelled()) {
         QMessageBox::information (this, "Database Not Created",
                                   "Database creation cancelled.");
-        QFile dbFile (dbFilename);
         dbFile.remove();
+        tmpDbFile.rename (dbFilename);
         return false;
     }
     else {
@@ -1205,7 +1212,6 @@ MainWindow::rebuildDatabase()
 
     delete thread;
     delete dialog;
-
     return true;
 }
 
