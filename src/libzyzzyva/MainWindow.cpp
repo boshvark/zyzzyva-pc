@@ -1159,12 +1159,26 @@ MainWindow::rebuildDatabase()
     wordEngine->disconnectFromDatabase();
     QFile dbFile (dbFilename);
     QFile tmpDbFile (tmpDbFilename);
-    bool ok = dbFile.rename (tmpDbFilename);
+
+    bool ok = tmpDbFile.remove();
     if (!ok) {
-        QMessageBox::warning (this, "Cannot remove database file",
-                              "Cannot remove original database file: " +
-                              dbFilename + ".\nPlease close Zyzzyva, remove "
-                              "or rename the file, then restart Zyzzyva.");
+        QString caption = "Cannot remove database backup file";
+        QString message = "Cannot remove database backup file: " +
+            tmpDbFilename + ".\nPlease close Zyzzyva, remove or rename the "
+            "file, then restart Zyzzyva.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
+        return false;
+    }
+
+    ok = dbFile.rename (tmpDbFilename);
+    if (!ok) {
+        QString caption = "Cannot remove database file";
+        QString message = "Cannot remove original database file: " +
+            dbFilename + ".\nPlease close Zyzzyva, remove or rename the "
+            "file, then restart Zyzzyva.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         tmpDbFile.rename (dbFilename);
         return false;
     }
