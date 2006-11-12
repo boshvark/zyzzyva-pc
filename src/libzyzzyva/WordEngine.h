@@ -62,7 +62,7 @@ class WordEngine : public QObject
 
     public:
     WordEngine (QObject* parent = 0)
-        : QObject (parent) { }
+        : QObject (parent), db (0) { }
     ~WordEngine() { }
 
     void clearCache() const;
