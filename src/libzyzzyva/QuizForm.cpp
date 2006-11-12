@@ -251,15 +251,26 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (correctStatusLabel);
     correctStatusHlay->addWidget (correctStatusLabel);
 
-    // Question status
-    QHBoxLayout* questionStatusHlay = new QHBoxLayout;
-    questionStatusHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (questionStatusHlay);
-    mainVlay->addLayout (questionStatusHlay);
+    // Cardbox status
+    QHBoxLayout* cardboxStatusHlay = new QHBoxLayout;
+    cardboxStatusHlay->setSpacing (SPACING);
+    Q_CHECK_PTR (cardboxStatusHlay);
+    mainVlay->addLayout (cardboxStatusHlay);
 
     cardboxStatusLabel = new DefinitionLabel;
     Q_CHECK_PTR (cardboxStatusLabel);
-    questionStatusHlay->addWidget (cardboxStatusLabel);
+    cardboxStatusHlay->addWidget (cardboxStatusLabel);
+
+    // Question stats
+    QHBoxLayout* questionStatsHlay = new QHBoxLayout;
+    questionStatsHlay->setSpacing (SPACING);
+    questionStatsHlay->setMargin (0);
+    Q_CHECK_PTR (questionStatsHlay);
+    mainVlay->addLayout (questionStatsHlay);
+
+    questionStatsLabel = new DefinitionLabel;
+    Q_CHECK_PTR (questionStatsLabel);
+    questionStatsHlay->addWidget (questionStatsLabel);
 
     // Input line
     inputLine = new WordLineEdit;
@@ -905,8 +916,8 @@ QuizForm::checkResponseClicked()
     if (MainSettings::getQuizRecordStats() && !recordStatsBlocked)
         recordQuestionStats (questionCorrect);
 
-    if (db && db->isValid() &&
-       (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod))
+    if (db && db->isValid() && (MainSettings::getQuizShowQuestionStats() ||
+       (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod)))
     {
         updateQuestionStatus();
     }
@@ -1132,6 +1143,7 @@ QuizForm::clearStats()
 {
     correctStatusLabel->setText ("");
     cardboxStatusLabel->setText ("");
+    questionStatsLabel->setText ("");
 }
 
 //---------------------------------------------------------------------------
@@ -1279,21 +1291,72 @@ QuizForm::setQuestionStatus (const QuizDatabase::QuestionData& data)
     if (!data.valid)
         return;
 
-    QDateTime nextDate;
-    nextDate.setTime_t (data.nextScheduled);
-    QDateTime now = QDateTime::currentDateTime();
-    int numDays = now.daysTo (nextDate);
+    if (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod) {
+        QDateTime nextDate;
+        nextDate.setTime_t (data.nextScheduled);
+        QDateTime now = QDateTime::currentDateTime();
+        int numDays = now.daysTo (nextDate);
 
-    int origCardbox = origQuestionData.cardbox;
+        int origCardbox = origQuestionData.cardbox;
 
-    QString format = "yyyy-MM-dd hh:mm:ss";
-    QString text = "Old Cardbox: " + QString::number (origCardbox) +
-                   ", New Cardbox: " + QString::number (data.cardbox) +
-                   ", Next Scheduled: " + nextDate.toString (format) +
-                   " (" + QString::number (numDays) + " day" +
-                   (numDays == 1 ? QString() : QString ("s")) + ")";
+        QString format = "yyyy-MM-dd hh:mm:ss";
+        QString text = "<b>Old Cardbox:</b> " + QString::number (origCardbox) +
+            ", <b>New Cardbox:</b> " + QString::number (data.cardbox) +
+            ", <b>Next Scheduled:</b> " + nextDate.toString (format) +
+            " (" + QString::number (numDays) + " day" +
+            (numDays == 1 ? QString() : QString ("s")) + ")";
 
-    cardboxStatusLabel->setText (text);
+        cardboxStatusLabel->setText (text);
+    }
+
+    if (MainSettings::getQuizShowQuestionStats()) {
+        int correct = data.numCorrect;
+        int incorrect = data.numIncorrect;
+        int total = correct + incorrect;
+        double pct = total ? (correct * 100.0) / total : 0;
+
+        QString streak;
+        if (data.streak == 0)
+            streak = "none";
+        else if (data.streak > 0)
+            streak = QString::number (data.streak) + " correct";
+        else if (data.streak < 0)
+            streak = QString::number (-data.streak) + " incorrect";
+
+        QString lastCorrect = "never";
+        if (data.lastCorrect) {
+
+            QDateTime lastCorrectDate;
+            lastCorrectDate.setTime_t (data.lastCorrect);
+            QDateTime now = QDateTime::currentDateTime();
+            int numDays = now.daysTo (lastCorrectDate);
+
+            QString format = "yyyy-MM-dd hh:mm:ss";
+            QString delta;
+            QString daysStr = (abs (numDays) == 1 ? QString ("day")
+                                                  : QString ("days"));
+            if (numDays == 0)
+                delta = "today";
+            else if (numDays < 0)
+                delta = QString::number (-numDays) + " " + daysStr + " ago";
+            else if (numDays > 0)
+                delta = QString::number (numDays) + " " + daysStr + " from now";
+
+            lastCorrect = lastCorrectDate.toString (format) + " (" +
+                delta + ")";
+        }
+
+        QString text = "<b>Overall:</b> " +
+            QString::number (correct) + "/" + QString::number (total) + " (" +
+            QString::number (pct, 'f', 1) + "%), <b>Streak:</b> " + streak +
+            ", <b>Last Correct:</b> " + lastCorrect;
+
+        questionStatsLabel->setText (text);
+        questionStatsLabel->show();
+    }
+    else {
+        questionStatsLabel->hide();
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -1341,7 +1404,8 @@ QuizForm::updateQuestionDisplay()
 //---------------------------------------------------------------------------
 //  updateQuestionStatus
 //
-//! Update the display of the current question's status.
+//! Update the display of the current question's status, including cardbox
+//! status and question stats.
 //---------------------------------------------------------------------------
 void
 QuizForm::updateQuestionStatus()

@@ -1407,6 +1407,8 @@ MainWindow::readSettings (bool useGeometry)
     }
 
     // Set tile theme and background color for all quiz forms
+    // FIXME: instead, this should simply call a settingsChanged slot on all
+    // forms, and each form should handle it as they see fit
     QString tileTheme = MainSettings::getTileTheme();
     QColor backgroundColor = MainSettings::getQuizBackgroundColor();
     int count = tabStack->count();
@@ -1416,6 +1418,7 @@ MainWindow::readSettings (bool useGeometry)
         if (type == ActionForm::QuizFormType) {
             QuizForm* quizForm = static_cast<QuizForm*> (form);
             quizForm->setBackgroundColor (backgroundColor);
+            quizForm->updateQuestionStatus();
             quizForm->updateStatusString();
             quizForm->setTileTheme (tileTheme);
         }
