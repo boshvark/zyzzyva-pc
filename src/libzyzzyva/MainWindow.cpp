@@ -758,14 +758,6 @@ MainWindow::viewVariation (int variation)
 void
 MainWindow::rebuildDatabaseRequested()
 {
-    qDebug ("Connections before:");
-    QStringList connections = QSqlDatabase::connectionNames();
-    QStringListIterator it (connections);
-    while (it.hasNext()) {
-        QString connection = it.next();
-        qDebug ("  |%s|", connection.toUtf8().data());
-    }
-
     QString lexicon = wordEngine->getLexiconName();
     QString dialogTitle = "Rebuild Database";
     QString dialogMessage =
