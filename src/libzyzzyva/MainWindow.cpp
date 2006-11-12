@@ -1157,7 +1157,13 @@ MainWindow::rebuildDatabase()
 
     wordEngine->disconnectFromDatabase();
     QFile dbFile (dbFilename);
-    dbFile.remove();
+    bool ok = dbFile.remove();
+    if (!ok) {
+        QMessageBox::warning (this, "Cannot remove database file",
+                              "Cannot remove original database file: " +
+                              dbFilename + ".\nPlease try closing Zyzzyva, "
+                              "removing the file, and restarting Zyzzyva.");
+    }
 
     QProgressDialog* dialog = new QProgressDialog (this);
 
