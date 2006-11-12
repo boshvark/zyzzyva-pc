@@ -318,6 +318,10 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (quizShowNumResponsesCbox);
     quizBehaviorVlay->addWidget (quizShowNumResponsesCbox);
 
+    quizShowQuestionStatsCbox = new QCheckBox ("Show question statistics");
+    Q_CHECK_PTR (quizShowQuestionStatsCbox);
+    quizBehaviorVlay->addWidget (quizShowQuestionStatsCbox);
+
     quizAutoCheckCbox = new QCheckBox
         ("End question after all correct responses");
     Q_CHECK_PTR (quizAutoCheckCbox);
@@ -695,6 +699,8 @@ SettingsDialog::readSettings()
         (MainSettings::getQuizUseFlashcardMode());
     quizShowNumResponsesCbox->setChecked
         (MainSettings::getQuizShowNumResponses());
+    quizShowQuestionStatsCbox->setChecked
+        (MainSettings::getQuizShowQuestionStats());
     bool autoCheck = MainSettings::getQuizAutoCheck();
     quizAutoCheckCbox->setChecked (autoCheck);
     quizAutoAdvanceCbox->setChecked (MainSettings::getQuizAutoAdvance());
@@ -763,6 +769,8 @@ SettingsDialog::writeSettings()
         (quizUseFlashcardModeCbox->isChecked());
     MainSettings::setQuizShowNumResponses
         (quizShowNumResponsesCbox->isChecked());
+    MainSettings::setQuizShowQuestionStats
+        (quizShowQuestionStatsCbox->isChecked());
     MainSettings::setQuizAutoCheck (quizAutoCheckCbox->isChecked());
     MainSettings::setQuizAutoAdvance (quizAutoAdvanceCbox->isChecked());
     MainSettings::setQuizAutoEndAfterIncorrect
