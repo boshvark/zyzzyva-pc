@@ -378,7 +378,11 @@ Auxil::getUserConfigDir()
 QString
 Auxil::dialogWordWrap (const QString& str)
 {
+#if defined Z_OSX
+    return str;
+#else
     return wordWrap (str, DIALOG_LINE_LENGTH);
+#endif
 }
 
 //---------------------------------------------------------------------------
