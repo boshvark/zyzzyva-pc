@@ -43,7 +43,7 @@ unix {
     LIBS = -lzyzzyva -L$$ROOT/bin
 }
 win32 {
-    LIBS = -lzyzzyva0 -L$$ROOT/bin
+    LIBS = -lzyzzyva1 -L$$ROOT/bin
 }
 
 # Source files
