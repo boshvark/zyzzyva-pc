@@ -42,7 +42,6 @@ void
 CreateDatabaseThread::run()
 {
     runPrivate();
-    QSqlDatabase::removeDatabase ("threaddb");
 }
 
 //---------------------------------------------------------------------------
@@ -53,40 +52,47 @@ CreateDatabaseThread::run()
 void
 CreateDatabaseThread::runPrivate()
 {
-    // Create empty database
-    QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE", "threaddb");
-    db.setDatabaseName (dbFilename);
-    if (!db.open())
-        return;
+    QString dbConnectionName = "CreateDatabaseThread";
+    int numSteps = 0;
 
-    // Start at 1% progress
-    emit (steps (100));
-    emit (progress (1));
+    {
+        // Create empty database
+        QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE",
+                                                     dbConnectionName);
+        db.setDatabaseName (dbFilename);
+        if (!db.open())
+            return;
 
-    // Total number of progress steps is number of words times 4.
-    // - One for finding each word's stats
-    // - One for reading each word's definitions
-    // - Two for inserting each word's values into the database
-    // - Two total for creating indexes
-    int numWords = wordEngine->getNumWords();
-    int baseProgress = numWords * 5 / 99;
-    int numSteps = numWords * 5 + baseProgress + 1;
-    emit steps (numSteps);
-    int stepNum = baseProgress;
-    emit progress (stepNum);
+        // Start at 1% progress
+        emit (steps (100));
+        emit (progress (1));
 
-    createTables (db);
+        // Total number of progress steps is number of words times 4.
+        // - One for finding each word's stats
+        // - One for reading each word's definitions
+        // - Two for inserting each word's values into the database
+        // - Two total for creating indexes
+        int numWords = wordEngine->getNumWords();
+        int baseProgress = numWords * 5 / 99;
+        numSteps = numWords * 5 + baseProgress + 1;
+        emit steps (numSteps);
+        int stepNum = baseProgress;
+        emit progress (stepNum);
 
-    createIndexes (db);
+        createTables (db);
 
-    insertWords (db, stepNum);
+        createIndexes (db);
 
-    updateProbabilityOrder (db, stepNum);
+        insertWords (db, stepNum);
 
-    updateDefinitions (db, stepNum);
+        updateProbabilityOrder (db, stepNum);
 
-    updateDefinitionLinks (db, stepNum);
+        updateDefinitions (db, stepNum);
 
+        updateDefinitionLinks (db, stepNum);
+    }
+
+    QSqlDatabase::removeDatabase (dbConnectionName);
     emit progress (numSteps);
 }
 

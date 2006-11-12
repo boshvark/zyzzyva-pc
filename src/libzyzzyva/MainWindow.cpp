@@ -758,6 +758,14 @@ MainWindow::viewVariation (int variation)
 void
 MainWindow::rebuildDatabaseRequested()
 {
+    qDebug ("Connections before:");
+    QStringList connections = QSqlDatabase::connectionNames();
+    QStringListIterator it (connections);
+    while (it.hasNext()) {
+        QString connection = it.next();
+        qDebug ("  |%s|", connection.toUtf8().data());
+    }
+
     QString lexicon = wordEngine->getLexiconName();
     QString dialogTitle = "Rebuild Database";
     QString dialogMessage =
@@ -1049,41 +1057,50 @@ MainWindow::connectToDatabase()
     QString dialogTitle;
 
     if (dbFile.exists()) {
-        QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE");
-        db.setDatabaseName (dbFilename);
-        bool ok = db.open();
+        Rand rng;
+        rng.srand (std::time (0), Auxil::getPid());
+        unsigned int r = rng.rand();
+        QString dbConnectionName = "MainWindow" + QString::number (r);
+        {
+            QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE",
+                                                         dbConnectionName);
+            db.setDatabaseName (dbFilename);
+            bool ok = db.open();
 
-        if (ok) {
-            QString qstr = "SELECT version FROM db_version";
-            QSqlQuery query (qstr, db);
-            int dbVersion = 0;
-            if (query.next())
-                dbVersion = query.value (0).toInt();
+            if (ok) {
+                QString qstr = "SELECT version FROM db_version";
+                QSqlQuery query (qstr, db);
+                int dbVersion = 0;
+                if (query.next())
+                    dbVersion = query.value (0).toInt();
 
-            if (dbVersion < CURRENT_DATABASE_VERSION) {
-                dialogTitle = "Update database?";
-                dialogMessage =
-                    "The database exists but is out of date.  "
-                    "For certain searches and quizzes to work correctly, "
-                    "Zyzzyva must create an updated database of information "
-                    "about the current lexicon (" + lexicon + ")."
-                    "This may take several minutes, but "
-                    "it will only need to be done once.\n\n"
-                    "Update the database now?";
+                if (dbVersion < CURRENT_DATABASE_VERSION) {
+                    dialogTitle = "Update database?";
+                    dialogMessage =
+                        "The database exists but is out of date.  "
+                        "For certain searches and quizzes to work correctly, "
+                        "Zyzzyva must create an updated database of "
+                        "information about the current lexicon (" + lexicon +
+                        ").  This may take several minutes, but "
+                        "it will only need to be done once.\n\n"
+                        "Update the database now?";
+                }
+
             }
 
+            else {
+                dialogTitle = "Rebuild database?";
+                dialogMessage =
+                    "The database exists but Zyzzyva cannot connect to it.  "
+                    "For certain searches and quizzes to work correctly, "
+                    "Zyzzyva must create a database of information about "
+                    "the current lexicon (" + lexicon + ").  This may take "
+                    "several minutes, but it will only need to be done "
+                    "once.\n\n";
+            }
         }
 
-        else {
-            dialogTitle = "Rebuild database?";
-            dialogMessage =
-                "The database exists but Zyzzyva cannot connect to it.  "
-                "For certain searches and quizzes to work correctly, Zyzzyva "
-                "must create a database of information about the current "
-                "lexicon (" + lexicon + ").  This may take several minutes, "
-                "but it will only need to be done once.\n\n"
-                "Rebuild the database now?";
-        }
+        QSqlDatabase::removeDatabase (dbConnectionName);
     }
 
     else {

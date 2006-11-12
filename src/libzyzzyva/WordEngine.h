@@ -114,10 +114,8 @@ class WordEngine : public QObject
     std::map< int, std::set<QString> > stemAlphagrams;
     mutable QMap<QString, WordInfo> wordCache;
 
-    QSqlDatabase db;
+    QSqlDatabase* db;
     QString dbConnectionName;
-
-
 
     QMap<QString, QString> definitionMap;
 };
