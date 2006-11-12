@@ -22,9 +22,11 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #---------------------------------------------------------------------------
 
+include($$ROOT/zyzzyva.pri)
+
 TEMPLATE = app
 TARGET = zyzzyva
-CONFIG += qt release thread warn_on assistant
+CONFIG += qt thread warn_on assistant
 QT += xml
 
 ROOT = ../..
