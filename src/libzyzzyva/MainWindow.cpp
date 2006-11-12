@@ -1089,7 +1089,8 @@ MainWindow::connectToDatabase()
                     "Zyzzyva must create a database of information about "
                     "the current lexicon (" + lexicon + ").  This may take "
                     "several minutes, but it will only need to be done "
-                    "once.\n\n";
+                    "once.\n\n"
+                    "Rebuild the database now?";
             }
         }
 
