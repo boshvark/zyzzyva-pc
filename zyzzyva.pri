@@ -32,3 +32,13 @@ else {
 }
 
 CONFIG = $$unique(CONFIG)
+
+unix {
+    DEFINES += Z_UNIX
+}
+win32 {
+    DEFINES += Z_W32
+}
+macx {
+    DEFINES += Z_OSX
+}
