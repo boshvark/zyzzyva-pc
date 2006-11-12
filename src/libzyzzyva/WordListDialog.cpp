@@ -163,9 +163,11 @@ WordListDialog::openFileClicked()
 
     QFile file (filename);
     if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::warning (this, "Error Opening Word List File",
-                              "Cannot open file '" + filename + "': " +
-                              file.errorString());
+        QString caption = "Error Opening Word List File";
+        QString message = "Cannot open file '" + filename + "': " +
+            file.errorString();
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 

@@ -368,6 +368,20 @@ Auxil::getUserConfigDir()
 }
 
 //---------------------------------------------------------------------------
+//  dialogWordWrap
+//
+//! Wrap a string so it is appropriate for display in a dialog.
+//
+//! @param str the string to wrap
+//! @return the wrapped string
+//---------------------------------------------------------------------------
+QString
+Auxil::dialogWordWrap (const QString& str)
+{
+    return wordWrap (str, DIALOG_LINE_LENGTH);
+}
+
+//---------------------------------------------------------------------------
 //  wordWrap
 //
 //! Wrap a string so that no line is longer than a certain length.

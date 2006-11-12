@@ -271,9 +271,11 @@ SearchSpecForm::loadSearch()
 
     QFile file (filename);
     if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::warning (this, "Error Opening Search File",
-                              "Cannot open file '" + filename + "': " +
-                              file.errorString());
+        QString caption = "Error Opening Search File";
+        QString message = "Cannot open file '" + filename + "': " +
+            file.errorString();
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 
@@ -288,18 +290,21 @@ SearchSpecForm::loadSearch()
     QApplication::restoreOverrideCursor();
 
     if (!success) {
-        QMessageBox::warning (this, "Error in Search File",
-                              "Error in search file, line " +
-                              QString::number (errorLine) + ", column " +
-                              QString::number (errorColumn) + ": " + 
-                              errorMsg);
+        QString caption = "Error in Search File";
+        QString message = "Error in search file, line " +
+            QString::number (errorLine) + ", column " +
+            QString::number (errorColumn) + ": " + errorMsg;
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 
     SearchSpec spec;
     if (!spec.fromDomElement (document.documentElement())) {
-        QMessageBox::warning (this, "Error in Search File",
-                              "Error in search file.");
+        QString caption = "Error in Search File";
+        QString message = "Error in search file.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 
@@ -329,9 +334,10 @@ SearchSpecForm::saveSearch()
 
     QFile file (filename);
     if (filenameEdited && file.exists()) {
-        int code = QMessageBox::warning (0, "Overwrite Existing File?",
-                                         "The file already exists.  "
-                                         "Overwrite it?",
+        QString caption = "Overwrite Existing File?";
+        QString message = "The file already exists.  Overwrite it?";
+        message = Auxil::dialogWordWrap (message);
+        int code = QMessageBox::warning (0, caption, message,
                                          QMessageBox::Yes | QMessageBox::No,
                                          QMessageBox::No);
         if (code != QMessageBox::Yes)
@@ -339,9 +345,10 @@ SearchSpecForm::saveSearch()
     }
 
     if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
-        QMessageBox::warning (this, "Error Saving Search",
-                              "Cannot save search:\n" + file.errorString() +
-                              ".");
+        QString caption = "Error Saving Search";
+        QString message = "Cannot save search:\n" + file.errorString() + ".";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::warning (this, caption, message);
         return;
     }
 

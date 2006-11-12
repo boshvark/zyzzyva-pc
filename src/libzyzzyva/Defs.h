@@ -38,6 +38,7 @@ namespace Defs {
     const int MAX_INPUT_LINE_LEN = 640;
     const int SPACING = 4;
     const int MARGIN = 4;
+    const int DIALOG_LINE_LENGTH = 60;
     const int QUIZ_TILE_SPACING = 10;
     const int QUIZ_TILE_MARGIN = 15;
     const QString QUIZ_LETTERS_ALPHA = "Alphabetical";
