@@ -79,6 +79,10 @@ class MainSettings
         return instance->quizShowNumResponses; }
     static void setQuizShowNumResponses (bool b) {
         instance->quizShowNumResponses = b; }
+    static bool getQuizShowQuestionStats() {
+        return instance->quizShowQuestionStats; }
+    static void setQuizShowQuestionStats (bool b) {
+        instance->quizShowQuestionStats = b; }
     static bool getQuizAutoCheck() { return instance->quizAutoCheck; }
     static void setQuizAutoCheck (bool b) { instance->quizAutoCheck = b; }
     static bool getQuizAutoAdvance() { return instance->quizAutoAdvance; }
@@ -177,6 +181,7 @@ class MainSettings
     QColor quizBackgroundColor;
     bool quizUseFlashcardMode;
     bool quizShowNumResponses;
+    bool quizShowQuestionStats;
     bool quizAutoCheck;
     bool quizAutoAdvance;
     bool quizAutoEndAfterIncorrect;
