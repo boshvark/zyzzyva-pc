@@ -257,9 +257,9 @@ QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (questionStatusHlay);
     mainVlay->addLayout (questionStatusHlay);
 
-    questionStatusLabel = new DefinitionLabel;
-    Q_CHECK_PTR (questionStatusLabel);
-    questionStatusHlay->addWidget (questionStatusLabel);
+    cardboxStatusLabel = new DefinitionLabel;
+    Q_CHECK_PTR (cardboxStatusLabel);
+    questionStatusHlay->addWidget (cardboxStatusLabel);
 
     // Input line
     inputLine = new WordLineEdit;
@@ -571,9 +571,9 @@ QuizForm::newQuiz (const QuizSpec& spec)
     }
 
     if (spec.getMethod() == QuizSpec::CardboxQuizMethod)
-        questionStatusLabel->show();
+        cardboxStatusLabel->show();
     else
-        questionStatusLabel->hide();
+        cardboxStatusLabel->hide();
 
     // Connect to dotabase before starting the first question
     QString lexicon = spec.getLexicon();
@@ -1131,7 +1131,7 @@ void
 QuizForm::clearStats()
 {
     correctStatusLabel->setText ("");
-    questionStatusLabel->setText ("");
+    cardboxStatusLabel->setText ("");
 }
 
 //---------------------------------------------------------------------------
@@ -1293,7 +1293,7 @@ QuizForm::setQuestionStatus (const QuizDatabase::QuestionData& data)
                    " (" + QString::number (numDays) + " day" +
                    (numDays == 1 ? QString() : QString ("s")) + ")";
 
-    questionStatusLabel->setText (text);
+    cardboxStatusLabel->setText (text);
 }
 
 //---------------------------------------------------------------------------
