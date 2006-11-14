@@ -1164,7 +1164,7 @@ MainWindow::rebuildDatabase()
     QFile dbFile (dbFilename);
     QFile tmpDbFile (tmpDbFilename);
 
-    bool ok = tmpDbFile.remove();
+    bool ok = !tmpDbFile.exists() || tmpDbFile.remove();
     if (!ok) {
         QString caption = "Cannot remove database backup file";
         QString message = "Cannot remove database backup file: " +
