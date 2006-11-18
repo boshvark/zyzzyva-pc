@@ -514,6 +514,7 @@ SearchConditionForm::typeChanged (const QString& string)
         paramCbox->addItem (Auxil::searchSetToString (SetHookWords));
         paramCbox->addItem (Auxil::searchSetToString (SetFrontHooks));
         paramCbox->addItem (Auxil::searchSetToString (SetBackHooks));
+        paramCbox->addItem (Auxil::searchSetToString (SetHighFives));
         paramCbox->addItem (Auxil::searchSetToString (SetTypeOneSevens));
         paramCbox->addItem (Auxil::searchSetToString (SetTypeTwoSevens));
         paramCbox->addItem (Auxil::searchSetToString (SetTypeThreeSevens));

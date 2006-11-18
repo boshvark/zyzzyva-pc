@@ -34,6 +34,7 @@ const QString SET_UNKNOWN_STRING = "Unknown";
 const QString SET_HOOK_WORDS_STRING = "Hook Words";
 const QString SET_FRONT_HOOKS_STRING = "Front Hooks";
 const QString SET_BACK_HOOKS_STRING = "Back Hooks";
+const QString SET_HIGH_FIVES_STRING = "High Fives";
 const QString SET_TYPE_ONE_SEVENS_STRING = "Type I Sevens";
 const QString SET_TYPE_TWO_SEVENS_STRING = "Type II Sevens";
 const QString SET_TYPE_THREE_SEVENS_STRING = "Type III Sevens";
@@ -525,6 +526,8 @@ Auxil::stringToSearchSet (const QString& string)
         return SetFrontHooks;
     else if (string == SET_BACK_HOOKS_STRING)
         return SetBackHooks;
+    else if (string == SET_HIGH_FIVES_STRING)
+        return SetHighFives;
     else if (string == SET_TYPE_ONE_SEVENS_STRING)
         return SetTypeOneSevens;
     else if (string == SET_TYPE_TWO_SEVENS_STRING)
@@ -560,6 +563,7 @@ Auxil::searchSetToString (SearchSet ss)
         case SetHookWords: return SET_HOOK_WORDS_STRING;
         case SetFrontHooks: return SET_FRONT_HOOKS_STRING;
         case SetBackHooks: return SET_BACK_HOOKS_STRING;
+        case SetHighFives: return SET_HIGH_FIVES_STRING;
         case SetTypeOneSevens: return SET_TYPE_ONE_SEVENS_STRING;
         case SetTypeTwoSevens: return SET_TYPE_TWO_SEVENS_STRING;
         case SetTypeThreeSevens: return SET_TYPE_THREE_SEVENS_STRING;
