@@ -675,11 +675,25 @@ MainWindow::doJudgeAction()
 void
 MainWindow::editSettings()
 {
-    if (settingsDialog->exec() == QDialog::Accepted)
+    QString lexicon;
+    if (settingsDialog->exec() == QDialog::Accepted) {
+        lexicon = MainSettings::getAutoImportLexicon();
         settingsDialog->writeSettings();
-    else
+    }
+    else {
         settingsDialog->readSettings();
+    }
     readSettings (false);
+
+    if (!lexicon.isEmpty() &&
+        (lexicon != MainSettings::getAutoImportLexicon()))
+    {
+        QString caption = "Zyzzyva Restart Necessary";
+        QString message = "Your lexicon settings have changed.  For the new "
+            "settings to take effect, please restart Zyzzyva.";
+        message = Auxil::dialogWordWrap (message);
+        QMessageBox::information (this, caption, message);
+    }
 }
 
 //---------------------------------------------------------------------------
