@@ -32,6 +32,7 @@ enum SearchSet {
     SetHookWords,
     SetFrontHooks,
     SetBackHooks,
+    SetHighFives,
     SetTypeOneSevens,
     SetTypeTwoSevens,
     SetTypeThreeSevens,

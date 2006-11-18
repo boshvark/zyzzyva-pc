@@ -1106,6 +1106,21 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
         case SetBackHooks:
         return isAcceptable (word.left (word.length() - 1));
 
+        case SetHighFives: {
+            if (word.length() != 5)
+                return false;
+
+            bool ok = false;
+            for (int i = 0; i < word.length(); ++i) {
+                int value = letterBag.getLetterValue (word[i]);
+                if (value > 5)
+                    return false;
+                if (((value == 4) || (value == 5)) && ((i == 0) || (i == 4)))
+                    ok = true;
+            }
+            return ok;
+        }
+
         case SetTypeOneSevens: {
             if (word.length() != 7)
                 return false;

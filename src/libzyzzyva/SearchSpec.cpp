@@ -283,6 +283,12 @@ SearchSpec::optimize()
                 if (!negated) {
                     SearchCondition addCondition;
                     switch (ss) {
+                        case SetHighFives:
+                        addCondition.type = SearchCondition::Length;
+                        addCondition.minValue = 5;
+                        addCondition.maxValue = 5;
+                        break;
+
                         case SetTypeOneSevens:
                         case SetTypeTwoSevens:
                         case SetTypeThreeSevens:
