@@ -1,3 +1,25 @@
+Version 1.0.0
+Released 2006-11-??, from /branches/1.0.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/1.0.0
+
+User-visible changes:
+ * Cardbox Quiz mode with automatic spaced repetition
+ * New quiz orders: Random, Alphabetical, Probability
+ * Display question statistics during a quiz
+ * New searches: Number of Vowels, Point Value, Unique Letters, High Fives
+ * Large speed improvement for most searches
+ * Save button for saving quizzes and search results
+ * Save search results in SuperMemo Q/A format
+ * Clear Word Judge input area of stray input after 15 seconds
+ * Customizable user data directory
+ * Accurate OSWI word list with word definitions
+ * Many word definition fixes for OWL2+LWL
+ * Numerous other bug fixes
+
+Developer visible-changes:
+ * Upgrade from Qt 4.1.3 to Qt 4.1.5
+
+
 Version 0.14.1
 Released 2006-06-02, from /branches/0.14.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/0.14.1
