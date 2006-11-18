@@ -80,15 +80,10 @@ CreateDatabaseThread::runPrivate()
         emit progress (stepNum);
 
         createTables (db);
-
         createIndexes (db);
-
         insertWords (db, stepNum);
-
         updateProbabilityOrder (db, stepNum);
-
         updateDefinitions (db, stepNum);
-
         updateDefinitionLinks (db, stepNum);
     }
 
