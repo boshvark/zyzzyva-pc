@@ -54,7 +54,7 @@ using namespace Defs;
 //! Constructor.
 //---------------------------------------------------------------------------
 WordGraph::WordGraph()
-    : dawg (0), rdawg (0), top (0), rtop (0)
+    : dawg (0), rdawg (0), top (0), rtop (0), numWords (0)
 {
     // Test for endianness
     char endianTest[2] = { 1, 0 };
@@ -164,6 +164,7 @@ WordGraph::addWord (const QString& w)
 
     addWordOld (w, false);
     addWordOld (w, true);
+    ++numWords;
 }
 
 //---------------------------------------------------------------------------
@@ -617,11 +618,7 @@ WordGraph::search (const SearchSpec& spec) const
 int
 WordGraph::getNumWords() const
 {
-    // FIXME: Clearly this is wrong
-    if (!dawg)
-        return 0;
-
-    return getNumWords (ROOT_NODE);
+    return (dawg ? getNumWords (ROOT_NODE) : numWords);
 }
 
 //---------------------------------------------------------------------------
