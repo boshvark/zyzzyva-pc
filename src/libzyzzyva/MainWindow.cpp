@@ -1160,7 +1160,7 @@ MainWindow::rebuildDatabase()
     QFile dbFile (dbFilename);
     QFile tmpDbFile (tmpDbFilename);
 
-    bool ok = !tmpDbFile.exists() || tmpDbFile.remove();
+    bool ok = (!tmpDbFile.exists() || tmpDbFile.remove());
     if (!ok) {
         QString caption = "Cannot remove database backup file";
         QString message = "Cannot remove database backup file: " +
@@ -1171,7 +1171,7 @@ MainWindow::rebuildDatabase()
         return false;
     }
 
-    ok = dbFile.rename (tmpDbFilename);
+    ok = (!dbFile.exists() || dbFile.rename (tmpDbFilename));
     if (!ok) {
         QString caption = "Cannot remove database file";
         QString message = "Cannot remove original database file: " +
@@ -1210,8 +1210,10 @@ MainWindow::rebuildDatabase()
     if (thread->getCancelled()) {
         QMessageBox::information (this, "Database Not Created",
                                   "Database creation cancelled.");
-        dbFile.remove();
-        tmpDbFile.rename (dbFilename);
+        if (dbFile.exists())
+            dbFile.remove();
+        if (tmpDbFile.exists())
+            tmpDbFile.rename (dbFilename);
         return false;
     }
     else {
