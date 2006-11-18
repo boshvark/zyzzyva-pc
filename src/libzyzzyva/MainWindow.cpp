@@ -1025,9 +1025,11 @@ QString
 MainWindow::getDatabaseFilename()
 {
     QString lexicon = wordEngine->getLexiconName();
-    QString lexiconPrefix = getLexiconPrefix (lexicon);
-    if (lexiconPrefix.isEmpty())
-        return QString::null;
+    if (lexicon != "Custom") {
+        QString lexiconPrefix = getLexiconPrefix (lexicon);
+        if (lexiconPrefix.isEmpty())
+            return QString::null;
+    }
 
     QString dbPath = Auxil::getUserDir() + "/lexicons";
     QDir dir;
@@ -1152,8 +1154,15 @@ MainWindow::rebuildDatabase()
 {
     QString dbFilename = getDatabaseFilename();
     QString lexicon = wordEngine->getLexiconName();
-    QString lexiconPrefix = getLexiconPrefix (lexicon);
-    QString definitionFilename = Auxil::getWordsDir() + lexiconPrefix + ".txt";
+
+    QString definitionFilename;
+    if (lexicon == "Custom") {
+        definitionFilename = MainSettings::getAutoImportFile();
+    }
+    else {
+        QString lexiconPrefix = getLexiconPrefix (lexicon);
+        definitionFilename = Auxil::getWordsDir() + lexiconPrefix + ".txt";
+    }
 
     QFileInfo fileInfo (dbFilename);
     QString file = fileInfo.fileName();

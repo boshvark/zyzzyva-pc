@@ -92,6 +92,7 @@ class WordGraph
     // OLD dawg structures - only used where new DAWG is unavailable
     Node* top;
     Node* rtop;
+    int numWords;
 };
 
 #endif // ZYZZYVA_WORD_GRAPH_H
