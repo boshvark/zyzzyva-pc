@@ -22,8 +22,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #---------------------------------------------------------------------------
 
-include($$ROOT/zyzzyva.pri)
-
 TEMPLATE = app
 TARGET = zyzzyva
 CONFIG += qt thread warn_on assistant
@@ -35,6 +33,9 @@ MOC_DIR = build/moc
 OBJECTS_DIR = build/obj
 INCLUDEPATH += build/moc $$ROOT/src/libzyzzyva
 DEPENDPATH += build/moc
+
+include($$ROOT/zyzzyva.pri)
+
 RESOURCES = $$ROOT/zyzzyva.qrc
 macx {
     TARGET = Zyzzyva
