@@ -910,27 +910,23 @@ CrosswordGameForm::processObserve (const QString& string)
 //! @param string the message
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::processAccept (const QString& string)
+CrosswordGameForm::processAccept (const QString&)
 {
-    QStringList split = string.simplified().split (" ");
-    int rating = split[0].toInt();
-    QString opponent = split[1];
-    int lexicon = split[2].toInt();
-    QString lexiconName = IscConverter::intToLexicon (lexicon);
-    int minutes = split[3].toInt();
-    int increment = split[4].toInt();
-    int rated = split[5].toInt();
-    int noescape = split[6].toInt();
-    int challenge = split[7].toInt();
-    QString challengeName = IscConverter::intToChallenge (challenge);
-    // if 1, then opponent is first; if 2, then I am first
-    QString firstPlayer = split[8];
-    QString opponentRack = split[9];
-    QString myRack = split[10];
-
-
-
-
+//    QStringList split = string.simplified().split (" ");
+//    int rating = split[0].toInt();
+//    QString opponent = split[1];
+//    int lexicon = split[2].toInt();
+//    QString lexiconName = IscConverter::intToLexicon (lexicon);
+//    int minutes = split[3].toInt();
+//    int increment = split[4].toInt();
+//    int rated = split[5].toInt();
+//    int noescape = split[6].toInt();
+//    int challenge = split[7].toInt();
+//    QString challengeName = IscConverter::intToChallenge (challenge);
+//    // if 1, then opponent is first; if 2, then I am first
+//    QString firstPlayer = split[8];
+//    QString opponentRack = split[9];
+//    QString myRack = split[10];
 }
 
 //---------------------------------------------------------------------------
@@ -1122,7 +1118,7 @@ CrosswordGameForm::processLogin (const QString& string)
 //! @param string the message
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::processResign (const QString& string)
+CrosswordGameForm::processResign (const QString&)
 {
     stopClock (1);
     stopClock (2);
