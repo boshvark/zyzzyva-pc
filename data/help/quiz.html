@@ -198,6 +198,141 @@
   the quiz specification is modified after loading it.  After clicking
   <i>OK</i>, the quiz will begin.</p>
 
+  <a name="cardbox-quiz">
+  <h2>Cardbox Quizzes</h2>
+
+  <a name="cardbox-leitner-system">
+  <h3>The Leitner Cardbox System</h3>
+
+  <p>Zyzzyva comes with a Cardbox Quiz mode that implements the Leitner
+  cardbox system, an effective method of studying for long-term retention.  In
+  the Leitner system, each quiz question is assigned to a certain cardbox.
+  When questions are first added to the system, they are placed in cardbox
+  0.</p>
+
+  <p>Every time a question is answered correctly, it is moved to the next
+  higher cardbox.  For example, a question in cardbox 0, if answered
+  correctly, will be moved to cardbox 1.  If answered correctly again the next
+  time it appears, it will be moved to cardbox 2, and so on.</p>
+
+  <p>Every time a question is answered incorrectly, it is moved back to
+  cardbox 0, regardless of the cardbox it is currently in.  For example, if a
+  question in cardbox 4 is answered incorrectly, it will be moved to cardbox
+  0, even though it had previously been correctly answered four times in a
+  row.</p>
+
+  <p>As questions are moved to higher cardboxes, Zyzzyva schedules them to be
+  seen at longer intervals.  For example, questions placed in cardbox 0 are
+  scheduled to be seen within about a day, whereas questions placed in cardbox
+  5 are scheduled to be seen approximately 30 days in the future.  In this
+  way, when a question is answered correctly many times, it will be seen less
+  often than more difficult questions.  If a question is always answered
+  incorrectly, it will be seen every day.</p>
+
+  <p>Here is the full list of schedule intervals for Zyzzyva cardboxes:</p>
+
+  <ul>
+  <li>Cardbox 0: 1 day</li>
+  <li>Cardbox 1: 3-5 days</li>
+  <li>Cardbox 2: 5-9 days</li>
+  <li>Cardbox 3: 9-15 days</li>
+  <li>Cardbox 4: 15-25 days</li>
+  <li>Cardbox 5: 23-37 days</li>
+  <li>Cardbox 6: 50-70 days</li>
+  <li>Cardbox 7: 75-105 days</li>
+  <li>Cardbox 8: 130-170 days</li>
+  <li>Cardbox 9: 240-300 days</li>
+  <li>Cardbox 10+: 430-530 days</li>
+  </ul>
+
+  <a name="cardbox-add-words">
+  <h3>Adding Words to the Cardboxes</h3>
+
+  <p>To add words to the cardbox system, do a search to find all the words
+  that should be added.  Right-click the word list and choose "Add list to
+  Cardbox".  A window will appear, containing the list of words.  Select the
+  quiz type for which the words should be added to the cardbox system
+  (Anagrams, Anagrams with Hooks, or Hooks).  Normally all words are added to
+  cardbox 0.  However, if the "Estimate cardbox" option is checked, Zyzzyva
+  will instead place each word in a cardbox corresponding to your past
+  performance on that word.  For example, if you have correctly responded to
+  AEIRSST four times in a row in non-cardbox quizzes, and are adding the word
+  SATIRES to the cardbox system, it will initially be placed in cardbox 4
+  instead of cardbox 0.  This option can be very useful for avoiding
+  unnecessary repetition of relatively easy words, so selecting the "Estimate
+  cardbox" option is recommended.</p>
+
+  <p>After the <i>OK</i> button is clicked, the words will be added to the
+  cardbox system.  Any words placed in cardbox 0 will be available for
+  quizzing immediately.</p>
+
+  <p>A word of caution: it is not a good idea to add large groups of words to
+  the cardbox system at the same time!  If too many words are added to the
+  system at once, then it may take several days to complete a cardbox quiz
+  over all of them.  This partially defeats the purpose of the cardbox system,
+  because missed questions will appear only after all the newly added
+  questions are answered, instead of every day.  For best results, words
+  should be added to the cardbox system in reasonably sized chunks so that the
+  cardbox quiz can be completed or nearly completed each day.</p>
+
+  <a name="cardbox-take-quiz">
+  <h3>Taking a Cardbox Quiz</h3>
+
+  <p>A cardbox quiz can be started in the same ways that a <a
+  href="#create-quiz">regular quiz</a> can be started.  The only difference is
+  that in the quiz creation window, the <tt>Cardbox</tt> quiz method should be
+  chosen instead of <tt>Standard</tt>.  When the Cardbox quiz method is used,
+  the quiz will only consist of questions that match the search criteria and
+  are ready for review in the cardbox system.  The questions will be presented
+  in order of their scheduled time.</p>
+
+  <p>Normally, Zyzzyva takes care of assigning questions to their appropriate
+  cardboxes throughout the course of a cardbox quiz.  However, at any time
+  during a cardbox quiz, the current question can also be manually assigned to
+  a cardbox.  To do so, hold down the <tt>Ctrl</tt> key and press the number
+  of the cardbox to which the question should be moved.  For example, to
+  assign the current question to cardbox 3, press <tt>Ctrl-3</tt>.  To assign
+  the question to cardbox 10, press <tt>Ctrl-0</tt>.  To assign the question
+  to cardbox 0, click the <i>Mark as Missed</i> button.  When manually
+  assigning the current question to a cardbox (other than 0), the question
+  will also be marked as correct.</p>
+
+  <a name="cardbox-reschedule">
+  <h3>Rescheduling Cardbox Questions</h3>
+
+  <p>If the number of cardbox questions available for review is getting too
+  large, or if there is a lapse of several days between study sessions, then
+  rescheduling the cardbox questions may help.  To do this, choose
+  <tt>Tools</tt> from the main application menu, then choose <tt>Reschedule
+  Cardbox Contents</tt>.  A window will appear, where the words to be
+  rescheduled can be found using a search.  After specifying a search and
+  clicking the <i>OK</i> button, all matching words in the cardbox system will
+  be rescheduled according to their current cardbox.  For example, all words
+  in cardbox 4 will be rescheduled to appear in 15-25 days, regardless of when
+  they were previously scheduled to appear.  Words in cardbox 0 will be
+  available for quizzing immediately, and they will be the only words
+  available immediately after the rescheduling operation.</p>
+
+  <a name="cardbox-remove-words">
+  <h3>Removing Words from the Cardboxes</h3>
+
+  <p>In general, words should not be removed from the cardbox system once they
+  are added.  Zyzzyva will automatically take care of scheduling each question
+  appropriately.  However, if too many questions have been added to the
+  system, and rescheduling does not help, removing words from the cardbox
+  system may be a useful option.</p>
+
+  <p>To remove words from the cardbox system, do a search to find all the
+  words that should be removed.  Right-click the word list and choose "Remove
+  list from Cardbox".  A window will appear, containing the list of words.
+  Select the quiz time for which the words should be removed from the cardbox
+  system, then click <i>OK</i>.  The words will be removed from the cardbox
+  system, but quiz statistics about them (number of times correct or
+  incorrect, last time correct, etc.) will remain intact.  If the removed
+  words are ever added to the cardbox again with the "Estimate cardbox" option
+  selected, it is likely that they will be added to the same cardboxes they
+  were removed from.</p>
+
   <hr>
   <table border="0" width="100%"><tr>
   <td align="left"><a href="search.html">&lt;&lt; Previous</a></td>

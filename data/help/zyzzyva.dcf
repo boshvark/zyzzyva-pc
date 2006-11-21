@@ -46,6 +46,18 @@
                title="Analyzing Your Quiz Performance" />
       <section ref="quiz.html#load-save-quiz"
                title="Loading and Saving Quizzes" />
+      <section ref="quiz.html#cardbox-quiz" title="Cardbox Quizzes">
+        <section ref="quiz.html#cardbox-leitner-system"
+                 title="The Leitner Cardbox System" />
+        <section ref="quiz.html#cardbox-add-words"
+                 title="Adding Words to the Cardboxes" />
+        <section ref="quiz.html#cardbox-take-quiz"
+                 title="Taking a Cardbox Quiz" />
+        <section ref="quiz.html#cardbox-reschedule"
+                 title="Rescheduling Cardbox Questions" />
+        <section ref="quiz.html#cardbox-remove-words"
+                 title="Removing Words from the Cardboxes" />
+      </section>
     </section>
     <section ref="judge.html" title="Judging Words">
       <keyword ref="judge.html">judge</keyword>
