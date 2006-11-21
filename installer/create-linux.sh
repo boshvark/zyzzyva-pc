@@ -37,5 +37,3 @@ cp -d $QTDIR/bin/assistant $OUTDIR/bin
 cp -d bin/libzyzzyva.so* $OUTDIR/bin
 cp -d bin/zyzzyva $OUTDIR/bin
 cp -d installer/zyzzyva.sh $OUTDIR
-
-
