@@ -40,3 +40,15 @@ cp -d $QTDIR/bin/assistant $OUTDIR/bin
 cp -d bin/libzyzzyva.so* $OUTDIR/bin
 cp -d bin/zyzzyva $OUTDIR/bin
 cp -d installer/zyzzyva.sh $OUTDIR
+
+cp zyzzyva.top $OUTDIR
+cp AUTHORS $OUTDIR/AUTHORS
+cp CHANGES $OUTDIR/CHANGES
+cp COPYING $OUTDIR/COPYING
+cp LICENSE $OUTDIR/LICENSE
+cp README $OUTDIR/README
+
+cp -r data $OUTDIR
+find $OUTDIR/data -type d -name '.svn' -print0 | xargs -0 rm -rf
+
+#perl -pi -e "\$f = '$OUTDIR';s/\@\@EXECUTABLE\@\@/zyzzyva/g; s/\@\@INSTALLDIR\@\@/\$f/g;" $OUTDIR/zyzzyva.sh
