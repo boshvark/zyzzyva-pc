@@ -22,6 +22,17 @@
   chosen, click the <tt>Browse</tt> button to bring up a file browser, from
   which you can choose the lexicon file to be loaded.</p>
 
+  <a name="data-directory">
+  <h3>Data Directory</h3>
+
+  <p>Zyzzyva can be configured to store local data in a location of your
+  choosing.  Normally Zyzzyva stores its data in a directory called ".zyzzyva"
+  in your home directory.  However, since Zyzzyva's data directory is
+  customizable, you could, for example, tell it to store its data on a USB
+  drive, which could then be transported between computers without having to
+  copy your Zyzzyva data files.  This may be useful if you often use Zyzzyva
+  on multiple computers and would like to keep them in sync.</p>
+
   <a name="welcome-display">
   <h3>Welcome Display</h3>
 
@@ -83,6 +94,13 @@
   After another correct answer, the status bar will say "Correct: 2/2",
   indicating that all correct answers have been entered.</p>
 
+  <p><b>Show question statistics:</b> If this option is selected, statistics
+  about the current question will be displayed immediately after the question
+  is answered.  Zyzzyva will display your overall performance on that
+  question, including the number of consecutive times you have answered the
+  question correctly or incorrectly, and the last time it was answered
+  correctly.</p>
+
   <p><b>End question after all correct responses:</b> If this option is
   selected, a quiz question will end automatically after all correct responses
   have been entered.  The effect is exactly as if the <tt>Check Answers</tt>
@@ -103,6 +121,12 @@
   button were clicked immediately after the incorrect response is entered.
   This option is useful for forcing yourself to be careful not to enter any
   incorrect responses.</p>
+
+  <p><b>Mark question as missed after an incorrect response:</b> If this
+  option is selected, a quiz question will be marked as missed if an incorrect
+  response was ever given in the course of answering the question.  This means
+  the question will be marked as missed even if all correct responses were
+  given.</p>
 
   <p><b>Cycle answers after ending a question:</b> If this option is
   selected, the quiz question display area will change to display correct

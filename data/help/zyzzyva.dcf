@@ -96,8 +96,8 @@
     <section ref="preferences.html" title="Preferences">
       <section ref="preferences.html#general" title="General Preferences">
         <keyword ref="preferences.html#auto-load-lexicon">lexicon</keyword>
-        <section ref="preferences.html#auto-load-lexicon"
-                 title="Lexicon" />
+        <section ref="preferences.html#auto-load-lexicon" title="Lexicon" />
+        <section ref="preferences.html#data-directory" title="Data Directory" />
         <section ref="preferences.html#welcome-display"
                  title="Welcome Display" />
       </section>
