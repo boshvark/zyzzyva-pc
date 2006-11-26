@@ -46,6 +46,10 @@ rem Copy Qt plugins
 mkdir %OUTDIR%\sqldrivers
 copy %QTDIR%\plugins\sqldrivers\qsqlite.dll %OUTDIR%\sqldrivers
 
+rem Copy Zyzzyva images
+mkdir %OUTDIR%\images
+copy images\zyzzyva*.ico %OUTDIR%\images
+
 rem Copy Zyzzyva stuff
 copy bin\zyzzyva.exe %OUTDIR%
 copy bin\zyzzyva1.dll %OUTDIR%
