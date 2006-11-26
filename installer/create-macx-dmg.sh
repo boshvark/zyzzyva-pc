@@ -25,50 +25,54 @@
 
 QTDIR=/usr/local/Trolltech/Qt-4.1.5
 QTVER=4.0
+OUTDIR=installer/macosx
 
 $QTDIR/bin/qmake
 make
 
+mkdir -p $OUTDIR
+
 # Copy executable into bundle
 echo "Copying Zyzzyva executable into bundle..."
-rm -rf Zyzzyva.app
-mkdir Zyzzyva.app
-cp -r bin/Zyzzyva.app/Contents Zyzzyva.app
+rm -rf $OUTDIR/Zyzzyva.app
+mkdir $OUTDIR/Zyzzyva.app
+cp -r bin/Zyzzyva.app/Contents $OUTDIR/Zyzzyva.app
 
 # Copy zyzzyva.tap
 echo "Copying zyzzyva.top into bundle..."
-cp zyzzyva.top Zyzzyva.app/Contents/MacOS
+cp zyzzyva.top $OUTDIR/Zyzzyva.app/Contents/MacOS
 
 # Copy data directory into bundle
 echo "Copying data directory into bundle..."
-cp -r data Zyzzyva.app/Contents/MacOS
+cp -r data $OUTDIR/Zyzzyva.app/Contents/MacOS
+find $OUTDIR -type d -name '.svn' -print0 | xargs -0 rm -rf
 
 # Copy Assistant client into bundle
 echo "Copying Assistant client into bundle..."
 cp $QTDIR/bin/assistant.app/Contents/MacOS/assistant \
-    Zyzzyva.app/Contents/MacOS
+    $OUTDIR/Zyzzyva.app/Contents/MacOS
 
 # Copy assistant.icns into bundle
 echo "Copying assistant.icns into bundle..."
-mkdir -p Zyzzyva.app/Contents/Resources
+mkdir -p $OUTDIR/Zyzzyva.app/Contents/Resources
 cp $QTDIR/bin/assistant.app/Contents/Resources/assistant.icns \
-    Zyzzyva.app/Contents/Resources
+    $OUTDIR/Zyzzyva.app/Contents/Resources
 
 # Create Contents/Frameworks directory in bundle
 echo "Creating Contents/Frameworks directory in bundle..."
-rm -rf Zyzzyva.app/Contents/Frameworks
-mkdir -p Zyzzyva.app/Contents/Frameworks
+rm -rf $OUTDIR/Zyzzyva.app/Contents/Frameworks
+mkdir -p $OUTDIR/Zyzzyva.app/Contents/Frameworks
 
 # Copy Zyzzyva libs to Frameworks directory
 echo "Copying libzyzzyva into bundle..."
-cp bin/libzyzzyva.1.dylib Zyzzyva.app/Contents/Frameworks
+cp bin/libzyzzyva.1.dylib $OUTDIR/Zyzzyva.app/Contents/Frameworks
 
 # Change link location for libzyzzyva in executable
 echo "Changing link location for libzyzzyva in Zyzzyva executable..."
 install_name_tool -change \
     libzyzzyva.1.dylib \
     @executable_path/../Frameworks/libzyzzyva.1.dylib \
-    Zyzzyva.app/Contents/MacOS/Zyzzyva
+    $OUTDIR/Zyzzyva.app/Contents/MacOS/Zyzzyva
 
 # Copy Qt frameworks into bundle and tell the executable to link to them
 for i in QtGui QtNetwork QtSql QtXml QtCore ; do
@@ -76,27 +80,27 @@ for i in QtGui QtNetwork QtSql QtXml QtCore ; do
     # Copy Qt framework into bundle
     echo "Copying $i.framework into bundle..."
     cp -R $QTDIR/lib/$i.framework \
-        Zyzzyva.app/Contents/Frameworks
+        $OUTDIR/Zyzzyva.app/Contents/Frameworks
 
     # Delete headers and debug libraries
     echo "Deleting $i.framework headers and debug libraries..."
-    rm Zyzzyva.app/Contents/Frameworks/$i.framework/Headers
-    rm -rf Zyzzyva.app/Contents/Frameworks/$i.framework/Versions/$QTVER/Headers
-    find Zyzzyva.app/Contents/Frameworks -name arch -or -name '*debug*' \
+    rm $OUTDIR/Zyzzyva.app/Contents/Frameworks/$i.framework/Headers
+    rm -rf $OUTDIR/Zyzzyva.app/Contents/Frameworks/$i.framework/Versions/$QTVER/Headers
+    find $OUTDIR/Zyzzyva.app/Contents/Frameworks -name arch -or -name '*debug*' \
         -print0 | xargs -0 rm -rf
 
     # Set identification names for the private framework
     echo "Setting identification name for $i.framework..."
     install_name_tool \
         -id @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
-        Zyzzyva.app/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+        $OUTDIR/Zyzzyva.app/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
 
     # Change link locations for framework in executable - ORIG
     echo "Changing link location for $i.framework in Zyzzyva executable..."
     install_name_tool -change \
         $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
         @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
-        Zyzzyva.app/Contents/MacOS/Zyzzyva
+        $OUTDIR/Zyzzyva.app/Contents/MacOS/Zyzzyva
 done
 
 # Change reference to QtCore in QtGui framework
@@ -104,96 +108,96 @@ echo "Changing link location for QtCore.framework in QtGui.framework..."
 install_name_tool -change \
     $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
     @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    Zyzzyva.app/Contents/Frameworks/QtGui.framework/Versions/$QTVER/QtGui
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/QtGui.framework/Versions/$QTVER/QtGui
 
 # Change reference to QtCore in QtNetwork framework
 echo "Changing link location for QtCore.framework in QtNetwork.framework..."
 install_name_tool -change \
     $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
     @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    Zyzzyva.app/Contents/Frameworks/QtNetwork.framework/Versions/$QTVER/QtNetwork
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/QtNetwork.framework/Versions/$QTVER/QtNetwork
 
 # Change reference to QtCore in QtSql framework
 echo "Changing link location for QtCore.framework in QtSql.framework..."
 install_name_tool -change \
     $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
     @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    Zyzzyva.app/Contents/Frameworks/QtSql.framework/Versions/$QTVER/QtSql
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/QtSql.framework/Versions/$QTVER/QtSql
 
 # Change reference to QtCore in QtXml framework
 echo "Changing link location for QtCore.framework in QtXml.framework..."
 install_name_tool -change \
     $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
     @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    Zyzzyva.app/Contents/Frameworks/QtXml.framework/Versions/$QTVER/QtXml
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/QtXml.framework/Versions/$QTVER/QtXml
 
 # Change reference to QtCore in Assistant client
 echo "Changing link location for QtCore.framework in Assistant client..."
 install_name_tool -change \
     $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
     @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    Zyzzyva.app/Contents/MacOS/assistant
+    $OUTDIR/Zyzzyva.app/Contents/MacOS/assistant
 
 # Change reference to QtGui in Assistant client
 echo "Changing link location for QtGui.framework in Assistant client..."
 install_name_tool -change \
     $QTDIR/lib/QtGui.framework/Versions/$QTVER/QtGui \
     @executable_path/../Frameworks/QtGui.framework/Versions/$QTVER/QtGui \
-    Zyzzyva.app/Contents/MacOS/assistant
+    $OUTDIR/Zyzzyva.app/Contents/MacOS/assistant
 
 # Change reference to QtNetwork in Assistant client
 echo "Changing link location for QtNetwork.framework in Assistant client..."
 install_name_tool -change \
     $QTDIR/lib/QtNetwork.framework/Versions/$QTVER/QtNetwork \
     @executable_path/../Frameworks/QtNetwork.framework/Versions/$QTVER/QtNetwork \
-    Zyzzyva.app/Contents/MacOS/assistant
+    $OUTDIR/Zyzzyva.app/Contents/MacOS/assistant
 
 # Change reference to QtXml in Assistant client
 echo "Changing link location for QtXml.framework in Assistant client..."
 install_name_tool -change \
     $QTDIR/lib/QtXml.framework/Versions/$QTVER/QtXml \
     @executable_path/../Frameworks/QtXml.framework/Versions/$QTVER/QtXml \
-    Zyzzyva.app/Contents/MacOS/assistant
+    $OUTDIR/Zyzzyva.app/Contents/MacOS/assistant
 
 # Change reference to QtCore in libzyzzyva
 echo "Changing link location for QtCore.framework in libzyzzyva..."
 install_name_tool -change \
     $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
     @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
 
 # Change reference to QtGui in libzyzzyva
 echo "Changing link location for QtGui.framework in libzyzzyva..."
 install_name_tool -change \
     $QTDIR/lib/QtGui.framework/Versions/$QTVER/QtGui \
     @executable_path/../Frameworks/QtGui.framework/Versions/$QTVER/QtGui \
-    Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
 
 # Change reference to QtNetwork in libzyzzyva
 echo "Changing link location for QtNetwork.framework in libzyzzyva..."
 install_name_tool -change \
     $QTDIR/lib/QtNetwork.framework/Versions/$QTVER/QtNetwork \
     @executable_path/../Frameworks/QtNetwork.framework/Versions/$QTVER/QtNetwork \
-    Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
 
 # Change reference to QtSql in libzyzzyva
 echo "Changing link location for QtSql.framework in libzyzzyva..."
 install_name_tool -change \
     $QTDIR/lib/QtSql.framework/Versions/$QTVER/QtSql \
     @executable_path/../Frameworks/QtSql.framework/Versions/$QTVER/QtSql \
-    Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
 
 # Change reference to QtXml in libzyzzyva
 echo "Changing link location for QtXml.framework in libzyzzyva..."
 install_name_tool -change \
     $QTDIR/lib/QtXml.framework/Versions/$QTVER/QtXml \
     @executable_path/../Frameworks/QtXml.framework/Versions/$QTVER/QtXml \
-    Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
 
 # Create disk image
 echo "Creating disk image..."
 rm -rf Zyzzyva.dmg
-hdiutil create -srcfolder Zyzzyva.app -volname Zyzzyva Zyzzyva.dmg
+hdiutil create -srcfolder $OUTDIR/Zyzzyva.app -volname Zyzzyva Zyzzyva.dmg
 hdiutil attach Zyzzyva.dmg
 DEVS=$(hdiutil attach Zyzzyva.dmg | cut -f 1)
 DEV=$(echo $DEVS | cut -f 1 -d ' ')
@@ -201,5 +205,6 @@ hdiutil detach $DEV
 hdiutil internet-enable -yes Zyzzyva.dmg
 hdiutil convert Zyzzyva.dmg -format UDZO -o Zyzzyva-output.dmg
 mv Zyzzyva-output.dmg Zyzzyva.dmg
+mv Zyzzyva.dmg $OUTDIR
 
 echo "Done.  Disk image is called Zyzzyva.dmg."
