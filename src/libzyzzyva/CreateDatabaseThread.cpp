@@ -30,6 +30,7 @@
 #include <QtSql>
 
 const int MAX_DEFINITION_LINKS = 3;
+const QString DB_CONNECTION_NAME = "CreateDatabaseThread";
 
 using namespace Defs;
 
@@ -52,13 +53,12 @@ CreateDatabaseThread::run()
 void
 CreateDatabaseThread::runPrivate()
 {
-    QString dbConnectionName = "CreateDatabaseThread";
     int numSteps = 0;
 
     {
         // Create empty database
         QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE",
-                                                     dbConnectionName);
+                                                     DB_CONNECTION_NAME);
         db.setDatabaseName (dbFilename);
         if (!db.open())
             return;
@@ -87,7 +87,7 @@ CreateDatabaseThread::runPrivate()
         updateDefinitionLinks (db, stepNum);
     }
 
-    QSqlDatabase::removeDatabase (dbConnectionName);
+    cleanup();
     emit progress (numSteps);
 }
 
@@ -414,6 +414,17 @@ void
 CreateDatabaseThread::cancel()
 {
     cancelled = true;
+}
+
+//---------------------------------------------------------------------------
+//  cleanup
+//
+//! Clean up open database handles.
+//---------------------------------------------------------------------------
+void
+CreateDatabaseThread::cleanup()
+{
+    QSqlDatabase::removeDatabase (DB_CONNECTION_NAME);
 }
 
 //---------------------------------------------------------------------------

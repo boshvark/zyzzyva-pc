@@ -47,6 +47,7 @@ class CreateDatabaseThread : public QThread
 
     public slots:
     void cancel();
+    void cleanup();
 
     signals:
     void steps (int s);
