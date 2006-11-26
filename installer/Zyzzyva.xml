@@ -172,6 +172,9 @@
                         <distributionDirectory>
                             <origin>/Users/mthelen/dev/zyzzyva-install/windows/sqldrivers</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/images</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
@@ -230,14 +233,16 @@
     <platformOptionsList/>
     <postInstallationActionList>
         <substitute>
+            <files>${installdir}/zyzzyva.sh</files>
+            <type>regexp</type>
             <ruleList>
                 <compareText>
-                    <text>${platform_name}</text>
                     <logic>equals</logic>
+                    <nocase>0</nocase>
+                    <text>${platform_name}</text>
                     <value>linux</value>
                 </compareText>
             </ruleList>
-            <files>${installdir}/zyzzyva.sh</files>
             <substitutionList>
                 <substitution>
                     <pattern>@@INSTALLDIR@@</pattern>
