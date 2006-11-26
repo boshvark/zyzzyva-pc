@@ -110,6 +110,9 @@
                         <distributionDirectory>
                             <origin>/Users/mthelen/dev/zyzzyva-install/linux/data</origin>
                         </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/images</origin>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
                 <folder>
