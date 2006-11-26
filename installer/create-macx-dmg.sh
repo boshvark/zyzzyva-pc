@@ -26,6 +26,9 @@
 QTDIR=/usr/local/Trolltech/Qt-4.1.5
 QTVER=4.0
 
+$QTDIR/bin/qmake
+make
+
 # Copy executable into bundle
 echo "Copying Zyzzyva executable into bundle..."
 rm -rf Zyzzyva.app
