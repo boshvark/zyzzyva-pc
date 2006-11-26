@@ -225,7 +225,28 @@
         </directoryParameter>
     </parameterList>
     <platformOptionsList/>
-    <postInstallationActionList/>
+    <postInstallationActionList>
+        <substitute>
+            <ruleList>
+                <compareText>
+                    <text>${platform_name}</text>
+                    <logic>equals</logic>
+                    <value>linux</value>
+                </compareText>
+            </ruleList>
+            <files>${installdir}/zyzzyva.sh</files>
+            <substitutionList>
+                <substitution>
+                    <pattern>@@INSTALLDIR@@</pattern>
+                    <value>${installdir}</value>
+                </substitution>
+                <substitution>
+                    <pattern>@@EXECUTABLE@@</pattern>
+                    <value>zyzzyva</value>
+                </substitution>
+            </substitutionList>
+        </substitute>
+    </postInstallationActionList>
     <postUninstallationActionList/>
     <preBuildActionList/>
     <preInstallationActionList/>
