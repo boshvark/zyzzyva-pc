@@ -63,8 +63,6 @@ const QString SEARCH_TYPE_PROBABILITY = "Probability";
 const QString SEARCH_TYPE_PROBABILITY_ORDER = "Probability Order";
 const QString SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER =
               "Limit by Probability Order";
-const QString SEARCH_TYPE_IN_CARDBOX = "In Cardbox";
-const QString SEARCH_TYPE_NEXT_SCHEDULED = "Next Scheduled";
 
 // Obsolete search condition strings
 const QString SEARCH_TYPE_OLD_EXACT_LENGTH = "Exact Length";
@@ -624,10 +622,6 @@ Auxil::stringToSearchType (const QString& string)
         return SearchCondition::ProbabilityOrder;
     else if (string == SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER)
         return SearchCondition::LimitByProbabilityOrder;
-    else if (string == SEARCH_TYPE_IN_CARDBOX)
-        return SearchCondition::InCardbox;
-    else if (string == SEARCH_TYPE_NEXT_SCHEDULED)
-        return SearchCondition::NextScheduled;
 
     // Obsolete search condition strings
     else if (string == SEARCH_TYPE_OLD_EXACT_LENGTH)
@@ -724,12 +718,6 @@ Auxil::searchTypeToString (SearchCondition::SearchType type)
 
         case SearchCondition::LimitByProbabilityOrder:
         return SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER;
-
-        case SearchCondition::InCardbox:
-        return SEARCH_TYPE_IN_CARDBOX;
-
-        case SearchCondition::NextScheduled:
-        return SEARCH_TYPE_NEXT_SCHEDULED;
 
         default: return QString::null;
     }
