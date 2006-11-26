@@ -29,11 +29,12 @@ OUTDIR=$HOME/dev/zyzzyva-install
 DMGFILE=$OUTDIR/Zyzzyva-$ZVER-osx-installer.dmg
 
 mkdir -p $OUTDIR
+mv "$BITROCKDIR/Zyzzyva*" $OUTDIR
 
 # Create disk image
 echo "Creating disk image..."
 rm -rf $DMGFILE
-hdiutil create -srcfolder "$BITROCKDIR/Zyzzyva-$ZVER-osx-installer.app" \
+hdiutil create -srcfolder $OUTDIR/Zyzzyva-$ZVER-osx-installer.app \
     -volname Zyzzyva-$ZVER-osx-installer $DMGFILE
 hdiutil attach $DMGFILE
 DEVS=$(hdiutil attach $DMGFILE | cut -f 1)
