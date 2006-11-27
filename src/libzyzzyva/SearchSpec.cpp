@@ -280,7 +280,15 @@ SearchSpec::optimize()
                 if (ss == UnknownSearchSet)
                     break;
 
-                if (!negated) {
+                else if (ss == SetNewInOwl2) {
+                    SearchCondition addCondition = condition;
+                    addCondition.type = SearchCondition::InWordList;
+                    addCondition.stringValue = Auxil::getNewInOwl2String();
+                    newConditions.append (addCondition);
+                    break;
+                }
+
+                else if (!negated) {
                     SearchCondition addCondition;
                     switch (ss) {
                         case SetHighFives:
@@ -314,6 +322,7 @@ SearchSpec::optimize()
                     }
                 }
             }
+            qDebug ("Before appending original condition");
             newConditions.append (condition);
             break;
 

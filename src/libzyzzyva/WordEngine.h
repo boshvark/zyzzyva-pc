@@ -99,7 +99,6 @@ class WordEngine : public QObject
     int getNumAnagrams (const QString& word) const;
     QStringList nonGraphSearch (const SearchSpec& spec) const;
     void addDefinition (const QString& word, const QString& definition);
-    QString getNewInOwl2String() const;
     QStringList databaseSearch (const SearchSpec& optimizedSpec, const
                                 QStringList* wordList = 0) const;
     QStringList applyPostConditions (const SearchSpec& optimizedSpec, const

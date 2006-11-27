@@ -253,35 +253,6 @@ WordEngine::importStems (const QString& filename, QString* errString)
 }
 
 //---------------------------------------------------------------------------
-//  getNewInOwl2String
-//
-//! Read all new OWL2 words into a string, separated by spaces.  XXX: Right
-//! now this is hard-coded to load a certain file for a specific purpose.
-//! This whole concept should be more flexible.
-//---------------------------------------------------------------------------
-QString
-WordEngine::getNewInOwl2String() const
-{
-    QFile file (Auxil::getWordsDir() + "/north-american/owl2-new-words.txt");
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
-        return QString::null;
-
-    QStringList words;
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
-    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
-        QString line (buffer);
-        line = line.simplified();
-        if (!line.length() || (line.at (0) == '#'))
-            continue;
-        QString word = line.section (' ', 0, 0);
-        words.append (word);
-    }
-    delete[] buffer;
-
-    return words.join (" ");
-}
-
-//---------------------------------------------------------------------------
 //  databaseSearch
 //
 //! Search the database for words matching the conditions in a search spec.
