@@ -45,7 +45,7 @@
             <desktopShortcutList>
                 <shortcut>
                     <comment>${product_fullname} ${product_version}</comment>
-                    <exec>${installdir}/zyzzyva.sh</exec>
+                    <exec>${installdir}/zyzzyva</exec>
                     <icon>${installdir}/images/zyzzyva-48x48.png</icon>
                     <name>${product_fullname} ${product_version}</name>
                     <path>${installdir}</path>
@@ -87,7 +87,7 @@
                             <origin>/Users/mthelen/dev/zyzzyva-install/linux/zyzzyva.top</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/zyzzyva.sh</origin>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/zyzzyva</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>/Users/mthelen/dev/zyzzyva-install/linux/README</origin>
@@ -233,7 +233,7 @@
     <platformOptionsList/>
     <postInstallationActionList>
         <substitute>
-            <files>${installdir}/zyzzyva.sh</files>
+            <files>${installdir}/zyzzyva</files>
             <type>regexp</type>
             <ruleList>
                 <compareText>
