@@ -1,8 +1,13 @@
 Zyzzyva is free software, released under the GNU General Public License.
-Please see COPYING and LICENSE for details.
+Please see COPYING and LICENSE for details.  Zyzzyva is written by Michael W
+Thelen <mthelen@gmail.com>.
 
-To build Zyzzyva, you will need the Qt4 library, available from
-http://www.trolltech.com/download/opensource.html.
+The Zyzzyva home page is http://zyzzyva.net/, and the latest version can
+always be found there.  Zyzzyva also has a user mailing list, which you can
+join at http://groups.yahoo.com/group/zyzzyva-users/.
+
+If you are building Zyzzyva from source code, you will need the Qt4 library,
+available from http://www.trolltech.com/download/opensource.html.
 
 After Qt4 is installed, the following steps should be sufficient to
 build Zyzzyva:
@@ -10,6 +15,5 @@ build Zyzzyva:
     qmake
     make
 
-The Zyzzyva home page is http://zyzzyva.net/, and the latest version can
-always be found there.  Please email Michael W Thelen <mthelen@gmail.com>
-with questions, comments, patches, or large cash donations.  Happy hacking!
+Please email Michael Thelen with questions, comments, patches, or large cash
+donations.  Happy hacking!
