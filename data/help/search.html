@@ -109,6 +109,80 @@
   appropriately.  An exact length can also be specified by making the
   <i>Min</i> and <i>Max</i> values equal to each other.</p>
 
+  <a name="num-vowels">
+  <h3>Number of Vowels</h3>
+
+  <p>A minimum and maximum number of vowels (A, E, I, O, U) can be specified
+  for the results of a search.  For example, if the minimum number of is 1 and
+  the maximum is 2, then the search will only return words that have one or
+  two vowels.</p>
+
+  <p>To specify minimum or maximum number of vowels, choose the <i>Number of
+  Vowels</i> condition and set the <i>Min</i> and <i>Max</i> values
+  appropriately.  An exact number of vowels can also be specified by making
+  the <i>Min</i> and <i>Max</i> values equal to each other.</p>
+
+  <a name="num-unique-letters">
+  <h3>Number of Unique Letters</h3>
+
+  <p>A minimum and maximum number of unique letters can be specified
+  for the results of a search.  For example, if the minimum number of is 3 and
+  the maximum is 5, then the search will only return words that have between
+  three and five unique letters.</p>
+
+  <p>To specify minimum or maximum number of unique letters, choose the
+  <i>Number of Unique Letters</i> condition and set the <i>Min</i> and
+  <i>Max</i> values appropriately.  An exact number of unique letters can also
+  be specified by making the <i>Min</i> and <i>Max</i> values equal to each
+  other.</p>
+
+  <a name="point-value">
+  <h3>Point Value</h3>
+
+  <p>A minimum and maximum point value can be specified for the results of a
+  search.  For example, if the minimum number of is 8 and the maximum is 10,
+  then the search will only return words that have a total point value between
+  8 and 10.  The point value of a word is determined by adding the individual
+  point values of its letters.  The value of each letter is the following:</p>
+
+  <ul>
+  <li>A = 1</li>
+  <li>B = 3</li>
+  <li>C = 3</li>
+  <li>D = 2</li>
+  <li>E = 1</li>
+  <li>F = 4</li>
+  <li>G = 2</li>
+  <li>H = 4</li>
+  <li>I = 1</li>
+  <li>J = 8</li>
+  <li>K = 5</li>
+  <li>L = 1</li>
+  <li>M = 3</li>
+  <li>N = 1</li>
+  <li>O = 1</li>
+  <li>P = 3</li>
+  <li>Q = 10</li>
+  <li>R = 1</li>
+  <li>S = 1</li>
+  <li>T = 1</li>
+  <li>U = 1</li>
+  <li>V = 4</li>
+  <li>W = 4</li>
+  <li>X = 8</li>
+  <li>Y = 4</li>
+  <li>Z = 10</li>
+  </ul>
+
+  <p>The point value of each letter is considered even if a word must normally
+  be formed using a blank.  For example, the point value of ZYZZYVA is 43 (10
+  + 4 + 10 + 10 + 4 + 4 + 1), not 23 (10 + 4 + 0 + 0 + 4 + 4 + 1).</p>
+
+  <p>To specify minimum or maximum point value, choose the <i>Point Value</i>
+  condition and set the <i>Min</i> and <i>Max</i> values appropriately.  An
+  exact point value can also be specified by making the <i>Min</i> and
+  <i>Max</i> values equal to each other.</p>
+
   <a name="prefixes-suffixes">
   <h3>Prefixes and Suffixes</h3>
 
@@ -199,6 +273,10 @@
   can form another valid word by removing the last letter.  For example,
   <tt>VIGA</tt> is a back hook, because the word <tt>VIG</tt> can be formed by
   removing its last letter.</p>
+
+  <p><b>High Fives.</b> The <i>High Fives</i> set consists of 5-letter
+  words beginning or ending with F, H, K, V, W, or Y.  High Fives also do not
+  contain J, Q, X, or Z.</p>
 
   <p><b>Type I Sevens.</b> The <i>Type I Sevens</i> set consists of 7-letter
   words containing a 6-letter bingo stem in the top 100 stems.  For example,

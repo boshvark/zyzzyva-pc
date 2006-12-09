@@ -19,6 +19,10 @@
         <section ref="search.html#subanagram-match"
                  title="Subanagram Match" />
         <section ref="search.html#word-length" title="Word Length" />
+        <section ref="search.html#num-vowels" title="Number of Vowels" />
+        <section ref="search.html#num-unique-letters"
+                 title="Number of Unique Letters" />
+        <section ref="search.html#point-value" title="Point Value" />
         <section ref="search.html#prefixes-suffixes"
                  title="Prefixes and Suffixes" />
         <section ref="search.html#includes-letters"
@@ -39,7 +43,11 @@
     </section>
     <section ref="quiz.html" title="Quizzes">
       <keyword ref="quiz.html">quiz</keyword>
-      <section ref="quiz.html#create-quiz" title="Creating a Quiz" />
+      <section ref="quiz.html#create-quiz" title="Creating a Quiz">
+        <section ref="quiz.html#quiz-type" title="Quiz Type" />
+        <section ref="quiz.html#quiz-method" title="Quiz Method" />
+        <section ref="quiz.html#question-order" title="Question Order" />
+      </section>
       <section ref="quiz.html#take-quiz" title="Taking a Quiz" />
       <section ref="quiz.html#flashcard-mode" title="Flashcard Mode" />
       <section ref="quiz.html#analyze-quiz"
