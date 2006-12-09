@@ -39,7 +39,7 @@ cp -d $QTDIR/lib/libQt{Core,Gui,Network,Sql,Xml}.so* $OUTDIR/bin
 cp -d $QTDIR/bin/assistant $OUTDIR/bin
 cp -d bin/libzyzzyva.so* $OUTDIR/bin
 cp -d bin/zyzzyva $OUTDIR/bin
-cp -d installer/zyzzyva.sh $OUTDIR
+cp -d installer/zyzzyva.sh $OUTDIR/zyzzyva
 
 cp zyzzyva.top $OUTDIR
 cp AUTHORS $OUTDIR/AUTHORS
