@@ -51,6 +51,8 @@ class SearchCondition
         Probability,
         ProbabilityOrder,
         LimitByProbabilityOrder,
+        InCardbox,
+        NextScheduled,
 
         // Obsolete search condition types
         OldExactLength,
