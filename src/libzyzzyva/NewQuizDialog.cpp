@@ -102,6 +102,22 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
              SLOT (methodActivated (const QString&)));
     methodHlay->addWidget (methodCombo);
 
+    QHBoxLayout* questionOrderHlay = new QHBoxLayout;
+    Q_CHECK_PTR (questionOrderHlay);
+    mainVlay->addLayout (questionOrderHlay);
+
+    QLabel* questionOrderLabel = new QLabel ("Question Order:");
+    Q_CHECK_PTR (questionOrderLabel);
+    questionOrderHlay->addWidget (questionOrderLabel);
+
+    questionOrderCombo = new QComboBox;
+    fillQuestionOrderCombo (methodCombo->currentText());
+    questionOrderCombo->setCurrentIndex (questionOrderCombo->findText
+        (Auxil::quizQuestionOrderToString (QuizSpec::RandomOrder)));
+    connect (questionOrderCombo, SIGNAL (activated (const QString&)),
+             SLOT (questionOrderActivated (const QString&)));
+    questionOrderHlay->addWidget (questionOrderCombo);
+
     QGroupBox* specGbox = new QGroupBox ("Search Specification");
     Q_CHECK_PTR (specGbox);
     mainVlay->addWidget (specGbox);
@@ -120,22 +136,6 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (progressCbox);
     progressCbox->setEnabled (false);
     mainVlay->addWidget (progressCbox);
-
-    QHBoxLayout* questionOrderHlay = new QHBoxLayout;
-    Q_CHECK_PTR (questionOrderHlay);
-    mainVlay->addLayout (questionOrderHlay);
-
-    QLabel* questionOrderLabel = new QLabel ("Question Order:");
-    Q_CHECK_PTR (questionOrderLabel);
-    questionOrderHlay->addWidget (questionOrderLabel);
-
-    questionOrderCombo = new QComboBox;
-    fillQuestionOrderCombo (methodCombo->currentText());
-    questionOrderCombo->setCurrentIndex (questionOrderCombo->findText
-        (Auxil::quizQuestionOrderToString (QuizSpec::RandomOrder)));
-    connect (questionOrderCombo, SIGNAL (activated (const QString&)),
-             SLOT (questionOrderActivated (const QString&)));
-    questionOrderHlay->addWidget (questionOrderCombo);
 
     QHBoxLayout* timerHlay = new QHBoxLayout;
     Q_CHECK_PTR (timerHlay);
