@@ -24,12 +24,11 @@
 #-----------------------------------------------------------------------------
 
 ZVER=1.0.0
-BITROCKDIR=/Applications/BitRock\ InstallBuilder\ Enterprise\ 3.8.1/output
 OUTDIR=$HOME/dev/zyzzyva-install
 DMGFILE=$OUTDIR/Zyzzyva-$ZVER-osx-installer.dmg
 
 mkdir -p $OUTDIR
-mv "$BITROCKDIR/Zyzzyva*" $OUTDIR
+mv /Applications/BitRock\ InstallBuilder\ Enterprise\ 3.8.1/output/Zyzzyva* $OUTDIR
 
 # Create disk image
 echo "Creating disk image..."
