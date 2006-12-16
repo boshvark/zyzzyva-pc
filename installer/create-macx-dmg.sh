@@ -100,7 +100,7 @@ for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistantClient ; do
     install_name_tool -change \
         $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
         @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
-        Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+        $OUTDIR/Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
 
     # Change link locations for framework in executable
     echo "Changing link location for $i.framework in Zyzzyva executable..."
