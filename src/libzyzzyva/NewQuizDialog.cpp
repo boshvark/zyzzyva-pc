@@ -118,19 +118,32 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
              SLOT (questionOrderActivated (const QString&)));
     questionOrderHlay->addWidget (questionOrderCombo);
 
-    QGroupBox* specGbox = new QGroupBox ("Search Specification");
-    Q_CHECK_PTR (specGbox);
-    mainVlay->addWidget (specGbox);
+    allCardboxButton = new QRadioButton;
+    Q_CHECK_PTR (allCardboxButton);
+    allCardboxButton->setText ("Use all available words");
+    allCardboxButton->setChecked (true);
+    mainVlay->addWidget (allCardboxButton);
 
-    QHBoxLayout* specHlay = new QHBoxLayout (specGbox);
+    useSearchButton = new QRadioButton;
+    Q_CHECK_PTR (useSearchButton);
+    useSearchButton->setText("Use only words matching search specification");
+    connect (useSearchButton, SIGNAL (toggled (bool)),
+             SLOT (useSearchButtonToggled (bool)));
+    mainVlay->addWidget (useSearchButton);
+
+    searchSpecGbox = new QGroupBox ("Search Specification");
+    Q_CHECK_PTR (searchSpecGbox);
+    mainVlay->addWidget (searchSpecGbox);
+
+    QHBoxLayout* specHlay = new QHBoxLayout (searchSpecGbox);
     Q_CHECK_PTR (specHlay);
 
-    specForm = new SearchSpecForm;
-    Q_CHECK_PTR (specForm);
-    connect (specForm, SIGNAL (contentsChanged()),
+    searchSpecForm = new SearchSpecForm;
+    Q_CHECK_PTR (searchSpecForm);
+    connect (searchSpecForm, SIGNAL (contentsChanged()),
              SLOT (searchContentsChanged()));
-    connect (specForm, SIGNAL (returnPressed()), SLOT (accept()));
-    specHlay->addWidget (specForm);
+    connect (searchSpecForm, SIGNAL (returnPressed()), SLOT (accept()));
+    specHlay->addWidget (searchSpecForm);
 
     progressCbox = new QCheckBox ("Restore &progress");
     Q_CHECK_PTR (progressCbox);
@@ -202,8 +215,10 @@ NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
     buttonHlay->addWidget (cancelButton);
 
+    updateForm();
+
     setWindowTitle (DIALOG_CAPTION);
-    specForm->selectInputArea();
+    searchSpecForm->selectInputArea();
 }
 
 //---------------------------------------------------------------------------
@@ -222,9 +237,16 @@ NewQuizDialog::getQuizSpec()
     quizSpec.setLexicon (wordEngine->getLexiconName());
     quizSpec.setType (Auxil::stringToQuizType (typeCombo->currentText()));
     quizSpec.setMethod (quizMethod);
-    quizSpec.setSearchSpec (specForm->getSearchSpec());
     quizSpec.setQuestionOrder (Auxil::stringToQuizQuestionOrder
                                (questionOrderCombo->currentText()));
+
+    if (allCardboxButton->isChecked()) {
+        quizSpec.setQuizSourceType (QuizSpec::CardboxReadySource);
+    }
+    else if (useSearchButton->isChecked()) {
+        quizSpec.setQuizSourceType (QuizSpec::SearchSource);
+        quizSpec.setSearchSpec (searchSpecForm->getSearchSpec());
+    }
 
     QuizTimerSpec timerSpec;
     if (timerCbox->isChecked()) {
@@ -264,10 +286,20 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
     typeCombo->setCurrentIndex
         (typeCombo->findText (Auxil::quizTypeToString (spec.getType())));
     typeActivated (typeCombo->currentText());
-    specForm->setSearchSpec (spec.getSearchSpec());
     questionOrderCombo->setCurrentIndex
         (questionOrderCombo->findText (Auxil::quizQuestionOrderToString
                                        (spec.getQuestionOrder())));
+
+    QuizSpec::QuizSourceType sourceType = spec.getQuizSourceType();
+    if (sourceType == QuizSpec::SearchSource) {
+        useSearchButton->setChecked (true);
+        searchSpecForm->setSearchSpec (spec.getSearchSpec());
+    }
+    else if (sourceType == QuizSpec::CardboxReadySource) {
+        allCardboxButton->setChecked (true);
+        searchSpecForm->setSearchSpec (SearchSpec());
+    }
+
     timerCbox->setChecked (false);
     timerSbox->setValue (0);
     timerCombo->setCurrentIndex (timerCombo->findText (TIMER_PER_RESPONSE));
@@ -338,6 +370,20 @@ NewQuizDialog::methodActivated (const QString& text)
     updateForm();
     disableProgress();
     clearFilename();
+}
+
+//---------------------------------------------------------------------------
+//  useSearchButtonToggled
+//
+//! Called when the Use Search Specification button is toggled.  Enable or
+//! disable the search specification area.
+//
+//! @param on whether the search button is active
+//---------------------------------------------------------------------------
+void
+NewQuizDialog::useSearchButtonToggled (bool)
+{
+    updateForm();
 }
 
 //---------------------------------------------------------------------------
@@ -541,17 +587,28 @@ NewQuizDialog::updateForm()
         questionOrderCombo->setEnabled (false);
         questionOrderCombo->setCurrentIndex (questionOrderCombo->findText
             (Auxil::quizQuestionOrderToString (QuizSpec::ScheduleOrder)));
-    }
 
-    else if (type == QuizSpec::QuizWordListRecall) {
-        questionOrderCombo->setEnabled (false);
-        questionOrderCombo->setCurrentIndex (questionOrderCombo->findText
-            (Auxil::quizQuestionOrderToString (QuizSpec::RandomOrder)));
+        allCardboxButton->show();
+        useSearchButton->show();
+        searchSpecGbox->setEnabled (useSearchButton->isChecked());
     }
 
     else {
-        progressCbox->setEnabled (true);
-        questionOrderCombo->setEnabled (true);
+        if (type == QuizSpec::QuizWordListRecall) {
+            questionOrderCombo->setEnabled (false);
+            questionOrderCombo->setCurrentIndex
+                (questionOrderCombo->findText (Auxil::quizQuestionOrderToString
+                                               (QuizSpec::RandomOrder)));
+        }
+
+        else {
+            progressCbox->setEnabled (true);
+            questionOrderCombo->setEnabled (true);
+        }
+
+        allCardboxButton->hide();
+        useSearchButton->hide();
+        searchSpecGbox->setEnabled (true);
     }
 }
 

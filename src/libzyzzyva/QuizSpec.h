@@ -55,6 +55,12 @@ class QuizSpec
         CardboxQuizMethod
     };
 
+    enum QuizSourceType {
+        UnknownSource = 0,
+        SearchSource,
+        CardboxReadySource
+    };
+
     enum QuestionOrder {
         UnknownOrder = 0,
         RandomOrder,
@@ -78,6 +84,7 @@ class QuizSpec
     void setLexicon (const QString& lex) { lexicon = lex; }
     void setType (QuizType t) { type = t; }
     void setMethod (QuizMethod m) { method = m; }
+    void setQuizSourceType (QuizSourceType s) { sourceType = s; }
     void setSearchSpec (const SearchSpec& s) { searchSpec = s; }
     void setTimerSpec (const QuizTimerSpec& s) { timerSpec = s; }
     void setProgress (const QuizProgress& p) { progress = p; }
@@ -93,6 +100,7 @@ class QuizSpec
     QString getLexicon() const { return lexicon; }
     QuizType getType() const { return type; }
     QuizMethod getMethod() const { return method; }
+    QuizSourceType getQuizSourceType() const { return sourceType; }
     SearchSpec getSearchSpec() const { return searchSpec; }
     QuizTimerSpec getTimerSpec() const { return timerSpec; }
     QuizProgress getProgress() const { return progress; }
@@ -106,6 +114,7 @@ class QuizSpec
     QString lexicon;
     QuizType type;
     QuizMethod method;
+    QuizSourceType sourceType;
     SearchSpec searchSpec;
     QuizTimerSpec timerSpec;
     QuizProgress progress;

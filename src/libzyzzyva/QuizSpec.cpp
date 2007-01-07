@@ -106,10 +106,12 @@ QuizSpec::asDomElement() const
 
     QDomElement sourceElement = doc.createElement
         (XML_QUESTION_SOURCE_ELEMENT);
-    sourceElement.setAttribute (XML_QUESTION_SOURCE_TYPE_ATTR, "search");
-
-    sourceElement.appendChild (searchSpec.asDomElement());
+    sourceElement.setAttribute (XML_QUESTION_SOURCE_TYPE_ATTR,
+                                Auxil::quizSourceTypeToString (sourceType));
     topElement.appendChild (sourceElement);
+
+    if (sourceType == SearchSource)
+        sourceElement.appendChild (searchSpec.asDomElement());
 
     if (questionOrder == RandomOrder) {
         QDomElement randomElement = doc.createElement
@@ -187,11 +189,14 @@ QuizSpec::fromDomElement (const QDomElement& element, QString*)
         // XXX: QuizQuestionSource needs to be a class of its own
         if (tag == XML_QUESTION_SOURCE_ELEMENT) {
 
-            if ((!elem.hasAttribute (XML_QUESTION_SOURCE_TYPE_ATTR)) ||
-                (elem.attribute (XML_QUESTION_SOURCE_TYPE_ATTR) != "search"))
-            {
+            if (!elem.hasAttribute (XML_QUESTION_SOURCE_TYPE_ATTR))
                 return false;
-            }
+
+            QuizSpec::QuizSourceType source = Auxil::stringToQuizSourceType
+                (elem.attribute (XML_QUESTION_SOURCE_TYPE_ATTR));
+            if (source == QuizSpec::UnknownSource)
+                return false;
+            tmpSpec.setQuizSourceType (source);
 
             // Only for backward compatibility - "single-question" is no
             // longer produced as an attribute
@@ -201,14 +206,16 @@ QuizSpec::fromDomElement (const QDomElement& element, QString*)
                 tmpSpec.setType (QuizSpec::QuizWordListRecall);
             }
 
-            QDomElement searchElem = elem.firstChild().toElement();
-            if (searchElem.tagName() != XML_SEARCH_ELEMENT)
-                return false;
+            if (source == QuizSpec::SearchSource) {
+                QDomElement searchElem = elem.firstChild().toElement();
+                if (searchElem.tagName() != XML_SEARCH_ELEMENT)
+                    return false;
 
-            SearchSpec tmpSearchSpec;
-            if (!tmpSearchSpec.fromDomElement (searchElem))
-                return false;
-            tmpSpec.setSearchSpec (tmpSearchSpec);
+                SearchSpec tmpSearchSpec;
+                if (!tmpSearchSpec.fromDomElement (searchElem))
+                    return false;
+                tmpSpec.setSearchSpec (tmpSearchSpec);
+            }
         }
 
         else if (tag == XML_TIMER_ELEMENT) {

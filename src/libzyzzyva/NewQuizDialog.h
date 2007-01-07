@@ -30,6 +30,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialog>
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
@@ -53,6 +54,7 @@ class NewQuizDialog : public QDialog
     void timerToggled (bool on);
     void typeActivated (const QString& text);
     void methodActivated (const QString& text);
+    void useSearchButtonToggled (bool on);
     void searchContentsChanged();
     void questionOrderActivated (const QString& text);
     void loadQuiz();
@@ -65,11 +67,14 @@ class NewQuizDialog : public QDialog
     void fillQuestionOrderCombo (const QString& method);
 
     private:
-    SearchSpecForm* specForm;
     QComboBox*      typeCombo;
     QComboBox*      methodCombo;
     QCheckBox*      progressCbox;
     QComboBox*      questionOrderCombo;
+    QRadioButton*   allCardboxButton;
+    QRadioButton*   useSearchButton;
+    QGroupBox*      searchSpecGbox;
+    SearchSpecForm* searchSpecForm;
     ZPushButton*    saveQuizButton;
     ZPushButton*    okButton;
     QWidget*        timerWidget;
