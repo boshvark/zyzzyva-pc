@@ -563,24 +563,31 @@ CreateDatabaseThread::replaceDefinitionLinks (const QString& definition, int
     QString pos = matchedRegex->cap (2);
 
     QString replacement;
-    if (maxDepth) {
-        QString upper = word.toUpper();
+    QString upper = word.toUpper();
+    QString failReplacement = useFollow ? word : upper;
+    if (!maxDepth) {
+        replacement = failReplacement;
+    }
+    else {
         QString subdef = getSubDefinition (upper, pos);
-        if (subdef.isEmpty() || (maxDepth == 1)) {
-            replacement = useFollow ? word : upper;
+        if (subdef.isEmpty()) {
+            replacement = failReplacement;
         }
         else if (useFollow) {
             replacement = (matchedRegex == &followRegex) ?
                 word + " (" + subdef + ")" : subdef;
         }
         else {
-            replacement = upper + ", " + getSubDefinition (upper, pos);
+            replacement = upper + ", " + subdef;
         }
     }
 
     modified.replace (index, matchedRegex->matchedLength(), replacement);
-    return maxDepth ? replaceDefinitionLinks (modified, maxDepth - 1,
-                                              useFollow) : modified;
+    int lowerMaxDepth = useFollow ? maxDepth - 1 : maxDepth;
+    QString newDefinition = maxDepth
+        ? replaceDefinitionLinks (modified, lowerMaxDepth, useFollow)
+        : modified;
+    return newDefinition;
 }
 
 //---------------------------------------------------------------------------
