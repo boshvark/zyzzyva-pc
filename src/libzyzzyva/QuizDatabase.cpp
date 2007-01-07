@@ -417,7 +417,6 @@ QuizDatabase::rescheduleCardbox (const QStringList& questions)
 QStringList
 QuizDatabase::getAllReadyQuestions()
 {
-    qDebug ("QuizDatabase::getAllReadyQuestions");
     QStringList readyQuestions;
     unsigned int now = std::time (0);
 
