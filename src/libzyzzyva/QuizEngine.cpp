@@ -78,91 +78,106 @@ QuizEngine::QuizEngine (WordEngine* e)
 bool
 QuizEngine::newQuiz (const QuizSpec& spec)
 {
-    QuizSpec::QuizType type = spec.getType();
-
     QStringList questions;
 
-    // Anagram Quiz: The search spec is used to select the list of words.
-    // Their alphagrams are used as quiz questions, and their anagrams are
-    // used as quiz answers.
-    if ((type == QuizSpec::QuizAnagrams) ||
-        (type == QuizSpec::QuizAnagramsWithHooks))
-    {
-        questions = wordEngine->search (spec.getSearchSpec(), true);
-        questions = wordEngine->alphagrams (questions);
-    }
-
-    else if (type == QuizSpec::QuizHooks) {
-        questions = wordEngine->search (spec.getSearchSpec(), true);
-    }
-
-    else if (type == QuizSpec::QuizWordListRecall) {
-        questions << spec.getSearchSpec().asString();
-    }
-
-    if (questions.isEmpty())
-        return false;
-
-    quizSpec = spec;
-    quizQuestions = questions;
-
-    switch (quizSpec.getQuestionOrder()) {
-        case QuizSpec::AlphabeticalOrder:
-        // do nothing - the questions are already in alphabetical order
-        break;
-
-        case QuizSpec::RandomOrder: {
-            unsigned int seed = spec.getRandomSeed();
-            if (!seed)
-                seed = std::time (0);
-            unsigned int seed2 = spec.getRandomSeed2();
-            if (!seed2)
-                seed2 = Auxil::getPid();
-            rng.setAlgorithm (spec.getRandomAlgorithm());
-            rng.srand (seed, seed2);
-            quizSpec.setRandomSeed (seed);
-            quizSpec.setRandomSeed2 (seed2);
-
-            // XXX: We need a Shuffle class to handle shuffling using various
-            // algorithms!
-            QString tmp;
-            int num = quizQuestions.size();
-            for (int i = 0; i < num - 1; ++i) {
-                unsigned int randnum = rng.rand (num - i - 1);
-                int rnum = i + randnum;
-                if (rnum == i)
-                    continue;
-                tmp = quizQuestions[rnum];
-                quizQuestions[rnum] = quizQuestions[i];
-                quizQuestions[i] = tmp;
-            }
-        }
-        break;
-
-        case QuizSpec::ProbabilityOrder: {
-            qSort (quizQuestions.begin(), quizQuestions.end(),
-                   probabilityCmp);
-        }
-        break;
-
-        case QuizSpec::ScheduleOrder: {
-            QString lexicon = spec.getLexicon();
-            QString quizType = Auxil::quizTypeToString (spec.getType());
-            QuizDatabase* db = new QuizDatabase (lexicon, quizType);
-            if (!db->isValid()) {
-                delete db;
-                return false;
-            }
-
-            quizQuestions = db->getReadyQuestions (quizQuestions);
-            if (quizQuestions.isEmpty())
-                return false;
-
+    if (spec.getQuizSourceType() == QuizSpec::CardboxReadySource) {
+        QString lexicon = spec.getLexicon();
+        QString quizType = Auxil::quizTypeToString (spec.getType());
+        QuizDatabase* db = new QuizDatabase (lexicon, quizType);
+        if (!db->isValid()) {
             delete db;
+            return false;
         }
-        break;
+        quizQuestions = db->getAllReadyQuestions();
+        delete db;
+        if (quizQuestions.isEmpty())
+            return false;
+        quizSpec = spec;
+    }
 
-        default: break;
+    else {
+        // Anagram Quiz: The search spec is used to select the list of words.
+        // Their alphagrams are used as quiz questions, and their anagrams are
+        // used as quiz answers.
+        QuizSpec::QuizType type = spec.getType();
+        if ((type == QuizSpec::QuizAnagrams) ||
+            (type == QuizSpec::QuizAnagramsWithHooks))
+        {
+            questions = wordEngine->search (spec.getSearchSpec(), true);
+            questions = wordEngine->alphagrams (questions);
+        }
+
+        else if (type == QuizSpec::QuizHooks) {
+            questions = wordEngine->search (spec.getSearchSpec(), true);
+        }
+
+        else if (type == QuizSpec::QuizWordListRecall) {
+            questions << spec.getSearchSpec().asString();
+        }
+
+        if (questions.isEmpty())
+            return false;
+
+        quizSpec = spec;
+        quizQuestions = questions;
+
+        switch (quizSpec.getQuestionOrder()) {
+            case QuizSpec::AlphabeticalOrder:
+            // do nothing - the questions are already in alphabetical order
+            break;
+
+            case QuizSpec::RandomOrder: {
+                unsigned int seed = spec.getRandomSeed();
+                if (!seed)
+                    seed = std::time (0);
+                unsigned int seed2 = spec.getRandomSeed2();
+                if (!seed2)
+                    seed2 = Auxil::getPid();
+                rng.setAlgorithm (spec.getRandomAlgorithm());
+                rng.srand (seed, seed2);
+                quizSpec.setRandomSeed (seed);
+                quizSpec.setRandomSeed2 (seed2);
+
+                // XXX: We need a Shuffle class to handle shuffling using various
+                // algorithms!
+                QString tmp;
+                int num = quizQuestions.size();
+                for (int i = 0; i < num - 1; ++i) {
+                    unsigned int randnum = rng.rand (num - i - 1);
+                    int rnum = i + randnum;
+                    if (rnum == i)
+                        continue;
+                    tmp = quizQuestions[rnum];
+                    quizQuestions[rnum] = quizQuestions[i];
+                    quizQuestions[i] = tmp;
+                }
+            }
+            break;
+
+            case QuizSpec::ProbabilityOrder: {
+                qSort (quizQuestions.begin(), quizQuestions.end(),
+                       probabilityCmp);
+            }
+            break;
+
+            case QuizSpec::ScheduleOrder: {
+                QString lexicon = spec.getLexicon();
+                QString quizType = Auxil::quizTypeToString (spec.getType());
+                QuizDatabase* db = new QuizDatabase (lexicon, quizType);
+                if (!db->isValid()) {
+                    delete db;
+                    return false;
+                }
+
+                quizQuestions = db->getReadyQuestions (quizQuestions);
+                delete db;
+                if (quizQuestions.isEmpty())
+                    return false;
+            }
+            break;
+
+            default: break;
+        }
     }
 
     // Restore quiz progress

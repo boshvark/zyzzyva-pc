@@ -407,6 +407,36 @@ QuizDatabase::rescheduleCardbox (const QStringList& questions)
 }
 
 //---------------------------------------------------------------------------
+//  getAllReadyQuestions
+//
+//! Get a list of all questions that are ready for review.  The questions are
+//! returned in their scheduled order.
+//
+//! @return the list of ready questions, in scheduled order
+//---------------------------------------------------------------------------
+QStringList
+QuizDatabase::getAllReadyQuestions()
+{
+    qDebug ("QuizDatabase::getAllReadyQuestions");
+    QStringList readyQuestions;
+    unsigned int now = std::time (0);
+
+    QString queryStr = "SELECT question FROM questions WHERE "
+        "next_scheduled <= " + QString::number (now) +
+        " ORDER BY next_scheduled";
+
+    QSqlQuery query (*db);
+    query.prepare (queryStr);
+    query.exec();
+
+    while (query.next()) {
+        readyQuestions.append (query.value (0).toString());
+    }
+
+    return readyQuestions;
+}
+
+//---------------------------------------------------------------------------
 //  getReadyQuestions
 //
 //! Get a list of questions that are ready for review, from a subset of
