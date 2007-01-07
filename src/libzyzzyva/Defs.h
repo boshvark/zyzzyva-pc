@@ -29,7 +29,7 @@
 #include <QString>
 
 namespace Defs {
-    const QString ZYZZYVA_VERSION = "1.0.0";
+    const QString ZYZZYVA_VERSION = "1.0.1";
     const int CURRENT_DATABASE_VERSION = 2;
     const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
     const QString EMPTY_DEFINITION = "(no definition)";
