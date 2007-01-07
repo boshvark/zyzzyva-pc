@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -63,6 +63,8 @@ namespace Auxil {
     QuizSpec::QuizType stringToQuizType (const QString& string);
     QString quizMethodToString (QuizSpec::QuizMethod method);
     QuizSpec::QuizMethod stringToQuizMethod (const QString& string);
+    QString quizSourceTypeToString (QuizSpec::QuizSourceType source);
+    QuizSpec::QuizSourceType stringToQuizSourceType (const QString& string);
     QString quizQuestionOrderToString (QuizSpec::QuestionOrder method);
     QuizSpec::QuestionOrder stringToQuizQuestionOrder (const QString& string);
     QString wordAttributeToString (WordAttribute attr);

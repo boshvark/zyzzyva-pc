@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -30,6 +30,7 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDialog>
+#include <QGroupBox>
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QSpinBox>
@@ -53,6 +54,7 @@ class NewQuizDialog : public QDialog
     void timerToggled (bool on);
     void typeActivated (const QString& text);
     void methodActivated (const QString& text);
+    void useSearchButtonToggled (bool on);
     void searchContentsChanged();
     void questionOrderActivated (const QString& text);
     void loadQuiz();
@@ -65,11 +67,14 @@ class NewQuizDialog : public QDialog
     void fillQuestionOrderCombo (const QString& method);
 
     private:
-    SearchSpecForm* specForm;
     QComboBox*      typeCombo;
     QComboBox*      methodCombo;
     QCheckBox*      progressCbox;
     QComboBox*      questionOrderCombo;
+    QRadioButton*   allCardboxButton;
+    QRadioButton*   useSearchButton;
+    QGroupBox*      searchSpecGbox;
+    SearchSpecForm* searchSpecForm;
     ZPushButton*    saveQuizButton;
     ZPushButton*    okButton;
     QWidget*        timerWidget;

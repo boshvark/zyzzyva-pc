@@ -322,7 +322,6 @@ SearchSpec::optimize()
                     }
                 }
             }
-            qDebug ("Before appending original condition");
             newConditions.append (condition);
             break;
 

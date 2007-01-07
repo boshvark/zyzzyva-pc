@@ -3,7 +3,7 @@
 //
 // A class for working with database of quiz performance statistics.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -404,6 +404,35 @@ QuizDatabase::rescheduleCardbox (const QStringList& questions)
     transactionQuery.exec ("END TRANSACTION");
 
     return selectedQuestions.size();
+}
+
+//---------------------------------------------------------------------------
+//  getAllReadyQuestions
+//
+//! Get a list of all questions that are ready for review.  The questions are
+//! returned in their scheduled order.
+//
+//! @return the list of ready questions, in scheduled order
+//---------------------------------------------------------------------------
+QStringList
+QuizDatabase::getAllReadyQuestions()
+{
+    QStringList readyQuestions;
+    unsigned int now = std::time (0);
+
+    QString queryStr = "SELECT question FROM questions WHERE "
+        "next_scheduled <= " + QString::number (now) +
+        " ORDER BY next_scheduled";
+
+    QSqlQuery query (*db);
+    query.prepare (queryStr);
+    query.exec();
+
+    while (query.next()) {
+        readyQuestions.append (query.value (0).toString());
+    }
+
+    return readyQuestions;
 }
 
 //---------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -93,6 +93,9 @@ const QString QUIZ_TYPE_WORD_LIST_RECALL = "Word List Recall";
 
 const QString QUIZ_METHOD_STANDARD = "Standard";
 const QString QUIZ_METHOD_CARDBOX = "Cardbox";
+
+const QString QUIZ_SOURCE_SEARCH = "search";
+const QString QUIZ_SOURCE_CARDBOX_READY = "cardbox-ready";
 
 const QString QUIZ_ORDER_UNKNOWN = "Unknown";
 const QString QUIZ_ORDER_RANDOM = "Random";
@@ -858,7 +861,7 @@ Auxil::quizMethodToString (QuizSpec::QuizMethod m)
 //---------------------------------------------------------------------------
 //  stringToQuizMethod
 //
-//! Convert a string representation to a quiz type.
+//! Convert a string representation to a quiz method.
 //
 //! @param s the string representation
 //! @return the quiz type
@@ -872,6 +875,47 @@ Auxil::stringToQuizMethod (const QString& s)
         return QuizSpec::CardboxQuizMethod;
     else
         return QuizSpec::UnknownQuizMethod;
+}
+
+//---------------------------------------------------------------------------
+//  quizSourceTypeToString
+//
+//! Convert a quiz source type to a string representation.
+//
+//! @param m the quiz source type
+//! @return the string representation
+//---------------------------------------------------------------------------
+QString
+Auxil::quizSourceTypeToString (QuizSpec::QuizSourceType s)
+{
+    switch (s) {
+        case QuizSpec::SearchSource:
+        return QUIZ_SOURCE_SEARCH;
+
+        case QuizSpec::CardboxReadySource:
+        return QUIZ_SOURCE_CARDBOX_READY;
+
+        default: return QString::null;
+    }
+}
+
+//---------------------------------------------------------------------------
+//  stringToQuizSourceType
+//
+//! Convert a string representation to a quiz source type.
+//
+//! @param s the string representation
+//! @return the quiz type
+//---------------------------------------------------------------------------
+QuizSpec::QuizSourceType
+Auxil::stringToQuizSourceType (const QString& s)
+{
+    if (s == QUIZ_SOURCE_SEARCH)
+        return QuizSpec::SearchSource;
+    else if (s == QUIZ_SOURCE_CARDBOX_READY)
+        return QuizSpec::CardboxReadySource;
+    else
+        return QuizSpec::UnknownSource;
 }
 
 //---------------------------------------------------------------------------
