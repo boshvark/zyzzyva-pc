@@ -850,6 +850,7 @@ QuizForm::checkResponseClicked()
             bool origGroupByAnagrams
                 = MainSettings::getWordListGroupByAnagrams();
             MainSettings::setWordListGroupByAnagrams (false);
+            responseModel->removeWord (word);
             responseModel->addWord (WordTableModel::WordItem
                                     (word, WordTableModel::WordCorrect),
                                     true);
@@ -963,7 +964,6 @@ QuizForm::markCorrectClicked()
         analyzeDialog->removeIncorrect (jt.next());
     }
 
-    responseModel->clear();
     bool old = checkBringsJudgment;
     checkBringsJudgment = false;
     db->undoLastResponse (quizEngine->getQuestion());
