@@ -240,10 +240,12 @@ NewQuizDialog::getQuizSpec()
     quizSpec.setQuestionOrder (Auxil::stringToQuizQuestionOrder
                                (questionOrderCombo->currentText()));
 
-    if (allCardboxButton->isChecked()) {
+    if ((quizMethod == QuizSpec::CardboxQuizMethod) &&
+        allCardboxButton->isChecked())
+    {
         quizSpec.setQuizSourceType (QuizSpec::CardboxReadySource);
     }
-    else if (useSearchButton->isChecked()) {
+    else {
         quizSpec.setQuizSourceType (QuizSpec::SearchSource);
         quizSpec.setSearchSpec (searchSpecForm->getSearchSpec());
     }
