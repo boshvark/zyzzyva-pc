@@ -14,7 +14,7 @@
     <file alias="preferences-icon">images/preferences-icon-medium.png</file>
     <file alias="left-arrow-icon">images/left-arrow-large.png</file>
     <file alias="right-arrow-icon">images/right-arrow-large.png</file>
-    <file alias="judge-acceptable">images/check-adjudication.png</file>
-    <file alias="judge-unacceptable">images/cross-adjudication.png</file>
+    <file alias="judge-acceptable">images/judge-acceptable.png</file>
+    <file alias="judge-unacceptable">images/judge-unacceptable.png</file>
 </qresource>
 </RCC>
