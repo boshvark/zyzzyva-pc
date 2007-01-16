@@ -27,6 +27,7 @@
 #define ZYZZYVA_JUDGE_DIALOG_H
 
 #include <QDialog>
+#include <QFrame>
 #include <QLabel>
 #include <QStackedWidget>
 #include <QTimer>
@@ -59,7 +60,8 @@ class JudgeDialog : public QDialog
     QWidget*        inputWidget;
     QLabel*         instLabel;
     WordTextEdit*   inputArea;
-    QWidget*        resultWidget;
+    QFrame*         resultWidget;
+    QLabel*         resultPixmapLabel;
     QLabel*         resultLabel;
     QTimer*         inputTimer;
     QTimer*         resultTimer;

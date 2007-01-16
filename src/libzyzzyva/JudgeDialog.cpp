@@ -45,6 +45,7 @@ const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
 const int EXIT_FONT_PIXEL_SIZE = 30;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 30;
+const int RESULT_SPACING = 100;
 const int CLEAR_INPUT_DELAY = 15000;
 const int CLEAR_RESULTS_DELAY = 10000;
 const int CLEAR_RESULTS_MIN_DELAY = 500;
@@ -114,25 +115,34 @@ JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect (inputArea, SIGNAL (textChanged()), SLOT (textChanged()));
     inputVlay->addWidget (inputArea);
 
-    resultWidget = new QWidget;
+    resultWidget = new QFrame;
     Q_CHECK_PTR (resultWidget);
     resultWidget->setSizePolicy (QSizePolicy::Expanding,
                                  QSizePolicy::Expanding);
+    resultWidget->setFrameStyle (QFrame::Box | QFrame::Plain);
+    resultWidget->setLineWidth (RESULT_BORDER_WIDTH);
     widgetStack->addWidget (resultWidget);
 
     QVBoxLayout* resultVlay = new QVBoxLayout (resultWidget);
     resultVlay->setMargin (0);
-    resultVlay->setSpacing (0);
+    resultVlay->setSpacing (RESULT_SPACING);
     Q_CHECK_PTR (resultVlay);
+
+    resultVlay->insertSpacing (0, RESULT_BORDER_WIDTH * 3);
+
+    resultPixmapLabel = new QLabel;
+    Q_CHECK_PTR (resultPixmapLabel);
+    resultPixmapLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
+    resultVlay->addWidget (resultPixmapLabel);
 
     resultLabel = new QLabel;
     Q_CHECK_PTR (resultLabel);
     resultLabel->setFont (formFont);
     resultLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
     resultLabel->setWordWrap (true);
-    resultLabel->setFrameStyle (QFrame::Box | QFrame::Plain);
-    resultLabel->setLineWidth (RESULT_BORDER_WIDTH);
     resultVlay->addWidget (resultLabel);
+
+    resultVlay->addStretch (1);
 
     QHBoxLayout* titleHlay = new QHBoxLayout;
     Q_CHECK_PTR (titleHlay);
@@ -301,25 +311,31 @@ JudgeDialog::judgeWord()
 
     QString resultStr;
     QColor resultColor;
+    QPixmap resultPixmap;
     if (acceptable) {
         resultStr = "<font color=\"#00bb00\">YES, the play is "
                     "<b>ACCEPTABLE</b></font>";
         resultColor = QColor (0, 204, 0);
+        resultPixmap.load(":/judge-acceptable");
     }
     else {
         resultStr = "<font color=\"red\">NO, the play is "
                     "<b>UNACCEPTABLE</b></font>";
         resultColor = Qt::red;
+        resultPixmap.load(":/judge-unacceptable");
     }
     resultStr += "<br><br><font color=\"black\">" + wordStr + "</font>";
 
-    QPalette pal = resultLabel->palette();
+    QPalette pal = resultWidget->palette();
     pal.setColor (QPalette::Foreground, resultColor);
+    resultWidget->setPalette (pal);
     resultLabel->setPalette (pal);
 
     ++clearResultsHold;
 
     resultLabel->setText (resultStr);
+    if (!resultPixmap.isNull())
+        resultPixmapLabel->setPixmap (resultPixmap);
     widgetStack->setCurrentWidget (resultWidget);
 
     QTimer::singleShot (CLEAR_RESULTS_MIN_DELAY, this,
