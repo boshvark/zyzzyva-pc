@@ -86,6 +86,7 @@ for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistantClient ; do
     echo "Deleting $i.framework headers and debug libraries..."
     rm $OUTDIR/Zyzzyva.app/Contents/Frameworks/$i.framework/Headers
     rm -rf $OUTDIR/Zyzzyva.app/Contents/Frameworks/$i.framework/Versions/$QTVER/Headers
+    rm -rf $OUTDIR/Zyzzyva.app/Contents/Frameworks/$i.framework/Versions/Current
     find $OUTDIR/Zyzzyva.app/Contents/Frameworks -name arch -or -name '*debug*' \
         -print0 | xargs -0 rm -rf
 
