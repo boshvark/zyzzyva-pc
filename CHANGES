@@ -1,3 +1,15 @@
+Version 1.0.1
+Released 2007-01-16, from /branches/1.0.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/1.0.1
+
+User-visible changes:
+ * OSPD4+LWL lexicon
+ * Cardbox Quiz without a search
+ * Fix bug in New In OWL2 search
+ * Fix incomplete word definition links
+ * Other minor bug fixes
+
+
 Version 1.0.0
 Released 2006-11-26, from /branches/1.0.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/1.0.0
