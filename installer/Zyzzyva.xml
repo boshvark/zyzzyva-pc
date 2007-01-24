@@ -1,7 +1,7 @@
 <project>
     <shortName>Zyzzyva</shortName>
     <fullName>Zyzzyva</fullName>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <installerFilename></installerFilename>
     <readmeFile>/Users/mthelen/dev/zyzzyva-install/windows/README.txt</readmeFile>
     <licenseFile>/Users/mthelen/dev/zyzzyva-install/windows/LICENSE.txt</licenseFile>
