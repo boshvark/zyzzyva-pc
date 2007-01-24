@@ -2,14 +2,14 @@
     <shortName>Zyzzyva</shortName>
     <fullName>Zyzzyva</fullName>
     <version>1.0.2</version>
-    <installerFilename></installerFilename>
+    <installerFilename>${product_shortname}-${product_version}-${platform_name}-installer.${platform_exec_suffix}</installerFilename>
     <readmeFile>/Users/mthelen/dev/zyzzyva-install/windows/README.txt</readmeFile>
     <licenseFile>/Users/mthelen/dev/zyzzyva-install/windows/LICENSE.txt</licenseFile>
     <wrapLicenseFileText>1</wrapLicenseFileText>
     <leftImage></leftImage>
     <logoImage></logoImage>
     <splashImage></splashImage>
-    <defaultLanguage></defaultLanguage>
+    <defaultLanguage>en</defaultLanguage>
     <allowLanguageSelection>0</allowLanguageSelection>
     <postInstallationScript></postInstallationScript>
     <postInstallationScriptArguments></postInstallationScriptArguments>
@@ -30,7 +30,7 @@
     <startMenuGroupName>${product_fullname}</startMenuGroupName>
     <style>standard</style>
     <summary>Place here a detailed description of your software</summary>
-    <uninstallerDirectory></uninstallerDirectory>
+    <uninstallerDirectory>${installdir}</uninstallerDirectory>
     <uninstallerName></uninstallerName>
     <validatorProgram></validatorProgram>
     <vendor>Name of your company</vendor>
@@ -183,9 +183,9 @@
                     <name>programfilesmacosx</name>
                     <platforms>osx</platforms>
                     <distributionFileList>
-                        <distributionFile>
+                        <distributionDirectory>
                             <origin>/Users/mthelen/dev/zyzzyva-install/macosx/Zyzzyva.app</origin>
-                        </distributionFile>
+                        </distributionDirectory>
                     </distributionFileList>
                 </folder>
             </folderList>
@@ -219,7 +219,7 @@
             <title></title>
             <description>Installer.Parameter.installdir.description</description>
             <explanation>Installer.Parameter.installdir.explanation</explanation>
-            <value></value>
+            <value>${platform_install_prefix}/${product_shortname}-${product_version}</value>
             <default>${platform_install_prefix}/${product_shortname}-${product_version}</default>
             <allowEmptyValue>0</allowEmptyValue>
             <ask>yes</ask>
