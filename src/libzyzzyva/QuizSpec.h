@@ -71,7 +71,8 @@ class QuizSpec
 
     public:
     QuizSpec() : type (QuizAnagrams), method (StandardQuizMethod),
-                 questionOrder (RandomOrder), randomSeed (0), randomSeed2 (0),
+                 sourceType (SearchSource), questionOrder (RandomOrder),
+                 randomSeed (0), randomSeed2 (0),
                  randomAlgorithm (Rand::MarsagliaMwc) { }
     ~QuizSpec() { }
 
