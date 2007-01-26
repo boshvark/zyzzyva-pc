@@ -81,11 +81,9 @@ for i in QtGui QtNetwork QtSql QtXml QtCore ; do
 
     # Copy Qt framework into bundle
     echo "Copying $i.framework into bundle..."
-    #cp -R $QTDIR/lib/$i.framework \
-    #    $OUTDIR/Zyzzyva.app/Contents/Frameworks
-    pushd $QTDIR/lib
-    tar -cvf - ./$i.framework | (cd $OUTDIR/Zyzzyva.app/Contents/Frameworks && tar -xvf -)
-    popd
+    pushd $QTDIR/lib > /dev/null
+    tar -cf - ./$i.framework | (cd $OUTDIR/Zyzzyva.app/Contents/Frameworks && tar -xf -)
+    popd > /dev/null
 
     # Delete headers and debug libraries
     echo "Deleting $i.framework headers and debug libraries..."
@@ -202,14 +200,14 @@ install_name_tool -change \
 # Create disk image
 echo "Creating disk image..."
 rm -rf Zyzzyva.dmg
-hdiutil create -srcfolder $OUTDIR/Zyzzyva.app -volname Zyzzyva Zyzzyva.dmg
-hdiutil attach Zyzzyva.dmg
+hdiutil create -srcfolder $OUTDIR/Zyzzyva.app -volname Zyzzyva Zyzzyva.dmg > /dev/null
+hdiutil attach Zyzzyva.dmg > /dev/null
 DEVS=$(hdiutil attach Zyzzyva.dmg | cut -f 1)
 DEV=$(echo $DEVS | cut -f 1 -d ' ')
-hdiutil detach $DEV
-hdiutil internet-enable -yes Zyzzyva.dmg
-hdiutil convert Zyzzyva.dmg -format UDZO -o Zyzzyva-output.dmg
+hdiutil detach $DEV > /dev/null
+hdiutil internet-enable -yes Zyzzyva.dmg > /dev/null
+hdiutil convert Zyzzyva.dmg -format UDZO -o Zyzzyva-output.dmg > /dev/null
 mv Zyzzyva-output.dmg Zyzzyva.dmg
 mv Zyzzyva.dmg $OUTDIR
 
-echo "Done.  Disk image is called Zyzzyva.dmg."
+echo "Done.  Disk image is called $OUTDIR/Zyzzyva.dmg."
