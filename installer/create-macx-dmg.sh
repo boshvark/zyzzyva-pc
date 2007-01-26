@@ -25,10 +25,12 @@
 
 QTDIR=/usr/local/Trolltech/Qt-4.1.5
 QTVER=4.0
-OUTDIR=installer/macosx
+OUTDIR=$(pwd)/installer/macosx
 
+echo "Running QMake..."
 $QTDIR/bin/qmake
-make
+echo "Building Zyzzyva..."
+make -s
 
 mkdir -p $OUTDIR
 
@@ -79,14 +81,16 @@ for i in QtGui QtNetwork QtSql QtXml QtCore ; do
 
     # Copy Qt framework into bundle
     echo "Copying $i.framework into bundle..."
-    cp -R $QTDIR/lib/$i.framework \
-        $OUTDIR/Zyzzyva.app/Contents/Frameworks
+    #cp -R $QTDIR/lib/$i.framework \
+    #    $OUTDIR/Zyzzyva.app/Contents/Frameworks
+    pushd $QTDIR/lib
+    tar -cvf - ./$i.framework | (cd $OUTDIR/Zyzzyva.app/Contents/Frameworks && tar -xvf -)
+    popd
 
     # Delete headers and debug libraries
     echo "Deleting $i.framework headers and debug libraries..."
     rm $OUTDIR/Zyzzyva.app/Contents/Frameworks/$i.framework/Headers
     rm -rf $OUTDIR/Zyzzyva.app/Contents/Frameworks/$i.framework/Versions/$QTVER/Headers
-    rm -rf $OUTDIR/Zyzzyva.app/Contents/Frameworks/$i.framework/Versions/Current
     find $OUTDIR/Zyzzyva.app/Contents/Frameworks -name arch -or -name '*debug*' \
         -print0 | xargs -0 rm -rf
 
