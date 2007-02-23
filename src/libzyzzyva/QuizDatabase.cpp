@@ -407,6 +407,81 @@ QuizDatabase::rescheduleCardbox (const QStringList& questions)
 }
 
 //---------------------------------------------------------------------------
+//  shiftCardbox
+//
+//! Shift questions in the cardbox system so that a certain number are
+//! currently available from the list provided.  If no questions are
+//! specified, then all questions are shifted.
+//
+//! @param questions the list of questions to shift
+//! @param desiredBacklog the desired backlog size after shifting
+//---------------------------------------------------------------------------
+int
+QuizDatabase::shiftCardbox (const QStringList& questions, int desiredBacklog)
+{
+    QString queryStr = "SELECT question, next_scheduled "
+        "FROM questions WHERE cardbox NOT NULL";
+
+    if (!questions.isEmpty()) {
+        queryStr += " AND question IN (";
+        QStringListIterator it (questions);
+        bool firstItem = true;
+        while (it.hasNext()) {
+            QString question = it.next();
+            if (!firstItem)
+                queryStr += ", ";
+            queryStr += "'" + question + "'";
+            firstItem = false;
+        }
+        queryStr += ")";
+    }
+
+    queryStr += " ORDER BY next_scheduled";
+
+    QSqlQuery query (*db);
+    query.prepare (queryStr);
+    query.exec();
+
+    QList<QString> selectedQuestions;
+    QList<int> selectedNextScheduled;
+
+    int index = 1;
+    int pegNextScheduled = 0;
+    while (query.next()) {
+        QString question = query.value (0).toString();
+        int nextScheduled = query.value (1).toInt();
+        selectedQuestions.append (question);
+        selectedNextScheduled.append (nextScheduled);
+        if (index <= desiredBacklog)
+            pegNextScheduled = nextScheduled;
+        ++index;
+    }
+
+    unsigned int now = std::time (0);
+    int shiftSeconds = now - pegNextScheduled;
+
+    QSqlQuery updateQuery (*db);
+    updateQuery.prepare ("UPDATE questions SET next_scheduled=? "
+                         "WHERE question=?");
+
+    QSqlQuery transactionQuery ("BEGIN TRANSACTION", *db);
+
+    QListIterator<QString> it (selectedQuestions);
+    QListIterator<int> jt (selectedNextScheduled);
+    while (it.hasNext()) {
+        QString question = it.next();
+        int nextScheduled = jt.next() + shiftSeconds;
+        updateQuery.bindValue (0, nextScheduled);
+        updateQuery.bindValue (1, question);
+        updateQuery.exec();
+    }
+
+    transactionQuery.exec ("END TRANSACTION");
+
+    return selectedQuestions.size();
+}
+
+//---------------------------------------------------------------------------
 //  getAllReadyQuestions
 //
 //! Get a list of all questions that are ready for review.  The questions are
