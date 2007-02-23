@@ -64,6 +64,7 @@ class MainWindow : public QMainWindow
     void newCrosswordGameForm();
     void newDefineForm();
     void newIntroForm();
+    void newCardboxForm();
     void doSaveAction();
     void doJudgeAction();
     void editSettings();

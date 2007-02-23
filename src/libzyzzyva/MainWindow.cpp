@@ -24,6 +24,7 @@
 
 #include "MainWindow.h"
 #include "AboutDialog.h"
+#include "CardboxForm.h"
 #include "CardboxRescheduleDialog.h"
 #include "CreateDatabaseThread.h"
 #include "CrosswordGameForm.h"
@@ -139,6 +140,13 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     newSearchAction->setIcon (QIcon (":/search-icon"));
     connect (newSearchAction, SIGNAL (triggered()), SLOT (newSearchForm()));
     fileMenu->addAction (newSearchAction);
+
+    // New Cardbox
+    QAction* newCardboxAction = new QAction ("&Cardbox", this);
+    Q_CHECK_PTR (newCardboxAction);
+    newCardboxAction->setIcon (QIcon (":/cardbox-icon"));
+    connect (newCardboxAction, SIGNAL (triggered()), SLOT (newCardboxForm()));
+    fileMenu->addAction (newCardboxAction);
 
     // New Crossword Game
     QAction* newCrosswordGameAction = new QAction ("Crossword &Game", this);
@@ -315,6 +323,7 @@ MainWindow::MainWindow (QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     toolbar->addSeparator();
     toolbar->addAction (newQuizAction);
     toolbar->addAction (newSearchAction);
+    toolbar->addAction (newCardboxAction);
     toolbar->addAction (newDefinitionAction);
     toolbar->addAction (newJudgeAction);
     toolbar->addSeparator();
@@ -618,6 +627,19 @@ void
 MainWindow::newIntroForm()
 {
     IntroForm* form = new IntroForm;
+    Q_CHECK_PTR (form);
+    newTab (form);
+}
+
+//---------------------------------------------------------------------------
+//  newCardboxForm
+//
+//! Create a new cardbox form.
+//---------------------------------------------------------------------------
+void
+MainWindow::newCardboxForm()
+{
+    CardboxForm* form = new CardboxForm (wordEngine);
     Q_CHECK_PTR (form);
     newTab (form);
 }

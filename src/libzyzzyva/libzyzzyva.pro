@@ -49,6 +49,7 @@ SOURCES = \
     AnalyzeQuizDialog.cpp \
     Auxil.cpp \
     CardboxAddDialog.cpp \
+    CardboxForm.cpp \
     CardboxRemoveDialog.cpp \
     CardboxRescheduleDialog.cpp \
     CreateDatabaseThread.cpp \
@@ -103,6 +104,7 @@ HEADERS = \
     ActionForm.h \
     AnalyzeQuizDialog.h \
     CardboxAddDialog.h \
+    CardboxForm.h \
     CardboxRemoveDialog.h \
     CardboxRescheduleDialog.h \
     CreateDatabaseThread.h \

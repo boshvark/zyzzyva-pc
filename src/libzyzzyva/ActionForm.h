@@ -40,7 +40,8 @@ class ActionForm : public QFrame
         SearchFormType,
         DefineFormType,
         IntroFormType,
-        CrosswordGameFormType
+        CrosswordGameFormType,
+        CardboxFormType
     };
 
     public:
