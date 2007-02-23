@@ -343,7 +343,7 @@ QuizDatabase::setCardbox (const QString& question, int cardbox)
 }
 
 //---------------------------------------------------------------------------
-//  rescheduleCardboxAll
+//  rescheduleCardbox
 //
 //! Reschedule questions in the cardbox system.  If no questions are
 //! specified, then all questions are rescheduled.
