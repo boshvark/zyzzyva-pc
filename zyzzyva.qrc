@@ -7,6 +7,7 @@
     <file alias="judge-icon">images/judge-icon-medium.png</file>
     <file alias="quiz-icon">images/quiz-icon-medium.png</file>
     <file alias="define-icon">images/define-icon-medium.png</file>
+    <file alias="cardbox-icon">images/cardbox-icon-medium.png</file>
     <file alias="save-icon">images/save-icon-medium.png</file>
     <file alias="save-as-icon">images/save-as-icon-medium.png</file>
     <file alias="close-tab-icon">images/close-tab-icon-small.png</file>
