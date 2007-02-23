@@ -77,7 +77,7 @@ install_name_tool -change \
     $OUTDIR/Zyzzyva.app/Contents/MacOS/Zyzzyva
 
 # Copy Qt frameworks into bundle and tell the executable to link to them
-for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistantClient ; do
+for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistant ; do
 
     # Copy Qt framework into bundle
     echo "Copying $i.framework into bundle..."
@@ -124,25 +124,25 @@ for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistantClient ; do
 done
 
 # Change reference to QtGui in Assistant client
-echo "Changing link location for QtGui.framework in QtAssistantClient.framework..."
+echo "Changing link location for QtGui.framework in QtAssistant.framework..."
 install_name_tool -change \
     $QTDIR/lib/QtGui.framework/Versions/$QTVER/QtGui \
     @executable_path/../Frameworks/QtGui.framework/Versions/$QTVER/QtGui \
-    $OUTDIR/Zyzzyva.app/Contents/Frameworks/QtAssistantClient.framework/Versions/$QTVER/QtAssistantClient
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/QtAssistant.framework/Versions/$QTVER/QtAssistant
 
 # Change reference to QtNetwork in Assistant client
-echo "Changing link location for QtNetwork.framework in QtAssistantClient.framework..."
+echo "Changing link location for QtNetwork.framework in QtAssistant.framework..."
 install_name_tool -change \
     $QTDIR/lib/QtNetwork.framework/Versions/$QTVER/QtNetwork \
     @executable_path/../Frameworks/QtNetwork.framework/Versions/$QTVER/QtNetwork \
-    $OUTDIR/Zyzzyva.app/Contents/Frameworks/QtAssistantClient.framework/Versions/$QTVER/QtAssistantClient
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/QtAssistant.framework/Versions/$QTVER/QtAssistant
 
 # Change reference to QtCore in Assistant client
-echo "Changing link location for QtCore.framework in QtAssistantClient.framework..."
+echo "Changing link location for QtCore.framework in QtAssistant.framework..."
 install_name_tool -change \
     $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
     @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-    $OUTDIR/Zyzzyva.app/Contents/Frameworks/QtAssistantClient.framework/Versions/$QTVER/QtAssistantClient
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/QtAssistant.framework/Versions/$QTVER/QtAssistant
 
 # Create disk image
 echo "Creating disk image..."
