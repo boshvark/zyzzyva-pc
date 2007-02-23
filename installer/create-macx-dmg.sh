@@ -23,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #-----------------------------------------------------------------------------
 
-QTDIR=/usr/local/Trolltech/Qt-4.2.1
+QTDIR=/usr/local/Trolltech/Qt-4.2.2
 QTVER=4
 OUTDIR=$(pwd)/installer/macosx
 
