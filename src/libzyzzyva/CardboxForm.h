@@ -45,7 +45,8 @@ class CardboxForm : public ActionForm
 
     public slots:
     void shiftClicked();
-    void refreshCurrentClicked();
+    void refreshBacklogClicked();
+    void refreshCardboxClicked();
     void quizSpecChanged();
 
     private:

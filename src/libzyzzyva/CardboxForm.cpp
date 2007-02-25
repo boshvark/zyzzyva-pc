@@ -72,13 +72,13 @@ CardboxForm::CardboxForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR (backlogLabel);
     currentHlay->addWidget (backlogLabel);
 
-    ZPushButton* refreshCurrentButton = new ZPushButton;
-    Q_CHECK_PTR (refreshCurrentButton);
-    refreshCurrentButton->setText ("&Refresh");
-    refreshCurrentButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (refreshCurrentButton, SIGNAL (clicked()),
-             SLOT (refreshCurrentClicked()));
-    currentHlay->addWidget (refreshCurrentButton);
+    ZPushButton* refreshBacklogButton = new ZPushButton;
+    Q_CHECK_PTR (refreshBacklogButton);
+    refreshBacklogButton->setText ("&Refresh");
+    refreshBacklogButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (refreshBacklogButton, SIGNAL (clicked()),
+             SLOT (refreshBacklogClicked()));
+    currentHlay->addWidget (refreshBacklogButton);
 
     // Shift area
     QHBoxLayout* shiftHlay = new QHBoxLayout;
@@ -106,6 +106,14 @@ CardboxForm::CardboxForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     cardboxView = new QTreeView;
     Q_CHECK_PTR (cardboxView);
     mainVlay->addWidget (cardboxView);
+
+    ZPushButton* refreshCardboxButton = new ZPushButton;
+    Q_CHECK_PTR (refreshCardboxButton);
+    refreshCardboxButton->setText ("&Refresh");
+    refreshCardboxButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (refreshCardboxButton, SIGNAL (clicked()),
+             SLOT (refreshCardboxClicked()));
+    mainVlay->addWidget (refreshCardboxButton);
 
     mainVlay->addStretch (0);
 
@@ -172,14 +180,14 @@ CardboxForm::shiftClicked()
 }
 
 //---------------------------------------------------------------------------
-//  refreshCurrentClicked
+//  refreshBacklogClicked
 //
 //! Called when the Refresh button is clicked.
 //---------------------------------------------------------------------------
 void
-CardboxForm::refreshCurrentClicked()
+CardboxForm::refreshBacklogClicked()
 {
-    qDebug ("CardboxForm::refreshCurrentClicked");
+    qDebug ("CardboxForm::refreshBacklogClicked");
 
     QString lexicon = wordEngine->getLexiconName();
     QString quizType = "Anagrams";
@@ -190,6 +198,26 @@ CardboxForm::refreshCurrentClicked()
 }
 
 //---------------------------------------------------------------------------
+//  refreshCardboxClicked
+//
+//! Called when the Refresh button is clicked.
+//---------------------------------------------------------------------------
+void
+CardboxForm::refreshCardboxClicked()
+{
+    qDebug ("CardboxForm::refreshCardboxClicked");
+
+    if (!cardboxModel || !quizDatabase)
+        return;
+
+    QString cardboxQueryStr = "SELECT cardbox, count(*) from questions "
+        "WHERE cardbox NOT NULL GROUP BY cardbox"; 
+    cardboxModel->setQuery (cardboxQueryStr, *(quizDatabase->getDatabase()));
+    cardboxModel->setHeaderData (0, Qt::Horizontal, "Cardbox");
+    cardboxModel->setHeaderData (1, Qt::Horizontal, "Count");
+}
+
+//---------------------------------------------------------------------------
 //  quizSpecChanged
 //
 //! Called when the Lexicon or Quiz Type is changed by the user.
@@ -197,7 +225,7 @@ CardboxForm::refreshCurrentClicked()
 void
 CardboxForm::quizSpecChanged()
 {
-    qDebug ("CardboxForm::refreshCurrentClicked");
+    qDebug ("CardboxForm::quizSpecChanged");
 
     QString lexicon = wordEngine->getLexiconName();
     QString quizType = "Anagrams";
@@ -209,11 +237,7 @@ CardboxForm::quizSpecChanged()
     delete cardboxModel;
     cardboxModel = new QSqlQueryModel;
     Q_CHECK_PTR (cardboxModel);
-    QString cardboxQueryStr = "SELECT cardbox, count(*) from questions "
-        "WHERE cardbox NOT NULL GROUP BY cardbox"; 
-    cardboxModel->setQuery (cardboxQueryStr, *(quizDatabase->getDatabase()));
-    cardboxModel->setHeaderData (0, Qt::Horizontal, "Cardbox");
-    cardboxModel->setHeaderData (1, Qt::Horizontal, "Count");
-
     cardboxView->setModel (cardboxModel);
+
+    refreshCardboxClicked();
 }
