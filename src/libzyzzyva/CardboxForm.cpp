@@ -42,7 +42,8 @@ const QString TITLE_PREFIX = "Cardbox";
 //! @param f widget flags
 //---------------------------------------------------------------------------
 CardboxForm::CardboxForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : ActionForm (CardboxFormType, parent, f), wordEngine (e)
+    : ActionForm (CardboxFormType, parent, f), wordEngine (e),
+    quizDatabase (0), cardboxModel (0)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout (this);
     mainVlay->setMargin (MARGIN);
@@ -102,7 +103,13 @@ CardboxForm::CardboxForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect (shiftButton, SIGNAL (clicked()), SLOT (shiftClicked()));
     shiftHlay->addWidget (shiftButton);
 
+    cardboxView = new QTreeView;
+    Q_CHECK_PTR (cardboxView);
+    mainVlay->addWidget (cardboxView);
+
     mainVlay->addStretch (0);
+
+    quizSpecChanged();
 }
 
 //---------------------------------------------------------------------------
@@ -180,4 +187,33 @@ CardboxForm::refreshCurrentClicked()
     QuizDatabase db (lexicon, quizType);
     QStringList readyQuestions = db.getAllReadyQuestions();
     backlogLabel->setText (QString::number (readyQuestions.count()));
+}
+
+//---------------------------------------------------------------------------
+//  quizSpecChanged
+//
+//! Called when the Lexicon or Quiz Type is changed by the user.
+//---------------------------------------------------------------------------
+void
+CardboxForm::quizSpecChanged()
+{
+    qDebug ("CardboxForm::refreshCurrentClicked");
+
+    QString lexicon = wordEngine->getLexiconName();
+    QString quizType = "Anagrams";
+
+    delete quizDatabase;
+    quizDatabase = new QuizDatabase (lexicon, quizType);
+    Q_CHECK_PTR (quizDatabase);
+
+    delete cardboxModel;
+    cardboxModel = new QSqlQueryModel;
+    Q_CHECK_PTR (cardboxModel);
+    QString cardboxQueryStr = "SELECT cardbox, count(*) from questions "
+        "WHERE cardbox NOT NULL GROUP BY cardbox"; 
+    cardboxModel->setQuery (cardboxQueryStr, *(quizDatabase->getDatabase()));
+    cardboxModel->setHeaderData (0, Qt::Horizontal, "Cardbox");
+    cardboxModel->setHeaderData (1, Qt::Horizontal, "Count");
+
+    cardboxView->setModel (cardboxModel);
 }

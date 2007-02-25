@@ -28,7 +28,10 @@
 #include "ActionForm.h"
 #include <QLabel>
 #include <QSpinBox>
+#include <QSqlQueryModel>
+#include <QTreeView>
 
+class QuizDatabase;
 class WordEngine;
 
 class CardboxForm : public ActionForm
@@ -43,11 +46,15 @@ class CardboxForm : public ActionForm
     public slots:
     void shiftClicked();
     void refreshCurrentClicked();
+    void quizSpecChanged();
 
     private:
-    WordEngine*  wordEngine;
-    QSpinBox*    backlogSbox;
-    QLabel*      backlogLabel;
+    WordEngine*     wordEngine;
+    QuizDatabase*   quizDatabase;
+    QSqlQueryModel* cardboxModel;
+    QSpinBox*       backlogSbox;
+    QLabel*         backlogLabel;
+    QTreeView*      cardboxView;
 };
 
 #endif // ZYZZYVA_CARDBOX_FORM_H
