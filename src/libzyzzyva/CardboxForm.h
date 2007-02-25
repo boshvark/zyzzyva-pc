@@ -26,6 +26,7 @@
 #define ZYZZYVA_CARDBOX_FORM_H
 
 #include "ActionForm.h"
+#include <QLabel>
 #include <QSpinBox>
 
 class WordEngine;
@@ -41,10 +42,12 @@ class CardboxForm : public ActionForm
 
     public slots:
     void shiftClicked();
+    void refreshCurrentClicked();
 
     private:
     WordEngine*  wordEngine;
     QSpinBox*    backlogSbox;
+    QLabel*      backlogLabel;
 };
 
 #endif // ZYZZYVA_CARDBOX_FORM_H

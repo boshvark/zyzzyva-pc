@@ -27,7 +27,6 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include <QHBoxLayout>
-#include <QLabel>
 #include <QVBoxLayout>
 
 using namespace Defs;
@@ -58,10 +57,33 @@ CardboxForm::CardboxForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     label->setWordWrap (true);
     mainVlay->addWidget (label);
 
+    // Current Backlog area
+    QHBoxLayout* currentHlay = new QHBoxLayout;
+    Q_CHECK_PTR (currentHlay);
+    currentHlay->setSpacing (SPACING);
+    mainVlay->addLayout (currentHlay);
+
+    QLabel* currentLabel = new QLabel ("Current backlog size:");
+    Q_CHECK_PTR (currentLabel);
+    currentHlay->addWidget (currentLabel);
+
+    backlogLabel = new QLabel;
+    Q_CHECK_PTR (backlogLabel);
+    currentHlay->addWidget (backlogLabel);
+
+    ZPushButton* refreshCurrentButton = new ZPushButton;
+    Q_CHECK_PTR (refreshCurrentButton);
+    refreshCurrentButton->setText ("&Refresh");
+    refreshCurrentButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect (refreshCurrentButton, SIGNAL (clicked()),
+             SLOT (refreshCurrentClicked()));
+    currentHlay->addWidget (refreshCurrentButton);
+
+    // Shift area
     QHBoxLayout* shiftHlay = new QHBoxLayout;
     Q_CHECK_PTR (shiftHlay);
     shiftHlay->setSpacing (SPACING);
-    mainVlay->addLayout(shiftHlay);
+    mainVlay->addLayout (shiftHlay);
 
     QLabel* shiftLabel = new QLabel ("Desired backlog size:");
     Q_CHECK_PTR (shiftLabel);
@@ -140,4 +162,22 @@ CardboxForm::shiftClicked()
 
     QuizDatabase db (lexicon, quizType);
     db.shiftCardbox (questions, desiredBacklog);
+}
+
+//---------------------------------------------------------------------------
+//  refreshCurrentClicked
+//
+//! Called when the Refresh button is clicked.
+//---------------------------------------------------------------------------
+void
+CardboxForm::refreshCurrentClicked()
+{
+    qDebug ("CardboxForm::refreshCurrentClicked");
+
+    QString lexicon = wordEngine->getLexiconName();
+    QString quizType = "Anagrams";
+
+    QuizDatabase db (lexicon, quizType);
+    QStringList readyQuestions = db.getAllReadyQuestions();
+    backlogLabel->setText (QString::number (readyQuestions.count()));
 }
