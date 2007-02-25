@@ -27,6 +27,7 @@
 
 #include "Rand.h"
 #include <QSqlDatabase>
+#include <QSqlQueryModel>
 #include <QString>
 
 class QuizDatabase
@@ -65,6 +66,8 @@ class QuizDatabase
     QStringList getAllReadyQuestions();
     QStringList getReadyQuestions (const QStringList& questions);
     QuestionData getQuestionData (const QString& question);
+
+    const QSqlDatabase* getDatabase() const;
 
     private:
     int calculateNextScheduled (int cardbox);

@@ -608,6 +608,19 @@ QuizDatabase::getQuestionData (const QString& question)
 }
 
 //---------------------------------------------------------------------------
+//  getDatabase
+//
+//! Retrieve a pointer to the database connection.
+//
+//! @return the database connection pointer
+//---------------------------------------------------------------------------
+const QSqlDatabase*
+QuizDatabase::getDatabase() const
+{
+    return db;
+}
+
+//---------------------------------------------------------------------------
 //  calculateNextScheduled
 //
 //! Calculate the next scheduled appearance of a question given the question's
