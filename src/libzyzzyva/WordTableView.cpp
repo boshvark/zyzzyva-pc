@@ -811,11 +811,8 @@ WordTableView::viewportEvent (QEvent* e)
         break;
 
         default:
-        QTreeView::viewportEvent (e);
-        break;
+        return QTreeView::viewportEvent (e);
     }
-
-    return true;
 }
 
 //---------------------------------------------------------------------------
