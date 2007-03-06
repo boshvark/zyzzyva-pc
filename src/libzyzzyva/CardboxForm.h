@@ -45,17 +45,18 @@ class CardboxForm : public ActionForm
 
     public slots:
     void shiftClicked();
-    void refreshBacklogClicked();
-    void refreshCardboxClicked();
+    void refreshClicked();
     void quizSpecChanged();
 
     private:
     WordEngine*     wordEngine;
     QuizDatabase*   quizDatabase;
-    QSqlQueryModel* cardboxModel;
+    QSqlQueryModel* cardboxCountModel;
+    QSqlQueryModel* cardboxDaysModel;
     QSpinBox*       backlogSbox;
     QLabel*         backlogLabel;
-    QTreeView*      cardboxView;
+    QTreeView*      cardboxCountView;
+    QTreeView*      cardboxDaysView;
 };
 
 #endif // ZYZZYVA_CARDBOX_FORM_H
