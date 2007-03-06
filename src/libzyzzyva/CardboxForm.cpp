@@ -82,20 +82,6 @@ CardboxForm::CardboxForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect (shiftButton, SIGNAL (clicked()), SLOT (shiftClicked()));
     shiftHlay->addWidget (shiftButton);
 
-    // Current Backlog area
-    QHBoxLayout* currentHlay = new QHBoxLayout;
-    Q_CHECK_PTR (currentHlay);
-    currentHlay->setSpacing (SPACING);
-    mainVlay->addLayout (currentHlay);
-
-    QLabel* currentLabel = new QLabel ("Current backlog size:");
-    Q_CHECK_PTR (currentLabel);
-    currentHlay->addWidget (currentLabel);
-
-    backlogLabel = new QLabel;
-    Q_CHECK_PTR (backlogLabel);
-    currentHlay->addWidget (backlogLabel);
-
     QHBoxLayout* cardboxHlay = new QHBoxLayout;
     Q_CHECK_PTR (cardboxHlay);
     cardboxHlay->setSpacing (SPACING);
@@ -196,11 +182,6 @@ CardboxForm::refreshClicked()
         return;
 
     QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-
-    // Refresh current backlog label
-    QStringList readyQuestions = quizDatabase->getAllReadyQuestions();
-    backlogLabel->setText (QString::number (readyQuestions.count()));
-
     const QSqlDatabase* sqlDb = quizDatabase->getDatabase();
 
     // Refresh cardbox count list

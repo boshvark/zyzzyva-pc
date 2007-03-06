@@ -54,7 +54,6 @@ class CardboxForm : public ActionForm
     QSqlQueryModel* cardboxCountModel;
     QSqlQueryModel* cardboxDaysModel;
     QSpinBox*       backlogSbox;
-    QLabel*         backlogLabel;
     QTreeView*      cardboxCountView;
     QTreeView*      cardboxDaysView;
 };
