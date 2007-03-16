@@ -3,7 +3,7 @@
 //
 // A class to handle the loading and searching of words.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -62,16 +62,16 @@ WordEngine::clearCache() const
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::connectToDatabase (const QString& filename, QString* errString)
+WordEngine::connectToDatabase(const QString& filename, QString* errString)
 {
     Rand rng;
-    rng.srand (std::time (0), Auxil::getPid());
+    rng.srand(std::time(0), Auxil::getPid());
     unsigned int r = rng.rand();
-    dbConnectionName = "WordEngine" + QString::number (r);
+    dbConnectionName = "WordEngine" + QString::number(r);
 
-    db = new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE",
-                                                      dbConnectionName));
-    db->setDatabaseName (filename);
+    db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE",
+                                                    dbConnectionName));
+    db->setDatabaseName(filename);
     bool ok = db->open();
 
     if (!ok) {
@@ -99,7 +99,7 @@ WordEngine::disconnectFromDatabase()
 
     delete db;
     db = 0;
-    QSqlDatabase::removeDatabase (dbConnectionName);
+    QSqlDatabase::removeDatabase(dbConnectionName);
     dbConnectionName.clear();
     return true;
 }
@@ -117,35 +117,36 @@ WordEngine::disconnectFromDatabase()
 //! @return the number of words imported
 //---------------------------------------------------------------------------
 int
-WordEngine::importTextFile (const QString& filename, const QString& lexName,
-                            bool loadDefinitions, QString* errString)
+WordEngine::importTextFile(const QString& filename, const QString& lexName,
+                           bool loadDefinitions, QString* errString)
 {
     QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
-        if (errString)
-            *errString = "Can't open file '" + filename + "': "
-            + file.errorString();
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        if (errString) {
+            *errString = "Can't open file '" + filename + "': " +
+                file.errorString();
+        }
         return 0;
     }
 
     int imported = 0;
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
-    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+    char* buffer = new char[MAX_INPUT_LINE_LEN];
+    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
         line = line.simplified();
-        if (!line.length() || (line.at (0) == '#'))
+        if (!line.length() || (line.at(0) == '#'))
             continue;
-        QString word = line.section (' ', 0, 0).toUpper();
+        QString word = line.section(' ', 0, 0).toUpper();
 
-        if (!graph.containsWord (word)) {
-            QString alpha = Auxil::getAlphagram (word);
+        if (!graph.containsWord(word)) {
+            QString alpha = Auxil::getAlphagram(word);
             ++numAnagramsMap[alpha];
         }
 
-        graph.addWord (word);
+        graph.addWord(word);
         if (loadDefinitions) {
-            QString definition = line.section (' ', 1);
-            addDefinition (word, definition);
+            QString definition = line.section(' ', 1);
+            addDefinition(word, definition);
         }
         ++imported;
     }
@@ -169,12 +170,12 @@ WordEngine::importTextFile (const QString& filename, const QString& lexName,
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::importDawgFile (const QString& filename, const QString& lexName,
-                            bool reverse, QString* errString, quint16*
-                            expectedChecksum)
+WordEngine::importDawgFile(const QString& filename, const QString& lexName,
+                           bool reverse, QString* errString, quint16*
+                           expectedChecksum)
 {
-    bool ok = graph.importDawgFile (filename, reverse, errString,
-                                    expectedChecksum);
+    bool ok = graph.importDawgFile(filename, reverse, errString,
+                                   expectedChecksum);
 
     if (!ok)
         return false;
@@ -198,13 +199,14 @@ WordEngine::importDawgFile (const QString& filename, const QString& lexName,
 //! @return the number of stems imported
 //---------------------------------------------------------------------------
 int
-WordEngine::importStems (const QString& filename, QString* errString)
+WordEngine::importStems(const QString& filename, QString* errString)
 {
     QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
-        if (errString)
-            *errString = "Can't open file '" + filename + "': "
-            + file.errorString();
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        if (errString) {
+            *errString = "Can't open file '" + filename + "': " +
+                file.errorString();
+        }
         return -1;
     }
 
@@ -214,39 +216,39 @@ WordEngine::importStems (const QString& filename, QString* errString)
     set<QString> alphagrams;
     int imported = 0;
     int length = 0;
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
-    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+    char* buffer = new char[MAX_INPUT_LINE_LEN];
+    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
         line = line.simplified();
-        if (!line.length() || (line.at (0) == '#'))
+        if (!line.length() || (line.at(0) == '#'))
             continue;
-        QString word = line.section (' ', 0, 0);
+        QString word = line.section(' ', 0, 0);
 
         if (!length)
             length = word.length();
 
-        if (length != int (word.length()))
+        if (length != int(word.length()))
             continue;
 
         words << word;
-        alphagrams.insert (Auxil::getAlphagram (word));
+        alphagrams.insert(Auxil::getAlphagram(word));
         ++imported;
     }
     delete[] buffer;
 
     // Insert the stem list into the map, or append to an existing stem list
-    map<int, QStringList>::iterator it = stems.find (length);
+    map<int, QStringList>::iterator it = stems.find(length);
     if (it == stems.end()) {
-        stems.insert (make_pair (length, words));
-        stemAlphagrams.insert (make_pair (length, alphagrams));
+        stems.insert(make_pair(length, words));
+        stemAlphagrams.insert(make_pair(length, alphagrams));
     }
     else {
         it->second += words;
         std::map< int, set<QString> >::iterator it =
-            stemAlphagrams.find (length);
+            stemAlphagrams.find(length);
         set<QString>::iterator sit;
         for (sit = alphagrams.begin(); sit != alphagrams.end(); ++sit)
-            (it->second).insert (*sit);
+            (it->second).insert(*sit);
     }
 
     return imported;
@@ -264,8 +266,8 @@ WordEngine::importStems (const QString& filename, QString* errString)
 //! @return a list of words matching the search spec
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
-                            const QStringList* wordList) const
+WordEngine::databaseSearch(const SearchSpec& optimizedSpec,
+                           const QStringList* wordList) const
 {
     // Build SQL query string
     QString queryStr = "SELECT word FROM words WHERE";
@@ -296,20 +298,21 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
                 // Lax boundaries
                 if (condition.boolValue) {
                     queryStr += " max_probability_order>=" +
-                        QString::number (condition.minValue)
-                        + " AND min_probability_order<=" +
-                        QString::number (condition.maxValue);
+                        QString::number(condition.minValue) +
+                        " AND min_probability_order<=" +
+                        QString::number(condition.maxValue);
                 }
                 // Strict boundaries
                 else {
                     queryStr += " probability_order";
                     if (condition.minValue == condition.maxValue) {
-                        queryStr += "=" + QString::number (condition.minValue);
+                        queryStr += "=" + QString::number(condition.minValue);
                     }
                     else {
-                        queryStr += ">=" + QString::number (condition.minValue)
-                            + " AND probability_order<=" +
-                            QString::number (condition.maxValue);
+                        queryStr += ">=" +
+                            QString::number(condition.minValue) +
+                            " AND probability_order<=" +
+                            QString::number(condition.maxValue);
                     }
                 }
             }
@@ -334,12 +337,12 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
 
                 queryStr += " " + column;
                 if (condition.minValue == condition.maxValue) {
-                    queryStr += "=" + QString::number (condition.minValue);
+                    queryStr += "=" + QString::number(condition.minValue);
                 }
                 else {
-                    queryStr += ">=" + QString::number (condition.minValue) +
+                    queryStr += ">=" + QString::number(condition.minValue) +
                         " AND " + column + "<=" +
-                        QString::number (condition.maxValue);
+                        QString::number(condition.maxValue);
                 }
             }
             break;
@@ -348,7 +351,7 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
                 QString str = condition.stringValue;
                 QMap<QChar, int> letters;
                 for (int i = 0; i < str.length(); ++i) {
-                    ++letters[str.at (i)];
+                    ++letters[str.at(i)];
                 }
 
                 QMapIterator<QChar, int> it (letters);
@@ -363,7 +366,7 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
                     queryStr += " LIKE '%";
                     int count = condition.negated ? 1 : it.value();
                     for (int j = 0; j < count; ++j) {
-                        queryStr += QString (c) + "%";
+                        queryStr += QString(c) + "%";
                     }
                     queryStr += "'";
                 }
@@ -375,7 +378,7 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
                 if (condition.negated)
                     queryStr += " NOT";
                 queryStr += " IN (";
-                QStringList words = condition.stringValue.split (QChar (' '));
+                QStringList words = condition.stringValue.split(QChar(' '));
                 QStringListIterator it (words);
                 bool firstWord = true;
                 while (it.hasNext()) {
@@ -417,11 +420,11 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
     QStringList resultList;
     QSqlQuery query (queryStr, *db);
     while (query.next()) {
-        QString word = query.value (0).toString();
-        if (!upperToLower.isEmpty() && upperToLower.contains (word)) {
+        QString word = query.value(0).toString();
+        if (!upperToLower.isEmpty() && upperToLower.contains(word)) {
             word = upperToLower[word];
         }
-        resultList.append (word);
+        resultList.append(word);
     }
 
     return resultList;
@@ -438,18 +441,18 @@ WordEngine::databaseSearch (const SearchSpec& optimizedSpec,
 //! @return a list of words matching the search spec
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::applyPostConditions (const SearchSpec& optimizedSpec, const
-                                 QStringList& wordList) const
+WordEngine::applyPostConditions(const SearchSpec& optimizedSpec, const
+                                QStringList& wordList) const
 {
     QStringList returnList = wordList;
 
     // Check special postconditions
     QStringList::iterator wit;
     for (wit = returnList.begin(); wit != returnList.end();) {
-        if (matchesConditions (*wit, optimizedSpec.conditions))
+        if (matchesConditions(*wit, optimizedSpec.conditions))
             ++wit;
         else
-            wit = returnList.erase (wit);
+            wit = returnList.erase(wit);
     }
 
     // Handle Limit by Probability Order conditions
@@ -483,7 +486,6 @@ WordEngine::applyPostConditions (const SearchSpec& optimizedSpec, const
 
     // Keep only words in the probability order range
     if (probLimitRangeCondition) {
-
         if ((probLimitRangeMin > returnList.size()) ||
             (probLimitRangeMinLax > returnList.size()))
         {
@@ -524,35 +526,35 @@ WordEngine::applyPostConditions (const SearchSpec& optimizedSpec, const
             // alone for old probability sorting
             QString radix;
             QString wordUpper = word.toUpper();
-            radix.sprintf ("%09.0f",
-                1e9 - 1 - bag.getNumCombinations (wordUpper));
+            radix.sprintf("%09.0f",
+                1e9 - 1 - bag.getNumCombinations(wordUpper));
             // Legacy probability order limits are sorted alphabetically, not
             // by alphagram
             if (!legacyProbCondition)
-                radix += Auxil::getAlphagram (wordUpper);
+                radix += Auxil::getAlphagram(wordUpper);
             radix += wordUpper;
-            probMap.insert (radix, word);
+            probMap.insert(radix, word);
         }
 
         QStringList keys = probMap.keys();
 
         QString minRadix = keys[min];
-        QString minCombinations = minRadix.left (9);
+        QString minCombinations = minRadix.left(9);
         while ((min > 0) && (min > probLimitRangeMin)) {
-            if (minCombinations != keys[min - 1].left (9))
+            if (minCombinations != keys[min - 1].left(9))
                 break;
             --min;
         }
 
         QString maxRadix = keys[max];
-        QString maxCombinations = maxRadix.left (9);
+        QString maxCombinations = maxRadix.left(9);
         while ((max < keys.size() - 1) && (max < probLimitRangeMax)) {
-            if (maxCombinations != keys[max + 1].left (9))
+            if (maxCombinations != keys[max + 1].left(9))
                 break;
             ++max;
         }
 
-        returnList = probMap.values().mid (min, max - min + 1);
+        returnList = probMap.values().mid(min, max - min + 1);
     }
 
     return returnList;
@@ -567,9 +569,9 @@ WordEngine::applyPostConditions (const SearchSpec& optimizedSpec, const
 //! @return true if acceptable, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::isAcceptable (const QString& word) const
+WordEngine::isAcceptable(const QString& word) const
 {
-    return graph.containsWord (word);
+    return graph.containsWord(word);
 }
 
 //---------------------------------------------------------------------------
@@ -582,7 +584,7 @@ WordEngine::isAcceptable (const QString& word) const
 //! @return a list of acceptable words
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::search (const SearchSpec& spec, bool allCaps) const
+WordEngine::search(const SearchSpec& spec, bool allCaps) const
 {
     SearchSpec optimizedSpec = spec;
     optimizedSpec.optimize();
@@ -607,7 +609,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
 
             case SearchCondition::AnagramMatch:
             case SearchCondition::PatternMatch:
-            if (condition.stringValue.contains ("*"))
+            if (condition.stringValue.contains("*"))
                 ++wildcardConditions;
             else
                 ++nonWildcardConditions;
@@ -650,22 +652,22 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
     // Search the word graph if necessary
     QStringList resultList;
     if (wordGraphConditions || !databaseConditions) {
-        resultList = wordGraphSearch (optimizedSpec);
+        resultList = wordGraphSearch(optimizedSpec);
         if (resultList.isEmpty())
             return resultList;
     }
 
     // Search the database if necessary, passing word graph results
     if (databaseConditions) {
-        resultList = databaseSearch (optimizedSpec,
-                                     wordGraphConditions ? &resultList : 0);
+        resultList = databaseSearch(optimizedSpec,
+                                    wordGraphConditions ? &resultList : 0);
         if (resultList.isEmpty())
             return resultList;
     }
 
     // Check post conditions if necessary
     if (postConditions) {
-        resultList = applyPostConditions (optimizedSpec, resultList);
+        resultList = applyPostConditions(optimizedSpec, resultList);
     }
 
     // Convert to all caps if necessary
@@ -677,7 +679,7 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
 
     if (!resultList.isEmpty()) {
         clearCache();
-        addToCache (resultList);
+        addToCache(resultList);
     }
 
     return resultList;
@@ -692,9 +694,9 @@ WordEngine::search (const SearchSpec& spec, bool allCaps) const
 //! @return a list of words
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::wordGraphSearch (const SearchSpec& optimizedSpec) const
+WordEngine::wordGraphSearch(const SearchSpec& optimizedSpec) const
 {
-    return graph.search (optimizedSpec);
+    return graph.search(optimizedSpec);
 }
 
 //---------------------------------------------------------------------------
@@ -707,7 +709,7 @@ WordEngine::wordGraphSearch (const SearchSpec& optimizedSpec) const
 //! @return a list of alphagrams
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::alphagrams (const QStringList& list) const
+WordEngine::alphagrams(const QStringList& list) const
 {
     QStringList alphagrams;
     QStringList::const_iterator it;
@@ -715,7 +717,7 @@ WordEngine::alphagrams (const QStringList& list) const
     // Insert into a set first, to remove duplicates
     set<QString> seen;
     for (it = list.begin(); it != list.end(); ++it) {
-        seen.insert (Auxil::getAlphagram (*it));
+        seen.insert(Auxil::getAlphagram(*it));
     }
 
     set<QString>::iterator sit;
@@ -736,12 +738,12 @@ WordEngine::alphagrams (const QStringList& list) const
 //! @return information about the word from the database
 //---------------------------------------------------------------------------
 WordEngine::WordInfo
-WordEngine::getWordInfo (const QString& word) const
+WordEngine::getWordInfo(const QString& word) const
 {
     if (word.isEmpty())
         return WordInfo();
 
-    if (wordCache.contains (word)) {
+    if (wordCache.contains(word)) {
         //qDebug ("Cache HIT: |%s|", word.toUtf8().data());
         return wordCache[word];
     }
@@ -756,22 +758,22 @@ WordEngine::getWordInfo (const QString& word) const
         "point_value, front_hooks, back_hooks, definition FROM words "
         "WHERE word=?";
     QSqlQuery query (*db);
-    query.prepare (qstr);
-    query.bindValue (0, word);
+    query.prepare(qstr);
+    query.bindValue(0, word);
     query.exec();
- 
+
     if (query.next()) {
         info.word = word;
-        info.probabilityOrder    = query.value (0).toInt();
-        info.minProbabilityOrder = query.value (1).toInt();
-        info.maxProbabilityOrder = query.value (2).toInt();
-        info.numVowels           = query.value (3).toInt();
-        info.numUniqueLetters    = query.value (4).toInt();
-        info.numAnagrams         = query.value (5).toInt();
-        info.pointValue          = query.value (6).toInt();
-        info.frontHooks          = query.value (7).toString();
-        info.backHooks           = query.value (8).toString();
-        info.definition          = query.value (9).toString();
+        info.probabilityOrder    = query.value(0).toInt();
+        info.minProbabilityOrder = query.value(1).toInt();
+        info.maxProbabilityOrder = query.value(2).toInt();
+        info.numVowels           = query.value(3).toInt();
+        info.numUniqueLetters    = query.value(4).toInt();
+        info.numAnagrams         = query.value(5).toInt();
+        info.pointValue          = query.value(6).toInt();
+        info.frontHooks          = query.value(7).toString();
+        info.backHooks           = query.value(8).toString();
+        info.definition          = query.value(9).toString();
         wordCache[word] = info;
     }
 
@@ -792,7 +794,7 @@ WordEngine::getNumWords() const
         QString qstr = "SELECT count(*) FROM words";
         QSqlQuery query (qstr, *db);
         if (query.next())
-            return query.value (0).toInt();
+            return query.value(0).toInt();
     }
     else
         return graph.getNumWords();
@@ -809,22 +811,20 @@ WordEngine::getNumWords() const
 //! @return the definition, or QString::null if no definition
 //---------------------------------------------------------------------------
 QString
-WordEngine::getDefinition (const QString& word, bool replaceLinks) const
+WordEngine::getDefinition(const QString& word, bool replaceLinks) const
 {
     QString definition;
 
-    WordInfo info = getWordInfo (word);
+    WordInfo info = getWordInfo(word);
     if (info.isValid()) {
         if (replaceLinks) {
-            QStringList defs = info.definition.split (" / ");
+            QStringList defs = info.definition.split(" / ");
             definition = "";
             QString def;
             foreach (def, defs) {
                 if (!definition.isEmpty())
                     definition += "\n";
                 definition += def;
-                //definition += replaceDefinitionLinks (def,
-                                                      //MAX_DEFINITION_LINKS);
             }
             return definition;
         }
@@ -835,7 +835,7 @@ WordEngine::getDefinition (const QString& word, bool replaceLinks) const
 
     else {
         map<QString, multimap<QString, QString> >::const_iterator it =
-            definitions.find (word);
+            definitions.find(word);
         if (it == definitions.end())
             return QString::null;
 
@@ -849,9 +849,6 @@ WordEngine::getDefinition (const QString& word, bool replaceLinks) const
                     definition += " / ";
             }
             definition += mit->second;
-            //definition += replaceLinks
-                //? replaceDefinitionLinks (mit->second, MAX_DEFINITION_LINKS)
-                //: mit->second;
         }
         return definition;
     }
@@ -867,11 +864,11 @@ WordEngine::getDefinition (const QString& word, bool replaceLinks) const
 //! @return a string containing lower case letters representing front hooks
 //---------------------------------------------------------------------------
 QString
-WordEngine::getFrontHookLetters (const QString& word) const
+WordEngine::getFrontHookLetters(const QString& word) const
 {
     QString ret;
 
-    WordInfo info = getWordInfo (word);
+    WordInfo info = getWordInfo(word);
     if (info.isValid()) {
         ret = info.frontHooks;
     }
@@ -881,14 +878,14 @@ WordEngine::getFrontHookLetters (const QString& word) const
         SearchCondition condition;
         condition.type = SearchCondition::PatternMatch;
         condition.stringValue = "?" + word;
-        spec.conditions.append (condition);
+        spec.conditions.append(condition);
 
         // Put first letter of each word in a set, for alphabetical order
-        QStringList words = search (spec, true);
+        QStringList words = search(spec, true);
         set<QChar> letters;
         QStringList::iterator it;
         for (it = words.begin(); it != words.end(); ++it)
-            letters.insert ((*it).at (0).toLower());
+            letters.insert((*it).at(0).toLower());
 
         set<QChar>::iterator sit;
         for (sit = letters.begin(); sit != letters.end(); ++sit)
@@ -908,11 +905,11 @@ WordEngine::getFrontHookLetters (const QString& word) const
 //! @return a string containing lower case letters representing back hooks
 //---------------------------------------------------------------------------
 QString
-WordEngine::getBackHookLetters (const QString& word) const
+WordEngine::getBackHookLetters(const QString& word) const
 {
     QString ret;
 
-    WordInfo info = getWordInfo (word);
+    WordInfo info = getWordInfo(word);
     if (info.isValid()) {
         ret = info.backHooks;
     }
@@ -922,14 +919,14 @@ WordEngine::getBackHookLetters (const QString& word) const
         SearchCondition condition;
         condition.type = SearchCondition::PatternMatch;
         condition.stringValue = word + "?";
-        spec.conditions.append (condition);
+        spec.conditions.append(condition);
 
         // Put first letter of each word in a set, for alphabetical order
-        QStringList words = search (spec, true);
+        QStringList words = search(spec, true);
         set<QChar> letters;
         QStringList::iterator it;
         for (it = words.begin(); it != words.end(); ++it)
-            letters.insert ((*it).at ((*it).length() - 1).toLower());
+            letters.insert((*it).at((*it).length() - 1).toLower());
 
         set<QChar>::iterator sit;
         for (sit = letters.begin(); sit != letters.end(); ++sit)
@@ -947,7 +944,7 @@ WordEngine::getBackHookLetters (const QString& word) const
 //! @param words the list of words
 //---------------------------------------------------------------------------
 void
-WordEngine::addToCache (const QStringList& words) const
+WordEngine::addToCache(const QStringList& words) const
 {
     if (words.isEmpty() || !db || !db->isOpen())
         return;
@@ -966,22 +963,22 @@ WordEngine::addToCache (const QStringList& words) const
     qstr += ")";
 
     QSqlQuery query (*db);
-    query.prepare (qstr);
+    query.prepare(qstr);
     query.exec();
 
     while (query.next()) {
         WordInfo info;
-        info.word                = query.value (0).toString();
-        info.probabilityOrder    = query.value (1).toInt();
-        info.minProbabilityOrder = query.value (2).toInt();
-        info.maxProbabilityOrder = query.value (3).toInt();
-        info.numVowels           = query.value (4).toInt();
-        info.numUniqueLetters    = query.value (5).toInt();
-        info.numAnagrams         = query.value (6).toInt();
-        info.pointValue          = query.value (7).toInt();
-        info.frontHooks          = query.value (8).toString();
-        info.backHooks           = query.value (9).toString();
-        info.definition          = query.value (10).toString();
+        info.word                = query.value(0).toString();
+        info.probabilityOrder    = query.value(1).toInt();
+        info.minProbabilityOrder = query.value(2).toInt();
+        info.maxProbabilityOrder = query.value(3).toInt();
+        info.numVowels           = query.value(4).toInt();
+        info.numUniqueLetters    = query.value(5).toInt();
+        info.numAnagrams         = query.value(6).toInt();
+        info.pointValue          = query.value(7).toInt();
+        info.frontHooks          = query.value(8).toString();
+        info.backHooks           = query.value(9).toString();
+        info.definition          = query.value(10).toString();
         wordCache[info.word] = info;
     }
 }
@@ -998,8 +995,8 @@ WordEngine::addToCache (const QStringList& words) const
 //! @return true if the word matches all special conditions, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::matchesConditions (const QString& word, const
-                               QList<SearchCondition>& conditions) const
+WordEngine::matchesConditions(const QString& word, const
+                              QList<SearchCondition>& conditions) const
 {
     // FIXME: For conditions that can be tested by querying the database, a
     // query should be constructed that tests all the conditions as part of a
@@ -1015,23 +1012,23 @@ WordEngine::matchesConditions (const QString& word, const
         switch (condition.type) {
 
             case SearchCondition::Prefix:
-            if ((!isAcceptable (condition.stringValue + wordUpper))
+            if ((!isAcceptable(condition.stringValue + wordUpper))
                 ^ condition.negated)
                 return false;
             break;
 
             case SearchCondition::Suffix:
-            if ((!isAcceptable (wordUpper + condition.stringValue))
+            if ((!isAcceptable(wordUpper + condition.stringValue))
                 ^ condition.negated)
                 return false;
             break;
 
             case SearchCondition::BelongToGroup: {
-                SearchSet searchSet = Auxil::stringToSearchSet
-                    (condition.stringValue);
+                SearchSet searchSet =
+                    Auxil::stringToSearchSet(condition.stringValue);
                 if (searchSet == UnknownSearchSet)
                     continue;
-                if (!isSetMember (wordUpper, searchSet) ^ condition.negated)
+                if (!isSetMember(wordUpper, searchSet) ^ condition.negated)
                     return false;
             }
             break;
@@ -1054,28 +1051,28 @@ WordEngine::matchesConditions (const QString& word, const
 //! @return true if a member of the set, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::isSetMember (const QString& word, SearchSet ss) const
+WordEngine::isSetMember(const QString& word, SearchSet ss) const
 {
     static QString typeTwoChars = "AAADEEEEGIIILNNOORRSSTTU";
     static int typeTwoCharsLen = typeTwoChars.length();
-    static LetterBag letterBag ("A:9 B:2 C:2 D:4 E:12 F:2 G:3 H:2 I:9 J:1 "
-                                "K:1 L:4 M:2 N:6 O:8 P:2 Q:1 R:6 S:4 T:6 "
-                                "U:4 V:2 W:2 X:1 Y:2 Z:1 _:2");
+    static LetterBag letterBag("A:9 B:2 C:2 D:4 E:12 F:2 G:3 H:2 I:9 J:1 "
+                               "K:1 L:4 M:2 N:6 O:8 P:2 Q:1 R:6 S:4 T:6 "
+                               "U:4 V:2 W:2 X:1 Y:2 Z:1 _:2");
     static double typeThreeSevenCombos
-        = letterBag.getNumCombinations ("HUNTERS");
+        = letterBag.getNumCombinations("HUNTERS");
     static double typeThreeEightCombos
-        = letterBag.getNumCombinations ("NOTIFIED");
+        = letterBag.getNumCombinations("NOTIFIED");
 
     switch (ss) {
         case SetHookWords:
-        return (isAcceptable (word.left (word.length() - 1)) ||
-                isAcceptable (word.right (word.length() - 1)));
+        return (isAcceptable(word.left(word.length() - 1)) ||
+                isAcceptable(word.right(word.length() - 1)));
 
         case SetFrontHooks:
-        return isAcceptable (word.right (word.length() - 1));
+        return isAcceptable(word.right(word.length() - 1));
 
         case SetBackHooks:
-        return isAcceptable (word.left (word.length() - 1));
+        return isAcceptable(word.left(word.length() - 1));
 
         case SetHighFives: {
             if (word.length() != 5)
@@ -1083,7 +1080,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 
             bool ok = false;
             for (int i = 0; i < word.length(); ++i) {
-                int value = letterBag.getLetterValue (word[i]);
+                int value = letterBag.getLetterValue(word[i]);
                 if (value > 5)
                     return false;
                 if (((value == 4) || (value == 5)) && ((i == 0) || (i == 4)))
@@ -1097,16 +1094,16 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                 return false;
 
             std::map< int, set<QString> >::const_iterator it =
-                stemAlphagrams.find (word.length() - 1);
+                stemAlphagrams.find(word.length() - 1);
             if (it == stemAlphagrams.end())
                 return false;
 
             const set<QString>& alphaset = it->second;
-            QString agram = Auxil::getAlphagram (word);
+            QString agram = Auxil::getAlphagram(word);
             set<QString>::const_iterator ait;
-            for (int i = 0; i < int (agram.length()); ++i) {
-                ait = alphaset.find (agram.left (i) +
-                                     agram.right (agram.length() - i - 1));
+            for (int i = 0; i < int(agram.length()); ++i) {
+                ait = alphaset.find(agram.left(i) +
+                                    agram.right(agram.length() - i - 1));
                 if (ait != alphaset.end())
                     return true;
             }
@@ -1118,11 +1115,11 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                 return false;
 
             std::map< int, set<QString> >::const_iterator it =
-                stemAlphagrams.find (word.length() - 2);
+                stemAlphagrams.find(word.length() - 2);
             if (it == stemAlphagrams.end())
                 return false;
 
-            QString agram = Auxil::getAlphagram (word);
+            QString agram = Auxil::getAlphagram(word);
 
             // Compare the letters of the word with the letters of each
             // alphagram, ensuring that no more than two letters in the word
@@ -1133,10 +1130,10 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                 QString setAlphagram = *ait;
                 int missing = 0;
                 int saIndex = 0;
-                for (int i = 0; (i < int (agram.length())) &&
+                for (int i = 0; (i < int(agram.length())) &&
                                 (saIndex < setAlphagram.length()); ++i)
                 {
-                    if (agram.at (i) == setAlphagram.at (saIndex))
+                    if (agram.at(i) == setAlphagram.at(saIndex))
                         ++saIndex;
                     else
                         ++missing;
@@ -1157,7 +1154,7 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                 return false;
 
             bool ok = false;
-            QString alphagram = Auxil::getAlphagram (word);
+            QString alphagram = Auxil::getAlphagram(word);
             int wi = 0;
             QChar wc = alphagram[wi];
             for (int ti = 0; ti < typeTwoCharsLen; ++ti) {
@@ -1171,29 +1168,29 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                     wc = alphagram[wi];
                 }
             }
-            return (ok && !isSetMember (word, (ss == SetTypeTwoSevens ?
-                                               SetTypeOneSevens :
-                                               SetTypeOneEights)));
+            return (ok && !isSetMember(word, (ss == SetTypeTwoSevens ?
+                                              SetTypeOneSevens :
+                                              SetTypeOneEights)));
         }
 
         case SetTypeThreeSevens: {
             if (word.length() != 7)
                 return false;
 
-            double combos = letterBag.getNumCombinations (word);
+            double combos = letterBag.getNumCombinations(word);
             return ((combos >= typeThreeSevenCombos) &&
-                    !isSetMember (word, SetTypeOneSevens) &&
-                    !isSetMember (word, SetTypeTwoSevens));
+                    !isSetMember(word, SetTypeOneSevens) &&
+                    !isSetMember(word, SetTypeTwoSevens));
         }
 
         case SetTypeThreeEights: {
             if (word.length() != 8)
                 return false;
 
-            double combos = letterBag.getNumCombinations (word);
+            double combos = letterBag.getNumCombinations(word);
             return ((combos >= typeThreeEightCombos) &&
-                    !isSetMember (word, SetTypeOneEights) &&
-                    !isSetMember (word, SetTypeTwoEights));
+                    !isSetMember(word, SetTypeOneEights) &&
+                    !isSetMember(word, SetTypeTwoEights));
         }
 
         case SetEightsFromSevenLetterStems: {
@@ -1201,16 +1198,16 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
                 return false;
 
             std::map< int, set<QString> >::const_iterator it =
-                stemAlphagrams.find (word.length() - 1);
+                stemAlphagrams.find(word.length() - 1);
             if (it == stemAlphagrams.end())
                 return false;
 
             const set<QString>& alphaset = it->second;
-            QString agram = Auxil::getAlphagram (word);
+            QString agram = Auxil::getAlphagram(word);
             set<QString>::const_iterator ait;
-            for (int i = 0; i < int (agram.length()); ++i) {
-                ait = alphaset.find (agram.left (i) +
-                                     agram.right (agram.length() - i - 1));
+            for (int i = 0; i < int(agram.length()); ++i) {
+                ait = alphaset.find(agram.left(i) +
+                                    agram.right(agram.length() - i - 1));
                 if (ait != alphaset.end())
                     return true;
             }
@@ -1231,16 +1228,16 @@ WordEngine::isSetMember (const QString& word, SearchSet ss) const
 //! @return the number of valid anagrams
 //---------------------------------------------------------------------------
 int
-WordEngine::getNumAnagrams (const QString& word) const
+WordEngine::getNumAnagrams(const QString& word) const
 {
-    WordInfo info = getWordInfo (word);
+    WordInfo info = getWordInfo(word);
     if (info.isValid()) {
         return info.numAnagrams;
     }
 
     else {
-        QString alpha = Auxil::getAlphagram (word);
-        return numAnagramsMap.contains (alpha) ? numAnagramsMap[alpha] : 0;
+        QString alpha = Auxil::getAlphagram(word);
+        return numAnagramsMap.contains(alpha) ? numAnagramsMap[alpha] : 0;
     }
 }
 
@@ -1253,9 +1250,9 @@ WordEngine::getNumAnagrams (const QString& word) const
 //! @return the probability order
 //---------------------------------------------------------------------------
 int
-WordEngine::getProbabilityOrder (const QString& word) const
+WordEngine::getProbabilityOrder(const QString& word) const
 {
-    WordInfo info = getWordInfo (word);
+    WordInfo info = getWordInfo(word);
     return info.isValid() ? info.probabilityOrder : 0;
 }
 
@@ -1268,9 +1265,9 @@ WordEngine::getProbabilityOrder (const QString& word) const
 //! @return the probability order
 //---------------------------------------------------------------------------
 int
-WordEngine::getMinProbabilityOrder (const QString& word) const
+WordEngine::getMinProbabilityOrder(const QString& word) const
 {
-    WordInfo info = getWordInfo (word);
+    WordInfo info = getWordInfo(word);
     return info.isValid() ? info.minProbabilityOrder : 0;
 }
 
@@ -1283,9 +1280,9 @@ WordEngine::getMinProbabilityOrder (const QString& word) const
 //! @return the probability order
 //---------------------------------------------------------------------------
 int
-WordEngine::getMaxProbabilityOrder (const QString& word) const
+WordEngine::getMaxProbabilityOrder(const QString& word) const
 {
-    WordInfo info = getWordInfo (word);
+    WordInfo info = getWordInfo(word);
     return info.isValid() ? info.maxProbabilityOrder : 0;
 }
 
@@ -1298,10 +1295,10 @@ WordEngine::getMaxProbabilityOrder (const QString& word) const
 //! @return the number of vowels
 //---------------------------------------------------------------------------
 int
-WordEngine::getNumVowels (const QString& word) const
+WordEngine::getNumVowels(const QString& word) const
 {
-    WordInfo info = getWordInfo (word);
-    return info.isValid() ? info.numVowels : Auxil::getNumVowels (word);
+    WordInfo info = getWordInfo(word);
+    return info.isValid() ? info.numVowels : Auxil::getNumVowels(word);
 }
 
 //---------------------------------------------------------------------------
@@ -1313,11 +1310,11 @@ WordEngine::getNumVowels (const QString& word) const
 //! @return the number of unique letters
 //---------------------------------------------------------------------------
 int
-WordEngine::getNumUniqueLetters (const QString& word) const
+WordEngine::getNumUniqueLetters(const QString& word) const
 {
-    WordInfo info = getWordInfo (word);
+    WordInfo info = getWordInfo(word);
     return info.isValid() ? info.numUniqueLetters
-                          : Auxil::getNumUniqueLetters (word);
+                          : Auxil::getNumUniqueLetters(word);
 }
 
 //---------------------------------------------------------------------------
@@ -1329,9 +1326,9 @@ WordEngine::getNumUniqueLetters (const QString& word) const
 //! @return the point value
 //---------------------------------------------------------------------------
 int
-WordEngine::getPointValue (const QString& word) const
+WordEngine::getPointValue(const QString& word) const
 {
-    WordInfo info = getWordInfo (word);
+    WordInfo info = getWordInfo(word);
     return info.isValid() ? info.pointValue : 0;
 }
 
@@ -1346,7 +1343,7 @@ WordEngine::getPointValue (const QString& word) const
 //! @return a list of acceptable words matching the In Word List conditions
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::nonGraphSearch (const SearchSpec& spec) const
+WordEngine::nonGraphSearch(const SearchSpec& spec) const
 {
     QStringList wordList;
     set<QString> finalWordSet;
@@ -1421,13 +1418,13 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
         // words for acceptability and combine the word lists
         if (condition.type != SearchCondition::InWordList)
             continue;
-        QStringList words = condition.stringValue.split (QChar (' '));
+        QStringList words = condition.stringValue.split(QChar(' '));
 
         set<QString> wordSet;
         QStringList::iterator wit;
         for (wit = words.begin(); wit != words.end(); ++wit) {
-            if (isAcceptable (*wit))
-                wordSet.insert (*wit);
+            if (isAcceptable(*wit))
+                wordSet.insert(*wit);
         }
 
         // Combine search result set with words already found
@@ -1438,8 +1435,8 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
         else if (spec.conjunction) {
             set<QString> conjunctionSet;
             for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
-                if (finalWordSet.find (*sit) != finalWordSet.end())
-                    conjunctionSet.insert (*sit);
+                if (finalWordSet.find(*sit) != finalWordSet.end())
+                    conjunctionSet.insert(*sit);
             }
             if (conjunctionSet.empty())
                 return wordList;
@@ -1448,7 +1445,7 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
 
         else {
             for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
-                finalWordSet.insert (*sit);
+                finalWordSet.insert(*sit);
             }
         }
 
@@ -1475,38 +1472,36 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
                                (minPointValue < 10 * MAX_WORD_LEN));
 
         set<QString> wordSet;
-        for (sit = finalWordSet.begin(); sit != finalWordSet.end();
-                ++sit)
-        {
+        for (sit = finalWordSet.begin(); sit != finalWordSet.end(); ++sit) {
             QString word = *sit;
 
             if (testAnagrams) {
-                int numAnagrams = getNumAnagrams (word);
+                int numAnagrams = getNumAnagrams(word);
                 if ((numAnagrams < minAnagrams) || (numAnagrams > maxAnagrams))
                     continue;
             }
 
             if (testNumVowels) {
-                int numVowels = getNumVowels (word);
+                int numVowels = getNumVowels(word);
                 if ((numVowels < minNumVowels) || (numVowels > maxNumVowels))
                     continue;
             }
 
             if (testNumUniqueLetters) {
-                int numUniqueLetters = getNumUniqueLetters (word);
+                int numUniqueLetters = getNumUniqueLetters(word);
                 if ((numUniqueLetters < minNumUniqueLetters) ||
                     (numUniqueLetters > maxNumUniqueLetters))
                     continue;
             }
 
             if (testPointValue) {
-                int pointValue = getPointValue (word);
+                int pointValue = getPointValue(word);
                 if ((pointValue < minPointValue) ||
                     (pointValue > maxPointValue))
                     continue;
             }
 
-            wordSet.insert (word);
+            wordSet.insert(word);
         }
         finalWordSet = wordSet;
     }
@@ -1529,21 +1524,21 @@ WordEngine::nonGraphSearch (const SearchSpec& spec) const
 //! @param definition the definition
 //---------------------------------------------------------------------------
 void
-WordEngine::addDefinition (const QString& word, const QString& definition)
+WordEngine::addDefinition(const QString& word, const QString& definition)
 {
     if (word.isEmpty() || definition.isEmpty())
         return;
 
-    QRegExp posRegex (QString ("\\[(\\w+)"));
+    QRegExp posRegex (QString("\\[(\\w+)"));
     multimap<QString, QString> defMap;
-    QStringList defs = definition.split (" / ");
+    QStringList defs = definition.split(" / ");
     QString def;
     foreach (def, defs) {
         QString pos;
-        if (posRegex.indexIn (def, 0) >= 0) {
-            pos = posRegex.cap (1);
+        if (posRegex.indexIn(def, 0) >= 0) {
+            pos = posRegex.cap(1);
         }
-        defMap.insert (make_pair (pos, def));
+        defMap.insert(make_pair(pos, def));
     }
-    definitions.insert (make_pair (word, defMap));
+    definitions.insert(make_pair(word, defMap));
 }

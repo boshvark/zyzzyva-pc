@@ -58,7 +58,7 @@ const QString XML_PROGRESS_ELEMENT = "progress";
 QString
 QuizSpec::asString() const
 {
-    return Auxil::quizTypeToString (type) + ": " + searchSpec.asString();
+    return Auxil::quizTypeToString(type) + ": " + searchSpec.asString();
 }
 
 //---------------------------------------------------------------------------
@@ -72,15 +72,15 @@ QString
 QuizSpec::asXml() const
 {
     QDomImplementation implementation;
-    QDomDocument document (implementation.createDocumentType
-                           ("zyzzyva-quiz", QString::null,
-                            "http://pietdepsi.com/dtd/zyzzyva-quiz.dtd"));
+    QDomDocument document(implementation.createDocumentType(
+                          "zyzzyva-quiz", QString::null,
+                          "http://pietdepsi.com/dtd/zyzzyva-quiz.dtd"));
 
-    document.appendChild (asDomElement());
+    document.appendChild(asDomElement());
 
     //// XXX: There should be a programmatic way to write the <?xml?> header
     //// based on the QDomImplementation, shouldn't there?
-    return QString ("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n") +
+    return QString("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n") +
         document.toString();
 }
 
@@ -95,39 +95,37 @@ QDomElement
 QuizSpec::asDomElement() const
 {
     QDomDocument doc;
-    QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
-    topElement.setAttribute (XML_TOP_TYPE_ATTR,
-                             Auxil::quizTypeToString (type));
-    topElement.setAttribute (XML_TOP_METHOD_ATTR,
-                             Auxil::quizMethodToString (method));
-    topElement.setAttribute (XML_TOP_QUESTION_ORDER_ATTR,
-                             Auxil::quizQuestionOrderToString (questionOrder));
-    topElement.setAttribute (XML_TOP_LEXICON_ATTR, lexicon);
+    QDomElement topElement = doc.createElement(XML_TOP_ELEMENT);
+    topElement.setAttribute(XML_TOP_TYPE_ATTR,
+                            Auxil::quizTypeToString(type));
+    topElement.setAttribute(XML_TOP_METHOD_ATTR,
+                            Auxil::quizMethodToString(method));
+    topElement.setAttribute(XML_TOP_QUESTION_ORDER_ATTR,
+                            Auxil::quizQuestionOrderToString(questionOrder));
+    topElement.setAttribute(XML_TOP_LEXICON_ATTR, lexicon);
 
-    QDomElement sourceElement = doc.createElement
-        (XML_QUESTION_SOURCE_ELEMENT);
-    sourceElement.setAttribute (XML_QUESTION_SOURCE_TYPE_ATTR,
-                                Auxil::quizSourceTypeToString (sourceType));
-    topElement.appendChild (sourceElement);
+    QDomElement sourceElement = doc.createElement(XML_QUESTION_SOURCE_ELEMENT);
+    sourceElement.setAttribute(XML_QUESTION_SOURCE_TYPE_ATTR,
+                               Auxil::quizSourceTypeToString(sourceType));
+    topElement.appendChild(sourceElement);
 
     if (sourceType == SearchSource)
-        sourceElement.appendChild (searchSpec.asDomElement());
+        sourceElement.appendChild(searchSpec.asDomElement());
 
     if (questionOrder == RandomOrder) {
-        QDomElement randomElement = doc.createElement
-            (XML_RANDOMIZER_ELEMENT);
-        randomElement.setAttribute (XML_RANDOMIZER_SEED_ATTR, randomSeed);
-        randomElement.setAttribute (XML_RANDOMIZER_SEED2_ATTR, randomSeed2);
-        randomElement.setAttribute (XML_RANDOMIZER_ALGORITHM_ATTR,
-                                    randomAlgorithm);
-        topElement.appendChild (randomElement);
+        QDomElement randomElement = doc.createElement(XML_RANDOMIZER_ELEMENT);
+        randomElement.setAttribute(XML_RANDOMIZER_SEED_ATTR, randomSeed);
+        randomElement.setAttribute(XML_RANDOMIZER_SEED2_ATTR, randomSeed2);
+        randomElement.setAttribute(XML_RANDOMIZER_ALGORITHM_ATTR,
+                                   randomAlgorithm);
+        topElement.appendChild(randomElement);
     }
 
     if (timerSpec.getType() != NoTimer)
-        topElement.appendChild (timerSpec.asDomElement());
+        topElement.appendChild(timerSpec.asDomElement());
 
     if (method != CardboxQuizMethod)
-        topElement.appendChild (progress.asDomElement());
+        topElement.appendChild(progress.asDomElement());
 
     return topElement;
 }
@@ -143,67 +141,66 @@ QuizSpec::asDomElement() const
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizSpec::fromDomElement (const QDomElement& element, QString*)
+QuizSpec::fromDomElement(const QDomElement& element, QString*)
 {
     if (element.tagName() != XML_TOP_ELEMENT)
         return false;
 
     QuizSpec tmpSpec;
-    tmpSpec.setQuestionOrder (QuizSpec::RandomOrder);
+    tmpSpec.setQuestionOrder(QuizSpec::RandomOrder);
 
-    if (element.hasAttribute (XML_TOP_TYPE_ATTR)) {
-        QuizSpec::QuizType type = Auxil::stringToQuizType
-            (element.attribute (XML_TOP_TYPE_ATTR));
+    if (element.hasAttribute(XML_TOP_TYPE_ATTR)) {
+        QuizSpec::QuizType type = Auxil::stringToQuizType(
+            element.attribute(XML_TOP_TYPE_ATTR));
         if (type == QuizSpec::UnknownQuizType)
             return false;
-        tmpSpec.setType (type);
+        tmpSpec.setType(type);
     }
 
-    if (element.hasAttribute (XML_TOP_METHOD_ATTR)) {
-        QuizSpec::QuizMethod method = Auxil::stringToQuizMethod
-            (element.attribute (XML_TOP_METHOD_ATTR));
+    if (element.hasAttribute(XML_TOP_METHOD_ATTR)) {
+        QuizSpec::QuizMethod method = Auxil::stringToQuizMethod(
+            element.attribute(XML_TOP_METHOD_ATTR));
         if (method == QuizSpec::UnknownQuizMethod)
             return false;
-        tmpSpec.setMethod (method);
+        tmpSpec.setMethod(method);
     }
 
-    if (element.hasAttribute (XML_TOP_QUESTION_ORDER_ATTR)) {
-        QuizSpec::QuestionOrder order = Auxil::stringToQuizQuestionOrder
-            (element.attribute (XML_TOP_QUESTION_ORDER_ATTR));
+    if (element.hasAttribute(XML_TOP_QUESTION_ORDER_ATTR)) {
+        QuizSpec::QuestionOrder order = Auxil::stringToQuizQuestionOrder(
+            element.attribute(XML_TOP_QUESTION_ORDER_ATTR));
         if (order == QuizSpec::UnknownOrder)
             return false;
-        tmpSpec.setQuestionOrder (order);
+        tmpSpec.setQuestionOrder(order);
     }
 
-    if (element.hasAttribute (XML_TOP_LEXICON_ATTR))
-        tmpSpec.setLexicon (element.attribute (XML_TOP_LEXICON_ATTR));
+    if (element.hasAttribute(XML_TOP_LEXICON_ATTR))
+        tmpSpec.setLexicon(element.attribute(XML_TOP_LEXICON_ATTR));
 
     QDomElement elem = element.firstChild().toElement();
     if (elem.isNull())
         return false;
 
     for (; !elem.isNull(); elem = elem.nextSibling().toElement()) {
-
         QString tag = elem.tagName();
 
         // XXX: QuizQuestionSource needs to be a class of its own
         if (tag == XML_QUESTION_SOURCE_ELEMENT) {
 
-            if (!elem.hasAttribute (XML_QUESTION_SOURCE_TYPE_ATTR))
+            if (!elem.hasAttribute(XML_QUESTION_SOURCE_TYPE_ATTR))
                 return false;
 
-            QuizSpec::QuizSourceType source = Auxil::stringToQuizSourceType
-                (elem.attribute (XML_QUESTION_SOURCE_TYPE_ATTR));
+            QuizSpec::QuizSourceType source = Auxil::stringToQuizSourceType(
+                elem.attribute(XML_QUESTION_SOURCE_TYPE_ATTR));
             if (source == QuizSpec::UnknownSource)
                 return false;
-            tmpSpec.setQuizSourceType (source);
+            tmpSpec.setQuizSourceType(source);
 
             // Only for backward compatibility - "single-question" is no
             // longer produced as an attribute
-            if (elem.attribute (XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR) ==
+            if (elem.attribute(XML_QUESTION_SOURCE_SINGLE_QUESTION_ATTR) ==
                 "true")
             {
-                tmpSpec.setType (QuizSpec::QuizWordListRecall);
+                tmpSpec.setType(QuizSpec::QuizWordListRecall);
             }
 
             if (source == QuizSpec::SearchSource) {
@@ -212,52 +209,51 @@ QuizSpec::fromDomElement (const QDomElement& element, QString*)
                     return false;
 
                 SearchSpec tmpSearchSpec;
-                if (!tmpSearchSpec.fromDomElement (searchElem))
+                if (!tmpSearchSpec.fromDomElement(searchElem))
                     return false;
-                tmpSpec.setSearchSpec (tmpSearchSpec);
+                tmpSpec.setSearchSpec(tmpSearchSpec);
             }
         }
 
         else if (tag == XML_TIMER_ELEMENT) {
             QuizTimerSpec tmpTimerSpec;
-            if (!tmpTimerSpec.fromDomElement (elem))
+            if (!tmpTimerSpec.fromDomElement(elem))
                 return false;
-            tmpSpec.setTimerSpec (tmpTimerSpec);
+            tmpSpec.setTimerSpec(tmpTimerSpec);
         }
 
         else if (tag == XML_RANDOMIZER_ELEMENT) {
             if (tmpSpec.getQuestionOrder() != QuizSpec::RandomOrder)
                 return false;
 
-            if (!elem.hasAttribute (XML_RANDOMIZER_SEED_ATTR) ||
-                !elem.hasAttribute (XML_RANDOMIZER_ALGORITHM_ATTR))
+            if (!elem.hasAttribute(XML_RANDOMIZER_SEED_ATTR) ||
+                !elem.hasAttribute(XML_RANDOMIZER_ALGORITHM_ATTR))
             {
                 return false;
             }
             bool ok = false;
-            unsigned int tmpSeed = elem.attribute
-                (XML_RANDOMIZER_SEED_ATTR).toUInt (&ok);
+            unsigned int tmpSeed = elem.attribute(
+                XML_RANDOMIZER_SEED_ATTR).toUInt(&ok);
             if (!ok)
                 return false;
-            tmpSpec.setRandomSeed (tmpSeed);
+            tmpSpec.setRandomSeed(tmpSeed);
 
-            tmpSeed = elem.attribute
-                (XML_RANDOMIZER_SEED2_ATTR).toUInt (&ok);
+            tmpSeed = elem.attribute(XML_RANDOMIZER_SEED2_ATTR).toUInt(&ok);
             if (ok)
-                tmpSpec.setRandomSeed2 (tmpSeed);
+                tmpSpec.setRandomSeed2(tmpSeed);
 
-            int tmpAlgorithm = elem.attribute
-                (XML_RANDOMIZER_ALGORITHM_ATTR).toInt (&ok);
+            int tmpAlgorithm = elem.attribute(
+                XML_RANDOMIZER_ALGORITHM_ATTR).toInt(&ok);
             if (!ok)
                 return false;
-            tmpSpec.setRandomAlgorithm (tmpAlgorithm);
+            tmpSpec.setRandomAlgorithm(tmpAlgorithm);
         }
 
         else if (tag == XML_PROGRESS_ELEMENT) {
             QuizProgress tmpProgress;
-            if (!tmpProgress.fromDomElement (elem))
+            if (!tmpProgress.fromDomElement(elem))
                 return false;
-            tmpSpec.setProgress (tmpProgress);
+            tmpSpec.setProgress(tmpProgress);
         }
 
         else
@@ -279,15 +275,15 @@ QuizSpec::fromDomElement (const QDomElement& element, QString*)
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizSpec::fromXmlFile (QFile& file, QString* errStr)
+QuizSpec::fromXmlFile(QFile& file, QString* errStr)
 {
     QString errorMsg;
     int errorLine = 0;
     int errorColumn = 0;
 
     QDomDocument document;
-    bool success = document.setContent (&file, false, &errorMsg, &errorLine,
-                                        &errorColumn);
+    bool success = document.setContent(&file, false, &errorMsg, &errorLine,
+                                       &errorColumn);
 
     if (!success) {
         if (errStr) {
@@ -299,7 +295,7 @@ QuizSpec::fromXmlFile (QFile& file, QString* errStr)
         return false;
     }
 
-    if (!fromDomElement (document.documentElement(), errStr))
+    if (!fromDomElement(document.documentElement(), errStr))
         return false;
 
     filename = file.fileName();

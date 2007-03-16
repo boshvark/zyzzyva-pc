@@ -3,7 +3,7 @@
 //
 // A class to represent quiz progress.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -63,9 +63,9 @@ QuizProgress::isEmpty() const
 //! @param word the incorrect response word
 //---------------------------------------------------------------------------
 void
-QuizProgress::addIncorrect (const QString& word)
+QuizProgress::addIncorrect(const QString& word)
 {
-    if (incorrectWords.contains (word))
+    if (incorrectWords.contains(word))
         ++incorrectWords[word];
     else
         incorrectWords[word] = 1;
@@ -81,7 +81,7 @@ QuizProgress::addIncorrect (const QString& word)
 //! @param count the number of times the incorrect response was given
 //---------------------------------------------------------------------------
 void
-QuizProgress::addIncorrect (const QString& word, int count)
+QuizProgress::addIncorrect(const QString& word, int count)
 {
     incorrectWords[word] = count;
     incorrect += count;
@@ -95,9 +95,9 @@ QuizProgress::addIncorrect (const QString& word, int count)
 //! @param word the response word
 //---------------------------------------------------------------------------
 void
-QuizProgress::removeIncorrect (const QString& word)
+QuizProgress::removeIncorrect(const QString& word)
 {
-    if (!incorrectWords.contains (word))
+    if (!incorrectWords.contains(word))
         return;
     --incorrectWords[word];
     --incorrect;
@@ -112,9 +112,9 @@ QuizProgress::removeIncorrect (const QString& word)
 //! @param word the missed response word
 //---------------------------------------------------------------------------
 void
-QuizProgress::addMissed (const QString& word)
+QuizProgress::addMissed(const QString& word)
 {
-    if (missedWords.contains (word))
+    if (missedWords.contains(word))
         ++missedWords[word];
     else
         missedWords[word] = 1;
@@ -130,7 +130,7 @@ QuizProgress::addMissed (const QString& word)
 //! @param count the number of times the response was missed
 //---------------------------------------------------------------------------
 void
-QuizProgress::addMissed (const QString& word, int count)
+QuizProgress::addMissed(const QString& word, int count)
 {
     missedWords[word] = count;
     missed += count;
@@ -144,9 +144,9 @@ QuizProgress::addMissed (const QString& word, int count)
 //! @param word the response word
 //---------------------------------------------------------------------------
 void
-QuizProgress::removeMissed (const QString& word)
+QuizProgress::removeMissed(const QString& word)
 {
-    if (!missedWords.contains (word))
+    if (!missedWords.contains(word))
         return;
     --missedWords[word];
     --missed;
@@ -160,9 +160,9 @@ QuizProgress::removeMissed (const QString& word)
 //! @param word the correct response word
 //---------------------------------------------------------------------------
 void
-QuizProgress::addQuestionCorrect (const QString& word)
+QuizProgress::addQuestionCorrect(const QString& word)
 {
-    questionCorrectWords.insert (word);
+    questionCorrectWords.insert(word);
 }
 
 //---------------------------------------------------------------------------
@@ -176,51 +176,50 @@ QDomElement
 QuizProgress::asDomElement() const
 {
     QDomDocument doc;
-    QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
+    QDomElement topElement = doc.createElement(XML_TOP_ELEMENT);
 
-    topElement.setAttribute (XML_QUESTION_ATTR, question);
-    topElement.setAttribute (XML_CORRECT_ATTR, correct);
-    topElement.setAttribute (XML_QUESTION_COMPLETE_ATTR,
-                             (questionComplete ? QString ("true") :
-                                                 QString ("false")));
+    topElement.setAttribute(XML_QUESTION_ATTR, question);
+    topElement.setAttribute(XML_CORRECT_ATTR, correct);
+    topElement.setAttribute(XML_QUESTION_COMPLETE_ATTR,
+        (questionComplete ? QString ("true") : QString ("false")));
 
     if (!questionCorrectWords.empty()) {
-        QDomElement questionCorrectElement = doc.createElement
-            (XML_QUESTION_CORRECT_RESPONSES_ELEMENT);
-        topElement.appendChild (questionCorrectElement);
+        QDomElement questionCorrectElement = doc.createElement(
+            XML_QUESTION_CORRECT_RESPONSES_ELEMENT);
+        topElement.appendChild(questionCorrectElement);
         set<QString>::const_iterator it;
         for (it = questionCorrectWords.begin();
              it != questionCorrectWords.end(); ++it)
         {
-            QDomElement elem = doc.createElement (XML_RESPONSE_ELEMENT);
-            elem.setAttribute (XML_RESPONSE_WORD_ATTR, *it);
-            questionCorrectElement.appendChild (elem);
+            QDomElement elem = doc.createElement(XML_RESPONSE_ELEMENT);
+            elem.setAttribute(XML_RESPONSE_WORD_ATTR, *it);
+            questionCorrectElement.appendChild(elem);
         }
     }
 
     if (!incorrectWords.empty()) {
-        QDomElement incorrectElement = doc.createElement
-            (XML_INCORRECT_RESPONSES_ELEMENT);
-        topElement.appendChild (incorrectElement);
+        QDomElement incorrectElement = doc.createElement(
+            XML_INCORRECT_RESPONSES_ELEMENT);
+        topElement.appendChild(incorrectElement);
         QMap<QString, int>::const_iterator it;
         for (it = incorrectWords.begin(); it != incorrectWords.end(); ++it) {
-            QDomElement elem = doc.createElement (XML_RESPONSE_ELEMENT);
-            elem.setAttribute (XML_RESPONSE_WORD_ATTR, it.key());
-            elem.setAttribute (XML_RESPONSE_COUNT_ATTR, *it);
-            incorrectElement.appendChild (elem);
+            QDomElement elem = doc.createElement(XML_RESPONSE_ELEMENT);
+            elem.setAttribute(XML_RESPONSE_WORD_ATTR, it.key());
+            elem.setAttribute(XML_RESPONSE_COUNT_ATTR, *it);
+            incorrectElement.appendChild(elem);
         }
     }
 
     if (!missedWords.empty()) {
-        QDomElement missedElement = doc.createElement
-            (XML_MISSED_RESPONSES_ELEMENT);
-        topElement.appendChild (missedElement);
+        QDomElement missedElement = doc.createElement(
+            XML_MISSED_RESPONSES_ELEMENT);
+        topElement.appendChild(missedElement);
         QMap<QString, int>::const_iterator it;
         for (it = missedWords.begin(); it != missedWords.end(); ++it) {
-            QDomElement elem = doc.createElement (XML_RESPONSE_ELEMENT);
-            elem.setAttribute (XML_RESPONSE_WORD_ATTR, it.key());
-            elem.setAttribute (XML_RESPONSE_COUNT_ATTR, *it);
-            missedElement.appendChild (elem);
+            QDomElement elem = doc.createElement(XML_RESPONSE_ELEMENT);
+            elem.setAttribute(XML_RESPONSE_WORD_ATTR, it.key());
+            elem.setAttribute(XML_RESPONSE_COUNT_ATTR, *it);
+            missedElement.appendChild(elem);
         }
     }
 
@@ -236,34 +235,33 @@ QuizProgress::asDomElement() const
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizProgress::fromDomElement (const QDomElement& element)
+QuizProgress::fromDomElement(const QDomElement& element)
 {
     if (element.tagName() != XML_TOP_ELEMENT)
         return false;
 
     QuizProgress tmpProgress;
 
-    if (element.hasAttribute (XML_QUESTION_ATTR)) {
+    if (element.hasAttribute(XML_QUESTION_ATTR)) {
         bool ok = false;
-        int tmpQuestion =
-            element.attribute (XML_QUESTION_ATTR).toInt (&ok);
+        int tmpQuestion = element.attribute(XML_QUESTION_ATTR).toInt(&ok);
         if (!ok)
             return false;
-        tmpProgress.setQuestion (tmpQuestion);
+        tmpProgress.setQuestion(tmpQuestion);
     }
 
-    if (element.hasAttribute (XML_CORRECT_ATTR)) {
+    if (element.hasAttribute(XML_CORRECT_ATTR)) {
         bool ok = false;
         int tmpCorrect =
-            element.attribute (XML_CORRECT_ATTR).toInt (&ok);
+            element.attribute(XML_CORRECT_ATTR).toInt(&ok);
         if (!ok)
             return false;
-        tmpProgress.setCorrect (tmpCorrect);
+        tmpProgress.setCorrect(tmpCorrect);
     }
 
-    if (element.hasAttribute (XML_QUESTION_COMPLETE_ATTR)) {
-        tmpProgress.setQuestionComplete
-            (element.attribute (XML_QUESTION_COMPLETE_ATTR) == "true");
+    if (element.hasAttribute(XML_QUESTION_COMPLETE_ATTR)) {
+        tmpProgress.setQuestionComplete(
+            element.attribute(XML_QUESTION_COMPLETE_ATTR) == "true");
     }
 
     QDomElement elem = element.firstChild().toElement();
@@ -280,29 +278,29 @@ QuizProgress::fromDomElement (const QDomElement& element)
         for (; !responseElem.isNull();
              responseElem = responseElem.nextSibling().toElement())
         {
-            if (!responseElem.hasAttribute (XML_RESPONSE_WORD_ATTR))
+            if (!responseElem.hasAttribute(XML_RESPONSE_WORD_ATTR))
                 return false;
 
             int count = 0;
             if ((elem.tagName() == XML_MISSED_RESPONSES_ELEMENT) ||
                 (elem.tagName() == XML_INCORRECT_RESPONSES_ELEMENT))
             {
-                if (!responseElem.hasAttribute (XML_RESPONSE_COUNT_ATTR))
+                if (!responseElem.hasAttribute(XML_RESPONSE_COUNT_ATTR))
                     return false;
                 bool ok = false;
-                count = responseElem.attribute
-                    (XML_RESPONSE_COUNT_ATTR).toInt (&ok);
+                count = responseElem.attribute(
+                    XML_RESPONSE_COUNT_ATTR).toInt(&ok);
                 if (!ok)
                     return false;
             }
 
-            QString word = responseElem.attribute (XML_RESPONSE_WORD_ATTR);
+            QString word = responseElem.attribute(XML_RESPONSE_WORD_ATTR);
             if (elem.tagName() == XML_MISSED_RESPONSES_ELEMENT)
-                tmpProgress.addMissed (word, count);
+                tmpProgress.addMissed(word, count);
             else if (elem.tagName() == XML_INCORRECT_RESPONSES_ELEMENT)
-                tmpProgress.addIncorrect (word, count);
+                tmpProgress.addIncorrect(word, count);
             else if (elem.tagName() == XML_QUESTION_CORRECT_RESPONSES_ELEMENT)
-                tmpProgress.addQuestionCorrect (word);
+                tmpProgress.addQuestionCorrect(word);
         }
     }
 

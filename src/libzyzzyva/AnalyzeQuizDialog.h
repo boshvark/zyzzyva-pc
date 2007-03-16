@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -40,36 +40,36 @@ class AnalyzeQuizDialog : public QDialog
 {
     Q_OBJECT
     public:
-    AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget* parent = 0,
-                       Qt::WFlags f = 0);
+    AnalyzeQuizDialog(QuizEngine* qe, WordEngine* we, QWidget* parent = 0,
+                      Qt::WFlags f = 0);
 
     ~AnalyzeQuizDialog() { }
 
     public slots:
-    void newQuiz (const QuizSpec& spec);
+    void newQuiz(const QuizSpec& spec);
     void updateStats();
-    void addMissed (const QString& word, bool update = true);
-    void addMissed (const QStringList& words, bool update = true);
-    void removeMissed (const QString& word, bool update = true);
-    void addIncorrect (const QString& word, bool update = true);
-    void addIncorrect (const QStringList& words, bool update = true);
-    void removeIncorrect (const QString& word, bool update = true);
+    void addMissed(const QString& word, bool update = true);
+    void addMissed(const QStringList& words, bool update = true);
+    void removeMissed(const QString& word, bool update = true);
+    void addIncorrect(const QString& word, bool update = true);
+    void addIncorrect(const QStringList& words, bool update = true);
+    void removeIncorrect(const QString& word, bool update = true);
     void clearMissed();
     void clearIncorrect();
 
     private:
-    void setRecall (int correct, int total);
-    void setPrecision (int correct, int total);
-    QString percentString (int numerator, int denominator) const;
+    void setRecall(int correct, int total);
+    void setPrecision(int correct, int total);
+    QString percentString(int numerator, int denominator) const;
 
     private:
-    QuizEngine*   quizEngine;
-    WordEngine*   wordEngine;
-    QLabel*       questionLabel;
-    QLabel*       recallLabel;
-    QLabel*       precisionLabel;
-    QLabel*       missedLabel;
-    QLabel*       incorrectLabel;
+    QuizEngine* quizEngine;
+    WordEngine* wordEngine;
+    QLabel*     questionLabel;
+    QLabel*     recallLabel;
+    QLabel*     precisionLabel;
+    QLabel*     missedLabel;
+    QLabel*     incorrectLabel;
     WordTableView*  missedView;
     WordTableModel* missedModel;
     WordTableView*  incorrectView;

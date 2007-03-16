@@ -3,7 +3,7 @@
 //
 // A class for managing an ISC connection in the background.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -61,22 +61,22 @@ IscConnectionThread::run()
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-IscConnectionThread::connectToServer (const QString& creds,
-                                      QAbstractSocket::SocketError* err)
+IscConnectionThread::connectToServer(const QString& creds,
+                                     QAbstractSocket::SocketError* err)
 {
     credentials = creds;
-    socket = new QTcpSocket (this);
-    Q_CHECK_PTR (socket);
-    connect (socket, SIGNAL (error (QAbstractSocket::SocketError)),
-             SIGNAL (socketError (QAbstractSocket::SocketError)));
-    connect (socket, SIGNAL (stateChanged (QAbstractSocket::SocketState)),
-             SLOT (socketStateChanged (QAbstractSocket::SocketState)));
-    connect (socket, SIGNAL (readyRead()), SLOT (socketReadyRead()));
+    socket = new QTcpSocket(this);
+    Q_CHECK_PTR(socket);
+    connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
+            SIGNAL(socketError(QAbstractSocket::SocketError)));
+    connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
+            SLOT(socketStateChanged(QAbstractSocket::SocketState)));
+    connect(socket, SIGNAL(readyRead()), SLOT(socketReadyRead()));
 
     // Connect to a random port between 1321 and 1330
-    Rand rng (Rand::MarsagliaMwc, std::time (0), Auxil::getPid());
-    int port = 1321 + rng.rand (9);
-    socket->connectToHost ("66.98.172.34", port);
+    Rand rng (Rand::MarsagliaMwc, std::time(0), Auxil::getPid());
+    int port = 1321 + rng.rand(9);
+    socket->connectToHost("66.98.172.34", port);
 
     if (socketHadError) {
         if (err)
@@ -115,27 +115,27 @@ IscConnectionThread::disconnectFromServer()
 //! @param message the message
 //---------------------------------------------------------------------------
 void
-IscConnectionThread::sendMessage (const QString& message)
+IscConnectionThread::sendMessage(const QString& message)
 {
     if (!socket)
         return;
 
-    QString command = message.section (" ", 0, 0).toUpper();
-    QString args = message.section (" ", 1);
+    QString command = message.section(" ", 0, 0).toUpper();
+    QString args = message.section(" ", 1);
 
     if (command == "SET") {
-        QString subcommand = args.section (" ", 0, 0).toUpper();
+        QString subcommand = args.section(" ", 0, 0).toUpper();
         command += " " + subcommand;
-        args = args.section (" ", 1);
+        args = args.section(" ", 1);
 
         if (subcommand == "FINGER") {
-            int index = args.section (" ", 0, 0).toInt() - 1;
-            command += " " + QString::number (index);
-            args = args.section (" ", 1);
+            int index = args.section(" ", 0, 0).toInt() - 1;
+            command += " " + QString::number(index);
+            args = args.section(" ", 1);
         }
     }
 
-    socket->write (encodeMessage (command + " " + args));
+    socket->write(encodeMessage(command + " " + args));
 }
 
 //---------------------------------------------------------------------------
@@ -146,12 +146,12 @@ IscConnectionThread::sendMessage (const QString& message)
 //! @param message the message
 //---------------------------------------------------------------------------
 void
-IscConnectionThread::receiveMessage (const QString& message)
+IscConnectionThread::receiveMessage(const QString& message)
 {
     if (message == "PING REPLY")
-        sendMessage ("PING REPLY");
+        sendMessage("PING REPLY");
     else
-        emit messageReceived (message);
+        emit messageReceived(message);
 }
 
 //---------------------------------------------------------------------------
@@ -160,61 +160,61 @@ IscConnectionThread::receiveMessage (const QString& message)
 //! Called when the socket state changes.
 //---------------------------------------------------------------------------
 void
-IscConnectionThread::socketStateChanged (QAbstractSocket::SocketState state)
+IscConnectionThread::socketStateChanged(QAbstractSocket::SocketState state)
 {
     switch (state) {
         case QAbstractSocket::UnconnectedState:
-        emit statusChanged ("Not connected.");
+        emit statusChanged("Not connected.");
         break;
 
         case QAbstractSocket::HostLookupState:
-        emit statusChanged ("Looking up hostname...");
+        emit statusChanged("Looking up hostname...");
         break;
 
         case QAbstractSocket::ConnectingState:
-        emit statusChanged ("Establishing connection...");
+        emit statusChanged("Establishing connection...");
         break;
 
         case QAbstractSocket::ConnectedState: {
-            emit statusChanged ("Logging in...");
+            emit statusChanged("Logging in...");
 
-            sendMessage ("LOGIN " + credentials);
+            sendMessage("LOGIN " + credentials);
 
             // Wait for SETALL
-            socket->waitForReadyRead (10000);
+            socket->waitForReadyRead(10000);
 
             // Wait for SET FORMULA, BUDDIES, etc.
-            socket->waitForReadyRead (10000);
+            socket->waitForReadyRead(10000);
 
-            sendMessage ("SOUGHT");
+            sendMessage("SOUGHT");
 
-            socket->waitForReadyRead (10000);
+            socket->waitForReadyRead(10000);
 
-            sendMessage ("RESUME LOGIN");
+            sendMessage("RESUME LOGIN");
 
-            emit statusChanged ("Connected.");
+            emit statusChanged("Connected.");
 
-            keepAliveTimer.setInterval (KEEP_ALIVE_INTERVAL);
-            connect (&keepAliveTimer, SIGNAL (timeout()),
-                     SLOT (keepAliveTimeout()));
+            keepAliveTimer.setInterval(KEEP_ALIVE_INTERVAL);
+            connect(&keepAliveTimer, SIGNAL(timeout()),
+                    SLOT(keepAliveTimeout()));
             keepAliveTimer.start();
         }
         break;
 
         case QAbstractSocket::BoundState:
-        emit statusChanged ("Bound to an address and port.");
+        emit statusChanged("Bound to an address and port.");
         break;
 
         case QAbstractSocket::ClosingState:
-        emit statusChanged ("Disconnecting...");
+        emit statusChanged("Disconnecting...");
         break;
 
         case QAbstractSocket::ListeningState:
-        emit statusChanged ("Listening...");
+        emit statusChanged("Listening...");
         break;
 
         default:
-        emit statusChanged ("");
+        emit statusChanged(QString());
         break;
     }
 }
@@ -228,10 +228,10 @@ void
 IscConnectionThread::socketReadyRead()
 {
     QByteArray bytes = socket->readAll();
-    QStringList messages = decodeMessage (bytes);
+    QStringList messages = decodeMessage(bytes);
     QString message;
     foreach (message, messages) {
-        receiveMessage (message);
+        receiveMessage(message);
     }
 }
 
@@ -243,7 +243,7 @@ IscConnectionThread::socketReadyRead()
 void
 IscConnectionThread::keepAliveTimeout()
 {
-    sendMessage ("ALIVE");
+    sendMessage("ALIVE");
 }
 
 //---------------------------------------------------------------------------
@@ -263,10 +263,10 @@ IscConnectionThread::encodeMessage (const QString& message)
     unsigned char low  = (length & 0x00ff);
 
     QByteArray bytes;
-    bytes.append (high);
-    bytes.append (low);
-    bytes.append (QString ("0 "));
-    bytes.append (message);
+    bytes.append(high);
+    bytes.append(low);
+    bytes.append(QString("0 "));
+    bytes.append(message);
     return bytes;
 }
 
@@ -281,7 +281,7 @@ IscConnectionThread::encodeMessage (const QString& message)
 //! @return the decoded messages
 //---------------------------------------------------------------------------
 QStringList
-IscConnectionThread::decodeMessage (const QByteArray& bytes)
+IscConnectionThread::decodeMessage(const QByteArray& bytes)
 {
     int index = 0;
     QStringList messages;
@@ -290,7 +290,7 @@ IscConnectionThread::decodeMessage (const QByteArray& bytes)
         unsigned char high = bytes[index];
         unsigned char low  = bytes[index + 1];
         int length = (high << 8) + low - 2;
-        messages.append (QString (bytes.mid (index + 4, length)));
+        messages.append(QString(bytes.mid(index + 4, length)));
         index += length + 4;
     }
 

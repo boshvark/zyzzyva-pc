@@ -5,7 +5,7 @@
 // does nothing special.  It only exists so objects of this class can be
 // distinguished from other QLineEdit objects when applying font settings.
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -33,10 +33,10 @@ class WordLineEdit : public QLineEdit
 {
     Q_OBJECT
     public:
-    WordLineEdit (QWidget* parent = 0)
-        : QLineEdit (parent) { }
-    WordLineEdit (const QString& contents, QWidget* parent = 0)
-        : QLineEdit (contents, parent) { }
+    WordLineEdit(QWidget* parent = 0)
+        : QLineEdit(parent) { }
+    WordLineEdit(const QString& contents, QWidget* parent = 0)
+        : QLineEdit(contents, parent) { }
 
     virtual ~WordLineEdit() { }
 };

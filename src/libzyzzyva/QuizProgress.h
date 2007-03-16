@@ -3,7 +3,7 @@
 //
 // A class to represent quiz progress.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -32,23 +32,23 @@
 class QuizProgress
 {
     public:
-    QuizProgress() : question (0), correct (0), incorrect (0), missed (0),
-                     questionComplete (false) { }
+    QuizProgress() : question(0), correct(0), incorrect(0), missed(0),
+                     questionComplete(false) { }
     ~QuizProgress() { }
 
     bool isEmpty() const;
 
-    void setQuestion (int q) { question = q; }
-    void setCorrect (int c) { correct = c; }
-    void addIncorrect (const QString& word);
-    void addIncorrect (const QString& word, int count);
-    void removeIncorrect (const QString& word);
-    void addMissed (const QString& word);
-    void addMissed (const QString& word, int count);
-    void removeMissed (const QString& word);
-    void addQuestionCorrect (const QString& word);
+    void setQuestion(int q) { question = q; }
+    void setCorrect(int c) { correct = c; }
+    void addIncorrect(const QString& word);
+    void addIncorrect(const QString& word, int count);
+    void removeIncorrect(const QString& word);
+    void addMissed(const QString& word);
+    void addMissed(const QString& word, int count);
+    void removeMissed(const QString& word);
+    void addQuestionCorrect(const QString& word);
     void clearQuestionCorrect() { questionCorrectWords.clear(); }
-    void setQuestionComplete (bool b) { questionComplete = b; }
+    void setQuestionComplete(bool b) { questionComplete = b; }
 
     int getQuestion() const { return question; }
     int getNumCorrect() const { return correct; }
@@ -62,7 +62,7 @@ class QuizProgress
     QMap<QString, int> getMissed() const { return missedWords; }
 
     QDomElement asDomElement() const;
-    bool fromDomElement (const QDomElement& element);
+    bool fromDomElement(const QDomElement& element);
 
     private:
     int question;

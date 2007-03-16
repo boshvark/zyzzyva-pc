@@ -70,33 +70,33 @@ class QuizSpec
     };
 
     public:
-    QuizSpec() : type (QuizAnagrams), method (StandardQuizMethod),
-                 sourceType (SearchSource), questionOrder (RandomOrder),
-                 randomSeed (0), randomSeed2 (0),
-                 randomAlgorithm (Rand::MarsagliaMwc) { }
+    QuizSpec() : type(QuizAnagrams), method(StandardQuizMethod),
+                 sourceType(SearchSource), questionOrder(RandomOrder),
+                 randomSeed(0), randomSeed2(0),
+                 randomAlgorithm(Rand::MarsagliaMwc) { }
     ~QuizSpec() { }
 
     QString asString() const;
     QString asXml() const;
     QDomElement asDomElement() const;
-    bool fromDomElement (const QDomElement& element, QString* errStr = 0);
-    bool fromXmlFile (QFile& file, QString* errStr = 0);
+    bool fromDomElement(const QDomElement& element, QString* errStr = 0);
+    bool fromXmlFile(QFile& file, QString* errStr = 0);
 
-    void setLexicon (const QString& lex) { lexicon = lex; }
-    void setType (QuizType t) { type = t; }
-    void setMethod (QuizMethod m) { method = m; }
-    void setQuizSourceType (QuizSourceType s) { sourceType = s; }
-    void setSearchSpec (const SearchSpec& s) { searchSpec = s; }
-    void setTimerSpec (const QuizTimerSpec& s) { timerSpec = s; }
-    void setProgress (const QuizProgress& p) { progress = p; }
-    void setQuestionOrder (QuestionOrder o) { questionOrder = o; }
-    void setRandomSeed (unsigned int i) { randomSeed = i; }
-    void setRandomSeed2 (unsigned int i) { randomSeed2 = i; }
-    void setRandomAlgorithm (int i) { randomAlgorithm = i; }
-    void setFilename (const QString& fname) { filename = fname; }
+    void setLexicon(const QString& lex) { lexicon = lex; }
+    void setType(QuizType t) { type = t; }
+    void setMethod(QuizMethod m) { method = m; }
+    void setQuizSourceType(QuizSourceType s) { sourceType = s; }
+    void setSearchSpec(const SearchSpec& s) { searchSpec = s; }
+    void setTimerSpec(const QuizTimerSpec& s) { timerSpec = s; }
+    void setProgress(const QuizProgress& p) { progress = p; }
+    void setQuestionOrder(QuestionOrder o) { questionOrder = o; }
+    void setRandomSeed(unsigned int i) { randomSeed = i; }
+    void setRandomSeed2(unsigned int i) { randomSeed2 = i; }
+    void setRandomAlgorithm(int i) { randomAlgorithm = i; }
+    void setFilename(const QString& fname) { filename = fname; }
 
-    void addIncorrect (const QString& word) { progress.addIncorrect (word); }
-    void addMissed (const QString& word) { progress.addMissed (word); }
+    void addIncorrect(const QString& word) { progress.addIncorrect (word); }
+    void addMissed(const QString& word) { progress.addMissed (word); }
 
     QString getLexicon() const { return lexicon; }
     QuizType getType() const { return type; }

@@ -3,7 +3,7 @@
 //
 // A class for managing an ISC connection in the background.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,29 +34,29 @@ class IscConnectionThread : public QThread
 {
     Q_OBJECT
     public:
-    IscConnectionThread (QObject* parent = 0)
-        : QThread (parent), socket (0) { }
+    IscConnectionThread(QObject* parent = 0)
+        : QThread(parent), socket(0) { }
     ~IscConnectionThread();
 
-    bool connectToServer (const QString& creds,
-                          QAbstractSocket::SocketError* err = 0);
+    bool connectToServer(const QString& creds,
+                         QAbstractSocket::SocketError* err = 0);
     void disconnectFromServer();
 
     signals:
-    void messageReceived (const QString& message);
-    void statusChanged (const QString& status);
-    void socketError (QAbstractSocket::SocketError error);
+    void messageReceived(const QString& message);
+    void statusChanged(const QString& status);
+    void socketError(QAbstractSocket::SocketError error);
 
     public slots:
-    void sendMessage (const QString& message);
-    void receiveMessage (const QString& message);
+    void sendMessage(const QString& message);
+    void receiveMessage(const QString& message);
 
     private slots:
-    void socketStateChanged (QAbstractSocket::SocketState state);
+    void socketStateChanged(QAbstractSocket::SocketState state);
     void socketReadyRead();
     void keepAliveTimeout();
-    QByteArray encodeMessage (const QString& message);
-    QStringList decodeMessage (const QByteArray& bytes);
+    QByteArray encodeMessage(const QString& message);
+    QStringList decodeMessage(const QByteArray& bytes);
 
     protected:
     void run();

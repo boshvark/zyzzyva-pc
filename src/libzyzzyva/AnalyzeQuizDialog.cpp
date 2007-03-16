@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -49,86 +49,86 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
-                                      parent, Qt::WFlags f)
-    : QDialog (parent, f), quizEngine (qe), wordEngine (we)
+AnalyzeQuizDialog::AnalyzeQuizDialog(QuizEngine* qe, WordEngine* we, QWidget*
+                                     parent, Qt::WFlags f)
+    : QDialog(parent, f), quizEngine(qe), wordEngine(we)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    mainVlay->setMargin (MARGIN);
-    mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    mainVlay->setMargin(MARGIN);
+    mainVlay->setSpacing(SPACING);
+    Q_CHECK_PTR(mainVlay);
 
     questionLabel = new QLabel;
-    Q_CHECK_PTR (questionLabel);
-    questionLabel->setAlignment (Qt::AlignHCenter);
-    mainVlay->addWidget (questionLabel);
+    Q_CHECK_PTR(questionLabel);
+    questionLabel->setAlignment(Qt::AlignHCenter);
+    mainVlay->addWidget(questionLabel);
 
     QHBoxLayout* recallHlay = new QHBoxLayout;
-    Q_CHECK_PTR (recallHlay);
-    recallHlay->setSpacing (SPACING);
-    mainVlay->addLayout (recallHlay);
+    Q_CHECK_PTR(recallHlay);
+    recallHlay->setSpacing(SPACING);
+    mainVlay->addLayout(recallHlay);
 
     missedLabel = new QLabel;
-    Q_CHECK_PTR (missedLabel);
-    recallHlay->addWidget (missedLabel);
+    Q_CHECK_PTR(missedLabel);
+    recallHlay->addWidget(missedLabel);
 
-    recallHlay->addStretch (1);
+    recallHlay->addStretch(1);
 
     recallLabel = new QLabel;
-    Q_CHECK_PTR (recallLabel);
-    recallHlay->addWidget (recallLabel);
+    Q_CHECK_PTR(recallLabel);
+    recallHlay->addWidget(recallLabel);
 
-    missedView = new WordTableView (wordEngine);
-    Q_CHECK_PTR (missedView);
-    mainVlay->addWidget (missedView);
+    missedView = new WordTableView(wordEngine);
+    Q_CHECK_PTR(missedView);
+    mainVlay->addWidget(missedView);
 
-    missedModel = new WordTableModel (wordEngine, this);
-    Q_CHECK_PTR (missedModel);
-    connect (missedModel, SIGNAL (wordsChanged()),
-             missedView, SLOT (resizeItemsToContents()));
-    missedView->setModel (missedModel);
+    missedModel = new WordTableModel(wordEngine, this);
+    Q_CHECK_PTR(missedModel);
+    connect(missedModel, SIGNAL(wordsChanged()),
+            missedView, SLOT(resizeItemsToContents()));
+    missedView->setModel(missedModel);
 
     QHBoxLayout* precisionHlay = new QHBoxLayout;
-    Q_CHECK_PTR (precisionHlay);
-    precisionHlay->setSpacing (SPACING);
-    mainVlay->addLayout (precisionHlay);
+    Q_CHECK_PTR(precisionHlay);
+    precisionHlay->setSpacing(SPACING);
+    mainVlay->addLayout(precisionHlay);
 
     incorrectLabel = new QLabel;
-    Q_CHECK_PTR (incorrectLabel);
-    precisionHlay->addWidget (incorrectLabel);
+    Q_CHECK_PTR(incorrectLabel);
+    precisionHlay->addWidget(incorrectLabel);
 
-    precisionHlay->addStretch (1);
+    precisionHlay->addStretch(1);
 
     precisionLabel = new QLabel;
-    Q_CHECK_PTR (precisionLabel);
-    precisionHlay->addWidget (precisionLabel);
+    Q_CHECK_PTR(precisionLabel);
+    precisionHlay->addWidget(precisionLabel);
 
-    incorrectView = new WordTableView (wordEngine);
-    Q_CHECK_PTR (incorrectView);
-    mainVlay->addWidget (incorrectView);
+    incorrectView = new WordTableView(wordEngine);
+    Q_CHECK_PTR(incorrectView);
+    mainVlay->addWidget(incorrectView);
 
-    incorrectModel = new WordTableModel (wordEngine, this);
-    Q_CHECK_PTR (incorrectModel);
-    connect (incorrectModel, SIGNAL (wordsChanged()),
-             incorrectView, SLOT (resizeItemsToContents()));
-    incorrectView->setModel (incorrectModel);
+    incorrectModel = new WordTableModel(wordEngine, this);
+    Q_CHECK_PTR(incorrectModel);
+    connect(incorrectModel, SIGNAL(wordsChanged()),
+            incorrectView, SLOT(resizeItemsToContents()));
+    incorrectView->setModel(incorrectModel);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (buttonHlay);
-    mainVlay->addLayout (buttonHlay);
+    buttonHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(buttonHlay);
+    mainVlay->addLayout(buttonHlay);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
-    closeButton = new ZPushButton ("&Close", this);
-    Q_CHECK_PTR (closeButton);
-    closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    closeButton->setAutoDefault (true);
-    connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
-    buttonHlay->addWidget (closeButton);
+    closeButton = new ZPushButton("&Close", this);
+    Q_CHECK_PTR(closeButton);
+    closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    closeButton->setAutoDefault(true);
+    connect(closeButton, SIGNAL(clicked()), SLOT(accept()));
+    buttonHlay->addWidget(closeButton);
 
-    resize (700, 500);
-    setWindowTitle (DIALOG_CAPTION);
+    resize(700, 500);
+    setWindowTitle(DIALOG_CAPTION);
     updateStats();
 
     closeButton->setFocus();
@@ -140,9 +140,9 @@ AnalyzeQuizDialog::AnalyzeQuizDialog (QuizEngine* qe, WordEngine* we, QWidget*
 //! Reset the dialog with a new quiz.
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::newQuiz (const QuizSpec& spec)
+AnalyzeQuizDialog::newQuiz(const QuizSpec& spec)
 {
-    questionLabel->setText (spec.asString());
+    questionLabel->setText(spec.asString());
     clearMissed();
     clearIncorrect();
 
@@ -153,14 +153,14 @@ AnalyzeQuizDialog::newQuiz (const QuizSpec& spec)
 
     QStringList missedList;
     for (it = missed.begin(); it != missed.end(); ++it)
-        missedList.append (it.key());
-    addMissed (missedList, false);
+        missedList.append(it.key());
+    addMissed(missedList, false);
 
     QMap<QString, int> incorrect = progress.getIncorrect();
     QStringList incorrectList;
     for (it = incorrect.begin(); it != incorrect.end(); ++it)
-        incorrectList.append (it.key());
-    addIncorrect (incorrectList, false);
+        incorrectList.append(it.key());
+    addIncorrect(incorrectList, false);
 
     updateStats();
 }
@@ -174,20 +174,20 @@ void
 AnalyzeQuizDialog::updateStats()
 {
     int correct = quizEngine->getQuizCorrect();
-    setRecall (correct, quizEngine->getQuizTotal());
-    setPrecision (correct, correct + quizEngine->getQuizIncorrect());
+    setRecall(correct, quizEngine->getQuizTotal());
+    setPrecision(correct, correct + quizEngine->getQuizIncorrect());
     int missed = missedModel->rowCount();
-    QString missedText = MISSED_LABEL_PREFIX + QString::number (missed) +
+    QString missedText = MISSED_LABEL_PREFIX + QString::number(missed) +
         " word";
     if (missed != 1)
         missedText += "s";
-    missedLabel->setText (missedText);
+    missedLabel->setText(missedText);
     int incorrect = incorrectModel->rowCount();
-    QString incorrectText = INCORRECT_LABEL_PREFIX + QString::number
-        (incorrect) + " word";
+    QString incorrectText = INCORRECT_LABEL_PREFIX +
+        QString::number(incorrect) + " word";
     if (incorrect != 1)
         incorrectText += "s";
-    incorrectLabel->setText (incorrectText);
+    incorrectLabel->setText(incorrectText);
 }
 
 //---------------------------------------------------------------------------
@@ -199,15 +199,15 @@ AnalyzeQuizDialog::updateStats()
 //! @param update true if visible stats should be updated
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::addMissed (const QString& word, bool update)
+AnalyzeQuizDialog::addMissed(const QString& word, bool update)
 {
     // FIXME: Probably not the right way to get alphabetical sorting
     // instead of alphagram sorting
     bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-    MainSettings::setWordListGroupByAnagrams (false);
-    missedModel->addWord (WordTableModel::WordItem
-                          (word, WordTableModel::WordMissed), false);
-    MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+    MainSettings::setWordListGroupByAnagrams(false);
+    missedModel->addWord(
+        WordTableModel::WordItem(word, WordTableModel::WordMissed), false);
+    MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
     if (update)
         updateStats();
@@ -222,7 +222,7 @@ AnalyzeQuizDialog::addMissed (const QString& word, bool update)
 //! @param update true if visible stats should be updated
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::addMissed (const QStringList& words, bool update)
+AnalyzeQuizDialog::addMissed(const QStringList& words, bool update)
 {
     if (words.empty())
         return;
@@ -230,16 +230,16 @@ AnalyzeQuizDialog::addMissed (const QStringList& words, bool update)
     QList<WordTableModel::WordItem> wordItems;
     QString word;
     foreach (word, words) {
-        wordItems.append (WordTableModel::WordItem
-                          (word, WordTableModel::WordMissed));
+        wordItems.append(WordTableModel::WordItem(word,
+                                                  WordTableModel::WordMissed));
     }
 
     // FIXME: Probably not the right way to get alphabetical sorting
     // instead of alphagram sorting
     bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-    MainSettings::setWordListGroupByAnagrams (false);
-    missedModel->addWords (wordItems);
-    MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+    MainSettings::setWordListGroupByAnagrams(false);
+    missedModel->addWords(wordItems);
+    MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
     if (update)
         updateStats();
@@ -254,9 +254,9 @@ AnalyzeQuizDialog::addMissed (const QStringList& words, bool update)
 //! @param update true if visible stats should be updated
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::removeMissed (const QString& word, bool update)
+AnalyzeQuizDialog::removeMissed(const QString& word, bool update)
 {
-    missedModel->removeWord (word);
+    missedModel->removeWord(word);
     if (update)
         updateStats();
 }
@@ -270,15 +270,15 @@ AnalyzeQuizDialog::removeMissed (const QString& word, bool update)
 //! @param update true if visible stats should be updated
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
+AnalyzeQuizDialog::addIncorrect(const QString& word, bool update)
 {
     // FIXME: Probably not the right way to get alphabetical sorting
     // instead of alphagram sorting
     bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-    MainSettings::setWordListGroupByAnagrams (false);
-    incorrectModel->addWord (WordTableModel::WordItem
-                             (word, WordTableModel::WordIncorrect), false);
-    MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+    MainSettings::setWordListGroupByAnagrams(false);
+    incorrectModel->addWord(
+        WordTableModel::WordItem(word, WordTableModel::WordIncorrect), false);
+    MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
     if (update)
         updateStats();
@@ -293,7 +293,7 @@ AnalyzeQuizDialog::addIncorrect (const QString& word, bool update)
 //! @param update true if visible stats should be updated
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::addIncorrect (const QStringList& words, bool update)
+AnalyzeQuizDialog::addIncorrect(const QStringList& words, bool update)
 {
     if (words.empty())
         return;
@@ -301,15 +301,15 @@ AnalyzeQuizDialog::addIncorrect (const QStringList& words, bool update)
     QList<WordTableModel::WordItem> wordItems;
     QString word;
     foreach (word, words) {
-        wordItems.append (WordTableModel::WordItem
-                          (word, WordTableModel::WordIncorrect));
+        wordItems.append(
+            WordTableModel::WordItem(word, WordTableModel::WordIncorrect));
     }
     // FIXME: Probably not the right way to get alphabetical sorting
     // instead of alphagram sorting
     bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-    MainSettings::setWordListGroupByAnagrams (false);
-    incorrectModel->addWords (wordItems);
-    MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+    MainSettings::setWordListGroupByAnagrams(false);
+    incorrectModel->addWords(wordItems);
+    MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
     if (update)
         updateStats();
@@ -324,9 +324,9 @@ AnalyzeQuizDialog::addIncorrect (const QStringList& words, bool update)
 //! @param update true if visible stats should be updated
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::removeIncorrect (const QString& word, bool update)
+AnalyzeQuizDialog::removeIncorrect(const QString& word, bool update)
 {
-    incorrectModel->removeWord (word);
+    incorrectModel->removeWord(word);
     if (update)
         updateStats();
 }
@@ -363,9 +363,9 @@ AnalyzeQuizDialog::clearIncorrect()
 //! @param total the total number of correct answers
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::setRecall (int correct, int total)
+AnalyzeQuizDialog::setRecall(int correct, int total)
 {
-    recallLabel->setText ("Recall: " + percentString (correct, total));
+    recallLabel->setText("Recall: " + percentString(correct, total));
 }
 
 //---------------------------------------------------------------------------
@@ -378,9 +378,9 @@ AnalyzeQuizDialog::setRecall (int correct, int total)
 //! @param total the total number of user responses
 //---------------------------------------------------------------------------
 void
-AnalyzeQuizDialog::setPrecision (int correct, int total)
+AnalyzeQuizDialog::setPrecision(int correct, int total)
 {
-    precisionLabel->setText ("Precision: " + percentString (correct, total));
+    precisionLabel->setText("Precision: " + percentString(correct, total));
 }
 
 //---------------------------------------------------------------------------
@@ -392,9 +392,9 @@ AnalyzeQuizDialog::setPrecision (int correct, int total)
 //! @param denominator the denominator
 //---------------------------------------------------------------------------
 QString
-AnalyzeQuizDialog::percentString (int numerator, int denominator) const
+AnalyzeQuizDialog::percentString(int numerator, int denominator) const
 {
     double pct = denominator ? (numerator * 100.0) / denominator : 0;
-    return QString::number (numerator) + " / " + QString::number (denominator)
-        + " (" + QString::number (pct, 'f', 1) + "%)";
+    return QString::number(numerator) + " / " + QString::number(denominator)
+        + " (" + QString::number(pct, 'f', 1) + "%)";
 }

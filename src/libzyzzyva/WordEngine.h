@@ -3,7 +3,7 @@
 //
 // A class to handle the loading and searching of words.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -39,9 +39,9 @@ class WordEngine : public QObject
     public:
     class WordInfo {
         public:
-        WordInfo() : probabilityOrder (0), minProbabilityOrder (0),
-            maxProbabilityOrder (0), numVowels (0), numUniqueLetters (0),
-            numAnagrams (0), pointValue (0) { }
+        WordInfo() : probabilityOrder(0), minProbabilityOrder(0),
+            maxProbabilityOrder(0), numVowels(0), numUniqueLetters(0),
+            numAnagrams(0), pointValue(0) { }
         ~WordInfo() { }
 
         bool isValid() const { return !word.isEmpty(); }
@@ -61,48 +61,48 @@ class WordEngine : public QObject
     };
 
     public:
-    WordEngine (QObject* parent = 0)
-        : QObject (parent), db (0) { }
+    WordEngine(QObject* parent = 0)
+        : QObject(parent), db(0) { }
     ~WordEngine() { }
 
     void clearCache() const;
-    bool connectToDatabase (const QString& filename, QString* errString = 0);
+    bool connectToDatabase(const QString& filename, QString* errString = 0);
     bool disconnectFromDatabase();
-    int importTextFile (const QString& filename, const QString& lexName, bool
-                        loadDefinitions = true, QString* errString = 0);
-    bool importDawgFile (const QString& filename, const QString& lexName, bool
-                         reverse = false, QString* errString = 0, quint16*
-                         expectedChecksum = 0);
-    int importStems (const QString& filename, QString* errString = 0);
-    bool isAcceptable (const QString& word) const;
-    QStringList search (const SearchSpec& spec, bool allCaps) const;
-    QStringList wordGraphSearch (const SearchSpec& spec) const;
-    QStringList alphagrams (const QStringList& list) const;
+    int importTextFile(const QString& filename, const QString& lexName, bool
+                       loadDefinitions = true, QString* errString = 0);
+    bool importDawgFile(const QString& filename, const QString& lexName, bool
+                        reverse = false, QString* errString = 0, quint16*
+                        expectedChecksum = 0);
+    int importStems(const QString& filename, QString* errString = 0);
+    bool isAcceptable(const QString& word) const;
+    QStringList search(const SearchSpec& spec, bool allCaps) const;
+    QStringList wordGraphSearch(const SearchSpec& spec) const;
+    QStringList alphagrams(const QStringList& list) const;
     int getNumWords() const;
-    WordInfo getWordInfo (const QString& word) const;
-    QString getDefinition (const QString& word, bool replaceLinks = true) const;
+    WordInfo getWordInfo(const QString& word) const;
+    QString getDefinition(const QString& word, bool replaceLinks = true) const;
     QString getLexiconName() const { return lexiconName; }
-    QString getFrontHookLetters (const QString& word) const;
+    QString getFrontHookLetters(const QString& word) const;
     QString getBackHookLetters (const QString& word) const;
-    int getProbabilityOrder (const QString& word) const;
-    int getMinProbabilityOrder (const QString& word) const;
-    int getMaxProbabilityOrder (const QString& word) const;
-    int getNumVowels (const QString& word) const;
-    int getNumUniqueLetters (const QString& word) const;
-    int getPointValue (const QString& word) const;
+    int getProbabilityOrder(const QString& word) const;
+    int getMinProbabilityOrder(const QString& word) const;
+    int getMaxProbabilityOrder(const QString& word) const;
+    int getNumVowels(const QString& word) const;
+    int getNumUniqueLetters(const QString& word) const;
+    int getPointValue(const QString& word) const;
 
     private:
-    void addToCache (const QStringList& words) const;
-    bool matchesConditions (const QString& word, const QList<SearchCondition>&
-                            conditions) const;
-    bool isSetMember (const QString& word, SearchSet ss) const;
-    int getNumAnagrams (const QString& word) const;
-    QStringList nonGraphSearch (const SearchSpec& spec) const;
-    void addDefinition (const QString& word, const QString& definition);
-    QStringList databaseSearch (const SearchSpec& optimizedSpec, const
-                                QStringList* wordList = 0) const;
-    QStringList applyPostConditions (const SearchSpec& optimizedSpec, const
-                                     QStringList& wordList) const;
+    void addToCache(const QStringList& words) const;
+    bool matchesConditions(const QString& word, const QList<SearchCondition>&
+                           conditions) const;
+    bool isSetMember(const QString& word, SearchSet ss) const;
+    int getNumAnagrams(const QString& word) const;
+    QStringList nonGraphSearch(const SearchSpec& spec) const;
+    void addDefinition(const QString& word, const QString& definition);
+    QStringList databaseSearch(const SearchSpec& optimizedSpec, const
+                               QStringList* wordList = 0) const;
+    QStringList applyPostConditions(const SearchSpec& optimizedSpec, const
+                                    QStringList& wordList) const;
 
     private:
     QString lexiconName;
