@@ -4,7 +4,7 @@
 #
 # Create a disk image file for the Mac OS X installer.
 #
-# Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -23,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #-----------------------------------------------------------------------------
 
-ZVER=1.0.2
+ZVER=1.0.3
 OUTDIR=$HOME/dev/zyzzyva-install
 DMGFILE=$OUTDIR/Zyzzyva-$ZVER-osx-installer.dmg
 
