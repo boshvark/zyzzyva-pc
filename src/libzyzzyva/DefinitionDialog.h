@@ -3,7 +3,7 @@
 //
 // The dialog for word definitions.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -33,8 +33,8 @@ class DefinitionDialog : public QDialog
 {
     Q_OBJECT
     public:
-    DefinitionDialog (WordEngine* e, const QString& word, QWidget* parent = 0,
-                      Qt::WFlags f = 0);
+    DefinitionDialog(WordEngine* e, const QString& word, QWidget* parent = 0,
+                     Qt::WFlags f = 0);
     ~DefinitionDialog();
 
     private:

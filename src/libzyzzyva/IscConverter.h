@@ -3,7 +3,7 @@
 //
 // Functions for translating between ISC weirdnesses and reality.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -29,14 +29,14 @@
 
 namespace IscConverter
 {
-    int timeIscToReal (int minutes, int seconds, bool overtime = false);
-    void timeRealToIsc (int totalSeconds, int& minutes, int& seconds,
-                        bool overtime = false);
-    int lexiconToInt (const QString& lexicon);
-    QString intToLexicon (int lexicon);
-    int challengeToInt (const QString& challenge);
-    QString intToChallenge (int challenge);
-    QString convertCoordinates (const QString& coordinates);
+    int timeIscToReal(int minutes, int seconds, bool overtime = false);
+    void timeRealToIsc(int totalSeconds, int& minutes, int& seconds,
+                       bool overtime = false);
+    int lexiconToInt(const QString& lexicon);
+    QString intToLexicon(int lexicon);
+    int challengeToInt(const QString& challenge);
+    QString intToChallenge(int challenge);
+    QString convertCoordinates(const QString& coordinates);
 };
 
 #endif // ZYZZYVA_ISC_CONVERTER_H

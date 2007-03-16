@@ -3,7 +3,7 @@
 //
 // A Directed Acyclic Word Graph class.
 //
-// Copyright 2004, 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -37,19 +37,19 @@ class WordGraph
     ~WordGraph();
 
     void clear();
-    bool importDawgFile (const QString& filename, bool reverse, QString*
-                         errString, quint16* expectedChecksum);
-    void addWord (const QString& w);
-    bool containsWord (const QString& w) const;
-    QStringList search (const SearchSpec& spec) const;
+    bool importDawgFile(const QString& filename, bool reverse, QString*
+                        errString, quint16* expectedChecksum);
+    void addWord(const QString& w);
+    bool containsWord(const QString& w) const;
+    QStringList search(const SearchSpec& spec) const;
     int getNumWords() const;
 
     private:
     class Node {
       public:
-        Node (char c = 0, bool e = false);
+        Node(char c = 0, bool e = false);
         ~Node();
-        bool operator== (const Node& rhs);
+        bool operator==(const Node& rhs);
         QChar letter;
         bool eow;
         Node* next;
@@ -58,8 +58,8 @@ class WordGraph
 
     class TraversalState {
       public:
-        TraversalState (long n, const QString& w, const QString& u)
-            : node (n), word (w), unmatched (u) { }
+        TraversalState(long n, const QString& w, const QString& u)
+            : node(n), word(w), unmatched(u) { }
         long node;
         QString word;
         QString unmatched;
@@ -67,22 +67,22 @@ class WordGraph
 
     class TraversalStateOld {
       public:
-        TraversalStateOld (Node* n, const QString& w, const QString& u)
-            : node (n), word (w), unmatched (u) { }
+        TraversalStateOld(Node* n, const QString& w, const QString& u)
+            : node(n), word(w), unmatched(u) { }
         Node* node;
         QString word;
         QString unmatched;
     };
 
     private:
-    bool matchesSpec (QString word, const SearchSpec& spec) const;
-    QString reverseString (const QString& s) const;
-    long convertEndian (long* data, long count);
+    bool matchesSpec(QString word, const SearchSpec& spec) const;
+    QString reverseString(const QString& s) const;
+    long convertEndian(long* data, long count);
 
-    void addWordOld (const QString& w, bool reverse);
-    bool containsWordOld (const QString& w) const;
-    QStringList searchOld (const SearchSpec& spec) const;
-    int getNumWords (long node) const;
+    void addWordOld(const QString& w, bool reverse);
+    bool containsWordOld(const QString& w) const;
+    QStringList searchOld(const SearchSpec& spec) const;
+    int getNumWords(long node) const;
 
     long* dawg;
     long* rdawg;

@@ -3,7 +3,7 @@
 //
 // A dialog for rescheduling words within the cardbox system.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -42,76 +42,76 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-CardboxRescheduleDialog::CardboxRescheduleDialog (QWidget* parent, Qt::WFlags f)
-    : QDialog (parent, f)
+CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
+    : QDialog(parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    mainVlay->setMargin (MARGIN);
-    mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    mainVlay->setMargin(MARGIN);
+    mainVlay->setSpacing(SPACING);
+    Q_CHECK_PTR(mainVlay);
 
     QHBoxLayout* quizTypeHlay = new QHBoxLayout;
-    Q_CHECK_PTR (quizTypeHlay);
-    mainVlay->addLayout (quizTypeHlay);
+    Q_CHECK_PTR(quizTypeHlay);
+    mainVlay->addLayout(quizTypeHlay);
 
     QLabel* quizTypeLabel = new QLabel;
-    Q_CHECK_PTR (quizTypeLabel);
-    quizTypeLabel->setText ("Reschedule words for quiz type:");
-    quizTypeHlay->addWidget (quizTypeLabel);
+    Q_CHECK_PTR(quizTypeLabel);
+    quizTypeLabel->setText("Reschedule words for quiz type:");
+    quizTypeHlay->addWidget(quizTypeLabel);
 
     quizTypeCombo = new QComboBox;
-    Q_CHECK_PTR (quizTypeCombo);
-    quizTypeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
-    quizTypeCombo->addItem (Auxil::quizTypeToString
-                            (QuizSpec::QuizAnagramsWithHooks));
-    quizTypeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizHooks));
-    quizTypeHlay->addWidget (quizTypeCombo);
+    Q_CHECK_PTR(quizTypeCombo);
+    quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizAnagrams));
+    quizTypeCombo->addItem(
+        Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
+    quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizHooks));
+    quizTypeHlay->addWidget(quizTypeCombo);
 
     rescheduleAllButton = new QRadioButton;
-    Q_CHECK_PTR (rescheduleAllButton);
-    rescheduleAllButton->setText ("Reschedule all words");
-    mainVlay->addWidget (rescheduleAllButton);
+    Q_CHECK_PTR(rescheduleAllButton);
+    rescheduleAllButton->setText("Reschedule all words");
+    mainVlay->addWidget(rescheduleAllButton);
 
     rescheduleSearchButton = new QRadioButton;
-    Q_CHECK_PTR (rescheduleSearchButton);
-    connect (rescheduleSearchButton, SIGNAL (toggled (bool)),
-             SLOT (useSearchButtonToggled (bool)));
-    rescheduleSearchButton->setText ("Reschedule words matching search "
-                                     "specification");
-    mainVlay->addWidget (rescheduleSearchButton);
+    Q_CHECK_PTR(rescheduleSearchButton);
+    connect(rescheduleSearchButton, SIGNAL(toggled(bool)),
+            SLOT(useSearchButtonToggled(bool)));
+    rescheduleSearchButton->setText("Reschedule words matching search "
+                                    "specification");
+    mainVlay->addWidget(rescheduleSearchButton);
 
-    searchSpecGbox = new QGroupBox ("Search Specification");
-    Q_CHECK_PTR (searchSpecGbox);
-    mainVlay->addWidget (searchSpecGbox);
+    searchSpecGbox = new QGroupBox("Search Specification");
+    Q_CHECK_PTR(searchSpecGbox);
+    mainVlay->addWidget(searchSpecGbox);
 
-    QHBoxLayout* specHlay = new QHBoxLayout (searchSpecGbox);
-    Q_CHECK_PTR (specHlay);
+    QHBoxLayout* specHlay = new QHBoxLayout(searchSpecGbox);
+    Q_CHECK_PTR(specHlay);
 
     searchSpecForm = new SearchSpecForm;
-    Q_CHECK_PTR (searchSpecForm);
-    specHlay->addWidget (searchSpecForm);
+    Q_CHECK_PTR(searchSpecForm);
+    specHlay->addWidget(searchSpecForm);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (buttonHlay);
-    mainVlay->addLayout (buttonHlay);
+    buttonHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(buttonHlay);
+    mainVlay->addLayout(buttonHlay);
 
-    ZPushButton* okButton = new ZPushButton ("&OK");
-    Q_CHECK_PTR (okButton);
-    okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    okButton->setDefault (true);
-    connect (okButton, SIGNAL (clicked()), SLOT (accept()));
-    buttonHlay->addWidget (okButton);
+    ZPushButton* okButton = new ZPushButton("&OK");
+    Q_CHECK_PTR(okButton);
+    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    okButton->setDefault(true);
+    connect(okButton, SIGNAL(clicked()), SLOT(accept()));
+    buttonHlay->addWidget(okButton);
 
-    ZPushButton* cancelButton = new ZPushButton ("Cancel");
-    Q_CHECK_PTR (cancelButton);
-    cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
-    buttonHlay->addWidget (cancelButton);
+    ZPushButton* cancelButton = new ZPushButton("Cancel");
+    Q_CHECK_PTR(cancelButton);
+    cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
+    buttonHlay->addWidget(cancelButton);
 
-    setWindowTitle (DIALOG_CAPTION);
-    rescheduleAllButton->setChecked (true);
-    searchSpecGbox->setEnabled (false);
+    setWindowTitle(DIALOG_CAPTION);
+    rescheduleAllButton->setChecked(true);
+    searchSpecGbox->setEnabled(false);
 }
 
 //---------------------------------------------------------------------------
@@ -162,7 +162,7 @@ CardboxRescheduleDialog::getSearchSpec() const
 //! @param checked true if the button is checked
 //---------------------------------------------------------------------------
 void
-CardboxRescheduleDialog::useSearchButtonToggled (bool checked)
+CardboxRescheduleDialog::useSearchButtonToggled(bool checked)
 {
-    searchSpecGbox->setEnabled (checked);
+    searchSpecGbox->setEnabled(checked);
 }

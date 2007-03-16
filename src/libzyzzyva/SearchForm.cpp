@@ -3,7 +3,7 @@
 //
 // A form for searching for words, patterns, anagrams, etc.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -51,53 +51,53 @@ const QString TITLE_PREFIX = "Search";
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : ActionForm (SearchFormType, parent, f), wordEngine (e)
+SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
+    : ActionForm(SearchFormType, parent, f), wordEngine(e)
 {
-    QHBoxLayout* mainHlay = new QHBoxLayout (this);
-    mainHlay->setMargin (MARGIN);
-    mainHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainHlay);
+    QHBoxLayout* mainHlay = new QHBoxLayout(this);
+    Q_CHECK_PTR(mainHlay);
+    mainHlay->setMargin(MARGIN);
+    mainHlay->setSpacing(SPACING);
 
     QVBoxLayout* specVlay = new QVBoxLayout;
-    specVlay->setSpacing (SPACING);
     Q_CHECK_PTR (specVlay);
-    mainHlay->addLayout (specVlay);
+    specVlay->setSpacing(SPACING);
+    mainHlay->addLayout(specVlay);
 
     specForm = new SearchSpecForm;
-    Q_CHECK_PTR (specForm);
-    connect (specForm, SIGNAL (returnPressed()), SLOT (search()));
-    connect (specForm, SIGNAL (contentsChanged()), SLOT (specChanged()));
-    specVlay->addWidget (specForm);
+    Q_CHECK_PTR(specForm);
+    connect(specForm, SIGNAL(returnPressed()), SLOT(search()));
+    connect(specForm, SIGNAL(contentsChanged()), SLOT(specChanged()));
+    specVlay->addWidget(specForm);
 
-    lowerCaseCbox = new QCheckBox ("Use &lower-case letters for wildcard "
-                                   "matches");
-    Q_CHECK_PTR (lowerCaseCbox);
-    specVlay->addWidget (lowerCaseCbox);
+    lowerCaseCbox = new QCheckBox("Use &lower-case letters for wildcard "
+                                  "matches");
+    Q_CHECK_PTR(lowerCaseCbox);
+    specVlay->addWidget(lowerCaseCbox);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (buttonHlay);
-    specVlay->addLayout (buttonHlay);
+    Q_CHECK_PTR(buttonHlay);
+    buttonHlay->setSpacing(SPACING);
+    specVlay->addLayout(buttonHlay);
 
-    searchButton = new ZPushButton ("&Search");
-    Q_CHECK_PTR (searchButton);
-    searchButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (searchButton, SIGNAL (clicked()), SLOT (search()));
-    buttonHlay->addWidget (searchButton);
+    searchButton = new ZPushButton("&Search");
+    Q_CHECK_PTR(searchButton);
+    searchButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(searchButton, SIGNAL(clicked()), SLOT(search()));
+    buttonHlay->addWidget(searchButton);
 
-    resultView = new WordTableView (wordEngine);
-    Q_CHECK_PTR (resultView);
-    specVlay->addWidget (resultView, 1);
+    resultView = new WordTableView(wordEngine);
+    Q_CHECK_PTR(resultView);
+    specVlay->addWidget(resultView, 1);
 
-    resultModel = new WordTableModel (wordEngine, this);
-    Q_CHECK_PTR (resultModel);
-    connect (resultModel, SIGNAL (wordsChanged()),
-             resultView, SLOT (resizeItemsToContents()));
-    resultView->setModel (resultModel);
+    resultModel = new WordTableModel(wordEngine, this);
+    Q_CHECK_PTR(resultModel);
+    connect(resultModel, SIGNAL(wordsChanged()),
+            resultView, SLOT(resizeItemsToContents()));
+    resultView->setModel(resultModel);
 
     specChanged();
-    QTimer::singleShot (0, specForm, SLOT (selectInputArea()));
+    QTimer::singleShot(0, specForm, SLOT(selectInputArea()));
 }
 
 //---------------------------------------------------------------------------
@@ -110,7 +110,7 @@ SearchForm::SearchForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 QIcon
 SearchForm::getIcon() const
 {
-    return QIcon (":/search-icon");
+    return QIcon(":/search-icon");
 }
 
 //---------------------------------------------------------------------------
@@ -176,17 +176,16 @@ SearchForm::search()
     if (spec.conditions.empty())
         return;
 
-    searchButton->setEnabled (false);
-    resultModel->removeRows (0, resultModel->rowCount());
+    searchButton->setEnabled(false);
+    resultModel->removeRows(0, resultModel->rowCount());
 
     statusString = "Searching...";
-    emit statusChanged (statusString);
+    emit statusChanged(statusString);
     qApp->processEvents();
 
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    QStringList wordList = wordEngine->search (specForm->getSearchSpec(),
-                                               false);
+    QStringList wordList = wordEngine->search(specForm->getSearchSpec(), false);
 
     if (!wordList.empty()) {
 
@@ -223,13 +222,13 @@ SearchForm::search()
                 for (int i = 0; i < word.length(); ++i) {
                     QChar c = word[i];
                     if (c.isLower())
-                        wildcardChars.append (c);
+                        wildcardChars.append(c);
                 }
                 if (!wildcardChars.isEmpty()) {
-                    qSort (wildcardChars);
+                    qSort(wildcardChars);
                     QChar c;
                     foreach (c, wildcardChars)
-                        wildcard.append (c.toUpper());
+                        wildcard.append(c.toUpper());
                 }
             }
 
@@ -242,38 +241,38 @@ SearchForm::search()
             WordTableModel::WordItem wordItem
                 (word, WordTableModel::WordNormal, wildcard);
 
-            int probOrder = wordEngine->getProbabilityOrder (wordUpper);
-            wordItem.setProbabilityOrder (probOrder);
+            int probOrder = wordEngine->getProbabilityOrder(wordUpper);
+            wordItem.setProbabilityOrder(probOrder);
 
-            wordItems.append (wordItem);
+            wordItems.append(wordItem);
         }
 
         // FIXME: Probably not the right way to get alphabetical sorting instead
         // of alphagram sorting
         bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
         if (!hasAnagramCondition)
-            MainSettings::setWordListGroupByAnagrams (false);
+            MainSettings::setWordListGroupByAnagrams(false);
         if (hasProbabilityCondition)
-            MainSettings::setWordListSortByProbabilityOrder (true);
-        resultModel->addWords (wordItems);
-        MainSettings::setWordListSortByProbabilityOrder (false);
+            MainSettings::setWordListSortByProbabilityOrder(true);
+        resultModel->addWords(wordItems);
+        MainSettings::setWordListSortByProbabilityOrder(false);
         if (!hasAnagramCondition)
-            MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+            MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
     }
 
-    updateResultTotal (wordList.size());
-    emit saveEnabledChanged (!wordList.empty());
+    updateResultTotal(wordList.size());
+    emit saveEnabledChanged(!wordList.empty());
 
     QWidget* focusWidget = QApplication::focusWidget();
     QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(focusWidget);
     if (lineEdit) {
-        lineEdit->setSelection (0, lineEdit->text().length());
+        lineEdit->setSelection(0, lineEdit->text().length());
     }
     else {
         specForm->selectInputArea();
     }
 
-    searchButton->setEnabled (true);
+    searchButton->setEnabled(true);
     QApplication::restoreOverrideCursor();
 }
 
@@ -286,7 +285,7 @@ SearchForm::search()
 void
 SearchForm::specChanged()
 {
-    searchButton->setEnabled (specForm->isValid());
+    searchButton->setEnabled(specForm->isValid());
 }
 
 //---------------------------------------------------------------------------
@@ -296,10 +295,11 @@ SearchForm::specChanged()
 //! @param num the number of words
 //---------------------------------------------------------------------------
 void
-SearchForm::updateResultTotal (int num)
+SearchForm::updateResultTotal(int num)
 {
-    QString wordStr = QString::number (num) + " word";
-    if (num != 1) wordStr += "s";
+    QString wordStr = QString::number(num) + " word";
+    if (num != 1)
+        wordStr += "s";
     statusString = "Search found " + wordStr;
-    emit statusChanged (statusString);
+    emit statusChanged(statusString);
 }

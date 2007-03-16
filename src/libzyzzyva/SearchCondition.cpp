@@ -3,7 +3,7 @@
 //
 // A class to represent a word search condition.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -55,7 +55,7 @@ SearchCondition::asString() const
     if (negated)
         str = "NOT ";
 
-    str += Auxil::searchTypeToString (type) + ": ";
+    str += Auxil::searchTypeToString(type) + ": ";
 
     switch (type) {
         case PatternMatch:
@@ -79,21 +79,21 @@ SearchCondition::asString() const
         case PointValue:
         case ProbabilityOrder:
         case LimitByProbabilityOrder:
-        str += "Min " + QString::number (minValue) + ", Max "
-            + QString::number (maxValue);
+        str += "Min " + QString::number(minValue) + ", Max "
+            + QString::number(maxValue);
         if (boolValue)
             str += " (Lax)";
         break;
 
         case Probability:
         // XXX: Multiply by the correct factor here!
-        str += "Min " + QString::number (minValue * 1) + ", Max "
-            + QString::number (maxValue * 1);
+        str += "Min " + QString::number(minValue * 1) + ", Max "
+            + QString::number(maxValue * 1);
         break;
 
         case ConsistOf:
-        str += "Min " + QString::number (minValue * 1) + "%, Max "
-            + QString::number (maxValue * 1) + "% " + stringValue;
+        str += "Min " + QString::number(minValue * 1) + "%, Max "
+            + QString::number(maxValue * 1) + "% " + stringValue;
         break;
 
         default: break;
@@ -113,18 +113,18 @@ QDomElement
 SearchCondition::asDomElement() const
 {
     QDomDocument doc;
-    QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
+    QDomElement topElement = doc.createElement(XML_TOP_ELEMENT);
 
     if (type == UnknownSearchType)
         return topElement;
 
-    topElement.setAttribute (XML_TYPE_ATTR, Auxil::searchTypeToString (type));
+    topElement.setAttribute(XML_TYPE_ATTR, Auxil::searchTypeToString(type));
 
     switch (type) {
         case PatternMatch:
         case AnagramMatch:
         case SubanagramMatch:
-        topElement.setAttribute (XML_STRING_ATTR, stringValue);
+        topElement.setAttribute(XML_STRING_ATTR, stringValue);
         break;
 
         case Prefix:
@@ -132,8 +132,8 @@ SearchCondition::asDomElement() const
         case IncludeLetters:
         case BelongToGroup:
         case InWordList:
-        topElement.setAttribute (XML_STRING_ATTR, stringValue);
-        topElement.setAttribute (XML_NEGATED_ATTR, negated);
+        topElement.setAttribute(XML_STRING_ATTR, stringValue);
+        topElement.setAttribute(XML_NEGATED_ATTR, negated);
         break;
 
         case Length:
@@ -143,24 +143,24 @@ SearchCondition::asDomElement() const
         case PointValue:
         case ProbabilityOrder:
         case LimitByProbabilityOrder:
-        topElement.setAttribute (XML_MIN_ATTR, minValue);
-        topElement.setAttribute (XML_MAX_ATTR, maxValue);
+        topElement.setAttribute(XML_MIN_ATTR, minValue);
+        topElement.setAttribute(XML_MAX_ATTR, maxValue);
         if ((type == ProbabilityOrder) || (type == LimitByProbabilityOrder)) {
-            topElement.setAttribute (XML_BOOL_ATTR,
-                (boolValue ? QString ("true") : QString ("false")));
+            topElement.setAttribute(XML_BOOL_ATTR,
+                (boolValue ? QString("true") : QString("false")));
         }
         break;
 
         case Probability:
         // XXX: Multiply by the correct factor here!
-        topElement.setAttribute (XML_MIN_ATTR, (minValue * 1));
-        topElement.setAttribute (XML_MAX_ATTR, (maxValue * 1));
+        topElement.setAttribute(XML_MIN_ATTR,(minValue * 1));
+        topElement.setAttribute(XML_MAX_ATTR,(maxValue * 1));
         break;
 
         case ConsistOf:
-        topElement.setAttribute (XML_MIN_ATTR, minValue);
-        topElement.setAttribute (XML_MAX_ATTR, maxValue);
-        topElement.setAttribute (XML_STRING_ATTR, stringValue);
+        topElement.setAttribute(XML_MIN_ATTR, minValue);
+        topElement.setAttribute(XML_MAX_ATTR, maxValue);
+        topElement.setAttribute(XML_STRING_ATTR, stringValue);
         break;
 
         default: break;
@@ -178,17 +178,17 @@ SearchCondition::asDomElement() const
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-SearchCondition::fromDomElement (const QDomElement& element)
+SearchCondition::fromDomElement(const QDomElement& element)
 {
     if ((element.tagName() != XML_TOP_ELEMENT) ||
-        (!element.hasAttribute (XML_TYPE_ATTR)))
+        (!element.hasAttribute(XML_TYPE_ATTR)))
     {
         return false;
     }
 
     SearchCondition tmpCondition;
-    tmpCondition.type = Auxil::stringToSearchType (element.attribute
-                                                   (XML_TYPE_ATTR));
+    tmpCondition.type =
+        Auxil::stringToSearchType(element.attribute(XML_TYPE_ATTR));
     if (tmpCondition.type == UnknownSearchType)
         return false;
 
@@ -198,9 +198,9 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case PatternMatch:
         case AnagramMatch:
         case SubanagramMatch:
-        if (!element.hasAttribute (XML_STRING_ATTR))
+        if (!element.hasAttribute(XML_STRING_ATTR))
             return false;
-        tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
+        tmpCondition.stringValue = element.attribute(XML_STRING_ATTR);
         break;
 
         case Prefix:
@@ -208,11 +208,11 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case IncludeLetters:
         case BelongToGroup:
         case InWordList:
-        if (!element.hasAttribute (XML_STRING_ATTR))
+        if (!element.hasAttribute(XML_STRING_ATTR))
             return false;
-        tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
-        if (element.hasAttribute (XML_NEGATED_ATTR)) {
-            int n = element.attribute (XML_NEGATED_ATTR).toInt (&ok);
+        tmpCondition.stringValue = element.attribute(XML_STRING_ATTR);
+        if (element.hasAttribute(XML_NEGATED_ATTR)) {
+            int n = element.attribute(XML_NEGATED_ATTR).toInt(&ok);
             if (ok)
                 tmpCondition.negated = n ? true : false;
         }
@@ -220,9 +220,9 @@ SearchCondition::fromDomElement (const QDomElement& element)
 
         case ProbabilityOrder:
         case LimitByProbabilityOrder:
-        if (element.hasAttribute (XML_BOOL_ATTR)) {
+        if (element.hasAttribute(XML_BOOL_ATTR)) {
             tmpCondition.boolValue =
-                (element.attribute (XML_BOOL_ATTR) == "true");
+                (element.attribute(XML_BOOL_ATTR) == "true");
         }
         // fall through
 
@@ -231,31 +231,31 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case NumVowels:
         case NumUniqueLetters:
         case PointValue:
-        if (!element.hasAttribute (XML_MIN_ATTR) ||
-            !element.hasAttribute (XML_MAX_ATTR))
+        if (!element.hasAttribute(XML_MIN_ATTR) ||
+            !element.hasAttribute(XML_MAX_ATTR))
             return false;
         tmpCondition.minValue =
-            element.attribute (XML_MIN_ATTR).toInt (&ok);
+            element.attribute(XML_MIN_ATTR).toInt(&ok);
         if (!ok)
             return false;
         tmpCondition.maxValue =
-            element.attribute (XML_MAX_ATTR).toInt (&ok);
+            element.attribute(XML_MAX_ATTR).toInt(&ok);
         if (!ok)
             return false;
         break;
 
         case Probability:
-        if (!element.hasAttribute (XML_MIN_ATTR) ||
-            !element.hasAttribute (XML_MAX_ATTR))
+        if (!element.hasAttribute(XML_MIN_ATTR) ||
+            !element.hasAttribute(XML_MAX_ATTR))
             return false;
         tmpCondition.minValue =
-            element.attribute (XML_MIN_ATTR).toInt (&ok);
+            element.attribute(XML_MIN_ATTR).toInt(&ok);
         if (!ok)
             return false;
         // XXX: Divide by the correct factor here!
         tmpCondition.minValue /= 1;
         tmpCondition.maxValue =
-            element.attribute (XML_MAX_ATTR).toInt (&ok);
+            element.attribute(XML_MAX_ATTR).toInt(&ok);
         if (!ok)
             return false;
         // XXX: Divide by the correct factor here!
@@ -263,17 +263,17 @@ SearchCondition::fromDomElement (const QDomElement& element)
         break;
 
         case ConsistOf: {
-            if (!element.hasAttribute (XML_STRING_ATTR))
+            if (!element.hasAttribute(XML_STRING_ATTR))
                 return false;
 
-            if (!element.hasAttribute (XML_OLD_PERCENT_ATTR) &&
-                (!element.hasAttribute (XML_MIN_ATTR) ||
-                !element.hasAttribute (XML_MAX_ATTR)))
+            if (!element.hasAttribute(XML_OLD_PERCENT_ATTR) &&
+                (!element.hasAttribute(XML_MIN_ATTR) ||
+                !element.hasAttribute(XML_MAX_ATTR)))
             {
                 return false;
             }
             int intValue =
-                element.attribute (XML_OLD_PERCENT_ATTR).toInt (&ok);
+                element.attribute(XML_OLD_PERCENT_ATTR).toInt(&ok);
             // Old style Consist condition
             if (ok) {
                 tmpCondition.minValue = intValue;
@@ -281,15 +281,15 @@ SearchCondition::fromDomElement (const QDomElement& element)
             }
             else {
                 tmpCondition.minValue =
-                    element.attribute (XML_MIN_ATTR).toInt (&ok);
+                    element.attribute(XML_MIN_ATTR).toInt(&ok);
                 if (!ok)
                     return false;
                 tmpCondition.maxValue =
-                    element.attribute (XML_MAX_ATTR).toInt (&ok);
+                    element.attribute(XML_MAX_ATTR).toInt(&ok);
                 if (!ok)
                     return false;
             }
-            tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
+            tmpCondition.stringValue = element.attribute(XML_STRING_ATTR);
         }
         break;
 
@@ -298,9 +298,9 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case OldDoesNotTakeSuffix:
         case OldMustExclude:
         case OldNotInWordList:
-        if (!element.hasAttribute (XML_STRING_ATTR))
+        if (!element.hasAttribute(XML_STRING_ATTR))
             return false;
-        tmpCondition.stringValue = element.attribute (XML_STRING_ATTR);
+        tmpCondition.stringValue = element.attribute(XML_STRING_ATTR);
         if (tmpCondition.type == OldDoesNotTakePrefix) {
             tmpCondition.type = Prefix;
             tmpCondition.negated = true;
@@ -326,9 +326,9 @@ SearchCondition::fromDomElement (const QDomElement& element)
         case OldExactAnagrams:
         case OldMinAnagrams:
         case OldMaxAnagrams: {
-            if (!element.hasAttribute (XML_OLD_NUMBER_ATTR))
+            if (!element.hasAttribute(XML_OLD_NUMBER_ATTR))
                 return false;
-            int intValue = element.attribute (XML_OLD_NUMBER_ATTR).toInt (&ok);
+            int intValue = element.attribute(XML_OLD_NUMBER_ATTR).toInt(&ok);
             if (!ok)
                 return false;
             if (tmpCondition.type == OldExactLength) {

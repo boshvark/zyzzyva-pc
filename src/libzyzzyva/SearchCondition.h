@@ -3,7 +3,7 @@
 //
 // A class to represent a word search condition.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -66,12 +66,12 @@ class SearchCondition
     };
 
     public:
-    SearchCondition() : type (UnknownSearchType), minValue (0),
-                        maxValue (0), negated (false), boolValue (false),
-                        legacy (false) { }
+    SearchCondition() : type(UnknownSearchType), minValue(0),
+                        maxValue(0), negated(false), boolValue(false),
+                        legacy(false) { }
     QString asString() const;
     QDomElement asDomElement() const;
-    bool fromDomElement (const QDomElement& element);
+    bool fromDomElement(const QDomElement& element);
 
     SearchType type;
     QString stringValue;

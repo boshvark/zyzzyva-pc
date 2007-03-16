@@ -34,7 +34,7 @@
 #include <QString>
 
 namespace Auxil {
-    bool copyDir (const QString& src, const QString& dest);
+    bool copyDir(const QString& src, const QString& dest);
     unsigned int getPid();
     QString getAboutString();
     QString getThanksString();
@@ -49,29 +49,29 @@ namespace Auxil {
     QString getUserWordsDir();
     QString getUserDir();
     QString getUserConfigDir();
-    QString dialogWordWrap (const QString& str);
-    QString wordWrap (const QString& str, int wrapLength);
-    bool isVowel (QChar c);
-    QString getAlphagram (const QString& word);
-    int getNumUniqueLetters (const QString& word);
-    int getNumVowels (const QString& word);
-    QString searchSetToString (SearchSet set);
-    SearchSet stringToSearchSet (const QString& string);
-    QString searchTypeToString (SearchCondition::SearchType type);
-    SearchCondition::SearchType stringToSearchType (const QString& string);
-    QString quizTypeToString (QuizSpec::QuizType type);
-    QuizSpec::QuizType stringToQuizType (const QString& string);
-    QString quizMethodToString (QuizSpec::QuizMethod method);
-    QuizSpec::QuizMethod stringToQuizMethod (const QString& string);
-    QString quizSourceTypeToString (QuizSpec::QuizSourceType source);
-    QuizSpec::QuizSourceType stringToQuizSourceType (const QString& string);
-    QString quizQuestionOrderToString (QuizSpec::QuestionOrder method);
-    QuizSpec::QuestionOrder stringToQuizQuestionOrder (const QString& string);
-    QString wordAttributeToString (WordAttribute attr);
-    WordAttribute stringToWordAttribute (const QString& string);
-    QString wordListFormatToString (WordListFormat format);
-    WordListFormat stringToWordListFormat (const QString& string);
-    QDate lexiconToDate (const QString& lexicon);
+    QString dialogWordWrap(const QString& str);
+    QString wordWrap(const QString& str, int wrapLength);
+    bool isVowel(QChar c);
+    QString getAlphagram(const QString& word);
+    int getNumUniqueLetters(const QString& word);
+    int getNumVowels(const QString& word);
+    QString searchSetToString(SearchSet set);
+    SearchSet stringToSearchSet(const QString& string);
+    QString searchTypeToString(SearchCondition::SearchType type);
+    SearchCondition::SearchType stringToSearchType(const QString& string);
+    QString quizTypeToString(QuizSpec::QuizType type);
+    QuizSpec::QuizType stringToQuizType(const QString& string);
+    QString quizMethodToString(QuizSpec::QuizMethod method);
+    QuizSpec::QuizMethod stringToQuizMethod(const QString& string);
+    QString quizSourceTypeToString(QuizSpec::QuizSourceType source);
+    QuizSpec::QuizSourceType stringToQuizSourceType(const QString& string);
+    QString quizQuestionOrderToString(QuizSpec::QuestionOrder method);
+    QuizSpec::QuestionOrder stringToQuizQuestionOrder(const QString& string);
+    QString wordAttributeToString(WordAttribute attr);
+    WordAttribute stringToWordAttribute(const QString& string);
+    QString wordListFormatToString(WordListFormat format);
+    WordListFormat stringToWordListFormat(const QString& string);
+    QDate lexiconToDate(const QString& lexicon);
 }
 
 #endif // ZYZZYVA_AUXIL_H

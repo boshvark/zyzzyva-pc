@@ -51,25 +51,25 @@ const QString SQL_CREATE_QUESTIONS_TABLE_CURRENT =
 //! @param lexicon the lexicon name
 //! @param quizType the quiz type
 //---------------------------------------------------------------------------
-QuizDatabase::QuizDatabase (const QString& lexicon, const QString& quizType)
-    : db (0)
+QuizDatabase::QuizDatabase(const QString& lexicon, const QString& quizType)
+    : db(0)
 {
     QString dirName = Auxil::getQuizDir() + "/data/" + lexicon;
     QDir dir (dirName);
-    if (!dir.exists() && !dir.mkpath (dirName)) {
-        qWarning ("Cannot create quiz stats directory\n");
+    if (!dir.exists() && !dir.mkpath(dirName)) {
+        qWarning("Cannot create quiz stats directory\n");
         return;
     }
 
     QString dbFilename = dirName + "/" + quizType + ".db";
 
     // Get random connection name
-    rng.srand (std::time (0), Auxil::getPid());
+    rng.srand(std::time(0), Auxil::getPid());
     unsigned int r = rng.rand();
-    dbConnectionName = "quiz" + QString::number (r);
-    db = new QSqlDatabase (QSqlDatabase::addDatabase ("QSQLITE",
-                                                      dbConnectionName));
-    db->setDatabaseName (dbFilename);
+    dbConnectionName = "quiz" + QString::number(r);
+    db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE",
+                                                    dbConnectionName));
+    db->setDatabaseName(dbFilename);
     if (!db->open())
         return;
 
@@ -88,7 +88,7 @@ QuizDatabase::~QuizDatabase()
             db->close();
         delete db;
         db = 0;
-        QSqlDatabase::removeDatabase (dbConnectionName);
+        QSqlDatabase::removeDatabase(dbConnectionName);
     }
 }
 
@@ -117,34 +117,34 @@ QuizDatabase::updateSchema()
 {
     // Create table if it doesn't already exist
     QSqlQuery query (*db);
-    query.exec ("SELECT name FROM sqlite_master WHERE type='table' "
-                "AND name='questions'");
+    query.exec("SELECT name FROM sqlite_master WHERE type='table' "
+               "AND name='questions'");
     if (!query.next()) {
-        query.exec (SQL_CREATE_QUESTIONS_TABLE_CURRENT);
+        query.exec(SQL_CREATE_QUESTIONS_TABLE_CURRENT);
     }
 
     // The table already exists, so update the schema
     else {
-        query.exec ("SELECT sql FROM sqlite_master WHERE type='table' "
-                    "AND name='questions'");
+        query.exec("SELECT sql FROM sqlite_master WHERE type='table' "
+                   "AND name='questions'");
         if (!query.next())
             return false;
-        QString sql = query.value (0).toString();
+        QString sql = query.value(0).toString();
 
         // Upgrade from 0.14.0 schema to 1.0.0 schema
         if (sql == SQL_CREATE_QUESTIONS_TABLE_0_14_0) {
-            query.exec ("ALTER TABLE questions ADD COLUMN cardbox integer");
-            query.exec ("ALTER TABLE questions ADD COLUMN "
-                        "next_scheduled integer");
+            query.exec("ALTER TABLE questions ADD COLUMN cardbox integer");
+            query.exec("ALTER TABLE questions ADD COLUMN "
+                       "next_scheduled integer");
         }
     }
 
     // Create index on question column of questions table
-    query.exec ("SELECT name FROM sqlite_master WHERE type='index' "
-                "AND name='question_index' AND tbl_name='questions'");
+    query.exec("SELECT name FROM sqlite_master WHERE type='index' "
+               "AND name='question_index' AND tbl_name='questions'");
     if (!query.next()) {
-        query.exec ("CREATE UNIQUE INDEX question_index ON questions "
-                    "(question)");
+        query.exec("CREATE UNIQUE INDEX question_index ON questions "
+                   "(question)");
     }
 
     return true;
@@ -160,10 +160,10 @@ QuizDatabase::updateSchema()
 //! @param updateCardbox whether to update the question in the cardbox system
 //---------------------------------------------------------------------------
 void
-QuizDatabase::recordResponse (const QString& question, bool correct,
-                              bool updateCardbox)
+QuizDatabase::recordResponse(const QString& question, bool correct,
+                             bool updateCardbox)
 {
-    QuestionData data = getQuestionData (question);
+    QuestionData data = getQuestionData(question);
     undoQuestion = question;
     undoData = data;
 
@@ -174,7 +174,7 @@ QuizDatabase::recordResponse (const QString& question, bool correct,
                 data.streak = 1;
             else
                 ++data.streak;
-            data.lastCorrect = std::time (0);
+            data.lastCorrect = std::time(0);
         }
         else {
             ++data.numIncorrect;
@@ -185,7 +185,7 @@ QuizDatabase::recordResponse (const QString& question, bool correct,
         }
         if (updateCardbox) {
             data.cardbox = correct ? data.cardbox + 1 : 0;
-            data.nextScheduled = calculateNextScheduled (data.cardbox);
+            data.nextScheduled = calculateNextScheduled(data.cardbox);
         }
     }
 
@@ -195,16 +195,16 @@ QuizDatabase::recordResponse (const QString& question, bool correct,
         data.numCorrect = (correct ? 1 : 0);
         data.numIncorrect = (correct ? 0 : 1);
         data.streak = (correct ? 1 : -1);
-        data.lastCorrect = (correct ? std::time (0) : 0);
+        data.lastCorrect = (correct ? std::time(0) : 0);
         // XXX: Fix difficulty ratings!
         data.difficulty = 50;
         if (updateCardbox) {
             data.cardbox = correct ? 1 : 0;
-            data.nextScheduled = calculateNextScheduled (data.cardbox);
+            data.nextScheduled = calculateNextScheduled(data.cardbox);
         }
     }
 
-    setQuestionData (question, data, updateCardbox);
+    setQuestionData(question, data, updateCardbox);
 }
 
 //---------------------------------------------------------------------------
@@ -213,12 +213,12 @@ QuizDatabase::recordResponse (const QString& question, bool correct,
 //! Undo the last question response.
 //---------------------------------------------------------------------------
 void
-QuizDatabase::undoLastResponse (const QString& question)
+QuizDatabase::undoLastResponse(const QString& question)
 {
     if (undoQuestion != question)
         return;
 
-    setQuestionData (question, undoData, true);
+    setQuestionData(question, undoData, true);
 }
 
 //---------------------------------------------------------------------------
@@ -232,15 +232,15 @@ QuizDatabase::undoLastResponse (const QString& question)
 //! performance
 //---------------------------------------------------------------------------
 void
-QuizDatabase::addToCardbox (const QStringList& questions, bool estimateCardbox)
+QuizDatabase::addToCardbox(const QStringList& questions, bool estimateCardbox)
 {
     QSqlQuery query (*db);
-    query.exec ("BEGIN TRANSACTION");
+    query.exec("BEGIN TRANSACTION");
     QStringListIterator it (questions);
     while (it.hasNext()) {
-        addToCardbox (it.next(), estimateCardbox);
+        addToCardbox(it.next(), estimateCardbox);
     }
-    query.exec ("COMMIT TRANSACTION");
+    query.exec("COMMIT TRANSACTION");
 }
 
 //---------------------------------------------------------------------------
@@ -254,9 +254,9 @@ QuizDatabase::addToCardbox (const QStringList& questions, bool estimateCardbox)
 //! performance
 //---------------------------------------------------------------------------
 void
-QuizDatabase::addToCardbox (const QString& question, bool estimateCardbox)
+QuizDatabase::addToCardbox(const QString& question, bool estimateCardbox)
 {
-    QuestionData data = getQuestionData (question);
+    QuestionData data = getQuestionData(question);
 
     if (data.valid) {
         // Question is already in the cardbox system, so leave it alone
@@ -278,10 +278,10 @@ QuizDatabase::addToCardbox (const QString& question, bool estimateCardbox)
 
     // Move scheduled time back by 16 hours, so questions in cardbox 0 will be
     // available immediately
-    data.nextScheduled = calculateNextScheduled (data.cardbox);
+    data.nextScheduled = calculateNextScheduled(data.cardbox);
     data.nextScheduled -= 60 * 60 * 16;
 
-    setQuestionData (question, data, true);
+    setQuestionData(question, data, true);
 }
 
 //---------------------------------------------------------------------------
@@ -292,19 +292,19 @@ QuizDatabase::addToCardbox (const QString& question, bool estimateCardbox)
 //! @param questions the questions to remove from the cardbox system
 //---------------------------------------------------------------------------
 void
-QuizDatabase::removeFromCardbox (const QStringList& questions)
+QuizDatabase::removeFromCardbox(const QStringList& questions)
 {
     QStringList qlist;
     QStringListIterator it (questions);
     while (it.hasNext()) {
-        qlist.append ("'" + it.next() + "'");
+        qlist.append("'" + it.next() + "'");
     }
     QString queryStr = "UPDATE questions SET cardbox=NULL, "
         "next_scheduled=NULL WHERE question IN (" +
-        qlist.join (", ") + ")";
+        qlist.join(", ") + ")";
 
     QSqlQuery query (*db);
-    query.prepare (queryStr);
+    query.prepare(queryStr);
     query.exec();
 }
 
@@ -316,11 +316,11 @@ QuizDatabase::removeFromCardbox (const QStringList& questions)
 //! @param question the question to remove from the cardbox system
 //---------------------------------------------------------------------------
 void
-QuizDatabase::removeFromCardbox (const QString& question)
+QuizDatabase::removeFromCardbox(const QString& question)
 {
     QStringList qlist;
-    qlist.append (question);
-    removeFromCardbox (qlist);
+    qlist.append(question);
+    removeFromCardbox(qlist);
 }
 
 //---------------------------------------------------------------------------
@@ -333,13 +333,13 @@ QuizDatabase::removeFromCardbox (const QString& question)
 //! @param cardbox the cardbox to place the question in
 //---------------------------------------------------------------------------
 void
-QuizDatabase::setCardbox (const QString& question, int cardbox)
+QuizDatabase::setCardbox(const QString& question, int cardbox)
 {
-    QuestionData data = getQuestionData (question);
+    QuestionData data = getQuestionData(question);
     data.valid = true;
     data.cardbox = cardbox;
-    data.nextScheduled = calculateNextScheduled (data.cardbox);
-    setQuestionData (question, data, true);
+    data.nextScheduled = calculateNextScheduled(data.cardbox);
+    setQuestionData(question, data, true);
 }
 
 //---------------------------------------------------------------------------
@@ -351,7 +351,7 @@ QuizDatabase::setCardbox (const QString& question, int cardbox)
 //! @param questions the list of questions to reschedule
 //---------------------------------------------------------------------------
 int
-QuizDatabase::rescheduleCardbox (const QStringList& questions)
+QuizDatabase::rescheduleCardbox(const QStringList& questions)
 {
     QString queryStr = "SELECT question, cardbox, next_scheduled "
         "FROM questions WHERE cardbox NOT NULL";
@@ -371,20 +371,20 @@ QuizDatabase::rescheduleCardbox (const QStringList& questions)
     }
 
     QSqlQuery query (*db);
-    query.prepare (queryStr);
+    query.prepare(queryStr);
     query.exec();
 
     QList<QString> selectedQuestions;
     QList<int> selectedCardboxes;
 
     while (query.next()) {
-        selectedQuestions.append (query.value (0).toString());
-        selectedCardboxes.append (query.value (1).toInt());
+        selectedQuestions.append(query.value(0).toString());
+        selectedCardboxes.append(query.value(1).toInt());
     }
 
     QSqlQuery updateQuery (*db);
-    updateQuery.prepare ("UPDATE questions SET next_scheduled=? "
-                         "WHERE question=?");
+    updateQuery.prepare("UPDATE questions SET next_scheduled=? "
+                        "WHERE question=?");
 
     QSqlQuery transactionQuery ("BEGIN TRANSACTION", *db);
 
@@ -393,15 +393,15 @@ QuizDatabase::rescheduleCardbox (const QStringList& questions)
     while (it.hasNext()) {
         QString question = it.next();
         int cardbox = jt.next();
-        int nextScheduled = calculateNextScheduled (cardbox);
+        int nextScheduled = calculateNextScheduled(cardbox);
         nextScheduled -= 60 * 60 * 16;
 
-        updateQuery.bindValue (0, nextScheduled);
-        updateQuery.bindValue (1, question);
+        updateQuery.bindValue(0, nextScheduled);
+        updateQuery.bindValue(1, question);
         updateQuery.exec();
     }
 
-    transactionQuery.exec ("END TRANSACTION");
+    transactionQuery.exec("END TRANSACTION");
 
     return selectedQuestions.size();
 }
@@ -417,7 +417,7 @@ QuizDatabase::rescheduleCardbox (const QStringList& questions)
 //! @param desiredBacklog the desired backlog size after shifting
 //---------------------------------------------------------------------------
 int
-QuizDatabase::shiftCardbox (const QStringList& questions, int desiredBacklog)
+QuizDatabase::shiftCardbox(const QStringList& questions, int desiredBacklog)
 {
     QString queryStr = "SELECT question, next_scheduled "
         "FROM questions WHERE cardbox NOT NULL";
@@ -439,7 +439,7 @@ QuizDatabase::shiftCardbox (const QStringList& questions, int desiredBacklog)
     queryStr += " ORDER BY next_scheduled";
 
     QSqlQuery query (*db);
-    query.prepare (queryStr);
+    query.prepare(queryStr);
     query.exec();
 
     QList<QString> selectedQuestions;
@@ -448,21 +448,21 @@ QuizDatabase::shiftCardbox (const QStringList& questions, int desiredBacklog)
     int index = 1;
     int pegNextScheduled = 0;
     while (query.next()) {
-        QString question = query.value (0).toString();
-        int nextScheduled = query.value (1).toInt();
-        selectedQuestions.append (question);
-        selectedNextScheduled.append (nextScheduled);
+        QString question = query.value(0).toString();
+        int nextScheduled = query.value(1).toInt();
+        selectedQuestions.append(question);
+        selectedNextScheduled.append(nextScheduled);
         if (index <= desiredBacklog)
             pegNextScheduled = nextScheduled;
         ++index;
     }
 
-    unsigned int now = std::time (0);
+    unsigned int now = std::time(0);
     int shiftSeconds = now - pegNextScheduled;
 
     QSqlQuery updateQuery (*db);
-    updateQuery.prepare ("UPDATE questions SET next_scheduled=? "
-                         "WHERE question=?");
+    updateQuery.prepare("UPDATE questions SET next_scheduled=? "
+                        "WHERE question=?");
 
     QSqlQuery transactionQuery ("BEGIN TRANSACTION", *db);
 
@@ -471,12 +471,12 @@ QuizDatabase::shiftCardbox (const QStringList& questions, int desiredBacklog)
     while (it.hasNext()) {
         QString question = it.next();
         int nextScheduled = jt.next() + shiftSeconds;
-        updateQuery.bindValue (0, nextScheduled);
-        updateQuery.bindValue (1, question);
+        updateQuery.bindValue(0, nextScheduled);
+        updateQuery.bindValue(1, question);
         updateQuery.exec();
     }
 
-    transactionQuery.exec ("END TRANSACTION");
+    transactionQuery.exec("END TRANSACTION");
 
     return selectedQuestions.size();
 }
@@ -493,18 +493,18 @@ QStringList
 QuizDatabase::getAllReadyQuestions()
 {
     QStringList readyQuestions;
-    unsigned int now = std::time (0);
+    unsigned int now = std::time(0);
 
     QString queryStr = "SELECT question FROM questions WHERE "
-        "next_scheduled <= " + QString::number (now) +
+        "next_scheduled <= " + QString::number(now) +
         " ORDER BY next_scheduled";
 
     QSqlQuery query (*db);
-    query.prepare (queryStr);
+    query.prepare(queryStr);
     query.exec();
 
     while (query.next()) {
-        readyQuestions.append (query.value (0).toString());
+        readyQuestions.append(query.value(0).toString());
     }
 
     return readyQuestions;
@@ -520,11 +520,11 @@ QuizDatabase::getAllReadyQuestions()
 //! @return the list of ready questions, in scheduled order
 //---------------------------------------------------------------------------
 QStringList
-QuizDatabase::getReadyQuestions (const QStringList& questions)
+QuizDatabase::getReadyQuestions(const QStringList& questions)
 {
     QStringList readyQuestions;
 
-    unsigned int now = std::time (0);
+    unsigned int now = std::time(0);
 
     QString inString;
     QString question;
@@ -538,15 +538,15 @@ QuizDatabase::getReadyQuestions (const QStringList& questions)
     inString += ")";
 
     QString queryStr = "SELECT question FROM questions WHERE "
-        "next_scheduled <= " + QString::number (now) + " AND "
+        "next_scheduled <= " + QString::number(now) + " AND "
         "question IN " + inString + " ORDER BY next_scheduled";
 
     QSqlQuery query (*db);
-    query.prepare (queryStr);
+    query.prepare(queryStr);
     query.exec();
 
     while (query.next()) {
-        readyQuestions.append (query.value (0).toString());
+        readyQuestions.append(query.value(0).toString());
     }
 
     return readyQuestions;
@@ -561,43 +561,43 @@ QuizDatabase::getReadyQuestions (const QStringList& questions)
 //! @return the associated data
 //---------------------------------------------------------------------------
 QuizDatabase::QuestionData
-QuizDatabase::getQuestionData (const QString& question)
+QuizDatabase::getQuestionData(const QString& question)
 {
     QuestionData data;
 
     QSqlQuery query (*db);
-    query.prepare ("SELECT correct, incorrect, streak, last_correct, "
-                   "difficulty, cardbox, next_scheduled "
-                   "FROM questions WHERE question=?");
-    query.bindValue (0, question);
+    query.prepare("SELECT correct, incorrect, streak, last_correct, "
+                  "difficulty, cardbox, next_scheduled "
+                  "FROM questions WHERE question=?");
+    query.bindValue(0, question);
     query.exec();
 
     if (query.next()) {
-        QVariant variant = query.value (0);
+        QVariant variant = query.value(0);
         if (!variant.isNull())
             data.numCorrect = variant.toInt();
 
-        variant = query.value (1);
+        variant = query.value(1);
         if (!variant.isNull())
             data.numIncorrect = variant.toInt();
 
-        variant = query.value (2);
+        variant = query.value(2);
         if (!variant.isNull())
             data.streak = variant.toInt();
 
-        variant = query.value (3);
+        variant = query.value(3);
         if (!variant.isNull())
             data.lastCorrect = variant.toInt();
 
-        variant = query.value (4);
+        variant = query.value(4);
         if (!variant.isNull())
             data.difficulty = variant.toInt();
 
-        variant = query.value (5);
+        variant = query.value(5);
         if (!variant.isNull())
             data.cardbox = variant.toInt();
 
-        variant = query.value (6);
+        variant = query.value(6);
         if (!variant.isNull())
             data.nextScheduled = variant.toInt();
 
@@ -630,7 +630,7 @@ QuizDatabase::getDatabase() const
 //! @return the next scheduled appearance of the question
 //---------------------------------------------------------------------------
 int
-QuizDatabase::calculateNextScheduled (int cardbox)
+QuizDatabase::calculateNextScheduled(int cardbox)
 {
     int daySeconds = 60 * 60 * 24;
     int halfDaySeconds = daySeconds / 2;
@@ -659,11 +659,11 @@ QuizDatabase::calculateNextScheduled (int cardbox)
     // the day.  For cardbox 0, the window is only 4 hours, so the question is
     // scheduled between 8 and 16 hours in the future.
     if (randDays)
-        numDays += rng.rand (randDays * 2) - randDays;
-    unsigned int now = std::time (0);
+        numDays += rng.rand(randDays * 2) - randDays;
+    unsigned int now = std::time(0);
     int nextSeconds = (daySeconds * numDays) - halfDaySeconds;
     int halfWindow = cardbox ? halfDaySeconds : 60 * 60 * 4;
-    int randSeconds = rng.rand (2 * halfWindow) - halfWindow;
+    int randSeconds = rng.rand(2 * halfWindow) - halfWindow;
     int nextScheduled = now + nextSeconds + randSeconds;
     return nextScheduled;
 }
@@ -678,12 +678,12 @@ QuizDatabase::calculateNextScheduled (int cardbox)
 //! @param updateCardbox whether to update the cardbox information
 //---------------------------------------------------------------------------
 void
-QuizDatabase::setQuestionData (const QString& question, const QuestionData&
-                               data, bool updateCardbox)
+QuizDatabase::setQuestionData(const QString& question, const QuestionData&
+                              data, bool updateCardbox)
 {
     QSqlQuery query (*db);
-    query.prepare ("SELECT question FROM questions WHERE question=?");
-    query.bindValue (0, question);
+    query.prepare("SELECT question FROM questions WHERE question=?");
+    query.bindValue(0, question);
     query.exec();
 
     // Question data already exists, so update it
@@ -697,27 +697,27 @@ QuizDatabase::setQuestionData (const QString& question, const QuestionData&
         }
         queryStr += "WHERE question=?";
 
-        query.prepare (queryStr);
-        query.bindValue (0, data.numCorrect);
-        query.bindValue (1, data.numIncorrect);
-        query.bindValue (2, data.streak);
-        query.bindValue (3, data.lastCorrect);
+        query.prepare(queryStr);
+        query.bindValue(0, data.numCorrect);
+        query.bindValue(1, data.numIncorrect);
+        query.bindValue(2, data.streak);
+        query.bindValue(3, data.lastCorrect);
         // XXX: Fix difficulty ratings!
-        query.bindValue (4, data.difficulty);
+        query.bindValue(4, data.difficulty);
 
         if (updateCardbox) {
             if (data.cardbox >= 0) {
-                query.bindValue (5, data.cardbox);
-                query.bindValue (6, data.nextScheduled);
+                query.bindValue(5, data.cardbox);
+                query.bindValue(6, data.nextScheduled);
             }
             else {
-                query.bindValue (5, QVariant());
-                query.bindValue (6, QVariant());
+                query.bindValue(5, QVariant());
+                query.bindValue(6, QVariant());
             }
             questionBindNum = 7;
         }
 
-        query.bindValue (questionBindNum, question);
+        query.bindValue(questionBindNum, question);
         query.exec();
     }
 
@@ -734,17 +734,17 @@ QuizDatabase::setQuestionData (const QString& question, const QuestionData&
         }
         queryStr += ")";
 
-        query.prepare (queryStr);
-        query.bindValue (0, question);
-        query.bindValue (1, data.numCorrect);
-        query.bindValue (2, data.numIncorrect);
-        query.bindValue (3, data.streak);
-        query.bindValue (4, data.lastCorrect);
-        query.bindValue (5, data.difficulty);
+        query.prepare(queryStr);
+        query.bindValue(0, question);
+        query.bindValue(1, data.numCorrect);
+        query.bindValue(2, data.numIncorrect);
+        query.bindValue(3, data.streak);
+        query.bindValue(4, data.lastCorrect);
+        query.bindValue(5, data.difficulty);
 
         if (updateCardbox) {
-            query.bindValue (6, data.cardbox);
-            query.bindValue (7, data.nextScheduled);
+            query.bindValue(6, data.cardbox);
+            query.bindValue(7, data.nextScheduled);
         }
 
         query.exec();

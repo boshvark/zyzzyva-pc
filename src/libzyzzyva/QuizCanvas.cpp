@@ -3,7 +3,7 @@
 //
 // A drawing surface for quiz questions.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -43,7 +43,7 @@ const QString LABEL_SHOW_STRING = "show";
 //! @return true if a is to the left of b
 //---------------------------------------------------------------------------
 bool
-xLessThan (const QLabel* a, const QLabel* b)
+xLessThan(const QLabel* a, const QLabel* b)
 {
     return (a->x() < b->x());
 }
@@ -55,13 +55,13 @@ xLessThan (const QLabel* a, const QLabel* b)
 //
 //! @param parent the parent widget
 //---------------------------------------------------------------------------
-QuizCanvas::QuizCanvas (QWidget* parent)
-    : QWidget(parent), numCanvasTiles (0), minCanvasTiles (7),
-      minCanvasWidth (300), widthHint (minCanvasWidth), heightHint (100),
-      dragDropEnabled (true)
+QuizCanvas::QuizCanvas(QWidget* parent)
+    : QWidget(parent), numCanvasTiles(0), minCanvasTiles(7),
+      minCanvasWidth(300), widthHint(minCanvasWidth), heightHint(100),
+      dragDropEnabled(true)
 {
-    setAcceptDrops (true);
-    setAutoFillBackground (true);
+    setAcceptDrops(true);
+    setAutoFillBackground(true);
 }
 
 //---------------------------------------------------------------------------
@@ -72,7 +72,7 @@ QuizCanvas::QuizCanvas (QWidget* parent)
 void
 QuizCanvas::clear()
 {
-    setText (QString::null);
+    setText(QString::null);
 }
 
 //---------------------------------------------------------------------------
@@ -83,38 +83,38 @@ QuizCanvas::clear()
 //! @param text the question text
 //---------------------------------------------------------------------------
 void
-QuizCanvas::setText (const QString& text)
+QuizCanvas::setText(const QString& text)
 {
     question = text;
-    setNumCanvasTiles (question.length());
+    setNumCanvasTiles(question.length());
 
     // Remove existing labels
     QList<QLabel*> labels = findChildren<QLabel*>();
     QListIterator<QLabel*> it (labels);
     while (it.hasNext()) {
         QLabel* label = it.next();
-        label->setObjectName (QString::null);
+        label->setObjectName(QString::null);
         label->close();
     }
 
     QMap<QString, QPixmap>::iterator pixmap;
     for (int i = 0; (i < numCanvasTiles) &&
-                    (i < int (question.length())); ++i)
+                    (i < int(question.length())); ++i)
     {
-        QString letter = QString (question[i]);
+        QString letter = QString(question[i]);
         if (letter == "?")
             letter = "_";
-        pixmap = tileImages.find (letter);
+        pixmap = tileImages.find(letter);
         if (pixmap == tileImages.end()) {
-            //qWarning ("Did not find letter '" + letter +
-            //            "' in tiles map!");
+            //qWarning("Did not find letter '" + letter +
+            //         "' in tiles map!");
         }
         else {
-            QLabel* label = new QLabel (this);
-            label->setObjectName (LABEL_SHOW_STRING);
-            label->setPixmap (*pixmap);
-            label->move (i, QUIZ_TILE_MARGIN);
-            label->setAttribute (Qt::WA_DeleteOnClose);
+            QLabel* label = new QLabel(this);
+            label->setObjectName(LABEL_SHOW_STRING);
+            label->setPixmap(*pixmap);
+            label->move(i, QUIZ_TILE_MARGIN);
+            label->setAttribute(Qt::WA_DeleteOnClose);
         }
     }
 
@@ -145,7 +145,7 @@ QuizCanvas::clearTileTheme()
 //! @param theme the name of the theme
 //---------------------------------------------------------------------------
 void
-QuizCanvas::setTileTheme (const QString& theme)
+QuizCanvas::setTileTheme(const QString& theme)
 {
     clearTileTheme();
     if (!theme.isEmpty()) {
@@ -153,14 +153,14 @@ QuizCanvas::setTileTheme (const QString& theme)
 
         QStringList tilesList;
         for (char c = 'A'; c <= 'Z'; ++c)
-            tilesList << QString (QChar (c));
+            tilesList << QString(QChar(c));
         tilesList << "_";
 
         QStringList::iterator it;
         for (it = tilesList.begin(); it != tilesList.end(); ++it) {
             QImage image (tilesDir + "/" + theme + "/" + *it + ".png");
-            QPixmap pixmap = QPixmap::fromImage (image);
-            tileImages.insert (*it, pixmap);
+            QPixmap pixmap = QPixmap::fromImage(image);
+            tileImages.insert(*it, pixmap);
 
             if (pixmap.width() > maxTileWidth)
                 maxTileWidth = pixmap.width();
@@ -178,7 +178,7 @@ QuizCanvas::setTileTheme (const QString& theme)
 //! @param num the number of tiles
 //---------------------------------------------------------------------------
 void
-QuizCanvas::setNumCanvasTiles (int num)
+QuizCanvas::setNumCanvasTiles(int num)
 {
     if (num < minCanvasTiles)
         num = minCanvasTiles;
@@ -186,7 +186,7 @@ QuizCanvas::setNumCanvasTiles (int num)
     widthHint = (2 * QUIZ_TILE_MARGIN) + (num * maxTileWidth) +
                 ((num - 1) * QUIZ_TILE_SPACING);
     heightHint = (2 * QUIZ_TILE_MARGIN) + maxTileHeight;
-    resize (widthHint, heightHint);
+    resize(widthHint, heightHint);
     updateGeometry();
 }
 
@@ -201,11 +201,11 @@ void
 QuizCanvas::setToMinimumSize()
 {
     if (tileImages.empty()) {
-        resize (minCanvasWidth, (2 * QUIZ_TILE_MARGIN) + maxTileHeight);
+        resize(minCanvasWidth, (2 * QUIZ_TILE_MARGIN) + maxTileHeight);
         updateGeometry();
     }
     else
-        setNumCanvasTiles (minCanvasTiles);
+        setNumCanvasTiles(minCanvasTiles);
 }
 
 //---------------------------------------------------------------------------
@@ -229,7 +229,7 @@ QuizCanvas::hasTileImages()
 QSize
 QuizCanvas::minimumSizeHint() const
 {
-    return QSize (widthHint, heightHint);
+    return QSize(widthHint, heightHint);
 }
 
 //---------------------------------------------------------------------------
@@ -240,7 +240,7 @@ QuizCanvas::minimumSizeHint() const
 QSize
 QuizCanvas::sizeHint() const
 {
-    return QSize (widthHint, heightHint);
+    return QSize(widthHint, heightHint);
 }
 
 //---------------------------------------------------------------------------
@@ -251,12 +251,11 @@ QuizCanvas::sizeHint() const
 //! @param event the drag enter event
 //---------------------------------------------------------------------------
 void
-QuizCanvas::dragEnterEvent (QDragEnterEvent* event)
+QuizCanvas::dragEnterEvent(QDragEnterEvent* event)
 {
-    if (event->mimeData()->hasFormat (QUIZ_TILE_MIME_TYPE))
-    {
+    if (event->mimeData()->hasFormat(QUIZ_TILE_MIME_TYPE)) {
         if (event->source() == this) {
-            event->setDropAction (Qt::MoveAction);
+            event->setDropAction(Qt::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -274,10 +273,10 @@ QuizCanvas::dragEnterEvent (QDragEnterEvent* event)
 //! @param event the drop event
 //---------------------------------------------------------------------------
 void
-QuizCanvas::dropEvent (QDropEvent* event)
+QuizCanvas::dropEvent(QDropEvent* event)
 {
-    if (event->mimeData()->hasFormat (QUIZ_TILE_MIME_TYPE)) {
-        QByteArray itemData = event->mimeData()->data (QUIZ_TILE_MIME_TYPE);
+    if (event->mimeData()->hasFormat(QUIZ_TILE_MIME_TYPE)) {
+        QByteArray itemData = event->mimeData()->data(QUIZ_TILE_MIME_TYPE);
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
         QPixmap pixmap;
@@ -285,9 +284,9 @@ QuizCanvas::dropEvent (QDropEvent* event)
         QPoint offset;
         dataStream >> pixmap >> sourcePos >> offset;
 
-        QLabel* label = new QLabel (this);
-        label->setObjectName (LABEL_SHOW_STRING);
-        label->setPixmap (pixmap);
+        QLabel* label = new QLabel(this);
+        label->setObjectName(LABEL_SHOW_STRING);
+        label->setPixmap(pixmap);
         QPoint dropPos = event->pos() - offset;
 
         // Move the tile an extra half tile width in the direction of the
@@ -295,12 +294,12 @@ QuizCanvas::dropEvent (QDropEvent* event)
         // more than halfway onto the spot.
         int extraMove = (sourcePos.x() < dropPos.x() ? maxTileWidth / 2
                                                      : -maxTileWidth / 2);
-        dropPos.setX (dropPos.x() + extraMove);
-        label->move (dropPos);
-        label->setAttribute (Qt::WA_DeleteOnClose);
+        dropPos.setX(dropPos.x() + extraMove);
+        label->move(dropPos);
+        label->setAttribute(Qt::WA_DeleteOnClose);
 
         if (event->source() == this) {
-            event->setDropAction (Qt::MoveAction);
+            event->setDropAction(Qt::MoveAction);
             event->accept();
         } else {
             event->acceptProposedAction();
@@ -319,12 +318,12 @@ QuizCanvas::dropEvent (QDropEvent* event)
 //! @param event the mouse press event
 //---------------------------------------------------------------------------
 void
-QuizCanvas::mousePressEvent (QMouseEvent* event)
+QuizCanvas::mousePressEvent(QMouseEvent* event)
 {
     if (!dragDropEnabled)
         return;
 
-    QLabel* child = static_cast<QLabel*>(childAt (event->pos()));
+    QLabel* child = static_cast<QLabel*>(childAt(event->pos()));
     if (!child)
         return;
 
@@ -332,35 +331,35 @@ QuizCanvas::mousePressEvent (QMouseEvent* event)
 
     QByteArray itemData;
     QDataStream dataStream (&itemData, QIODevice::WriteOnly);
-    dataStream << pixmap << QPoint (event->pos())
-               << QPoint (event->pos() - child->pos());
+    dataStream << pixmap << QPoint(event->pos())
+               << QPoint(event->pos() - child->pos());
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData (QUIZ_TILE_MIME_TYPE, itemData);
+    mimeData->setData(QUIZ_TILE_MIME_TYPE, itemData);
 
-    QDrag *drag = new QDrag (this);
-    drag->setMimeData (mimeData);
-    drag->setPixmap (pixmap);
-    drag->setHotSpot (event->pos() - child->pos());
+    QDrag *drag = new QDrag(this);
+    drag->setMimeData(mimeData);
+    drag->setPixmap(pixmap);
+    drag->setHotSpot(event->pos() - child->pos());
 
-    QColor bgColor = palette().color (QPalette::Window);
+    QColor bgColor = palette().color(QPalette::Window);
 
     QPixmap tempPixmap = pixmap;
     QPainter painter;
-    painter.begin (&tempPixmap);
-    painter.fillRect (pixmap.rect(), QColor(bgColor.red(), bgColor.green(),
-                                            bgColor.blue(), 127));
+    painter.begin(&tempPixmap);
+    painter.fillRect(pixmap.rect(), QColor(bgColor.red(), bgColor.green(),
+                                           bgColor.blue(), 127));
     painter.end();
 
-    child->setPixmap (tempPixmap);
+    child->setPixmap(tempPixmap);
 
-    if (drag->start (Qt::CopyAction | Qt::MoveAction) == Qt::MoveAction) {
-        child->setObjectName (QString::null);
+    if (drag->start(Qt::CopyAction | Qt::MoveAction) == Qt::MoveAction) {
+        child->setObjectName(QString::null);
         child->close();
     }
     else {
         child->show();
-        child->setPixmap (pixmap);
+        child->setPixmap(pixmap);
     }
 
     squeezeTileImages();
@@ -375,7 +374,7 @@ void
 QuizCanvas::squeezeTileImages()
 {
     QList<QLabel*> labels = findChildren<QLabel*>(LABEL_SHOW_STRING);
-    qSort (labels.begin(), labels.end(), xLessThan);
+    qSort(labels.begin(), labels.end(), xLessThan);
 
     int x = QUIZ_TILE_MARGIN + ((numCanvasTiles - labels.size()) *
             (maxTileWidth + QUIZ_TILE_SPACING)) / 2;
@@ -384,7 +383,7 @@ QuizCanvas::squeezeTileImages()
     QListIterator<QLabel*> it (labels);
     while (it.hasNext()) {
         QLabel* label = it.next();
-        label->move (x, QUIZ_TILE_MARGIN);
+        label->move(x, QUIZ_TILE_MARGIN);
         x += maxTileWidth + QUIZ_TILE_SPACING;
     }
 

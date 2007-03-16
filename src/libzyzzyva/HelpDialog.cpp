@@ -3,7 +3,7 @@
 //
 // A help browser dialog.
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-HelpDialog::HelpDialog (const QString& path, QObject* parent)
-    : QAssistantClient (path, parent)
+HelpDialog::HelpDialog(const QString& path, QObject* parent)
+    : QAssistantClient(path, parent)
 {
     QString mainHelpFile = Auxil::getHelpDir() + "/zyzzyva.dcf";
     QStringList args;
     args << "-profile" << mainHelpFile;
-    setArguments (args);
+    setArguments(args);
 }

@@ -3,7 +3,7 @@
 //
 // A form for looking up and displaying word definitions.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -36,13 +36,13 @@ class DefineForm : public ActionForm
 {
     Q_OBJECT
     public:
-    DefineForm (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
+    DefineForm(WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
     QIcon getIcon() const;
     QString getTitle() const;
     QString getStatusString() const;
 
     public slots:
-    void wordChanged (const QString& word);
+    void wordChanged(const QString& word);
     void defineWord();
     void selectInputArea();
 

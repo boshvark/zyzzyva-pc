@@ -3,7 +3,7 @@
 //
 // A model for representing word lists.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -45,10 +45,10 @@ class WordTableModel : public QAbstractTableModel
 
     class WordItem {
         public:
-        WordItem() : type (WordNormal) { init(); }
-        WordItem (const QString& w, WordType t = WordNormal,
-                  const QString& wc = QString::null)
-            : word (w), type (t), wildcard (wc) { init(); }
+        WordItem() : type(WordNormal) { init(); }
+        WordItem(const QString& w, WordType t = WordNormal,
+                 const QString& wc = QString::null)
+            : word(w), type(t), wildcard(wc) { init(); }
         void init();
         QString getWord() const { return word; }
         WordType getType() const { return type; }
@@ -58,18 +58,18 @@ class WordTableModel : public QAbstractTableModel
         bool getFrontParentHook() const { return frontParentHook; }
         bool getBackParentHook() const { return backParentHook; }
         int getProbabilityOrder() const { return probabilityOrder; }
-        void setWord (const QString& w) { word = w; }
-        void setType (WordType t) { type = t; }
-        void setWildcard (const QString& w) { wildcard = w; }
-        void setProbabilityOrder (int p);
+        void setWord(const QString& w) { word = w; }
+        void setType(WordType t) { type = t; }
+        void setWildcard(const QString& w) { wildcard = w; }
+        void setProbabilityOrder(int p);
 
-        void setHooks (const QString& front, const QString& back);
-        void setParentHooks (bool front, bool back);
+        void setHooks(const QString& front, const QString& back);
+        void setParentHooks(bool front, bool back);
         bool hooksAreValid() const { return hooksValid; }
         bool parentHooksAreValid() const { return parentHooksValid; }
         bool probabilityOrderIsValid() const { return probabilityOrderValid; }
 
-        bool operator== (const WordItem& other) const {
+        bool operator==(const WordItem& other) const {
             return ((word == other.word) && (type == other.type));
         }
         bool operator< (const WordItem& other) const {
@@ -92,26 +92,26 @@ class WordTableModel : public QAbstractTableModel
 
     Q_OBJECT
     public:
-    WordTableModel (WordEngine* e, QObject* parent = 0);
+    WordTableModel(WordEngine* e, QObject* parent = 0);
     ~WordTableModel();
 
     bool clear();
-    bool addWord (const WordItem& word, bool updateLastAdded = true);
-    bool addWords (const QList<WordItem>& words);
-    bool removeWord (const QString& word);
+    bool addWord(const WordItem& word, bool updateLastAdded = true);
+    bool addWords(const QList<WordItem>& words);
+    bool removeWord(const QString& word);
 
-    int rowCount (const QModelIndex& parent = QModelIndex()) const;
-    int columnCount (const QModelIndex& parent = QModelIndex()) const;
-    QVariant data (const QModelIndex& index, int role = Qt::DisplayRole) const;
-    QVariant headerData (int section, Qt::Orientation orientation, int role =
-                         Qt::DisplayRole) const;
-    bool insertRows (int row, int count, const QModelIndex& parent =
-                     QModelIndex());
-    bool removeRows (int row, int count, const QModelIndex& parent =
-                     QModelIndex());
-    bool setData (const QModelIndex& index, const QVariant& value, int role =
-                  Qt::EditRole);
-    void sort (int column, Qt::SortOrder order = Qt::AscendingOrder);
+    int rowCount(const QModelIndex& parent = QModelIndex()) const;
+    int columnCount(const QModelIndex& parent = QModelIndex()) const;
+    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const;
+    QVariant headerData(int section, Qt::Orientation orientation, int role =
+                        Qt::DisplayRole) const;
+    bool insertRows(int row, int count, const QModelIndex& parent =
+                    QModelIndex());
+    bool removeRows(int row, int count, const QModelIndex& parent =
+                    QModelIndex());
+    bool setData(const QModelIndex& index, const QVariant& value, int role =
+                 Qt::EditRole);
+    void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
     int getLastAddedIndex() const { return lastAddedIndex; }
     void clearLastAddedIndex();
 
@@ -119,12 +119,12 @@ class WordTableModel : public QAbstractTableModel
     void wordsChanged();
 
     private:
-    void addWordPrivate (const WordItem& word, int row);
+    void addWordPrivate(const WordItem& word, int row);
     void markAlternates();
-    bool isFrontHook (const QString& word) const;
-    bool isBackHook (const QString& word) const;
-    QString getFrontHookLetters (const QString& word) const;
-    QString getBackHookLetters (const QString& word) const;
+    bool isFrontHook(const QString& word) const;
+    bool isBackHook(const QString& word) const;
+    QString getFrontHookLetters(const QString& word) const;
+    QString getBackHookLetters(const QString& word) const;
 
     private:
     WordEngine* wordEngine;

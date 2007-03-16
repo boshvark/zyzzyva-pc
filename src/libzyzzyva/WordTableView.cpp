@@ -3,7 +3,7 @@
 //
 // A class derived from QTableView, used to display word lists.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -57,22 +57,22 @@ using namespace std;
 //
 //! @param parent the parent object
 //---------------------------------------------------------------------------
-WordTableView::WordTableView (WordEngine* e, QWidget* parent)
-    : QTreeView (parent), wordEngine (e)
+WordTableView::WordTableView(WordEngine* e, QWidget* parent)
+    : QTreeView(parent), wordEngine(e)
 {
-    setFocusPolicy (Qt::NoFocus);
-    setSelectionBehavior (QAbstractItemView::SelectRows);
-    setSelectionMode (QAbstractItemView::SingleSelection);
-    setRootIsDecorated (false);
+    setFocusPolicy(Qt::NoFocus);
+    setSelectionBehavior(QAbstractItemView::SelectRows);
+    setSelectionMode(QAbstractItemView::SingleSelection);
+    setRootIsDecorated(false);
 
-    WordTableDelegate* delegate = new WordTableDelegate (this);
-    setItemDelegate (delegate);
+    WordTableDelegate* delegate = new WordTableDelegate(this);
+    setItemDelegate(delegate);
 
     // FIXME: Once Trolltech fixes the assert in QHeaderView, continue with
     // statements like these
     //if (!MainSettings::getWordListShowHooks()) {
-    //    setColumnHidden (WordTableModel::FRONT_HOOK_COLUMN, true);
-    //    setColumnHidden (WordTableModel::BACK_HOOK_COLUMN, true);
+    //    setColumnHidden(WordTableModel::FRONT_HOOK_COLUMN, true);
+    //    setColumnHidden(WordTableModel::BACK_HOOK_COLUMN, true);
     //}
 }
 
@@ -85,9 +85,9 @@ void
 WordTableView::resizeItemsToContents()
 {
 //    for (int i = 0; i < model()->rowCount(); ++i)
-//        resizeRowToContents (i);
+//        resizeRowToContents(i);
     for (int i = 0; i < model()->columnCount(); ++i)
-        resizeColumnToContents (i);
+        resizeColumnToContents(i);
 }
 
 //---------------------------------------------------------------------------
@@ -99,11 +99,11 @@ void
 WordTableView::viewDefinition()
 {
     QModelIndex index = currentIndex();
-    index = index.sibling (index.row(), WordTableModel::WORD_COLUMN);
-    QString word = model()->data (index, Qt::EditRole).toString();
-    DefinitionDialog* dialog = new DefinitionDialog (wordEngine, word, this);
-    Q_CHECK_PTR (dialog);
-    dialog->setAttribute (Qt::WA_DeleteOnClose);
+    index = index.sibling(index.row(), WordTableModel::WORD_COLUMN);
+    QString word = model()->data(index, Qt::EditRole).toString();
+    DefinitionDialog* dialog = new DefinitionDialog(wordEngine, word, this);
+    Q_CHECK_PTR(dialog);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->show();
 }
 
@@ -115,16 +115,16 @@ WordTableView::viewDefinition()
 //! @param variation the variation to display
 //---------------------------------------------------------------------------
 void
-WordTableView::viewVariation (int variation)
+WordTableView::viewVariation(int variation)
 {
     QModelIndex index = currentIndex();
-    index = index.sibling (index.row(), WordTableModel::WORD_COLUMN);
-    QString word = model()->data (index, Qt::EditRole).toString();
+    index = index.sibling(index.row(), WordTableModel::WORD_COLUMN);
+    QString word = model()->data(index, Qt::EditRole).toString();
     WordVariationType type = static_cast<WordVariationType>(variation);
-    WordVariationDialog* dialog = new WordVariationDialog (wordEngine, word,
-                                                           type, this);
-    dialog->setAttribute (Qt::WA_DeleteOnClose);
-    Q_CHECK_PTR (dialog);
+    WordVariationDialog* dialog = new WordVariationDialog(wordEngine, word,
+                                                          type, this);
+    dialog->setAttribute(Qt::WA_DeleteOnClose);
+    Q_CHECK_PTR(dialog);
     dialog->show();
 }
 
@@ -141,13 +141,13 @@ WordTableView::exportRequested()
     if (model()->rowCount() == 0) {
         QString caption = "Cannot Save Word List";
         QString message = "Cannot save word list:\nNo words to save.";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
-    WordListSaveDialog* dialog = new WordListSaveDialog (this);
-    Q_CHECK_PTR (dialog);
+    WordListSaveDialog* dialog = new WordListSaveDialog(this);
+    Q_CHECK_PTR(dialog);
     int code = dialog->exec();
     if (code != QDialog::Accepted) {
         delete dialog;
@@ -161,39 +161,39 @@ WordTableView::exportRequested()
     if (attributes.empty())
         return;
 
-    QString filename = QFileDialog::getSaveFileName (this, "Save Word List",
+    QString filename = QFileDialog::getSaveFileName(this, "Save Word List",
         Auxil::getUserWordsDir() + "/saved", "Text Files (*.txt)");
 
     if (filename.isEmpty())
         return;
 
-    if (!filename.endsWith (".txt", Qt::CaseInsensitive)) {
+    if (!filename.endsWith(".txt", Qt::CaseInsensitive)) {
         filename += ".txt";
-        if (QFile::exists (filename)) {
+        if (QFile::exists(filename)) {
             QFileInfo fileInfo (filename);
             QString caption = "File Exists";
             QString message = "An item named \"" + fileInfo.fileName() +
                 "\" already exists in this location.  Do you want to replace "
                 "it with the one you are saving?";
-            message = Auxil::dialogWordWrap (message);
-            int code = QMessageBox::warning (this, caption, message,
-                                             QMessageBox::Ok |
-                                             QMessageBox::Cancel,
-                                             QMessageBox::Cancel);
+            message = Auxil::dialogWordWrap(message);
+            int code = QMessageBox::warning(this, caption, message,
+                                            QMessageBox::Ok |
+                                            QMessageBox::Cancel,
+                                            QMessageBox::Cancel);
             if (code != QMessageBox::Ok)
                 return;
         }
     }
 
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString error;
     bool ok = exportFile (filename, format, attributes, &error);
     QApplication::restoreOverrideCursor();
     if (!ok) {
         QString caption = "Error Saving Word List";
         QString message = "Cannot save word list:\n" + error + ".";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
     }
 }
 
@@ -211,27 +211,27 @@ WordTableView::createQuizRequested()
     if (numWords == 0) {
         QString caption = "Error Creating Quiz";
         QString message = "Cannot create quiz:\nNo words in the list.";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
     }
 
     QuizSpec quizSpec;
     SearchSpec searchSpec;
     SearchCondition searchCondition;
     QString searchString;
-    QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
+    QModelIndex index = model()->index(0, WordTableModel::WORD_COLUMN);
     for (int i = 0; i < numWords; ) {
         if (!searchString.isEmpty())
             searchString += " ";
-        searchString += model()->data (index, Qt::EditRole).toString();
-        index = index.sibling (++i, WordTableModel::WORD_COLUMN);
+        searchString += model()->data(index, Qt::EditRole).toString();
+        index = index.sibling(++i, WordTableModel::WORD_COLUMN);
     }
 
     searchCondition.type = SearchCondition::InWordList;
     searchCondition.stringValue = searchString;
-    searchSpec.conditions.push_back (searchCondition);
-    quizSpec.setSearchSpec (searchSpec);
-    MainWindow::getInstance()->newQuizFormInteractive (quizSpec);
+    searchSpec.conditions.push_back(searchCondition);
+    quizSpec.setSearchSpec(searchSpec);
+    MainWindow::getInstance()->newQuizFormInteractive(quizSpec);
 }
 
 //---------------------------------------------------------------------------
@@ -248,22 +248,22 @@ WordTableView::addToCardboxRequested()
         QString caption = "Error Adding Words to Cardbox";
         QString message = "Cannot add words to cardbox:\n"
             "No words in the list.";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
-    CardboxAddDialog* dialog = new CardboxAddDialog (this);
-    Q_CHECK_PTR (dialog);
+    CardboxAddDialog* dialog = new CardboxAddDialog(this);
+    Q_CHECK_PTR(dialog);
 
     QStringList words;
-    QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
+    QModelIndex index = model()->index(0, WordTableModel::WORD_COLUMN);
     for (int i = 0; i < numWords; ) {
-        words.append (model()->data (index, Qt::EditRole).toString());
-        index = index.sibling (++i, WordTableModel::WORD_COLUMN);
+        words.append(model()->data(index, Qt::EditRole).toString());
+        index = index.sibling(++i, WordTableModel::WORD_COLUMN);
     }
 
-    dialog->setWords (words);
+    dialog->setWords(words);
 
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
@@ -272,16 +272,16 @@ WordTableView::addToCardboxRequested()
         QString quizType = dialog->getQuizType();
         bool estimateCardbox = dialog->getEstimateCardbox();
 
-        QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-        bool ok = addToCardbox (words, lexicon, quizType, estimateCardbox);
+        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        bool ok = addToCardbox(words, lexicon, quizType, estimateCardbox);
         QApplication::restoreOverrideCursor();
 
         if (!ok) {
             QString caption = "Error Adding Words to Cardbox";
             QString message = "An error occurred while adding words to the "
                 "cardbox system.";
-            message = Auxil::dialogWordWrap (message);
-            QMessageBox::warning (this, caption, message);
+            message = Auxil::dialogWordWrap(message);
+            QMessageBox::warning(this, caption, message);
         }
     }
 
@@ -302,22 +302,22 @@ WordTableView::removeFromCardboxRequested()
         QString caption = "Error Removing Words from Cardbox";
         QString message = "Cannot remove words from cardbox:\n"
             "No words in the list.";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
-    CardboxRemoveDialog* dialog = new CardboxRemoveDialog (this);
-    Q_CHECK_PTR (dialog);
+    CardboxRemoveDialog* dialog = new CardboxRemoveDialog(this);
+    Q_CHECK_PTR(dialog);
 
     QStringList words;
-    QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
+    QModelIndex index = model()->index(0, WordTableModel::WORD_COLUMN);
     for (int i = 0; i < numWords; ) {
-        words.append (model()->data (index, Qt::EditRole).toString());
-        index = index.sibling (++i, WordTableModel::WORD_COLUMN);
+        words.append(model()->data(index, Qt::EditRole).toString());
+        index = index.sibling(++i, WordTableModel::WORD_COLUMN);
     }
 
-    dialog->setWords (words);
+    dialog->setWords(words);
 
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
@@ -325,16 +325,16 @@ WordTableView::removeFromCardboxRequested()
         QString lexicon = MainSettings::getAutoImportLexicon();
         QString quizType = dialog->getQuizType();
 
-        QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-        bool ok = removeFromCardbox (words, lexicon, quizType);
+        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        bool ok = removeFromCardbox(words, lexicon, quizType);
         QApplication::restoreOverrideCursor();
 
         if (!ok) {
             QString caption = "Error Removing Words from Cardbox";
             QString message = "An error occurred while removing words "
                 "from the cardbox system.";
-            message = Auxil::dialogWordWrap (message);
-            QMessageBox::warning (this, caption, message);
+            message = Auxil::dialogWordWrap(message);
+            QMessageBox::warning(this, caption, message);
         }
     }
 
@@ -354,9 +354,9 @@ WordTableView::removeFromCardboxRequested()
 //! @return true if successful or if the user cancels, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableView::exportFile (const QString& filename, WordListFormat format,
-                           const QList<WordAttribute>& attributes,
-                           QString* err) const
+WordTableView::exportFile(const QString& filename, WordListFormat format,
+                          const QList<WordAttribute>& attributes,
+                          QString* err) const
 {
     if (model()->rowCount() == 0) {
         if (err)
@@ -365,7 +365,7 @@ WordTableView::exportFile (const QString& filename, WordListFormat format,
     }
 
     QFile file (filename);
-    if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         if (err)
             *err = file.errorString();
         return false;
@@ -383,13 +383,13 @@ WordTableView::exportFile (const QString& filename, WordListFormat format,
     QTextStream stream (&file);
 
     if (format == WordListOnePerLine) {
-        QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
+        QModelIndex index = model()->index(0, WordTableModel::WORD_COLUMN);
         for (int i = 0; i < model()->rowCount(); ++i) {
-            index = index.sibling (i, WordTableModel::WORD_COLUMN);
-            QStringList strings = getExportStrings (index, attributes,
-                                                    exportInnerHooks);
-            stream << strings.join ("\t");
-            endl (stream);
+            index = index.sibling(i, WordTableModel::WORD_COLUMN);
+            QStringList strings = getExportStrings(index, attributes,
+                                                   exportInnerHooks);
+            stream << strings.join("\t");
+            endl(stream);
         }
     }
 
@@ -397,30 +397,30 @@ WordTableView::exportFile (const QString& filename, WordListFormat format,
 
         // Build map of alphagrams to indexes
         QMap<QString, QList<int> > alphaIndexes;
-        QModelIndex index = model()->index (0, WordTableModel::WORD_COLUMN);
+        QModelIndex index = model()->index(0, WordTableModel::WORD_COLUMN);
         for (int i = 0; i < model()->rowCount(); ++i) {
-            index = index.sibling (i, WordTableModel::WORD_COLUMN);
-            QString word = model()->data (index, Qt::EditRole).toString();
-            QString alphagram = Auxil::getAlphagram (word);
-            alphaIndexes[alphagram].append (i);
+            index = index.sibling(i, WordTableModel::WORD_COLUMN);
+            QString word = model()->data(index, Qt::EditRole).toString();
+            QString alphagram = Auxil::getAlphagram(word);
+            alphaIndexes[alphagram].append(i);
         }
 
         QMapIterator<QString, QList<int> > it (alphaIndexes);
         while (it.hasNext()) {
             it.next();
             stream << "Q: " << it.key();
-            endl (stream);
+            endl(stream);
 
             QListIterator<int> jt (it.value());
             while (jt.hasNext()) {
                 int row = jt.next();
-                index = index.sibling (row, WordTableModel::WORD_COLUMN);
-                QStringList strings = getExportStrings (index, attributes,
-                                                        exportInnerHooks);
-                stream << "A: " << strings.join (" ");
-                endl (stream);
+                index = index.sibling(row, WordTableModel::WORD_COLUMN);
+                QStringList strings = getExportStrings(index, attributes,
+                                                       exportInnerHooks);
+                stream << "A: " << strings.join(" ");
+                endl(stream);
             }
-            endl (stream);
+            endl(stream);
         }
     }
 
@@ -440,9 +440,9 @@ WordTableView::exportFile (const QString& filename, WordListFormat format,
 //! @return an ordered list of strings to be exported
 //---------------------------------------------------------------------------
 QStringList
-WordTableView::getExportStrings (QModelIndex& index, const
-                                 QList<WordAttribute>& attributes, bool
-                                 exportInnerHooks) const
+WordTableView::getExportStrings(QModelIndex& index, const
+                                QList<WordAttribute>& attributes, bool
+                                exportInnerHooks) const
 {
     QListIterator<WordAttribute> attrIt (attributes);
     QStringList strings;
@@ -480,16 +480,15 @@ WordTableView::getExportStrings (QModelIndex& index, const
         if (column < 0)
             continue;
 
-        index = index.sibling (index.row(), column);
+        index = index.sibling(index.row(), column);
         QString str;
         if (exportInnerHooks && (attribute == WordAttrWord)) {
-            str = model()->data (index,
-                                 Qt::DisplayRole).toString().toUpper();
+            str = model()->data(index, Qt::DisplayRole).toString().toUpper();
         }
         else {
-            str = model()->data (index, Qt::EditRole).toString();
+            str = model()->data(index, Qt::EditRole).toString();
         }
-        strings.append (str);
+        strings.append(str);
     }
 
     return strings;
@@ -509,11 +508,11 @@ WordTableView::getExportStrings (QModelIndex& index, const
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableView::addToCardbox (const QStringList& words, const QString& lexicon,
-                             const QString& quizType, bool estimateCardbox)
+WordTableView::addToCardbox(const QStringList& words, const QString& lexicon,
+                            const QString& quizType, bool estimateCardbox)
 const
 {
-    QuizSpec::QuizType type = Auxil::stringToQuizType (quizType);
+    QuizSpec::QuizType type = Auxil::stringToQuizType(quizType);
     if (type == QuizSpec::UnknownQuizType)
         return false;
 
@@ -528,9 +527,9 @@ const
             QSet<QString> alphagramSet;
             QStringListIterator it (words);
             while (it.hasNext()) {
-                alphagramSet.insert (Auxil::getAlphagram (it.next()));
+                alphagramSet.insert(Auxil::getAlphagram(it.next()));
             }
-            questions = QStringList::fromSet (alphagramSet);
+            questions = QStringList::fromSet(alphagramSet);
         }
         break;
 
@@ -542,7 +541,7 @@ const
     if (!db.isValid())
         return false;
 
-    db.addToCardbox (questions, estimateCardbox);
+    db.addToCardbox(questions, estimateCardbox);
     return true;
 }
 
@@ -558,10 +557,10 @@ const
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableView::removeFromCardbox (const QStringList& words, const QString&
-                                  lexicon, const QString& quizType) const
+WordTableView::removeFromCardbox(const QStringList& words, const QString&
+                                 lexicon, const QString& quizType) const
 {
-    QuizSpec::QuizType type = Auxil::stringToQuizType (quizType);
+    QuizSpec::QuizType type = Auxil::stringToQuizType(quizType);
     if (type == QuizSpec::UnknownQuizType)
         return false;
 
@@ -576,9 +575,9 @@ WordTableView::removeFromCardbox (const QStringList& words, const QString&
             QSet<QString> alphagramSet;
             QStringListIterator it (words);
             while (it.hasNext()) {
-                alphagramSet.insert (Auxil::getAlphagram (it.next()));
+                alphagramSet.insert(Auxil::getAlphagram(it.next()));
             }
-            questions = QStringList::fromSet (alphagramSet);
+            questions = QStringList::fromSet(alphagramSet);
         }
         break;
 
@@ -590,7 +589,7 @@ WordTableView::removeFromCardbox (const QStringList& words, const QString&
     if (!db.isValid())
         return false;
 
-    db.removeFromCardbox (questions);
+    db.removeFromCardbox(questions);
     return true;
 }
 
@@ -607,8 +606,8 @@ WordTableView::removeFromCardbox (const QStringList& words, const QString&
 //! @return the tool tip text
 //---------------------------------------------------------------------------
 QString
-WordTableView::hookToolTipText (const QString& word, const QString& hooks,
-                                bool front) const
+WordTableView::hookToolTipText(const QString& word, const QString& hooks,
+                               bool front) const
 {
     QString text;
 
@@ -619,7 +618,7 @@ WordTableView::hookToolTipText (const QString& word, const QString& hooks,
         if (!text.isEmpty())
             text += "\n\n";
 
-        text += hookWord + " : " + wordEngine->getDefinition (hookWord);
+        text += hookWord + " : " + wordEngine->getDefinition(hookWord);
     }
 
     return text;
@@ -636,127 +635,119 @@ WordTableView::hookToolTipText (const QString& word, const QString& hooks,
 //! @return true if successful or if the user cancels, false otherwise
 //---------------------------------------------------------------------------
 void
-WordTableView::contextMenuEvent (QContextMenuEvent* e)
+WordTableView::contextMenuEvent(QContextMenuEvent* e)
 {
-    QModelIndex index = indexAt (e->pos());
+    QModelIndex index = indexAt(e->pos());
     bool wordOptions = (index.isValid() &&
                         (index.row() >= 0) && (index.column() >= 0));
 
     QMenu* popupMenu = new QMenu;
-    Q_CHECK_PTR (popupMenu);
+    Q_CHECK_PTR(popupMenu);
 
     if (wordOptions) {
-        QMenu* wordMenu = new QMenu ("Word");
-        Q_CHECK_PTR (wordMenu);
-        popupMenu->addMenu (wordMenu);
+        QMenu* wordMenu = new QMenu("Word");
+        Q_CHECK_PTR(wordMenu);
+        popupMenu->addMenu(wordMenu);
 
-        QSignalMapper* wordMapper = new QSignalMapper (wordMenu);
-        Q_CHECK_PTR (wordMapper);
+        QSignalMapper* wordMapper = new QSignalMapper(wordMenu);
+        Q_CHECK_PTR(wordMapper);
 
         // Word Definition
-        QAction* definitionAction = new QAction ("Definition", wordMenu);
-        Q_CHECK_PTR (definitionAction);
-        connect (definitionAction, SIGNAL (triggered()),
-                 SLOT (viewDefinition()));
-        wordMenu->addAction (definitionAction);
+        QAction* definitionAction = new QAction("Definition", wordMenu);
+        Q_CHECK_PTR(definitionAction);
+        connect(definitionAction, SIGNAL(triggered()), SLOT(viewDefinition()));
+        wordMenu->addAction(definitionAction);
 
         // Word Anagrams
-        QAction* anagramsAction = new QAction ("Anagrams", wordMenu);
-        Q_CHECK_PTR (anagramsAction);
-        connect (anagramsAction, SIGNAL (triggered()),
-                 wordMapper, SLOT (map()));
-        wordMapper->setMapping (anagramsAction, VariationAnagrams);
-        wordMenu->addAction (anagramsAction);
+        QAction* anagramsAction = new QAction("Anagrams", wordMenu);
+        Q_CHECK_PTR(anagramsAction);
+        connect(anagramsAction, SIGNAL(triggered()), wordMapper, SLOT(map()));
+        wordMapper->setMapping(anagramsAction, VariationAnagrams);
+        wordMenu->addAction(anagramsAction);
 
         // Word Subanagrams
-        QAction* subanagramsAction = new QAction ("Subanagrams", wordMenu);
-        Q_CHECK_PTR (subanagramsAction);
-        connect (subanagramsAction, SIGNAL (triggered()),
-                 wordMapper, SLOT (map()));
-        wordMapper->setMapping (subanagramsAction, VariationSubanagrams);
-        wordMenu->addAction (subanagramsAction);
+        QAction* subanagramsAction = new QAction("Subanagrams", wordMenu);
+        Q_CHECK_PTR(subanagramsAction);
+        connect(subanagramsAction, SIGNAL(triggered()),
+                wordMapper, SLOT(map()));
+        wordMapper->setMapping(subanagramsAction, VariationSubanagrams);
+        wordMenu->addAction(subanagramsAction);
 
         // Word Hooks
-        QAction* hooksAction = new QAction ("Hooks", wordMenu);
-        Q_CHECK_PTR (hooksAction);
-        connect (hooksAction, SIGNAL (triggered()), wordMapper, SLOT (map()));
-        wordMapper->setMapping (hooksAction, VariationHooks);
-        wordMenu->addAction (hooksAction);
+        QAction* hooksAction = new QAction("Hooks", wordMenu);
+        Q_CHECK_PTR(hooksAction);
+        connect(hooksAction, SIGNAL(triggered()), wordMapper, SLOT(map()));
+        wordMapper->setMapping(hooksAction, VariationHooks);
+        wordMenu->addAction(hooksAction);
 
         // Word Extensions
-        QAction* extensionsAction = new QAction ("Extensions", wordMenu);
-        Q_CHECK_PTR (extensionsAction);
-        connect (extensionsAction, SIGNAL (triggered()),
-                 wordMapper, SLOT (map()));
-        wordMapper->setMapping (extensionsAction, VariationExtensions);
-        wordMenu->addAction (extensionsAction);
+        QAction* extensionsAction = new QAction("Extensions", wordMenu);
+        Q_CHECK_PTR(extensionsAction);
+        connect(extensionsAction, SIGNAL(triggered()), wordMapper, SLOT(map()));
+        wordMapper->setMapping(extensionsAction, VariationExtensions);
+        wordMenu->addAction(extensionsAction);
 
         // Word Anagram Hooks
-        QAction* anagramHooksAction = new QAction ("Anagram Hooks", wordMenu);
-        Q_CHECK_PTR (anagramHooksAction);
-        connect (anagramHooksAction, SIGNAL (triggered()),
-                 wordMapper, SLOT (map()));
-        wordMapper->setMapping (anagramHooksAction, VariationAnagramHooks);
-        wordMenu->addAction (anagramHooksAction);
+        QAction* anagramHooksAction = new QAction("Anagram Hooks", wordMenu);
+        Q_CHECK_PTR(anagramHooksAction);
+        connect(anagramHooksAction, SIGNAL(triggered()),
+                wordMapper, SLOT(map()));
+        wordMapper->setMapping(anagramHooksAction, VariationAnagramHooks);
+        wordMenu->addAction(anagramHooksAction);
 
         // Word Blank Anagrams
-        QAction* blankAnagramsAction = new QAction ("Blank Anagrams",
-                                                    wordMenu);
-        Q_CHECK_PTR (blankAnagramsAction);
-        connect (blankAnagramsAction, SIGNAL (triggered()),
-                 wordMapper, SLOT (map()));
-        wordMapper->setMapping (blankAnagramsAction, VariationBlankAnagrams);
-        wordMenu->addAction (blankAnagramsAction);
+        QAction* blankAnagramsAction = new QAction("Blank Anagrams", wordMenu);
+        Q_CHECK_PTR(blankAnagramsAction);
+        connect(blankAnagramsAction, SIGNAL(triggered()),
+                wordMapper, SLOT(map()));
+        wordMapper->setMapping(blankAnagramsAction, VariationBlankAnagrams);
+        wordMenu->addAction(blankAnagramsAction);
 
         // Word Blank Matches
-        QAction* blankMatchesAction = new QAction ("Blank Matches", wordMenu);
-        Q_CHECK_PTR (blankMatchesAction);
-        connect (blankMatchesAction, SIGNAL (triggered()),
-                 wordMapper, SLOT (map()));
-        wordMapper->setMapping (blankMatchesAction, VariationBlankMatches);
-        wordMenu->addAction (blankMatchesAction);
+        QAction* blankMatchesAction = new QAction("Blank Matches", wordMenu);
+        Q_CHECK_PTR(blankMatchesAction);
+        connect(blankMatchesAction, SIGNAL(triggered()),
+                wordMapper, SLOT(map()));
+        wordMapper->setMapping(blankMatchesAction, VariationBlankMatches);
+        wordMenu->addAction(blankMatchesAction);
 
         // Word Transpositions
-        QAction* transpositionsAction = new QAction ("Transpositions",
-                                                     wordMenu);
-        Q_CHECK_PTR (transpositionsAction);
-        connect (transpositionsAction, SIGNAL (triggered()),
-                 wordMapper, SLOT (map()));
-        wordMapper->setMapping (transpositionsAction,
-                                VariationTranspositions);
-        wordMenu->addAction (transpositionsAction);
+        QAction* transpositionsAction = new QAction("Transpositions", wordMenu);
+        Q_CHECK_PTR(transpositionsAction);
+        connect(transpositionsAction, SIGNAL(triggered()),
+                wordMapper, SLOT(map()));
+        wordMapper->setMapping(transpositionsAction, VariationTranspositions);
+        wordMenu->addAction(transpositionsAction);
 
         // Connect Word signal mappings to viewVariation
-        connect (wordMapper, SIGNAL (mapped (int)),
-                 SLOT (viewVariation (int)));
+        connect(wordMapper, SIGNAL(mapped(int)), SLOT(viewVariation(int)));
     }
 
-    QAction* exportAction = new QAction ("Save list...", popupMenu);
-    Q_CHECK_PTR (exportAction);
-    connect (exportAction, SIGNAL (triggered()), SLOT (exportRequested()));
-    popupMenu->addAction (exportAction);
+    QAction* exportAction = new QAction("Save list...", popupMenu);
+    Q_CHECK_PTR(exportAction);
+    connect(exportAction, SIGNAL(triggered()), SLOT(exportRequested()));
+    popupMenu->addAction(exportAction);
 
-    QAction* createQuizAction = new QAction ("Quiz from list...", popupMenu);
-    Q_CHECK_PTR (createQuizAction);
-    connect (createQuizAction, SIGNAL (triggered()),
-             SLOT (createQuizRequested()));
-    popupMenu->addAction (createQuizAction);
+    QAction* createQuizAction = new QAction("Quiz from list...", popupMenu);
+    Q_CHECK_PTR(createQuizAction);
+    connect(createQuizAction, SIGNAL(triggered()), SLOT(createQuizRequested()));
+    popupMenu->addAction(createQuizAction);
 
-    QAction* addToCardboxAction = new QAction ("Add list to Cardbox...",
-                                               popupMenu);
-    Q_CHECK_PTR (addToCardboxAction);
-    connect (addToCardboxAction, SIGNAL (triggered()),
-             SLOT (addToCardboxRequested()));
-    popupMenu->addAction (addToCardboxAction);
+    QAction* addToCardboxAction =
+        new QAction("Add list to Cardbox...", popupMenu);
+    Q_CHECK_PTR(addToCardboxAction);
+    connect(addToCardboxAction, SIGNAL(triggered()),
+             SLOT(addToCardboxRequested()));
+    popupMenu->addAction(addToCardboxAction);
 
     QAction* removeFromCardboxAction =
-        new QAction ("Remove list from Cardbox...", popupMenu);
-    Q_CHECK_PTR (removeFromCardboxAction);
-    connect (removeFromCardboxAction, SIGNAL (triggered()),
-             SLOT (removeFromCardboxRequested()));
-    popupMenu->addAction (removeFromCardboxAction);
+        new QAction("Remove list from Cardbox...", popupMenu);
+    Q_CHECK_PTR(removeFromCardboxAction);
+    connect(removeFromCardboxAction, SIGNAL(triggered()),
+            SLOT(removeFromCardboxRequested()));
+    popupMenu->addAction(removeFromCardboxAction);
 
-    popupMenu->exec (QCursor::pos());
+    popupMenu->exec(QCursor::pos());
     delete popupMenu;
 }
 
@@ -771,33 +762,33 @@ WordTableView::contextMenuEvent (QContextMenuEvent* e)
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableView::viewportEvent (QEvent* e)
+WordTableView::viewportEvent(QEvent* e)
 {
     switch (e->type()) {
         case QEvent::ToolTip: {
             QHelpEvent* helpEvent = static_cast<QHelpEvent*>(e);
-            QModelIndex index = indexAt (helpEvent->pos());
+            QModelIndex index = indexAt(helpEvent->pos());
             if (!index.isValid())
                 break;
 
             QString toolTipText;
             switch (index.column()) {
                 case WordTableModel::DEFINITION_COLUMN:
-                toolTipText = index.model()->data (index,
-                                                   Qt::DisplayRole).toString();
+                toolTipText = index.model()->data(index,
+                                                  Qt::DisplayRole).toString();
                 break;
 
                 case WordTableModel::FRONT_HOOK_COLUMN:
                 case WordTableModel::BACK_HOOK_COLUMN: {
                     QString hooks =
-                        index.model()->data (index, Qt::EditRole).toString();
-                    QString word = index.model()->data (index.sibling
-                            (index.row(), WordTableModel::WORD_COLUMN),
-                            Qt::EditRole).toString();
+                        index.model()->data(index, Qt::EditRole).toString();
+                    QString word = index.model()->data(
+                        index.sibling(index.row(), WordTableModel::WORD_COLUMN),
+                        Qt::EditRole).toString();
                     bool front = (index.column() ==
                                   WordTableModel::FRONT_HOOK_COLUMN);
 
-                    toolTipText = hookToolTipText (word, hooks, front);
+                    toolTipText = hookToolTipText(word, hooks, front);
                 }
                 break;
 
@@ -806,12 +797,12 @@ WordTableView::viewportEvent (QEvent* e)
             }
 
             if (!toolTipText.isEmpty())
-                QToolTip::showText (helpEvent->globalPos(), toolTipText);
+                QToolTip::showText(helpEvent->globalPos(), toolTipText);
         }
         break;
 
         default:
-        return QTreeView::viewportEvent (e);
+        return QTreeView::viewportEvent(e);
     }
 }
 
@@ -827,9 +818,9 @@ WordTableView::viewportEvent (QEvent* e)
 //! @return the size hint for the column
 //---------------------------------------------------------------------------
 int
-WordTableView::sizeHintForColumn (int column) const
+WordTableView::sizeHintForColumn(int column) const
 {
-    return QAbstractItemView::sizeHintForColumn (column) +
+    return QAbstractItemView::sizeHintForColumn(column) +
         (2 * WordTableDelegate::ITEM_XPADDING);
 }
 
@@ -845,8 +836,8 @@ WordTableView::sizeHintForColumn (int column) const
 //! @return the size hint for the column
 //---------------------------------------------------------------------------
 int
-WordTableView::sizeHintForRow (int row) const
+WordTableView::sizeHintForRow(int row) const
 {
-    return QAbstractItemView::sizeHintForRow (row) +
+    return QAbstractItemView::sizeHintForRow(row) +
         (2 * WordTableDelegate::ITEM_YPADDING);
 }

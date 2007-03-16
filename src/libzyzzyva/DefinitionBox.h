@@ -3,7 +3,7 @@
 //
 // A class derived from QVGroupBox, used to display word definitions.
 //
-// Copyright 2004, 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -33,9 +33,9 @@ class DefinitionBox : public QGroupBox
 {
     Q_OBJECT
     public:
-    DefinitionBox (QWidget* parent = 0);
-    DefinitionBox (const QString& title, QWidget* parent = 0);
-    void setText (const QString& text);
+    DefinitionBox(QWidget* parent = 0);
+    DefinitionBox(const QString& title, QWidget* parent = 0);
+    void setText(const QString& text);
 
     private:
     void init();

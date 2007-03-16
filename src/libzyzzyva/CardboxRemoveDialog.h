@@ -3,7 +3,7 @@
 //
 // A dialog for removing words from the cardbox system.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,11 +34,11 @@ class CardboxRemoveDialog : public QDialog
 {
     Q_OBJECT
     public:
-    CardboxRemoveDialog (QWidget* parent = 0, Qt::WFlags f = 0);
+    CardboxRemoveDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~CardboxRemoveDialog() { }
 
     public:
-    void setWords (const QStringList& words);
+    void setWords(const QStringList& words);
     QString getQuizType() const;
     QStringList getWords() const;
 

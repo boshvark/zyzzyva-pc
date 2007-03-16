@@ -3,7 +3,7 @@
 //
 // A class for holding instances of letters.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,20 +34,20 @@
 class LetterBag
 {
     public:
-    LetterBag (const QString& distribution = QString::null);
+    LetterBag(const QString& distribution = QString::null);
     ~LetterBag() { }
 
-    double getProbability (const QString& word) const;
-    double getNumCombinations (const QString& word) const;
+    double getProbability(const QString& word) const;
+    double getNumCombinations(const QString& word) const;
 
-    int getLetterValue (const QChar& letter) const;
-    void setLetterValue (const QChar& letter, int value);
+    int getLetterValue(const QChar& letter) const;
+    void setLetterValue(const QChar& letter, int value);
 
-    void resetContents (const QString& distribution = QString::null);
-    void insertLetter (const QChar& letter);
-    bool drawLetter (const QChar& letter);
-    QString lookRandomLetters (int num);
-    QString drawRandomLetters (int num);
+    void resetContents(const QString& distribution = QString::null);
+    void insertLetter(const QChar& letter);
+    bool drawLetter(const QChar& letter);
+    QString lookRandomLetters(int num);
+    QString drawRandomLetters(int num);
 
     QString getLetters() const;
     int getNumLetters() const;

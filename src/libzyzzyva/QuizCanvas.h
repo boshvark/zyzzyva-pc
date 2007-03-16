@@ -3,7 +3,7 @@
 //
 // A drawing surface for quiz questions.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -36,24 +36,24 @@ class QuizCanvas : public QWidget
 {
     Q_OBJECT
     public:
-    QuizCanvas (QWidget *parent = 0);
+    QuizCanvas(QWidget *parent = 0);
 
     void clear();
-    void setText (const QString& text);
+    void setText(const QString& text);
     void clearTileTheme();
-    void setTileTheme (const QString& theme);
-    void setNumCanvasTiles (int num);
+    void setTileTheme(const QString& theme);
+    void setNumCanvasTiles(int num);
     void setToMinimumSize();
     bool hasTileImages();
-    void setDragDropEnabled (bool on) { dragDropEnabled = on; }
+    void setDragDropEnabled(bool on) { dragDropEnabled = on; }
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
     protected:
-    void dragEnterEvent (QDragEnterEvent* event);
-    void dropEvent (QDropEvent* event);
-    void mousePressEvent (QMouseEvent* event);
+    void dragEnterEvent(QDragEnterEvent* event);
+    void dropEvent(QDropEvent* event);
+    void mousePressEvent(QMouseEvent* event);
 
     private slots:
     void squeezeTileImages();

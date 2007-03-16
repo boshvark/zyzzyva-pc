@@ -3,7 +3,7 @@
 //
 // A dialog for adding words to the cardbox system.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,11 +34,11 @@ class CardboxAddDialog : public QDialog
 {
     Q_OBJECT
     public:
-    CardboxAddDialog (QWidget* parent = 0, Qt::WFlags f = 0);
+    CardboxAddDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~CardboxAddDialog() { }
 
     public:
-    void setWords (const QStringList& words);
+    void setWords(const QStringList& words);
     QString getQuizType() const;
     bool getEstimateCardbox() const;
     QStringList getWords() const;

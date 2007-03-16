@@ -3,7 +3,7 @@
 //
 // A form for playing a crossword game.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -56,187 +56,185 @@ const int SCORE_FONT_PIXEL_SIZE = 20;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-CrosswordGameForm::CrosswordGameForm (QWidget* parent, Qt::WFlags f)
-    : ActionForm (CrosswordGameFormType, parent, f),
-      aSeconds (0), bSeconds (0), aOvertime (false), bOvertime (false),
-      myPlayerNum (0), gameStatus (NoGame), game (new CrosswordGameGame()),
-      iscThread (0)
+CrosswordGameForm::CrosswordGameForm(QWidget* parent, Qt::WFlags f)
+    : ActionForm(CrosswordGameFormType, parent, f),
+      aSeconds(0), bSeconds(0), aOvertime(false), bOvertime(false),
+      myPlayerNum(0), gameStatus(NoGame), game(new CrosswordGameGame()),
+      iscThread(0)
 {
     QFont playerFont = qApp->font();
-    playerFont.setPixelSize (PLAYER_FONT_PIXEL_SIZE);
+    playerFont.setPixelSize(PLAYER_FONT_PIXEL_SIZE);
 
     QFont timerFont = qApp->font();
-    timerFont.setPixelSize (TIMER_FONT_PIXEL_SIZE);
+    timerFont.setPixelSize(TIMER_FONT_PIXEL_SIZE);
 
     QFont scoreFont = qApp->font();
-    scoreFont.setPixelSize (SCORE_FONT_PIXEL_SIZE);
-    scoreFont.setWeight (QFont::Bold);
+    scoreFont.setPixelSize(SCORE_FONT_PIXEL_SIZE);
+    scoreFont.setWeight(QFont::Bold);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout (this);
-    Q_CHECK_PTR (mainHlay);
-    mainHlay->setMargin (MARGIN);
-    mainHlay->setSpacing (SPACING);
+    QHBoxLayout* mainHlay = new QHBoxLayout(this);
+    Q_CHECK_PTR(mainHlay);
+    mainHlay->setMargin(MARGIN);
+    mainHlay->setSpacing(SPACING);
 
     QVBoxLayout* boardVlay = new QVBoxLayout;
-    Q_CHECK_PTR (boardVlay);
-    boardVlay->setMargin (MARGIN);
-    boardVlay->setSpacing (SPACING);
-    mainHlay->addLayout (boardVlay);
+    Q_CHECK_PTR(boardVlay);
+    boardVlay->setMargin(MARGIN);
+    boardVlay->setSpacing(SPACING);
+    mainHlay->addLayout(boardVlay);
 
     QHBoxLayout* playerHlay = new QHBoxLayout;
-    Q_CHECK_PTR (playerHlay);
-    boardVlay->addLayout (playerHlay);
+    Q_CHECK_PTR(playerHlay);
+    boardVlay->addLayout(playerHlay);
 
     QVBoxLayout* aPlayerVlay = new QVBoxLayout;
-    Q_CHECK_PTR (aPlayerVlay);
-    playerHlay->addLayout (aPlayerVlay);
+    Q_CHECK_PTR(aPlayerVlay);
+    playerHlay->addLayout(aPlayerVlay);
 
     QHBoxLayout* aPlayerNameHlay = new QHBoxLayout;
-    Q_CHECK_PTR (aPlayerNameHlay);
-    aPlayerVlay->addLayout (aPlayerNameHlay);
+    Q_CHECK_PTR(aPlayerNameHlay);
+    aPlayerVlay->addLayout(aPlayerNameHlay);
 
     aPlayerLabel = new QLabel;
-    Q_CHECK_PTR (aPlayerLabel);
-    aPlayerLabel->setAlignment (Qt::AlignRight | Qt::AlignVCenter);
-    aPlayerLabel->setFont (playerFont);
-    aPlayerNameHlay->addWidget (aPlayerLabel);
+    Q_CHECK_PTR(aPlayerLabel);
+    aPlayerLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    aPlayerLabel->setFont(playerFont);
+    aPlayerNameHlay->addWidget(aPlayerLabel);
 
     aRatingLabel = new QLabel;
-    Q_CHECK_PTR (aRatingLabel);
-    aRatingLabel->setAlignment (Qt::AlignLeft | Qt::AlignVCenter);
-    aRatingLabel->setFont (playerFont);
-    aPlayerNameHlay->addWidget (aRatingLabel);
+    Q_CHECK_PTR(aRatingLabel);
+    aRatingLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    aRatingLabel->setFont(playerFont);
+    aPlayerNameHlay->addWidget(aRatingLabel);
 
     QHBoxLayout* aPlayerStatsHlay = new QHBoxLayout;
-    Q_CHECK_PTR (aPlayerStatsHlay);
-    aPlayerVlay->addLayout (aPlayerStatsHlay);
+    Q_CHECK_PTR(aPlayerStatsHlay);
+    aPlayerVlay->addLayout(aPlayerStatsHlay);
 
     aScoreLabel = new QLabel;
-    Q_CHECK_PTR (aScoreLabel);
-    aScoreLabel->setAlignment (Qt::AlignLeft | Qt::AlignVCenter);
-    aScoreLabel->setFont (scoreFont);
-    aPlayerStatsHlay->addWidget (aScoreLabel);
+    Q_CHECK_PTR(aScoreLabel);
+    aScoreLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    aScoreLabel->setFont(scoreFont);
+    aPlayerStatsHlay->addWidget(aScoreLabel);
 
     aTimerLabel = new QLabel;
-    Q_CHECK_PTR (aTimerLabel);
-    aTimerLabel->setAlignment (Qt::AlignRight | Qt::AlignVCenter);
-    aTimerLabel->setFont (timerFont);
-    aPlayerStatsHlay->addWidget (aTimerLabel);
+    Q_CHECK_PTR(aTimerLabel);
+    aTimerLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    aTimerLabel->setFont(timerFont);
+    aPlayerStatsHlay->addWidget(aTimerLabel);
 
     QHBoxLayout* aPlayerRackHlay = new QHBoxLayout;
-    Q_CHECK_PTR (aPlayerRackHlay);
-    aPlayerVlay->addLayout (aPlayerRackHlay);
+    Q_CHECK_PTR(aPlayerRackHlay);
+    aPlayerVlay->addLayout(aPlayerRackHlay);
 
-    aRackWidget = new CrosswordGameRackWidget (1, this);
-    Q_CHECK_PTR (aRackWidget);
-    aPlayerRackHlay->addWidget (aRackWidget);
+    aRackWidget = new CrosswordGameRackWidget(1, this);
+    Q_CHECK_PTR(aRackWidget);
+    aPlayerRackHlay->addWidget(aRackWidget);
 
-    playerHlay->addStretch (1);
+    playerHlay->addStretch(1);
 
     QVBoxLayout* bPlayerVlay = new QVBoxLayout;
-    Q_CHECK_PTR (bPlayerVlay);
-    playerHlay->addLayout (bPlayerVlay);
+    Q_CHECK_PTR(bPlayerVlay);
+    playerHlay->addLayout(bPlayerVlay);
 
     QHBoxLayout* bPlayerNameHlay = new QHBoxLayout;
-    Q_CHECK_PTR (bPlayerNameHlay);
-    bPlayerVlay->addLayout (bPlayerNameHlay);
+    Q_CHECK_PTR(bPlayerNameHlay);
+    bPlayerVlay->addLayout(bPlayerNameHlay);
 
     bPlayerLabel = new QLabel;
-    Q_CHECK_PTR (bPlayerLabel);
-    bPlayerLabel->setAlignment (Qt::AlignRight | Qt::AlignVCenter);
-    bPlayerLabel->setFont (playerFont);
-    bPlayerNameHlay->addWidget (bPlayerLabel);
+    Q_CHECK_PTR(bPlayerLabel);
+    bPlayerLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    bPlayerLabel->setFont(playerFont);
+    bPlayerNameHlay->addWidget(bPlayerLabel);
 
     bRatingLabel = new QLabel;
-    Q_CHECK_PTR (bRatingLabel);
-    bRatingLabel->setAlignment (Qt::AlignLeft | Qt::AlignVCenter);
-    bRatingLabel->setFont (playerFont);
-    bPlayerNameHlay->addWidget (bRatingLabel);
+    Q_CHECK_PTR(bRatingLabel);
+    bRatingLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    bRatingLabel->setFont(playerFont);
+    bPlayerNameHlay->addWidget(bRatingLabel);
 
     QHBoxLayout* bPlayerStatsHlay = new QHBoxLayout;
-    Q_CHECK_PTR (bPlayerStatsHlay);
-    bPlayerVlay->addLayout (bPlayerStatsHlay);
+    Q_CHECK_PTR(bPlayerStatsHlay);
+    bPlayerVlay->addLayout(bPlayerStatsHlay);
 
     bTimerLabel = new QLabel;
-    Q_CHECK_PTR (bTimerLabel);
-    bTimerLabel->setAlignment (Qt::AlignLeft | Qt::AlignVCenter);
-    bTimerLabel->setFont (timerFont);
-    bPlayerStatsHlay->addWidget (bTimerLabel);
+    Q_CHECK_PTR(bTimerLabel);
+    bTimerLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    bTimerLabel->setFont(timerFont);
+    bPlayerStatsHlay->addWidget(bTimerLabel);
 
     bScoreLabel = new QLabel;
-    Q_CHECK_PTR (bScoreLabel);
-    bScoreLabel->setAlignment (Qt::AlignRight | Qt::AlignVCenter);
-    bScoreLabel->setFont (scoreFont);
-    bPlayerStatsHlay->addWidget (bScoreLabel);
+    Q_CHECK_PTR(bScoreLabel);
+    bScoreLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    bScoreLabel->setFont(scoreFont);
+    bPlayerStatsHlay->addWidget(bScoreLabel);
 
     QHBoxLayout* bPlayerRackHlay = new QHBoxLayout;
-    Q_CHECK_PTR (bPlayerRackHlay);
-    bPlayerVlay->addLayout (bPlayerRackHlay);
+    Q_CHECK_PTR(bPlayerRackHlay);
+    bPlayerVlay->addLayout(bPlayerRackHlay);
 
-    bRackWidget = new CrosswordGameRackWidget (2, this);
-    Q_CHECK_PTR (bRackWidget);
-    bPlayerRackHlay->addWidget (bRackWidget);
+    bRackWidget = new CrosswordGameRackWidget(2, this);
+    Q_CHECK_PTR(bRackWidget);
+    bPlayerRackHlay->addWidget(bRackWidget);
 
     QHBoxLayout* boardHlay = new QHBoxLayout;
-    Q_CHECK_PTR (boardHlay);
-    boardVlay->addLayout (boardHlay);
+    Q_CHECK_PTR(boardHlay);
+    boardVlay->addLayout(boardHlay);
 
-    boardWidget = new CrosswordGameBoardWidget (game, this);
-    Q_CHECK_PTR (boardWidget);
-    boardHlay->addWidget (boardWidget);
+    boardWidget = new CrosswordGameBoardWidget(game, this);
+    Q_CHECK_PTR(boardWidget);
+    boardHlay->addWidget(boardWidget);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    Q_CHECK_PTR (buttonHlay);
-    boardVlay->addLayout (buttonHlay);
+    Q_CHECK_PTR(buttonHlay);
+    boardVlay->addLayout(buttonHlay);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
-    connectButton = new QPushButton ("&Connect", this);
-    Q_CHECK_PTR (connectButton);
-    connect (connectButton, SIGNAL (clicked()), SLOT (connectClicked()));
-    buttonHlay->addWidget (connectButton);
+    connectButton = new QPushButton("&Connect", this);
+    Q_CHECK_PTR(connectButton);
+    connect(connectButton, SIGNAL(clicked()), SLOT(connectClicked()));
+    buttonHlay->addWidget(connectButton);
 
-    disconnectButton = new QPushButton ("&Disconnect", this);
-    Q_CHECK_PTR (disconnectButton);
-    connect (disconnectButton, SIGNAL (clicked()), SLOT (disconnectClicked()));
-    disconnectButton->setEnabled (false);
-    buttonHlay->addWidget (disconnectButton);
+    disconnectButton = new QPushButton("&Disconnect", this);
+    Q_CHECK_PTR(disconnectButton);
+    connect(disconnectButton, SIGNAL(clicked()), SLOT(disconnectClicked()));
+    disconnectButton->setEnabled(false);
+    buttonHlay->addWidget(disconnectButton);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
     QVBoxLayout* messageVlay = new QVBoxLayout;
-    Q_CHECK_PTR (messageVlay);
-    messageVlay->setMargin (0);
-    messageVlay->setSpacing (SPACING);
-    mainHlay->addLayout (messageVlay);
+    Q_CHECK_PTR(messageVlay);
+    messageVlay->setMargin(0);
+    messageVlay->setSpacing(SPACING);
+    mainHlay->addLayout(messageVlay);
 
     unseenLabel = new QLabel;
-    Q_CHECK_PTR (unseenLabel);
-    unseenLabel->setWordWrap (true);
-    messageVlay->addWidget (unseenLabel);
+    Q_CHECK_PTR(unseenLabel);
+    unseenLabel->setWordWrap(true);
+    messageVlay->addWidget(unseenLabel);
 
-    messageArea = new QTextEdit (this);
-    Q_CHECK_PTR (messageArea);
-    messageArea->setReadOnly (true);
-    messageVlay->addWidget (messageArea);
+    messageArea = new QTextEdit(this);
+    Q_CHECK_PTR(messageArea);
+    messageArea->setReadOnly(true);
+    messageVlay->addWidget(messageArea);
 
-    inputLine = new QLineEdit (this);
-    Q_CHECK_PTR (inputLine);
-    connect (inputLine, SIGNAL (returnPressed()),
-             SLOT (inputReturnPressed()));
-    messageVlay->addWidget (inputLine);
+    inputLine = new QLineEdit(this);
+    Q_CHECK_PTR(inputLine);
+    connect(inputLine, SIGNAL(returnPressed()), SLOT(inputReturnPressed()));
+    messageVlay->addWidget(inputLine);
 
     // Set up connections for clock timers
-    QSignalMapper* clockSignalMapper = new QSignalMapper (this);
-    Q_CHECK_PTR (clockSignalMapper);
-    connect (clockSignalMapper, SIGNAL (mapped (int)),
-             SLOT (clockTimeout (int)));
-    connect (&aTimer, SIGNAL (timeout()), clockSignalMapper, SLOT (map()));
-    clockSignalMapper->setMapping (&aTimer, 1);
-    connect (&bTimer, SIGNAL (timeout()), clockSignalMapper, SLOT (map()));
-    clockSignalMapper->setMapping (&bTimer, 2);
+    QSignalMapper* clockSignalMapper = new QSignalMapper(this);
+    Q_CHECK_PTR(clockSignalMapper);
+    connect(clockSignalMapper, SIGNAL(mapped(int)), SLOT(clockTimeout(int)));
+    connect(&aTimer, SIGNAL(timeout()), clockSignalMapper, SLOT(map()));
+    clockSignalMapper->setMapping(&aTimer, 1);
+    connect(&bTimer, SIGNAL(timeout()), clockSignalMapper, SLOT(map()));
+    clockSignalMapper->setMapping(&bTimer, 2);
 
-    connect (game, SIGNAL (changed()), SLOT (gameChanged()));
+    connect(game, SIGNAL(changed()), SLOT(gameChanged()));
 }
 
 //---------------------------------------------------------------------------
@@ -259,7 +257,7 @@ QIcon
 CrosswordGameForm::getIcon() const
 {
     // FIXME: need a real crossword game icon
-    return QIcon ("/define-icon");
+    return QIcon("/define-icon");
 }
 
 //---------------------------------------------------------------------------
@@ -297,29 +295,29 @@ void
 CrosswordGameForm::connectClicked()
 {
     if (!iscThread)
-        iscThread = new IscConnectionThread (this);
+        iscThread = new IscConnectionThread(this);
 
     if (iscThread->isRunning())
         return;
 
     QFile file (Auxil::getUserConfigDir() + "/isc-creds");
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
 
-    connect (iscThread, SIGNAL (messageReceived (const QString&)),
-             SLOT (threadMessageReceived (const QString&)));
-    connect (iscThread, SIGNAL (statusChanged (const QString&)),
-             SLOT (threadStatusChanged (const QString&)));
-    connect (iscThread, SIGNAL (socketError (QAbstractSocket::SocketError)),
-             SLOT (threadSocketError (QAbstractSocket::SocketError)));
+    connect(iscThread, SIGNAL(messageReceived(const QString&)),
+            SLOT(threadMessageReceived(const QString&)));
+    connect(iscThread, SIGNAL(statusChanged(const QString&)),
+            SLOT(threadStatusChanged(const QString&)));
+    connect(iscThread, SIGNAL(socketError(QAbstractSocket::SocketError)),
+            SLOT(threadSocketError(QAbstractSocket::SocketError)));
 
     QByteArray credBytes = file.readLine();
     QString credStr (credBytes);
-    if (!iscThread->connectToServer (credStr.simplified()))
+    if (!iscThread->connectToServer(credStr.simplified()))
         return;
 
-    connectButton->setEnabled (false);
-    disconnectButton->setEnabled (true);
+    connectButton->setEnabled(false);
+    disconnectButton->setEnabled(true);
 }
 
 //---------------------------------------------------------------------------
@@ -338,8 +336,8 @@ CrosswordGameForm::disconnectClicked()
     delete iscThread;
     iscThread = 0;
 
-    disconnectButton->setEnabled (false);
-    connectButton->setEnabled (true);
+    disconnectButton->setEnabled(false);
+    connectButton->setEnabled(true);
 }
 
 //---------------------------------------------------------------------------
@@ -354,7 +352,7 @@ CrosswordGameForm::inputReturnPressed()
     if (text.isEmpty())
         return;
 
-    processCommand (text);
+    processCommand(text);
     inputLine->clear();
 }
 
@@ -366,10 +364,10 @@ CrosswordGameForm::inputReturnPressed()
 //! @param status the status message
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::threadStatusChanged (const QString& status)
+CrosswordGameForm::threadStatusChanged(const QString& status)
 {
     statusString = status;
-    emit statusChanged (status);
+    emit statusChanged(status);
 }
 
 //---------------------------------------------------------------------------
@@ -380,12 +378,12 @@ CrosswordGameForm::threadStatusChanged (const QString& status)
 //! @param message the message
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::threadMessageReceived (const QString& message)
+CrosswordGameForm::threadMessageReceived(const QString& message)
 {
     qDebug() << "*** threadMessageReceived: " << message;
 
-    QString command = message.section (" ", 0, 0);
-    QString args = message.section (" ", 1);
+    QString command = message.section(" ", 0, 0);
+    QString args = message.section(" ", 1);
 
     // A hush fills the room as olaugh walks in! :)
     // WHO BEST 1877 olaugh a 0 0
@@ -437,90 +435,90 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 
     // Take care of messages the GUI doesn't need to know about
     if ((command == "TELL") || (command == "WHISPER")) {
-        QString sender = args.section (" ", 0, 0);
-        QString channel = args.section (" ", 1, 1); // ?
-        QString text = args.section (" ", 2);
+        QString sender = args.section(" ", 0, 0);
+        QString channel = args.section(" ", 1, 1); // ?
+        QString text = args.section(" ", 2);
 
         if (command == "TELL") {
-            messageAppendHtml (sender + " tells you: " + text,
-                            QColor (0x8b, 0x00, 0x8b));
+            messageAppendHtml(sender + " tells you: " + text,
+                              QColor(0x8b, 0x00, 0x8b));
         }
         else if (command == "WHISPER") {
-            messageAppendHtml (sender + " whispers: " + text,
-                            QColor (0x64, 0x95, 0xed));
+            messageAppendHtml(sender + " whispers: " + text,
+                              QColor(0x64, 0x95, 0xed));
         }
     }
 
     else if (command == "MATCH") {
-        QStringList split = args.simplified().split (" ");
+        QStringList split = args.simplified().split(" ");
         int rating = split[0].toInt();
         QString requester = split[1];
         int lexicon = split[2].toInt();
-        QString lexiconName = IscConverter::intToLexicon (lexicon);
+        QString lexiconName = IscConverter::intToLexicon(lexicon);
         int minutes = split[3].toInt();
         int increment = split[4].toInt();
         int rated = split[5].toInt();
         int noescape = split[6].toInt();
         int challenge = split[7].toInt();
-        QString challengeName = IscConverter::intToChallenge (challenge);
+        QString challengeName = IscConverter::intToChallenge(challenge);
         QString somethingG = split[8];   // -1
 
         QString displayMessage = "MATCH request from " + requester + " (" +
-            QString::number (rating) + "): " + lexiconName + " " +
-            QString::number (minutes) + " " + QString::number (increment) +
-            " " + (rated ? QString ("rated") : QString ("unrated")) + " " +
-            (noescape ? QString ("noescape ") : QString ("")) + challengeName;
+            QString::number(rating) + "): " + lexiconName + " " +
+            QString::number(minutes) + " " + QString::number(increment) +
+            " " + (rated ? QString("rated") : QString("unrated")) + " " +
+            (noescape ? QString("noescape ") : QString()) + challengeName;
 
         // A different (nicer?) match request message
         //QString displayMessage = "MATCH request from " + requester + " (" +
-        //    QString::number (rating) + "):\n"
+        //    QString::number(rating) + "):\n"
         //    "Lexicon: " + lexiconName + "\n" +
-        //    "Time: " + QString::number (minutes) + " minutes, " +
-        //    QString::number (increment) + " second increment\n" +
-        //    "Rated: " + (rated ? QString ("yes") : QString ("no")) + "\n" +
-        //    "Noescape: " + (noescape ? QString ("on") : QString ("off")) +
+        //    "Time: " + QString::number(minutes) + " minutes, " +
+        //    QString::number(increment) + " second increment\n" +
+        //    "Rated: " + (rated ? QString("yes") : QString("no")) + "\n" +
+        //    "Noescape: " + (noescape ? QString("on") : QString("off")) +
         //    "\nChallenge: " + challengeName;
 
-        messageAppendHtml (displayMessage, QColor (0xff, 0x00, 0xff));
+        messageAppendHtml(displayMessage, QColor(0xff, 0x00, 0xff));
 
         QString instructions = "Type 'ACCEPT " + requester + "' to accept "
             "the challenge, or 'DECLINE " + requester + "' to decline it.";
-        messageAppendHtml (instructions, QColor (0x00, 0x00, 0x00));
+        messageAppendHtml(instructions, QColor(0x00, 0x00, 0x00));
 
         // MATCH 0 moobles 0 60 0 0 0 1 -1
 
         //if (requester == "moobles") {
         //    QString response = "ACCEPT " + requester + " " + somethingB +
-        //                            " " + QString::number (minutes) + " " +
+        //                            " " + QString::number(minutes) + " " +
         //                            somethingC + " " + somethingD + " " +
         //                            somethingE + " " + somethingF +
         //                            " 2 aeinrst fjqvxyz";
         //    qDebug() << "Sending response: " << response;
-        //    iscThread->sendMessage (response);
+        //    iscThread->sendMessage(response);
         //}
     }
 
     else if (command == "OBSERVE") {
-        processObserve (args);
+        processObserve(args);
     }
 
     else if (command == "ACCEPT") {
-        processAccept (args);
+        processAccept(args);
     }
 
     else if (command == "MOVE") {
-        processMove (message);
+        processMove(message);
     }
 
     else if (command == "ASITIS") {
-        messageAppendHtml (args, QColor (0x00, 0x00, 0x00));
+        messageAppendHtml(args, QColor(0x00, 0x00, 0x00));
         // CHANNEL 0 PropRod 4 aap asked: match
         // shows up as:
         // #0 PropRod(H) -> app asked: match
     }
 
     else if (command == "ASITIS") {
-        messageAppendHtml (args, QColor (0x00, 0x00, 0x00));
+        messageAppendHtml(args, QColor(0x00, 0x00, 0x00));
     }
 
     else if (command == "SETALL") {
@@ -540,7 +538,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
     }
 
     else {
-        messageAppendHtml (message, QColor (0x00, 0x00, 0x00));
+        messageAppendHtml(message, QColor(0x00, 0x00, 0x00));
     }
 }
 
@@ -552,8 +550,7 @@ CrosswordGameForm::threadMessageReceived (const QString& message)
 //! @param text the text to append
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::messageAppendHtml (const QString& text,
-                                      const QColor& color)
+CrosswordGameForm::messageAppendHtml(const QString& text, const QColor& color)
 {
     int red = color.red();
     int green = color.green();
@@ -561,22 +558,22 @@ CrosswordGameForm::messageAppendHtml (const QString& text,
     int minPad = 2;
     int base = 16;
     QChar pad = '0';
-    QString colorStr = QString ("#%1%2%3").arg (red, minPad, base, pad).
-                                           arg (green, minPad, base, pad).
-                                           arg (blue, minPad, base, pad);
+    QString colorStr = QString("#%1%2%3").arg(red, minPad, base, pad).
+                                          arg(green, minPad, base, pad).
+                                          arg(blue, minPad, base, pad);
 
     QString html = "<font color=\"" + colorStr + "\">" +
-                   encodeHtmlEntities (text) + "</font><br>";
+                   encodeHtmlEntities(text) + "</font><br>";
 
     // Move to the end, append HTML, and move to the end again
     QTextCursor cursor = messageArea->textCursor();
-    cursor.movePosition (QTextCursor::End);
-    messageArea->setTextCursor (cursor);
+    cursor.movePosition(QTextCursor::End);
+    messageArea->setTextCursor(cursor);
 
-    messageArea->insertHtml (html);
+    messageArea->insertHtml(html);
 
-    cursor.movePosition (QTextCursor::End);
-    messageArea->setTextCursor (cursor);
+    cursor.movePosition(QTextCursor::End);
+    messageArea->setTextCursor(cursor);
 }
 
 //---------------------------------------------------------------------------
@@ -588,13 +585,13 @@ CrosswordGameForm::messageAppendHtml (const QString& text,
 //! @return the encoded string
 //---------------------------------------------------------------------------
 QString
-CrosswordGameForm::encodeHtmlEntities (const QString& text)
+CrosswordGameForm::encodeHtmlEntities(const QString& text)
 {
     QString encoded = text;
-    encoded.replace ("&", "&amp;");
-    encoded.replace ("<", "&lt;");
-    encoded.replace (">", "&gt;");
-    encoded.replace ("\n", "<br>");
+    encoded.replace("&", "&amp;");
+    encoded.replace("<", "&lt;");
+    encoded.replace(">", "&gt;");
+    encoded.replace("\n", "<br>");
     return encoded;
 }
 
@@ -608,24 +605,24 @@ CrosswordGameForm::encodeHtmlEntities (const QString& text)
 //! @return the canonized message
 //---------------------------------------------------------------------------
 QString
-CrosswordGameForm::canonizeMessage (const QString& message)
+CrosswordGameForm::canonizeMessage(const QString& message)
 {
     QString str = message.trimmed();
-    QString command = str.section (" ", 0, 0).toUpper();
-    QString args = str.section (" ", 1);
+    QString command = str.section(" ", 0, 0).toUpper();
+    QString args = str.section(" ", 1);
 
     if (command == "SET") {
-        QString subcommand = args.section (" ", 0, 0).toUpper();
+        QString subcommand = args.section(" ", 0, 0).toUpper();
         command += " " + subcommand;
-        args = args.section (" ", 1);
+        args = args.section(" ", 1);
     }
 
     // FIXME: this will also falsely match incorrect commands like ALVO
-    if (command.startsWith ("AL"))
+    if (command.startsWith("AL"))
         command = "ALLOBSERVERS";
-    else if (command.startsWith ("F"))
+    else if (command.startsWith("F"))
         command = "FINGER";
-    else if (command.startsWith ("O"))
+    else if (command.startsWith("O"))
         command = "OBSERVE";
 
     return command + " " + args;
@@ -640,7 +637,7 @@ CrosswordGameForm::canonizeMessage (const QString& message)
 //! @param seconds the number of seconds
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::setClock (int playerNum, int seconds)
+CrosswordGameForm::setClock(int playerNum, int seconds)
 {
     QLabel* label = 0;
     if (playerNum == 1) {
@@ -659,22 +656,22 @@ CrosswordGameForm::setClock (int playerNum, int seconds)
 
         if (seconds < 0) {
             QPalette palette (label->palette());
-            palette.setColor (QPalette::WindowText, QColor (0xff, 0x00, 0x00));
-            label->setPalette (palette);
+            palette.setColor(QPalette::WindowText, QColor(0xff, 0x00, 0x00));
+            label->setPalette(palette);
             minutes = -minutes;
             seconds = -seconds;
             overtime = true;
         }
         else {
             QPalette palette (label->palette());
-            palette.setColor (QPalette::WindowText, QColor (0x00, 0x00, 0x00));
-            label->setPalette (palette);
+            palette.setColor(QPalette::WindowText, QColor(0x00, 0x00, 0x00));
+            label->setPalette(palette);
         }
 
-        label->setText (QString ("%1%2:%3").
-                        arg (overtime ? QString ("-") : QString()).
-                        arg (QString::number (minutes)).
-                        arg (QString::number (seconds), 2, '0'));
+        label->setText(QString("%1%2:%3").
+                       arg(overtime ? QString("-") : QString()).
+                       arg(QString::number(minutes)).
+                       arg(QString::number(seconds), 2, '0'));
     }
 }
 
@@ -686,12 +683,12 @@ CrosswordGameForm::setClock (int playerNum, int seconds)
 //! @param playerNum the player whose clock to decrement
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::decrementClock (int playerNum)
+CrosswordGameForm::decrementClock(int playerNum)
 {
     if (playerNum == 1)
-        setClock (1, --aSeconds);
+        setClock(1, --aSeconds);
     else if (playerNum == 2)
-        setClock (2, --bSeconds);
+        setClock(2, --bSeconds);
 }
 
 //---------------------------------------------------------------------------
@@ -702,12 +699,12 @@ CrosswordGameForm::decrementClock (int playerNum)
 //! @param playerNum the player whose clock to start
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::startClock (int playerNum)
+CrosswordGameForm::startClock(int playerNum)
 {
     if (playerNum == 1)
-        aTimer.start (1000);
+        aTimer.start(1000);
     else if (playerNum == 2)
-        bTimer.start (1000);
+        bTimer.start(1000);
 }
 
 //---------------------------------------------------------------------------
@@ -718,7 +715,7 @@ CrosswordGameForm::startClock (int playerNum)
 //! @param playerNum the player whose clock to stop
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::stopClock (int playerNum)
+CrosswordGameForm::stopClock(int playerNum)
 {
     if (playerNum == 1)
         aTimer.stop();
@@ -734,13 +731,13 @@ CrosswordGameForm::stopClock (int playerNum)
 //! @param string the message
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::processCommand (const QString& string)
+CrosswordGameForm::processCommand(const QString& string)
 {
-    QString command = canonizeMessage (string);
-    QString action = command.section (" ", 0, 0);
+    QString command = canonizeMessage(string);
+    QString action = command.section(" ", 0, 0);
 
     if ((gameStatus == ObservingGame) && (action == "OBSERVE")) {
-        processCommand ("UNOBSERVE");
+        processCommand("UNOBSERVE");
     }
 
     else if (action == "UNOBSERVE") {
@@ -748,11 +745,11 @@ CrosswordGameForm::processCommand (const QString& string)
     }
 
     else if (action == "MOVE") {
-        processMove (command);
+        processMove(command);
     }
 
-    messageAppendHtml (command, QColor (0x00, 0x00, 0xff));
-    iscThread->sendMessage (command);
+    messageAppendHtml(command, QColor(0x00, 0x00, 0xff));
+    iscThread->sendMessage(command);
 }
 
 //---------------------------------------------------------------------------
@@ -763,11 +760,11 @@ CrosswordGameForm::processCommand (const QString& string)
 //! @param string the message
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::processObserve (const QString& string)
+CrosswordGameForm::processObserve(const QString& string)
 {
     gameStatus = ObservingGame;
-    QString action = string.section (" ", 0, 0);
-    QString args = string.section (" ", 1);
+    QString action = string.section(" ", 0, 0);
+    QString args = string.section(" ", 1);
 
     // OBSERVE LOGIN when first move was made overtime:
     // OBSERVE LOGIN
@@ -814,23 +811,23 @@ CrosswordGameForm::processObserve (const QString& string)
     // OBSERVE PAS   41 21 8A_cvaVcier_92
 
     if (action == "MOVE") {
-        processMove (string);
+        processMove(string);
     }
 
     else if (action == "CHANGE") {
         CrosswordGameMove move (action + " " + args.simplified());
         int playerToMove = game->getPlayerToMove();
-        move.setPlayerNum (playerToMove);
-        fixMoveOvertime (move);
-        makeMove (move);
+        move.setPlayerNum(playerToMove);
+        fixMoveOvertime(move);
+        makeMove(move);
     }
 
     else if (action == "LOGIN") {
-        processLogin (args);
+        processLogin(args);
     }
 
     else if (action == "CHALLENGE") {
-        QStringList judgments = args.simplified().split (" ");
+        QStringList judgments = args.simplified().split(" ");
         QString judgment;
         bool acceptable = true;
         foreach (judgment, judgments) {
@@ -840,48 +837,48 @@ CrosswordGameForm::processObserve (const QString& string)
             break;
         }
 
-        QString acceptableStr = acceptable ? QString ("valid")
-                                           : QString ("invalid");
-        messageAppendHtml ("CHALLENGE: move is " + acceptableStr + ".",
-                           QColor (0x00, 0x00, 0xff));
+        QString acceptableStr = acceptable ? QString("valid")
+                                           : QString("invalid");
+        messageAppendHtml("CHALLENGE: move is " + acceptableStr + ".",
+                          QColor(0x00, 0x00, 0xff));
     }
 
     else if (action == "PAS") {
         args = args.simplified();
-        int minutes = args.section (" ", 0, 0).toInt();
-        int seconds = args.section (" ", 1, 1).toInt();
-        QString challengedPlay = args.section (" ", 2, 2);
+        int minutes = args.section(" ", 0, 0).toInt();
+        int seconds = args.section(" ", 1, 1).toInt();
+        QString challengedPlay = args.section(" ", 2, 2);
         int playerToMove = game->getPlayerToMove();
 
         if ((challengedPlay != "---") && !challengedPlay.isEmpty()) {
             game->challengeLastMove();
             QString playerName = playerToMove == 1 ? aPlayerLabel->text()
                                                    : bPlayerLabel->text();
-            messageAppendHtml (playerName + ": PASS",
-                               QColor (0x00, 0x00, 0xff));
+            messageAppendHtml(playerName + ": PASS",
+                              QColor(0x00, 0x00, 0xff));
         }
         else {
             bool overtime = (playerToMove == 1 ? aOvertime : bOvertime);
-            int realSeconds = IscConverter::timeIscToReal
-                (minutes, seconds, overtime);
+            int realSeconds = IscConverter::timeIscToReal(minutes, seconds,
+                                                          overtime);
 
             CrosswordGameMove move;
-            move.setType (CrosswordGameMove::Pass);
-            move.setPlayerNum (playerToMove);
-            move.setSecondsLeft (realSeconds);
-            move.setNewRack (game->getPlayerRack (playerToMove));
-            makeMove (move);
+            move.setType(CrosswordGameMove::Pass);
+            move.setPlayerNum(playerToMove);
+            move.setSecondsLeft(realSeconds);
+            move.setNewRack(game->getPlayerRack(playerToMove));
+            makeMove(move);
         }
     }
 
     else if (action == "RESIGN") {
-        messageAppendHtml (string, QColor (0x00, 0x00, 0x00));
-        processResign (args.simplified());
+        messageAppendHtml(string, QColor(0x00, 0x00, 0x00));
+        processResign(args.simplified());
     }
 
     else if (action == "ADJUST") {
-        QString arg = args.section (" ", 0, 0);
-        QString playerName = args.section (" ", 1, 1);
+        QString arg = args.section(" ", 0, 0);
+        QString playerName = args.section(" ", 1, 1);
 
         if (arg == "OVERTIME") {
             if (playerName == aPlayerLabel->text())
@@ -889,16 +886,16 @@ CrosswordGameForm::processObserve (const QString& string)
             else if (playerName == bPlayerLabel->text())
                 bOvertime = true;
 
-            messageAppendHtml (playerName + "'s game time has expired. " +
-                               playerName + " will get 1 more minute "
-                               "with a 10-point penalty.  When this "
-                               "minute expires he will forfeit on time.",
-                               QColor (0x00, 0x00, 0x00));
+            messageAppendHtml(playerName + "'s game time has expired. " +
+                              playerName + " will get 1 more minute "
+                              "with a 10-point penalty.  When this "
+                              "minute expires he will forfeit on time.",
+                              QColor(0x00, 0x00, 0x00));
         }
     }
 
     else {
-        messageAppendHtml (string, QColor (0x00, 0x00, 0x00));
+        messageAppendHtml(string, QColor(0x00, 0x00, 0x00));
     }
 }
 
@@ -910,19 +907,19 @@ CrosswordGameForm::processObserve (const QString& string)
 //! @param string the message
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::processAccept (const QString&)
+CrosswordGameForm::processAccept(const QString&)
 {
-//    QStringList split = string.simplified().split (" ");
+//    QStringList split = string.simplified().split(" ");
 //    int rating = split[0].toInt();
 //    QString opponent = split[1];
 //    int lexicon = split[2].toInt();
-//    QString lexiconName = IscConverter::intToLexicon (lexicon);
+//    QString lexiconName = IscConverter::intToLexicon(lexicon);
 //    int minutes = split[3].toInt();
 //    int increment = split[4].toInt();
 //    int rated = split[5].toInt();
 //    int noescape = split[6].toInt();
 //    int challenge = split[7].toInt();
-//    QString challengeName = IscConverter::intToChallenge (challenge);
+//    QString challengeName = IscConverter::intToChallenge(challenge);
 //    // if 1, then opponent is first; if 2, then I am first
 //    QString firstPlayer = split[8];
 //    QString opponentRack = split[9];
@@ -937,13 +934,13 @@ CrosswordGameForm::processAccept (const QString&)
 //! @param string the message
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::processMove (const QString& string)
+CrosswordGameForm::processMove(const QString& string)
 {
     CrosswordGameMove move (string.simplified());
     int playerToMove = game->getPlayerToMove();
-    move.setPlayerNum (playerToMove);
-    fixMoveOvertime (move);
-    makeMove (move);
+    move.setPlayerNum(playerToMove);
+    fixMoveOvertime(move);
+    makeMove(move);
 }
 
 //---------------------------------------------------------------------------
@@ -954,22 +951,22 @@ CrosswordGameForm::processMove (const QString& string)
 //! @param string the message
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::processLogin (const QString& string)
+CrosswordGameForm::processLogin(const QString& string)
 {
     game->clear();
-    stopClock (1);
-    stopClock (2);
+    stopClock(1);
+    stopClock(2);
 
     // What does the first line mean?
 
-    QStringList lines = string.trimmed().split ("\n");
+    QStringList lines = string.trimmed().split("\n");
 
     // FIXME
     QString firstLine = lines[0];
 
-    QStringList vars = lines[1].split (" ");
+    QStringList vars = lines[1].split(" ");
 
-    QString lexicon = IscConverter::intToLexicon (vars[0].toInt());
+    QString lexicon = IscConverter::intToLexicon(vars[0].toInt());
     //switch (lexnum) {
     //    case '0': lexicon = "TWL98"; break;
     //    case '1': lexicon = "SOWPODS"; break;
@@ -986,9 +983,9 @@ CrosswordGameForm::processLogin (const QString& string)
     QString moreVars = vars[3];
     bool rated = (moreVars[0] == '1');
 
-    int seconds = IscConverter::timeIscToReal (minutes, 0);
-    setClock (1, seconds);
-    setClock (2, seconds);
+    int seconds = IscConverter::timeIscToReal(minutes, 0);
+    setClock(1, seconds);
+    setClock(2, seconds);
 
     // SINGLE   c
     // DOUBLE   b
@@ -1011,39 +1008,39 @@ CrosswordGameForm::processLogin (const QString& string)
     QChar something = moreVars[3];
     QChar somethingElse = moreVars[4];
 
-    QStringList aPlayerSplit = lines[2].split (" ");
+    QStringList aPlayerSplit = lines[2].split(" ");
     QString aPlayer = aPlayerSplit[0];
     QString aRating = aPlayerSplit[1];
 
-    aPlayerLabel->setText (aPlayer);
-    aRatingLabel->setText ("(" + aRating + ")");
+    aPlayerLabel->setText(aPlayer);
+    aRatingLabel->setText("(" + aRating + ")");
 
     QString aInitialRack = aPlayerSplit[2];
     aOvertime = (aPlayerSplit[3] == "-100");
 
     QList<CrosswordGameMove> aPlayerMoves;
-    CrosswordGameMove aDrawMove ("DRAW " + aInitialRack);
-    aDrawMove.setSecondsLeft (seconds);
-    aDrawMove.setPlayerNum (1);
-    aPlayerMoves.append (aDrawMove);
-    appendMoves (aPlayerMoves, lines[3], 1);
+    CrosswordGameMove aDrawMove("DRAW " + aInitialRack);
+    aDrawMove.setSecondsLeft(seconds);
+    aDrawMove.setPlayerNum(1);
+    aPlayerMoves.append(aDrawMove);
+    appendMoves(aPlayerMoves, lines[3], 1);
 
-    QStringList bPlayerSplit = lines[5].split (" ");
+    QStringList bPlayerSplit = lines[5].split(" ");
     QString bPlayer = bPlayerSplit[0];
     QString bRating = bPlayerSplit[1];
 
-    bPlayerLabel->setText (bPlayer);
-    bRatingLabel->setText ("(" + bRating + ")");
+    bPlayerLabel->setText(bPlayer);
+    bRatingLabel->setText("(" + bRating + ")");
 
     QString bInitialRack = bPlayerSplit[2];
     bOvertime = (bPlayerSplit[3] == "-100");
 
     QList<CrosswordGameMove> bPlayerMoves;
-    CrosswordGameMove bDrawMove ("DRAW " + bInitialRack);
-    bDrawMove.setSecondsLeft (seconds);
-    bDrawMove.setPlayerNum (2);
-    bPlayerMoves.append (bDrawMove);
-    appendMoves (bPlayerMoves, lines[6], 2);
+    CrosswordGameMove bDrawMove("DRAW " + bInitialRack);
+    bDrawMove.setSecondsLeft(seconds);
+    bDrawMove.setPlayerNum(2);
+    bPlayerMoves.append(bDrawMove);
+    appendMoves(bPlayerMoves, lines[6], 2);
 
     QListIterator<CrosswordGameMove> aMoveIt (aPlayerMoves);
     QListIterator<CrosswordGameMove> bMoveIt (bPlayerMoves);
@@ -1059,8 +1056,8 @@ CrosswordGameForm::processLogin (const QString& string)
     while (aMove.isValid() || bMove.isValid()) {
 
         if ((playerToMove == 1) && aMove.isValid()) {
-            fixMoveOvertime (aMove);
-            makeMove (aMove);
+            fixMoveOvertime(aMove);
+            makeMove(aMove);
 
             if (aMoveIt.hasNext())
                 aMove = aMoveIt.next();
@@ -1068,8 +1065,8 @@ CrosswordGameForm::processLogin (const QString& string)
                 aMove = CrosswordGameMove();
 
             if (aMove.getType() == CrosswordGameMove::TakeBack) {
-                fixMoveOvertime (aMove);
-                makeMove (aMove);
+                fixMoveOvertime(aMove);
+                makeMove(aMove);
                 if (aMoveIt.hasNext())
                     aMove = aMoveIt.next();
                 else
@@ -1078,16 +1075,16 @@ CrosswordGameForm::processLogin (const QString& string)
         }
 
         else if ((playerToMove == 2) && bMove.isValid()) {
-            fixMoveOvertime (bMove);
-            makeMove (bMove);
+            fixMoveOvertime(bMove);
+            makeMove(bMove);
             if (bMoveIt.hasNext())
                 bMove = bMoveIt.next();
             else
                 bMove = CrosswordGameMove();
 
             if (bMove.getType() == CrosswordGameMove::TakeBack) {
-                fixMoveOvertime (bMove);
-                makeMove (bMove);
+                fixMoveOvertime(bMove);
+                makeMove(bMove);
                 if (bMoveIt.hasNext())
                     bMove = bMoveIt.next();
                 else
@@ -1099,15 +1096,15 @@ CrosswordGameForm::processLogin (const QString& string)
     }
 
     QString text = "You are now observing: " + aPlayer + " vs " +
-        bPlayer + " " + lexicon + " " + QString::number (minutes) +
+        bPlayer + " " + lexicon + " " + QString::number(minutes) +
         " " + increment + " " +
-        (rated ? QString ("rated") : QString ("unrated")) + " " +
-        "noescape=" + (noescape ? QString ("ON") : QString ("OFF")) +
+        (rated ? QString("rated") : QString("unrated")) + " " +
+        "noescape=" + (noescape ? QString("ON") : QString("OFF")) +
         " challenge=" + challenge;
-    messageAppendHtml (text, QColor (0x00, 0x00, 0x00));
+    messageAppendHtml(text, QColor(0x00, 0x00, 0x00));
 
     text = (playerToMove == 1 ? aPlayer : bPlayer) + " to move.";
-    messageAppendHtml (text, QColor (0x00, 0x00, 0x00));
+    messageAppendHtml(text, QColor(0x00, 0x00, 0x00));
 }
 
 //---------------------------------------------------------------------------
@@ -1118,10 +1115,10 @@ CrosswordGameForm::processLogin (const QString& string)
 //! @param string the message
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::processResign (const QString&)
+CrosswordGameForm::processResign(const QString&)
 {
-    stopClock (1);
-    stopClock (2);
+    stopClock(1);
+    stopClock(2);
 
     // FIXME: Need to account for the method of resigning - was it forfeiting
     // on time?  abort by mutual agreement?  something else?
@@ -1135,61 +1132,61 @@ CrosswordGameForm::processResign (const QString&)
     QString bPlayerName = bPlayerLabel->text();
 
     // Apply rack bonuses or penalties
-    QString aRack = game->getPlayerRack (1);
-    int aRackValue = game->getRackValue (aRack);
-    QString bRack = game->getPlayerRack (2);
-    int bRackValue = game->getRackValue (bRack);
+    QString aRack = game->getPlayerRack(1);
+    int aRackValue = game->getRackValue(aRack);
+    QString bRack = game->getPlayerRack(2);
+    int bRackValue = game->getRackValue(bRack);
 
     if ((aRackValue > 0) && (bRackValue > 0)) {
         CrosswordGameMove aRackMove;
-        aRackMove.setPlayerNum (1);
-        aRackMove.setType (CrosswordGameMove::RackBonus);
-        aRackMove.setScore (-aRackValue);
-        aRackMove.setNewRack (aRack);
-        game->makeMove (aRackMove);
-        messageAppendHtml (aPlayerName + " loses " +
-                            QString::number (aRackValue) + " points "
-                            "for the final rack: " + aRack,
-                            QColor (0x00, 0x00, 0x00));
+        aRackMove.setPlayerNum(1);
+        aRackMove.setType(CrosswordGameMove::RackBonus);
+        aRackMove.setScore(-aRackValue);
+        aRackMove.setNewRack(aRack);
+        game->makeMove(aRackMove);
+        messageAppendHtml(aPlayerName + " loses " +
+                          QString::number(aRackValue) + " points "
+                          "for the final rack: " + aRack,
+                          QColor(0x00, 0x00, 0x00));
 
         CrosswordGameMove bRackMove;
-        bRackMove.setPlayerNum (2);
-        bRackMove.setType (CrosswordGameMove::RackBonus);
-        bRackMove.setScore (-bRackValue);
-        bRackMove.setNewRack (bRack);
-        game->makeMove (bRackMove);
-        messageAppendHtml (bPlayerName + " loses " +
-                            QString::number (bRackValue) + " points "
-                            "for the final rack: " + bRack,
-                            QColor (0x00, 0x00, 0x00));
+        bRackMove.setPlayerNum(2);
+        bRackMove.setType(CrosswordGameMove::RackBonus);
+        bRackMove.setScore(-bRackValue);
+        bRackMove.setNewRack(bRack);
+        game->makeMove(bRackMove);
+        messageAppendHtml(bPlayerName + " loses " +
+                          QString::number(bRackValue) + " points "
+                          "for the final rack: " + bRack,
+                          QColor(0x00, 0x00, 0x00));
     }
 
     else if (aRackValue > 0) {
         int bonus = 2 * aRackValue;
         CrosswordGameMove bRackMove;
-        bRackMove.setPlayerNum (2);
-        bRackMove.setType (CrosswordGameMove::RackBonus);
-        bRackMove.setScore (bonus);
-        bRackMove.setNewRack (bRack);
-        game->makeMove (bRackMove);
-        messageAppendHtml (bPlayerName + " gets " +
-                            QString::number (bonus) + " points for " +
-                            aPlayerName + "'s final rack: " + aRack,
-                            QColor (0x00, 0x00, 0x00));
+        bRackMove.setPlayerNum(2);
+        bRackMove.setType(CrosswordGameMove::RackBonus);
+        bRackMove.setScore(bonus);
+        bRackMove.setNewRack(bRack);
+        game->makeMove(bRackMove);
+        messageAppendHtml(bPlayerName + " gets " +
+                          QString::number(bonus) + " points for " +
+                          aPlayerName + "'s final rack: " + aRack,
+                          QColor(0x00, 0x00, 0x00));
     }
 
     else if (bRackValue > 0) {
         int bonus = 2 * bRackValue;
         CrosswordGameMove aRackMove;
-        aRackMove.setPlayerNum (1);
-        aRackMove.setType (CrosswordGameMove::RackBonus);
-        aRackMove.setScore (bonus);
-        aRackMove.setNewRack (aRack);
-        game->makeMove (aRackMove);
-        messageAppendHtml (bPlayerName + " gets " +
-                            QString::number (bonus) + " points for " +
-                            bPlayerName + "'s final rack: " + bRack,
-                            QColor (0x00, 0x00, 0x00));
+        aRackMove.setPlayerNum(1);
+        aRackMove.setType(CrosswordGameMove::RackBonus);
+        aRackMove.setScore(bonus);
+        aRackMove.setNewRack(aRack);
+        game->makeMove(aRackMove);
+        messageAppendHtml(bPlayerName + " gets " +
+                          QString::number(bonus) + " points for " +
+                          bPlayerName + "'s final rack: " + bRack,
+                          QColor(0x00, 0x00, 0x00));
     }
 
     // Apply time penalties
@@ -1197,56 +1194,56 @@ CrosswordGameForm::processResign (const QString&)
     if (aOvertime) {
         int penalty = 10;
         CrosswordGameMove overtimeMove;
-        overtimeMove.setPlayerNum (1);
-        overtimeMove.setType (CrosswordGameMove::TimePenalty);
-        overtimeMove.setScore (-penalty);
-        overtimeMove.setNewRack (aRack);
-        game->makeMove (overtimeMove);
-        messageAppendHtml (aPlayerName + " loses " +
-                            QString::number (penalty) + " points for "
-                            "going over time.",
-                            QColor (0x00, 0x00, 0x00));
+        overtimeMove.setPlayerNum(1);
+        overtimeMove.setType(CrosswordGameMove::TimePenalty);
+        overtimeMove.setScore(-penalty);
+        overtimeMove.setNewRack(aRack);
+        game->makeMove(overtimeMove);
+        messageAppendHtml(aPlayerName + " loses " +
+                          QString::number(penalty) + " points for "
+                          "going over time.",
+                          QColor(0x00, 0x00, 0x00));
     }
 
     if (bOvertime) {
         int penalty = 10;
         CrosswordGameMove overtimeMove;
-        overtimeMove.setPlayerNum (2);
-        overtimeMove.setType (CrosswordGameMove::TimePenalty);
-        overtimeMove.setScore (-penalty);
-        overtimeMove.setNewRack (bRack);
-        game->makeMove (overtimeMove);
-        messageAppendHtml (bPlayerName + " loses " +
-                            QString::number (penalty) + " points for "
-                            "going over time.",
-                            QColor (0x00, 0x00, 0x00));
+        overtimeMove.setPlayerNum(2);
+        overtimeMove.setType(CrosswordGameMove::TimePenalty);
+        overtimeMove.setScore(-penalty);
+        overtimeMove.setNewRack(bRack);
+        game->makeMove(overtimeMove);
+        messageAppendHtml(bPlayerName + " loses " +
+                          QString::number(penalty) + " points for "
+                          "going over time.",
+                          QColor(0x00, 0x00, 0x00));
     }
 
     // End the game
-    int aScore = game->getPlayerScore (1);
-    int bScore = game->getPlayerScore (2);
+    int aScore = game->getPlayerScore(1);
+    int bScore = game->getPlayerScore(2);
 
-    QString aScoreStr = aPlayerName + " " + QString::number (aScore);
-    QString bScoreStr = bPlayerName + " " + QString::number (bScore);
+    QString aScoreStr = aPlayerName + " " + QString::number(aScore);
+    QString bScoreStr = bPlayerName + " " + QString::number(bScore);
 
     QString finalScoreStr = "Final score: ";
     if (aScore > bScore) {
         finalScoreStr += aScoreStr + ", " + bScoreStr;
-        messageAppendHtml (finalScoreStr, QColor (0x00, 0x00, 0x00));
-        messageAppendHtml (aPlayerName + " wins the game.",
-                            QColor (0x00, 0x00, 0x00));
+        messageAppendHtml(finalScoreStr, QColor(0x00, 0x00, 0x00));
+        messageAppendHtml(aPlayerName + " wins the game.",
+                          QColor(0x00, 0x00, 0x00));
     }
     else if (bScore > aScore) {
         finalScoreStr += bScoreStr + ", " + aScoreStr;
-        messageAppendHtml (finalScoreStr, QColor (0x00, 0x00, 0x00));
-        messageAppendHtml (bPlayerName + " wins the game.",
-                            QColor (0x00, 0x00, 0x00));
+        messageAppendHtml(finalScoreStr, QColor(0x00, 0x00, 0x00));
+        messageAppendHtml(bPlayerName + " wins the game.",
+                          QColor(0x00, 0x00, 0x00));
     }
     else {
         finalScoreStr += aScoreStr + ", " + bScoreStr;
-        messageAppendHtml (finalScoreStr, QColor (0x00, 0x00, 0x00));
-        messageAppendHtml ("The game ends in a tie.",
-                            QColor (0x00, 0x00, 0x00));
+        messageAppendHtml(finalScoreStr, QColor(0x00, 0x00, 0x00));
+        messageAppendHtml("The game ends in a tie.",
+                          QColor(0x00, 0x00, 0x00));
     }
 
     gameStatus = NoGame;
@@ -1263,42 +1260,42 @@ CrosswordGameForm::processResign (const QString&)
 //! @param move the move
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::makeMove (CrosswordGameMove& move)
+CrosswordGameForm::makeMove(CrosswordGameMove& move)
 {
     int playerToMove = move.getPlayerNum();
     QString playerName = playerToMove == 1 ? aPlayerLabel->text()
         : bPlayerLabel->text();
-    game->makeMove (move);
+    game->makeMove(move);
 
     switch (move.getType()) {
         case CrosswordGameMove::Move: {
             QString placement = move.getPlacement();
             QString word = move.getWord();
-            QString score = QString::number (move.getScore());
-            messageAppendHtml (playerName + ": MOVE " + placement + " " +
-                               word + " " + score, QColor (0x00, 0x00, 0xff));
+            QString score = QString::number(move.getScore());
+            messageAppendHtml(playerName + ": MOVE " + placement + " " +
+                              word + " " + score, QColor(0x00, 0x00, 0xff));
         }
         break;
 
         case CrosswordGameMove::Exchange: {
             int numExchanged = move.getNumExchanged();
-            messageAppendHtml (playerName + ": CHANGE " +
-                               QString::number (numExchanged),
-                               QColor (0x00, 0x00, 0xff));
+            messageAppendHtml(playerName + ": CHANGE " +
+                              QString::number(numExchanged),
+                              QColor(0x00, 0x00, 0xff));
         }
         break;
 
         case CrosswordGameMove::Pass: {
-            messageAppendHtml (playerName + ": PASS",
-                               QColor (0x00, 0x00, 0xff));
+            messageAppendHtml(playerName + ": PASS",
+                              QColor(0x00, 0x00, 0xff));
         }
         break;
         default: break;
     }
 
-    stopClock (playerToMove);
-    setClock (playerToMove, move.getSecondsLeft());
-    startClock (playerToMove == 1 ? 2 : 1);
+    stopClock(playerToMove);
+    setClock(playerToMove, move.getSecondsLeft());
+    startClock(playerToMove == 1 ? 2 : 1);
 }
 
 //---------------------------------------------------------------------------
@@ -1310,13 +1307,13 @@ CrosswordGameForm::makeMove (CrosswordGameMove& move)
 //! @param move the move
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::fixMoveOvertime (CrosswordGameMove& move) const
+CrosswordGameForm::fixMoveOvertime(CrosswordGameMove& move) const
 {
     int playerToMove = move.getPlayerNum();
     bool overtime = (playerToMove == 1 ? aOvertime : bOvertime);
     if (overtime) {
-        move.setSecondsLeft (IscConverter::timeIscToReal
-                             (0, move.getSecondsLeft(), true));
+        move.setSecondsLeft(
+            IscConverter::timeIscToReal(0, move.getSecondsLeft(), true));
     }
 }
 
@@ -1331,28 +1328,28 @@ CrosswordGameForm::fixMoveOvertime (CrosswordGameMove& move) const
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-CrosswordGameForm::appendMoves (QList<CrosswordGameMove>& moves, const
-                                QString& string, int playerToMove) const
+CrosswordGameForm::appendMoves(QList<CrosswordGameMove>& moves, const
+                               QString& string, int playerToMove) const
 {
-    QStringList tokens = string.split (" ");
-    QRegExp moveRe ("MOVE(\\s+\\S+){7}|CHANGE(\\s+\\S+){4}|"
-                    "PAS(\\s+\\S+){3}");
+    QStringList tokens = string.split(" ");
+    QRegExp moveRe("MOVE(\\s+\\S+){7}|CHANGE(\\s+\\S+){4}|"
+                   "PAS(\\s+\\S+){3}");
     int pos = 0;
-    while ((pos = moveRe.indexIn (string, pos)) >= 0) {
-        QString match = string.mid (pos, moveRe.matchedLength());
+    while ((pos = moveRe.indexIn(string, pos)) >= 0) {
+        QString match = string.mid(pos, moveRe.matchedLength());
         CrosswordGameMove move (match);
-        move.setPlayerNum (playerToMove);
+        move.setPlayerNum(playerToMove);
 
         if (move.getType() == CrosswordGameMove::TakeBack) {
             CrosswordGameMove challengedMove = move;
-            challengedMove.setType (CrosswordGameMove::Move);
-            challengedMove.setScore (-move.getScore());
+            challengedMove.setType(CrosswordGameMove::Move);
+            challengedMove.setScore(-move.getScore());
             // this is a hack - that's not really the new rack
-            challengedMove.setNewRack (moves.last().getNewRack());
-            moves.append (challengedMove);
+            challengedMove.setNewRack(moves.last().getNewRack());
+            moves.append(challengedMove);
         }
 
-        moves.append (move);
+        moves.append(move);
         pos += moveRe.matchedLength();
     }
 
@@ -1369,43 +1366,43 @@ void
 CrosswordGameForm::gameChanged()
 {
     boardWidget->gameChanged();
-    aScoreLabel->setText (QString::number (game->getPlayerScore (1)));
-    bScoreLabel->setText (QString::number (game->getPlayerScore (2)));
-    aRackWidget->setRack (game->getPlayerRack (1));
-    bRackWidget->setRack (game->getPlayerRack (2));
+    aScoreLabel->setText(QString::number(game->getPlayerScore(1)));
+    bScoreLabel->setText(QString::number(game->getPlayerScore(2)));
+    aRackWidget->setRack(game->getPlayerRack(1));
+    bRackWidget->setRack(game->getPlayerRack(2));
 
     QFont font = aPlayerLabel->font();
-    font.setWeight (QFont::Normal);
+    font.setWeight(QFont::Normal);
     QFont boldFont = font;
-    boldFont.setWeight (QFont::Bold);
+    boldFont.setWeight(QFont::Bold);
     int playerToMove = game->getPlayerToMove();
     if (playerToMove == 1) {
-        aPlayerLabel->setFont (boldFont);
-        aRatingLabel->setFont (boldFont);
-        aTimerLabel->setFont (boldFont);
-        bPlayerLabel->setFont (font);
-        bRatingLabel->setFont (font);
-        bTimerLabel->setFont (font);
+        aPlayerLabel->setFont(boldFont);
+        aRatingLabel->setFont(boldFont);
+        aTimerLabel->setFont(boldFont);
+        bPlayerLabel->setFont(font);
+        bRatingLabel->setFont(font);
+        bTimerLabel->setFont(font);
     }
     else if (playerToMove == 2) {
-        aPlayerLabel->setFont (font);
-        aRatingLabel->setFont (font);
-        aTimerLabel->setFont (font);
-        bPlayerLabel->setFont (boldFont);
-        bRatingLabel->setFont (boldFont);
-        bTimerLabel->setFont (boldFont);
+        aPlayerLabel->setFont(font);
+        aRatingLabel->setFont(font);
+        aTimerLabel->setFont(font);
+        bPlayerLabel->setFont(boldFont);
+        bRatingLabel->setFont(boldFont);
+        bTimerLabel->setFont(boldFont);
     }
 
     QString bagStr = game->getTilesInBag();
     int numInBag = bagStr.length();
-    bagStr.replace (QRegExp ("(.)"), "\\1 ");
-    QString unseenStr = game->getUnseenTiles (playerToMove);
+    bagStr.replace(QRegExp("(.)"), "\\1 ");
+    QString unseenStr = game->getUnseenTiles(playerToMove);
     //int numUnseen = unseenStr.length();
-    unseenStr.replace (QRegExp ("(.)"), "\\1 ");
-    unseenLabel->setText ("Tiles in Bag (" + QString::number (numInBag) +
-                          "): " + bagStr); // + "\n" +
-                          //"Unseen (" + QString::number (numUnseen) +
-                          //"): " + unseenStr);
+    unseenStr.replace(QRegExp("(.)"), "\\1 ");
+    unseenLabel->setText("Tiles in Bag (" + QString::number(numInBag) +
+                         "): " + bagStr); // + "\n" +
+                         //"Unseen (" + QString::number(numUnseen) +
+                         //"): " + unseenStr);
 }
 
 //---------------------------------------------------------------------------
@@ -1417,9 +1414,9 @@ CrosswordGameForm::gameChanged()
 //! @param playerNum the player number
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::clockTimeout (int playerNum)
+CrosswordGameForm::clockTimeout(int playerNum)
 {
-    decrementClock (playerNum);
+    decrementClock(playerNum);
 }
 
 //---------------------------------------------------------------------------
@@ -1430,7 +1427,7 @@ CrosswordGameForm::clockTimeout (int playerNum)
 //! @param error the error
 //---------------------------------------------------------------------------
 void
-CrosswordGameForm::threadSocketError (QAbstractSocket::SocketError error)
+CrosswordGameForm::threadSocketError(QAbstractSocket::SocketError error)
 {
     QString errorMsg;
     switch (error) {
@@ -1485,8 +1482,8 @@ CrosswordGameForm::threadSocketError (QAbstractSocket::SocketError error)
 
     QString caption = "Network Error";
     QString message = "A network error occurred:\n" + errorMsg;
-    message = Auxil::dialogWordWrap (message);
-    QMessageBox::warning (this, caption, message);
+    message = Auxil::dialogWordWrap(message);
+    QMessageBox::warning(this, caption, message);
 
     disconnectClicked();
 }

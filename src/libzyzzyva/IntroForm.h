@@ -3,7 +3,7 @@
 //
 // A form for displaying introductory help material.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -33,7 +33,7 @@ class IntroForm : public ActionForm
 {
     Q_OBJECT
     public:
-    IntroForm (QWidget* parent = 0, Qt::WFlags f = 0);
+    IntroForm(QWidget* parent = 0, Qt::WFlags f = 0);
     ~IntroForm() { }
     QIcon getIcon() const;
     QString getTitle() const;

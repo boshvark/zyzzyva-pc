@@ -3,7 +3,7 @@
 //
 // A form for looking up and displaying word definitions.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -44,49 +44,49 @@ const QString TITLE_PREFIX = "Definition";
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-DefineForm::DefineForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : ActionForm (DefineFormType, parent, f), engine (e)
+DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
+    : ActionForm(DefineFormType, parent, f), engine(e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    mainVlay->setMargin (MARGIN);
-    mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    mainVlay->setMargin(MARGIN);
+    mainVlay->setSpacing(SPACING);
+    Q_CHECK_PTR(mainVlay);
 
     QHBoxLayout* lookupHlay = new QHBoxLayout;
-    lookupHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (lookupHlay);
-    mainVlay->addLayout (lookupHlay);
+    lookupHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(lookupHlay);
+    mainVlay->addLayout(lookupHlay);
 
-    QLabel* label = new QLabel ("Word : ");
-    Q_CHECK_PTR (label);
-    lookupHlay->addWidget (label);
+    QLabel* label = new QLabel("Word : ");
+    Q_CHECK_PTR(label);
+    lookupHlay->addWidget(label);
 
     wordLine = new WordLineEdit;
-    Q_CHECK_PTR (wordLine);
-    wordLine->setValidator (new WordValidator (wordLine));
-    connect (wordLine, SIGNAL (textChanged (const QString&)),
-             SLOT (wordChanged (const QString&)));
-    connect (wordLine, SIGNAL (returnPressed()), SLOT (defineWord()));
-    lookupHlay->addWidget (wordLine);
+    Q_CHECK_PTR(wordLine);
+    wordLine->setValidator(new WordValidator(wordLine));
+    connect(wordLine, SIGNAL(textChanged(const QString&)),
+            SLOT(wordChanged(const QString&)));
+    connect(wordLine, SIGNAL(returnPressed()), SLOT(defineWord()));
+    lookupHlay->addWidget(wordLine);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (buttonHlay);
-    mainVlay->addLayout (buttonHlay);
+    buttonHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(buttonHlay);
+    mainVlay->addLayout(buttonHlay);
 
-    defineButton = new ZPushButton ("&Define");
-    Q_CHECK_PTR (defineButton);
-    defineButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (defineButton, SIGNAL (clicked()), SLOT (defineWord()));
-    buttonHlay->addWidget (defineButton);
+    defineButton = new ZPushButton("&Define");
+    Q_CHECK_PTR(defineButton);
+    defineButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(defineButton, SIGNAL(clicked()), SLOT(defineWord()));
+    buttonHlay->addWidget(defineButton);
 
     resultBox = new DefinitionBox;
-    Q_CHECK_PTR (resultBox);
-    mainVlay->addWidget (resultBox, 1);
+    Q_CHECK_PTR(resultBox);
+    mainVlay->addWidget(resultBox, 1);
 
-    mainVlay->addStretch (0);
+    mainVlay->addStretch(0);
 
-    defineButton->setEnabled (false);
+    defineButton->setEnabled(false);
     resultBox->hide();
 }
 
@@ -100,7 +100,7 @@ DefineForm::DefineForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 QIcon
 DefineForm::getIcon() const
 {
-    return QIcon (":/define-icon");
+    return QIcon(":/define-icon");
 }
 
 //---------------------------------------------------------------------------
@@ -136,9 +136,9 @@ DefineForm::getStatusString() const
 //! the buttons appropriately.
 //---------------------------------------------------------------------------
 void
-DefineForm::wordChanged (const QString& word)
+DefineForm::wordChanged(const QString& word)
 {
-    defineButton->setEnabled (!word.isEmpty());
+    defineButton->setEnabled(!word.isEmpty());
 }
 
 //---------------------------------------------------------------------------
@@ -151,14 +151,15 @@ void
 DefineForm::defineWord()
 {
     QString word = wordLine->text();
-    if (word.isEmpty()) return;
-    bool acceptable = engine->isAcceptable (word);
+    if (word.isEmpty())
+        return;
+    bool acceptable = engine->isAcceptable(word);
     QString resultStr = acceptable ?
-                        QString ("<font color=\"blue\">Acceptable</font>") :
-                        QString ("<font color=\"red\">Unacceptable</font>");
+                        QString("<font color=\"blue\">Acceptable</font>") :
+                        QString("<font color=\"red\">Unacceptable</font>");
 
     if (acceptable) {
-        QString definition = engine->getDefinition (word);
+        QString definition = engine->getDefinition(word);
         if (definition.isEmpty())
             definition = EMPTY_DEFINITION;
         resultStr += "<br>" + definition;
@@ -167,8 +168,8 @@ DefineForm::defineWord()
         word += "*";
     }
 
-    resultBox->setText (resultStr);
-    resultBox->setTitle (word);
+    resultBox->setText(resultStr);
+    resultBox->setTitle(word);
     resultBox->show();
     selectInputArea();
 }
@@ -182,5 +183,5 @@ void
 DefineForm::selectInputArea()
 {
     wordLine->setFocus();
-    wordLine->setSelection (0, wordLine->text().length());
+    wordLine->setSelection(0, wordLine->text().length());
 }

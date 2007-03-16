@@ -3,7 +3,7 @@
 //
 // A class derived from QApplication.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -32,28 +32,28 @@ class ZApplication : public QApplication
 {
     Q_OBJECT
     public:
-    ZApplication (int& argc, char** argv)
-        : QApplication (argc, argv) { }
-    ZApplication (int& argc, char** argv, bool GUIenabled)
-        : QApplication (argc, argv, GUIenabled) { }
-    ZApplication (int& argc, char** argv, Type type)
-        : QApplication (argc, argv, type) { }
+    ZApplication(int& argc, char** argv)
+        : QApplication(argc, argv) { }
+    ZApplication(int& argc, char** argv, bool GUIenabled)
+        : QApplication(argc, argv, GUIenabled) { }
+    ZApplication(int& argc, char** argv, Type type)
+        : QApplication(argc, argv, type) { }
     // Only available on X11
-    //ZApplication (Display* display, Qt::HANDLE visual = 0,
-    //              Qt::HANDLE colormap = 0)
-    //    : QApplication (display, visual, colormap) { }
-    //ZApplication (Display* display, int& argc, char** argv,
-    //              Qt::HANDLE visual = 0, Qt::HANDLE colormap = 0)
-    //    : QApplication (display, argc, argv, visual, colormap) { }
+    //ZApplication(Display* display, Qt::HANDLE visual = 0,
+    //             Qt::HANDLE colormap = 0)
+    //    : QApplication(display, visual, colormap) { }
+    //ZApplication(Display* display, int& argc, char** argv,
+    //             Qt::HANDLE visual = 0, Qt::HANDLE colormap = 0)
+    //    : QApplication(display, argc, argv, visual, colormap) { }
     virtual ~ZApplication() { }
 
-    virtual bool event (QEvent* e);
+    virtual bool event(QEvent* e);
 
     void clearFileOpenRequests() { fileOpenRequests.clear(); }
     QStringList getFileOpenRequests() const { return fileOpenRequests; }
 
     signals:
-    void fileOpenRequested (const QString& file);
+    void fileOpenRequested(const QString& file);
 
     private:
     QStringList fileOpenRequests;

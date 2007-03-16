@@ -3,7 +3,7 @@
 //
 // A class for holding instances of letters.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -39,41 +39,41 @@ const QChar LetterBag::BLANK_CHAR = '_';
 //
 //! @param distribution the letter distribution to use
 //---------------------------------------------------------------------------
-LetterBag::LetterBag (const QString& distribution)
-    : totalLetters (0)
+LetterBag::LetterBag(const QString& distribution)
+    : totalLetters(0)
 {
     // Set letter values
     // FIXME: this should be able to be passed in as a parameter
-    letterValues[QChar (BLANK_CHAR)] = 0;
-    letterValues[QChar ('A')] = 1;
-    letterValues[QChar ('B')] = 3;
-    letterValues[QChar ('C')] = 3;
-    letterValues[QChar ('D')] = 2;
-    letterValues[QChar ('E')] = 1;
-    letterValues[QChar ('F')] = 4;
-    letterValues[QChar ('G')] = 2;
-    letterValues[QChar ('H')] = 4;
-    letterValues[QChar ('I')] = 1;
-    letterValues[QChar ('J')] = 8;
-    letterValues[QChar ('K')] = 5;
-    letterValues[QChar ('L')] = 1;
-    letterValues[QChar ('M')] = 3;
-    letterValues[QChar ('N')] = 1;
-    letterValues[QChar ('O')] = 1;
-    letterValues[QChar ('P')] = 3;
-    letterValues[QChar ('Q')] = 10;
-    letterValues[QChar ('R')] = 1;
-    letterValues[QChar ('S')] = 1;
-    letterValues[QChar ('T')] = 1;
-    letterValues[QChar ('U')] = 1;
-    letterValues[QChar ('V')] = 4;
-    letterValues[QChar ('W')] = 4;
-    letterValues[QChar ('X')] = 8;
-    letterValues[QChar ('Y')] = 4;
-    letterValues[QChar ('Z')] = 10;
+    letterValues[QChar(BLANK_CHAR)] = 0;
+    letterValues[QChar('A')] = 1;
+    letterValues[QChar('B')] = 3;
+    letterValues[QChar('C')] = 3;
+    letterValues[QChar('D')] = 2;
+    letterValues[QChar('E')] = 1;
+    letterValues[QChar('F')] = 4;
+    letterValues[QChar('G')] = 2;
+    letterValues[QChar('H')] = 4;
+    letterValues[QChar('I')] = 1;
+    letterValues[QChar('J')] = 8;
+    letterValues[QChar('K')] = 5;
+    letterValues[QChar('L')] = 1;
+    letterValues[QChar('M')] = 3;
+    letterValues[QChar('N')] = 1;
+    letterValues[QChar('O')] = 1;
+    letterValues[QChar('P')] = 3;
+    letterValues[QChar('Q')] = 10;
+    letterValues[QChar('R')] = 1;
+    letterValues[QChar('S')] = 1;
+    letterValues[QChar('T')] = 1;
+    letterValues[QChar('U')] = 1;
+    letterValues[QChar('V')] = 4;
+    letterValues[QChar('W')] = 4;
+    letterValues[QChar('X')] = 8;
+    letterValues[QChar('Y')] = 4;
+    letterValues[QChar('Z')] = 10;
 
-    rng.srand (std::time (0), Auxil::getPid());
-    resetContents (distribution);
+    rng.srand(std::time(0), Auxil::getPid());
+    resetContents(distribution);
 }
 
 //---------------------------------------------------------------------------
@@ -86,9 +86,9 @@ LetterBag::LetterBag (const QString& distribution)
 //! @return the probability of drawing letters to form the word, times 1e9
 //---------------------------------------------------------------------------
 double
-LetterBag::getProbability (const QString& word) const
+LetterBag::getProbability(const QString& word) const
 {
-    return (1e9 * getNumCombinations (word)) /
+    return (1e9 * getNumCombinations(word)) /
         fullChooseCombos[word.length()];
 }
 
@@ -102,7 +102,7 @@ LetterBag::getProbability (const QString& word) const
 //! @return the number of ways of drawing letters to form the word
 //---------------------------------------------------------------------------
 double
-LetterBag::getNumCombinations (const QString& word) const
+LetterBag::getNumCombinations(const QString& word) const
 {
     // Build parallel arrays of letters with their counts, and the
     // precalculated combinations based on the letter frequency
@@ -110,7 +110,7 @@ LetterBag::getNumCombinations (const QString& word) const
     QList<int> counts;
     QList<const QList<double>*> combos;
     for (int i = 0; i < word.length(); ++i) {
-        QChar c = word.at (i);
+        QChar c = word.at(i);
 
         bool foundLetter = false;
         for (int j = 0; j < letters.size(); ++j) {
@@ -122,9 +122,9 @@ LetterBag::getNumCombinations (const QString& word) const
         }
 
         if (!foundLetter) {
-            letters.append (c);
-            counts.append (1);
-            combos.append (&subChooseCombos[ letterFrequencies[c] ]);
+            letters.append(c);
+            counts.append(1);
+            combos.append(&subChooseCombos[ letterFrequencies[c] ]);
         }
     }
 
@@ -180,9 +180,9 @@ LetterBag::getNumCombinations (const QString& word) const
 //! @return the point value
 //---------------------------------------------------------------------------
 int
-LetterBag::getLetterValue (const QChar& letter) const
+LetterBag::getLetterValue(const QChar& letter) const
 {
-    return letterValues.value (letter.toUpper(), 0);
+    return letterValues.value(letter.toUpper(), 0);
 }
 
 //---------------------------------------------------------------------------
@@ -194,7 +194,7 @@ LetterBag::getLetterValue (const QChar& letter) const
 //! @param value the point value
 //---------------------------------------------------------------------------
 void
-LetterBag::setLetterValue (const QChar& letter, int value)
+LetterBag::setLetterValue(const QChar& letter, int value)
 {
     letterValues[letter] = value;
 }
@@ -213,7 +213,7 @@ LetterBag::resetContents (const QString& distribution)
     QString dist (distribution);
     if (dist.isEmpty())
         dist = MainSettings::getLetterDistribution();
-    QStringList strList = dist.split (" ");
+    QStringList strList = dist.split(" ");
 
     int maxFrequency = MAX_WORD_LEN;
 
@@ -222,9 +222,9 @@ LetterBag::resetContents (const QString& distribution)
 
     QString str;
     foreach (str, strList) {
-        QChar letter = str.section (":", 0, 0)[0];
-        int frequency = str.section (":", 1, 1).toInt();
-        letterFrequencies.insert (letter, frequency);
+        QChar letter = str.section(":", 0, 0)[0];
+        int frequency = str.section(":", 1, 1).toInt();
+        letterFrequencies.insert(letter, frequency);
         totalLetters += frequency;
         if (frequency > maxFrequency)
             maxFrequency = frequency;
@@ -235,20 +235,20 @@ LetterBag::resetContents (const QString& distribution)
     double a = 1;
     double r = 1;
     for (int i = 0; i <= maxFrequency; ++i, ++r) {
-        fullChooseCombos.append (a);
+        fullChooseCombos.append(a);
         a *= (totalLetters + 1.0 - r) / r;
 
         QList<double> subList;
         for (int j = 0; j <= maxFrequency; ++j) {
             if ((i == j) || (j == 0))
-                subList.append (1.0);
+                subList.append(1.0);
             else if (i == 0)
-                subList.append (0.0);
+                subList.append(0.0);
             else
-                subList.append (subChooseCombos[i-1][j-1] +
-                                subChooseCombos[i-1][j]);
+                subList.append(subChooseCombos[i-1][j-1] +
+                               subChooseCombos[i-1][j]);
         }
-        subChooseCombos.append (subList);
+        subChooseCombos.append(subList);
     }
 
 }
@@ -261,10 +261,10 @@ LetterBag::resetContents (const QString& distribution)
 //! @param letter the letter
 //---------------------------------------------------------------------------
 void
-LetterBag::insertLetter (const QChar& letter)
+LetterBag::insertLetter(const QChar& letter)
 {
     QChar c = letter.toUpper();
-    if (letterFrequencies.contains (c))
+    if (letterFrequencies.contains(c))
         ++letterFrequencies[c];
     else
         letterFrequencies[c] = 1;
@@ -285,7 +285,7 @@ LetterBag::insertLetter (const QChar& letter)
 //! @return true if the letter can be drawn, false if it is not in the bag
 //---------------------------------------------------------------------------
 bool
-LetterBag::drawLetter (const QChar& letter)
+LetterBag::drawLetter(const QChar& letter)
 {
     QChar c = letter.toUpper();
     --letterFrequencies[c];
@@ -301,7 +301,7 @@ LetterBag::drawLetter (const QChar& letter)
 //! @return the letters, or an empty character of the bag is empty
 //---------------------------------------------------------------------------
 QString
-LetterBag::lookRandomLetters (int num)
+LetterBag::lookRandomLetters(int num)
 {
     if (totalLetters < num)
         return QString();
@@ -315,7 +315,7 @@ LetterBag::lookRandomLetters (int num)
         it.next();
         int frequency = it.value();
         for (int i = 0; i < frequency; ++i, --chooseFrom) {
-            unsigned int r = chooseFrom > 1 ? rng.rand (chooseFrom - 1) : 0;
+            unsigned int r = chooseFrom > 1 ? rng.rand(chooseFrom - 1) : 0;
             if (r >= choose)
                 continue;
 
@@ -338,11 +338,11 @@ LetterBag::lookRandomLetters (int num)
 //! @return the letters, or an empty string if the bag is empty
 //---------------------------------------------------------------------------
 QString
-LetterBag::drawRandomLetters (int num)
+LetterBag::drawRandomLetters(int num)
 {
-    QString letters = lookRandomLetters (num);
+    QString letters = lookRandomLetters(num);
     for (int i = 0; i < letters.length(); ++i) {
-        drawLetter (letters[i]);
+        drawLetter(letters[i]);
     }
     return letters;
 }

@@ -4,7 +4,7 @@
 // A full-screen dialog for Word Judge functionality, in which the user can
 // very easily judge the validity of one or more words.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -70,115 +70,114 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-JudgeDialog::JudgeDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : QDialog (parent, f), engine (e), clearResultsHold (0)
+JudgeDialog::JudgeDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
+    : QDialog(parent, f), engine(e), clearResultsHold(0)
 {
     QFont formFont = qApp->font();
-    formFont.setPixelSize (FORM_FONT_PIXEL_SIZE);
+    formFont.setPixelSize(FORM_FONT_PIXEL_SIZE);
 
     QFont titleFont = qApp->font();
-    titleFont.setPixelSize (TITLE_FONT_PIXEL_SIZE);
+    titleFont.setPixelSize(TITLE_FONT_PIXEL_SIZE);
 
     QFont instructionFont = qApp->font();
-    instructionFont.setPixelSize (INSTRUCTION_FONT_PIXEL_SIZE);
+    instructionFont.setPixelSize(INSTRUCTION_FONT_PIXEL_SIZE);
 
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    mainVlay->setMargin (0);
-    mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    mainVlay->setMargin(0);
+    mainVlay->setSpacing(SPACING);
+    Q_CHECK_PTR(mainVlay);
 
     widgetStack = new QStackedWidget;
-    Q_CHECK_PTR (widgetStack);
-    mainVlay->addWidget (widgetStack);
+    Q_CHECK_PTR(widgetStack);
+    mainVlay->addWidget(widgetStack);
 
     inputWidget = new QWidget;
-    Q_CHECK_PTR (inputWidget);
-    widgetStack->addWidget (inputWidget);
+    Q_CHECK_PTR(inputWidget);
+    widgetStack->addWidget(inputWidget);
 
-    QVBoxLayout* inputVlay = new QVBoxLayout (inputWidget);
-    inputVlay->setMargin (INPUT_MARGIN);
-    inputVlay->setSpacing (20);
-    Q_CHECK_PTR (inputVlay);
+    QVBoxLayout* inputVlay = new QVBoxLayout(inputWidget);
+    inputVlay->setMargin(INPUT_MARGIN);
+    inputVlay->setSpacing(20);
+    Q_CHECK_PTR(inputVlay);
 
-    instLabel = new QLabel (INSTRUCTION_MESSAGE);
-    Q_CHECK_PTR (instLabel);
-    instLabel->setFont (instructionFont);
-    instLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
-    instLabel->setWordWrap (true);
-    inputVlay->addWidget (instLabel);
+    instLabel = new QLabel(INSTRUCTION_MESSAGE);
+    Q_CHECK_PTR(instLabel);
+    instLabel->setFont(instructionFont);
+    instLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    instLabel->setWordWrap(true);
+    inputVlay->addWidget(instLabel);
 
     inputArea = new WordTextEdit;
-    Q_CHECK_PTR (inputArea);
-    inputArea->setContextMenuPolicy (Qt::NoContextMenu);
-    inputArea->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
-    inputArea->setFont (formFont);
-    connect (inputArea, SIGNAL (textChanged()), SLOT (textChanged()));
-    inputVlay->addWidget (inputArea);
+    Q_CHECK_PTR(inputArea);
+    inputArea->setContextMenuPolicy(Qt::NoContextMenu);
+    inputArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    inputArea->setFont(formFont);
+    connect(inputArea, SIGNAL(textChanged()), SLOT(textChanged()));
+    inputVlay->addWidget(inputArea);
 
     resultWidget = new QFrame;
-    Q_CHECK_PTR (resultWidget);
-    resultWidget->setSizePolicy (QSizePolicy::Expanding,
-                                 QSizePolicy::Expanding);
-    resultWidget->setFrameStyle (QFrame::Box | QFrame::Plain);
-    resultWidget->setLineWidth (RESULT_BORDER_WIDTH);
-    widgetStack->addWidget (resultWidget);
+    Q_CHECK_PTR(resultWidget);
+    resultWidget->setSizePolicy(QSizePolicy::Expanding,
+                                QSizePolicy::Expanding);
+    resultWidget->setFrameStyle(QFrame::Box | QFrame::Plain);
+    resultWidget->setLineWidth(RESULT_BORDER_WIDTH);
+    widgetStack->addWidget(resultWidget);
 
-    QVBoxLayout* resultVlay = new QVBoxLayout (resultWidget);
-    resultVlay->setMargin (0);
-    resultVlay->setSpacing (RESULT_SPACING);
-    Q_CHECK_PTR (resultVlay);
+    QVBoxLayout* resultVlay = new QVBoxLayout(resultWidget);
+    resultVlay->setMargin(0);
+    resultVlay->setSpacing(RESULT_SPACING);
+    Q_CHECK_PTR(resultVlay);
 
-    resultVlay->insertSpacing (0, RESULT_BORDER_WIDTH * 3);
+    resultVlay->insertSpacing(0, RESULT_BORDER_WIDTH * 3);
 
     resultPixmapLabel = new QLabel;
-    Q_CHECK_PTR (resultPixmapLabel);
-    resultPixmapLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
-    resultVlay->addWidget (resultPixmapLabel);
+    Q_CHECK_PTR(resultPixmapLabel);
+    resultPixmapLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    resultVlay->addWidget(resultPixmapLabel);
 
     resultLabel = new QLabel;
-    Q_CHECK_PTR (resultLabel);
-    resultLabel->setFont (formFont);
-    resultLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
-    resultLabel->setWordWrap (true);
-    resultVlay->addWidget (resultLabel);
+    Q_CHECK_PTR(resultLabel);
+    resultLabel->setFont(formFont);
+    resultLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    resultLabel->setWordWrap(true);
+    resultVlay->addWidget(resultLabel);
 
-    resultVlay->addStretch (1);
+    resultVlay->addStretch(1);
 
     QHBoxLayout* titleHlay = new QHBoxLayout;
-    Q_CHECK_PTR (titleHlay);
-    inputVlay->addLayout (titleHlay);
+    Q_CHECK_PTR(titleHlay);
+    inputVlay->addLayout(titleHlay);
 
-    QLabel* programLabel = new QLabel ("Zyzzyva Word Judge\n"
-                                       "Version " + ZYZZYVA_VERSION);
-    Q_CHECK_PTR (programLabel);
-    programLabel->setFont (titleFont);
-    titleHlay->addWidget (programLabel);
+    QLabel* programLabel = new QLabel("Zyzzyva Word Judge\n"
+                                      "Version " + ZYZZYVA_VERSION);
+    Q_CHECK_PTR(programLabel);
+    programLabel->setFont(titleFont);
+    titleHlay->addWidget(programLabel);
 
-    titleHlay->addStretch (1);
+    titleHlay->addStretch(1);
 
     QString lexicon = engine->getLexiconName();
-    QDate date = Auxil::lexiconToDate (lexicon);
+    QDate date = Auxil::lexiconToDate(lexicon);
     QString dateStr = "";
     if (date.isValid())
         dateStr = date.toString("MMMM d, yyyy");
-    QLabel* lexiconLabel = new QLabel ("Lexicon: " + lexicon + "\n" +
-                                       dateStr);
-    Q_CHECK_PTR (lexiconLabel);
-    lexiconLabel->setFont (titleFont);
-    lexiconLabel->setAlignment (Qt::AlignRight);
-    titleHlay->addWidget (lexiconLabel);
+    QLabel* lexiconLabel = new QLabel("Lexicon: " + lexicon + "\n" + dateStr);
+    Q_CHECK_PTR(lexiconLabel);
+    lexiconLabel->setFont(titleFont);
+    lexiconLabel->setAlignment(Qt::AlignRight);
+    titleHlay->addWidget(lexiconLabel);
 
-    inputTimer = new QTimer (this);
-    Q_CHECK_PTR (inputTimer);
-    connect (inputTimer, SIGNAL (timeout()), SLOT (clearInput()));
+    inputTimer = new QTimer(this);
+    Q_CHECK_PTR(inputTimer);
+    connect(inputTimer, SIGNAL(timeout()), SLOT(clearInput()));
 
-    resultTimer = new QTimer (this);
-    Q_CHECK_PTR (resultTimer);
-    connect (resultTimer, SIGNAL (timeout()), SLOT (clearResults()));
+    resultTimer = new QTimer(this);
+    Q_CHECK_PTR(resultTimer);
+    connect(resultTimer, SIGNAL(timeout()), SLOT(clearResults()));
 
-    exitTimer = new QTimer (this);
-    Q_CHECK_PTR (exitTimer);
-    connect (exitTimer, SIGNAL (timeout()), SLOT (clearExit()));
+    exitTimer = new QTimer(this);
+    Q_CHECK_PTR(exitTimer);
+    connect(exitTimer, SIGNAL(timeout()), SLOT(clearExit()));
 
     clearResults();
     showFullScreen();
@@ -197,7 +196,7 @@ JudgeDialog::textChanged()
     int origCursorPosition = cursor.position();
     int deletedBeforeCursor = 0;
 
-    inputArea->blockSignals (true);
+    inputArea->blockSignals(true);
     QString text = inputArea->toPlainText().toUpper();
     int lookIndex = 0;
     int wordLength = 0;
@@ -205,7 +204,7 @@ JudgeDialog::textChanged()
     bool afterSpace = false;
     bool doJudge = false;
     for (int i = 0; i < text.length(); ++i) {
-        QChar c = text.at (lookIndex);
+        QChar c = text.at(lookIndex);
 
         if (c.isLetter()) {
             if (wordLength == 0)
@@ -215,7 +214,7 @@ JudgeDialog::textChanged()
                 afterSpace = false;
                 ++wordLength;
                 if (wordLength > MAX_WORD_LEN) {
-                    text.insert (lookIndex, "\n");
+                    text.insert(lookIndex, "\n");
                     afterSpace = true;
                     wordLength = 0;
                     if (i < origCursorPosition)
@@ -225,12 +224,12 @@ JudgeDialog::textChanged()
 
             // Disallow more than MAX_JUDGE_WORDS by whiting them out
             else {
-                text.replace (lookIndex, 1, "\n");
+                text.replace(lookIndex, 1, "\n");
             }
             ++lookIndex;
         }
         else if ((lookIndex > 0) && c.isSpace() && (c != '\t') && !afterSpace) {
-            text.replace (lookIndex, 1, "\n");
+            text.replace(lookIndex, 1, "\n");
             afterSpace = true;
             ++lookIndex;
             wordLength = 0;
@@ -238,27 +237,27 @@ JudgeDialog::textChanged()
         else {
             if (c == '\t')
                 doJudge = true;
-            text.remove (lookIndex, 1);
+            text.remove(lookIndex, 1);
             if (i < origCursorPosition)
                 ++deletedBeforeCursor;
             wordLength = 0;
         }
     }
-    text.replace (QRegExp ("\\n+"), "\n");
+    text.replace(QRegExp("\\n+"), "\n");
 
-    inputArea->setPlainText (text);
+    inputArea->setPlainText(text);
     int position = origCursorPosition - deletedBeforeCursor;
     if (position > text.length())
         position = text.length();
-    cursor.setPosition (position);
-    inputArea->setTextCursor (cursor);
-    inputArea->blockSignals (false);
+    cursor.setPosition(position);
+    inputArea->setTextCursor(cursor);
+    inputArea->blockSignals(false);
 
     if (!text.isEmpty()) {
         if (doJudge)
             judgeWord();
         else
-            inputTimer->start (CLEAR_INPUT_DELAY);
+            inputTimer->start(CLEAR_INPUT_DELAY);
     }
 }
 
@@ -274,7 +273,7 @@ JudgeDialog::clearResults()
     exitTimer->stop();
     clearExit();
     inputArea->clear();
-    widgetStack->setCurrentWidget (inputWidget);
+    widgetStack->setCurrentWidget(inputWidget);
 }
 
 //---------------------------------------------------------------------------
@@ -289,18 +288,18 @@ JudgeDialog::judgeWord()
     bool acceptable = true;
 
     QString text = inputArea->toPlainText().simplified();
-    QStringList words = text.split (QChar (' '));
+    QStringList words = text.split(QChar(' '));
     QStringList acceptableWords;
     QStringList unacceptableWords;
     QStringList::iterator it;
     QString wordStr;
     for (it = words.begin(); it != words.end(); ++it) {
-        bool wordAcceptable = engine->isAcceptable (*it);
+        bool wordAcceptable = engine->isAcceptable(*it);
 
         if (wordAcceptable)
-            acceptableWords.append (*it);
+            acceptableWords.append(*it);
         else
-            unacceptableWords.append (*it);
+            unacceptableWords.append(*it);
 
         if (!wordAcceptable)
             acceptable = false;
@@ -315,7 +314,7 @@ JudgeDialog::judgeWord()
     if (acceptable) {
         resultStr = "<font color=\"#00bb00\">YES, the play is "
                     "<b>ACCEPTABLE</b></font>";
-        resultColor = QColor (0, 204, 0);
+        resultColor = QColor(0, 204, 0);
         resultPixmap.load(":/judge-acceptable");
     }
     else {
@@ -327,21 +326,21 @@ JudgeDialog::judgeWord()
     resultStr += "<br><br><font color=\"black\">" + wordStr + "</font>";
 
     QPalette pal = resultWidget->palette();
-    pal.setColor (QPalette::Foreground, resultColor);
-    resultWidget->setPalette (pal);
-    resultLabel->setPalette (pal);
+    pal.setColor(QPalette::Foreground, resultColor);
+    resultWidget->setPalette(pal);
+    resultLabel->setPalette(pal);
 
     ++clearResultsHold;
 
-    resultLabel->setText (resultStr);
+    resultLabel->setText(resultStr);
     if (!resultPixmap.isNull())
-        resultPixmapLabel->setPixmap (resultPixmap);
-    widgetStack->setCurrentWidget (resultWidget);
+        resultPixmapLabel->setPixmap(resultPixmap);
+    widgetStack->setCurrentWidget(resultWidget);
 
-    QTimer::singleShot (CLEAR_RESULTS_MIN_DELAY, this,
-                        SLOT (clearResultsReleaseHold()));
+    QTimer::singleShot(CLEAR_RESULTS_MIN_DELAY, this,
+                       SLOT(clearResultsReleaseHold()));
 
-    resultTimer->start (CLEAR_RESULTS_DELAY);
+    resultTimer->start(CLEAR_RESULTS_DELAY);
 
     if (!MainSettings::getJudgeSaveLog())
         return;
@@ -350,8 +349,8 @@ JudgeDialog::judgeWord()
         engine->getLexiconName();
     QDir logDir (logDirName);
 
-    if (!logDir.exists() && !logDir.mkdir (logDirName)) {
-        qWarning ("Cannot create judge log directory\n");
+    if (!logDir.exists() && !logDir.mkdir(logDirName)) {
+        qWarning("Cannot create judge log directory\n");
         return;
     }
 
@@ -359,33 +358,33 @@ JudgeDialog::judgeWord()
     QString word;
     if (!acceptableWords.empty()) {
         QFile file (logDirName + "/acceptable.txt");
-        file.open (QIODevice::Append | QIODevice::Text);
+        file.open(QIODevice::Append | QIODevice::Text);
         QTextStream stream (&file);
         foreach (word, acceptableWords) {
             stream << word;
-            endl (stream);
+            endl(stream);
         }
     }
 
     if (!unacceptableWords.empty()) {
         QFile file (logDirName + "/unacceptable.txt");
-        file.open (QIODevice::Append | QIODevice::Text);
+        file.open(QIODevice::Append | QIODevice::Text);
         QTextStream stream (&file);
         foreach (word, unacceptableWords) {
             stream << word;
-            endl (stream);
+            endl(stream);
         }
     }
 
     QFile file (logDirName + "/challenge.txt");
-    file.open (QIODevice::Append | QIODevice::Text);
+    file.open(QIODevice::Append | QIODevice::Text);
     QTextStream stream (&file);
     stream << QDateTime::currentDateTime().toString("[yyyy-MM-dd hh:mm:ss] ")
         << (acceptable ? "acceptable   +++" : "unacceptable ---");
     foreach (word, words) {
         stream << " " << word;
     }
-    endl (stream);
+    endl(stream);
 }
 
 //---------------------------------------------------------------------------
@@ -407,9 +406,9 @@ JudgeDialog::clearResultsReleaseHold()
 void
 JudgeDialog::displayExit()
 {
-    instLabel->setText (INSTRUCTION_MESSAGE + "\nTo exit, hold SHIFT and "
-                        "press the ESC key.");
-    exitTimer->start (CLEAR_EXIT_DELAY);
+    instLabel->setText(INSTRUCTION_MESSAGE + "\nTo exit, hold SHIFT and "
+                       "press the ESC key.");
+    exitTimer->start(CLEAR_EXIT_DELAY);
 }
 
 //---------------------------------------------------------------------------
@@ -432,7 +431,7 @@ JudgeDialog::clearInput()
 void
 JudgeDialog::clearExit()
 {
-    instLabel->setText (INSTRUCTION_MESSAGE);
+    instLabel->setText(INSTRUCTION_MESSAGE);
 }
 
 //---------------------------------------------------------------------------
@@ -443,7 +442,7 @@ JudgeDialog::clearExit()
 //! @param event the key press event
 //---------------------------------------------------------------------------
 void
-JudgeDialog::keyPressEvent (QKeyEvent* event)
+JudgeDialog::keyPressEvent(QKeyEvent* event)
 {
     if (!event)
         return;

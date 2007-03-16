@@ -3,7 +3,7 @@
 //
 // A form for searching for words, patterns, anagrams, etc.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -39,7 +39,7 @@ class SearchForm : public ActionForm
 {
     Q_OBJECT
     public:
-    SearchForm (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
+    SearchForm(WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
     QIcon getIcon() const;
     QString getTitle() const;
     QString getStatusString() const;
@@ -48,7 +48,7 @@ class SearchForm : public ActionForm
     public slots:
     void saveRequested();
     void search();
-    void updateResultTotal (int num);
+    void updateResultTotal(int num);
     void specChanged();
 
     private:

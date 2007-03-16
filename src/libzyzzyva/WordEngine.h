@@ -83,7 +83,7 @@ class WordEngine : public QObject
     QString getDefinition(const QString& word, bool replaceLinks = true) const;
     QString getLexiconName() const { return lexiconName; }
     QString getFrontHookLetters(const QString& word) const;
-    QString getBackHookLetters (const QString& word) const;
+    QString getBackHookLetters(const QString& word) const;
     int getProbabilityOrder(const QString& word) const;
     int getMinProbabilityOrder(const QString& word) const;
     int getMaxProbabilityOrder(const QString& word) const;

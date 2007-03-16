@@ -3,7 +3,7 @@
 //
 // The dialog for editing a list of words.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -46,56 +46,56 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-WordListDialog::WordListDialog (QWidget* parent, Qt::WFlags f)
-    : QDialog (parent, f)
+WordListDialog::WordListDialog(QWidget* parent, Qt::WFlags f)
+    : QDialog(parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    mainVlay->setMargin (MARGIN);
-    mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    Q_CHECK_PTR(mainVlay);
+    mainVlay->setMargin(MARGIN);
+    mainVlay->setSpacing(SPACING);
 
     numWordsLabel = new QLabel;
-    Q_CHECK_PTR (numWordsLabel);
-    mainVlay->addWidget (numWordsLabel);
+    Q_CHECK_PTR(numWordsLabel);
+    mainVlay->addWidget(numWordsLabel);
 
-    wordList = new QListWidget (this);
-    Q_CHECK_PTR (wordList);
-    mainVlay->addWidget (wordList);
+    wordList = new QListWidget(this);
+    Q_CHECK_PTR(wordList);
+    mainVlay->addWidget(wordList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (buttonHlay);
-    mainVlay->addLayout (buttonHlay);
+    Q_CHECK_PTR(buttonHlay);
+    buttonHlay->setSpacing(SPACING);
+    mainVlay->addLayout(buttonHlay);
 
-    ZPushButton* openFileButton = new ZPushButton ("Open &File...");
-    Q_CHECK_PTR (openFileButton);
-    openFileButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (openFileButton, SIGNAL (clicked()), SLOT (openFileClicked()));
-    buttonHlay->addWidget (openFileButton);
+    ZPushButton* openFileButton = new ZPushButton("Open &File...");
+    Q_CHECK_PTR(openFileButton);
+    openFileButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(openFileButton, SIGNAL(clicked()), SLOT(openFileClicked()));
+    buttonHlay->addWidget(openFileButton);
 
-    ZPushButton* clearButton = new ZPushButton ("&Clear");
-    Q_CHECK_PTR (clearButton);
-    clearButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (clearButton, SIGNAL (clicked()), SLOT (clearClicked()));
-    buttonHlay->addWidget (clearButton);
+    ZPushButton* clearButton = new ZPushButton("&Clear");
+    Q_CHECK_PTR(clearButton);
+    clearButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(clearButton, SIGNAL(clicked()), SLOT(clearClicked()));
+    buttonHlay->addWidget(clearButton);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
-    ZPushButton* okButton = new ZPushButton ("&OK");
-    Q_CHECK_PTR (okButton);
-    okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    okButton->setDefault (true);
-    connect (okButton, SIGNAL (clicked()), SLOT (accept()));
-    buttonHlay->addWidget (okButton);
+    ZPushButton* okButton = new ZPushButton("&OK");
+    Q_CHECK_PTR(okButton);
+    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    okButton->setDefault(true);
+    connect(okButton, SIGNAL(clicked()), SLOT(accept()));
+    buttonHlay->addWidget(okButton);
 
-    ZPushButton* cancelButton = new ZPushButton ("Cancel");
-    Q_CHECK_PTR (cancelButton);
-    cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
-    buttonHlay->addWidget (cancelButton);
+    ZPushButton* cancelButton = new ZPushButton("Cancel");
+    Q_CHECK_PTR(cancelButton);
+    cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
+    buttonHlay->addWidget(cancelButton);
 
     updateLabel();
-    setWindowTitle (DIALOG_CAPTION);
+    setWindowTitle(DIALOG_CAPTION);
 }
 
 //---------------------------------------------------------------------------
@@ -116,13 +116,13 @@ WordListDialog::~WordListDialog()
 //! @param string the word list string
 //---------------------------------------------------------------------------
 void
-WordListDialog::setWords (const QString& string)
+WordListDialog::setWords(const QString& string)
 {
     wordList->clear();
-    QStringList words = string.split (QChar (' '), QString::SkipEmptyParts);
+    QStringList words = string.split(QChar(' '), QString::SkipEmptyParts);
     QStringListIterator it (words);
     while (it.hasNext())
-        new QListWidgetItem (it.next(), wordList);
+        new QListWidgetItem(it.next(), wordList);
 }
 
 //---------------------------------------------------------------------------
@@ -138,7 +138,7 @@ WordListDialog::getWords() const
     QString str;
     QListWidgetItem* lookItem = 0;
     for (int i = 0; i < wordList->count(); ++i) {
-        lookItem = wordList->item (i);
+        lookItem = wordList->item(i);
         if (!str.isEmpty())
             str += " ";
         str += lookItem->text();
@@ -154,7 +154,7 @@ WordListDialog::getWords() const
 void
 WordListDialog::openFileClicked()
 {
-    QString filename = QFileDialog::getOpenFileName (this,
+    QString filename = QFileDialog::getOpenFileName(this,
         "Open Word List File", Auxil::getUserWordsDir() + "/saved",
         "Text Files (*.txt)");
 
@@ -162,25 +162,25 @@ WordListDialog::openFileClicked()
         return;
 
     QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QString caption = "Error Opening Word List File";
         QString message = "Cannot open file '" + filename + "': " +
             file.errorString();
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString line;
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
-    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+    char* buffer = new char[MAX_INPUT_LINE_LEN];
+    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
         line = line.simplified();
-        if (!line.length() || (line.at (0) == '#'))
+        if (!line.length() || (line.at(0) == '#'))
             continue;
-        QString word = line.section (' ', 0, 0).toUpper();
-        new QListWidgetItem (word, wordList);
+        QString word = line.section(' ', 0, 0).toUpper();
+        new QListWidgetItem(word, wordList);
     }
     delete[] buffer;
 
@@ -209,6 +209,6 @@ WordListDialog::clearClicked()
 void
 WordListDialog::updateLabel()
 {
-    numWordsLabel->setText (LIST_HEADER_PREFIX + QString::number
-                            (wordList->count()) + " words");
+    numWordsLabel->setText(LIST_HEADER_PREFIX +
+                           QString::number(wordList->count()) + " words");
 }

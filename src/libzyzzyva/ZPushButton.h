@@ -4,7 +4,7 @@
 // A class derived from ZPushButton.  This class allows buttons to be clicked
 // by pressing Enter as well as the space bar.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -32,15 +32,15 @@ class ZPushButton : public QPushButton
 {
     Q_OBJECT
     public:
-    ZPushButton (QWidget* parent = 0)
-        : QPushButton (parent) { init(); }
-    ZPushButton (const QString& text, QWidget* parent = 0)
-        : QPushButton (text, parent) { init(); }
-    ZPushButton (const QIcon& icon, const QString& text, QWidget* parent = 0)
-        : QPushButton (icon, text, parent) { init(); }
+    ZPushButton(QWidget* parent = 0)
+        : QPushButton(parent) { init(); }
+    ZPushButton(const QString& text, QWidget* parent = 0)
+        : QPushButton(text, parent) { init(); }
+    ZPushButton(const QIcon& icon, const QString& text, QWidget* parent = 0)
+        : QPushButton(icon, text, parent) { init(); }
 
     protected:
-    virtual void keyPressEvent (QKeyEvent* e);
+    virtual void keyPressEvent(QKeyEvent* e);
     void init();
 
     virtual ~ZPushButton() { }

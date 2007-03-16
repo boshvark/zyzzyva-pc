@@ -128,14 +128,14 @@ using namespace Defs;
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-Auxil::copyDir (const QString& src, const QString& dest)
+Auxil::copyDir(const QString& src, const QString& dest)
 {
     QDir srcDir (src);
     QDir destDir (dest);
     if (!srcDir.isReadable())
         return false;
 
-    destDir.mkpath (dest);
+    destDir.mkpath(dest);
     QFileInfoList entries = srcDir.entryInfoList();
     QListIterator<QFileInfo> it (entries);
     while (it.hasNext()) {
@@ -143,12 +143,12 @@ Auxil::copyDir (const QString& src, const QString& dest)
         if ((finfo.fileName() == ".") || (finfo.fileName() == ".."))
             continue;
         else if (finfo.isDir()) {
-            copyDir (finfo.filePath(),
-                     destDir.absoluteFilePath (finfo.fileName()));
+            copyDir(finfo.filePath(),
+                    destDir.absoluteFilePath(finfo.fileName()));
         }
         else if (finfo.isFile() && finfo.isReadable()) {
             QFile file (finfo.filePath());
-            file.copy (destDir.absoluteFilePath (finfo.fileName()));
+            file.copy(destDir.absoluteFilePath(finfo.fileName()));
         }
         else
             return false;
@@ -186,10 +186,10 @@ Auxil::getAboutString()
 
     QString aboutFileName = getHelpDir() + "/about.html";
     QFile aboutFile (aboutFileName);
-    if (!aboutFile.open (QIODevice::ReadOnly | QIODevice::Text))
+    if (!aboutFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return aboutString;
 
-    aboutString.append (aboutFile.readAll());
+    aboutString.append(aboutFile.readAll());
     return aboutString;
 }
 
@@ -210,10 +210,10 @@ Auxil::getThanksString()
 
     QString thanksFileName = getHelpDir() + "/thanks.html";
     QFile thanksFile (thanksFileName);
-    if (!thanksFile.open (QIODevice::ReadOnly | QIODevice::Text))
+    if (!thanksFile.open(QIODevice::ReadOnly | QIODevice::Text))
         return thanksString;
 
-    thanksString.append (thanksFile.readAll());
+    thanksString.append(thanksFile.readAll());
     return thanksString;
 }
 
@@ -228,22 +228,22 @@ QString
 Auxil::getNewInOwl2String()
 {
     QFile file (Auxil::getWordsDir() + "/north-american/owl2-new-words.txt");
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return QString::null;
 
     QStringList words;
     char* buffer = new char [MAX_INPUT_LINE_LEN];
-    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
         line = line.simplified();
-        if (!line.length() || (line.at (0) == '#'))
+        if (!line.length() || (line.at(0) == '#'))
             continue;
-        QString word = line.section (' ', 0, 0);
-        words.append (word);
+        QString word = line.section(' ', 0, 0);
+        words.append(word);
     }
     delete[] buffer;
 
-    return words.join (" ");
+    return words.join(" ");
 }
 
 //---------------------------------------------------------------------------
@@ -267,7 +267,7 @@ Auxil::getRootDir()
     // Search in the application dir path first, then up directories until a
     // directory is found that contains a zyzzyva.top file.
     while (true) {
-        if (dir.exists ("zyzzyva.top")) {
+        if (dir.exists("zyzzyva.top")) {
             rootDir = dir.absolutePath();
             return rootDir;
         }
@@ -302,7 +302,7 @@ QString
 Auxil::getHomeDir()
 {
     QString home = QDir::homePath();
-    home.replace (QRegExp ("/+$"), "");
+    home.replace(QRegExp("/+$"), "");
     return home;
 }
 
@@ -409,12 +409,12 @@ Auxil::getUserConfigDir()
 //! @return the wrapped string
 //---------------------------------------------------------------------------
 QString
-Auxil::dialogWordWrap (const QString& str)
+Auxil::dialogWordWrap(const QString& str)
 {
 #if defined Z_OSX
     return str;
 #else
-    return wordWrap (str, DIALOG_LINE_LENGTH);
+    return wordWrap(str, DIALOG_LINE_LENGTH);
 #endif
 }
 
@@ -428,7 +428,7 @@ Auxil::dialogWordWrap (const QString& str)
 //! @return the wrapped string
 //---------------------------------------------------------------------------
 QString
-Auxil::wordWrap (const QString& str, int wrapLength)
+Auxil::wordWrap(const QString& str, int wrapLength)
 {
     int strLen = str.length();
     if (strLen <= wrapLength)
@@ -439,7 +439,7 @@ Auxil::wordWrap (const QString& str, int wrapLength)
     int lastSpace = 0;
     int lastNewline = 0;
     for (int i = 0; i < strLen; ++i) {
-        c = wrappedStr.at (i);
+        c = wrappedStr.at(i);
         if (c == '\n')
             lastNewline = i;
         if (c.isSpace())
@@ -462,7 +462,7 @@ Auxil::wordWrap (const QString& str, int wrapLength)
 //! @return true if the character is a vowel, false otherwise
 //---------------------------------------------------------------------------
 bool
-Auxil::isVowel (QChar c)
+Auxil::isVowel(QChar c)
 {
     return ((c == 'A') || (c == 'E') || (c == 'I') ||
             (c == 'O') || (c == 'U'));
@@ -478,14 +478,14 @@ Auxil::isVowel (QChar c)
 //! @return the alphagram
 //---------------------------------------------------------------------------
 QString
-Auxil::getAlphagram (const QString& word)
+Auxil::getAlphagram(const QString& word)
 {
     int wordLength = word.length();
     char chars[wordLength + 1];
     int charsPlaced = 0;
 
     for (int i = 0; i < wordLength; ++i) {
-        char c = word.at (i).toAscii();
+        char c = word.at(i).toAscii();
         int j = 0;
         while ((j < charsPlaced) && (c >= chars[j]))
             ++j;
@@ -496,7 +496,7 @@ Auxil::getAlphagram (const QString& word)
     }
     chars[charsPlaced] = 0;
 
-    return QString (chars);
+    return QString(chars);
 }
 
 //---------------------------------------------------------------------------
@@ -508,13 +508,13 @@ Auxil::getAlphagram (const QString& word)
 //! @return the number of unique letters
 //---------------------------------------------------------------------------
 int
-Auxil::getNumUniqueLetters (const QString& word)
+Auxil::getNumUniqueLetters(const QString& word)
 {
     int numUniqueLetters = 0;
-    QString alphagram = getAlphagram (word);
+    QString alphagram = getAlphagram(word);
     QChar c;
     for (int i = 0; i < alphagram.length(); ++i) {
-        QChar d = alphagram.at (i);
+        QChar d = alphagram.at(i);
         if (d != c)
             ++numUniqueLetters;
         c = d;
@@ -531,11 +531,11 @@ Auxil::getNumUniqueLetters (const QString& word)
 //! @return the number of vowels
 //---------------------------------------------------------------------------
 int
-Auxil::getNumVowels (const QString& word)
+Auxil::getNumVowels(const QString& word)
 {
     int numVowels = 0;
     for (int i = 0; i < word.length(); ++i) {
-        if (isVowel (word.at (i)))
+        if (isVowel(word.at(i)))
             ++numVowels;
     }
     return numVowels;
@@ -550,7 +550,7 @@ Auxil::getNumVowels (const QString& word)
 //! @return the corresponding search set value
 //---------------------------------------------------------------------------
 SearchSet
-Auxil::stringToSearchSet (const QString& string)
+Auxil::stringToSearchSet(const QString& string)
 {
     if (string == SET_HOOK_WORDS_STRING)
         return SetHookWords;
@@ -589,7 +589,7 @@ Auxil::stringToSearchSet (const QString& string)
 //! @return the corresponding string
 //---------------------------------------------------------------------------
 QString
-Auxil::searchSetToString (SearchSet ss)
+Auxil::searchSetToString(SearchSet ss)
 {
     switch (ss) {
         case SetHookWords: return SET_HOOK_WORDS_STRING;
@@ -618,7 +618,7 @@ Auxil::searchSetToString (SearchSet ss)
 //! @return the corresponding search type value
 //---------------------------------------------------------------------------
 SearchCondition::SearchType
-Auxil::stringToSearchType (const QString& string)
+Auxil::stringToSearchType(const QString& string)
 {
     if (string == SEARCH_TYPE_PATTERN_MATCH)
         return SearchCondition::PatternMatch;
@@ -697,7 +697,7 @@ Auxil::stringToSearchType (const QString& string)
 //! @return the corresponding string
 //---------------------------------------------------------------------------
 QString
-Auxil::searchTypeToString (SearchCondition::SearchType type)
+Auxil::searchTypeToString(SearchCondition::SearchType type)
 {
     switch (type) {
         case SearchCondition::PatternMatch:
@@ -764,7 +764,7 @@ Auxil::searchTypeToString (SearchCondition::SearchType type)
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
-Auxil::quizTypeToString (QuizSpec::QuizType t)
+Auxil::quizTypeToString(QuizSpec::QuizType t)
 {
     switch (t) {
         case QuizSpec::QuizPatterns:
@@ -810,7 +810,7 @@ Auxil::quizTypeToString (QuizSpec::QuizType t)
 //! @return the quiz type
 //---------------------------------------------------------------------------
 QuizSpec::QuizType
-Auxil::stringToQuizType (const QString& s)
+Auxil::stringToQuizType(const QString& s)
 {
     if (s == QUIZ_TYPE_PATTERNS)
         return QuizSpec::QuizPatterns;
@@ -845,7 +845,7 @@ Auxil::stringToQuizType (const QString& s)
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
-Auxil::quizMethodToString (QuizSpec::QuizMethod m)
+Auxil::quizMethodToString(QuizSpec::QuizMethod m)
 {
     switch (m) {
         case QuizSpec::StandardQuizMethod:
@@ -867,7 +867,7 @@ Auxil::quizMethodToString (QuizSpec::QuizMethod m)
 //! @return the quiz type
 //---------------------------------------------------------------------------
 QuizSpec::QuizMethod
-Auxil::stringToQuizMethod (const QString& s)
+Auxil::stringToQuizMethod(const QString& s)
 {
     if (s == QUIZ_METHOD_STANDARD)
         return QuizSpec::StandardQuizMethod;
@@ -886,7 +886,7 @@ Auxil::stringToQuizMethod (const QString& s)
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
-Auxil::quizSourceTypeToString (QuizSpec::QuizSourceType s)
+Auxil::quizSourceTypeToString(QuizSpec::QuizSourceType s)
 {
     switch (s) {
         case QuizSpec::SearchSource:
@@ -908,7 +908,7 @@ Auxil::quizSourceTypeToString (QuizSpec::QuizSourceType s)
 //! @return the quiz type
 //---------------------------------------------------------------------------
 QuizSpec::QuizSourceType
-Auxil::stringToQuizSourceType (const QString& s)
+Auxil::stringToQuizSourceType(const QString& s)
 {
     if (s == QUIZ_SOURCE_SEARCH)
         return QuizSpec::SearchSource;
@@ -927,7 +927,7 @@ Auxil::stringToQuizSourceType (const QString& s)
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
-Auxil::quizQuestionOrderToString (QuizSpec::QuestionOrder o)
+Auxil::quizQuestionOrderToString(QuizSpec::QuestionOrder o)
 {
     switch (o) {
         case QuizSpec::UnknownOrder:
@@ -958,7 +958,7 @@ Auxil::quizQuestionOrderToString (QuizSpec::QuestionOrder o)
 //! @return the quiz question order
 //---------------------------------------------------------------------------
 QuizSpec::QuestionOrder
-Auxil::stringToQuizQuestionOrder (const QString& s)
+Auxil::stringToQuizQuestionOrder(const QString& s)
 {
     if (s == QUIZ_ORDER_RANDOM)
         return QuizSpec::RandomOrder;
@@ -981,7 +981,7 @@ Auxil::stringToQuizQuestionOrder (const QString& s)
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
-Auxil::wordAttributeToString (WordAttribute attr)
+Auxil::wordAttributeToString(WordAttribute attr)
 {
     switch (attr) {
         case WordAttrWord:
@@ -1024,7 +1024,7 @@ Auxil::wordAttributeToString (WordAttribute attr)
 //! @return the word attribute
 //---------------------------------------------------------------------------
 WordAttribute
-Auxil::stringToWordAttribute (const QString& s)
+Auxil::stringToWordAttribute(const QString& s)
 {
     if (s == WORD_ATTR_WORD)
         return WordAttrWord;
@@ -1057,7 +1057,7 @@ Auxil::stringToWordAttribute (const QString& s)
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
-Auxil::wordListFormatToString (WordListFormat format)
+Auxil::wordListFormatToString(WordListFormat format)
 {
     switch (format) {
         case WordListOnePerLine:
@@ -1079,7 +1079,7 @@ Auxil::wordListFormatToString (WordListFormat format)
 //! @return the word list format
 //---------------------------------------------------------------------------
 WordListFormat
-Auxil::stringToWordListFormat (const QString& s)
+Auxil::stringToWordListFormat(const QString& s)
 {
     if (s == WORD_LIST_FORMAT_ONE_PER_LINE)
         return WordListOnePerLine;
@@ -1098,15 +1098,15 @@ Auxil::stringToWordListFormat (const QString& s)
 //! @return the date the lexicon was last modified
 //---------------------------------------------------------------------------
 QDate
-Auxil::lexiconToDate (const QString& lexicon)
+Auxil::lexiconToDate(const QString& lexicon)
 {
     if (lexicon == "OWL+LWL")
-        return QDate (2003, 7, 1);
+        return QDate(2003, 7, 1);
     if (lexicon == "OWL2+LWL")
-        return QDate (2006, 3, 1);
+        return QDate(2006, 3, 1);
     if (lexicon == "OSPD4+LWL")
-        return QDate (2006, 3, 1);
+        return QDate(2006, 3, 1);
     if (lexicon == "OSWI")
-        return QDate (2002, 1, 14);
+        return QDate(2002, 1, 14);
     return QDate();
 }

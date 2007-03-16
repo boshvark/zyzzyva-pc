@@ -4,7 +4,7 @@
 // The engine for generating quizzes and keeping track of the user's
 // performance on each quiz.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -44,14 +44,14 @@ class QuizEngine
     };
 
     public:
-    QuizEngine (WordEngine* e);
+    QuizEngine(WordEngine* e);
     ~QuizEngine() { }
 
-    bool newQuiz (const QuizSpec& spec);
+    bool newQuiz(const QuizSpec& spec);
     bool nextQuestion();
     void completeQuestion();
 
-    ResponseStatus respond (const QString& response);
+    ResponseStatus respond(const QString& response);
     void markQuestionAsCorrect();
     void markQuestionAsMissed();
     QString getQuestion() const;
@@ -73,15 +73,15 @@ class QuizEngine
     bool getQuestionComplete() const {
         return quizSpec.getProgress().getQuestionComplete(); }
     bool onLastQuestion() const;
-    void setQuizSpecFilename (const QString& filename) {
-        quizSpec.setFilename (filename);
+    void setQuizSpecFilename(const QString& filename) {
+        quizSpec.setFilename(filename);
     }
 
     private:
     void clearQuestion();
     void prepareQuestion();
-    void addQuestionCorrect (const QString& response);
-    void addQuestionIncorrect (const QString& response);
+    void addQuestionCorrect(const QString& response);
+    void addQuestionIncorrect(const QString& response);
 
     private:
     WordEngine*       wordEngine;

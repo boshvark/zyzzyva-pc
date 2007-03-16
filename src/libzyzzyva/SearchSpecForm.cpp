@@ -3,7 +3,7 @@
 //
 // A form for specifying a search specification.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -48,82 +48,82 @@ const int MAX_CONDITIONS = 8;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-SearchSpecForm::SearchSpecForm (QWidget* parent, Qt::WFlags f)
-    : QFrame (parent, f)
+SearchSpecForm::SearchSpecForm(QWidget* parent, Qt::WFlags f)
+    : QFrame(parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    Q_CHECK_PTR (mainVlay);
-    mainVlay->setMargin (0);
-    mainVlay->setSpacing (SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    Q_CHECK_PTR(mainVlay);
+    mainVlay->setMargin(0);
+    mainVlay->setSpacing(SPACING);
 
-    //QButtonGroup* radioGroup = new QButtonGroup (this);
-    //Q_CHECK_PTR (radioGroup);
+    //QButtonGroup* radioGroup = new QButtonGroup(this);
+    //Q_CHECK_PTR(radioGroup);
     //radioGroup->hide();
 
     //QFrame* radioFrame = new QFrame;
-    //Q_CHECK_PTR (radioFrame);
-    //mainVlay->addWidget (radioFrame);
+    //Q_CHECK_PTR(radioFrame);
+    //mainVlay->addWidget(radioFrame);
 
-    //QHBoxLayout* radioHlay = new QHBoxLayout (radioFrame, 0, SPACING);
-    //Q_CHECK_PTR (radioHlay);
+    //QHBoxLayout* radioHlay = new QHBoxLayout(radioFrame, 0, SPACING);
+    //Q_CHECK_PTR(radioHlay);
 
-    //conjunctionRadio = new QRadioButton ("Match all of the following");
-    //Q_CHECK_PTR (conjunctionRadio);
-    //conjunctionRadio->setChecked (true);
-    //radioGroup->insert (conjunctionRadio, 1);
-    //radioHlay->addWidget (conjunctionRadio);
+    //conjunctionRadio = new QRadioButton("Match all of the following");
+    //Q_CHECK_PTR(conjunctionRadio);
+    //conjunctionRadio->setChecked(true);
+    //radioGroup->insert(conjunctionRadio, 1);
+    //radioHlay->addWidget(conjunctionRadio);
 
-    //QRadioButton* disjunctionRadio = new QRadioButton
-    //    ("Match any of the following");
-    //Q_CHECK_PTR (disjunctionRadio);
-    //radioGroup->insert (disjunctionRadio, 1);
-    //radioHlay->addWidget (disjunctionRadio);
+    //QRadioButton* disjunctionRadio =
+    //    new QRadioButton("Match any of the following");
+    //Q_CHECK_PTR(disjunctionRadio);
+    //radioGroup->insert(disjunctionRadio, 1);
+    //radioHlay->addWidget(disjunctionRadio);
 
     QHBoxLayout* conditionHlay = new QHBoxLayout;
-    conditionHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (conditionHlay);
-    mainVlay->addLayout (conditionHlay);
-    mainVlay->setStretchFactor (conditionHlay, 1);
+    conditionHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(conditionHlay);
+    mainVlay->addLayout(conditionHlay);
+    mainVlay->setStretchFactor(conditionHlay, 1);
 
     conditionVlay = new QVBoxLayout;
-    conditionVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (conditionVlay);
-    conditionHlay->addLayout (conditionVlay);
+    conditionVlay->setSpacing(SPACING);
+    Q_CHECK_PTR(conditionVlay);
+    conditionHlay->addLayout(conditionVlay);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (buttonHlay);
-    mainVlay->addLayout (buttonHlay);
+    buttonHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(buttonHlay);
+    mainVlay->addLayout(buttonHlay);
 
-    moreButton = new ZPushButton ("&More");
-    Q_CHECK_PTR (moreButton);
-    moreButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (moreButton, SIGNAL (clicked()), SLOT (addConditionForm()));
-    buttonHlay->addWidget (moreButton);
+    moreButton = new ZPushButton("&More");
+    Q_CHECK_PTR(moreButton);
+    moreButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(moreButton, SIGNAL(clicked()), SLOT(addConditionForm()));
+    buttonHlay->addWidget(moreButton);
 
-    fewerButton = new ZPushButton ("Fewe&r");
-    Q_CHECK_PTR (fewerButton);
-    fewerButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (fewerButton, SIGNAL (clicked()), SLOT (removeConditionForm()));
-    buttonHlay->addWidget (fewerButton);
+    fewerButton = new ZPushButton("Fewe&r");
+    Q_CHECK_PTR(fewerButton);
+    fewerButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(fewerButton, SIGNAL(clicked()), SLOT(removeConditionForm()));
+    buttonHlay->addWidget(fewerButton);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
-    loadButton = new ZPushButton ("L&oad Search...");
-    Q_CHECK_PTR (loadButton);
-    loadButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (loadButton, SIGNAL (clicked()), SLOT (loadSearch()));
-    buttonHlay->addWidget (loadButton);
+    loadButton = new ZPushButton("L&oad Search...");
+    Q_CHECK_PTR(loadButton);
+    loadButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(loadButton, SIGNAL(clicked()), SLOT(loadSearch()));
+    buttonHlay->addWidget(loadButton);
 
-    saveButton = new ZPushButton ("S&ave Search...");
-    Q_CHECK_PTR (saveButton);
-    saveButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (saveButton, SIGNAL (clicked()), SLOT (saveSearch()));
-    buttonHlay->addWidget (saveButton);
+    saveButton = new ZPushButton("S&ave Search...");
+    Q_CHECK_PTR(saveButton);
+    saveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(saveButton, SIGNAL(clicked()), SLOT(saveSearch()));
+    buttonHlay->addWidget(saveButton);
 
-    connect (this, SIGNAL (contentsChanged()), SLOT (contentsChangedSlot()));
-    fewerButton->setEnabled (false);
-    saveButton->setEnabled (false);
+    connect(this, SIGNAL(contentsChanged()), SLOT(contentsChangedSlot()));
+    fewerButton->setEnabled(false);
+    saveButton->setEnabled(false);
 
     addConditionForm();
 }
@@ -145,7 +145,7 @@ SearchSpecForm::getSearchSpec() const
     while (it.hasNext()) {
         const SearchConditionForm* form = it.next();
         if (form->isValid())
-            spec.conditions.append (form->getSearchCondition());
+            spec.conditions.append(form->getSearchCondition());
     }
     return spec;
 }
@@ -158,7 +158,7 @@ SearchSpecForm::getSearchSpec() const
 //! @param spec the search spec
 //---------------------------------------------------------------------------
 void
-SearchSpecForm::setSearchSpec (const SearchSpec& spec)
+SearchSpecForm::setSearchSpec(const SearchSpec& spec)
 {
     if (spec.conditions.empty())
         return;
@@ -166,15 +166,15 @@ SearchSpecForm::setSearchSpec (const SearchSpec& spec)
     while (!conditionForms.isEmpty())
         removeConditionForm();
 
-    //conjunctionRadio->setChecked (spec->conjunction);
+    //conjunctionRadio->setChecked(spec->conjunction);
     QListIterator<SearchCondition> cit (spec.conditions);
     while (cit.hasNext()) {
         addConditionForm();
-        conditionForms.last()->setSearchCondition (cit.next());
+        conditionForms.last()->setSearchCondition(cit.next());
     }
 
-    fewerButton->setEnabled (conditionForms.size() > 1);
-    moreButton->setEnabled (conditionForms.size() < MAX_CONDITIONS);
+    fewerButton->setEnabled(conditionForms.size() > 1);
+    moreButton->setEnabled(conditionForms.size() < MAX_CONDITIONS);
 }
 
 //---------------------------------------------------------------------------
@@ -205,7 +205,7 @@ SearchSpecForm::isValid() const
 void
 SearchSpecForm::contentsChangedSlot()
 {
-    saveButton->setEnabled (isValid());
+    saveButton->setEnabled(isValid());
 }
 
 //---------------------------------------------------------------------------
@@ -219,16 +219,16 @@ SearchSpecForm::addConditionForm()
     if (conditionForms.size() == MAX_CONDITIONS)
         return;
 
-    SearchConditionForm* form = new SearchConditionForm (this);
-    Q_CHECK_PTR (form);
-    connect (form, SIGNAL (returnPressed()), SIGNAL (returnPressed()));
-    connect (form, SIGNAL (contentsChanged()), SIGNAL (contentsChanged()));
-    conditionVlay->addWidget (form);
-    conditionForms.append (form);
+    SearchConditionForm* form = new SearchConditionForm(this);
+    Q_CHECK_PTR(form);
+    connect(form, SIGNAL(returnPressed()), SIGNAL(returnPressed()));
+    connect(form, SIGNAL(contentsChanged()), SIGNAL(contentsChanged()));
+    conditionVlay->addWidget(form);
+    conditionForms.append(form);
 
-    fewerButton->setEnabled (conditionForms.size() > 1);
+    fewerButton->setEnabled(conditionForms.size() > 1);
     if (conditionForms.size() == MAX_CONDITIONS)
-        moreButton->setEnabled (false);
+        moreButton->setEnabled(false);
 
     contentsChanged();
 }
@@ -248,9 +248,9 @@ SearchSpecForm::removeConditionForm()
     delete form;
     conditionForms.removeLast();
 
-    moreButton->setEnabled (true);
+    moreButton->setEnabled(true);
     if (conditionForms.size() == 1)
-        fewerButton->setEnabled (false);
+        fewerButton->setEnabled(false);
 
     contentsChanged();
 }
@@ -263,19 +263,19 @@ SearchSpecForm::removeConditionForm()
 void
 SearchSpecForm::loadSearch()
 {
-    QString filename = QFileDialog::getOpenFileName (this, "Load Search",
+    QString filename = QFileDialog::getOpenFileName(this, "Load Search",
         Auxil::getSearchDir() + "/saved", "Zyzzyva Search Files (*.zzs)");
 
     if (filename.isEmpty())
         return;
 
     QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QString caption = "Error Opening Search File";
         QString message = "Cannot open file '" + filename + "': " +
             file.errorString();
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
@@ -283,32 +283,32 @@ SearchSpecForm::loadSearch()
     int errorLine = 0;
     int errorColumn = 0;
 
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QDomDocument document;
-    bool success = document.setContent (&file, false, &errorMsg, &errorLine,
-                                        &errorColumn);
+    bool success = document.setContent(&file, false, &errorMsg, &errorLine,
+                                       &errorColumn);
     QApplication::restoreOverrideCursor();
 
     if (!success) {
         QString caption = "Error in Search File";
         QString message = "Error in search file, line " +
-            QString::number (errorLine) + ", column " +
-            QString::number (errorColumn) + ": " + errorMsg;
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+            QString::number(errorLine) + ", column " +
+            QString::number(errorColumn) + ": " + errorMsg;
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
     SearchSpec spec;
-    if (!spec.fromDomElement (document.documentElement())) {
+    if (!spec.fromDomElement(document.documentElement())) {
         QString caption = "Error in Search File";
         QString message = "Error in search file.";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
-    setSearchSpec (spec);
+    setSearchSpec(spec);
     contentsChanged();
 }
 
@@ -320,14 +320,14 @@ SearchSpecForm::loadSearch()
 void
 SearchSpecForm::saveSearch()
 {
-    QString filename = QFileDialog::getSaveFileName (this, "Save Search",
+    QString filename = QFileDialog::getSaveFileName(this, "Save Search",
         Auxil::getSearchDir() + "/saved", "Zyzzyva Search Files (*.zzs)");
 
     if (filename.isEmpty())
         return;
 
     bool filenameEdited = false;
-    if (!filename.endsWith (".zzs", Qt::CaseInsensitive)) {
+    if (!filename.endsWith(".zzs", Qt::CaseInsensitive)) {
         filename += ".zzs";
         filenameEdited = true;
     }
@@ -336,28 +336,27 @@ SearchSpecForm::saveSearch()
     if (filenameEdited && file.exists()) {
         QString caption = "Overwrite Existing File?";
         QString message = "The file already exists.  Overwrite it?";
-        message = Auxil::dialogWordWrap (message);
-        int code = QMessageBox::warning (0, caption, message,
-                                         QMessageBox::Yes | QMessageBox::No,
-                                         QMessageBox::No);
+        message = Auxil::dialogWordWrap(message);
+        int code = QMessageBox::warning(0, caption, message,
+                                        QMessageBox::Yes | QMessageBox::No,
+                                        QMessageBox::No);
         if (code != QMessageBox::Yes)
             return;
     }
 
-    if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QString caption = "Error Saving Search";
         QString message = "Cannot save search:\n" + file.errorString() + ".";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
     QDomImplementation implementation;
-    QDomDocument document (implementation.createDocumentType
-                           ("zyzzyva-search", QString::null,
-                            "http://pietdepsi.com/dtd/zyzzyva-search.dtd"));
+    QDomDocument document (implementation.createDocumentType("zyzzyva-search",
+        QString::null, "http://pietdepsi.com/dtd/zyzzyva-search.dtd"));
 
-    document.appendChild (getSearchSpec().asDomElement());
+    document.appendChild(getSearchSpec().asDomElement());
 
     // XXX: There should be a programmatic way to write the <?xml?> header
     // based on the QDomImplementation, shouldn't there?

@@ -3,7 +3,7 @@
 //
 // A form for looking up and displaying word definitions.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@ using namespace Defs;
 //
 //! @param parent the parent widget
 //---------------------------------------------------------------------------
-DefinitionBox::DefinitionBox (QWidget* parent)
-    : QGroupBox (parent)
+DefinitionBox::DefinitionBox(QWidget* parent)
+    : QGroupBox(parent)
 {
     init();
 }
@@ -48,8 +48,8 @@ DefinitionBox::DefinitionBox (QWidget* parent)
 //! @param title the widget title
 //! @param parent the parent widget
 //---------------------------------------------------------------------------
-DefinitionBox::DefinitionBox (const QString& title, QWidget* parent)
-    : QGroupBox (title, parent)
+DefinitionBox::DefinitionBox(const QString& title, QWidget* parent)
+    : QGroupBox(title, parent)
 {
     init();
 }
@@ -62,17 +62,17 @@ DefinitionBox::DefinitionBox (const QString& title, QWidget* parent)
 void
 DefinitionBox::init()
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    mainVlay->setMargin (MARGIN);
-    mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    mainVlay->setMargin(MARGIN);
+    mainVlay->setSpacing(SPACING);
+    Q_CHECK_PTR(mainVlay);
 
     definitionLabel = new DefinitionLabel;
-    Q_CHECK_PTR (definitionLabel);
-    definitionLabel->setWordWrap (true);
-    mainVlay->addWidget (definitionLabel);
+    Q_CHECK_PTR(definitionLabel);
+    definitionLabel->setWordWrap(true);
+    mainVlay->addWidget(definitionLabel);
 
-    mainVlay->addStretch (1);
+    mainVlay->addStretch(1);
 }
 
 //---------------------------------------------------------------------------
@@ -83,9 +83,9 @@ DefinitionBox::init()
 //! @param text the text string
 //---------------------------------------------------------------------------
 void
-DefinitionBox::setText (const QString& text)
+DefinitionBox::setText(const QString& text)
 {
     QString richText (text);
-    richText.replace ("\n", "<br>");
-    definitionLabel->setText (richText);
+    richText.replace("\n", "<br>");
+    definitionLabel->setText(richText);
 }

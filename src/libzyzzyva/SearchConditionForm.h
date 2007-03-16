@@ -3,7 +3,7 @@
 //
 // A form for specifying a search condition.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -40,10 +40,10 @@ class SearchConditionForm : public QWidget
 {
     Q_OBJECT
     public:
-    SearchConditionForm (QWidget* parent = 0, Qt::WFlags f = 0);
+    SearchConditionForm(QWidget* parent = 0, Qt::WFlags f = 0);
 
     SearchCondition getSearchCondition() const;
-    void setSearchCondition (const SearchCondition& condition);
+    void setSearchCondition(const SearchCondition& condition);
     bool isValid() const;
 
     signals:
@@ -51,14 +51,14 @@ class SearchConditionForm : public QWidget
     void contentsChanged();
 
     public slots:
-    void typeChanged (const QString&);
+    void typeChanged(const QString&);
     void editListClicked();
     void reset();
     void selectInputArea();
 
     private:
-    void setWordListString (const QString& string);
-    bool matchStringIsValid (const QString& string) const;
+    void setWordListString(const QString& string);
+    bool matchStringIsValid(const QString& string) const;
 
     private:
     QCheckBox*      negationCbox;

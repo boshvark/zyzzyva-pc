@@ -288,8 +288,8 @@ QuizSpec::fromXmlFile(QFile& file, QString* errStr)
     if (!success) {
         if (errStr) {
             *errStr = "Error in quiz file, line " +
-                      QString::number (errorLine) + ", column " +
-                      QString::number (errorColumn) + ": " + 
+                      QString::number(errorLine) + ", column " +
+                      QString::number(errorColumn) + ": " + 
                       errorMsg;
         }
         return false;

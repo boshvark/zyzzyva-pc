@@ -3,7 +3,7 @@
 //
 // A class to represent a crossword game.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -76,13 +76,13 @@ CrosswordGameGame::init()
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-CrosswordGameGame::makeMove (CrosswordGameMove& move)
+CrosswordGameGame::makeMove(CrosswordGameMove& move)
 {
     if (move.getType() == CrosswordGameMove::TakeBack)
         return challengeLastMove();
 
     QString lettersPlaced;
-    if (!board.makeMove (move, &lettersPlaced))
+    if (!board.makeMove(move, &lettersPlaced))
         return false;
 
     bool pass = (move.getType() == CrosswordGameMove::Pass);
@@ -95,7 +95,7 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
         oldRack = aPlayerRack.toUpper();
         aPlayerScore += newMove.getScore();
         if (pass)
-            newMove.setNewRack (aPlayerRack);
+            newMove.setNewRack(aPlayerRack);
         else
             aPlayerRack = newMove.getNewRack();
         newRack = aPlayerRack.toUpper();
@@ -105,7 +105,7 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
         oldRack = bPlayerRack.toUpper();
         bPlayerScore += newMove.getScore();
         if (pass)
-            newMove.setNewRack (bPlayerRack);
+            newMove.setNewRack(bPlayerRack);
         else
             bPlayerRack = newMove.getNewRack();
         newRack = bPlayerRack.toUpper();
@@ -116,7 +116,7 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
             oldRack = aPlayerRack.toUpper();
             aPlayerScore += newMove.getScore();
             if (pass)
-                newMove.setNewRack (aPlayerRack);
+                newMove.setNewRack(aPlayerRack);
             else
                 aPlayerRack = newMove.getNewRack();
             newRack = aPlayerRack.toUpper();
@@ -125,7 +125,7 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
             oldRack = bPlayerRack.toUpper();
             bPlayerScore += newMove.getScore();
             if (pass)
-                newMove.setNewRack (bPlayerRack);
+                newMove.setNewRack(bPlayerRack);
             else
                 bPlayerRack = newMove.getNewRack();
             newRack = bPlayerRack.toUpper();
@@ -135,8 +135,8 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
 
     // Draw tiles from the bag
     if (!lettersPlaced.isEmpty()) {
-        lettersPlaced = Auxil::getAlphagram (lettersPlaced);
-        oldRack = Auxil::getAlphagram (oldRack);
+        lettersPlaced = Auxil::getAlphagram(lettersPlaced);
+        oldRack = Auxil::getAlphagram(oldRack);
 
         qDebug() << "Old rack was: " << oldRack;
         qDebug() << "Letters placed were: " << lettersPlaced;
@@ -161,10 +161,10 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
             if (numToDraw > numInBag)
                 numToDraw = numInBag;
 
-            QString newLetters = letterBag.drawRandomLetters (numToDraw);
+            QString newLetters = letterBag.drawRandomLetters(numToDraw);
             qDebug() << "Draw random letters: " << newLetters;
 
-            newRack = Auxil::getAlphagram (lettersLeft + newLetters);
+            newRack = Auxil::getAlphagram(lettersLeft + newLetters);
             qDebug() << "New rack is: " << newRack;
 
             switch (newMove.getPlayerNum()) {
@@ -175,7 +175,7 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
         }
 
         else {
-            newRack = Auxil::getAlphagram (newRack);
+            newRack = Auxil::getAlphagram(newRack);
             int q = 0;
             for (int i = 0; i < newRack.length(); ++i) {
                 if ((q == lettersLeft.length()) ||
@@ -184,7 +184,7 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
                     QChar c = newRack[i];
                     if (c == '?')
                         c = LetterBag::BLANK_CHAR;
-                    letterBag.drawLetter (c);
+                    letterBag.drawLetter(c);
                 }
                 else
                     ++q;
@@ -195,13 +195,13 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
     else if (newMove.getType() == CrosswordGameMove::DrawTiles) {
         // Choose random tiles unless specified
         if (newRack.isEmpty())
-            newRack = letterBag.lookRandomLetters (7);
+            newRack = letterBag.lookRandomLetters(7);
 
         for (int i = 0; i < newRack.length(); ++i) {
             QChar c = newRack[i].toUpper();
             if (c == '?')
                 c = LetterBag::BLANK_CHAR;
-            letterBag.drawLetter (c);
+            letterBag.drawLetter(c);
         }
     }
 
@@ -220,19 +220,19 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
                 QChar c = oldRack[i].toUpper();
                 if (c == '?')
                     c = LetterBag::BLANK_CHAR;
-                letterBag.insertLetter (c);
+                letterBag.insertLetter(c);
             }
             for (int i = 0; i < newRack.length(); ++i) {
                 QChar c = newRack[i].toUpper();
                 if (c == '?')
                     c = LetterBag::BLANK_CHAR;
-                letterBag.drawLetter (c);
+                letterBag.drawLetter(c);
             }
         }
     }
 
     playerToMove = (newMove.getPlayerNum() == 1) ? 2 : 1;
-    moveHistory.append (newMove);
+    moveHistory.append(newMove);
     emit changed();
     return true;
 }
@@ -246,14 +246,14 @@ CrosswordGameGame::makeMove (CrosswordGameMove& move)
 //! @return the total value
 //---------------------------------------------------------------------------
 int
-CrosswordGameGame::getRackValue (const QString& rack) const
+CrosswordGameGame::getRackValue(const QString& rack) const
 {
     int value = 0;
     for (int i = 0; i < rack.length(); ++i) {
         QChar letter = rack[i];
         if (letter == '?')
             letter = LetterBag::BLANK_CHAR;
-        value += letterBag.getLetterValue (letter);
+        value += letterBag.getLetterValue(letter);
     }
     return value;
 }
@@ -269,8 +269,8 @@ QString
 CrosswordGameGame::getTilesInBag() const
 {
     QString string = letterBag.getLetters();
-    string = string.replace (LetterBag::BLANK_CHAR, "?");
-    return Auxil::getAlphagram (string);
+    string = string.replace(LetterBag::BLANK_CHAR, "?");
+    return Auxil::getAlphagram(string);
 }
 
 //---------------------------------------------------------------------------
@@ -282,15 +282,15 @@ CrosswordGameGame::getTilesInBag() const
 //! @return a string containing all unseen tiles
 //---------------------------------------------------------------------------
 QString
-CrosswordGameGame::getUnseenTiles (int playerNum) const
+CrosswordGameGame::getUnseenTiles(int playerNum) const
 {
     QString bag = letterBag.getLetters();
-    bag.replace (LetterBag::BLANK_CHAR, QChar ('?'));
-    bag = Auxil::getAlphagram (bag);
+    bag.replace(LetterBag::BLANK_CHAR, QChar('?'));
+    bag = Auxil::getAlphagram(bag);
     qDebug() << "Contents of bag: " << bag;
 
     QString oppRack = (playerNum == 1 ? bPlayerRack : aPlayerRack);
-    oppRack = Auxil::getAlphagram (oppRack.toUpper());
+    oppRack = Auxil::getAlphagram(oppRack.toUpper());
 
     QString unseen;
     int a = 0;
@@ -314,7 +314,7 @@ CrosswordGameGame::getUnseenTiles (int playerNum) const
         }
     }
 
-    unseen.replace (LetterBag::BLANK_CHAR, "?");
+    unseen.replace(LetterBag::BLANK_CHAR, "?");
     return unseen;
 }
 
@@ -372,17 +372,17 @@ CrosswordGameGame::challengeLastMove()
         // FIXME: this is kind of redundant when challengeLastMove is called
         // from makeMove
         CrosswordGameMove takeBackMove = challengedMove;
-        takeBackMove.setType (CrosswordGameMove::TakeBack);
-        takeBackMove.setScore (-challengedMove.getScore());
-        takeBackMove.setNewRack (newRack);
-        moveHistory.append (takeBackMove);
+        takeBackMove.setType(CrosswordGameMove::TakeBack);
+        takeBackMove.setScore(-challengedMove.getScore());
+        takeBackMove.setNewRack(newRack);
+        moveHistory.append(takeBackMove);
 
         QString lettersRemoved;
-        board.removeMove (challengedMove, &lettersRemoved);
+        board.removeMove(challengedMove, &lettersRemoved);
 
         if (!lettersRemoved.isEmpty()) {
-            lettersRemoved = Auxil::getAlphagram (lettersRemoved);
-            newRack = Auxil::getAlphagram (newRack.toUpper());
+            lettersRemoved = Auxil::getAlphagram(lettersRemoved);
+            newRack = Auxil::getAlphagram(newRack.toUpper());
 
 
             // Find removed letters in new rack
@@ -402,7 +402,7 @@ CrosswordGameGame::challengeLastMove()
             qDebug() << "Letters left: " << lettersLeft;
 
             // Find letters in old rack not left on the rack
-            oldRack = Auxil::getAlphagram (oldRack.toUpper());
+            oldRack = Auxil::getAlphagram(oldRack.toUpper());
             qDebug() << "Old rack was: " << oldRack;
             int q = 0;
             for (int i = 0; i < oldRack.length(); ++i) {
@@ -413,7 +413,7 @@ CrosswordGameGame::challengeLastMove()
                     if (c == '?')
                         c = LetterBag::BLANK_CHAR;
                     qDebug() << "Replacing letter: " << c;
-                    letterBag.insertLetter (c);
+                    letterBag.insertLetter(c);
                 }
                 else
                     ++q;
@@ -435,7 +435,7 @@ CrosswordGameGame::challengeLastMove()
 //! @return the player score, or -1 if invalid player number
 //---------------------------------------------------------------------------
 int
-CrosswordGameGame::getPlayerScore (int playerNum)
+CrosswordGameGame::getPlayerScore(int playerNum)
 {
     switch (playerNum) {
         case 1: return aPlayerScore;
@@ -453,7 +453,7 @@ CrosswordGameGame::getPlayerScore (int playerNum)
 //! @return the player rack, or -1 if invalid player number
 //---------------------------------------------------------------------------
 QString
-CrosswordGameGame::getPlayerRack (int playerNum)
+CrosswordGameGame::getPlayerRack(int playerNum)
 {
     switch (playerNum) {
         case 1: return aPlayerRack;

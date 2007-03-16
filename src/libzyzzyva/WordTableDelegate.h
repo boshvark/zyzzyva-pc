@@ -3,7 +3,7 @@
 //
 // A class derived from QItemDelegate, used to render items in a word list.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -38,15 +38,15 @@ class WordTableDelegate : public QItemDelegate
     static const int ITEM_YPADDING;
 
     public:
-    WordTableDelegate (QWidget* parent = 0);
+    WordTableDelegate(QWidget* parent = 0);
     virtual ~WordTableDelegate() { }
 
-    virtual QSize sizeHint (const QStyleOptionViewItem& option,
-                            const QModelIndex& index) const;
+    virtual QSize sizeHint(const QStyleOptionViewItem& option,
+                           const QModelIndex& index) const;
 
     protected:
-    virtual void paint (QPainter* painter, const QStyleOptionViewItem& option,
-                        const QModelIndex& index) const;
+    virtual void paint(QPainter* painter, const QStyleOptionViewItem& option,
+                       const QModelIndex& index) const;
 
 };
 

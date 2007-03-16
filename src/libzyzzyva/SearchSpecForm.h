@@ -3,7 +3,7 @@
 //
 // A form for specifying a search specification.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -39,9 +39,9 @@ class SearchSpecForm : public QFrame
 {
     Q_OBJECT
     public:
-    SearchSpecForm (QWidget* parent = 0, Qt::WFlags f = 0);
+    SearchSpecForm(QWidget* parent = 0, Qt::WFlags f = 0);
     SearchSpec getSearchSpec() const;
-    void setSearchSpec (const SearchSpec& spec);
+    void setSearchSpec(const SearchSpec& spec);
     bool isValid() const;
 
     signals:

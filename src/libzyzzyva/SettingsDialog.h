@@ -3,7 +3,7 @@
 //
 // The settings dialog for the word study application.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -38,23 +38,23 @@ class SettingsDialog : public QDialog
 {
     Q_OBJECT
     public:
-    SettingsDialog (QWidget* parent = 0, Qt::WFlags f = 0);
+    SettingsDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~SettingsDialog();
 
     void readSettings();
     void writeSettings();
 
     public slots:
-    void navTextChanged (const QString& text);
+    void navTextChanged(const QString& text);
     void autoImportBrowseButtonClicked();
-    void autoImportCboxToggled (bool on);
-    void autoImportLexiconActivated (const QString& text);
+    void autoImportCboxToggled(bool on);
+    void autoImportLexiconActivated(const QString& text);
     void userDataDirBrowseButtonClicked();
-    void userDataDirChanged (const QString& text);
-    void themeCboxToggled (bool on);
-    void autoCheckCboxToggled (bool on);
-    void judgeSaveLogCboxToggled (bool on);
-    void chooseFontButtonClicked (int button);
+    void userDataDirChanged(const QString& text);
+    void themeCboxToggled(bool on);
+    void autoCheckCboxToggled(bool on);
+    void judgeSaveLogCboxToggled(bool on);
+    void chooseFontButtonClicked(int button);
     void chooseQuizBackgroundColorButtonClicked();
 
     private:

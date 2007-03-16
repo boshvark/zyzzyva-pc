@@ -4,7 +4,7 @@
 // A random number generator based on George Marsaglia's algorithms found
 // on this web page:  http://www.ciphersbyritter.com/NEWS4/RANDC.HTM
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -36,7 +36,7 @@
 //! @return a random number
 //---------------------------------------------------------------------------
 unsigned int
-Rand::rand (unsigned int max)
+Rand::rand(unsigned int max)
 {
     unsigned int randnum = 0;
     switch (algorithm) {

@@ -3,7 +3,7 @@
 //
 // The main Zyzzyva program.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -33,31 +33,31 @@ const QString SETTINGS_ORGANIZATION_NAME = "Piet Depsi";
 const QString SETTINGS_DOMAIN_NAME = "pietdepsi.com";
 const QString SETTINGS_APPLICATION_NAME = "Zyzzyva";
 
-int main (int argc, char** argv)
+int main(int argc, char** argv)
 {
-    ZApplication app (argc, argv);
-    QCoreApplication::setOrganizationName (SETTINGS_ORGANIZATION_NAME);
-    QCoreApplication::setOrganizationDomain (SETTINGS_DOMAIN_NAME);
-    QCoreApplication::setApplicationName (SETTINGS_APPLICATION_NAME);
+    ZApplication app(argc, argv);
+    QCoreApplication::setOrganizationName(SETTINGS_ORGANIZATION_NAME);
+    QCoreApplication::setOrganizationDomain(SETTINGS_DOMAIN_NAME);
+    QCoreApplication::setApplicationName(SETTINGS_APPLICATION_NAME);
 
     QPixmap pixmap (":/zyzzyva-splash");
-    QSplashScreen* splash = new QSplashScreen (pixmap);
+    QSplashScreen* splash = new QSplashScreen(pixmap);
     splash->show();
 
-    MainWindow* window = new MainWindow (0, splash);
+    MainWindow* window = new MainWindow(0, splash);
 
     // Connect to database if it exists
     QString dbFilename = window->getDatabaseFilename();
-    bool dbExists = QFile (dbFilename).exists();
+    bool dbExists = QFile(dbFilename).exists();
     if (dbExists) {
-        splash->showMessage ("Connecting to database...",
-                             Qt::AlignHCenter | Qt::AlignBottom);
+        splash->showMessage("Connecting to database...",
+                            Qt::AlignHCenter | Qt::AlignBottom);
         qApp->processEvents();
         window->connectToDatabase();
     }
 
     window->show();
-    splash->finish (window);
+    splash->finish(window);
     delete splash;
 
     // Try to create database if it does not exist
@@ -69,21 +69,21 @@ int main (int argc, char** argv)
     if (argc > 1) {
         QStringList args;
         for (int i = 1; i < argc; ++i) {
-            args.append (QString (argv[i]));
+            args.append(QString(argv[i]));
         }
-        window->processArguments (args);
+        window->processArguments(args);
     }
 
     // Handle file open requests
     QStringList files = app.getFileOpenRequests();
     QString file;
     foreach (file, files) {
-        window->fileOpenRequested (file);
+        window->fileOpenRequested(file);
     }
     app.clearFileOpenRequests();
 
-    QObject::connect (&app, SIGNAL (fileOpenRequested (const QString&)),
-                      window, SLOT (fileOpenRequested (const QString&)));
+    QObject::connect(&app, SIGNAL(fileOpenRequested(const QString&)),
+                     window, SLOT(fileOpenRequested(const QString&)));
 
     return app.exec();
 }

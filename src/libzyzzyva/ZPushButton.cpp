@@ -4,7 +4,7 @@
 // A class derived from ZPushButton.  This class allows buttons to be clicked
 // by pressing Enter as well as the space bar.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,7 +34,7 @@
 void
 ZPushButton::init()
 {
-    setFocusPolicy (Qt::TabFocus);
+    setFocusPolicy(Qt::TabFocus);
 }
 
 //---------------------------------------------------------------------------
@@ -47,10 +47,10 @@ ZPushButton::init()
 //! @param e the key press event
 //---------------------------------------------------------------------------
 void
-ZPushButton::keyPressEvent (QKeyEvent* e)
+ZPushButton::keyPressEvent(QKeyEvent* e)
 {
     if (e && ((e->key() == Qt::Key_Return) || (e->key() == Qt::Key_Enter)))
         animateClick();
     else
-        QPushButton::keyPressEvent (e);
+        QPushButton::keyPressEvent(e);
 }

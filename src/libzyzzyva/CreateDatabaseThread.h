@@ -3,7 +3,7 @@
 //
 // A class for creating a database in the background.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -37,10 +37,10 @@ class CreateDatabaseThread : public QThread
 {
     Q_OBJECT
     public:
-    CreateDatabaseThread (WordEngine* e, const QString& lex, const QString& db,
-                          const QString& def, QObject* parent = 0)
-        : QThread (parent), wordEngine (e), lexiconName (lex),
-          dbFilename (db), definitionFilename (def), cancelled (false) { }
+    CreateDatabaseThread(WordEngine* e, const QString& lex, const QString& db,
+                         const QString& def, QObject* parent = 0)
+        : QThread(parent), wordEngine(e), lexiconName(lex),
+          dbFilename(db), definitionFilename(def), cancelled(false) { }
     ~CreateDatabaseThread() { }
 
     bool getCancelled() { return cancelled; }
@@ -50,27 +50,27 @@ class CreateDatabaseThread : public QThread
     void cleanup();
 
     signals:
-    void steps (int s);
-    void progress (int p);
-    void done (bool success);
+    void steps(int s);
+    void progress(int p);
+    void done(bool success);
 
     protected:
     void run();
 
     private:
     void runPrivate();
-    void createTables (QSqlDatabase& db);
-    void createIndexes (QSqlDatabase& db);
-    void insertVersion (QSqlDatabase& db);
-    void insertWords (QSqlDatabase& db, int& stepNum);
-    void updateProbabilityOrder (QSqlDatabase& db, int& stepNum);
-    void updateDefinitions (QSqlDatabase& db, int& stepNum);
-    void updateDefinitionLinks (QSqlDatabase& db, int& stepNum);
+    void createTables(QSqlDatabase& db);
+    void createIndexes(QSqlDatabase& db);
+    void insertVersion(QSqlDatabase& db);
+    void insertWords(QSqlDatabase& db, int& stepNum);
+    void updateProbabilityOrder(QSqlDatabase& db, int& stepNum);
+    void updateDefinitions(QSqlDatabase& db, int& stepNum);
+    void updateDefinitionLinks(QSqlDatabase& db, int& stepNum);
 
-    void getDefinitions (QSqlDatabase& db, int& stepNum);
-    QString replaceDefinitionLinks (const QString& definition, int maxDepth,
-                                    bool useFollow = false) const;
-    QString getSubDefinition (const QString& word, const QString& pos) const;
+    void getDefinitions(QSqlDatabase& db, int& stepNum);
+    QString replaceDefinitionLinks(const QString& definition, int maxDepth,
+                                   bool useFollow = false) const;
+    QString getSubDefinition(const QString& word, const QString& pos) const;
 
     WordEngine* wordEngine;
     QString lexiconName;

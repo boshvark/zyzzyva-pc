@@ -3,7 +3,7 @@
 //
 // A dialog for rescheduling words within the cardbox system.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -38,7 +38,7 @@ class CardboxRescheduleDialog : public QDialog
 {
     Q_OBJECT
     public:
-    CardboxRescheduleDialog (QWidget* parent = 0, Qt::WFlags f = 0);
+    CardboxRescheduleDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~CardboxRescheduleDialog() { }
 
     public:
@@ -47,7 +47,7 @@ class CardboxRescheduleDialog : public QDialog
     SearchSpec getSearchSpec() const;
 
     public slots:
-    void useSearchButtonToggled (bool checked);
+    void useSearchButtonToggled(bool checked);
 
     private:
     QComboBox* quizTypeCombo;

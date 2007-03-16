@@ -3,7 +3,7 @@
 //
 // A widget for displaying and manipulating a crossword game board.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,11 +42,11 @@ const int SQUARE_SHADE_VALUE = 125;
 const int TILE_SHADE_PANEL_WIDTH = 2;
 const int TILE_SHADE_VALUE = 150;
 
-const QColor BACKGROUND_COLOR = QColor (0xdc, 0xdc, 0xdc);
-const QColor TILE_COLOR = QColor (0xf0, 0xe6, 0x8c);
-const QColor DEFAULT_LETTER_COLOR = QColor (0x00, 0x00, 0x00);
-const QColor PLAYER1_LETTER_COLOR = QColor (0x00, 0x00, 0xb0);
-const QColor PLAYER2_LETTER_COLOR = QColor (0xb0, 0x00, 0x00);
+const QColor BACKGROUND_COLOR = QColor(0xdc, 0xdc, 0xdc);
+const QColor TILE_COLOR = QColor(0xf0, 0xe6, 0x8c);
+const QColor DEFAULT_LETTER_COLOR = QColor(0x00, 0x00, 0x00);
+const QColor PLAYER1_LETTER_COLOR = QColor(0x00, 0x00, 0xb0);
+const QColor PLAYER2_LETTER_COLOR = QColor(0xb0, 0x00, 0x00);
 
 //---------------------------------------------------------------------------
 //  CrosswordGameRackWidget
@@ -56,13 +56,13 @@ const QColor PLAYER2_LETTER_COLOR = QColor (0xb0, 0x00, 0x00);
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-CrosswordGameRackWidget::CrosswordGameRackWidget (int player, QWidget* parent,
-                                                  Qt::WFlags f)
-    : QFrame (parent, f), playerNum (player)
+CrosswordGameRackWidget::CrosswordGameRackWidget(int player, QWidget* parent,
+                                                 Qt::WFlags f)
+    : QFrame(parent, f), playerNum(player)
 {
-    setFrameStyle (QFrame::StyledPanel | QFrame::Raised);
-    setLineWidth (2);
-    setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
+    setFrameStyle(QFrame::StyledPanel | QFrame::Raised);
+    setLineWidth(2);
+    setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     pixmap = makePixmap();
 }
 
@@ -75,8 +75,8 @@ QSize
 CrosswordGameRackWidget::minimumSizeHint() const
 {
     QSize size = getRackSize();
-    size.setWidth (size.width() + 2 * lineWidth());
-    size.setHeight (size.height() + 2 * lineWidth());
+    size.setWidth(size.width() + 2 * lineWidth());
+    size.setHeight(size.height() + 2 * lineWidth());
     return size;
 }
 
@@ -99,11 +99,11 @@ CrosswordGameRackWidget::sizeHint() const
 //! @param rack the rack of letters
 //---------------------------------------------------------------------------
 void
-CrosswordGameRackWidget::setRack (const QString& rack)
+CrosswordGameRackWidget::setRack(const QString& rack)
 {
-    letters = Auxil::getAlphagram (rack).toUpper();
+    letters = Auxil::getAlphagram(rack).toUpper();
     pixmap = makePixmap();
-    update (contentsRect());
+    update(contentsRect());
 }
 
 //---------------------------------------------------------------------------
@@ -122,75 +122,74 @@ CrosswordGameRackWidget::makePixmap() const
     // FIXME: most of this is duplicated between BoardWidget and here
     QColor backgroundColor = BACKGROUND_COLOR;
     QPalette backgroundPalette;
-    backgroundPalette.setColor (QPalette::Light,
-                                backgroundColor.light (SQUARE_SHADE_VALUE));
-    backgroundPalette.setColor (QPalette::Mid, backgroundColor);
-    backgroundPalette.setColor (QPalette::Dark,
-                                backgroundColor.dark (SQUARE_SHADE_VALUE));
+    backgroundPalette.setColor(QPalette::Light,
+                               backgroundColor.light(SQUARE_SHADE_VALUE));
+    backgroundPalette.setColor(QPalette::Mid, backgroundColor);
+    backgroundPalette.setColor(QPalette::Dark,
+                               backgroundColor.dark(SQUARE_SHADE_VALUE));
 
     for (int i = 0; i < NUM_TILES; ++i) {
-
         QRect rect (i * COLUMN_WIDTH, 0, COLUMN_WIDTH, ROW_HEIGHT);
-        painter.setPen (backgroundColor);
-        painter.setBrush (backgroundColor);
-        painter.drawRect (rect);
+        painter.setPen(backgroundColor);
+        painter.setBrush(backgroundColor);
+        painter.drawRect(rect);
 
-        qDrawShadePanel (&painter, rect, backgroundPalette, false,
-                         SQUARE_SHADE_PANEL_WIDTH);
+        qDrawShadePanel(&painter, rect, backgroundPalette, false,
+                        SQUARE_SHADE_PANEL_WIDTH);
 
 
         if (i >= letters.length())
             continue;
 
-        QRect tileRect (i * COLUMN_WIDTH + TILE_MARGIN, TILE_MARGIN,
-                        COLUMN_WIDTH - 2 * TILE_MARGIN -
-                        SQUARE_SHADE_PANEL_WIDTH,
-                        ROW_HEIGHT - 2 * TILE_MARGIN -
-                        SQUARE_SHADE_PANEL_WIDTH);
+        QRect tileRect(i * COLUMN_WIDTH + TILE_MARGIN, TILE_MARGIN,
+                       COLUMN_WIDTH - 2 * TILE_MARGIN -
+                       SQUARE_SHADE_PANEL_WIDTH,
+                       ROW_HEIGHT - 2 * TILE_MARGIN -
+                       SQUARE_SHADE_PANEL_WIDTH);
 
         QColor color = TILE_COLOR;
         QPalette palette;
-        palette.setColor (QPalette::Light,
-                          color.light (TILE_SHADE_VALUE));
-        palette.setColor (QPalette::Mid, color);
-        palette.setColor (QPalette::Dark,
-                          color.dark (TILE_SHADE_VALUE));
+        palette.setColor(QPalette::Light,
+                         color.light(TILE_SHADE_VALUE));
+        palette.setColor(QPalette::Mid, color);
+        palette.setColor(QPalette::Dark,
+                         color.dark(TILE_SHADE_VALUE));
 
-        painter.setPen (QColor ("black"));
-        painter.setBrush (color);
-        painter.drawRect (tileRect);
-        qDrawShadePanel (&painter, tileRect, palette, false,
-                         TILE_SHADE_PANEL_WIDTH);
+        painter.setPen(QColor("black"));
+        painter.setBrush(color);
+        painter.drawRect(tileRect);
+        qDrawShadePanel(&painter, tileRect, palette, false,
+                        TILE_SHADE_PANEL_WIDTH);
 
         QFont tileFont = font();
-        tileFont.setPixelSize (LETTER_HEIGHT);
-        tileFont.setWeight (QFont::Black);
-        painter.setFont (tileFont);
+        tileFont.setPixelSize(LETTER_HEIGHT);
+        tileFont.setWeight(QFont::Black);
+        painter.setFont(tileFont);
 
         switch (playerNum) {
             case 1:  color = PLAYER1_LETTER_COLOR; break;
             case 2:  color = PLAYER2_LETTER_COLOR; break;
             default: color = DEFAULT_LETTER_COLOR; break;
         }
-        painter.setPen (QPen (color));
+        painter.setPen(QPen(color));
 
         QChar letter = letters[i];
         if (letter == '?') {
             QPen pen (color);
-            pen.setWidth (1);
-            painter.setPen (pen);
-            painter.setBrush (Qt::NoBrush);
-            QRect blankRect (rect.x() + BLANK_SQUARE_MARGIN,
-                             rect.y() + BLANK_SQUARE_MARGIN,
-                             rect.width() - 2 * BLANK_SQUARE_MARGIN -
-                             SQUARE_SHADE_PANEL_WIDTH - 1,
-                             rect.height() - 2 * BLANK_SQUARE_MARGIN -
-                             SQUARE_SHADE_PANEL_WIDTH - 1);
-            painter.drawRect (blankRect);
+            pen.setWidth(1);
+            painter.setPen(pen);
+            painter.setBrush(Qt::NoBrush);
+            QRect blankRect(rect.x() + BLANK_SQUARE_MARGIN,
+                            rect.y() + BLANK_SQUARE_MARGIN,
+                            rect.width() - 2 * BLANK_SQUARE_MARGIN -
+                            SQUARE_SHADE_PANEL_WIDTH - 1,
+                            rect.height() - 2 * BLANK_SQUARE_MARGIN -
+                            SQUARE_SHADE_PANEL_WIDTH - 1);
+            painter.drawRect(blankRect);
         }
 
         else {
-            painter.drawText (rect, Qt::AlignCenter, letter);
+            painter.drawText(rect, Qt::AlignCenter, letter);
         }
     }
 
@@ -207,7 +206,7 @@ CrosswordGameRackWidget::makePixmap() const
 QSize
 CrosswordGameRackWidget::getRackSize() const
 {
-    return QSize (NUM_TILES * COLUMN_WIDTH, ROW_HEIGHT);
+    return QSize(NUM_TILES * COLUMN_WIDTH, ROW_HEIGHT);
 }
 
 //---------------------------------------------------------------------------
@@ -218,11 +217,11 @@ CrosswordGameRackWidget::getRackSize() const
 //! @param event the paint event
 //---------------------------------------------------------------------------
 void
-CrosswordGameRackWidget::paintEvent (QPaintEvent* event)
+CrosswordGameRackWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter (this);
     QRect rect (contentsRect());
-    painter.drawPixmap (contentsRect().topLeft(), pixmap);
+    painter.drawPixmap(contentsRect().topLeft(), pixmap);
     painter.end();
-    QFrame::paintEvent (event);
+    QFrame::paintEvent(event);
 }

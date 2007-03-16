@@ -3,7 +3,7 @@
 //
 // A class derived from QApplication.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -36,7 +36,7 @@
 //! @param e the event
 //---------------------------------------------------------------------------
 bool
-ZApplication::event (QEvent* e)
+ZApplication::event(QEvent* e)
 {
     if (!e)
         return false;
@@ -44,13 +44,13 @@ ZApplication::event (QEvent* e)
     switch (e->type()) {
         case QEvent::FileOpen: {
             QFileOpenEvent* fileEvent = static_cast<QFileOpenEvent*>(e);
-            fileOpenRequests.append (fileEvent->file());
-            emit fileOpenRequested (fileEvent->file());
+            fileOpenRequests.append(fileEvent->file());
+            emit fileOpenRequested(fileEvent->file());
             return true;
             break;
         }
 
         default:
-        return QApplication::event (e);
+        return QApplication::event(e);
     }
 }

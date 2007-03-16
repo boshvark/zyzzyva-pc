@@ -3,7 +3,7 @@
 //
 // A widget for displaying and manipulating a crossword game rack.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -35,20 +35,19 @@ class CrosswordGameRackWidget : public QFrame
     Q_OBJECT
 
     public:
-    CrosswordGameRackWidget (int player, QWidget* parent = 0, Qt::WFlags f =
-                             0);
+    CrosswordGameRackWidget(int player, QWidget* parent = 0, Qt::WFlags f = 0);
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
 
     public slots:
-    void setRack (const QString& rack);
+    void setRack(const QString& rack);
 
     private:
     QPixmap makePixmap() const;
     QSize getRackSize() const;
 
-    virtual void paintEvent (QPaintEvent* event);
+    virtual void paintEvent(QPaintEvent* event);
 
     private:
     QPixmap pixmap;

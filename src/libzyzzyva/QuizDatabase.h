@@ -35,9 +35,9 @@ class QuizDatabase
     public:
     class QuestionData {
         public:
-        QuestionData() : valid (false), numCorrect (0), numIncorrect (0),
-                         streak (0), lastCorrect (0), difficulty (0),
-                         cardbox (-1), nextScheduled (0) { }
+        QuestionData() : valid(false), numCorrect(0), numIncorrect(0),
+                         streak(0), lastCorrect(0), difficulty(0),
+                         cardbox(-1), nextScheduled(0) { }
         bool valid;
         int numCorrect;
         int numIncorrect;
@@ -48,31 +48,31 @@ class QuizDatabase
         int nextScheduled;
     };
 
-    QuizDatabase (const QString& lexicon, const QString& quizType);
+    QuizDatabase(const QString& lexicon, const QString& quizType);
     ~QuizDatabase();
 
     bool isValid() const;
     bool updateSchema();
-    void recordResponse (const QString& question, bool correct,
-                         bool updateCardbox);
-    void undoLastResponse (const QString& question);
-    void addToCardbox (const QStringList& questions, bool estimateCardbox);
-    void addToCardbox (const QString& question, bool estimateCardbox);
-    void removeFromCardbox (const QStringList& questions);
-    void removeFromCardbox (const QString& question);
-    void setCardbox (const QString& question, int cardbox);
-    int rescheduleCardbox (const QStringList& questions);
-    int shiftCardbox (const QStringList& questions, int desiredBacklog);
+    void recordResponse(const QString& question, bool correct,
+                        bool updateCardbox);
+    void undoLastResponse(const QString& question);
+    void addToCardbox(const QStringList& questions, bool estimateCardbox);
+    void addToCardbox(const QString& question, bool estimateCardbox);
+    void removeFromCardbox(const QStringList& questions);
+    void removeFromCardbox(const QString& question);
+    void setCardbox(const QString& question, int cardbox);
+    int rescheduleCardbox(const QStringList& questions);
+    int shiftCardbox(const QStringList& questions, int desiredBacklog);
     QStringList getAllReadyQuestions();
-    QStringList getReadyQuestions (const QStringList& questions);
-    QuestionData getQuestionData (const QString& question);
+    QStringList getReadyQuestions(const QStringList& questions);
+    QuestionData getQuestionData(const QString& question);
 
     const QSqlDatabase* getDatabase() const;
 
     private:
-    int calculateNextScheduled (int cardbox);
-    void setQuestionData (const QString& question, const QuestionData& data,
-                          bool updateCardbox);
+    int calculateNextScheduled(int cardbox);
+    void setQuestionData(const QString& question, const QuestionData& data,
+                         bool updateCardbox);
 
     private:
     QString dbConnectionName;

@@ -3,7 +3,7 @@
 //
 // A form for quizzing the user.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -55,7 +55,7 @@ class QuizForm : public ActionForm
 {
     Q_OBJECT
     public:
-    QuizForm (WordEngine* we, QWidget* parent = 0, Qt::WFlags f = 0);
+    QuizForm(WordEngine* we, QWidget* parent = 0, Qt::WFlags f = 0);
     ~QuizForm();
     QIcon getIcon() const;
     QString getTitle() const;
@@ -67,7 +67,7 @@ class QuizForm : public ActionForm
     void saveRequested();
 
     public slots:
-    bool newQuiz (const QuizSpec& spec);
+    bool newQuiz(const QuizSpec& spec);
     void responseEntered();
     void alphaOrderClicked();
     void randomOrderClicked();
@@ -78,9 +78,9 @@ class QuizForm : public ActionForm
     void markCorrectClicked();
     void pauseClicked();
     void analyzeClicked();
-    void flashcardStateChanged (int state);
-    void setTileTheme (const QString& theme);
-    void setBackgroundColor (const QColor& color);
+    void flashcardStateChanged(int state);
+    void setTileTheme(const QString& theme);
+    void setBackgroundColor(const QColor& color);
     void updateStatusString();
     void updateQuestionDisplay();
     void updateQuestionStatus();
@@ -91,7 +91,7 @@ class QuizForm : public ActionForm
     bool promptToSaveChanges();
 
     protected:
-    void keyPressEvent (QKeyEvent* event);
+    void keyPressEvent(QKeyEvent* event);
 
     private:
     void updateStats();
@@ -104,24 +104,24 @@ class QuizForm : public ActionForm
     void unpauseTimer();
     void clearCanvas();
     void minimizeCanvas();
-    void setNumCanvasTiles (int num);
-    void setQuestionLabel (const QString& question, const QString& order =
-                           QString::null);
-    void setCorrectStatus (int correct, int total);
-    void setQuestionStatus (const QuizDatabase::QuestionData& data);
-    void setStatusString (const QString& status);
-    void setTimerDisplay (int seconds);
-    void setQuizName (const QString& name);
-    void setQuizNameFromFilename (const QString& filename);
-    void setUnsavedChanges (bool b);
+    void setNumCanvasTiles(int num);
+    void setQuestionLabel(const QString& question, const QString& order =
+                          QString::null);
+    void setCorrectStatus(int correct, int total);
+    void setQuestionStatus(const QuizDatabase::QuestionData& data);
+    void setStatusString(const QString& status);
+    void setTimerDisplay(int seconds);
+    void setQuizName(const QString& name);
+    void setQuizNameFromFilename(const QString& filename);
+    void setUnsavedChanges(bool b);
     void clearTileTheme();
     void reflowLayout();
-    bool responseMatchesQuestion (const QString& response) const;
-    void connectToDatabase (const QString& lexicon, const QString& quizType);
+    bool responseMatchesQuestion(const QString& response) const;
+    void connectToDatabase(const QString& lexicon, const QString& quizType);
     void disconnectDatabase();
-    void recordQuestionStats (bool correct);
+    void recordQuestionStats(bool correct);
 
-    void timerEvent (QTimerEvent* event);
+    void timerEvent(QTimerEvent* event);
 
     private:
     WordEngine*   wordEngine;

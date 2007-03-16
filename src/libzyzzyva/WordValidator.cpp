@@ -3,7 +3,7 @@
 //
 // A validator for ensuring words are well-formed.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,7 +34,7 @@
 //! @param pos the cursor position
 //-----------------------------------------------------------------------------
 QValidator::State
-WordValidator::validate (QString& input, int& pos) const
+WordValidator::validate(QString& input, int& pos) const
 {
     input = input.toUpper();
     QString re = "[^A-Z";
@@ -48,9 +48,9 @@ WordValidator::validate (QString& input, int& pos) const
         re += ":";
     re += "]+";
     if (options & AllowHooks) {
-        replaceRegExp (QRegExp (" "), ":", input, pos);
-        replaceRegExp (QRegExp (":+"), ":", input, pos);
-        replaceRegExp (QRegExp ("^([^:]*:[^:]+:[^:]*):.*"), "\\1", input, pos);
+        replaceRegExp(QRegExp(" "), ":", input, pos);
+        replaceRegExp(QRegExp(":+"), ":", input, pos);
+        replaceRegExp(QRegExp("^([^:]*:[^:]+:[^:]*):.*"), "\\1", input, pos);
     }
     replaceRegExp(QRegExp(re), "", input, pos);
     return Acceptable;
@@ -75,6 +75,5 @@ WordValidator::replaceRegExp(const QRegExp& re, const QString& str,
 {
     QString left = input.left(pos).replace(re, str);
     input = left + input.right(input.length() - pos).replace(re, str);
-    if (input.isNull()) { input = ""; }
     pos = left.length();
 }

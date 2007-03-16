@@ -3,7 +3,7 @@
 //
 // A class to represent a crossword game move.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -59,24 +59,24 @@ class CrosswordGameMove
 
     public:
     CrosswordGameMove() { init(); }
-    CrosswordGameMove (const QString& str);
+    CrosswordGameMove(const QString& str);
 
-    void setType (Type t) { type = t; }
-    void setOrientation (Orientation o) { orientation = o; }
-    void setRow (int r) { row = r; }
-    void setColumn (int c) { column = c; }
-    void setWord (const QString& w) { word = w; }
-    void setScore (int s) { score = s; }
-    void setSecondsLeft (int s) { secondsLeft = s; }
-    void setNumExchanged (int n) { numExchanged = n; }
-    void setExchangedLetters (const QString& s) {
+    void setType(Type t) { type = t; }
+    void setOrientation(Orientation o) { orientation = o; }
+    void setRow(int r) { row = r; }
+    void setColumn(int c) { column = c; }
+    void setWord(const QString& w) { word = w; }
+    void setScore(int s) { score = s; }
+    void setSecondsLeft(int s) { secondsLeft = s; }
+    void setNumExchanged(int n) { numExchanged = n; }
+    void setExchangedLetters(const QString& s) {
         exchangedLetters = s;
         numExchanged = s.length();
     }
-    void setPenaltyType (PenaltyType p) { penaltyType = p; }
-    void setPenaltyPoints (int n) { penaltyPoints = n; }
-    void setPlayerNum (int n) { playerNum = n; }
-    void setNewRack (const QString& r) { newRack = Auxil::getAlphagram (r); }
+    void setPenaltyType(PenaltyType p) { penaltyType = p; }
+    void setPenaltyPoints(int n) { penaltyPoints = n; }
+    void setPlayerNum(int n) { playerNum = n; }
+    void setNewRack(const QString& r) { newRack = Auxil::getAlphagram(r); }
 
     Type getType() const { return type; }
     Orientation getOrientation() const { return orientation; }
@@ -96,7 +96,7 @@ class CrosswordGameMove
 
     private:
     void init();
-    void setPlacement (const QString& placement);
+    void setPlacement(const QString& placement);
 
     private:
     Type type;

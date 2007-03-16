@@ -3,7 +3,7 @@
 //
 // The main settings for the word study application.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -71,7 +71,7 @@ const QString SETTINGS_JUDGE_SAVE_LOG = "judge_save_log";
 const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL2+LWL";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
-const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb (0, 0, 127);
+const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb(0, 0, 127);
 const QString DEFAULT_LETTER_DISTRIBUTION = "A:9 B:2 C:2 D:4 E:12 F:2 G:3 "
     "H:2 I:9 J:1 K:1 L:4 M:2 N:6 O:8 P:2 Q:1 R:6 S:4 T:6 U:4 V:2 W:2 X:1 "
     "Y:2 Z:1 _:2";
@@ -85,21 +85,21 @@ void
 MainSettings::readSettings()
 {
     QSettings settings;
-    settings.beginGroup (SETTINGS_MAIN);
+    settings.beginGroup(SETTINGS_MAIN);
 
     instance->mainWindowPos =
-        settings.value (SETTINGS_MAIN_WINDOW_POS, QPoint (50, 50)).toPoint();
+        settings.value(SETTINGS_MAIN_WINDOW_POS, QPoint(50, 50)).toPoint();
     instance->mainWindowSize
-        = settings.value (SETTINGS_MAIN_WINDOW_SIZE,
-                          QSize (640, 480)).toSize();
+        = settings.value(SETTINGS_MAIN_WINDOW_SIZE,
+                         QSize(640, 480)).toSize();
 
     instance->programVersion
-        = settings.value (SETTINGS_PROGRAM_VERSION).toString();
+        = settings.value(SETTINGS_PROGRAM_VERSION).toString();
 
-    instance->useAutoImport = settings.value (SETTINGS_IMPORT, true).toBool();
+    instance->useAutoImport = settings.value(SETTINGS_IMPORT, true).toBool();
     instance->autoImportLexicon
-        = settings.value (SETTINGS_IMPORT_LEXICON,
-                          DEFAULT_AUTO_IMPORT_LEXICON).toString();
+        = settings.value(SETTINGS_IMPORT_LEXICON,
+                         DEFAULT_AUTO_IMPORT_LEXICON).toString();
 
     // Kludge to update the names of renamed lexicons
     if (instance->autoImportLexicon == "OWL")
@@ -110,81 +110,79 @@ MainSettings::readSettings()
         instance->autoImportLexicon = "OSWI";
 
     instance->autoImportFile
-        = settings.value (SETTINGS_IMPORT_FILE).toString();
+        = settings.value(SETTINGS_IMPORT_FILE).toString();
 
     instance->displayWelcome
-        = settings.value (SETTINGS_DISPLAY_WELCOME, true).toBool();
+        = settings.value(SETTINGS_DISPLAY_WELCOME, true).toBool();
 
     QString defaultUserDir = Auxil::getHomeDir() + "/.zyzzyva";
-    instance->userDataDir = QDir::cleanPath (
-        settings.value (SETTINGS_USER_DATA_DIR, defaultUserDir).toString());
+    instance->userDataDir = QDir::cleanPath(
+        settings.value(SETTINGS_USER_DATA_DIR, defaultUserDir).toString());
 
     instance->useTileTheme
-        = settings.value (SETTINGS_USE_TILE_THEME, true).toBool();
+        = settings.value(SETTINGS_USE_TILE_THEME, true).toBool();
     instance->tileTheme
-        = settings.value (SETTINGS_TILE_THEME, DEFAULT_TILE_THEME).toString();
+        = settings.value(SETTINGS_TILE_THEME, DEFAULT_TILE_THEME).toString();
 
     instance->quizLetterOrder
-        = settings.value (SETTINGS_QUIZ_LETTER_ORDER,
-                          DEFAULT_QUIZ_LETTER_ORDER).toString();
+        = settings.value(SETTINGS_QUIZ_LETTER_ORDER,
+                         DEFAULT_QUIZ_LETTER_ORDER).toString();
 
-    instance->quizBackgroundColor.setRgb (
-        settings.value (SETTINGS_QUIZ_BACKGROUND_COLOR,
-                        QString::number (DEFAULT_QUIZ_BACKGROUND_COLOR)
-                        ).toUInt());
+    instance->quizBackgroundColor.setRgb(
+        settings.value(SETTINGS_QUIZ_BACKGROUND_COLOR,
+                       QString::number(DEFAULT_QUIZ_BACKGROUND_COLOR)).toUInt());
 
     instance->quizUseFlashcardMode
-        = settings.value (SETTINGS_QUIZ_USE_FLASHCARD_MODE, false).toBool();
+        = settings.value(SETTINGS_QUIZ_USE_FLASHCARD_MODE, false).toBool();
     instance->quizShowNumResponses
-        = settings.value (SETTINGS_QUIZ_SHOW_NUM_RESPONSES, true).toBool();
+        = settings.value(SETTINGS_QUIZ_SHOW_NUM_RESPONSES, true).toBool();
     instance->quizShowQuestionStats
-        = settings.value (SETTINGS_QUIZ_SHOW_QUESTION_STATS, true).toBool();
+        = settings.value(SETTINGS_QUIZ_SHOW_QUESTION_STATS, true).toBool();
     instance->quizAutoCheck
-        = settings.value (SETTINGS_QUIZ_AUTO_CHECK, true).toBool();
+        = settings.value(SETTINGS_QUIZ_AUTO_CHECK, true).toBool();
     instance->quizAutoAdvance
-        = settings.value (SETTINGS_QUIZ_AUTO_ADVANCE, false).toBool();
+        = settings.value(SETTINGS_QUIZ_AUTO_ADVANCE, false).toBool();
     instance->quizAutoEndAfterIncorrect
-        = settings.value (SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT,
-                          false).toBool();
+        = settings.value(SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT,
+                         false).toBool();
     instance->quizMarkMissedAfterIncorrect
-        = settings.value (SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT,
-                          true).toBool();
+        = settings.value(SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT,
+                         true).toBool();
     instance->quizCycleAnswers
-        = settings.value (SETTINGS_QUIZ_CYCLE_ANSWERS, true).toBool();
+        = settings.value(SETTINGS_QUIZ_CYCLE_ANSWERS, true).toBool();
     instance->quizRecordStats
-        = settings.value (SETTINGS_QUIZ_RECORD_STATS, true).toBool();
+        = settings.value(SETTINGS_QUIZ_RECORD_STATS, true).toBool();
 
     instance->mainFont
-        = settings.value (SETTINGS_FONT_MAIN).toString();
+        = settings.value(SETTINGS_FONT_MAIN).toString();
     instance->wordListFont
-        = settings.value (SETTINGS_FONT_WORD_LISTS).toString();
+        = settings.value(SETTINGS_FONT_WORD_LISTS).toString();
     instance->quizLabelFont
-        = settings.value (SETTINGS_FONT_QUIZ_LABEL).toString();
+        = settings.value(SETTINGS_FONT_QUIZ_LABEL).toString();
     instance->wordInputFont
-        = settings.value (SETTINGS_FONT_WORD_INPUT).toString();
+        = settings.value(SETTINGS_FONT_WORD_INPUT).toString();
     instance->definitionFont
-        = settings.value (SETTINGS_FONT_DEFINITIONS).toString();
-
+        = settings.value(SETTINGS_FONT_DEFINITIONS).toString();
 
     instance->wordListSortByLength
-        = settings.value (SETTINGS_SORT_BY_LENGTH, false).toBool();
+        = settings.value(SETTINGS_SORT_BY_LENGTH, false).toBool();
     instance->wordListGroupByAnagrams
-        = settings.value (SETTINGS_GROUP_BY_ALPHAGRAMS, true).toBool();
+        = settings.value(SETTINGS_GROUP_BY_ALPHAGRAMS, true).toBool();
     instance->wordListShowProbabilityOrder
-        = settings.value (SETTINGS_SHOW_PROBABILITY_ORDER, true).toBool();
+        = settings.value(SETTINGS_SHOW_PROBABILITY_ORDER, true).toBool();
     instance->wordListShowHooks
-        = settings.value (SETTINGS_SHOW_HOOKS, true).toBool();
+        = settings.value(SETTINGS_SHOW_HOOKS, true).toBool();
     instance->wordListShowHookParents
-        = settings.value (SETTINGS_SHOW_HOOK_PARENTS, true).toBool();
+        = settings.value(SETTINGS_SHOW_HOOK_PARENTS, true).toBool();
     instance->wordListShowDefinitions
-        = settings.value (SETTINGS_SHOW_DEFINITIONS, true).toBool();
+        = settings.value(SETTINGS_SHOW_DEFINITIONS, true).toBool();
 
     instance->letterDistribution
-        = settings.value (SETTINGS_LETTER_DISTRIBUTION,
-                          DEFAULT_LETTER_DISTRIBUTION).toString();
+        = settings.value(SETTINGS_LETTER_DISTRIBUTION,
+                         DEFAULT_LETTER_DISTRIBUTION).toString();
 
     instance->judgeSaveLog
-        = settings.value (SETTINGS_JUDGE_SAVE_LOG, true).toBool();
+        = settings.value(SETTINGS_JUDGE_SAVE_LOG, true).toBool();
 
     settings.endGroup();
 }
@@ -198,57 +196,57 @@ void
 MainSettings::writeSettings()
 {
     QSettings settings;
-    settings.beginGroup (SETTINGS_MAIN);
-    settings.setValue (SETTINGS_MAIN_WINDOW_POS, instance->mainWindowPos);
-    settings.setValue (SETTINGS_MAIN_WINDOW_SIZE, instance->mainWindowSize);
+    settings.beginGroup(SETTINGS_MAIN);
+    settings.setValue(SETTINGS_MAIN_WINDOW_POS, instance->mainWindowPos);
+    settings.setValue(SETTINGS_MAIN_WINDOW_SIZE, instance->mainWindowSize);
 
-    settings.setValue (SETTINGS_PROGRAM_VERSION, instance->programVersion);
-    settings.setValue (SETTINGS_IMPORT, instance->useAutoImport);
-    settings.setValue (SETTINGS_IMPORT_LEXICON, instance->autoImportLexicon);
-    settings.setValue (SETTINGS_IMPORT_FILE, instance->autoImportFile);
-    settings.setValue (SETTINGS_DISPLAY_WELCOME, instance->displayWelcome);
-    settings.setValue (SETTINGS_USER_DATA_DIR, instance->userDataDir);
-    settings.setValue (SETTINGS_USE_TILE_THEME, instance->useTileTheme);
-    settings.setValue (SETTINGS_TILE_THEME, instance->tileTheme);
-    settings.setValue (SETTINGS_QUIZ_LETTER_ORDER,
-                       instance->quizLetterOrder);
-    settings.setValue (SETTINGS_QUIZ_BACKGROUND_COLOR,
-                       QString::number (instance->quizBackgroundColor.rgb()));
-    settings.setValue (SETTINGS_QUIZ_USE_FLASHCARD_MODE,
-                       instance->quizUseFlashcardMode);
-    settings.setValue (SETTINGS_QUIZ_SHOW_NUM_RESPONSES,
-                       instance->quizShowNumResponses);
-    settings.setValue (SETTINGS_QUIZ_SHOW_QUESTION_STATS,
-                       instance->quizShowQuestionStats);
-    settings.setValue (SETTINGS_QUIZ_AUTO_CHECK, instance->quizAutoCheck);
-    settings.setValue (SETTINGS_QUIZ_AUTO_ADVANCE,
-                       instance->quizAutoAdvance);
-    settings.setValue (SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT,
-                       instance->quizAutoEndAfterIncorrect);
-    settings.setValue (SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT,
-                       instance->quizMarkMissedAfterIncorrect);
-    settings.setValue (SETTINGS_QUIZ_CYCLE_ANSWERS,
-                       instance->quizCycleAnswers);
-    settings.setValue (SETTINGS_QUIZ_RECORD_STATS,
-                       instance->quizRecordStats);
-    settings.setValue (SETTINGS_FONT_MAIN, instance->mainFont);
-    settings.setValue (SETTINGS_FONT_WORD_LISTS, instance->wordListFont);
-    settings.setValue (SETTINGS_FONT_QUIZ_LABEL, instance->quizLabelFont);
-    settings.setValue (SETTINGS_FONT_WORD_INPUT, instance->wordInputFont);
-    settings.setValue (SETTINGS_FONT_DEFINITIONS, instance->definitionFont);
-    settings.setValue (SETTINGS_SORT_BY_LENGTH,
-                       instance->wordListSortByLength);
-    settings.setValue (SETTINGS_GROUP_BY_ALPHAGRAMS,
-                       instance->wordListGroupByAnagrams);
-    settings.setValue (SETTINGS_SHOW_PROBABILITY_ORDER,
-                       instance->wordListShowProbabilityOrder);
-    settings.setValue (SETTINGS_SHOW_HOOKS, instance->wordListShowHooks);
-    settings.setValue (SETTINGS_SHOW_HOOK_PARENTS,
-                       instance->wordListShowHookParents);
-    settings.setValue (SETTINGS_SHOW_DEFINITIONS,
-                       instance->wordListShowDefinitions);
-    settings.setValue (SETTINGS_LETTER_DISTRIBUTION,
-                       instance->letterDistribution);
-    settings.setValue (SETTINGS_JUDGE_SAVE_LOG, instance->judgeSaveLog);
+    settings.setValue(SETTINGS_PROGRAM_VERSION, instance->programVersion);
+    settings.setValue(SETTINGS_IMPORT, instance->useAutoImport);
+    settings.setValue(SETTINGS_IMPORT_LEXICON, instance->autoImportLexicon);
+    settings.setValue(SETTINGS_IMPORT_FILE, instance->autoImportFile);
+    settings.setValue(SETTINGS_DISPLAY_WELCOME, instance->displayWelcome);
+    settings.setValue(SETTINGS_USER_DATA_DIR, instance->userDataDir);
+    settings.setValue(SETTINGS_USE_TILE_THEME, instance->useTileTheme);
+    settings.setValue(SETTINGS_TILE_THEME, instance->tileTheme);
+    settings.setValue(SETTINGS_QUIZ_LETTER_ORDER,
+                      instance->quizLetterOrder);
+    settings.setValue(SETTINGS_QUIZ_BACKGROUND_COLOR,
+                      QString::number(instance->quizBackgroundColor.rgb()));
+    settings.setValue(SETTINGS_QUIZ_USE_FLASHCARD_MODE,
+                      instance->quizUseFlashcardMode);
+    settings.setValue(SETTINGS_QUIZ_SHOW_NUM_RESPONSES,
+                      instance->quizShowNumResponses);
+    settings.setValue(SETTINGS_QUIZ_SHOW_QUESTION_STATS,
+                      instance->quizShowQuestionStats);
+    settings.setValue(SETTINGS_QUIZ_AUTO_CHECK, instance->quizAutoCheck);
+    settings.setValue(SETTINGS_QUIZ_AUTO_ADVANCE,
+                      instance->quizAutoAdvance);
+    settings.setValue(SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT,
+                      instance->quizAutoEndAfterIncorrect);
+    settings.setValue(SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT,
+                      instance->quizMarkMissedAfterIncorrect);
+    settings.setValue(SETTINGS_QUIZ_CYCLE_ANSWERS,
+                      instance->quizCycleAnswers);
+    settings.setValue(SETTINGS_QUIZ_RECORD_STATS,
+                      instance->quizRecordStats);
+    settings.setValue(SETTINGS_FONT_MAIN, instance->mainFont);
+    settings.setValue(SETTINGS_FONT_WORD_LISTS, instance->wordListFont);
+    settings.setValue(SETTINGS_FONT_QUIZ_LABEL, instance->quizLabelFont);
+    settings.setValue(SETTINGS_FONT_WORD_INPUT, instance->wordInputFont);
+    settings.setValue(SETTINGS_FONT_DEFINITIONS, instance->definitionFont);
+    settings.setValue(SETTINGS_SORT_BY_LENGTH,
+                      instance->wordListSortByLength);
+    settings.setValue(SETTINGS_GROUP_BY_ALPHAGRAMS,
+                      instance->wordListGroupByAnagrams);
+    settings.setValue(SETTINGS_SHOW_PROBABILITY_ORDER,
+                      instance->wordListShowProbabilityOrder);
+    settings.setValue(SETTINGS_SHOW_HOOKS, instance->wordListShowHooks);
+    settings.setValue(SETTINGS_SHOW_HOOK_PARENTS,
+                      instance->wordListShowHookParents);
+    settings.setValue(SETTINGS_SHOW_DEFINITIONS,
+                      instance->wordListShowDefinitions);
+    settings.setValue(SETTINGS_LETTER_DISTRIBUTION,
+                      instance->letterDistribution);
+    settings.setValue(SETTINGS_JUDGE_SAVE_LOG, instance->judgeSaveLog);
     settings.endGroup();
 }

@@ -41,12 +41,12 @@
 //! @param b another string
 //---------------------------------------------------------------------------
 bool
-probabilityCmp (const QString& a, const QString& b)
+probabilityCmp(const QString& a, const QString& b)
 {
     // FIXME: There has to be a more efficient way than this!
     LetterBag letterBag;
-    double ca = letterBag.getNumCombinations (a);
-    double cb = letterBag.getNumCombinations (b);
+    double ca = letterBag.getNumCombinations(a);
+    double cb = letterBag.getNumCombinations(b);
 
     if (ca > cb)
         return true;
@@ -61,9 +61,9 @@ probabilityCmp (const QString& a, const QString& b)
 //
 //! Constructor.
 //---------------------------------------------------------------------------
-QuizEngine::QuizEngine (WordEngine* e)
-    : wordEngine (e), quizTotal (0), quizCorrect (0), quizIncorrect (0),
-    questionIndex (0)
+QuizEngine::QuizEngine(WordEngine* e)
+    : wordEngine(e), quizTotal(0), quizCorrect(0), quizIncorrect(0),
+    questionIndex(0)
 {
 }
 
@@ -76,14 +76,14 @@ QuizEngine::QuizEngine (WordEngine* e)
 //! @return true if the quiz was started successfully, false otherwise;
 //---------------------------------------------------------------------------
 bool
-QuizEngine::newQuiz (const QuizSpec& spec)
+QuizEngine::newQuiz(const QuizSpec& spec)
 {
     QStringList questions;
 
     if (spec.getQuizSourceType() == QuizSpec::CardboxReadySource) {
         QString lexicon = spec.getLexicon();
-        QString quizType = Auxil::quizTypeToString (spec.getType());
-        QuizDatabase* db = new QuizDatabase (lexicon, quizType);
+        QString quizType = Auxil::quizTypeToString(spec.getType());
+        QuizDatabase* db = new QuizDatabase(lexicon, quizType);
         if (!db->isValid()) {
             delete db;
             return false;
@@ -103,12 +103,12 @@ QuizEngine::newQuiz (const QuizSpec& spec)
         if ((type == QuizSpec::QuizAnagrams) ||
             (type == QuizSpec::QuizAnagramsWithHooks))
         {
-            questions = wordEngine->search (spec.getSearchSpec(), true);
-            questions = wordEngine->alphagrams (questions);
+            questions = wordEngine->search(spec.getSearchSpec(), true);
+            questions = wordEngine->alphagrams(questions);
         }
 
         else if (type == QuizSpec::QuizHooks) {
-            questions = wordEngine->search (spec.getSearchSpec(), true);
+            questions = wordEngine->search(spec.getSearchSpec(), true);
         }
 
         else if (type == QuizSpec::QuizWordListRecall) {
@@ -129,21 +129,21 @@ QuizEngine::newQuiz (const QuizSpec& spec)
             case QuizSpec::RandomOrder: {
                 unsigned int seed = spec.getRandomSeed();
                 if (!seed)
-                    seed = std::time (0);
+                    seed = std::time(0);
                 unsigned int seed2 = spec.getRandomSeed2();
                 if (!seed2)
                     seed2 = Auxil::getPid();
-                rng.setAlgorithm (spec.getRandomAlgorithm());
-                rng.srand (seed, seed2);
-                quizSpec.setRandomSeed (seed);
-                quizSpec.setRandomSeed2 (seed2);
+                rng.setAlgorithm(spec.getRandomAlgorithm());
+                rng.srand(seed, seed2);
+                quizSpec.setRandomSeed(seed);
+                quizSpec.setRandomSeed2(seed2);
 
                 // XXX: We need a Shuffle class to handle shuffling using various
                 // algorithms!
                 QString tmp;
                 int num = quizQuestions.size();
                 for (int i = 0; i < num - 1; ++i) {
-                    unsigned int randnum = rng.rand (num - i - 1);
+                    unsigned int randnum = rng.rand(num - i - 1);
                     int rnum = i + randnum;
                     if (rnum == i)
                         continue;
@@ -155,21 +155,21 @@ QuizEngine::newQuiz (const QuizSpec& spec)
             break;
 
             case QuizSpec::ProbabilityOrder: {
-                qSort (quizQuestions.begin(), quizQuestions.end(),
-                       probabilityCmp);
+                qSort(quizQuestions.begin(), quizQuestions.end(),
+                      probabilityCmp);
             }
             break;
 
             case QuizSpec::ScheduleOrder: {
                 QString lexicon = spec.getLexicon();
-                QString quizType = Auxil::quizTypeToString (spec.getType());
-                QuizDatabase* db = new QuizDatabase (lexicon, quizType);
+                QString quizType = Auxil::quizTypeToString(spec.getType());
+                QuizDatabase* db = new QuizDatabase(lexicon, quizType);
                 if (!db->isValid()) {
                     delete db;
                     return false;
                 }
 
-                quizQuestions = db->getReadyQuestions (quizQuestions);
+                quizQuestions = db->getReadyQuestions(quizQuestions);
                 delete db;
                 if (quizQuestions.isEmpty())
                     return false;
@@ -220,21 +220,21 @@ QuizEngine::nextQuestion()
 
     // Update progress
     QuizProgress progress = quizSpec.getProgress();
-    progress.setQuestion (questionIndex);
-    progress.setCorrect (quizCorrect);
-    progress.setQuestionComplete (false);
+    progress.setQuestion(questionIndex);
+    progress.setCorrect(quizCorrect);
+    progress.setQuestionComplete(false);
     progress.clearQuestionCorrect();
     QStringList missed = getMissed();
     QStringList::iterator it;
     for (it = missed.begin(); it != missed.end(); ++it)
-        progress.addMissed (*it);
+        progress.addMissed(*it);
 
     for (it = incorrectUserResponses.begin(); it !=
          incorrectUserResponses.end(); ++it)
     {
-        progress.addIncorrect (*it);
+        progress.addIncorrect(*it);
     }
-    quizSpec.setProgress (progress);
+    quizSpec.setProgress(progress);
 
     prepareQuestion();
     return true;
@@ -249,8 +249,8 @@ void
 QuizEngine::completeQuestion()
 {
     QuizProgress progress = quizSpec.getProgress();
-    progress.setQuestionComplete (true);
-    quizSpec.setProgress (progress);
+    progress.setQuestionComplete(true);
+    quizSpec.setProgress(progress);
 }
 
 //---------------------------------------------------------------------------
@@ -262,38 +262,38 @@ QuizEngine::completeQuestion()
 //! @return the status of the response
 //---------------------------------------------------------------------------
 QuizEngine::ResponseStatus
-QuizEngine::respond (const QString& response)
+QuizEngine::respond(const QString& response)
 {
     QString word (response);
 
     if (quizSpec.getType() == QuizSpec::QuizAnagramsWithHooks) {
-        QStringList sections = response.split (":");
+        QStringList sections = response.split(":");
         if (sections.size() != 3) {
-            addQuestionIncorrect (response);
+            addQuestionIncorrect(response);
             return Incorrect;
         }
 
-        QString frontHooks = Auxil::getAlphagram (sections.at (0));
-        word = sections.at (1);
-        QString backHooks = Auxil::getAlphagram (sections.at (2));
+        QString frontHooks = Auxil::getAlphagram(sections.at(0));
+        word = sections.at(1);
+        QString backHooks = Auxil::getAlphagram(sections.at(2));
 
-        if ((frontHooks.toLower() != wordEngine->getFrontHookLetters (word))
-            || (backHooks.toLower() != wordEngine->getBackHookLetters (word)))
+        if ((frontHooks.toLower() != wordEngine->getFrontHookLetters(word))
+            || (backHooks.toLower() != wordEngine->getBackHookLetters(word)))
         {
-            addQuestionIncorrect (response);
+            addQuestionIncorrect(response);
             return Incorrect;
         }
     }
 
-    if (correctResponses.find (word) == correctResponses.end()) {
-        addQuestionIncorrect (response);
+    if (correctResponses.find(word) == correctResponses.end()) {
+        addQuestionIncorrect(response);
         return Incorrect;
     }
 
-    if (correctUserResponses.find (word) != correctUserResponses.end())
+    if (correctUserResponses.find(word) != correctUserResponses.end())
         return Duplicate;
 
-    addQuestionCorrect (word);
+    addQuestionCorrect(word);
     return Correct;
 }
 
@@ -312,7 +312,7 @@ QuizEngine::markQuestionAsCorrect()
     QuizProgress progress = quizSpec.getProgress();
     QStringListIterator it (incorrectUserResponses);
     while (it.hasNext()) {
-        progress.removeIncorrect (it.next());
+        progress.removeIncorrect(it.next());
     }
     incorrectUserResponses.clear();
 
@@ -320,14 +320,14 @@ QuizEngine::markQuestionAsCorrect()
     QStringListIterator jt (missed);
     while (jt.hasNext()) {
         QString word = jt.next();
-        correctUserResponses.insert (word);
-        progress.addQuestionCorrect (word);
+        correctUserResponses.insert(word);
+        progress.addQuestionCorrect(word);
         if (progress.getQuestionComplete()) {
-            progress.removeMissed (word);
+            progress.removeMissed(word);
         }
     }
 
-    quizSpec.setProgress (progress);
+    quizSpec.setProgress(progress);
 }
 
 //---------------------------------------------------------------------------
@@ -346,8 +346,8 @@ QuizEngine::markQuestionAsMissed()
 
     QuizProgress progress = quizSpec.getProgress();
     progress.clearQuestionCorrect();
-    progress.setCorrect (progress.getNumCorrect() - numCorrect);
-    quizSpec.setProgress (progress);
+    progress.setCorrect(progress.getNumCorrect() - numCorrect);
+    quizSpec.setProgress(progress);
 }
 
 //---------------------------------------------------------------------------
@@ -361,7 +361,7 @@ QString
 QuizEngine::getQuestion() const
 {
     return (questionIndex >= quizQuestions.size()) ? QString::null:
-        quizQuestions.at (questionIndex);
+        quizQuestions.at(questionIndex);
 }
 
 //---------------------------------------------------------------------------
@@ -377,7 +377,7 @@ QuizEngine::getMissed() const
     QStringList responses;
     std::set<QString>::const_iterator it, uit;
     for (it = correctResponses.begin(); it != correctResponses.end(); ++it) {
-        uit = correctUserResponses.find (*it);
+        uit = correctUserResponses.find(*it);
         if (uit == correctUserResponses.end())
             responses << *it;
     }
@@ -426,7 +426,7 @@ QuizEngine::prepareQuestion()
     QuizSpec::QuizType type = quizSpec.getType();
 
     if (type == QuizSpec::QuizWordListRecall)
-        answers = wordEngine->search (quizSpec.getSearchSpec(), true);
+        answers = wordEngine->search(quizSpec.getSearchSpec(), true);
     else if ((type == QuizSpec::QuizAnagrams) ||
              (type == QuizSpec::QuizAnagramsWithHooks))
     {
@@ -434,26 +434,26 @@ QuizEngine::prepareQuestion()
         condition.type = SearchCondition::AnagramMatch;
         condition.stringValue = question;
         SearchSpec spec;
-        spec.conditions.append (condition);
-        answers = wordEngine->search (spec, true);
+        spec.conditions.append(condition);
+        answers = wordEngine->search(spec, true);
     }
     else if (type == QuizSpec::QuizHooks) {
         SearchCondition condition;
         condition.type = SearchCondition::PatternMatch;
         condition.stringValue = "?" + question;
         SearchSpec spec;
-        spec.conditions.append (condition);
-        answers = wordEngine->search (spec, true);
+        spec.conditions.append(condition);
+        answers = wordEngine->search(spec, true);
 
         spec.conditions.clear();
         condition.stringValue = question + "?";
-        spec.conditions.append (condition);
-        answers += wordEngine->search (spec, true);
+        spec.conditions.append(condition);
+        answers += wordEngine->search(spec, true);
     }
 
     QStringList::iterator it;
     for (it = answers.begin(); it != answers.end(); ++it) {
-        correctResponses.insert (*it);
+        correctResponses.insert(*it);
     }
     quizTotal += correctResponses.size();
 }
@@ -466,14 +466,14 @@ QuizEngine::prepareQuestion()
 //! @param response the correct response
 //---------------------------------------------------------------------------
 void
-QuizEngine::addQuestionCorrect (const QString& response)
+QuizEngine::addQuestionCorrect(const QString& response)
 {
-    correctUserResponses.insert (response);
+    correctUserResponses.insert(response);
     ++quizCorrect;
     QuizProgress progress = quizSpec.getProgress();
-    progress.addQuestionCorrect (response);
-    progress.setCorrect (progress.getNumCorrect() + 1);
-    quizSpec.setProgress (progress);
+    progress.addQuestionCorrect(response);
+    progress.setCorrect(progress.getNumCorrect() + 1);
+    quizSpec.setProgress(progress);
 }
 
 //---------------------------------------------------------------------------
@@ -484,11 +484,11 @@ QuizEngine::addQuestionCorrect (const QString& response)
 //! @param response the incorrect response
 //---------------------------------------------------------------------------
 void
-QuizEngine::addQuestionIncorrect (const QString& response)
+QuizEngine::addQuestionIncorrect(const QString& response)
 {
     incorrectUserResponses << response;
     ++quizIncorrect;
     QuizProgress progress = quizSpec.getProgress();
-    progress.addIncorrect (response);
-    quizSpec.setProgress (progress);
+    progress.addIncorrect(response);
+    quizSpec.setProgress(progress);
 }

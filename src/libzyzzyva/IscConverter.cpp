@@ -3,7 +3,7 @@
 //
 // Functions for translating between ISC weirdnesses and reality.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -37,7 +37,7 @@
 //! @return the total number of seconds, negative if overtime
 //---------------------------------------------------------------------------
 int
-IscConverter::timeIscToReal (int minutes, int seconds, bool overtime)
+IscConverter::timeIscToReal(int minutes, int seconds, bool overtime)
 {
     if (overtime)
         return -minutes * 60 + seconds - 60;
@@ -57,8 +57,8 @@ IscConverter::timeIscToReal (int minutes, int seconds, bool overtime)
 //! @param overtime whether the time is overtime
 //---------------------------------------------------------------------------
 void
-IscConverter::timeRealToIsc (int totalSeconds, int& minutes, int& seconds,
-                             bool overtime)
+IscConverter::timeRealToIsc(int totalSeconds, int& minutes, int& seconds,
+                            bool overtime)
 {
     minutes = totalSeconds / 60;
     seconds = totalSeconds % 60;
@@ -77,7 +77,7 @@ IscConverter::timeRealToIsc (int totalSeconds, int& minutes, int& seconds,
 //! @return the numeric value, or -1 if error
 //---------------------------------------------------------------------------
 int
-IscConverter::lexiconToInt (const QString& lexicon)
+IscConverter::lexiconToInt(const QString& lexicon)
 {
     if (lexicon == "TWL98")
         return 0;
@@ -106,7 +106,7 @@ IscConverter::lexiconToInt (const QString& lexicon)
 //! @return the lexicon name, or null string if error
 //---------------------------------------------------------------------------
 QString
-IscConverter::intToLexicon (int lexicon)
+IscConverter::intToLexicon(int lexicon)
 {
     switch (lexicon) {
         case 0: return "TWL98";
@@ -129,7 +129,7 @@ IscConverter::intToLexicon (int lexicon)
 //! @return the numeric value, or -1 if error
 //---------------------------------------------------------------------------
 int
-IscConverter::challengeToInt (const QString& challenge)
+IscConverter::challengeToInt(const QString& challenge)
 {
     if (challenge == "SINGLE")
         return 0;
@@ -152,7 +152,7 @@ IscConverter::challengeToInt (const QString& challenge)
 //! @return the challenge name, or null string if error
 //---------------------------------------------------------------------------
 QString
-IscConverter::intToChallenge (int challenge)
+IscConverter::intToChallenge(int challenge)
 {
     switch (challenge) {
         case 0: return "SINGLE";
@@ -172,14 +172,14 @@ IscConverter::intToChallenge (int challenge)
 //! @return the converted coordinates
 //---------------------------------------------------------------------------
 QString
-IscConverter::convertCoordinates (const QString& coordinates)
+IscConverter::convertCoordinates(const QString& coordinates)
 {
     QString real;
     QRegExp re ("\\d+|\\w");
 
     int pos = 0;
-    while ((pos = re.indexIn (coordinates, pos)) >= 0) {
-        QString match = coordinates.mid (pos, re.matchedLength());
+    while ((pos = re.indexIn(coordinates, pos)) >= 0) {
+        QString match = coordinates.mid(pos, re.matchedLength());
 
         if (match == "1") real += "A";
         else if (match == "2") real += "B";

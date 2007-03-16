@@ -3,7 +3,7 @@
 //
 // A dialog for getting a word from the user.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -44,52 +44,51 @@ using namespace Defs;
 //! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
-WordEntryDialog::WordEntryDialog (QWidget* parent, Qt::WFlags f)
-    : QDialog (parent, f),
-    wordValidator (new WordValidator (this))
+WordEntryDialog::WordEntryDialog(QWidget* parent, Qt::WFlags f)
+    : QDialog(parent, f),
+    wordValidator(new WordValidator(this))
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    mainVlay->setMargin (MARGIN);
-    mainVlay->setSpacing (SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
     Q_CHECK_PTR (mainVlay);
+    mainVlay->setMargin(MARGIN);
+    mainVlay->setSpacing(SPACING);
 
     QHBoxLayout* lineHlay = new QHBoxLayout;
-    lineHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (lineHlay);
-    mainVlay->addLayout (lineHlay);
+    Q_CHECK_PTR(lineHlay);
+    lineHlay->setSpacing(SPACING);
+    mainVlay->addLayout(lineHlay);
 
-    QLabel* label = new QLabel ("Word:");
-    Q_CHECK_PTR (label);
-    lineHlay->addWidget (label);
+    QLabel* label = new QLabel("Word:");
+    Q_CHECK_PTR(label);
+    lineHlay->addWidget(label);
 
     wordLine = new QLineEdit;
-    Q_CHECK_PTR (wordLine);
-    wordLine->setValidator (wordValidator);
-    lineHlay->addWidget (wordLine);
+    Q_CHECK_PTR(wordLine);
+    wordLine->setValidator(wordValidator);
+    lineHlay->addWidget(wordLine);
 
     // OK/Cancel buttons
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (buttonHlay);
-    mainVlay->addLayout (buttonHlay);
+    Q_CHECK_PTR(buttonHlay);
+    buttonHlay->setSpacing(SPACING);
+    mainVlay->addLayout(buttonHlay);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
-    ZPushButton* okButton = new ZPushButton ("OK");
-    Q_CHECK_PTR (okButton);
-    okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    okButton->setDefault (true);
-    connect (okButton, SIGNAL (clicked()), SLOT (accept()));
-    buttonHlay->addWidget (okButton);
+    ZPushButton* okButton = new ZPushButton("OK");
+    Q_CHECK_PTR(okButton);
+    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    okButton->setDefault(true);
+    connect(okButton, SIGNAL(clicked()), SLOT(accept()));
+    buttonHlay->addWidget(okButton);
 
-    ZPushButton* cancelButton = new ZPushButton ("Cancel");
-    Q_CHECK_PTR (cancelButton);
-    cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
-    buttonHlay->addWidget (cancelButton);
+    ZPushButton* cancelButton = new ZPushButton("Cancel");
+    Q_CHECK_PTR(cancelButton);
+    cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
+    buttonHlay->addWidget(cancelButton);
 
-    setWindowTitle (DIALOG_CAPTION);
-    //resize (minimumSizeHint().width(), 500);
+    setWindowTitle(DIALOG_CAPTION);
 }
 
 //---------------------------------------------------------------------------

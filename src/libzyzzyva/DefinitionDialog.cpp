@@ -3,7 +3,7 @@
 //
 // The dialog for word definitions.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -45,46 +45,46 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-DefinitionDialog::DefinitionDialog (WordEngine* e, const QString& word,
-                                    QWidget* parent, Qt::WFlags f)
-    : QDialog (parent, f), engine (e)
+DefinitionDialog::DefinitionDialog(WordEngine* e, const QString& word,
+                                   QWidget* parent, Qt::WFlags f)
+    : QDialog(parent, f), engine(e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    mainVlay->setMargin (MARGIN);
-    mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    mainVlay->setMargin(MARGIN);
+    mainVlay->setSpacing(SPACING);
+    Q_CHECK_PTR(mainVlay);
 
-    bool acceptable = engine->isAcceptable (word);
+    bool acceptable = engine->isAcceptable(word);
     QString wordAcceptable = acceptable ? word : word + "*";
 
     DefinitionBox* defBox = new DefinitionBox;
-    Q_CHECK_PTR (defBox);
-    defBox->setTitle (wordAcceptable);
-    mainVlay->addWidget (defBox);
+    Q_CHECK_PTR(defBox);
+    defBox->setTitle(wordAcceptable);
+    mainVlay->addWidget(defBox);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (buttonHlay);
-    mainVlay->addLayout (buttonHlay);
+    buttonHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(buttonHlay);
+    mainVlay->addLayout(buttonHlay);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
-    ZPushButton* closeButton = new ZPushButton ("&Close");
-    Q_CHECK_PTR (closeButton);
-    closeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    closeButton->setDefault (true);
-    connect (closeButton, SIGNAL (clicked()), SLOT (accept()));
-    buttonHlay->addWidget (closeButton);
+    ZPushButton* closeButton = new ZPushButton("&Close");
+    Q_CHECK_PTR(closeButton);
+    closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    closeButton->setDefault(true);
+    connect(closeButton, SIGNAL(clicked()), SLOT(accept()));
+    buttonHlay->addWidget(closeButton);
 
-    setWindowTitle (DIALOG_CAPTION_PREFIX + wordAcceptable);
+    setWindowTitle(DIALOG_CAPTION_PREFIX + wordAcceptable);
 
-    QString definition = engine->getDefinition (word);
+    QString definition = engine->getDefinition(word);
     if (definition.isEmpty()) {
         definition = acceptable ? EMPTY_DEFINITION :
-            QString ("<font color=\"red\">Unacceptable</font>");
+            QString("<font color=\"red\">Unacceptable</font>");
     }
 
-    defBox->setText (Auxil::wordWrap (definition, DEFINITION_WRAP_LENGTH));
+    defBox->setText(Auxil::wordWrap(definition, DEFINITION_WRAP_LENGTH));
 }
 
 //---------------------------------------------------------------------------

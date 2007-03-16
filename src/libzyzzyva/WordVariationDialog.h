@@ -3,7 +3,7 @@
 //
 // A dialog for displaying the front and back hooks of a word.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -39,14 +39,14 @@ class WordVariationDialog : public QDialog
 {
     Q_OBJECT
     public:
-    WordVariationDialog (WordEngine* we, const QString& word,
-                         WordVariationType variation, QWidget* parent = 0,
-                         Qt::WFlags f = 0);
+    WordVariationDialog(WordEngine* we, const QString& word,
+                        WordVariationType variation, QWidget* parent = 0,
+                        Qt::WFlags f = 0);
     ~WordVariationDialog();
 
     private:
-    void setWordVariation (const QString& word, WordVariationType variation);
-    bool needsRightList (WordVariationType variation);
+    void setWordVariation(const QString& word, WordVariationType variation);
+    bool needsRightList(WordVariationType variation);
 
     private:
     WordEngine*      wordEngine;

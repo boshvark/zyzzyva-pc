@@ -48,7 +48,7 @@ using std::multimap;
 void
 WordEngine::clearCache() const
 {
-    //qDebug ("Clearing the cache...");
+    //qDebug("Clearing the cache...");
     wordCache.clear();
 }
 
@@ -744,10 +744,10 @@ WordEngine::getWordInfo(const QString& word) const
         return WordInfo();
 
     if (wordCache.contains(word)) {
-        //qDebug ("Cache HIT: |%s|", word.toUtf8().data());
+        //qDebug("Cache HIT: |%s|", word.toUtf8().data());
         return wordCache[word];
     }
-    //qDebug ("Cache MISS: |%s|", word.toUtf8().data());
+    //qDebug("Cache MISS: |%s|", word.toUtf8().data());
 
     WordInfo info;
     if (!db || !db->isOpen())

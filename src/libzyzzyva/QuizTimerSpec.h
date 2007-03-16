@@ -3,7 +3,7 @@
 //
 // A class to represent a quiz timer specification.
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -37,22 +37,22 @@ enum QuizTimerType {
 class QuizTimerSpec
 {
     public:
-    QuizTimerSpec() : type (NoTimer), duration (0) { }
+    QuizTimerSpec() : type(NoTimer), duration(0) { }
     ~QuizTimerSpec() { }
 
     QString asString() const;
     QDomElement asDomElement() const;
-    bool fromDomElement (const QDomElement& element);
+    bool fromDomElement(const QDomElement& element);
 
-    void setType (QuizTimerType t) { type = t; }
-    void setDuration (int d) { duration = d; }
+    void setType(QuizTimerType t) { type = t; }
+    void setDuration(int d) { duration = d; }
 
     QuizTimerType getType() const { return type; }
     int getDuration() const { return duration; }
 
     private:
-    QString typeToString (const QuizTimerType t) const;
-    QuizTimerType stringToType (const QString& s) const;
+    QString typeToString(const QuizTimerType t) const;
+    QuizTimerType stringToType(const QString& s) const;
 
     private:
     QuizTimerType type;

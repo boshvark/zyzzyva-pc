@@ -3,7 +3,7 @@
 //
 // The dialog for saving a list of words.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -43,119 +43,119 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-WordListSaveDialog::WordListSaveDialog (QWidget* parent, Qt::WFlags f)
-    : QDialog (parent, f)
+WordListSaveDialog::WordListSaveDialog(QWidget* parent, Qt::WFlags f)
+    : QDialog(parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    Q_CHECK_PTR (mainVlay);
-    mainVlay->setMargin (MARGIN);
-    mainVlay->setSpacing (SPACING);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    Q_CHECK_PTR(mainVlay);
+    mainVlay->setMargin(MARGIN);
+    mainVlay->setSpacing(SPACING);
 
     QHBoxLayout* formatHlay = new QHBoxLayout;
-    Q_CHECK_PTR (formatHlay);
-    formatHlay->setSpacing (SPACING);
-    mainVlay->addLayout (formatHlay);
+    Q_CHECK_PTR(formatHlay);
+    formatHlay->setSpacing(SPACING);
+    mainVlay->addLayout(formatHlay);
 
-    QLabel* formatLabel = new QLabel ("Format:");
-    Q_CHECK_PTR (formatLabel);
-    formatHlay->addWidget (formatLabel);
+    QLabel* formatLabel = new QLabel("Format:");
+    Q_CHECK_PTR(formatLabel);
+    formatHlay->addWidget(formatLabel);
 
-    formatCombo = new QComboBox (this);
-    Q_CHECK_PTR (formatCombo);
-    formatCombo->addItem (Auxil::wordListFormatToString (WordListOnePerLine));
-    formatCombo->addItem (Auxil::wordListFormatToString
-                          (WordListAnagramQuestionAnswer));
-    formatHlay->addWidget (formatCombo);
+    formatCombo = new QComboBox(this);
+    Q_CHECK_PTR(formatCombo);
+    formatCombo->addItem(Auxil::wordListFormatToString(WordListOnePerLine));
+    formatCombo->addItem(
+        Auxil::wordListFormatToString(WordListAnagramQuestionAnswer));
+    formatHlay->addWidget(formatCombo);
 
     QHBoxLayout* listHlay = new QHBoxLayout;
-    Q_CHECK_PTR (listHlay);
-    listHlay->setSpacing (SPACING);
-    mainVlay->addLayout (listHlay);
+    Q_CHECK_PTR(listHlay);
+    listHlay->setSpacing(SPACING);
+    mainVlay->addLayout(listHlay);
 
     QVBoxLayout* unselectedVlay = new QVBoxLayout;
-    Q_CHECK_PTR (unselectedVlay);
-    unselectedVlay->setSpacing (SPACING);
-    listHlay->addLayout (unselectedVlay);
+    Q_CHECK_PTR(unselectedVlay);
+    unselectedVlay->setSpacing(SPACING);
+    listHlay->addLayout(unselectedVlay);
 
-    QLabel* unselectedLabel = new QLabel ("Available attributes:");
-    Q_CHECK_PTR (unselectedLabel);
-    unselectedVlay->addWidget (unselectedLabel);
+    QLabel* unselectedLabel = new QLabel("Available attributes:");
+    Q_CHECK_PTR(unselectedLabel);
+    unselectedVlay->addWidget(unselectedLabel);
 
-    unselectedAttrList = new QListWidget (this);
-    Q_CHECK_PTR (unselectedAttrList);
-    unselectedAttrList->setSelectionMode (QAbstractItemView::ExtendedSelection);
-    unselectedAttrList->setDragEnabled (true);
-    unselectedAttrList->setAcceptDrops (true);
-    unselectedAttrList->setDropIndicatorShown (true);
-    unselectedAttrList->setDragDropMode (QAbstractItemView::InternalMove);
-    connect (unselectedAttrList, SIGNAL (itemSelectionChanged()),
-             SLOT (unselectedSelectionChanged()));
-    unselectedVlay->addWidget (unselectedAttrList);
+    unselectedAttrList = new QListWidget(this);
+    Q_CHECK_PTR(unselectedAttrList);
+    unselectedAttrList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    unselectedAttrList->setDragEnabled(true);
+    unselectedAttrList->setAcceptDrops(true);
+    unselectedAttrList->setDropIndicatorShown(true);
+    unselectedAttrList->setDragDropMode(QAbstractItemView::InternalMove);
+    connect(unselectedAttrList, SIGNAL(itemSelectionChanged()),
+            SLOT(unselectedSelectionChanged()));
+    unselectedVlay->addWidget(unselectedAttrList);
 
     QVBoxLayout* arrowVlay = new QVBoxLayout;
-    Q_CHECK_PTR (arrowVlay);
-    listHlay->addLayout (arrowVlay);
+    Q_CHECK_PTR(arrowVlay);
+    listHlay->addLayout(arrowVlay);
 
-    arrowVlay->addStretch (1);
+    arrowVlay->addStretch(1);
 
-    selectButton = new QToolButton (this);
-    Q_CHECK_PTR (selectButton);
-    selectButton->setIcon (QIcon (":/right-arrow-icon"));
-    connect (selectButton, SIGNAL (clicked()), SLOT (selectClicked()));
-    arrowVlay->addWidget (selectButton);
+    selectButton = new QToolButton(this);
+    Q_CHECK_PTR(selectButton);
+    selectButton->setIcon(QIcon(":/right-arrow-icon"));
+    connect(selectButton, SIGNAL(clicked()), SLOT(selectClicked()));
+    arrowVlay->addWidget(selectButton);
 
-    deselectButton = new QToolButton (this);
-    Q_CHECK_PTR (deselectButton);
-    deselectButton->setIcon (QIcon (":/left-arrow-icon"));
-    connect (deselectButton, SIGNAL (clicked()), SLOT (deselectClicked()));
-    arrowVlay->addWidget (deselectButton);
+    deselectButton = new QToolButton(this);
+    Q_CHECK_PTR(deselectButton);
+    deselectButton->setIcon(QIcon(":/left-arrow-icon"));
+    connect(deselectButton, SIGNAL(clicked()), SLOT(deselectClicked()));
+    arrowVlay->addWidget(deselectButton);
 
-    arrowVlay->addStretch (1);
+    arrowVlay->addStretch(1);
 
     QVBoxLayout* selectedVlay = new QVBoxLayout;
-    Q_CHECK_PTR (selectedVlay);
-    selectedVlay->setSpacing (SPACING);
-    listHlay->addLayout (selectedVlay);
+    Q_CHECK_PTR(selectedVlay);
+    selectedVlay->setSpacing(SPACING);
+    listHlay->addLayout(selectedVlay);
 
-    QLabel* selectedLabel = new QLabel ("Selected attributes:");
-    Q_CHECK_PTR (selectedLabel);
-    selectedVlay->addWidget (selectedLabel);
+    QLabel* selectedLabel = new QLabel("Selected attributes:");
+    Q_CHECK_PTR(selectedLabel);
+    selectedVlay->addWidget(selectedLabel);
 
-    selectedAttrList = new QListWidget (this);
-    Q_CHECK_PTR (selectedAttrList);
-    selectedAttrList->setSelectionMode (QAbstractItemView::ExtendedSelection);
-    selectedAttrList->setDragEnabled (true);
-    selectedAttrList->setAcceptDrops (true);
-    selectedAttrList->setDropIndicatorShown (true);
-    selectedAttrList->setDragDropMode (QAbstractItemView::InternalMove);
-    connect (selectedAttrList, SIGNAL (itemSelectionChanged()),
-             SLOT (selectedSelectionChanged()));
-    selectedVlay->addWidget (selectedAttrList);
+    selectedAttrList = new QListWidget(this);
+    Q_CHECK_PTR(selectedAttrList);
+    selectedAttrList->setSelectionMode(QAbstractItemView::ExtendedSelection);
+    selectedAttrList->setDragEnabled(true);
+    selectedAttrList->setAcceptDrops(true);
+    selectedAttrList->setDropIndicatorShown(true);
+    selectedAttrList->setDragDropMode(QAbstractItemView::InternalMove);
+    connect(selectedAttrList, SIGNAL(itemSelectionChanged()),
+            SLOT(selectedSelectionChanged()));
+    selectedVlay->addWidget(selectedAttrList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    Q_CHECK_PTR (buttonHlay);
-    buttonHlay->setSpacing (SPACING);
-    mainVlay->addLayout (buttonHlay);
+    Q_CHECK_PTR(buttonHlay);
+    buttonHlay->setSpacing(SPACING);
+    mainVlay->addLayout(buttonHlay);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
-    ZPushButton* okButton = new ZPushButton ("&OK");
-    Q_CHECK_PTR (okButton);
-    okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    okButton->setDefault (true);
-    connect (okButton, SIGNAL (clicked()), SLOT (accept()));
-    buttonHlay->addWidget (okButton);
+    ZPushButton* okButton = new ZPushButton("&OK");
+    Q_CHECK_PTR(okButton);
+    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    okButton->setDefault(true);
+    connect(okButton, SIGNAL(clicked()), SLOT(accept()));
+    buttonHlay->addWidget(okButton);
 
-    ZPushButton* cancelButton = new ZPushButton ("Cancel");
-    Q_CHECK_PTR (cancelButton);
-    cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
-    buttonHlay->addWidget (cancelButton);
+    ZPushButton* cancelButton = new ZPushButton("Cancel");
+    Q_CHECK_PTR(cancelButton);
+    cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
+    buttonHlay->addWidget(cancelButton);
 
-    selectButton->setEnabled (false);
-    deselectButton->setEnabled (false);
+    selectButton->setEnabled(false);
+    deselectButton->setEnabled(false);
     initializeLists();
-    setWindowTitle (DIALOG_CAPTION);
+    setWindowTitle(DIALOG_CAPTION);
 }
 
 //---------------------------------------------------------------------------
@@ -179,10 +179,10 @@ WordListSaveDialog::getSelectedAttributes() const
 {
     QList<WordAttribute> attributes;
     for (int i = 0; i < selectedAttrList->count(); ++i) {
-        QString str = selectedAttrList->item (i)->text();
-        WordAttribute attr = Auxil::stringToWordAttribute (str);
+        QString str = selectedAttrList->item(i)->text();
+        WordAttribute attr = Auxil::stringToWordAttribute(str);
         if (attr != WordAttrInvalid)
-            attributes.append (attr);
+            attributes.append(attr);
     }
     return attributes;
 }
@@ -197,7 +197,7 @@ WordListSaveDialog::getSelectedAttributes() const
 WordListFormat
 WordListSaveDialog::getWordListFormat() const
 {
-    return Auxil::stringToWordListFormat (formatCombo->currentText());
+    return Auxil::stringToWordListFormat(formatCombo->currentText());
 }
 
 //---------------------------------------------------------------------------
@@ -208,7 +208,7 @@ WordListSaveDialog::getWordListFormat() const
 void
 WordListSaveDialog::selectClicked()
 {
-    moveSelection (unselectedAttrList, selectedAttrList);
+    moveSelection(unselectedAttrList, selectedAttrList);
 }
 
 //---------------------------------------------------------------------------
@@ -219,7 +219,7 @@ WordListSaveDialog::selectClicked()
 void
 WordListSaveDialog::deselectClicked()
 {
-    moveSelection (selectedAttrList, unselectedAttrList);
+    moveSelection(selectedAttrList, unselectedAttrList);
 }
 
 //---------------------------------------------------------------------------
@@ -231,7 +231,7 @@ WordListSaveDialog::deselectClicked()
 void
 WordListSaveDialog::unselectedSelectionChanged()
 {
-    selectButton->setEnabled (!unselectedAttrList->selectedItems().empty());
+    selectButton->setEnabled(!unselectedAttrList->selectedItems().empty());
 }
 
 //---------------------------------------------------------------------------
@@ -243,7 +243,7 @@ WordListSaveDialog::unselectedSelectionChanged()
 void
 WordListSaveDialog::selectedSelectionChanged()
 {
-    deselectButton->setEnabled (!selectedAttrList->selectedItems().empty());
+    deselectButton->setEnabled(!selectedAttrList->selectedItems().empty());
 }
 
 //---------------------------------------------------------------------------
@@ -254,19 +254,18 @@ WordListSaveDialog::selectedSelectionChanged()
 void
 WordListSaveDialog::initializeLists()
 {
-    unselectedAttrList->addItem
-        (Auxil::wordAttributeToString (WordAttrDefinition));
-    unselectedAttrList->addItem
-        (Auxil::wordAttributeToString (WordAttrFrontHooks));
-    unselectedAttrList->addItem
-        (Auxil::wordAttributeToString (WordAttrBackHooks));
-    unselectedAttrList->addItem
-        (Auxil::wordAttributeToString (WordAttrInnerHooks));
-    unselectedAttrList->addItem
-        (Auxil::wordAttributeToString (WordAttrProbabilityOrder));
+    unselectedAttrList->addItem(
+        Auxil::wordAttributeToString(WordAttrDefinition));
+    unselectedAttrList->addItem(
+        Auxil::wordAttributeToString(WordAttrFrontHooks));
+    unselectedAttrList->addItem(
+        Auxil::wordAttributeToString(WordAttrBackHooks));
+    unselectedAttrList->addItem(
+        Auxil::wordAttributeToString(WordAttrInnerHooks));
+    unselectedAttrList->addItem(
+        Auxil::wordAttributeToString(WordAttrProbabilityOrder));
 
-    selectedAttrList->addItem
-        (Auxil::wordAttributeToString (WordAttrWord));
+    selectedAttrList->addItem(Auxil::wordAttributeToString(WordAttrWord));
 }
 
 //---------------------------------------------------------------------------
@@ -278,7 +277,7 @@ WordListSaveDialog::initializeLists()
 //! @param dest the destination list widget
 //---------------------------------------------------------------------------
 void
-WordListSaveDialog::moveSelection (QListWidget* src, QListWidget* dest)
+WordListSaveDialog::moveSelection(QListWidget* src, QListWidget* dest)
 {
     // FIXME: use selectedItems??  May be much easier, if they're sorted.
 
@@ -288,14 +287,14 @@ WordListSaveDialog::moveSelection (QListWidget* src, QListWidget* dest)
     QListIterator<QModelIndex> it (selectedIndexes);
     QList<int> selectedRows;
     while (it.hasNext()) {
-        selectedRows.append (it.next().row());
+        selectedRows.append(it.next().row());
     }
 
     // Move rows in reverse sorted order so row numbers are not messed up
-    qSort (selectedRows.begin(), selectedRows.end(), qGreater<int>());
+    qSort(selectedRows.begin(), selectedRows.end(), qGreater<int>());
     QListIterator<int> jt (selectedRows);
     int insertRow = dest->count();
     while (jt.hasNext()) {
-        dest->insertItem (insertRow, src->takeItem (jt.next()));
+        dest->insertItem(insertRow, src->takeItem(jt.next()));
     }
 }

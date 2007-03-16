@@ -3,7 +3,7 @@
 //
 // The dialog for editing a list of words.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,11 +34,11 @@ class WordListDialog : public QDialog
 {
     Q_OBJECT
     public:
-    WordListDialog (QWidget* parent = 0, Qt::WFlags f = 0);
+    WordListDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~WordListDialog();
 
     int numWords() const { return wordList->count(); }
-    void setWords (const QString& string);
+    void setWords(const QString& string);
     QString getWords() const;
 
     public slots:

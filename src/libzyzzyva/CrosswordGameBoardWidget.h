@@ -3,7 +3,7 @@
 //
 // A widget for displaying and manipulating a crossword game board.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -35,8 +35,8 @@ class CrosswordGameBoardWidget : public QFrame
     Q_OBJECT
 
     public:
-    CrosswordGameBoardWidget (CrosswordGameGame* game, QWidget* parent = 0,
-                              Qt::WFlags f = 0);
+    CrosswordGameBoardWidget(CrosswordGameGame* game, QWidget* parent = 0,
+                             Qt::WFlags f = 0);
 
     QSize minimumSizeHint() const;
     QSize sizeHint() const;
@@ -46,10 +46,10 @@ class CrosswordGameBoardWidget : public QFrame
 
     private:
     QPixmap makePixmap() const;
-    QColor getBackgroundColor (int row, int col) const;
+    QColor getBackgroundColor(int row, int col) const;
     QSize getBoardSize() const;
 
-    virtual void paintEvent (QPaintEvent* event);
+    virtual void paintEvent(QPaintEvent* event);
 
     private:
     QPixmap pixmap;

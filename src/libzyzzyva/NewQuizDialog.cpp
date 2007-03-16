@@ -56,168 +56,167 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-NewQuizDialog::NewQuizDialog (WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : QDialog (parent, f), wordEngine (e)
+NewQuizDialog::NewQuizDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
+    : QDialog(parent, f), wordEngine(e)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    Q_CHECK_PTR(mainVlay);
 
     QHBoxLayout* typeHlay = new QHBoxLayout;
-    Q_CHECK_PTR (typeHlay);
-    mainVlay->addLayout (typeHlay);
+    Q_CHECK_PTR(typeHlay);
+    mainVlay->addLayout(typeHlay);
 
-    QLabel* typeLabel = new QLabel ("Quiz Type:");
-    Q_CHECK_PTR (typeLabel);
-    typeHlay->addWidget (typeLabel);
+    QLabel* typeLabel = new QLabel("Quiz Type:");
+    Q_CHECK_PTR(typeLabel);
+    typeHlay->addWidget(typeLabel);
 
     typeCombo = new QComboBox;
-    typeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizAnagrams));
-    typeCombo->addItem (Auxil::quizTypeToString
-                        (QuizSpec::QuizAnagramsWithHooks));
-    typeCombo->addItem (Auxil::quizTypeToString
-                        (QuizSpec::QuizWordListRecall));
-    typeCombo->addItem (Auxil::quizTypeToString (QuizSpec::QuizHooks));
-    typeCombo->setCurrentIndex (typeCombo->findText
-        (Auxil::quizTypeToString (QuizSpec::QuizAnagrams)));
-    connect (typeCombo, SIGNAL (activated (const QString&)),
-             SLOT (typeActivated (const QString&)));
-    typeHlay->addWidget (typeCombo);
+    typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizAnagrams));
+    typeCombo->addItem(
+        Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
+    typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizWordListRecall));
+    typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizHooks));
+    typeCombo->setCurrentIndex(typeCombo->findText(
+        Auxil::quizTypeToString(QuizSpec::QuizAnagrams)));
+    connect(typeCombo, SIGNAL(activated(const QString&)),
+            SLOT(typeActivated(const QString&)));
+    typeHlay->addWidget(typeCombo);
 
     QHBoxLayout* methodHlay = new QHBoxLayout;
-    Q_CHECK_PTR (methodHlay);
-    mainVlay->addLayout (methodHlay);
+    Q_CHECK_PTR(methodHlay);
+    mainVlay->addLayout(methodHlay);
 
-    QLabel* methodLabel = new QLabel ("Quiz Method:");
-    Q_CHECK_PTR (methodLabel);
-    methodHlay->addWidget (methodLabel);
+    QLabel* methodLabel = new QLabel("Quiz Method:");
+    Q_CHECK_PTR(methodLabel);
+    methodHlay->addWidget(methodLabel);
 
     methodCombo = new QComboBox;
-    methodCombo->addItem (Auxil::quizMethodToString
-                          (QuizSpec::StandardQuizMethod));
-    methodCombo->addItem (Auxil::quizMethodToString
-                          (QuizSpec::CardboxQuizMethod));
-    methodCombo->setCurrentIndex (methodCombo->findText
-        (Auxil::quizMethodToString (QuizSpec::StandardQuizMethod)));
-    connect (methodCombo, SIGNAL (activated (const QString&)),
-             SLOT (methodActivated (const QString&)));
-    methodHlay->addWidget (methodCombo);
+    methodCombo->addItem(
+        Auxil::quizMethodToString(QuizSpec::StandardQuizMethod));
+    methodCombo->addItem(
+        Auxil::quizMethodToString(QuizSpec::CardboxQuizMethod));
+    methodCombo->setCurrentIndex(methodCombo->findText(
+        Auxil::quizMethodToString(QuizSpec::StandardQuizMethod)));
+    connect(methodCombo, SIGNAL(activated(const QString&)),
+            SLOT(methodActivated(const QString&)));
+    methodHlay->addWidget(methodCombo);
 
     QHBoxLayout* questionOrderHlay = new QHBoxLayout;
-    Q_CHECK_PTR (questionOrderHlay);
-    mainVlay->addLayout (questionOrderHlay);
+    Q_CHECK_PTR(questionOrderHlay);
+    mainVlay->addLayout(questionOrderHlay);
 
-    QLabel* questionOrderLabel = new QLabel ("Question Order:");
-    Q_CHECK_PTR (questionOrderLabel);
-    questionOrderHlay->addWidget (questionOrderLabel);
+    QLabel* questionOrderLabel = new QLabel("Question Order:");
+    Q_CHECK_PTR(questionOrderLabel);
+    questionOrderHlay->addWidget(questionOrderLabel);
 
     questionOrderCombo = new QComboBox;
-    fillQuestionOrderCombo (methodCombo->currentText());
-    questionOrderCombo->setCurrentIndex (questionOrderCombo->findText
-        (Auxil::quizQuestionOrderToString (QuizSpec::RandomOrder)));
-    connect (questionOrderCombo, SIGNAL (activated (const QString&)),
-             SLOT (questionOrderActivated (const QString&)));
-    questionOrderHlay->addWidget (questionOrderCombo);
+    fillQuestionOrderCombo(methodCombo->currentText());
+    questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
+        Auxil::quizQuestionOrderToString(QuizSpec::RandomOrder)));
+    connect(questionOrderCombo, SIGNAL(activated(const QString&)),
+            SLOT(questionOrderActivated(const QString&)));
+    questionOrderHlay->addWidget(questionOrderCombo);
 
     allCardboxButton = new QRadioButton;
-    Q_CHECK_PTR (allCardboxButton);
-    allCardboxButton->setText ("Use all available words");
-    allCardboxButton->setChecked (true);
-    mainVlay->addWidget (allCardboxButton);
+    Q_CHECK_PTR(allCardboxButton);
+    allCardboxButton->setText("Use all available words");
+    allCardboxButton->setChecked(true);
+    mainVlay->addWidget(allCardboxButton);
 
     useSearchButton = new QRadioButton;
-    Q_CHECK_PTR (useSearchButton);
+    Q_CHECK_PTR(useSearchButton);
     useSearchButton->setText("Use only words matching search specification");
-    connect (useSearchButton, SIGNAL (toggled (bool)),
-             SLOT (useSearchButtonToggled (bool)));
-    mainVlay->addWidget (useSearchButton);
+    connect(useSearchButton, SIGNAL(toggled(bool)),
+            SLOT(useSearchButtonToggled(bool)));
+    mainVlay->addWidget(useSearchButton);
 
-    searchSpecGbox = new QGroupBox ("Search Specification");
-    Q_CHECK_PTR (searchSpecGbox);
-    mainVlay->addWidget (searchSpecGbox);
+    searchSpecGbox = new QGroupBox("Search Specification");
+    Q_CHECK_PTR(searchSpecGbox);
+    mainVlay->addWidget(searchSpecGbox);
 
-    QHBoxLayout* specHlay = new QHBoxLayout (searchSpecGbox);
-    Q_CHECK_PTR (specHlay);
+    QHBoxLayout* specHlay = new QHBoxLayout(searchSpecGbox);
+    Q_CHECK_PTR(specHlay);
 
     searchSpecForm = new SearchSpecForm;
-    Q_CHECK_PTR (searchSpecForm);
-    connect (searchSpecForm, SIGNAL (contentsChanged()),
-             SLOT (searchContentsChanged()));
-    connect (searchSpecForm, SIGNAL (returnPressed()), SLOT (accept()));
-    specHlay->addWidget (searchSpecForm);
+    Q_CHECK_PTR(searchSpecForm);
+    connect(searchSpecForm, SIGNAL(contentsChanged()),
+            SLOT(searchContentsChanged()));
+    connect(searchSpecForm, SIGNAL(returnPressed()), SLOT(accept()));
+    specHlay->addWidget(searchSpecForm);
 
-    progressCbox = new QCheckBox ("Restore &progress");
-    Q_CHECK_PTR (progressCbox);
-    progressCbox->setEnabled (false);
-    mainVlay->addWidget (progressCbox);
+    progressCbox = new QCheckBox("Restore &progress");
+    Q_CHECK_PTR(progressCbox);
+    progressCbox->setEnabled(false);
+    mainVlay->addWidget(progressCbox);
 
     QHBoxLayout* timerHlay = new QHBoxLayout;
-    Q_CHECK_PTR (timerHlay);
-    mainVlay->addLayout (timerHlay);
+    Q_CHECK_PTR(timerHlay);
+    mainVlay->addLayout(timerHlay);
 
-    timerCbox = new QCheckBox ("&Timer:");
-    Q_CHECK_PTR (timerCbox);
-    connect (timerCbox, SIGNAL (toggled (bool)), SLOT (timerToggled (bool)));
-    timerHlay->addWidget (timerCbox);
+    timerCbox = new QCheckBox("&Timer:");
+    Q_CHECK_PTR(timerCbox);
+    connect(timerCbox, SIGNAL(toggled(bool)), SLOT(timerToggled(bool)));
+    timerHlay->addWidget(timerCbox);
 
     timerWidget = new QWidget;
-    Q_CHECK_PTR (timerWidget);
-    timerWidget->setEnabled (false);
-    timerHlay->addWidget (timerWidget);
+    Q_CHECK_PTR(timerWidget);
+    timerWidget->setEnabled(false);
+    timerHlay->addWidget(timerWidget);
 
-    QHBoxLayout* timerWidgetHlay = new QHBoxLayout (timerWidget);
-    Q_CHECK_PTR (timerWidgetHlay);
-    timerWidgetHlay->setMargin (0);
+    QHBoxLayout* timerWidgetHlay = new QHBoxLayout(timerWidget);
+    Q_CHECK_PTR(timerWidgetHlay);
+    timerWidgetHlay->setMargin(0);
 
     timerSbox = new QSpinBox;
-    Q_CHECK_PTR (timerSbox);
-    timerSbox->setMinimum (1);
-    timerSbox->setMaximum (9999);
-    timerSbox->setValue (10);
-    timerWidgetHlay->addWidget (timerSbox);
+    Q_CHECK_PTR(timerSbox);
+    timerSbox->setMinimum(1);
+    timerSbox->setMaximum(9999);
+    timerSbox->setValue(10);
+    timerWidgetHlay->addWidget(timerSbox);
 
-    QLabel* timerLabel = new QLabel ("seconds");
-    Q_CHECK_PTR (timerLabel);
-    timerWidgetHlay->addWidget (timerLabel);
+    QLabel* timerLabel = new QLabel("seconds");
+    Q_CHECK_PTR(timerLabel);
+    timerWidgetHlay->addWidget(timerLabel);
 
     timerCombo = new QComboBox;
-    timerCombo->addItem (TIMER_PER_QUESTION);
-    timerCombo->addItem (TIMER_PER_RESPONSE);
-    timerCombo->setCurrentIndex (timerCombo->findText (TIMER_PER_RESPONSE));
-    timerWidgetHlay->addWidget (timerCombo);
+    timerCombo->addItem(TIMER_PER_QUESTION);
+    timerCombo->addItem(TIMER_PER_RESPONSE);
+    timerCombo->setCurrentIndex(timerCombo->findText(TIMER_PER_RESPONSE));
+    timerWidgetHlay->addWidget(timerCombo);
 
     // OK/Cancel buttons
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    Q_CHECK_PTR (buttonHlay);
-    mainVlay->addLayout (buttonHlay);
+    Q_CHECK_PTR(buttonHlay);
+    mainVlay->addLayout(buttonHlay);
 
-    ZPushButton* loadQuizButton = new ZPushButton ("&Load Quiz...");
-    Q_CHECK_PTR (loadQuizButton);
-    connect (loadQuizButton, SIGNAL (clicked()), SLOT (loadQuiz()));
-    buttonHlay->addWidget (loadQuizButton);
+    ZPushButton* loadQuizButton = new ZPushButton("&Load Quiz...");
+    Q_CHECK_PTR(loadQuizButton);
+    connect(loadQuizButton, SIGNAL(clicked()), SLOT(loadQuiz()));
+    buttonHlay->addWidget(loadQuizButton);
 
-    saveQuizButton = new ZPushButton ("&Save Quiz...");
-    Q_CHECK_PTR (saveQuizButton);
-    connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveQuiz()));
-    buttonHlay->addWidget (saveQuizButton);
+    saveQuizButton = new ZPushButton("&Save Quiz...");
+    Q_CHECK_PTR(saveQuizButton);
+    connect(saveQuizButton, SIGNAL(clicked()), SLOT(saveQuiz()));
+    buttonHlay->addWidget(saveQuizButton);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
-    okButton = new ZPushButton ("OK");
-    Q_CHECK_PTR (okButton);
-    okButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    okButton->setDefault (true);
-    connect (okButton, SIGNAL (clicked()), SLOT (accept()));
-    buttonHlay->addWidget (okButton);
+    okButton = new ZPushButton("OK");
+    Q_CHECK_PTR(okButton);
+    okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    okButton->setDefault(true);
+    connect(okButton, SIGNAL(clicked()), SLOT(accept()));
+    buttonHlay->addWidget(okButton);
 
-    ZPushButton* cancelButton = new ZPushButton ("Cancel");
-    Q_CHECK_PTR (cancelButton);
-    cancelButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (cancelButton, SIGNAL (clicked()), SLOT (reject()));
-    buttonHlay->addWidget (cancelButton);
+    ZPushButton* cancelButton = new ZPushButton("Cancel");
+    Q_CHECK_PTR(cancelButton);
+    cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
+    buttonHlay->addWidget(cancelButton);
 
     updateForm();
 
-    setWindowTitle (DIALOG_CAPTION);
+    setWindowTitle(DIALOG_CAPTION);
     searchSpecForm->selectInputArea();
 }
 
@@ -232,40 +231,40 @@ QuizSpec
 NewQuizDialog::getQuizSpec()
 {
     QuizSpec::QuizMethod quizMethod =
-        Auxil::stringToQuizMethod (methodCombo->currentText());
+        Auxil::stringToQuizMethod(methodCombo->currentText());
 
-    quizSpec.setLexicon (wordEngine->getLexiconName());
-    quizSpec.setType (Auxil::stringToQuizType (typeCombo->currentText()));
-    quizSpec.setMethod (quizMethod);
-    quizSpec.setQuestionOrder (Auxil::stringToQuizQuestionOrder
-                               (questionOrderCombo->currentText()));
+    quizSpec.setLexicon(wordEngine->getLexiconName());
+    quizSpec.setType(Auxil::stringToQuizType(typeCombo->currentText()));
+    quizSpec.setMethod(quizMethod);
+    quizSpec.setQuestionOrder(
+        Auxil::stringToQuizQuestionOrder(questionOrderCombo->currentText()));
 
     if ((quizMethod == QuizSpec::CardboxQuizMethod) &&
         allCardboxButton->isChecked())
     {
-        quizSpec.setQuizSourceType (QuizSpec::CardboxReadySource);
+        quizSpec.setQuizSourceType(QuizSpec::CardboxReadySource);
     }
     else {
-        quizSpec.setQuizSourceType (QuizSpec::SearchSource);
-        quizSpec.setSearchSpec (searchSpecForm->getSearchSpec());
+        quizSpec.setQuizSourceType(QuizSpec::SearchSource);
+        quizSpec.setSearchSpec(searchSpecForm->getSearchSpec());
     }
 
     QuizTimerSpec timerSpec;
     if (timerCbox->isChecked()) {
-        timerSpec.setDuration (timerSbox->value());
+        timerSpec.setDuration(timerSbox->value());
         QString timerType = timerCombo->currentText();
         if (timerType == TIMER_PER_QUESTION)
-            timerSpec.setType (PerQuestion);
+            timerSpec.setType(PerQuestion);
         else if (timerType == TIMER_PER_RESPONSE)
-            timerSpec.setType (PerResponse);
+            timerSpec.setType(PerResponse);
     }
-    quizSpec.setTimerSpec (timerSpec);
+    quizSpec.setTimerSpec(timerSpec);
 
     if (!progressCbox->isChecked() &&
         (quizMethod != QuizSpec::CardboxQuizMethod))
     {
-        quizSpec.setProgress (QuizProgress());
-        quizSpec.setFilename (QString::null);
+        quizSpec.setProgress(QuizProgress());
+        quizSpec.setFilename(QString::null);
     }
 
     return quizSpec;
@@ -279,44 +278,43 @@ NewQuizDialog::getQuizSpec()
 //! @param spec the quiz spec
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::setQuizSpec (const QuizSpec& spec)
+NewQuizDialog::setQuizSpec(const QuizSpec& spec)
 {
     // Set method before type, because type may end up changing the method
-    methodCombo->setCurrentIndex
-        (methodCombo->findText (Auxil::quizMethodToString (spec.getMethod())));
-    methodActivated (methodCombo->currentText());
-    typeCombo->setCurrentIndex
-        (typeCombo->findText (Auxil::quizTypeToString (spec.getType())));
-    typeActivated (typeCombo->currentText());
-    questionOrderCombo->setCurrentIndex
-        (questionOrderCombo->findText (Auxil::quizQuestionOrderToString
-                                       (spec.getQuestionOrder())));
+    methodCombo->setCurrentIndex(methodCombo->findText(
+        Auxil::quizMethodToString(spec.getMethod())));
+    methodActivated(methodCombo->currentText());
+    typeCombo->setCurrentIndex(typeCombo->findText(
+        Auxil::quizTypeToString(spec.getType())));
+    typeActivated(typeCombo->currentText());
+    questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
+        Auxil::quizQuestionOrderToString(spec.getQuestionOrder())));
 
     QuizSpec::QuizSourceType sourceType = spec.getQuizSourceType();
     if (sourceType == QuizSpec::SearchSource) {
-        useSearchButton->setChecked (true);
-        searchSpecForm->setSearchSpec (spec.getSearchSpec());
+        useSearchButton->setChecked(true);
+        searchSpecForm->setSearchSpec(spec.getSearchSpec());
     }
     else if (sourceType == QuizSpec::CardboxReadySource) {
-        allCardboxButton->setChecked (true);
-        searchSpecForm->setSearchSpec (SearchSpec());
+        allCardboxButton->setChecked(true);
+        searchSpecForm->setSearchSpec(SearchSpec());
     }
 
-    timerCbox->setChecked (false);
-    timerSbox->setValue (0);
-    timerCombo->setCurrentIndex (timerCombo->findText (TIMER_PER_RESPONSE));
+    timerCbox->setChecked(false);
+    timerSbox->setValue(0);
+    timerCombo->setCurrentIndex(timerCombo->findText(TIMER_PER_RESPONSE));
     QuizTimerSpec timerSpec = spec.getTimerSpec();
     if (timerSpec.getType() != NoTimer) {
-        timerCbox->setChecked (true);
-        timerSbox->setValue (timerSpec.getDuration());
+        timerCbox->setChecked(true);
+        timerSbox->setValue(timerSpec.getDuration());
         switch (timerSpec.getType()) {
             case PerQuestion:
-            timerCombo->setCurrentIndex (timerCombo->findText
-                                         (TIMER_PER_QUESTION));
+            timerCombo->setCurrentIndex(
+                timerCombo->findText(TIMER_PER_QUESTION));
             break;
             case PerResponse:
-            timerCombo->setCurrentIndex (timerCombo->findText
-                                         (TIMER_PER_RESPONSE));
+            timerCombo->setCurrentIndex(
+                timerCombo->findText(TIMER_PER_RESPONSE));
             break;
             default: break;
         }
@@ -324,8 +322,8 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
     if ((spec.getMethod() == QuizSpec::StandardQuizMethod) &&
         !spec.getProgress().isEmpty())
     {
-        progressCbox->setEnabled (true);
-        progressCbox->setChecked (true);
+        progressCbox->setEnabled(true);
+        progressCbox->setChecked(true);
     }
     quizSpec = spec;
 }
@@ -340,16 +338,16 @@ NewQuizDialog::setQuizSpec (const QuizSpec& spec)
 //! @param text the text in the combo box
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::typeActivated (const QString& text)
+NewQuizDialog::typeActivated(const QString& text)
 {
-    QuizSpec::QuizType type = Auxil::stringToQuizType (text);
+    QuizSpec::QuizType type = Auxil::stringToQuizType(text);
     if (type == QuizSpec::QuizWordListRecall) {
-        methodCombo->setEnabled (false);
-        methodCombo->setCurrentIndex (methodCombo->findText
-            (Auxil::quizMethodToString (QuizSpec::StandardQuizMethod)));
+        methodCombo->setEnabled(false);
+        methodCombo->setCurrentIndex(methodCombo->findText(
+            Auxil::quizMethodToString(QuizSpec::StandardQuizMethod)));
     }
     else {
-        methodCombo->setEnabled (true);
+        methodCombo->setEnabled(true);
     }
     updateForm();
     disableProgress();
@@ -366,9 +364,9 @@ NewQuizDialog::typeActivated (const QString& text)
 //! @param text the text in the combo box
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::methodActivated (const QString& text)
+NewQuizDialog::methodActivated(const QString& text)
 {
-    fillQuestionOrderCombo (text);
+    fillQuestionOrderCombo(text);
     updateForm();
     disableProgress();
     clearFilename();
@@ -383,7 +381,7 @@ NewQuizDialog::methodActivated (const QString& text)
 //! @param on whether the search button is active
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::useSearchButtonToggled (bool)
+NewQuizDialog::useSearchButtonToggled(bool)
 {
     updateForm();
 }
@@ -397,9 +395,9 @@ NewQuizDialog::useSearchButtonToggled (bool)
 //! @param on whether the checkbox is checked
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::timerToggled (bool on)
+NewQuizDialog::timerToggled(bool on)
 {
-    timerWidget->setEnabled (on);
+    timerWidget->setEnabled(on);
 }
 
 //---------------------------------------------------------------------------
@@ -422,7 +420,7 @@ NewQuizDialog::searchContentsChanged()
 //! @param text the new contents of the combo box
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::questionOrderActivated (const QString&)
+NewQuizDialog::questionOrderActivated(const QString&)
 {
     disableProgress();
     clearFilename();
@@ -436,33 +434,33 @@ NewQuizDialog::questionOrderActivated (const QString&)
 void
 NewQuizDialog::loadQuiz()
 {
-    QString filename = QFileDialog::getOpenFileName (this, "Load Quiz",
+    QString filename = QFileDialog::getOpenFileName(this, "Load Quiz",
         Auxil::getQuizDir() + "/saved", "Zyzzyva Quiz Files (*.zzq)");
 
     if (filename.isEmpty())
         return;
 
     QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QString caption = "Error Opening Quiz File";
         QString message = "Cannot open file '" + filename + "': " +
             file.errorString();
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
     QString errorMsg;
     QuizSpec spec;
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-    bool ok = spec.fromXmlFile (file, &errorMsg);
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    bool ok = spec.fromXmlFile(file, &errorMsg);
     QApplication::restoreOverrideCursor();
 
     if (!ok) {
         QString caption = "Error in Quiz File";
         QString message = "Error in quiz file.\n" + errorMsg;
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
@@ -480,18 +478,18 @@ NewQuizDialog::loadQuiz()
                           "If a different lexicon is used, the quiz may "
                           "encounter problems.\n\n"
                           "Are you sure you want to proceed?";
-        message = Auxil::dialogWordWrap (message);
-        int code = QMessageBox::warning (this, caption, message,
-                                         QMessageBox::Yes | QMessageBox::No,
-                                         QMessageBox::No);
+        message = Auxil::dialogWordWrap(message);
+        int code = QMessageBox::warning(this, caption, message,
+                                        QMessageBox::Yes | QMessageBox::No,
+                                        QMessageBox::No);
 
         if (code != QMessageBox::Yes)
             return;
 
-        spec.setLexicon (currentLexicon);
+        spec.setLexicon(currentLexicon);
     }
 
-    setQuizSpec (spec);
+    setQuizSpec(spec);
 }
 
 //---------------------------------------------------------------------------
@@ -506,18 +504,18 @@ NewQuizDialog::saveQuiz()
     QString startDir = Auxil::getQuizDir() + "/saved";
     QString currentFilename = quizSpec.getFilename();
     if (!currentFilename.isEmpty()) {
-        currentFilename.remove ("/[^/]+$");
+        currentFilename.remove("/[^/]+$");
         startDir = currentFilename;
     }
 
-    QString filename = QFileDialog::getSaveFileName (this, "Save Quiz",
+    QString filename = QFileDialog::getSaveFileName(this, "Save Quiz",
         startDir, "Zyzzyva Quiz Files (*.zzq)");
 
     if (filename.isEmpty())
         return;
 
     bool filenameEdited = false;
-    if (!filename.endsWith (".zzq", Qt::CaseInsensitive)) {
+    if (!filename.endsWith(".zzq", Qt::CaseInsensitive)) {
         filename += ".zzq";
         filenameEdited = true;
     }
@@ -526,19 +524,19 @@ NewQuizDialog::saveQuiz()
     if (filenameEdited && file.exists()) {
         QString caption = "Overwrite Existing File?";
         QString message = "The file already exists.  Overwrite it?";
-        message = Auxil::dialogWordWrap (message);
-        int code = QMessageBox::warning (0, caption, message,
-                                         QMessageBox::Yes | QMessageBox::No,
-                                         QMessageBox::No);
+        message = Auxil::dialogWordWrap(message);
+        int code = QMessageBox::warning(0, caption, message,
+                                        QMessageBox::Yes | QMessageBox::No,
+                                        QMessageBox::No);
         if (code != QMessageBox::Yes)
             return;
     }
 
-    if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QString caption = "Error Saving Quiz";
         QString message = "Cannot save quiz:\n" + file.errorString() + ".";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         return;
     }
 
@@ -554,8 +552,8 @@ NewQuizDialog::saveQuiz()
 void
 NewQuizDialog::disableProgress()
 {
-    progressCbox->setChecked (false);
-    progressCbox->setEnabled (false);
+    progressCbox->setChecked(false);
+    progressCbox->setEnabled(false);
 }
 
 //---------------------------------------------------------------------------
@@ -566,7 +564,7 @@ NewQuizDialog::disableProgress()
 void
 NewQuizDialog::clearFilename()
 {
-    quizSpec.setFilename (QString::null);
+    quizSpec.setFilename(QString::null);
 }
 
 //---------------------------------------------------------------------------
@@ -579,38 +577,37 @@ void
 NewQuizDialog::updateForm()
 {
     QuizSpec::QuizType type =
-        Auxil::stringToQuizType (typeCombo->currentText());
+        Auxil::stringToQuizType(typeCombo->currentText());
     QuizSpec::QuizMethod method =
-        Auxil::stringToQuizMethod (methodCombo->currentText());
+        Auxil::stringToQuizMethod(methodCombo->currentText());
 
     if (method == QuizSpec::CardboxQuizMethod) {
-        progressCbox->setEnabled (false);
-        progressCbox->setChecked (false);
-        questionOrderCombo->setEnabled (false);
-        questionOrderCombo->setCurrentIndex (questionOrderCombo->findText
-            (Auxil::quizQuestionOrderToString (QuizSpec::ScheduleOrder)));
+        progressCbox->setEnabled(false);
+        progressCbox->setChecked(false);
+        questionOrderCombo->setEnabled(false);
+        questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
+            Auxil::quizQuestionOrderToString(QuizSpec::ScheduleOrder)));
 
         allCardboxButton->show();
         useSearchButton->show();
-        searchSpecGbox->setEnabled (useSearchButton->isChecked());
+        searchSpecGbox->setEnabled(useSearchButton->isChecked());
     }
 
     else {
         if (type == QuizSpec::QuizWordListRecall) {
-            questionOrderCombo->setEnabled (false);
-            questionOrderCombo->setCurrentIndex
-                (questionOrderCombo->findText (Auxil::quizQuestionOrderToString
-                                               (QuizSpec::RandomOrder)));
+            questionOrderCombo->setEnabled(false);
+            questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
+                Auxil::quizQuestionOrderToString(QuizSpec::RandomOrder)));
         }
 
         else {
-            progressCbox->setEnabled (true);
-            questionOrderCombo->setEnabled (true);
+            progressCbox->setEnabled(true);
+            questionOrderCombo->setEnabled(true);
         }
 
         allCardboxButton->hide();
         useSearchButton->hide();
-        searchSpecGbox->setEnabled (true);
+        searchSpecGbox->setEnabled(true);
     }
 }
 
@@ -624,31 +621,31 @@ NewQuizDialog::updateForm()
 //! @param method the quiz method string
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::fillQuestionOrderCombo (const QString& method)
+NewQuizDialog::fillQuestionOrderCombo(const QString& method)
 {
     QString prevText = questionOrderCombo->currentText();
-    QuizSpec::QuizMethod meth = Auxil::stringToQuizMethod (method);
+    QuizSpec::QuizMethod meth = Auxil::stringToQuizMethod(method);
 
     switch (meth) {
         case QuizSpec::StandardQuizMethod:
         questionOrderCombo->clear();
-        questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
-                                    (QuizSpec::RandomOrder));
-        questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
-                                    (QuizSpec::AlphabeticalOrder));
-        questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
-                                    (QuizSpec::ProbabilityOrder));
+        questionOrderCombo->addItem(
+            Auxil::quizQuestionOrderToString(QuizSpec::RandomOrder));
+        questionOrderCombo->addItem(
+            Auxil::quizQuestionOrderToString(QuizSpec::AlphabeticalOrder));
+        questionOrderCombo->addItem(
+            Auxil::quizQuestionOrderToString(QuizSpec::ProbabilityOrder));
         break;
 
         case QuizSpec::CardboxQuizMethod:
         questionOrderCombo->clear();
-        questionOrderCombo->addItem (Auxil::quizQuestionOrderToString
-                                    (QuizSpec::ScheduleOrder));
+        questionOrderCombo->addItem(
+            Auxil::quizQuestionOrderToString(QuizSpec::ScheduleOrder));
         break;
 
         default: break;
     }
 
-    int index = questionOrderCombo->findText (prevText);
-    questionOrderCombo->setCurrentIndex (index >= 0 ? index : 0);
+    int index = questionOrderCombo->findText(prevText);
+    questionOrderCombo->setCurrentIndex(index >= 0 ? index : 0);
 }

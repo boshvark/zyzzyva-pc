@@ -35,18 +35,18 @@ const QString TITLE_PREFIX = "Welcome";
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-IntroForm::IntroForm (QWidget* parent, Qt::WFlags f)
-    : ActionForm (IntroFormType, parent, f)
+IntroForm::IntroForm(QWidget* parent, Qt::WFlags f)
+    : ActionForm(IntroFormType, parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    Q_CHECK_PTR(mainVlay);
 
-    QTextBrowser* browser = new QTextBrowser (this);
-    Q_CHECK_PTR (browser);
-    mainVlay->addWidget (browser);
+    QTextBrowser* browser = new QTextBrowser(this);
+    Q_CHECK_PTR(browser);
+    mainVlay->addWidget(browser);
 
     QString mainPage = Auxil::getHelpDir() + "/index.html";
-    browser->setSource (QUrl::fromLocalFile (mainPage));
+    browser->setSource(QUrl::fromLocalFile(mainPage));
 }
 
 //---------------------------------------------------------------------------
@@ -59,7 +59,7 @@ IntroForm::IntroForm (QWidget* parent, Qt::WFlags f)
 QIcon
 IntroForm::getIcon() const
 {
-    return QIcon (":/help-icon");
+    return QIcon(":/help-icon");
 }
 
 //---------------------------------------------------------------------------

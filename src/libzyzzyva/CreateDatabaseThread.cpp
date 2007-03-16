@@ -57,15 +57,15 @@ CreateDatabaseThread::runPrivate()
 
     {
         // Create empty database
-        QSqlDatabase db = QSqlDatabase::addDatabase ("QSQLITE",
-                                                     DB_CONNECTION_NAME);
-        db.setDatabaseName (dbFilename);
+        QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",
+                                                    DB_CONNECTION_NAME);
+        db.setDatabaseName(dbFilename);
         if (!db.open())
             return;
 
         // Start at 1% progress
-        emit (steps (100));
-        emit (progress (1));
+        emit(steps(100));
+        emit(progress(1));
 
         // Total number of progress steps is number of words times 4.
         // - One for finding each word's stats
@@ -75,20 +75,20 @@ CreateDatabaseThread::runPrivate()
         int numWords = wordEngine->getNumWords();
         int baseProgress = numWords * 5 / 99;
         numSteps = numWords * 5 + baseProgress + 1;
-        emit steps (numSteps);
+        emit steps(numSteps);
         int stepNum = baseProgress;
-        emit progress (stepNum);
+        emit progress(stepNum);
 
-        createTables (db);
-        createIndexes (db);
-        insertWords (db, stepNum);
-        updateProbabilityOrder (db, stepNum);
-        updateDefinitions (db, stepNum);
-        updateDefinitionLinks (db, stepNum);
+        createTables(db);
+        createIndexes(db);
+        insertWords(db, stepNum);
+        updateProbabilityOrder(db, stepNum);
+        updateDefinitions(db, stepNum);
+        updateDefinitionLinks(db, stepNum);
     }
 
     cleanup();
-    emit progress (numSteps);
+    emit progress(numSteps);
 }
 
 //---------------------------------------------------------------------------
@@ -99,11 +99,11 @@ CreateDatabaseThread::runPrivate()
 //! @param db the database
 //---------------------------------------------------------------------------
 void
-CreateDatabaseThread::createTables (QSqlDatabase& db)
+CreateDatabaseThread::createTables(QSqlDatabase& db)
 {
     QSqlQuery query (db);
 
-    query.exec ("CREATE TABLE words (word varchar(16), "
+    query.exec("CREATE TABLE words (word varchar(16), "
         "length integer, combinations integer, probability_order integer, "
         "min_probability_order integer, max_probability_order integer, "
         "alphagram varchar(16), num_anagrams integer, "
@@ -111,13 +111,13 @@ CreateDatabaseThread::createTables (QSqlDatabase& db)
         "point_value integer, front_hooks varchar(32), "
         "back_hooks varchar(32), definition varchar(256))");
 
-    query.exec ("CREATE TABLE db_version (version integer)");
-    query.exec ("INSERT into db_version (version) VALUES (" +
-                QString::number (CURRENT_DATABASE_VERSION) + ")");
+    query.exec("CREATE TABLE db_version (version integer)");
+    query.exec("INSERT into db_version (version) VALUES (" +
+               QString::number(CURRENT_DATABASE_VERSION) + ")");
 
-    query.exec ("CREATE TABLE lexicon_date (date date)");
-    query.prepare ("INSERT into lexicon_date (date) VALUES (?)");
-    query.bindValue (0, Auxil::lexiconToDate (lexiconName));
+    query.exec("CREATE TABLE lexicon_date (date date)");
+    query.prepare("INSERT into lexicon_date (date) VALUES (?)");
+    query.bindValue(0, Auxil::lexiconToDate(lexiconName));
     query.exec();
 }
 
@@ -130,13 +130,13 @@ CreateDatabaseThread::createTables (QSqlDatabase& db)
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
 void
-CreateDatabaseThread::createIndexes (QSqlDatabase& db)
+CreateDatabaseThread::createIndexes(QSqlDatabase& db)
 {
     QSqlQuery query (db);
-    query.exec ("CREATE UNIQUE INDEX word_index on words (word)");
+    query.exec("CREATE UNIQUE INDEX word_index on words (word)");
     if (cancelled)
         return;
-    query.exec ("CREATE INDEX length_index on words (length)");
+    query.exec("CREATE INDEX length_index on words (length)");
     if (cancelled)
         return;
 }
@@ -150,7 +150,7 @@ CreateDatabaseThread::createIndexes (QSqlDatabase& db)
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
 void
-CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
+CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
 {
     LetterBag letterBag;
     QStringList letters;
@@ -161,7 +161,7 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
     SearchCondition searchCondition;
     searchCondition.type = SearchCondition::Length;
     SearchSpec searchSpec;
-    searchSpec.conditions.append (searchCondition);
+    searchSpec.conditions.append(searchCondition);
 
     QSqlQuery transactionQuery (db);
     QSqlQuery query (db);
@@ -169,34 +169,33 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
     QMap<QString, int> numAnagramsMap;
 
     for (int length = 1; length <= MAX_WORD_LEN; ++length) {
-
         searchSpec.conditions[0].minValue = length;
         searchSpec.conditions[0].maxValue = length;
 
         // Do a word graph search because we're still building the database!
-        QStringList words = wordEngine->wordGraphSearch (searchSpec);
+        QStringList words = wordEngine->wordGraphSearch(searchSpec);
 
-        query.prepare ("INSERT INTO words (word, length, combinations, "
-                       "alphagram, num_unique_letters, num_vowels, "
-                       "point_value, front_hooks, back_hooks) "
-                       "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        query.prepare("INSERT INTO words (word, length, combinations, "
+                      "alphagram, num_unique_letters, num_vowels, "
+                      "point_value, front_hooks, back_hooks) "
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        transactionQuery.exec ("BEGIN TRANSACTION");
+        transactionQuery.exec("BEGIN TRANSACTION");
 
         // Insert words with length, combinations, hooks
         QString word;
         foreach (word, words) {
-            double combinations = letterBag.getNumCombinations (word);
-            int numUniqueLetters = Auxil::getNumUniqueLetters (word);
-            int numVowels = Auxil::getNumVowels (word);
+            double combinations = letterBag.getNumCombinations(word);
+            int numUniqueLetters = Auxil::getNumUniqueLetters(word);
+            int numVowels = Auxil::getNumVowels(word);
 
             int pointValue = 0;
             for (int i = 0; i < word.length(); ++i) {
-                pointValue += letterBag.getLetterValue (word.at (i));
+                pointValue += letterBag.getLetterValue(word.at(i));
             }
 
-            QString alphagram = Auxil::getAlphagram (word);
-            if (numAnagramsMap.contains (alphagram))
+            QString alphagram = Auxil::getAlphagram(word);
+            if (numAnagramsMap.contains(alphagram))
                 ++numAnagramsMap[alphagram];
             else
                 numAnagramsMap[alphagram] = 1;
@@ -204,54 +203,54 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
             QString front, back;
             QString letter;
             foreach (letter, letters) {
-                if (wordEngine->isAcceptable (letter + word))
+                if (wordEngine->isAcceptable(letter + word))
                     front += letter;
-                if (wordEngine->isAcceptable (word + letter))
+                if (wordEngine->isAcceptable(word + letter))
                     back += letter;
             }
 
-            query.bindValue (0, word);
-            query.bindValue (1, length);
-            query.bindValue (2, combinations);
-            query.bindValue (3, alphagram);
-            query.bindValue (4, numUniqueLetters);
-            query.bindValue (5, numVowels);
-            query.bindValue (6, pointValue);
-            query.bindValue (7, front.toLower());
-            query.bindValue (8, back.toLower());
+            query.bindValue(0, word);
+            query.bindValue(1, length);
+            query.bindValue(2, combinations);
+            query.bindValue(3, alphagram);
+            query.bindValue(4, numUniqueLetters);
+            query.bindValue(5, numVowels);
+            query.bindValue(6, pointValue);
+            query.bindValue(7, front.toLower());
+            query.bindValue(8, back.toLower());
             query.exec();
 
             if ((stepNum % 1000) == 0) {
                 if (cancelled) {
-                    transactionQuery.exec ("END TRANSACTION");
+                    transactionQuery.exec("END TRANSACTION");
                     return;
                 }
-                emit progress (stepNum);
+                emit progress(stepNum);
             }
             ++stepNum;
         }
-        transactionQuery.exec ("END TRANSACTION");
+        transactionQuery.exec("END TRANSACTION");
 
         // Update number of anagrams
-        query.prepare ("UPDATE words SET num_anagrams=? WHERE word=?");
+        query.prepare("UPDATE words SET num_anagrams=? WHERE word=?");
 
-        transactionQuery.exec ("BEGIN TRANSACTION");
+        transactionQuery.exec("BEGIN TRANSACTION");
         foreach (word, words) {
-            QString alphagram = Auxil::getAlphagram (word);
-            query.bindValue (0, numAnagramsMap[alphagram]);
-            query.bindValue (1, word);
+            QString alphagram = Auxil::getAlphagram(word);
+            query.bindValue(0, numAnagramsMap[alphagram]);
+            query.bindValue(1, word);
             query.exec();
 
             if ((stepNum % 1000) == 0) {
                 if (cancelled) {
-                    transactionQuery.exec ("END TRANSACTION");
+                    transactionQuery.exec("END TRANSACTION");
                     return;
                 }
-                emit progress (stepNum);
+                emit progress(stepNum);
             }
             ++stepNum;
         }
-        transactionQuery.exec ("END TRANSACTION");
+        transactionQuery.exec("END TRANSACTION");
     }
 }
 
@@ -264,21 +263,21 @@ CreateDatabaseThread::insertWords (QSqlDatabase& db, int& stepNum)
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
 void
-CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
+CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
 {
     QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
 
-    QSqlQuery selectQuery (db);
-    selectQuery.prepare ("SELECT word, combinations FROM words WHERE length=? "
-                         "ORDER BY combinations DESC");
+    QSqlQuery selectQuery(db);
+    selectQuery.prepare("SELECT word, combinations FROM words WHERE length=? "
+                        "ORDER BY combinations DESC");
 
     QSqlQuery updateQuery (db);
-    updateQuery.prepare ("UPDATE words SET probability_order=?, "
-                         "min_probability_order=?, max_probability_order=? "
-                         "WHERE word=?");
+    updateQuery.prepare("UPDATE words SET probability_order=?, "
+                        "min_probability_order=?, max_probability_order=? "
+                        "WHERE word=?");
 
     for (int length = 1; length <= MAX_WORD_LEN; ++length) {
-        selectQuery.bindValue (0, length);
+        selectQuery.bindValue(0, length);
         selectQuery.exec();
 
         QMap<QString, QString> equalWordMap;
@@ -288,8 +287,8 @@ CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
         double prevCombinations = 0;
 
         while (selectQuery.next()) {
-            QString word = selectQuery.value (0).toString();
-            double combinations = selectQuery.value (1).toDouble();
+            QString word = selectQuery.value(0).toString();
+            double combinations = selectQuery.value(1).toDouble();
 
             // Update probability ranges
             if ((combinations != prevCombinations) && !equalWordMap.empty()) {
@@ -300,18 +299,18 @@ CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
                     QString equalWord = it.value();
 
                     // Update probability order and range of this word
-                    updateQuery.bindValue (0, probOrder);
-                    updateQuery.bindValue (1, minProbOrder);
-                    updateQuery.bindValue (2, maxProbOrder);
-                    updateQuery.bindValue (3, equalWord);
+                    updateQuery.bindValue(0, probOrder);
+                    updateQuery.bindValue(1, minProbOrder);
+                    updateQuery.bindValue(2, maxProbOrder);
+                    updateQuery.bindValue(3, equalWord);
                     updateQuery.exec();
 
                     if ((stepNum % 1000) == 0) {
-                        transactionQuery.exec ("END TRANSACTION");
+                        transactionQuery.exec("END TRANSACTION");
                         if (cancelled)
                             return;
-                        transactionQuery.exec ("BEGIN TRANSACTION");
-                        emit progress (stepNum);
+                        transactionQuery.exec("BEGIN TRANSACTION");
+                        emit progress(stepNum);
                     }
 
                     ++probOrder;
@@ -322,8 +321,8 @@ CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
             }
 
             // Sort words by alphagram
-            QString radix = Auxil::getAlphagram (word) + word;
-            equalWordMap.insert (radix, word);
+            QString radix = Auxil::getAlphagram(word) + word;
+            equalWordMap.insert(radix, word);
 
             prevCombinations = combinations;
         }
@@ -333,15 +332,15 @@ CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
         while (it.hasNext()) {
             it.next();
             QString equalWord = it.value();
-            updateQuery.bindValue (0, probOrder);
-            updateQuery.bindValue (1, minProbOrder);
-            updateQuery.bindValue (2, maxProbOrder);
-            updateQuery.bindValue (3, equalWord);
+            updateQuery.bindValue(0, probOrder);
+            updateQuery.bindValue(1, minProbOrder);
+            updateQuery.bindValue(2, maxProbOrder);
+            updateQuery.bindValue(3, equalWord);
             updateQuery.exec();
         }
     }
 
-    transactionQuery.exec ("END TRANSACTION");
+    transactionQuery.exec("END TRANSACTION");
 }
 
 //---------------------------------------------------------------------------
@@ -353,55 +352,55 @@ CreateDatabaseThread::updateProbabilityOrder (QSqlDatabase& db, int& stepNum)
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
 void
-CreateDatabaseThread::updateDefinitions (QSqlDatabase& db, int& stepNum)
+CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
 {
-    QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
+    QSqlQuery transactionQuery("BEGIN TRANSACTION", db);
 
     QSqlQuery query (db);
-    query.prepare ("UPDATE words SET definition=? WHERE word=?");
+    query.prepare("UPDATE words SET definition=? WHERE word=?");
 
     QMap<QString, QString> definitionMap;
     QFile definitionFile (definitionFilename);
-    if (definitionFile.open (QIODevice::ReadOnly | QIODevice::Text)) {
+    if (definitionFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         char* buffer = new char [MAX_INPUT_LINE_LEN];
-        while (definitionFile.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        while (definitionFile.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
             QString line (buffer);
             line = line.simplified();
-            if (!line.length() || (line.at (0) == '#')) {
+            if (!line.length() || (line.at(0) == '#')) {
                 if ((stepNum % 1000) == 0) {
-                    transactionQuery.exec ("END TRANSACTION");
+                    transactionQuery.exec("END TRANSACTION");
                     if (cancelled) {
                         delete buffer;
                         return;
                     }
-                    transactionQuery.exec ("BEGIN TRANSACTION");
-                    emit progress (stepNum);
+                    transactionQuery.exec("BEGIN TRANSACTION");
+                    emit progress(stepNum);
                 }
                 ++stepNum;
                 continue;
             }
-            QString word = line.section (' ', 0, 0).toUpper();
-            QString definition = line.section (' ', 1);
+            QString word = line.section(' ', 0, 0).toUpper();
+            QString definition = line.section(' ', 1);
 
-            query.bindValue (0, definition);
-            query.bindValue (1, word);
+            query.bindValue(0, definition);
+            query.bindValue(1, word);
             query.exec();
 
             if ((stepNum % 1000) == 0) {
-                transactionQuery.exec ("END TRANSACTION");
+                transactionQuery.exec("END TRANSACTION");
                 if (cancelled) {
                     delete buffer;
                     return;
                 }
-                transactionQuery.exec ("BEGIN TRANSACTION");
-                emit progress (stepNum);
+                transactionQuery.exec("BEGIN TRANSACTION");
+                emit progress(stepNum);
             }
             ++stepNum;
         }
         delete buffer;
     }
 
-    transactionQuery.exec ("END TRANSACTION");
+    transactionQuery.exec("END TRANSACTION");
 }
 
 //---------------------------------------------------------------------------
@@ -424,7 +423,7 @@ CreateDatabaseThread::cancel()
 void
 CreateDatabaseThread::cleanup()
 {
-    QSqlDatabase::removeDatabase (DB_CONNECTION_NAME);
+    QSqlDatabase::removeDatabase(DB_CONNECTION_NAME);
 }
 
 //---------------------------------------------------------------------------
@@ -436,18 +435,18 @@ CreateDatabaseThread::cleanup()
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
 void
-CreateDatabaseThread::updateDefinitionLinks (QSqlDatabase& db, int& stepNum)
+CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase& db, int& stepNum)
 {
-    getDefinitions (db, stepNum);
+    getDefinitions(db, stepNum);
 
     if (cancelled)
         return;
 
     QSqlQuery updateQuery (db);
-    updateQuery.prepare ("UPDATE words SET definition=? WHERE word=?");
+    updateQuery.prepare("UPDATE words SET definition=? WHERE word=?");
 
     QSqlQuery transactionQuery (db);
-    transactionQuery.exec ("BEGIN TRANSACTION");
+    transactionQuery.exec("BEGIN TRANSACTION");
 
     QMapIterator<QString, QString> it (definitions);
     while (it.hasNext()) {
@@ -455,34 +454,33 @@ CreateDatabaseThread::updateDefinitionLinks (QSqlDatabase& db, int& stepNum)
         QString word = it.key();
         QString definition = it.value();
 
-        QStringList defs = definition.split (" / ");
+        QStringList defs = definition.split(" / ");
         QString newDefinition;
         QString def;
         foreach (def, defs) {
             if (!newDefinition.isEmpty())
                 newDefinition += "\n";
-            newDefinition += replaceDefinitionLinks (def,
-                                                     MAX_DEFINITION_LINKS);
+            newDefinition += replaceDefinitionLinks(def, MAX_DEFINITION_LINKS);
         }
 
         if (definition != newDefinition) {
-            updateQuery.bindValue (0, newDefinition);
-            updateQuery.bindValue (1, word);
+            updateQuery.bindValue(0, newDefinition);
+            updateQuery.bindValue(1, word);
             updateQuery.exec();
         }
 
         ++stepNum;
 
         if ((stepNum % 1000) == 0) {
-            transactionQuery.exec ("END TRANSACTION");
+            transactionQuery.exec("END TRANSACTION");
             if (cancelled)
                 return;
-            transactionQuery.exec ("BEGIN TRANSACTION");
-            emit progress (stepNum);
+            transactionQuery.exec("BEGIN TRANSACTION");
+            emit progress(stepNum);
         }
     }
 
-    transactionQuery.exec ("END TRANSACTION");
+    transactionQuery.exec("END TRANSACTION");
 }
 
 //---------------------------------------------------------------------------
@@ -495,24 +493,24 @@ CreateDatabaseThread::updateDefinitionLinks (QSqlDatabase& db, int& stepNum)
 //! @param stepNum the current step number
 //---------------------------------------------------------------------------
 void
-CreateDatabaseThread::getDefinitions (QSqlDatabase& db, int& stepNum)
+CreateDatabaseThread::getDefinitions(QSqlDatabase& db, int& stepNum)
 {
     QSqlQuery selectQuery (db);
-    selectQuery.prepare ("SELECT word, definition FROM words");
+    selectQuery.prepare("SELECT word, definition FROM words");
     selectQuery.exec();
 
-    QRegExp defRegex (QString ("^[^[]|\\s+/\\s+[^[]"));
+    QRegExp defRegex (QString("^[^[]|\\s+/\\s+[^[]"));
 
     while (selectQuery.next()) {
-        QString word = selectQuery.value (0).toString();
-        QString definition = selectQuery.value (1).toString();
+        QString word = selectQuery.value(0).toString();
+        QString definition = selectQuery.value(1).toString();
 
-        if (defRegex.indexIn (definition, 0) < 0) {
+        if (defRegex.indexIn(definition, 0) < 0) {
             ++stepNum;
             if ((stepNum % 1000) == 0) {
                 if (cancelled)
                     return;
-                emit progress (stepNum);
+                emit progress(stepNum);
             }
             continue;
         }
@@ -535,23 +533,23 @@ CreateDatabaseThread::getDefinitions (QSqlDatabase& db, int& stepNum)
 //! @return a string with links replaced
 //---------------------------------------------------------------------------
 QString
-CreateDatabaseThread::replaceDefinitionLinks (const QString& definition, int
-                                              maxDepth, bool useFollow) const
+CreateDatabaseThread::replaceDefinitionLinks(const QString& definition, int
+                                             maxDepth, bool useFollow) const
 {
-    QRegExp followRegex (QString ("\\{(\\w+)=(\\w+)\\}"));
-    QRegExp replaceRegex (QString ("\\<(\\w+)=(\\w+)\\>"));
+    QRegExp followRegex (QString("\\{(\\w+)=(\\w+)\\}"));
+    QRegExp replaceRegex (QString("\\<(\\w+)=(\\w+)\\>"));
 
     // Try to match the follow regex and the replace regex.  If a follow regex
     // is ever matched, then the "follow" replacements should always be used,
     // even if the "replace" regex is matched in a later iteration.
     QRegExp* matchedRegex = 0;
-    int index = followRegex.indexIn (definition, 0);
+    int index = followRegex.indexIn(definition, 0);
     if (index >= 0) {
         matchedRegex = &followRegex;
         useFollow = true;
     }
     else {
-        index = replaceRegex.indexIn (definition, 0);
+        index = replaceRegex.indexIn(definition, 0);
         matchedRegex = &replaceRegex;
     }
 
@@ -559,8 +557,8 @@ CreateDatabaseThread::replaceDefinitionLinks (const QString& definition, int
         return definition;
 
     QString modified (definition);
-    QString word = matchedRegex->cap (1);
-    QString pos = matchedRegex->cap (2);
+    QString word = matchedRegex->cap(1);
+    QString pos = matchedRegex->cap(2);
 
     QString replacement;
     QString upper = word.toUpper();
@@ -569,7 +567,7 @@ CreateDatabaseThread::replaceDefinitionLinks (const QString& definition, int
         replacement = failReplacement;
     }
     else {
-        QString subdef = getSubDefinition (upper, pos);
+        QString subdef = getSubDefinition(upper, pos);
         if (subdef.isEmpty()) {
             replacement = failReplacement;
         }
@@ -582,10 +580,10 @@ CreateDatabaseThread::replaceDefinitionLinks (const QString& definition, int
         }
     }
 
-    modified.replace (index, matchedRegex->matchedLength(), replacement);
+    modified.replace(index, matchedRegex->matchedLength(), replacement);
     int lowerMaxDepth = useFollow ? maxDepth - 1 : maxDepth;
     QString newDefinition = maxDepth
-        ? replaceDefinitionLinks (modified, lowerMaxDepth, useFollow)
+        ? replaceDefinitionLinks(modified, lowerMaxDepth, useFollow)
         : modified;
     return newDefinition;
 }
@@ -603,21 +601,21 @@ CreateDatabaseThread::replaceDefinitionLinks (const QString& definition, int
 //! @return the definition substring
 //---------------------------------------------------------------------------
 QString
-CreateDatabaseThread::getSubDefinition (const QString& word, const QString&
-                                        pos) const
+CreateDatabaseThread::getSubDefinition(const QString& word, const QString&
+                                       pos) const
 {
-    if (!definitions.contains (word))
+    if (!definitions.contains(word))
         return QString::null;
 
     QString definition = definitions[word];
-    QRegExp posRegex (QString ("\\[(\\w+)"));
-    QStringList defs = definition.split (" / ");
+    QRegExp posRegex (QString("\\[(\\w+)"));
+    QStringList defs = definition.split(" / ");
     QString def;
     foreach (def, defs) {
-        if ((posRegex.indexIn (def, 0) > 0) &&
-            (posRegex.cap (1) == pos))
+        if ((posRegex.indexIn(def, 0) > 0) &&
+            (posRegex.cap(1) == pos))
         {
-            QString str = def.left (def.indexOf ("[")).simplified();
+            QString str = def.left(def.indexOf("[")).simplified();
             if (!str.isEmpty())
                 return str;
         }

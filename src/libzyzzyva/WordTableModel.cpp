@@ -3,7 +3,7 @@
 //
 // A model for representing word lists.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -50,8 +50,8 @@ const int NUM_COLUMNS = 6;
 //! @return true if a is lexically less than b
 //---------------------------------------------------------------------------
 bool
-lessThan (const WordTableModel::WordItem& a,
-          const WordTableModel::WordItem& b)
+lessThan(const WordTableModel::WordItem& a,
+         const WordTableModel::WordItem& b)
 {
     if (MainSettings::getWordListSortByLength()) {
         if (a.getWord().length() < b.getWord().length()) {
@@ -63,8 +63,8 @@ lessThan (const WordTableModel::WordItem& a,
     }
 
     if (MainSettings::getWordListGroupByAnagrams()) {
-        QString aa = Auxil::getAlphagram (a.getWord().toUpper());
-        QString ab = Auxil::getAlphagram (b.getWord().toUpper());
+        QString aa = Auxil::getAlphagram(a.getWord().toUpper());
+        QString ab = Auxil::getAlphagram(b.getWord().toUpper());
         if (aa < ab)
             return true;
         else if (ab < aa)
@@ -90,8 +90,8 @@ lessThan (const WordTableModel::WordItem& a,
 //
 //! @param parent the parent object
 //---------------------------------------------------------------------------
-WordTableModel::WordTableModel (WordEngine* e, QObject* parent)
-    : QAbstractTableModel (parent), wordEngine (e), lastAddedIndex (-1)
+WordTableModel::WordTableModel(WordEngine* e, QObject* parent)
+    : QAbstractTableModel(parent), wordEngine(e), lastAddedIndex(-1)
 {
 }
 
@@ -114,7 +114,7 @@ WordTableModel::~WordTableModel()
 bool
 WordTableModel::clear()
 {
-    bool ok = removeRows (0, rowCount());
+    bool ok = removeRows(0, rowCount());
     emit wordsChanged();
     return ok;
 }
@@ -129,17 +129,17 @@ WordTableModel::clear()
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::addWord (const WordItem& word, bool updateLastAdded)
+WordTableModel::addWord(const WordItem& word, bool updateLastAdded)
 {
     int row = rowCount();
-    bool ok = insertRow (row);
+    bool ok = insertRow(row);
     if (!ok)
         return false;
 
-    addWordPrivate (word, row);
+    addWordPrivate(word, row);
 
-    sort (WORD_COLUMN);
-    lastAddedIndex = updateLastAdded ? wordList.indexOf (word) : -1;
+    sort(WORD_COLUMN);
+    lastAddedIndex = updateLastAdded ? wordList.indexOf(word) : -1;
     emit wordsChanged();
     return true;
 }
@@ -153,18 +153,18 @@ WordTableModel::addWord (const WordItem& word, bool updateLastAdded)
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::addWords (const QList<WordItem>& words)
+WordTableModel::addWords(const QList<WordItem>& words)
 {
     int row = rowCount();
-    bool ok = insertRows (row, words.size());
+    bool ok = insertRows(row, words.size());
     if (!ok)
         return false;
     WordItem word;
     foreach (word, words) {
-        addWordPrivate (word, row);
+        addWordPrivate(word, row);
         ++row;
     }
-    sort (WORD_COLUMN);
+    sort(WORD_COLUMN);
     lastAddedIndex = -1;
     emit wordsChanged();
     return true;
@@ -179,12 +179,12 @@ WordTableModel::addWords (const QList<WordItem>& words)
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::removeWord (const QString& word)
+WordTableModel::removeWord(const QString& word)
 {
     int count = 0;
     int start = 0;
     for (int i = 0; i < rowCount(); ++i) {
-        const WordItem& item = wordList.at (i);
+        const WordItem& item = wordList.at(i);
         if (item.getWord() == word) {
             if (!count)
                 start = i;
@@ -196,14 +196,14 @@ WordTableModel::removeWord (const QString& word)
                 lastAddedIndex = -1;
         }
         else if (count) {
-            bool ok = removeRows (start, count);
+            bool ok = removeRows(start, count);
             emit wordsChanged();
             return ok;
         }
     }
 
     if (count) {
-        bool ok = removeRows (start, count);
+        bool ok = removeRows(start, count);
         emit wordsChanged();
         return ok;
     }
@@ -221,7 +221,7 @@ WordTableModel::removeWord (const QString& word)
 //! @return the number of rows
 //---------------------------------------------------------------------------
 int
-WordTableModel::rowCount (const QModelIndex&) const
+WordTableModel::rowCount(const QModelIndex&) const
 {
     return wordList.count();
 }
@@ -236,7 +236,7 @@ WordTableModel::rowCount (const QModelIndex&) const
 //! @return the number of columns
 //---------------------------------------------------------------------------
 int
-WordTableModel::columnCount (const QModelIndex&) const
+WordTableModel::columnCount(const QModelIndex&) const
 {
     return NUM_COLUMNS;
 }
@@ -252,7 +252,7 @@ WordTableModel::columnCount (const QModelIndex&) const
 //! @return the appropriate header data, or an empty object if invalid
 //---------------------------------------------------------------------------
 QVariant
-WordTableModel::data (const QModelIndex& index, int role) const
+WordTableModel::data(const QModelIndex& index, int role) const
 {
     if (!index.isValid())
         return QVariant();
@@ -261,7 +261,7 @@ WordTableModel::data (const QModelIndex& index, int role) const
         return QVariant();
 
     if (role == Qt::UserRole)
-        return wordList.at (index.row()).getType();
+        return wordList.at(index.row()).getType();
 
     if ((role != Qt::DisplayRole) && (role != Qt::EditRole))
         return QVariant();
@@ -282,13 +282,13 @@ WordTableModel::data (const QModelIndex& index, int role) const
             }
 
             if (!wordItem.probabilityOrderIsValid()) {
-                int p = wordEngine->getProbabilityOrder (wordUpper);
+                int p = wordEngine->getProbabilityOrder(wordUpper);
                 if (p)
-                    wordItem.setProbabilityOrder (p);
+                    wordItem.setProbabilityOrder(p);
             }
 
             int probOrder = wordItem.getProbabilityOrder();
-            return (probOrder ? QString::number (probOrder) : QString());
+            return (probOrder ? QString::number(probOrder) : QString());
         }
 
         case FRONT_HOOK_COLUMN:
@@ -296,8 +296,8 @@ WordTableModel::data (const QModelIndex& index, int role) const
             return QString();
         }
         else if (!wordItem.hooksAreValid()) {
-            wordItem.setHooks (wordEngine->getFrontHookLetters (wordUpper),
-                               wordEngine->getBackHookLetters (wordUpper));
+            wordItem.setHooks(wordEngine->getFrontHookLetters(wordUpper),
+                              wordEngine->getBackHookLetters(wordUpper));
         }
         return wordItem.getFrontHooks();
 
@@ -306,8 +306,8 @@ WordTableModel::data (const QModelIndex& index, int role) const
             return QString();
         }
         else if (!wordItem.hooksAreValid()) {
-            wordItem.setHooks (wordEngine->getFrontHookLetters (wordUpper),
-                               wordEngine->getBackHookLetters (wordUpper));
+            wordItem.setHooks(wordEngine->getFrontHookLetters(wordUpper),
+                              wordEngine->getBackHookLetters(wordUpper));
         }
         return wordItem.getBackHooks();
 
@@ -318,14 +318,14 @@ WordTableModel::data (const QModelIndex& index, int role) const
         else if (role == Qt::DisplayRole) {
             if (MainSettings::getWordListShowHookParents()) {
                 if (!wordItem.parentHooksAreValid()) {
-                    wordItem.setParentHooks (isFrontHook (wordUpper),
-                                             isBackHook (wordUpper));
+                    wordItem.setParentHooks(isFrontHook(wordUpper),
+                                            isBackHook(wordUpper));
                 }
                 return (wordItem.getFrontParentHook() ? PARENT_HOOK_CHAR
-                                                      : QChar (' '))
+                                                      : QChar(' '))
                        + word
                        + (wordItem.getBackParentHook() ? PARENT_HOOK_CHAR
-                                                       : QChar (' '));
+                                                       : QChar(' '));
             }
             else
                 return word;
@@ -335,7 +335,7 @@ WordTableModel::data (const QModelIndex& index, int role) const
 
         case DEFINITION_COLUMN:
         return MainSettings::getWordListShowDefinitions() ?
-            wordEngine->getDefinition (wordUpper) : QString::null;
+            wordEngine->getDefinition(wordUpper) : QString::null;
 
         default: return word;
     }
@@ -353,8 +353,8 @@ WordTableModel::data (const QModelIndex& index, int role) const
 //! @return the appropriate header data, or an empty object if invalid
 //---------------------------------------------------------------------------
 QVariant
-WordTableModel::headerData (int section, Qt::Orientation orientation, int
-                            role) const
+WordTableModel::headerData(int section, Qt::Orientation orientation, int
+                           role) const
 {
     if ((section < 0)  || (section > NUM_COLUMNS - 1))
         return QVariant();
@@ -407,12 +407,12 @@ WordTableModel::headerData (int section, Qt::Orientation orientation, int
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::insertRows (int row, int count, const QModelIndex&)
+WordTableModel::insertRows(int row, int count, const QModelIndex&)
 {
-    beginInsertRows (QModelIndex(), row, row + count - 1);
+    beginInsertRows(QModelIndex(), row, row + count - 1);
 
     for (int i = 0; i < count; ++i) {
-        wordList.insert (row, WordItem ("", WordNormal));
+        wordList.insert(row, WordItem(QString(), WordNormal));
     }
 
     endInsertRows();
@@ -431,15 +431,15 @@ WordTableModel::insertRows (int row, int count, const QModelIndex&)
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::removeRows (int row, int count, const QModelIndex&)
+WordTableModel::removeRows(int row, int count, const QModelIndex&)
 {
     if (wordList.empty())
         return true;
 
-    beginRemoveRows (QModelIndex(), row, row + count - 1);
+    beginRemoveRows(QModelIndex(), row, row + count - 1);
 
     for (int i = 0; i < count; ++i) {
-        wordList.removeAt (row);
+        wordList.removeAt(row);
     }
 
     endRemoveRows();
@@ -458,39 +458,39 @@ WordTableModel::removeRows (int row, int count, const QModelIndex&)
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::setData (const QModelIndex& index, const QVariant& value, int
-                         role)
+WordTableModel::setData(const QModelIndex& index, const QVariant& value, int
+                        role)
 {
     if (index.isValid() && (role == Qt::EditRole)) {
         if (index.column() == WILDCARD_MATCH_COLUMN) {
-            wordList[index.row()].setWildcard (value.toString());
+            wordList[index.row()].setWildcard(value.toString());
         }
         else if (index.column() == WORD_COLUMN) {
             WordItem& word = wordList[index.row()];
-            word.setWord (value.toString());
+            word.setWord(value.toString());
             if (MainSettings::getWordListShowHooks()) {
-                word.setHooks
-                    (wordEngine->getFrontHookLetters (word.getWord().toUpper()),
-                     wordEngine->getBackHookLetters (word.getWord().toUpper()));
+                word.setHooks(
+                    wordEngine->getFrontHookLetters(word.getWord().toUpper()),
+                    wordEngine->getBackHookLetters(word.getWord().toUpper()));
             }
             if (MainSettings::getWordListShowHookParents()) {
-                word.setParentHooks
-                    (isFrontHook (word.getWord().toUpper()),
-                     isBackHook (word.getWord().toUpper()));
+                word.setParentHooks(
+                    isFrontHook(word.getWord().toUpper()),
+                    isBackHook(word.getWord().toUpper()));
             }
         }
         else if (index.column() == PROBABILITY_ORDER_COLUMN) {
-            wordList[index.row()].setProbabilityOrder (value.toInt());
+            wordList[index.row()].setProbabilityOrder(value.toInt());
         }
         else {
             return false;
         }
-        emit dataChanged (index, index);
+        emit dataChanged(index, index);
         return true;
     }
     else if (index.isValid() && (role == Qt::UserRole)) {
-        wordList[index.row()].setType (WordType (value.toInt()));
-        emit dataChanged (index, index);
+        wordList[index.row()].setType(WordType(value.toInt()));
+        emit dataChanged(index, index);
         return true;
     }
     return false;
@@ -506,15 +506,15 @@ WordTableModel::setData (const QModelIndex& index, const QVariant& value, int
 //! @param order the sort order
 //---------------------------------------------------------------------------
 void
-WordTableModel::sort (int, Qt::SortOrder)
+WordTableModel::sort(int, Qt::SortOrder)
 {
-    qSort (wordList.begin(), wordList.end(), lessThan);
+    qSort(wordList.begin(), wordList.end(), lessThan);
 
     if (MainSettings::getWordListGroupByAnagrams())
         markAlternates();
 
-    emit dataChanged (index (0, 0),
-                      index (wordList.size() - 1, DEFINITION_COLUMN));
+    emit dataChanged(index(0, 0),
+                     index(wordList.size() - 1, DEFINITION_COLUMN));
 }
 
 //---------------------------------------------------------------------------
@@ -528,9 +528,9 @@ WordTableModel::clearLastAddedIndex()
     if (lastAddedIndex < 0)
         return;
 
-    setData (index (lastAddedIndex, 0), WordNormal, Qt::UserRole);
-    emit dataChanged (index (lastAddedIndex, 0),
-                      index (lastAddedIndex, DEFINITION_COLUMN));
+    setData(index(lastAddedIndex, 0), WordNormal, Qt::UserRole);
+    emit dataChanged(index(lastAddedIndex, 0),
+                     index(lastAddedIndex, DEFINITION_COLUMN));
     lastAddedIndex = -1;
 }
 
@@ -543,15 +543,15 @@ WordTableModel::clearLastAddedIndex()
 //! @param row the row whose data to set to the word
 //---------------------------------------------------------------------------
 void
-WordTableModel::addWordPrivate (const WordItem& word, int row)
+WordTableModel::addWordPrivate(const WordItem& word, int row)
 {
-    setData (index (row, WORD_COLUMN), word.getWord(), Qt::EditRole);
-    setData (index (row, WORD_COLUMN), word.getType(), Qt::UserRole);
-    setData (index (row, WILDCARD_MATCH_COLUMN), word.getWildcard(),
-                    Qt::EditRole);
+    setData(index(row, WORD_COLUMN), word.getWord(), Qt::EditRole);
+    setData(index(row, WORD_COLUMN), word.getType(), Qt::UserRole);
+    setData(index(row, WILDCARD_MATCH_COLUMN), word.getWildcard(),
+                  Qt::EditRole);
     if (word.probabilityOrderIsValid()) {
-        setData (index (row, PROBABILITY_ORDER_COLUMN),
-                 word.getProbabilityOrder(), Qt::EditRole);
+        setData(index(row, PROBABILITY_ORDER_COLUMN),
+                word.getProbabilityOrder(), Qt::EditRole);
     }
 }
 
@@ -568,14 +568,14 @@ WordTableModel::markAlternates()
     bool alternate = false;
     for (int i = 0; i < wordList.size(); ++i) {
         WordItem& item = wordList[i];
-        QString alphagram = Auxil::getAlphagram (item.getWord().toUpper());
+        QString alphagram = Auxil::getAlphagram(item.getWord().toUpper());
         if (alphagram != prevAlphagram) {
             if (!prevAlphagram.isEmpty())
                 alternate = !alternate;
             prevAlphagram = alphagram;
         }
         if (alternate && (item.getType() == WordNormal))
-            item.setType (WordNormalAlternate);
+            item.setType(WordNormalAlternate);
     }
 }
 
@@ -589,9 +589,9 @@ WordTableModel::markAlternates()
 //! @return true if the word is a front hook, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::isFrontHook (const QString& word) const
+WordTableModel::isFrontHook(const QString& word) const
 {
-    return wordEngine->isAcceptable (word.right (word.length() - 1));
+    return wordEngine->isAcceptable(word.right(word.length() - 1));
 }
 
 //---------------------------------------------------------------------------
@@ -604,9 +604,9 @@ WordTableModel::isFrontHook (const QString& word) const
 //! @return true if the word is a back hook, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordTableModel::isBackHook (const QString& word) const
+WordTableModel::isBackHook(const QString& word) const
 {
-    return wordEngine->isAcceptable (word.left (word.length() - 1));
+    return wordEngine->isAcceptable(word.left(word.length() - 1));
 }
 
 //---------------------------------------------------------------------------
@@ -633,7 +633,7 @@ WordTableModel::WordItem::init()
 //! @param p the probability order
 //---------------------------------------------------------------------------
 void
-WordTableModel::WordItem::setProbabilityOrder (int p)
+WordTableModel::WordItem::setProbabilityOrder(int p)
 {
     probabilityOrder = p;
     probabilityOrderValid = true;
@@ -648,7 +648,7 @@ WordTableModel::WordItem::setProbabilityOrder (int p)
 //! @param back the back hooks
 //---------------------------------------------------------------------------
 void
-WordTableModel::WordItem::setHooks (const QString& front, const QString& back)
+WordTableModel::WordItem::setHooks(const QString& front, const QString& back)
 {
     if (hooksValid)
         return;
@@ -666,7 +666,7 @@ WordTableModel::WordItem::setHooks (const QString& front, const QString& back)
 //! @param back the back parent hook
 //---------------------------------------------------------------------------
 void
-WordTableModel::WordItem::setParentHooks (bool front, bool back)
+WordTableModel::WordItem::setParentHooks(bool front, bool back)
 {
     if (parentHooksValid)
         return;

@@ -49,7 +49,7 @@ SearchSpec::asString() const
     QListIterator<SearchCondition> it (conditions);
     while (it.hasNext()) {
         if (!str.isEmpty())
-            str += (conjunction ? QString (" AND ") : QString (" OR "));
+            str += (conjunction ? QString(" AND ") : QString(" OR "));
         str += it.next().asString();
     }
     return str;
@@ -66,24 +66,23 @@ QDomElement
 SearchSpec::asDomElement() const
 {
     QDomDocument doc;
-    QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
-    topElement.setAttribute (XML_VERSION_ATTR, CURRENT_VERSION);
+    QDomElement topElement = doc.createElement(XML_TOP_ELEMENT);
+    topElement.setAttribute(XML_VERSION_ATTR, CURRENT_VERSION);
 
     if (conditions.empty())
         return topElement;
 
-    QDomElement conditionsElement = doc.createElement
-        (XML_CONDITIONS_ELEMENT);
-    topElement.appendChild (conditionsElement);
+    QDomElement conditionsElement = doc.createElement(XML_CONDITIONS_ELEMENT);
+    topElement.appendChild(conditionsElement);
 
     QString conjunctionType = (conjunction ? XML_CONJUNCTION_ELEMENT
                                            : XML_DISJUNCTION_ELEMENT);
-    QDomElement conjunctionElement = doc.createElement (conjunctionType);
-    conditionsElement.appendChild (conjunctionElement);
+    QDomElement conjunctionElement = doc.createElement(conjunctionType);
+    conditionsElement.appendChild(conjunctionElement);
 
     QListIterator<SearchCondition> it (conditions);
     while (it.hasNext())
-        conjunctionElement.appendChild (it.next().asDomElement());
+        conjunctionElement.appendChild(it.next().asDomElement());
 
     return topElement;
 }
@@ -97,16 +96,16 @@ SearchSpec::asDomElement() const
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-SearchSpec::fromDomElement (const QDomElement& element)
+SearchSpec::fromDomElement(const QDomElement& element)
 {
     if (element.tagName() != XML_TOP_ELEMENT)
         return false;
 
     SearchSpec tmpSpec;
 
-    if (element.hasAttribute (XML_VERSION_ATTR)) {
+    if (element.hasAttribute(XML_VERSION_ATTR)) {
         bool ok;
-        tmpSpec.version = element.attribute (XML_VERSION_ATTR).toInt (&ok);
+        tmpSpec.version = element.attribute(XML_VERSION_ATTR).toInt(&ok);
         if (!ok)
             return false;
     }
@@ -128,9 +127,9 @@ SearchSpec::fromDomElement (const QDomElement& element)
          elem = elem.nextSibling().toElement())
     {
         SearchCondition condition;
-        if (!condition.fromDomElement (elem))
+        if (!condition.fromDomElement(elem))
             return false;
-        tmpSpec.conditions.append (condition);
+        tmpSpec.conditions.append(condition);
     }
 
     if (tmpSpec.conditions.empty())
@@ -185,19 +184,19 @@ SearchSpec::optimize()
             case SearchCondition::AnagramMatch:
             case SearchCondition::SubanagramMatch: {
 
-                if (stringValue.contains ("*")) {
-                    newConditions.append (condition);
+                if (stringValue.contains("*")) {
+                    newConditions.append(condition);
                     break;
                 }
 
-                bool wildcard = (stringValue.contains ("[") ||
-                                 stringValue.contains ("?"));
+                bool wildcard = (stringValue.contains("[") ||
+                                 stringValue.contains("?"));
                 int length = stringValue.length();
-                if (stringValue.contains ("[")) {
+                if (stringValue.contains("[")) {
                     int subtract = 0;
                     bool inCharClass = false;
                     for (int i = 0; i < length; ++i) {
-                        QChar c = stringValue.at (i);
+                        QChar c = stringValue.at(i);
                         if (c == '[')
                             inCharClass = true;
                         else if (c == ']') {
@@ -229,9 +228,9 @@ SearchSpec::optimize()
                 }
 
                 if (wildcard)
-                    wildcardConditions.append (condition);
+                    wildcardConditions.append(condition);
                 else
-                    newConditions.append (condition);
+                    newConditions.append(condition);
             }
             break;
 
@@ -251,32 +250,32 @@ SearchSpec::optimize()
             case SearchCondition::IncludeLetters:
             if (negated) {
                 if (!mustInclude.isEmpty()) {
-                    for (int i = 0; i < int (stringValue.length()); ++i) {
-                        if (mustInclude.contains (stringValue.at (i))) {
+                    for (int i = 0; i < int(stringValue.length()); ++i) {
+                        if (mustInclude.contains(stringValue.at(i))) {
                             conditions.clear();
                             return;
                         }
                     }
                 }
                 mustExclude += stringValue;
-                newConditions.append (condition);
+                newConditions.append(condition);
             }
             else {
                 if (!mustExclude.isEmpty()) {
-                    for (int i = 0; i < int (stringValue.length()); ++i) {
-                        if (mustExclude.contains (stringValue.at (i))) {
+                    for (int i = 0; i < int(stringValue.length()); ++i) {
+                        if (mustExclude.contains(stringValue.at(i))) {
                             conditions.clear();
                             return;
                         }
                     }
                 }
                 mustInclude += stringValue;
-                newConditions.append (condition);
+                newConditions.append(condition);
             }
             break;
 
             case SearchCondition::BelongToGroup: {
-                SearchSet ss = Auxil::stringToSearchSet (stringValue);
+                SearchSet ss = Auxil::stringToSearchSet(stringValue);
                 if (ss == UnknownSearchSet)
                     break;
 
@@ -284,7 +283,7 @@ SearchSpec::optimize()
                     SearchCondition addCondition = condition;
                     addCondition.type = SearchCondition::InWordList;
                     addCondition.stringValue = Auxil::getNewInOwl2String();
-                    newConditions.append (addCondition);
+                    newConditions.append(addCondition);
                     break;
                 }
 
@@ -318,11 +317,11 @@ SearchSpec::optimize()
                     if (addCondition.type !=
                         SearchCondition::UnknownSearchType)
                     {
-                        newConditions.append (addCondition);
+                        newConditions.append(addCondition);
                     }
                 }
             }
-            newConditions.append (condition);
+            newConditions.append(condition);
             break;
 
             case SearchCondition::NumAnagrams:
@@ -379,7 +378,7 @@ SearchSpec::optimize()
             break;
 
             default:
-            newConditions.append (condition);
+            newConditions.append(condition);
             break;
         }
     }
@@ -399,7 +398,7 @@ SearchSpec::optimize()
         condition.type = SearchCondition::NumAnagrams;
         condition.minValue = minAnagrams;
         condition.maxValue = maxAnagrams;
-        newConditions.push_front (condition);
+        newConditions.push_front(condition);
     }
 
     // Add Point Value conditions
@@ -407,7 +406,7 @@ SearchSpec::optimize()
         condition.type = SearchCondition::PointValue;
         condition.minValue = minPointValue;
         condition.maxValue = maxPointValue;
-        newConditions.push_front (condition);
+        newConditions.push_front(condition);
     }
 
     // Add Number of Unique Letters conditions
@@ -417,7 +416,7 @@ SearchSpec::optimize()
         condition.type = SearchCondition::NumUniqueLetters;
         condition.minValue = minNumUniqueLetters;
         condition.maxValue = maxNumUniqueLetters;
-        newConditions.push_front (condition);
+        newConditions.push_front(condition);
     }
 
     // Add Number of Vowels conditions
@@ -425,7 +424,7 @@ SearchSpec::optimize()
         condition.type = SearchCondition::NumVowels;
         condition.minValue = minNumVowels;
         condition.maxValue = maxNumVowels;
-        newConditions.push_front (condition);
+        newConditions.push_front(condition);
     }
 
     // Add Length conditions
@@ -433,7 +432,7 @@ SearchSpec::optimize()
         condition.type = SearchCondition::Length;
         condition.minValue = minLength;
         condition.maxValue = maxLength;
-        newConditions.push_front (condition);
+        newConditions.push_front(condition);
     }
 
     conditions = wildcardConditions + newConditions;

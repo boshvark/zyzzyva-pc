@@ -3,7 +3,7 @@
 //
 // A class to represent a crossword game move.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,11 +36,11 @@ using namespace Defs;
 //
 //! @param str a string representation of the move
 //---------------------------------------------------------------------------
-CrosswordGameMove::CrosswordGameMove (const QString& str)
+CrosswordGameMove::CrosswordGameMove(const QString& str)
 {
     init();
 
-    QStringList split = str.split (" ");
+    QStringList split = str.split(" ");
     QString tMoveType = split[0];
 
     if (tMoveType == "MOVE") {
@@ -49,18 +49,18 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
 
         type = Move;
 
-        QString placement = IscConverter::convertCoordinates (split[1]);
+        QString placement = IscConverter::convertCoordinates(split[1]);
         word = split[2];
         score = split[3].toInt();
         int minutes = split[4].toInt();
         int seconds = split[5].toInt();
-        secondsLeft = IscConverter::timeIscToReal (minutes, seconds);
-        newRack = Auxil::getAlphagram (split[6]);
+        secondsLeft = IscConverter::timeIscToReal(minutes, seconds);
+        newRack = Auxil::getAlphagram(split[6]);
         if (newRack == "---")
             newRack = QString();
         //QString tChangeNumber = split[7];
 
-        setPlacement (placement);
+        setPlacement(placement);
     }
 
     else if (tMoveType == "PAS") {
@@ -69,7 +69,7 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
 
         int minutes = split[1].toInt();
         int seconds = split[2].toInt();
-        secondsLeft = IscConverter::timeIscToReal (minutes, seconds);
+        secondsLeft = IscConverter::timeIscToReal(minutes, seconds);
         QString challenged = split[3];
         if (challenged == "---") {
             type = Pass;
@@ -77,11 +77,11 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
         else {
             type = TakeBack;
             penaltyType = LoseTurn;
-            QStringList tokens = challenged.split ("_");
-            QString placement = IscConverter::convertCoordinates (tokens[0]);
+            QStringList tokens = challenged.split("_");
+            QString placement = IscConverter::convertCoordinates(tokens[0]);
             word = tokens[1];
             score = -tokens[2].toInt();
-            setPlacement (placement);
+            setPlacement(placement);
         }
     }
 
@@ -93,13 +93,13 @@ CrosswordGameMove::CrosswordGameMove (const QString& str)
         newRack = split[1];
         int minutes = split[2].toInt();
         int seconds = split[3].toInt();
-        secondsLeft = IscConverter::timeIscToReal (minutes, seconds);
+        secondsLeft = IscConverter::timeIscToReal(minutes, seconds);
         numExchanged = split[4].toInt();
     }
 
     else if (tMoveType == "DRAW") {
         type = DrawTiles;
-        newRack = Auxil::getAlphagram (split[1]);
+        newRack = Auxil::getAlphagram(split[1]);
     }
 }
 
@@ -117,8 +117,8 @@ CrosswordGameMove::getPlacement() const
     if (type != Move)
         return placement;
 
-    QString rowStr = QString::number (row + 1);
-    QString colStr = QChar ('A' + column);
+    QString rowStr = QString::number(row + 1);
+    QString colStr = QChar('A' + column);
 
     if (orientation == Horizontal) {
         placement = rowStr + colStr;
@@ -203,13 +203,13 @@ CrosswordGameMove::init()
 //! @param placement the placement string
 //---------------------------------------------------------------------------
 void
-CrosswordGameMove::setPlacement (const QString& placement)
+CrosswordGameMove::setPlacement(const QString& placement)
 {
     QRegExp re ("\\d+|\\w");
-    int pos = re.indexIn (placement, 0);
-    QString aMatch = placement.mid (pos, re.matchedLength());
-    pos = re.indexIn (placement, pos + re.matchedLength());
-    QString bMatch = placement.mid (pos, re.matchedLength());
+    int pos = re.indexIn(placement, 0);
+    QString aMatch = placement.mid(pos, re.matchedLength());
+    pos = re.indexIn(placement, pos + re.matchedLength());
+    QString bMatch = placement.mid(pos, re.matchedLength());
 
     orientation = aMatch[0].isNumber() ? Horizontal : Vertical;
 

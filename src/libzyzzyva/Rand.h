@@ -4,7 +4,7 @@
 // A random number generator based on George Marsaglia's algorithms found
 // on this web page:  http://www.ciphersbyritter.com/NEWS4/RANDC.HTM
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -37,17 +37,17 @@ class Rand
     };
 
     public:
-    Rand (int a = MarsagliaMwc, unsigned int z0 = 362436069,
-          unsigned int w0 = 521288629)
-        : algorithm (Algorithm (a)), z (z0), w (w0) { }
+    Rand(int a = MarsagliaMwc, unsigned int z0 = 362436069,
+         unsigned int w0 = 521288629)
+        : algorithm(Algorithm(a)), z(z0), w(w0) { }
     ~Rand() { }
 
-    void setAlgorithm (int a) { algorithm = Algorithm (a); }
-    void srand (unsigned int z0, unsigned int w0 = 0) {
-        if (algorithm == SystemRand) std::srand (z0);
+    void setAlgorithm(int a) { algorithm = Algorithm(a); }
+    void srand(unsigned int z0, unsigned int w0 = 0) {
+        if (algorithm == SystemRand) std::srand(z0);
         z = z0; w = w0;
     }
-    unsigned int rand (unsigned int max = 4294967295U);
+    unsigned int rand(unsigned int max = 4294967295U);
 
     private:
     unsigned int mwc();

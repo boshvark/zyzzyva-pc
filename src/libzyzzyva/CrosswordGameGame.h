@@ -3,7 +3,7 @@
 //
 // A class to represent a crossword game.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -39,24 +39,24 @@ class CrosswordGameGame : public QObject
     public:
     CrosswordGameGame();
     void clear();
-    bool makeMove (CrosswordGameMove& move);
+    bool makeMove(CrosswordGameMove& move);
     bool challengeLastMove();
 
-    int getRackValue (const QString& rack) const;
+    int getRackValue(const QString& rack) const;
 
     int getNumTilesInBag() const { return letterBag.getNumLetters(); }
     QString getTilesInBag() const;
-    QString getUnseenTiles (int playerNum) const;
+    QString getUnseenTiles(int playerNum) const;
 
     int getPlayerToMove() const { return playerToMove; }
-    int getPlayerScore (int playerNum);
-    QString getPlayerRack (int playerNum);
+    int getPlayerScore(int playerNum);
+    QString getPlayerRack(int playerNum);
 
-    CrosswordGameBoard::SquareType getSquareType (int row, int col) const {
-        return board.getSquareType (row, col);
+    CrosswordGameBoard::SquareType getSquareType(int row, int col) const {
+        return board.getSquareType(row, col);
     }
-    CrosswordGameBoard::Tile getTile (int row, int col) const {
-        return board.getTile (row, col);
+    CrosswordGameBoard::Tile getTile(int row, int col) const {
+        return board.getTile(row, col);
     }
     int getNumRows() const { return board.getNumRows(); }
     int getNumColumns() const { return board.getNumColumns(); }

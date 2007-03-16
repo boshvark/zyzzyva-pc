@@ -3,7 +3,7 @@
 //
 // A class to represent a crossword game board.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -35,13 +35,13 @@ class CrosswordGameBoard
     public:
     class Tile {
         public:
-        Tile() : blank (false), playerNum (0), timesUsed (0), valid (false) { }
-        Tile (const QChar& c, bool b, int p)
-            : letter (c), blank (b), playerNum (p), timesUsed (0), valid (true) { }
+        Tile() : blank(false), playerNum(0), timesUsed(0), valid(false) { }
+        Tile(const QChar& c, bool b, int p)
+            : letter(c), blank(b), playerNum(p), timesUsed(0), valid(true) { }
 
-        void setLetter (const QChar& c) { letter = c; valid = true; }
-        void setBlank (bool b) { blank = b; valid = true; }
-        void setPlayerNum (int p) { playerNum = p; }
+        void setLetter(const QChar& c) { letter = c; valid = true; }
+        void setBlank(bool b) { blank = b; valid = true; }
+        void setPlayerNum(int p) { playerNum = p; }
         void incrementTimesUsed() { ++timesUsed; }
         void decrementTimesUsed() { --timesUsed; }
 
@@ -71,13 +71,12 @@ class CrosswordGameBoard
     public:
     CrosswordGameBoard();
     void clear();
-    SquareType getSquareType (int row, int col) const;
-    Tile getTile (int row, int col) const;
+    SquareType getSquareType(int row, int col) const;
+    Tile getTile(int row, int col) const;
     int getNumRows() const;
     int getNumColumns() const;
-    bool makeMove (const CrosswordGameMove& move, QString* lettersPlaced = 0);
-    bool removeMove (const CrosswordGameMove& move,
-                     QString* lettersRemoved = 0);
+    bool makeMove(const CrosswordGameMove& move, QString* lettersPlaced = 0);
+    bool removeMove(const CrosswordGameMove& move, QString* lettersRemoved = 0);
 
     private:
     QList< QList<SquareType> > squareTypes;

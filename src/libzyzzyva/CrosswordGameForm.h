@@ -3,7 +3,7 @@
 //
 // A form for playing a crossword game.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -44,7 +44,7 @@ class CrosswordGameForm : public ActionForm
 {
     Q_OBJECT
     public:
-    CrosswordGameForm (QWidget* parent = 0, Qt::WFlags f = 0);
+    CrosswordGameForm(QWidget* parent = 0, Qt::WFlags f = 0);
     ~CrosswordGameForm();
     QIcon getIcon() const;
     QString getTitle() const;
@@ -54,38 +54,38 @@ class CrosswordGameForm : public ActionForm
     void connectClicked();
     void disconnectClicked();
     void inputReturnPressed();
-    void threadStatusChanged (const QString& status);
-    void threadMessageReceived (const QString& message);
-    void threadSocketError (QAbstractSocket::SocketError error);
+    void threadStatusChanged(const QString& status);
+    void threadMessageReceived(const QString& message);
+    void threadSocketError(QAbstractSocket::SocketError error);
     void gameChanged();
-    void clockTimeout (int playerNum);
+    void clockTimeout(int playerNum);
 
     private:
-    void messageAppendHtml (const QString& text, const QColor& color);
-    QString encodeHtmlEntities (const QString& text);
-    QString canonizeMessage (const QString& text);
-    int minutesSecondsToSeconds (int minutes, int seconds,
-                                 bool overtime = false);
-    int secondsToMinutesSeconds (int totalSeconds, int& minutes, int& seconds,
-                                 bool overtime = false);
-    void setClock (int playerNum, int seconds);
-    void decrementClock (int playerNum);
-    void startClock (int playerNum);
-    void stopClock (int playerNum);
+    void messageAppendHtml(const QString& text, const QColor& color);
+    QString encodeHtmlEntities(const QString& text);
+    QString canonizeMessage(const QString& text);
+    int minutesSecondsToSeconds(int minutes, int seconds,
+                                bool overtime = false);
+    int secondsToMinutesSeconds(int totalSeconds, int& minutes, int& seconds,
+                                bool overtime = false);
+    void setClock(int playerNum, int seconds);
+    void decrementClock(int playerNum);
+    void startClock(int playerNum);
+    void stopClock(int playerNum);
 
-    //void processGameAction (const QString& string);
-    void processCommand (const QString& string);
-    void processObserve (const QString& string);
-    void processAccept (const QString& string);
-    void processMove (const QString& string);
-    void processLogin (const QString& string);
-    void processResign (const QString& string);
-    void makeMove (CrosswordGameMove& move);
-    int scoreMove (const CrosswordGameMove& move);
-    void fixMoveOvertime (CrosswordGameMove& move) const;
+    //void processGameAction(const QString& string);
+    void processCommand(const QString& string);
+    void processObserve(const QString& string);
+    void processAccept(const QString& string);
+    void processMove(const QString& string);
+    void processLogin(const QString& string);
+    void processResign(const QString& string);
+    void makeMove(CrosswordGameMove& move);
+    int scoreMove(const CrosswordGameMove& move);
+    void fixMoveOvertime(CrosswordGameMove& move) const;
 
-    bool appendMoves (QList<CrosswordGameMove>& moves, const QString& string,
-                      int playerToMove) const;
+    bool appendMoves(QList<CrosswordGameMove>& moves, const QString& string,
+                     int playerToMove) const;
 
     public:
     enum GameStatus {

@@ -42,67 +42,67 @@ const QString TITLE_PREFIX = "Cardbox";
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-CardboxForm::CardboxForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : ActionForm (CardboxFormType, parent, f), wordEngine (e),
-    quizDatabase (0), cardboxCountModel (0), cardboxDaysModel (0)
+CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
+    : ActionForm(CardboxFormType, parent, f), wordEngine(e),
+    quizDatabase(0), cardboxCountModel(0), cardboxDaysModel(0)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout (this);
-    mainVlay->setMargin (MARGIN);
-    mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    mainVlay->setMargin(MARGIN);
+    mainVlay->setSpacing(SPACING);
+    Q_CHECK_PTR(mainVlay);
 
-    QLabel* label = new QLabel
-        ("Shift cardbox questions so the backlog contains a certain number "
-         "of questions.  Currently this is hard-coded to reschedule all "
-         "questions in the Anagrams cardbox.");
-    Q_CHECK_PTR (label);
-    label->setWordWrap (true);
-    mainVlay->addWidget (label);
+    QLabel* label = new QLabel(
+        "Shift cardbox questions so the backlog contains a certain number "
+        "of questions.  Currently this is hard-coded to reschedule all "
+        "questions in the Anagrams cardbox.");
+    Q_CHECK_PTR(label);
+    label->setWordWrap(true);
+    mainVlay->addWidget(label);
 
     // Shift area
     QHBoxLayout* shiftHlay = new QHBoxLayout;
-    Q_CHECK_PTR (shiftHlay);
-    shiftHlay->setSpacing (SPACING);
-    mainVlay->addLayout (shiftHlay);
+    Q_CHECK_PTR(shiftHlay);
+    shiftHlay->setSpacing(SPACING);
+    mainVlay->addLayout(shiftHlay);
 
-    QLabel* shiftLabel = new QLabel ("Desired backlog size:");
-    Q_CHECK_PTR (shiftLabel);
-    shiftHlay->addWidget (shiftLabel);
+    QLabel* shiftLabel = new QLabel("Desired backlog size:");
+    Q_CHECK_PTR(shiftLabel);
+    shiftHlay->addWidget(shiftLabel);
 
     backlogSbox = new QSpinBox;
-    Q_CHECK_PTR (backlogSbox);
-    backlogSbox->setMinimum (1);
-    backlogSbox->setMaximum (999999);
-    shiftHlay->addWidget (backlogSbox);
+    Q_CHECK_PTR(backlogSbox);
+    backlogSbox->setMinimum(1);
+    backlogSbox->setMaximum(999999);
+    shiftHlay->addWidget(backlogSbox);
 
     ZPushButton* shiftButton = new ZPushButton;
-    Q_CHECK_PTR (shiftButton);
-    shiftButton->setText ("&Shift");
-    shiftButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (shiftButton, SIGNAL (clicked()), SLOT (shiftClicked()));
-    shiftHlay->addWidget (shiftButton);
+    Q_CHECK_PTR(shiftButton);
+    shiftButton->setText("&Shift");
+    shiftButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(shiftButton, SIGNAL(clicked()), SLOT(shiftClicked()));
+    shiftHlay->addWidget(shiftButton);
 
     QHBoxLayout* cardboxHlay = new QHBoxLayout;
-    Q_CHECK_PTR (cardboxHlay);
-    cardboxHlay->setSpacing (SPACING);
-    mainVlay->addLayout (cardboxHlay);
+    Q_CHECK_PTR(cardboxHlay);
+    cardboxHlay->setSpacing(SPACING);
+    mainVlay->addLayout(cardboxHlay);
 
     cardboxCountView = new QTreeView;
-    Q_CHECK_PTR (cardboxCountView);
-    cardboxHlay->addWidget (cardboxCountView);
+    Q_CHECK_PTR(cardboxCountView);
+    cardboxHlay->addWidget(cardboxCountView);
 
     cardboxDaysView = new QTreeView;
-    Q_CHECK_PTR (cardboxDaysView);
-    cardboxHlay->addWidget (cardboxDaysView);
+    Q_CHECK_PTR(cardboxDaysView);
+    cardboxHlay->addWidget(cardboxDaysView);
 
     ZPushButton* refreshButton = new ZPushButton;
-    Q_CHECK_PTR (refreshButton);
-    refreshButton->setText ("&Refresh");
-    refreshButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (refreshButton, SIGNAL (clicked()), SLOT (refreshClicked()));
-    mainVlay->addWidget (refreshButton);
+    Q_CHECK_PTR(refreshButton);
+    refreshButton->setText("&Refresh");
+    refreshButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(refreshButton, SIGNAL(clicked()), SLOT(refreshClicked()));
+    mainVlay->addWidget(refreshButton);
 
-    mainVlay->addStretch (0);
+    mainVlay->addStretch(0);
 
     quizSpecChanged();
 }
@@ -117,7 +117,7 @@ CardboxForm::CardboxForm (WordEngine* e, QWidget* parent, Qt::WFlags f)
 QIcon
 CardboxForm::getIcon() const
 {
-    return QIcon (":/cardbox-icon");
+    return QIcon(":/cardbox-icon");
 }
 
 //---------------------------------------------------------------------------
@@ -154,7 +154,7 @@ CardboxForm::getStatusString() const
 void
 CardboxForm::shiftClicked()
 {
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
     int desiredBacklog = backlogSbox->value();
     QString lexicon = wordEngine->getLexiconName();
@@ -163,7 +163,7 @@ CardboxForm::shiftClicked()
     QStringList questions;
 
     QuizDatabase db (lexicon, quizType);
-    db.shiftCardbox (questions, desiredBacklog);
+    db.shiftCardbox(questions, desiredBacklog);
 
     refreshClicked();
 
@@ -181,27 +181,27 @@ CardboxForm::refreshClicked()
     if (!quizDatabase)
         return;
 
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     const QSqlDatabase* sqlDb = quizDatabase->getDatabase();
 
     // Refresh cardbox count list
     if (cardboxCountModel) {
         QString queryStr = "SELECT cardbox, count(*) FROM questions "
             "WHERE cardbox NOT NULL GROUP BY cardbox"; 
-        cardboxCountModel->setQuery (queryStr, *sqlDb);
-        cardboxCountModel->setHeaderData (0, Qt::Horizontal, "Cardbox");
-        cardboxCountModel->setHeaderData (1, Qt::Horizontal, "Count");
+        cardboxCountModel->setQuery(queryStr, *sqlDb);
+        cardboxCountModel->setHeaderData(0, Qt::Horizontal, "Cardbox");
+        cardboxCountModel->setHeaderData(1, Qt::Horizontal, "Count");
     }
 
     // Refresh upcoming word counts
     if (cardboxDaysModel) {
-        unsigned int now = std::time (0);
+        unsigned int now = std::time(0);
         QString queryStr =
             "SELECT round((next_scheduled - 43200.0 - %1) / 86400) AS days, "
             "count(*) FROM questions WHERE cardbox NOT NULL GROUP BY days";
-        cardboxDaysModel->setQuery (queryStr.arg (now), *sqlDb);
-        cardboxDaysModel->setHeaderData (0, Qt::Horizontal, "Days");
-        cardboxDaysModel->setHeaderData (1, Qt::Horizontal, "Count");
+        cardboxDaysModel->setQuery(queryStr.arg(now), *sqlDb);
+        cardboxDaysModel->setHeaderData(0, Qt::Horizontal, "Days");
+        cardboxDaysModel->setHeaderData(1, Qt::Horizontal, "Count");
     }
 
     QApplication::restoreOverrideCursor();
@@ -219,18 +219,18 @@ CardboxForm::quizSpecChanged()
     QString quizType = "Anagrams";
 
     delete quizDatabase;
-    quizDatabase = new QuizDatabase (lexicon, quizType);
-    Q_CHECK_PTR (quizDatabase);
+    quizDatabase = new QuizDatabase(lexicon, quizType);
+    Q_CHECK_PTR(quizDatabase);
 
     delete cardboxCountModel;
     cardboxCountModel = new QSqlQueryModel;
-    Q_CHECK_PTR (cardboxCountModel);
-    cardboxCountView->setModel (cardboxCountModel);
+    Q_CHECK_PTR(cardboxCountModel);
+    cardboxCountView->setModel(cardboxCountModel);
 
     delete cardboxDaysModel;
     cardboxDaysModel = new QSqlQueryModel;
-    Q_CHECK_PTR (cardboxDaysModel);
-    cardboxDaysView->setModel (cardboxDaysModel);
+    Q_CHECK_PTR(cardboxDaysModel);
+    cardboxDaysView->setModel(cardboxDaysModel);
 
     refreshClicked();
 }

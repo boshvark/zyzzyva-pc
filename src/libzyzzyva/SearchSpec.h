@@ -3,7 +3,7 @@
 //
 // A class to represent a word search specification.
 //
-// Copyright 2004, 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,12 +34,12 @@
 class SearchSpec
 {
     public:
-    SearchSpec() : version (0), conjunction (true) { }
+    SearchSpec() : version(0), conjunction(true) { }
     ~SearchSpec() { }
 
     QString asString() const;
     QDomElement asDomElement() const;
-    bool fromDomElement (const QDomElement& element);
+    bool fromDomElement(const QDomElement& element);
     void optimize();
     void update();
 

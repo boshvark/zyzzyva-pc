@@ -3,7 +3,7 @@
 //
 // A help browser dialog.
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -31,7 +31,7 @@ class HelpDialog : public QAssistantClient
 {
     Q_OBJECT
     public:
-    HelpDialog (const QString& path, QObject* parent = 0);
+    HelpDialog(const QString& path, QObject* parent = 0);
 };
 
 #endif // ZYZZYVA_HELP_DIALOG_H

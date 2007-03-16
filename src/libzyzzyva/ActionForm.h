@@ -3,7 +3,7 @@
 //
 // A base class for main action forms.
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -45,8 +45,8 @@ class ActionForm : public QFrame
     };
 
     public:
-    ActionForm (ActionFormType t, QWidget* parent = 0, Qt::WFlags f = 0)
-        : QFrame (parent, f), type (t) { }
+    ActionForm(ActionFormType t, QWidget* parent = 0, Qt::WFlags f = 0)
+        : QFrame(parent, f), type(t) { }
     virtual ~ActionForm() { }
     virtual ActionFormType getType() const { return type; }
     virtual QIcon getIcon() const { return QIcon(); }
@@ -58,9 +58,9 @@ class ActionForm : public QFrame
     virtual void saveRequested() { }
 
     signals:
-    void titleChanged (const QString& title);
-    void statusChanged (const QString& status);
-    void saveEnabledChanged (bool saveEnabled);
+    void titleChanged(const QString& title);
+    void statusChanged(const QString& status);
+    void saveEnabledChanged(bool saveEnabled);
 
     private:
     ActionFormType type;

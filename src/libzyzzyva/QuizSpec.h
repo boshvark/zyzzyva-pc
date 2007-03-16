@@ -95,8 +95,8 @@ class QuizSpec
     void setRandomAlgorithm(int i) { randomAlgorithm = i; }
     void setFilename(const QString& fname) { filename = fname; }
 
-    void addIncorrect(const QString& word) { progress.addIncorrect (word); }
-    void addMissed(const QString& word) { progress.addMissed (word); }
+    void addIncorrect(const QString& word) { progress.addIncorrect(word); }
+    void addMissed(const QString& word) { progress.addMissed(word); }
 
     QString getLexicon() const { return lexicon; }
     QuizType getType() const { return type; }

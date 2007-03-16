@@ -3,7 +3,7 @@
 //
 // The dialog for saving a list of words.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -37,7 +37,7 @@ class WordListSaveDialog : public QDialog
 {
     Q_OBJECT
     public:
-    WordListSaveDialog (QWidget* parent = 0, Qt::WFlags f = 0);
+    WordListSaveDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~WordListSaveDialog();
 
     QList<WordAttribute> getSelectedAttributes() const;
@@ -51,7 +51,7 @@ class WordListSaveDialog : public QDialog
 
     private:
     void initializeLists();
-    void moveSelection (QListWidget* src, QListWidget* dest);
+    void moveSelection(QListWidget* src, QListWidget* dest);
 
     private:
     QListWidget* unselectedAttrList;

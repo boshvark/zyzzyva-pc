@@ -44,19 +44,19 @@ class NewQuizDialog : public QDialog
 {
     Q_OBJECT
     public:
-    NewQuizDialog (WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
+    NewQuizDialog(WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
     ~NewQuizDialog() { }
 
     QuizSpec getQuizSpec();
-    void setQuizSpec (const QuizSpec& spec);
+    void setQuizSpec(const QuizSpec& spec);
 
     public slots:
-    void timerToggled (bool on);
-    void typeActivated (const QString& text);
-    void methodActivated (const QString& text);
-    void useSearchButtonToggled (bool on);
+    void timerToggled(bool on);
+    void typeActivated(const QString& text);
+    void methodActivated(const QString& text);
+    void useSearchButtonToggled(bool on);
     void searchContentsChanged();
-    void questionOrderActivated (const QString& text);
+    void questionOrderActivated(const QString& text);
     void loadQuiz();
     void saveQuiz();
 
@@ -64,7 +64,7 @@ class NewQuizDialog : public QDialog
     void disableProgress();
     void clearFilename();
     void updateForm();
-    void fillQuestionOrderCombo (const QString& method);
+    void fillQuestionOrderCombo(const QString& method);
 
     private:
     QComboBox*      typeCombo;

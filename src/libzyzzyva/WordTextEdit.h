@@ -5,7 +5,7 @@
 // does nothing special.  It only exists so objects of this class can be
 // distinguished from other QTextEdit objects when applying font settings.
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -33,10 +33,10 @@ class WordTextEdit : public QTextEdit
 {
     Q_OBJECT
     public:
-    WordTextEdit (QWidget* parent = 0)
-        : QTextEdit (parent) { }
-    WordTextEdit (const QString& text, QWidget* parent = 0)
-        : QTextEdit (text, parent) { }
+    WordTextEdit(QWidget* parent = 0)
+        : QTextEdit(parent) { }
+    WordTextEdit(const QString& text, QWidget* parent = 0)
+        : QTextEdit(text, parent) { }
 
     virtual ~WordTextEdit() { }
 };

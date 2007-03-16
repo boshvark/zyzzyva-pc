@@ -3,7 +3,7 @@
 //
 // A class derived from QItemDelegate, used to render items in a word list.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -59,8 +59,8 @@ const QColor INVALID_WORD_OUTLINE = Qt::white;
 //
 //! @param parent the parent object
 //---------------------------------------------------------------------------
-WordTableDelegate::WordTableDelegate (QWidget* parent)
-    : QItemDelegate (parent)
+WordTableDelegate::WordTableDelegate(QWidget* parent)
+    : QItemDelegate(parent)
 {
 }
 
@@ -74,14 +74,14 @@ WordTableDelegate::WordTableDelegate (QWidget* parent)
 //! @param index the model index corresponding to the item
 //---------------------------------------------------------------------------
 QSize
-WordTableDelegate::sizeHint (const QStyleOptionViewItem& option,
-                             const QModelIndex& index) const
+WordTableDelegate::sizeHint(const QStyleOptionViewItem& option,
+                            const QModelIndex& index) const
 {
-    QString text = index.model()->data (index, Qt::DisplayRole).toString();
+    QString text = index.model()->data(index, Qt::DisplayRole).toString();
     QFontMetrics fm (option.font);
-    QRect rect = fm.boundingRect (QRect (0, 0, 1000, 1000), 0, text);
-    return QSize (rect.width() + ITEM_XPADDING,
-                  rect.height() + ITEM_YPADDING);
+    QRect rect = fm.boundingRect(QRect(0, 0, 1000, 1000), 0, text);
+    return QSize(rect.width() + ITEM_XPADDING,
+                 rect.height() + ITEM_YPADDING);
 }
 
 //---------------------------------------------------------------------------
@@ -94,8 +94,8 @@ WordTableDelegate::sizeHint (const QStyleOptionViewItem& option,
 //! @param index the model index corresponding to the item
 //---------------------------------------------------------------------------
 void
-WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
-                          option, const QModelIndex& index) const
+WordTableDelegate::paint(QPainter* painter, const QStyleOptionViewItem&
+                         option, const QModelIndex& index) const
 {
     // XXX: Yuck - instead of doing this, the WordTableModel should implement
     // another user-defined role to represent "last-added-ness".
@@ -105,8 +105,8 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
 
     WordTableModel::WordType type =
         (lastAddedIndex == index.row()) ? WordTableModel::WordLastAdded :
-        WordTableModel::WordType (index.model()->data (index,
-                                                       Qt::UserRole).toInt());
+        WordTableModel::WordType(index.model()->data(index,
+                                                     Qt::UserRole).toInt());
 
     QColor color;
     QColor outlineColor;
@@ -139,13 +139,13 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
         break;
         default: break;
     }
-    painter->setBrush (QBrush (color));
-    painter->setPen (color);
-    painter->drawRect (option.rect);
+    painter->setBrush(QBrush(color));
+    painter->setPen(color);
+    painter->drawRect(option.rect);
 
-    painter->setPen (outlineColor);
-    painter->drawLine (option.rect.left(), option.rect.bottom(),
-                       option.rect.right(), option.rect.bottom());
+    painter->setPen(outlineColor);
+    painter->drawLine(option.rect.left(), option.rect.bottom(),
+                      option.rect.right(), option.rect.bottom());
 
     // Draw foreground
     switch (type) {
@@ -169,7 +169,7 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
         break;
         default: break;
     }
-    painter->setPen (color);
+    painter->setPen(color);
 
     // Align text to left except for front hooks, which are aligned right
     int flags = Qt::AlignVCenter;
@@ -184,18 +184,18 @@ WordTableDelegate::paint (QPainter* painter, const QStyleOptionViewItem&
         break;
     }
 
-    QRect rectToDraw = option.rect.adjusted (ITEM_XPADDING, 0,
-                                             -ITEM_XPADDING, 0);
+    QRect rectToDraw = option.rect.adjusted(ITEM_XPADDING, 0,
+                                            -ITEM_XPADDING, 0);
     int width = option.rect.width() - 2 * ITEM_XPADDING;
     QFontMetrics fm (option.font);
-    QString text = index.model()->data (index, Qt::DisplayRole).toString();
-    QStringList defs = text.split ("\n");
+    QString text = index.model()->data(index, Qt::DisplayRole).toString();
+    QStringList defs = text.split("\n");
     QString textToDraw;
     QString def;
     foreach (def, defs) {
         if (!textToDraw.isEmpty())
             textToDraw += "\n";
-        textToDraw += elidedText (fm, width, Qt::ElideRight, def);
+        textToDraw += elidedText(fm, width, Qt::ElideRight, def);
     }
-    painter->drawText (rectToDraw, flags, textToDraw);
+    painter->drawText(rectToDraw, flags, textToDraw);
 }

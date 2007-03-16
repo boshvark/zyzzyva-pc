@@ -3,7 +3,7 @@
 //
 // A class to represent a crossword game board.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ CrosswordGameBoard::clear()
 //! @return the square type
 //---------------------------------------------------------------------------
 CrosswordGameBoard::SquareType
-CrosswordGameBoard::getSquareType (int row, int col) const
+CrosswordGameBoard::getSquareType(int row, int col) const
 {
     if ((row < 0) || (row > NUM_ROWS) || (col < 0) || (col > NUM_COLUMNS))
         return Invalid;
@@ -134,7 +134,7 @@ CrosswordGameBoard::getSquareType (int row, int col) const
 //! @return the square type
 //---------------------------------------------------------------------------
 CrosswordGameBoard::Tile
-CrosswordGameBoard::getTile (int row, int col) const
+CrosswordGameBoard::getTile(int row, int col) const
 {
     if ((row < 0) || (row > NUM_ROWS) || (col < 0) || (col > NUM_COLUMNS))
         return Tile();
@@ -178,8 +178,8 @@ CrosswordGameBoard::getNumColumns() const
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-CrosswordGameBoard::makeMove (const CrosswordGameMove& move,
-                              QString* lettersPlaced)
+CrosswordGameBoard::makeMove(const CrosswordGameMove& move,
+                             QString* lettersPlaced)
 {
     if (!move.isValid())
         return false;
@@ -192,11 +192,11 @@ CrosswordGameBoard::makeMove (const CrosswordGameMove& move,
     for (int i = 0; i < word.length(); ++i) {
         if (!tiles[row][col].isValid()) {
             QChar letter = word[i];
-            tiles[row][col].setLetter (letter.toUpper());
-            tiles[row][col].setBlank (letter.isUpper());
-            tiles[row][col].setPlayerNum (move.getPlayerNum());
+            tiles[row][col].setLetter(letter.toUpper());
+            tiles[row][col].setBlank(letter.isUpper());
+            tiles[row][col].setPlayerNum(move.getPlayerNum());
             if (lettersPlaced) {
-                (*lettersPlaced) += (letter.isUpper() ? QChar ('?')
+                (*lettersPlaced) += (letter.isUpper() ? QChar('?')
                                                       : letter.toUpper());
             }
         }
@@ -221,8 +221,8 @@ CrosswordGameBoard::makeMove (const CrosswordGameMove& move,
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-CrosswordGameBoard::removeMove (const CrosswordGameMove& move,
-                                QString* lettersRemoved)
+CrosswordGameBoard::removeMove(const CrosswordGameMove& move,
+                               QString* lettersRemoved)
 {
     if (!move.isValid())
         return false;
@@ -236,7 +236,7 @@ CrosswordGameBoard::removeMove (const CrosswordGameMove& move,
         tiles[row][col].decrementTimesUsed();
         if (tiles[row][col].getTimesUsed() <= 0) {
             if (lettersRemoved) {
-                (*lettersRemoved) += tiles[row][col].isBlank() ? QChar ('?')
+                (*lettersRemoved) += tiles[row][col].isBlank() ? QChar('?')
                                      : tiles[row][col].getLetter();
             }
             tiles[row][col] = Tile();

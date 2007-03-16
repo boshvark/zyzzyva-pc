@@ -3,7 +3,7 @@
 //
 // The about dialog.
 //
-// Copyright 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -31,7 +31,7 @@ class AboutDialog : public QDialog
 {
     Q_OBJECT
     public:
-    AboutDialog (QWidget* parent = 0, Qt::WFlags f = 0);
+    AboutDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~AboutDialog();
 };
 

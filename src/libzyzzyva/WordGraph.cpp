@@ -3,7 +3,7 @@
 //
 // A Directed Acyclic Word Graph class.
 //
-// Copyright 2004, 2005, 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -54,7 +54,7 @@ using namespace Defs;
 //! Constructor.
 //---------------------------------------------------------------------------
 WordGraph::WordGraph()
-    : dawg (0), rdawg (0), top (0), rtop (0), numWords (0)
+    : dawg(0), rdawg(0), top(0), rtop(0), numWords(0)
 {
     // Test for endianness
     char endianTest[2] = { 1, 0 };
@@ -100,11 +100,11 @@ WordGraph::clear()
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
-                           errString, quint16* expectedChecksum)
+WordGraph::importDawgFile(const QString& filename, bool reverse, QString*
+                          errString, quint16* expectedChecksum)
 {
     QFile file (filename);
-    if (!file.open (QIODevice::ReadOnly)) {
+    if (!file.open(QIODevice::ReadOnly)) {
         if (errString)
             *errString = "Can't open file '" + filename + "': "
             + file.errorString();
@@ -114,28 +114,28 @@ WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
     long numEdges;
     long* p = &numEdges;
     char* cp = (char*) p;
-    file.read (cp, 1 * sizeof (long));
+    file.read(cp, 1 * sizeof(long));
     if (bigEndian)
-        convertEndian (p, 1);
+        convertEndian(p, 1);
 
     if (reverse) {
         rdawg = new long[numEdges + 1];
         rdawg[0] = 0;
         p = &rdawg[1];
         cp = (char*) p;
-        file.read (cp, numEdges * sizeof (long));
+        file.read(cp, numEdges * sizeof(long));
     }
     else {
         dawg = new long[numEdges + 1];
         dawg[0] = 0;
         p = &dawg[1];
         cp = (char*) p;
-        file.read (cp, numEdges * sizeof (long));
+        file.read(cp, numEdges * sizeof(long));
     }
 
     if (expectedChecksum && errString) {
         char* cp = (char*) p;
-        if (*expectedChecksum != qChecksum (cp, numEdges)) {
+        if (*expectedChecksum != qChecksum(cp, numEdges)) {
             *errString =
                 "The lexicon checksum does not match the expected checksum.  "
                 "It is possible the lexicon has been corrupted.";
@@ -143,7 +143,7 @@ WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
     }
 
     if (bigEndian)
-        convertEndian (p, numEdges);
+        convertEndian(p, numEdges);
 
     return true;
 }
@@ -157,13 +157,13 @@ WordGraph::importDawgFile (const QString& filename, bool reverse, QString*
 //! @param w the word to add
 //---------------------------------------------------------------------------
 void
-WordGraph::addWord (const QString& w)
+WordGraph::addWord(const QString& w)
 {
     if (w.isEmpty())
         return;
 
-    addWordOld (w, false);
-    addWordOld (w, true);
+    addWordOld(w, false);
+    addWordOld(w, true);
     ++numWords;
 }
 
@@ -175,13 +175,13 @@ WordGraph::addWord (const QString& w)
 //! @param w the word to search for
 //---------------------------------------------------------------------------
 bool
-WordGraph::containsWord (const QString& w) const
+WordGraph::containsWord(const QString& w) const
 {
     if (w.isEmpty())
         return false;
 
     if (!dawg)
-        return containsWordOld (w);
+        return containsWordOld(w);
 
     long node = ROOT_NODE;
     bool eow = false;
@@ -190,7 +190,7 @@ WordGraph::containsWord (const QString& w) const
         if (!node)
             return false;
 
-        QChar letter = w.at (i);
+        QChar letter = w.at(i);
         for (long* edge = &dawg[node]; ; ++edge) {
             long lc = *edge;
             lc = lc >> V_LETTER;
@@ -220,14 +220,14 @@ WordGraph::containsWord (const QString& w) const
 //! @return a list of acceptable words
 //---------------------------------------------------------------------------
 QStringList
-WordGraph::search (const SearchSpec& spec) const
+WordGraph::search(const SearchSpec& spec) const
 {
     QStringList wordList;
     if (spec.conditions.empty())
         return wordList;
 
     if (!dawg)
-        return searchOld (spec);
+        return searchOld(spec);
 
     QList<SearchCondition> matchConditions;
     int maxLength = MAX_WORD_LEN;
@@ -242,9 +242,9 @@ WordGraph::search (const SearchSpec& spec) const
             case SearchCondition::PatternMatch:
             case SearchCondition::AnagramMatch:
             case SearchCondition::SubanagramMatch:
-            matchConditions.append (condition); 
-            if (condition.stringValue.contains ("?") ||
-                condition.stringValue.contains ("["))
+            matchConditions.append(condition); 
+            if (condition.stringValue.contains("?") ||
+                condition.stringValue.contains("["))
                 ++numWildcardConditions;
             break;
 
@@ -266,7 +266,7 @@ WordGraph::search (const SearchSpec& spec) const
     // exactly one pattern using wildcards
     // XXX: Commented out because it may be a reasonable default to use the
     // lower case lettering as matched by the first such condition
-    //bool wildcardLower = (numWildcardConditions == 1);
+    //bool wildcardLower =(numWildcardConditions == 1);
     bool wildcardLower = true;
 
     // If no match condition was specified, search for all words matching the
@@ -275,7 +275,7 @@ WordGraph::search (const SearchSpec& spec) const
         SearchCondition condition;
         condition.type = SearchCondition::PatternMatch;
         condition.stringValue = "*";
-        matchConditions.append (condition);
+        matchConditions.append(condition);
     }
 
     map<QString, QString> finalWordSet;
@@ -304,10 +304,10 @@ WordGraph::search (const SearchSpec& spec) const
             if (unmatched.isEmpty())
                 unmatched = "*";
             else
-                unmatched.replace (QRegExp ("\\*+"), "*");
+                unmatched.replace(QRegExp("\\*+"), "*");
 
-            if ((unmatched.left (1) == "*") && (unmatched.right (1) != "*")) {
-                unmatched = reverseString (unmatched);
+            if ((unmatched.left(1) == "*") && (unmatched.right(1) != "*")) {
+                unmatched = reverseString(unmatched);
                 reversePattern = true;
             }
         }
@@ -319,17 +319,17 @@ WordGraph::search (const SearchSpec& spec) const
         else if ((condition.type == SearchCondition::AnagramMatch) ||
                  (condition.type == SearchCondition::SubanagramMatch))
         {
-            wildcard = unmatched.contains ('*');
+            wildcard = unmatched.contains('*');
             if (wildcard)
-                unmatched = unmatched.replace ('*', "");
+                unmatched = unmatched.replace('*', "");
 
             QRegExp re ("\\[[^\\]]*\\][A-Z]");
             int pos = 0;
-            while ((pos = re.indexIn (unmatched, pos)) >= 0) {
-                unmatched = unmatched.left (re.pos()) +
-                    unmatched.right (unmatched.length() -
-                                    (re.pos() + re.matchedLength()) + 1) +
-                    unmatched.mid (re.pos(), re.matchedLength() - 1);
+            while ((pos = re.indexIn(unmatched, pos)) >= 0) {
+                unmatched = unmatched.left(re.pos()) +
+                    unmatched.right(unmatched.length() -
+                                   (re.pos() + re.matchedLength()) + 1) +
+                    unmatched.mid(re.pos(), re.matchedLength() - 1);
                 pos += re.matchedLength();
             }
         }
@@ -340,7 +340,7 @@ WordGraph::search (const SearchSpec& spec) const
         while (node) {
 
             // Stop if word is at max length
-            if (int (word.length()) < maxLength) {
+            if (int(word.length()) < maxLength) {
                 QString origWord = word;
                 QString origUnmatched = unmatched;
 
@@ -352,14 +352,14 @@ WordGraph::search (const SearchSpec& spec) const
                 if ((condition.type == SearchCondition::PatternMatch) &&
                     (!unmatched.isEmpty()))
                 {
-                    match = unmatched.at (0);
+                    match = unmatched.at(0);
                     if (match == "*")
-                        states.push (TraversalState (node, word,
-                            unmatched.right (unmatched.length() - 1)));
+                        states.push(TraversalState(node, word,
+                            unmatched.right(unmatched.length() - 1)));
 
                     else if (match == "[") {
-                        closeIndex = unmatched.indexOf (']', 0);
-                        match = unmatched.mid (1, closeIndex);
+                        closeIndex = unmatched.indexOf(']', 0);
+                        match = unmatched.mid(1, closeIndex);
                     }
                 }
 
@@ -373,7 +373,7 @@ WordGraph::search (const SearchSpec& spec) const
 
                     QChar letter = (char) longLetter;
 
-                    if (excludeLetters.contains (letter)) {
+                    if (excludeLetters.contains(letter)) {
                         if (*edge & M_END_OF_NODE)
                             break;
                         else
@@ -388,8 +388,8 @@ WordGraph::search (const SearchSpec& spec) const
 
                         // A node matches wildcard characters or its own
                         // letter
-                        bool matchLetter = match.contains (letter);
-                        bool matchNegated = match.contains ("^");
+                        bool matchLetter = match.contains(letter);
+                        bool matchNegated = match.contains("^");
                         QChar c = letter;
                         if (match.contains ("]") || (match == "?"))
                             c = c.toLower();
@@ -410,13 +410,12 @@ WordGraph::search (const SearchSpec& spec) const
                         // to be traversed later
                         if (child) {
                             if (match == "*")
-                                states.push (TraversalState (child,
-                                                             word,
-                                                             unmatched));
+                                states.push(TraversalState(child, word,
+                                                           unmatched));
 
-                            states.push (TraversalState (child, word,
-                                unmatched.right (unmatched.length() -
-                                                 closeIndex - 1)));
+                            states.push(TraversalState(child, word,
+                                unmatched.right(unmatched.length() -
+                                                closeIndex - 1)));
                         }
 
                         // If end of word and end of pattern, put the word in
@@ -424,17 +423,17 @@ WordGraph::search (const SearchSpec& spec) const
                         // reverse the word first.
                         QString wordUpper = word.toUpper();
                         if (reversePattern)
-                            wordUpper = reverseString (wordUpper);
+                            wordUpper = reverseString(wordUpper);
 
                         if ((*edge & M_END_OF_WORD) &&
-                            ((int (unmatched.length()) == closeIndex + 1) ||
-                            ((int (unmatched.length()) == closeIndex + 2) &&
-                             (QChar (unmatched.at (closeIndex + 1)) == '*'))) &&
-                            matchesSpec (wordUpper, spec) &&
-                            !wordSet.count (wordUpper))
+                            ((int(unmatched.length()) == closeIndex + 1) ||
+                            ((int(unmatched.length()) == closeIndex + 2) &&
+                             (QChar(unmatched.at(closeIndex + 1)) == '*'))) &&
+                            matchesSpec(wordUpper, spec) &&
+                            !wordSet.count(wordUpper))
                         {
-                            wordSet.insert (make_pair (wordUpper,
-                                reversePattern ? reverseString (word)
+                            wordSet.insert(make_pair(wordUpper,
+                                reversePattern ? reverseString(word)
                                                : word));
                         }
                     }
@@ -462,7 +461,7 @@ WordGraph::search (const SearchSpec& spec) const
                         int groupStart = -1;
                         bool wildcardMatch = false;
                         for (int i = 0; i < len; ++i) {
-                            QChar c = unmatched.at (i);
+                            QChar c = unmatched.at(i);
 
                             if (c == '[') {
                                 inGroup = true;
@@ -485,13 +484,11 @@ WordGraph::search (const SearchSpec& spec) const
                                         }
 
                                         else if (child) {
-                                            states.push ( TraversalState
-                                                (child, word +
-                                                 letter,
-                                                 unmatched.left (groupStart) +
-                                                 unmatched.right
-                                                 (unmatched.length() - i -
-                                                  1)));
+                                            states.push(TraversalState(child,
+                                                word + letter,
+                                                unmatched.left(groupStart) +
+                                                unmatched.right(
+                                                unmatched.length() - i - 1)));
                                         }
                                     }
                                     inGroup = false;
@@ -515,10 +512,10 @@ WordGraph::search (const SearchSpec& spec) const
                         // Try to match the current letter against the
                         // pattern.  If the letter doesn't match exactly,
                         // match a ? char.
-                        //int index = unmatched.find (node->letter);
+                        //int index = unmatched.find(node->letter);
                         found = (matchStart >= 0);
                         if (!found) {
-                            matchStart = matchEnd = unmatched.indexOf ("?");
+                            matchStart = matchEnd = unmatched.indexOf("?");
                             found = (matchStart >= 0);
                             wildcardMatch = true;
                         }
@@ -527,21 +524,20 @@ WordGraph::search (const SearchSpec& spec) const
                         // keep traversing after possibly adding the current
                         // word.
                         if (found || wildcard) {
-                            word += (found && !wildcardMatch) ? QChar (letter)
-                                : QChar (letter).toLower();
+                            word += (found && !wildcardMatch) ? QChar(letter)
+                                : QChar(letter).toLower();
 
                             if (found)
-                                unmatched.replace (matchStart,
-                                                   matchEnd - matchStart + 1,
-                                                   "");
+                                unmatched.replace(matchStart,
+                                                  matchEnd - matchStart + 1,
+                                                  QString());
 
                             long child = *edge & M_NODE_POINTER;
                             if (child &&
                                 (wildcard || !unmatched.isEmpty()))
                             {
-                                states.push (TraversalState (child,
-                                                             word,
-                                                             unmatched));
+                                states.push(TraversalState(child, word,
+                                                           unmatched));
                             }
 
                             QString wordUpper = word.toUpper();
@@ -549,10 +545,10 @@ WordGraph::search (const SearchSpec& spec) const
                                 ((condition.type ==
                                   SearchCondition::SubanagramMatch) ||
                                   unmatched.isEmpty()) &&
-                                  matchesSpec (wordUpper, spec) &&
-                                  !wordSet.count (wordUpper))
+                                  matchesSpec(wordUpper, spec) &&
+                                  !wordSet.count(wordUpper))
                             {
-                                wordSet.insert (make_pair (wordUpper, word));
+                                wordSet.insert(make_pair(wordUpper, word));
                             }
                         }
                     }
@@ -582,9 +578,9 @@ WordGraph::search (const SearchSpec& spec) const
             map<QString, QString> conjunctionSet;
             for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
                 map<QString, QString>::iterator found =
-                    finalWordSet.find (sit->first);
+                    finalWordSet.find(sit->first);
                 if (found != finalWordSet.end())
-                    conjunctionSet.insert (*found);
+                    conjunctionSet.insert(*found);
             }
             if (conjunctionSet.empty())
                 return wordList;
@@ -593,7 +589,7 @@ WordGraph::search (const SearchSpec& spec) const
 
         else {
             for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
-                finalWordSet.insert (*sit);
+                finalWordSet.insert(*sit);
             }
         }
 
@@ -618,7 +614,7 @@ WordGraph::search (const SearchSpec& spec) const
 int
 WordGraph::getNumWords() const
 {
-    return (dawg ? getNumWords (ROOT_NODE) : numWords);
+    return (dawg ? getNumWords(ROOT_NODE) : numWords);
 }
 
 //---------------------------------------------------------------------------
@@ -631,7 +627,7 @@ WordGraph::getNumWords() const
 //! finding the word to be checked.
 //---------------------------------------------------------------------------
 bool
-WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
+WordGraph::matchesSpec(QString word, const SearchSpec& spec) const
 {
     QListIterator<SearchCondition> it (spec.conditions);
     while (it.hasNext()) {
@@ -639,8 +635,8 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
 
         switch (condition.type) {
             case SearchCondition::Length:
-            if ((int (word.length()) < condition.minValue) ||
-                (int (word.length()) > condition.maxValue))
+            if ((int(word.length()) < condition.minValue) ||
+                (int(word.length()) > condition.maxValue))
                 return false;
             break;
 
@@ -648,10 +644,10 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
                 QString tmpWord = word;
                 int includeLen = condition.stringValue.length();
                 for (int i = 0; i < includeLen; ++i) {
-                    int index = tmpWord.indexOf (condition.stringValue.at (i));
+                    int index = tmpWord.indexOf(condition.stringValue.at(i));
                     if ((index < 0) ^ condition.negated)
                         return false;
-                    tmpWord.replace (index, 1, "");
+                    tmpWord.replace(index, 1, "");
                 }
             }
             break;
@@ -661,7 +657,7 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
                 int wordLen = word.length();
                 int consist = 0;
                 for (int i = 0; i < wordLen; ++i) {
-                    if (condition.stringValue.contains (word.at (i)))
+                    if (condition.stringValue.contains(word.at(i)))
                         ++consist;
                 }
                 int consistPct = (consist * 100) / wordLen;
@@ -692,7 +688,7 @@ WordGraph::matchesSpec (QString word, const SearchSpec& spec) const
 //! @return the number of words converted
 //---------------------------------------------------------------------------
 long
-WordGraph::convertEndian (long* data, long count)
+WordGraph::convertEndian(long* data, long count)
 {
     for (int i = 0; i < count; ++i) {
         char* p = (char*) data;
@@ -717,19 +713,19 @@ WordGraph::convertEndian (long* data, long count)
 //! reverse list
 //---------------------------------------------------------------------------
 void
-WordGraph::addWordOld (const QString& w, bool reverse)
+WordGraph::addWordOld(const QString& w, bool reverse)
 {
-    QString word = (reverse ? reverseString (w) : w);
+    QString word = (reverse ? reverseString(w) : w);
     Node* node = (reverse ? rtop : top);
     Node* parentNode = 0;
     QChar c;
     int wordLength = word.length();
     for (int i = 0; i < wordLength; ++i) {
-        c = word.at (i);
+        c = word.at(i);
 
         // Empty node, so create a new node and link from its parent
         if (!node) {
-            node = new Node (c.toAscii());
+            node = new Node(c.toAscii());
             (parentNode ? parentNode->child : (reverse ? rtop : top)) = node;
         }
 
@@ -737,7 +733,7 @@ WordGraph::addWordOld (const QString& w, bool reverse)
         else {
             while (node->letter != c) {
                 if (!node->next) {
-                    node->next = new Node (c.toAscii());
+                    node->next = new Node(c.toAscii());
                 }
                 node = node->next;
             }
@@ -760,7 +756,7 @@ WordGraph::addWordOld (const QString& w, bool reverse)
 //! @return the reversed string
 //---------------------------------------------------------------------------
 QString
-WordGraph::reverseString (const QString& s) const
+WordGraph::reverseString(const QString& s) const
 {
     QString reverse;
     QString tmp;
@@ -769,28 +765,28 @@ WordGraph::reverseString (const QString& s) const
         QChar c = s[i];
 
         if (c == ']') {
-            reverse.prepend (c);
-            reverse.prepend (tmp);
+            reverse.prepend(c);
+            reverse.prepend(tmp);
             tmp.clear();
             inCharClass = false;
         }
 
         else if (c == '[') {
-            tmp.append (c);
+            tmp.append(c);
             inCharClass = true;
         }
 
         else if (inCharClass) {
-            tmp.append (c);
+            tmp.append(c);
         }
 
         else {
-            reverse.prepend (c);
+            reverse.prepend(c);
         }
     }
 
     if (inCharClass)
-        reverse.prepend (tmp);
+        reverse.prepend(tmp);
 
     return reverse;
 }
@@ -803,7 +799,7 @@ WordGraph::reverseString (const QString& s) const
 //! @param w the word to search for
 //---------------------------------------------------------------------------
 bool
-WordGraph::containsWordOld (const QString& w) const
+WordGraph::containsWordOld(const QString& w) const
 {
     Node* node = top;
     bool eow = false;
@@ -813,7 +809,7 @@ WordGraph::containsWordOld (const QString& w) const
         if (!node)
             return false;
 
-        c = w.at (i);
+        c = w.at(i);
         while (node->letter != c) {
             if (!node->next)
                 return false;
@@ -839,7 +835,7 @@ WordGraph::containsWordOld (const QString& w) const
 //! @return a list of acceptable words
 //---------------------------------------------------------------------------
 QStringList
-WordGraph::searchOld (const SearchSpec& spec) const
+WordGraph::searchOld(const SearchSpec& spec) const
 {
     QStringList wordList;
     if (!top || spec.conditions.empty())
@@ -858,9 +854,9 @@ WordGraph::searchOld (const SearchSpec& spec) const
             case SearchCondition::PatternMatch:
             case SearchCondition::AnagramMatch:
             case SearchCondition::SubanagramMatch:
-            matchConditions.append (condition); 
-            if (condition.stringValue.contains ("?") ||
-                condition.stringValue.contains ("["))
+            matchConditions.append(condition); 
+            if (condition.stringValue.contains("?") ||
+                condition.stringValue.contains("["))
                 ++numWildcardConditions;
             break;
 
@@ -882,7 +878,7 @@ WordGraph::searchOld (const SearchSpec& spec) const
     // exactly one pattern using wildcards
     // XXX: Commented out because it may be a reasonable default to use the
     // lower case lettering as matched by the first such condition
-    //bool wildcardLower = (numWildcardConditions == 1);
+    //bool wildcardLower =(numWildcardConditions == 1);
     bool wildcardLower = true;
 
     // If no match condition was specified, search for all words matching the
@@ -891,7 +887,7 @@ WordGraph::searchOld (const SearchSpec& spec) const
         SearchCondition condition;
         condition.type = SearchCondition::PatternMatch;
         condition.stringValue = "*";
-        matchConditions.append (condition);
+        matchConditions.append(condition);
     }
 
     map<QString, QString> finalWordSet;
@@ -920,10 +916,10 @@ WordGraph::searchOld (const SearchSpec& spec) const
             if (unmatched.isEmpty())
                 unmatched = "*";
             else
-                unmatched.replace (QRegExp ("\\*+"), "*");
+                unmatched.replace(QRegExp("\\*+"), "*");
 
-            if ((unmatched.left (1) == "*") && (unmatched.right (1) != "*")) {
-                unmatched = reverseString (unmatched);
+            if ((unmatched.left(1) == "*") && (unmatched.right(1) != "*")) {
+                unmatched = reverseString(unmatched);
                 reversePattern = true;
             }
         }
@@ -935,17 +931,17 @@ WordGraph::searchOld (const SearchSpec& spec) const
         else if ((condition.type == SearchCondition::AnagramMatch) ||
                  (condition.type == SearchCondition::SubanagramMatch))
         {
-            wildcard = unmatched.contains ('*');
+            wildcard = unmatched.contains('*');
             if (wildcard)
-                unmatched = unmatched.replace ('*', "");
+                unmatched = unmatched.replace('*', "");
 
             QRegExp re ("\\[[^\\]]*\\][A-Z]");
             int pos = 0;
-            while ((pos = re.indexIn (unmatched, pos)) >= 0) {
-                unmatched = unmatched.left (re.pos()) +
-                    unmatched.right (unmatched.length() -
-                                    (re.pos() + re.matchedLength()) + 1) +
-                    unmatched.mid (re.pos(), re.matchedLength() - 1);
+            while ((pos = re.indexIn(unmatched, pos)) >= 0) {
+                unmatched = unmatched.left(re.pos()) +
+                    unmatched.right(unmatched.length() -
+                                   (re.pos() + re.matchedLength()) + 1) +
+                    unmatched.mid(re.pos(), re.matchedLength() - 1);
                 pos += re.matchedLength();
             }
         }
@@ -956,7 +952,7 @@ WordGraph::searchOld (const SearchSpec& spec) const
         while (node) {
 
             // Stop if word is at max length
-            if (int (word.length()) < maxLength) {
+            if (int(word.length()) < maxLength) {
                 QString origWord = word;
                 QString origUnmatched = unmatched;
 
@@ -968,20 +964,20 @@ WordGraph::searchOld (const SearchSpec& spec) const
                 if ((condition.type == SearchCondition::PatternMatch) &&
                     (!unmatched.isEmpty()))
                 {
-                    match = unmatched.at (0);
+                    match = unmatched.at(0);
                     if (match == "*")
-                        states.push (TraversalStateOld (node, word,
-                            unmatched.right (unmatched.length() - 1)));
+                        states.push(TraversalStateOld(node, word,
+                            unmatched.right(unmatched.length() - 1)));
 
                     else if (match == "[") {
-                        closeIndex = unmatched.indexOf (']', 0);
-                        match = unmatched.mid (1, closeIndex);
+                        closeIndex = unmatched.indexOf(']', 0);
+                        match = unmatched.mid(1, closeIndex);
                     }
                 }
 
                 // Traverse next nodes, looking for matches
                 for (; node; node = node->next) {
-                    if (excludeLetters.contains (node->letter))
+                    if (excludeLetters.contains(node->letter))
                         continue;
 
                     unmatched = origUnmatched;
@@ -992,8 +988,8 @@ WordGraph::searchOld (const SearchSpec& spec) const
 
                         // A node matches wildcard characters or its own
                         // letter
-                        bool matchLetter = match.contains (node->letter);
-                        bool matchNegated = match.contains ("^");
+                        bool matchLetter = match.contains(node->letter);
+                        bool matchNegated = match.contains("^");
                         QChar c = (match.contains ("]") || (match == "?"))
                             ? node->letter.toLower() : node->letter;
 
@@ -1007,13 +1003,12 @@ WordGraph::searchOld (const SearchSpec& spec) const
                         // to be traversed later
                         if (node->child) {
                             if (match == "*")
-                                states.push (TraversalStateOld (node->child,
-                                                             word,
-                                                             unmatched));
+                                states.push(TraversalStateOld(node->child, word,
+                                                              unmatched));
 
-                            states.push (TraversalStateOld (node->child, word,
-                                unmatched.right (unmatched.length() -
-                                                 closeIndex - 1)));
+                            states.push(TraversalStateOld(node->child, word,
+                                unmatched.right(unmatched.length() -
+                                                closeIndex - 1)));
                         }
 
                         // If end of word and end of pattern, put the word in
@@ -1021,17 +1016,17 @@ WordGraph::searchOld (const SearchSpec& spec) const
                         // reverse the word first.
                         QString wordUpper = word.toUpper();
                         if (reversePattern)
-                            wordUpper = reverseString (wordUpper);
+                            wordUpper = reverseString(wordUpper);
 
                         if (node->eow &&
-                            ((int (unmatched.length()) == closeIndex + 1) ||
-                            ((int (unmatched.length()) == closeIndex + 2) &&
-                             (QChar (unmatched.at (closeIndex + 1)) == '*'))) &&
-                            matchesSpec (wordUpper, spec) &&
-                            !wordSet.count (wordUpper))
+                            ((int(unmatched.length()) == closeIndex + 1) ||
+                            ((int(unmatched.length()) == closeIndex + 2) &&
+                             (QChar(unmatched.at(closeIndex + 1)) == '*'))) &&
+                            matchesSpec(wordUpper, spec) &&
+                            !wordSet.count(wordUpper))
                         {
-                            wordSet.insert (make_pair (wordUpper,
-                                reversePattern ? reverseString (word)
+                            wordSet.insert(make_pair(wordUpper,
+                                reversePattern ? reverseString(word)
                                                : word));
                         }
                     }
@@ -1059,7 +1054,7 @@ WordGraph::searchOld (const SearchSpec& spec) const
                         int groupStart = -1;
                         bool wildcardMatch = false;
                         for (int i = 0; i < len; ++i) {
-                            QChar c = unmatched.at (i);
+                            QChar c = unmatched.at(i);
 
                             if (c == '[') {
                                 inGroup = true;
@@ -1080,13 +1075,12 @@ WordGraph::searchOld (const SearchSpec& spec) const
                                         }
 
                                         else if (node->child) {
-                                            states.push ( TraversalStateOld
-                                                (node->child, word +
-                                                 node->letter,
-                                                 unmatched.left (groupStart) +
-                                                 unmatched.right
-                                                 (unmatched.length() - i -
-                                                  1)));
+                                            states.push(TraversalStateOld(
+                                                node->child,
+                                                word + node->letter,
+                                                unmatched.left(groupStart) +
+                                                unmatched.right(
+                                                unmatched.length() - i - 1)));
                                         }
                                     }
                                     inGroup = false;
@@ -1110,10 +1104,10 @@ WordGraph::searchOld (const SearchSpec& spec) const
                         // Try to match the current letter against the
                         // pattern.  If the letter doesn't match exactly,
                         // match a ? char.
-                        //int index = unmatched.find (node->letter);
+                        //int index = unmatched.find(node->letter);
                         found = (matchStart >= 0);
                         if (!found) {
-                            matchStart = matchEnd = unmatched.indexOf ("?");
+                            matchStart = matchEnd = unmatched.indexOf("?");
                             found = (matchStart >= 0);
                             wildcardMatch = true;
                         }
@@ -1126,16 +1120,15 @@ WordGraph::searchOld (const SearchSpec& spec) const
                                 : node->letter.toLower();
 
                             if (found)
-                                unmatched.replace (matchStart,
-                                                   matchEnd - matchStart + 1,
-                                                   "");
+                                unmatched.replace(matchStart,
+                                                  matchEnd - matchStart + 1,
+                                                  QString());
 
                             if (node->child &&
                                 (wildcard || !unmatched.isEmpty()))
                             {
-                                states.push (TraversalStateOld (node->child,
-                                                             word,
-                                                             unmatched));
+                                states.push(TraversalStateOld(node->child, word,
+                                                              unmatched));
                             }
 
                             QString wordUpper = word.toUpper();
@@ -1143,10 +1136,10 @@ WordGraph::searchOld (const SearchSpec& spec) const
                                 ((condition.type ==
                                   SearchCondition::SubanagramMatch) ||
                                   unmatched.isEmpty()) &&
-                                  matchesSpec (wordUpper, spec) &&
-                                  !wordSet.count (wordUpper))
+                                  matchesSpec(wordUpper, spec) &&
+                                  !wordSet.count(wordUpper))
                             {
-                                wordSet.insert (make_pair (wordUpper, word));
+                                wordSet.insert(make_pair(wordUpper, word));
                             }
                         }
                     }
@@ -1173,9 +1166,9 @@ WordGraph::searchOld (const SearchSpec& spec) const
             map<QString, QString> conjunctionSet;
             for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
                 map<QString, QString>::iterator found =
-                    finalWordSet.find (sit->first);
+                    finalWordSet.find(sit->first);
                 if (found != finalWordSet.end())
-                    conjunctionSet.insert (*found);
+                    conjunctionSet.insert(*found);
             }
             if (conjunctionSet.empty())
                 return wordList;
@@ -1184,7 +1177,7 @@ WordGraph::searchOld (const SearchSpec& spec) const
 
         else {
             for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
-                finalWordSet.insert (*sit);
+                finalWordSet.insert(*sit);
             }
         }
 
@@ -1207,7 +1200,7 @@ WordGraph::searchOld (const SearchSpec& spec) const
 //! @return the number of words
 //---------------------------------------------------------------------------
 int
-WordGraph::getNumWords (long node) const
+WordGraph::getNumWords(long node) const
 {
     int count = 0;
     for (long* edge = &dawg[node]; ; ++edge) {
@@ -1215,7 +1208,7 @@ WordGraph::getNumWords (long node) const
             ++count;
         node = *edge & M_NODE_POINTER;
         if (node)
-            count += getNumWords (node);
+            count += getNumWords(node);
         if (*edge & M_END_OF_NODE)
             break;
     }
@@ -1228,7 +1221,7 @@ WordGraph::getNumWords (long node) const
 //! Constructor.
 //---------------------------------------------------------------------------
 WordGraph::Node::Node(char c, bool e)
-    : letter (c), eow (e), next (0), child (0)
+    : letter(c), eow(e), next(0), child(0)
 {
 }
 
@@ -1254,7 +1247,7 @@ WordGraph::Node::~Node()
 //! @return true if equivalent, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordGraph::Node::operator== (const Node& rhs)
+WordGraph::Node::operator==(const Node& rhs)
 {
     return ((letter == rhs.letter) && (eow == rhs.eow)
             && (next == rhs.next) && (child == rhs.child));

@@ -3,7 +3,7 @@
 //
 // A class to represent a quiz timer specification.
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -41,8 +41,8 @@ QString
 QuizTimerSpec::asString() const
 {
     return (type == NoTimer) ? QString::null
-                             : "Timer: " + QString::number (duration) +
-                               " seconds " + typeToString (type);
+                             : "Timer: " + QString::number(duration) +
+                               " seconds " + typeToString(type);
 }
 
 //---------------------------------------------------------------------------
@@ -56,13 +56,13 @@ QDomElement
 QuizTimerSpec::asDomElement() const
 {
     QDomDocument doc;
-    QDomElement topElement = doc.createElement (XML_TOP_ELEMENT);
+    QDomElement topElement = doc.createElement(XML_TOP_ELEMENT);
 
     if (type == NoTimer)
         return topElement;
 
-    topElement.setAttribute (XML_TYPE_ATTR, typeToString (type));
-    topElement.setAttribute (XML_DURATION_ATTR, duration);
+    topElement.setAttribute(XML_TYPE_ATTR, typeToString(type));
+    topElement.setAttribute(XML_DURATION_ATTR, duration);
 
     return topElement;
 }
@@ -76,21 +76,21 @@ QuizTimerSpec::asDomElement() const
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizTimerSpec::fromDomElement (const QDomElement& element)
+QuizTimerSpec::fromDomElement(const QDomElement& element)
 {
     QuizTimerSpec tmpSpec;
 
     if (element.tagName() != XML_TOP_ELEMENT)
         return false;
 
-    if (element.hasAttribute (XML_TYPE_ATTR)) {
-        tmpSpec.type = stringToType (element.attribute (XML_TYPE_ATTR));
+    if (element.hasAttribute(XML_TYPE_ATTR)) {
+        tmpSpec.type = stringToType(element.attribute(XML_TYPE_ATTR));
 
-        if (!element.hasAttribute (XML_DURATION_ATTR))
+        if (!element.hasAttribute(XML_DURATION_ATTR))
             return false;
 
         bool ok = false;
-        tmpSpec.duration = element.attribute (XML_DURATION_ATTR).toInt (&ok);
+        tmpSpec.duration = element.attribute(XML_DURATION_ATTR).toInt(&ok);
         if (!ok)
             return false;
     }
@@ -108,7 +108,7 @@ QuizTimerSpec::fromDomElement (const QDomElement& element)
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
-QuizTimerSpec::typeToString (QuizTimerType t) const
+QuizTimerSpec::typeToString(QuizTimerType t) const
 {
     switch (t) {
         case PerQuestion: return PER_QUESTION_TYPE;
@@ -126,7 +126,7 @@ QuizTimerSpec::typeToString (QuizTimerType t) const
 //! @return the timer type
 //---------------------------------------------------------------------------
 QuizTimerType
-QuizTimerSpec::stringToType (const QString& s) const
+QuizTimerSpec::stringToType(const QString& s) const
 {
     if (s == PER_QUESTION_TYPE)
         return PerQuestion;

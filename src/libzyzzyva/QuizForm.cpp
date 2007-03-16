@@ -69,7 +69,7 @@ const int TITLE_FONT_PIXEL_SIZE = 20;
 //! @param b another character
 //---------------------------------------------------------------------------
 bool
-alphabeticalCmp (const QChar& a, const QChar& b)
+alphabeticalCmp(const QChar& a, const QChar& b)
 {
     return (a < b);
 }
@@ -84,11 +84,11 @@ alphabeticalCmp (const QChar& a, const QChar& b)
 //! @param b another character
 //---------------------------------------------------------------------------
 bool
-vowelsFirstCmp (const QChar& a, const QChar& b)
+vowelsFirstCmp(const QChar& a, const QChar& b)
 {
-    if (Auxil::isVowel (a) && !Auxil::isVowel (b))
+    if (Auxil::isVowel(a) && !Auxil::isVowel(b))
         return true;
-    else if (!Auxil::isVowel (a) && Auxil::isVowel (b))
+    else if (!Auxil::isVowel(a) && Auxil::isVowel(b))
         return false;
     else
         return (a < b);
@@ -104,11 +104,11 @@ vowelsFirstCmp (const QChar& a, const QChar& b)
 //! @param another character
 //---------------------------------------------------------------------------
 bool
-consonantsFirstCmp (const QChar& a, const QChar& b)
+consonantsFirstCmp(const QChar& a, const QChar& b)
 {
-    if (Auxil::isVowel (a) && !Auxil::isVowel (b))
+    if (Auxil::isVowel(a) && !Auxil::isVowel(b))
         return false;
-    else if (!Auxil::isVowel (a) && Auxil::isVowel (b))
+    else if (!Auxil::isVowel(a) && Auxil::isVowel(b))
         return true;
     else
         return (a < b);
@@ -123,239 +123,235 @@ consonantsFirstCmp (const QChar& a, const QChar& b)
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-QuizForm::QuizForm (WordEngine* we, QWidget* parent, Qt::WFlags f)
-    : ActionForm (QuizFormType, parent, f), wordEngine (we),
-    quizEngine (new QuizEngine (wordEngine)),
-    timerId (0), timerPaused (0), checkBringsJudgment (true),
-    recordStatsBlocked (false), unsavedChanges (false), db (0),
+QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
+    : ActionForm(QuizFormType, parent, f), wordEngine(we),
+    quizEngine(new QuizEngine(wordEngine)),
+    timerId(0), timerPaused(0), checkBringsJudgment(true),
+    recordStatsBlocked(false), unsavedChanges(false), db(0),
     // FIXME: This dialog should be nonmodal!
-    analyzeDialog (new AnalyzeQuizDialog (quizEngine, we, this,
-                                          Qt::WindowMinMaxButtonsHint))
+    analyzeDialog(new AnalyzeQuizDialog(quizEngine, we, this,
+                                        Qt::WindowMinMaxButtonsHint))
 {
     QFont titleFont = qApp->font();
-    titleFont.setPixelSize (TITLE_FONT_PIXEL_SIZE);
+    titleFont.setPixelSize(TITLE_FONT_PIXEL_SIZE);
 
-    QHBoxLayout* mainHlay = new QHBoxLayout (this);
-    mainHlay->setMargin (MARGIN);
-    mainHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainHlay);
+    QHBoxLayout* mainHlay = new QHBoxLayout(this);
+    mainHlay->setMargin(MARGIN);
+    mainHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(mainHlay);
 
     QVBoxLayout* mainVlay = new QVBoxLayout;
-    mainVlay->setSpacing (SPACING);
-    Q_CHECK_PTR (mainVlay);
-    mainHlay->addLayout (mainVlay);
+    mainVlay->setSpacing(SPACING);
+    Q_CHECK_PTR(mainVlay);
+    mainHlay->addLayout(mainVlay);
 
     QHBoxLayout* topHlay = new QHBoxLayout;
-    topHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (topHlay);
-    mainVlay->addLayout (topHlay);
+    topHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(topHlay);
+    mainVlay->addLayout(topHlay);
 
     quizTypeLabel = new QLabel;
-    Q_CHECK_PTR (quizTypeLabel);
-    quizTypeLabel->setFont (titleFont);
-    quizTypeLabel->setAlignment (Qt::AlignLeft);
-    topHlay->addWidget (quizTypeLabel);
+    Q_CHECK_PTR(quizTypeLabel);
+    quizTypeLabel->setFont(titleFont);
+    quizTypeLabel->setAlignment(Qt::AlignLeft);
+    topHlay->addWidget(quizTypeLabel);
 
     timerLabel = new QLabel;
-    Q_CHECK_PTR (timerLabel);
-    timerLabel->setFont (titleFont);
-    timerLabel->setAlignment (Qt::AlignHCenter);
-    topHlay->addWidget (timerLabel);
+    Q_CHECK_PTR(timerLabel);
+    timerLabel->setFont(titleFont);
+    timerLabel->setAlignment(Qt::AlignHCenter);
+    topHlay->addWidget(timerLabel);
 
     quizNameLabel = new QLabel;
-    Q_CHECK_PTR (quizNameLabel);
-    quizNameLabel->setFont (titleFont);
-    quizNameLabel->setAlignment (Qt::AlignRight);
-    quizNameLabel->setText ("Unnamed Quiz");
-    topHlay->addWidget (quizNameLabel);
+    Q_CHECK_PTR(quizNameLabel);
+    quizNameLabel->setFont(titleFont);
+    quizNameLabel->setAlignment(Qt::AlignRight);
+    quizNameLabel->setText("Unnamed Quiz");
+    topHlay->addWidget(quizNameLabel);
 
     QHBoxLayout* quizBoxHlay = new QHBoxLayout;
-    quizBoxHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (quizBoxHlay);
-    mainVlay->addLayout (quizBoxHlay);
+    quizBoxHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(quizBoxHlay);
+    mainVlay->addLayout(quizBoxHlay);
 
-    quizBoxHlay->addStretch (1);
+    quizBoxHlay->addStretch(1);
 
     questionStack = new QStackedWidget;
-    Q_CHECK_PTR (questionStack);
-    questionStack->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    quizBoxHlay->addWidget (questionStack);
+    Q_CHECK_PTR(questionStack);
+    questionStack->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    quizBoxHlay->addWidget(questionStack);
 
     // Canvas for tile images - set default background color
     questionCanvas = new QuizCanvas;
-    Q_CHECK_PTR (questionCanvas);
-    questionCanvas->setPalette
-        (QPalette (MainSettings::getQuizBackgroundColor()));
-    questionCanvas->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    questionStack->addWidget (questionCanvas);
+    Q_CHECK_PTR(questionCanvas);
+    questionCanvas->setPalette(
+        QPalette(MainSettings::getQuizBackgroundColor()));
+    questionCanvas->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    questionStack->addWidget(questionCanvas);
 
     questionLabel = new QuizQuestionLabel;
-    Q_CHECK_PTR (questionLabel);
-    questionLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
-    questionStack->addWidget (questionLabel);
+    Q_CHECK_PTR(questionLabel);
+    questionLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    questionStack->addWidget(questionLabel);
 
-    quizBoxHlay->addStretch (1);
+    quizBoxHlay->addStretch(1);
 
     questionSpecLabel = new QLabel;
-    Q_CHECK_PTR (questionSpecLabel);
-    questionSpecLabel->setAlignment (Qt::AlignHCenter | Qt::AlignVCenter);
-    questionStack->addWidget (questionSpecLabel);
+    Q_CHECK_PTR(questionSpecLabel);
+    questionSpecLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    questionStack->addWidget(questionSpecLabel);
 
     QHBoxLayout* letterOrderHlay = new QHBoxLayout;
-    Q_CHECK_PTR (letterOrderHlay);
-    mainVlay->addLayout (letterOrderHlay);
+    Q_CHECK_PTR(letterOrderHlay);
+    mainVlay->addLayout(letterOrderHlay);
 
-    letterOrderHlay->addStretch (1);
+    letterOrderHlay->addStretch(1);
 
-    letterOrderLabel = new QLabel ("Letter order:");
-    Q_CHECK_PTR (letterOrderLabel);
-    letterOrderHlay->addWidget (letterOrderLabel);
+    letterOrderLabel = new QLabel("Letter order:");
+    Q_CHECK_PTR(letterOrderLabel);
+    letterOrderHlay->addWidget(letterOrderLabel);
 
-    alphaOrderButton = new ZPushButton ("&Alpha");
-    Q_CHECK_PTR (alphaOrderButton);
-    alphaOrderButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (alphaOrderButton, SIGNAL (clicked()),
-             SLOT (alphaOrderClicked()));
-    letterOrderHlay->addWidget (alphaOrderButton);
+    alphaOrderButton = new ZPushButton("&Alpha");
+    Q_CHECK_PTR(alphaOrderButton);
+    alphaOrderButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(alphaOrderButton, SIGNAL(clicked()), SLOT(alphaOrderClicked()));
+    letterOrderHlay->addWidget(alphaOrderButton);
 
-    randomOrderButton = new ZPushButton ("&Random");
-    Q_CHECK_PTR (randomOrderButton);
-    randomOrderButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (randomOrderButton, SIGNAL (clicked()),
-             SLOT (randomOrderClicked()));
-    letterOrderHlay->addWidget (randomOrderButton);
+    randomOrderButton = new ZPushButton("&Random");
+    Q_CHECK_PTR(randomOrderButton);
+    randomOrderButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(randomOrderButton, SIGNAL(clicked()), SLOT(randomOrderClicked()));
+    letterOrderHlay->addWidget(randomOrderButton);
 
-    letterOrderHlay->addStretch (1);
+    letterOrderHlay->addStretch(1);
 
-    responseView = new WordTableView (wordEngine);
-    Q_CHECK_PTR (responseView);
-    mainVlay->addWidget (responseView);
+    responseView = new WordTableView(wordEngine);
+    Q_CHECK_PTR(responseView);
+    mainVlay->addWidget(responseView);
 
-    responseModel = new WordTableModel (wordEngine, this);
-    Q_CHECK_PTR (responseModel);
-    connect (responseModel, SIGNAL (wordsChanged()),
-             responseView, SLOT (resizeItemsToContents()));
-    responseView->setModel (responseModel);
+    responseModel = new WordTableModel(wordEngine, this);
+    Q_CHECK_PTR(responseModel);
+    connect(responseModel, SIGNAL(wordsChanged()),
+            responseView, SLOT(resizeItemsToContents()));
+    responseView->setModel(responseModel);
 
     // Correct status
     QHBoxLayout* correctStatusHlay = new QHBoxLayout;
-    correctStatusHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (correctStatusHlay);
-    mainVlay->addLayout (correctStatusHlay);
+    correctStatusHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(correctStatusHlay);
+    mainVlay->addLayout(correctStatusHlay);
 
     responseStatusLabel = new DefinitionLabel;
-    Q_CHECK_PTR (responseStatusLabel);
-    correctStatusHlay->addWidget (responseStatusLabel);
+    Q_CHECK_PTR(responseStatusLabel);
+    correctStatusHlay->addWidget(responseStatusLabel);
 
     correctStatusLabel = new DefinitionLabel;
-    Q_CHECK_PTR (correctStatusLabel);
-    correctStatusHlay->addWidget (correctStatusLabel);
+    Q_CHECK_PTR(correctStatusLabel);
+    correctStatusHlay->addWidget(correctStatusLabel);
 
     // Cardbox status
     QHBoxLayout* cardboxStatusHlay = new QHBoxLayout;
-    cardboxStatusHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (cardboxStatusHlay);
-    mainVlay->addLayout (cardboxStatusHlay);
+    cardboxStatusHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(cardboxStatusHlay);
+    mainVlay->addLayout(cardboxStatusHlay);
 
     cardboxStatusLabel = new DefinitionLabel;
-    Q_CHECK_PTR (cardboxStatusLabel);
-    cardboxStatusHlay->addWidget (cardboxStatusLabel);
+    Q_CHECK_PTR(cardboxStatusLabel);
+    cardboxStatusHlay->addWidget(cardboxStatusLabel);
 
     // Question stats
     QHBoxLayout* questionStatsHlay = new QHBoxLayout;
-    questionStatsHlay->setSpacing (SPACING);
-    questionStatsHlay->setMargin (0);
-    Q_CHECK_PTR (questionStatsHlay);
-    mainVlay->addLayout (questionStatsHlay);
+    questionStatsHlay->setSpacing(SPACING);
+    questionStatsHlay->setMargin(0);
+    Q_CHECK_PTR(questionStatsHlay);
+    mainVlay->addLayout(questionStatsHlay);
 
     questionStatsLabel = new DefinitionLabel;
-    Q_CHECK_PTR (questionStatsLabel);
-    questionStatsHlay->addWidget (questionStatsLabel);
+    Q_CHECK_PTR(questionStatsLabel);
+    questionStatsHlay->addWidget(questionStatsLabel);
 
     // Input line
     inputLine = new WordLineEdit;
-    Q_CHECK_PTR (inputLine);
-    inputValidator = new WordValidator (inputLine);
-    Q_CHECK_PTR (inputValidator);
-    inputLine->setValidator (inputValidator);
-    inputLine->setEnabled (false);
-    connect (inputLine, SIGNAL (returnPressed()), SLOT (responseEntered()));
-    mainVlay->addWidget (inputLine);
+    Q_CHECK_PTR(inputLine);
+    inputValidator = new WordValidator(inputLine);
+    Q_CHECK_PTR(inputValidator);
+    inputLine->setValidator(inputValidator);
+    inputLine->setEnabled(false);
+    connect(inputLine, SIGNAL(returnPressed()), SLOT(responseEntered()));
+    mainVlay->addWidget(inputLine);
 
     // Button layout
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing (SPACING);
-    Q_CHECK_PTR (buttonHlay);
-    mainVlay->addLayout (buttonHlay);
+    buttonHlay->setSpacing(SPACING);
+    Q_CHECK_PTR(buttonHlay);
+    mainVlay->addLayout(buttonHlay);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
     QGridLayout* buttonGlay = new QGridLayout;
-    buttonGlay->setSpacing (SPACING);
-    Q_CHECK_PTR (buttonGlay);
-    buttonHlay->addLayout (buttonGlay);
+    buttonGlay->setSpacing(SPACING);
+    Q_CHECK_PTR(buttonGlay);
+    buttonHlay->addLayout(buttonGlay);
 
     // Buttons
-    nextQuestionButton = new ZPushButton ("&Next");
-    Q_CHECK_PTR (nextQuestionButton);
-    nextQuestionButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (nextQuestionButton, SIGNAL (clicked()),
-             SLOT (nextQuestionClicked()));
-    nextQuestionButton->setEnabled (false);
-    buttonGlay->addWidget (nextQuestionButton, 0, 0, Qt::AlignHCenter);
+    nextQuestionButton = new ZPushButton("&Next");
+    Q_CHECK_PTR(nextQuestionButton);
+    nextQuestionButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(nextQuestionButton, SIGNAL(clicked()), SLOT(nextQuestionClicked()));
+    nextQuestionButton->setEnabled(false);
+    buttonGlay->addWidget(nextQuestionButton, 0, 0, Qt::AlignHCenter);
 
-    checkResponseButton = new ZPushButton ("&Check Answers");
-    Q_CHECK_PTR (checkResponseButton);
-    checkResponseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (checkResponseButton, SIGNAL (clicked()),
-             SLOT (checkResponseClicked()));
-    checkResponseButton->setEnabled (false);
-    buttonGlay->addWidget (checkResponseButton, 0, 1, Qt::AlignHCenter);
+    checkResponseButton = new ZPushButton("&Check Answers");
+    Q_CHECK_PTR(checkResponseButton);
+    checkResponseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(checkResponseButton, SIGNAL(clicked()),
+            SLOT(checkResponseClicked()));
+    checkResponseButton->setEnabled(false);
+    buttonGlay->addWidget(checkResponseButton, 0, 1, Qt::AlignHCenter);
 
-    markMissedButton = new ZPushButton ("&Mark as Missed");
-    Q_CHECK_PTR (markMissedButton);
-    markMissedButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (markMissedButton, SIGNAL (clicked()),
-             SLOT (markMissedClicked()));
-    buttonGlay->addWidget (markMissedButton, 0, 2, Qt::AlignHCenter);
+    markMissedButton = new ZPushButton("&Mark as Missed");
+    Q_CHECK_PTR(markMissedButton);
+    markMissedButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(markMissedButton, SIGNAL(clicked()), SLOT(markMissedClicked()));
+    buttonGlay->addWidget(markMissedButton, 0, 2, Qt::AlignHCenter);
 
-    pauseButton = new ZPushButton (PAUSE_BUTTON);
-    Q_CHECK_PTR (pauseButton);
-    pauseButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (pauseButton, SIGNAL (clicked()), SLOT (pauseClicked()));
-    pauseButton->setEnabled (false);
-    buttonGlay->addWidget (pauseButton, 0, 3, Qt::AlignHCenter);
+    pauseButton = new ZPushButton(PAUSE_BUTTON);
+    Q_CHECK_PTR(pauseButton);
+    pauseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(pauseButton, SIGNAL(clicked()), SLOT(pauseClicked()));
+    pauseButton->setEnabled(false);
+    buttonGlay->addWidget(pauseButton, 0, 3, Qt::AlignHCenter);
 
-    flashcardCbox = new QCheckBox ("Flashcard M&ode");
-    Q_CHECK_PTR (flashcardCbox);
-    connect (flashcardCbox, SIGNAL (stateChanged (int)),
-             SLOT (flashcardStateChanged (int)));
-    buttonGlay->addWidget (flashcardCbox, 1, 0, Qt::AlignHCenter);
+    flashcardCbox = new QCheckBox("Flashcard M&ode");
+    Q_CHECK_PTR(flashcardCbox);
+    connect(flashcardCbox, SIGNAL(stateChanged(int)),
+            SLOT(flashcardStateChanged(int)));
+    buttonGlay->addWidget(flashcardCbox, 1, 0, Qt::AlignHCenter);
 
-    newQuizButton = new ZPushButton ("New &Quiz...");
-    Q_CHECK_PTR (newQuizButton);
-    newQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (newQuizButton, SIGNAL (clicked()), SLOT (newQuizClicked()));
-    buttonGlay->addWidget (newQuizButton, 1, 1, Qt::AlignHCenter);
+    newQuizButton = new ZPushButton("New &Quiz...");
+    Q_CHECK_PTR(newQuizButton);
+    newQuizButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(newQuizButton, SIGNAL(clicked()), SLOT(newQuizClicked()));
+    buttonGlay->addWidget(newQuizButton, 1, 1, Qt::AlignHCenter);
 
-    saveQuizButton = new ZPushButton ("&Save Quiz");
-    Q_CHECK_PTR (saveQuizButton);
-    saveQuizButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (saveQuizButton, SIGNAL (clicked()), SLOT (saveRequested()));
-    buttonGlay->addWidget (saveQuizButton, 1, 2, Qt::AlignHCenter);
+    saveQuizButton = new ZPushButton("&Save Quiz");
+    Q_CHECK_PTR(saveQuizButton);
+    saveQuizButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(saveQuizButton, SIGNAL(clicked()), SLOT(saveRequested()));
+    buttonGlay->addWidget(saveQuizButton, 1, 2, Qt::AlignHCenter);
 
-    analyzeButton = new ZPushButton ("Analy&ze Quiz...");
-    Q_CHECK_PTR (analyzeButton);
-    analyzeButton->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect (analyzeButton, SIGNAL (clicked()), SLOT (analyzeClicked()));
-    buttonGlay->addWidget (analyzeButton, 1, 3, Qt::AlignHCenter);
+    analyzeButton = new ZPushButton("Analy&ze Quiz...");
+    Q_CHECK_PTR(analyzeButton);
+    analyzeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(analyzeButton, SIGNAL(clicked()), SLOT(analyzeClicked()));
+    buttonGlay->addWidget(analyzeButton, 1, 3, Qt::AlignHCenter);
 
-    buttonHlay->addStretch (1);
+    buttonHlay->addStretch(1);
 
-    displayAnswerTimer = new QTimer (this);
-    Q_CHECK_PTR (displayAnswerTimer);
-    connect (displayAnswerTimer, SIGNAL (timeout()),
-             SLOT (displayNextCorrectAnswer()));
+    displayAnswerTimer = new QTimer(this);
+    Q_CHECK_PTR(displayAnswerTimer);
+    connect(displayAnswerTimer, SIGNAL(timeout()),
+            SLOT(displayNextCorrectAnswer()));
 }
 
 //---------------------------------------------------------------------------
@@ -379,7 +375,7 @@ QuizForm::~QuizForm()
 QIcon
 QuizForm::getIcon() const
 {
-    return QIcon (":/quiz-icon");
+    return QIcon(":/quiz-icon");
 }
 
 //---------------------------------------------------------------------------
@@ -439,39 +435,38 @@ QuizForm::responseEntered()
         return;
     }
 
-    if (!responseMatchesQuestion (response)) {
+    if (!responseMatchesQuestion(response)) {
         pauseTimer();
         QString caption = "Response does not match question";
         QString message = "Sorry, your response does not match the question.";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         unpauseTimer();
         return;
     }
 
-    QuizEngine::ResponseStatus status = quizEngine->respond (response);
+    QuizEngine::ResponseStatus status = quizEngine->respond(response);
     QString displayResponse = response;
     QString statusStr = "";
 
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
-        setUnsavedChanges (true);
+        setUnsavedChanges(true);
 
     if (status == QuizEngine::Correct) {
-        if (response.contains (":"))
-            response = response.section (":", 1, 1);
+        if (response.contains(":"))
+            response = response.section(":", 1, 1);
 
         // FIXME: Probably not the right way to get alphabetical sorting
         // instead of alphagram sorting
         bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-        MainSettings::setWordListGroupByAnagrams (false);
-        responseModel->addWord (WordTableModel::WordItem
-                                (response, WordTableModel::WordCorrect),
-                                true);
-        MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+        MainSettings::setWordListGroupByAnagrams(false);
+        responseModel->addWord(
+            WordTableModel::WordItem(response, WordTableModel::WordCorrect),
+            true);
+        MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
-        responseView->scrollTo (responseModel->sibling
-                                (responseModel->getLastAddedIndex(), 0,
-                                 QModelIndex()));
+        responseView->scrollTo(responseModel->sibling(
+            responseModel->getLastAddedIndex(), 0, QModelIndex()));
         statusStr = "<font color=\"blue\">Correct</font>";
         analyzeDialog->updateStats();
         inputLine->clear();
@@ -479,7 +474,7 @@ QuizForm::responseEntered()
     else if (status == QuizEngine::Incorrect) {
         displayResponse += "*";
         statusStr = "<font color=\"red\">Incorrect</font>";
-        analyzeDialog->addIncorrect (response);
+        analyzeDialog->addIncorrect(response);
         selectInputArea();
     }
     else if (status == QuizEngine::Duplicate) {
@@ -492,7 +487,7 @@ QuizForm::responseEntered()
         updateStats();
 
     // Update the response status label
-    responseStatusLabel->setText (displayResponse + " : " + statusStr);
+    responseStatusLabel->setText(displayResponse + " : " + statusStr);
 
     // Restart the timer, if the timer runs per response
     if (timerId && (timerSpec.getType() == PerResponse))
@@ -533,7 +528,7 @@ QuizForm::responseEntered()
 //! @return true if the quiz is successfully started, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizForm::newQuiz (const QuizSpec& spec)
+QuizForm::newQuiz(const QuizSpec& spec)
 {
     disconnectDatabase();
 
@@ -555,12 +550,12 @@ QuizForm::newQuiz (const QuizSpec& spec)
         enableLetterOrder = false;
         break;
     }
-    letterOrderLabel->setEnabled (enableLetterOrder);
-    alphaOrderButton->setEnabled (enableLetterOrder);
-    randomOrderButton->setEnabled (enableLetterOrder);
+    letterOrderLabel->setEnabled(enableLetterOrder);
+    alphaOrderButton->setEnabled(enableLetterOrder);
+    randomOrderButton->setEnabled(enableLetterOrder);
 
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
-    bool ok = quizEngine->newQuiz (spec);
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    bool ok = quizEngine->newQuiz(spec);
     QApplication::restoreOverrideCursor();
 
     if (!ok) {
@@ -575,9 +570,9 @@ QuizForm::newQuiz (const QuizSpec& spec)
             message = "No matching questions were found.  "
                       "Please modify your search criteria.";
         }
-        message = Auxil::dialogWordWrap (message);
+        message = Auxil::dialogWordWrap(message);
 
-        QMessageBox::warning (MainWindow::getInstance(), caption, message);
+        QMessageBox::warning(MainWindow::getInstance(), caption, message);
         return false;
     }
 
@@ -588,12 +583,12 @@ QuizForm::newQuiz (const QuizSpec& spec)
 
     // Connect to dotabase before starting the first question
     QString lexicon = spec.getLexicon();
-    QString quizType = Auxil::quizTypeToString (spec.getType());
-    connectToDatabase (lexicon, quizType);
+    QString quizType = Auxil::quizTypeToString(spec.getType());
+    connectToDatabase(lexicon, quizType);
 
-    quizTypeLabel->setText (quizType);
+    quizTypeLabel->setText(quizType);
     startQuestion();
-    analyzeDialog->newQuiz (spec);
+    analyzeDialog->newQuiz(spec);
 
     // If the question is complete, don't record stats when restoring it
     if (quizEngine->getQuestionComplete()) {
@@ -602,18 +597,18 @@ QuizForm::newQuiz (const QuizSpec& spec)
         recordStatsBlocked = false;
     }
 
-    flashcardCbox->setChecked (MainSettings::getQuizUseFlashcardMode());
+    flashcardCbox->setChecked(MainSettings::getQuizUseFlashcardMode());
 
     if (spec.getType() == QuizSpec::QuizAnagramsWithHooks)
-        inputValidator->setOptions (WordValidator::AllowHooks);
+        inputValidator->setOptions(WordValidator::AllowHooks);
     else
-        inputValidator->setOptions (WordValidator::None);
+        inputValidator->setOptions(WordValidator::None);
 
-    setQuizNameFromFilename (spec.getFilename());
+    setQuizNameFromFilename(spec.getFilename());
 
-    QTimer::singleShot (0, this, SLOT (selectInputArea()));
+    QTimer::singleShot(0, this, SLOT(selectInputArea()));
 
-    setUnsavedChanges (spec.getFilename().isEmpty());
+    setUnsavedChanges(spec.getFilename().isEmpty());
     return true;
 }
 
@@ -633,7 +628,7 @@ QuizForm::saveRequested()
     QString startDir = Auxil::getQuizDir() + "/saved";
     QString currentFilename = quizEngine->getQuizSpec().getFilename();
     if (!currentFilename.isEmpty()) {
-        currentFilename.remove ("/[^/]+$");
+        currentFilename.remove("/[^/]+$");
         startDir = currentFilename;
     }
 
@@ -641,15 +636,15 @@ QuizForm::saveRequested()
     bool filenameEdited = false;
 
     if (filename.isEmpty()) {
-        filename = QFileDialog::getSaveFileName (this, "Save Quiz", startDir,
-                                                "Zyzzyva Quiz Files (*.zzq)");
+        filename = QFileDialog::getSaveFileName(this, "Save Quiz", startDir,
+                                               "Zyzzyva Quiz Files (*.zzq)");
 
         if (filename.isEmpty()) {
             unpauseTimer();
             return;
         }
 
-        if (!filename.endsWith (".zzq", Qt::CaseInsensitive)) {
+        if (!filename.endsWith(".zzq", Qt::CaseInsensitive)) {
             filename += ".zzq";
             filenameEdited = true;
         }
@@ -659,31 +654,30 @@ QuizForm::saveRequested()
     if (filenameEdited && file.exists()) {
         QString caption = "Overwrite Existing File?";
         QString message = "The file already exists.  Overwrite it?";
-        message = Auxil::dialogWordWrap (message);
-        int code = QMessageBox::warning (0, caption, message,
-                                         QMessageBox::Yes | QMessageBox::No,
-                                         QMessageBox::No);
+        message = Auxil::dialogWordWrap(message);
+        int code = QMessageBox::warning(0, caption, message,
+                                        QMessageBox::Yes | QMessageBox::No,
+                                        QMessageBox::No);
         if (code != QMessageBox::Yes) {
             unpauseTimer();
             return;
         }
     }
 
-    if (!file.open (QIODevice::WriteOnly | QIODevice::Text)) {
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QString caption = "Error Saving Quiz";
         QString message = "Cannot save quiz:\n" + file.errorString() + ".";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
         unpauseTimer();
         return;
     }
 
     QDomImplementation implementation;
-    QDomDocument document (implementation.createDocumentType
-                           ("zyzzyva-quiz", QString::null,
-                            "http://pietdepsi.com/dtd/zyzzyva-quiz.dtd"));
+    QDomDocument document (implementation.createDocumentType("zyzzyva-quiz",
+        QString::null, "http://pietdepsi.com/dtd/zyzzyva-quiz.dtd"));
 
-    document.appendChild (quizEngine->getQuizSpec().asDomElement());
+    document.appendChild(quizEngine->getQuizSpec().asDomElement());
 
     //// XXX: There should be a programmatic way to write the <?xml?> header
     //// based on the QDomImplementation, shouldn't there?
@@ -691,13 +685,13 @@ QuizForm::saveRequested()
     stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
         << document.toString();
 
-    quizEngine->setQuizSpecFilename (filename);
-    setQuizNameFromFilename (filename);
-    setUnsavedChanges (false);
+    quizEngine->setQuizSpecFilename(filename);
+    setQuizNameFromFilename(filename);
+    setUnsavedChanges(false);
 
     selectInputArea();
-    setStatusString ("Quiz saved successfully.");
-    QTimer::singleShot (2000, this, SLOT (updateStatusString()));
+    setStatusString("Quiz saved successfully.");
+    QTimer::singleShot(2000, this, SLOT(updateStatusString()));
     unpauseTimer();
 }
 
@@ -709,7 +703,7 @@ QuizForm::saveRequested()
 void
 QuizForm::alphaOrderClicked()
 {
-    setQuestionLabel (quizEngine->getQuestion(), Defs::QUIZ_LETTERS_ALPHA);
+    setQuestionLabel(quizEngine->getQuestion(), Defs::QUIZ_LETTERS_ALPHA);
     selectInputArea();
 }
 
@@ -721,7 +715,7 @@ QuizForm::alphaOrderClicked()
 void
 QuizForm::randomOrderClicked()
 {
-    setQuestionLabel (quizEngine->getQuestion(), Defs::QUIZ_LETTERS_RANDOM);
+    setQuestionLabel(quizEngine->getQuestion(), Defs::QUIZ_LETTERS_RANDOM);
     selectInputArea();
 }
 
@@ -738,21 +732,21 @@ QuizForm::newQuizClicked()
     if (!promptToSaveChanges())
         return;
 
-    NewQuizDialog* dialog = new NewQuizDialog (wordEngine, this);
-    Q_CHECK_PTR (dialog);
+    NewQuizDialog* dialog = new NewQuizDialog(wordEngine, this);
+    Q_CHECK_PTR(dialog);
     QuizSpec spec = quizEngine->getQuizSpec();
-    spec.setProgress (QuizProgress());
-    spec.setRandomAlgorithm (Rand::MarsagliaMwc);
-    spec.setRandomSeed (0);
-    spec.setRandomSeed2 (0);
-    dialog->setQuizSpec (spec);
+    spec.setProgress(QuizProgress());
+    spec.setRandomAlgorithm(Rand::MarsagliaMwc);
+    spec.setRandomSeed(0);
+    spec.setRandomSeed2(0);
+    dialog->setQuizSpec(spec);
     int code = dialog->exec();
     if (code != QDialog::Accepted) {
         selectInputArea();
         unpauseTimer();
         return;
     }
-    newQuiz (dialog->getQuizSpec());
+    newQuiz(dialog->getQuizSpec());
 }
 
 //---------------------------------------------------------------------------
@@ -767,7 +761,7 @@ QuizForm::pauseTimer()
     if (!timerId)
         return;
     ++timerPaused;
-    pauseButton->setText (UNPAUSE_BUTTON);
+    pauseButton->setText(UNPAUSE_BUTTON);
 }
 
 //---------------------------------------------------------------------------
@@ -782,7 +776,7 @@ QuizForm::unpauseTimer()
         return;
     --timerPaused;
     if (timerPaused == 0)
-        pauseButton->setText (PAUSE_BUTTON);
+        pauseButton->setText(PAUSE_BUTTON);
 }
 
 //---------------------------------------------------------------------------
@@ -796,13 +790,13 @@ QuizForm::nextQuestionClicked()
     if (!quizEngine->nextQuestion()) {
         QString caption = "Error getting next question";
         QString message = "Error getting next question.";
-        message = Auxil::dialogWordWrap (message);
-        QMessageBox::warning (this, caption, message);
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
     }
     startQuestion();
     analyzeDialog->updateStats();
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
-        setUnsavedChanges (true);
+        setUnsavedChanges(true);
 }
 
 //---------------------------------------------------------------------------
@@ -827,7 +821,7 @@ QuizForm::checkResponseClicked()
         return;
     }
 
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
     // If checking responses does not bring judgment, then feed all correct
     // responses to the quiz engine
@@ -839,36 +833,36 @@ QuizForm::checkResponseClicked()
             QString response = word;
 
             if (quizType == QuizSpec::QuizAnagramsWithHooks) {
-                response = wordEngine->getFrontHookLetters (word).toUpper()
+                response = wordEngine->getFrontHookLetters(word).toUpper()
                     + ":" + word + ":"
-                    + wordEngine->getBackHookLetters (word).toUpper();
+                    + wordEngine->getBackHookLetters(word).toUpper();
             }
 
-            quizEngine->respond (response);
+            quizEngine->respond(response);
 
             // FIXME: Probably not the right way to get alphabetical sorting
             // instead of alphagram sorting
             bool origGroupByAnagrams
                 = MainSettings::getWordListGroupByAnagrams();
-            MainSettings::setWordListGroupByAnagrams (false);
-            responseModel->removeWord (word);
-            responseModel->addWord (WordTableModel::WordItem
-                                    (word, WordTableModel::WordCorrect),
-                                    true);
-            MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+            MainSettings::setWordListGroupByAnagrams(false);
+            responseModel->removeWord(word);
+            responseModel->addWord(
+                WordTableModel::WordItem(word, WordTableModel::WordCorrect),
+                true);
+            MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
         }
     }
 
     killActiveTimer();
     updateStats();
-    inputLine->setText ("");
-    inputLine->setEnabled (false);
-    checkResponseButton->setEnabled (false);
+    inputLine->setText(QString());
+    inputLine->setEnabled(false);
+    checkResponseButton->setEnabled(false);
     quizEngine->completeQuestion();
     analyzeDialog->updateStats();
 
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
-        setUnsavedChanges (true);
+        setUnsavedChanges(true);
 
     // FIXME: Count Incorrect answers (not just Missed) as incorrect when
     // recording stats
@@ -882,24 +876,24 @@ QuizForm::checkResponseClicked()
         QStringList::iterator it;
         QList<WordTableModel::WordItem> wordItems;
         for (it = unanswered.begin(); it != unanswered.end(); ++it) {
-            wordItems.append (WordTableModel::WordItem
-                              (*it, WordTableModel::WordMissed));
+            wordItems.append(
+                WordTableModel::WordItem(*it, WordTableModel::WordMissed));
         }
         // FIXME: Probably not the right way to get alphabetical sorting
         // instead of alphagram sorting
         bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-        MainSettings::setWordListGroupByAnagrams (false);
-        responseModel->addWords (wordItems);
-        MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+        MainSettings::setWordListGroupByAnagrams(false);
+        responseModel->addWords(wordItems);
+        MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
-        analyzeDialog->addMissed (unanswered);
+        analyzeDialog->addMissed(unanswered);
         questionCorrect = false;
 
-        markMissedButton->setEnabled (false);
+        markMissedButton->setEnabled(false);
     }
 
     if ((quizEngine->numQuestions() > 0) && !quizEngine->onLastQuestion()) {
-        nextQuestionButton->setEnabled (true);
+        nextQuestionButton->setEnabled(true);
         nextQuestionButton->setFocus();
     }
     else
@@ -916,7 +910,7 @@ QuizForm::checkResponseClicked()
     }
 
     if (MainSettings::getQuizRecordStats() && !recordStatsBlocked)
-        recordQuestionStats (questionCorrect);
+        recordQuestionStats(questionCorrect);
 
     if (db && db->isValid() && (MainSettings::getQuizShowQuestionStats() ||
        (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod)))
@@ -937,10 +931,10 @@ QuizForm::markMissedClicked()
 {
     quizEngine->markQuestionAsMissed();
     responseModel->clear();
-    markMissedButton->setEnabled (false);
+    markMissedButton->setEnabled(false);
     bool old = checkBringsJudgment;
     checkBringsJudgment = true;
-    db->undoLastResponse (quizEngine->getQuestion());
+    db->undoLastResponse(quizEngine->getQuestion());
     checkResponseClicked();
     checkBringsJudgment = old;
 }
@@ -956,18 +950,18 @@ QuizForm::markCorrectClicked()
     QStringList missed = quizEngine->getMissed();
     QStringListIterator it (missed);
     while (it.hasNext()) {
-        analyzeDialog->removeMissed (it.next());
+        analyzeDialog->removeMissed(it.next());
     }
 
     QStringList incorrect = quizEngine->getQuestionIncorrectResponses();
     QStringListIterator jt (incorrect);
     while (jt.hasNext()) {
-        analyzeDialog->removeIncorrect (jt.next());
+        analyzeDialog->removeIncorrect(jt.next());
     }
 
     bool old = checkBringsJudgment;
     checkBringsJudgment = false;
-    db->undoLastResponse (quizEngine->getQuestion());
+    db->undoLastResponse(quizEngine->getQuestion());
     checkResponseClicked();
     checkBringsJudgment = old;
     quizEngine->markQuestionAsCorrect();
@@ -1013,7 +1007,7 @@ QuizForm::analyzeClicked()
 //! @param state the new checkbox state
 //---------------------------------------------------------------------------
 void
-QuizForm::flashcardStateChanged (int state)
+QuizForm::flashcardStateChanged(int state)
 {
     if (state == Qt::Checked) {
         checkBringsJudgment = false;
@@ -1043,7 +1037,7 @@ QuizForm::flashcardStateChanged (int state)
 void
 QuizForm::startQuestion()
 {
-    QApplication::setOverrideCursor (QCursor (Qt::WaitCursor));
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
     stopDisplayingCorrectAnswers();
     clearStats();
@@ -1051,30 +1045,30 @@ QuizForm::startQuestion()
     responseModel->clear();
 
     QString question = quizEngine->getQuestion();
-    origQuestionData = db->getQuestionData (question);
+    origQuestionData = db->getQuestionData(question);
 
     std::set<QString> correct = quizEngine->getQuestionCorrectResponses();
     if (!correct.empty()) {
         std::set<QString>::iterator it;
         QList<WordTableModel::WordItem> wordItems;
         for (it = correct.begin(); it != correct.end(); ++it) {
-            wordItems.append (WordTableModel::WordItem
-                                (*it, WordTableModel::WordCorrect));
+            wordItems.append(
+                WordTableModel::WordItem(*it, WordTableModel::WordCorrect));
         }
 
         // FIXME: Probably not the right way to get alphabetical sorting
         // instead of alphagram sorting
         bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-        MainSettings::setWordListGroupByAnagrams (false);
-        responseModel->addWords (wordItems);
-        MainSettings::setWordListGroupByAnagrams (origGroupByAnagrams);
+        MainSettings::setWordListGroupByAnagrams(false);
+        responseModel->addWords(wordItems);
+        MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
     }
 
-    responseStatusLabel->setText ("");
-    checkResponseButton->setEnabled (true);
-    markMissedButton->setEnabled (true);
-    nextQuestionButton->setEnabled (false);
-    inputLine->setEnabled (true);
+    responseStatusLabel->setText(QString());
+    checkResponseButton->setEnabled(true);
+    markMissedButton->setEnabled(true);
+    nextQuestionButton->setEnabled(false);
+    inputLine->setEnabled(true);
     selectInputArea();
     if (timerSpec.getType() == NoTimer)
         clearTimerDisplay();
@@ -1084,7 +1078,7 @@ QuizForm::startQuestion()
     updateStatusString();
 
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
-        setUnsavedChanges (true);
+        setUnsavedChanges(true);
 
     QApplication::restoreOverrideCursor();
 }
@@ -1099,9 +1093,9 @@ QuizForm::startNewTimer()
 {
     killActiveTimer();
     timerRemaining = timerSpec.getDuration();
-    setTimerDisplay (timerRemaining);
-    timerId = startTimer (1000);
-    pauseButton->setEnabled (true);
+    setTimerDisplay(timerRemaining);
+    timerId = startTimer(1000);
+    pauseButton->setEnabled(true);
 }
 
 //---------------------------------------------------------------------------
@@ -1117,9 +1111,9 @@ QuizForm::killActiveTimer()
 
     while (timerPaused)
         unpauseTimer();
-    killTimer (timerId);
+    killTimer(timerId);
     timerId = 0;
-    pauseButton->setEnabled (false);
+    pauseButton->setEnabled(false);
 }
 
 //---------------------------------------------------------------------------
@@ -1130,8 +1124,8 @@ QuizForm::killActiveTimer()
 void
 QuizForm::updateStats()
 {
-    setCorrectStatus (quizEngine->getQuestionCorrect(),
-                      quizEngine->getQuestionTotal());
+    setCorrectStatus(quizEngine->getQuestionCorrect(),
+                     quizEngine->getQuestionTotal());
 }
 
 //---------------------------------------------------------------------------
@@ -1142,9 +1136,9 @@ QuizForm::updateStats()
 void
 QuizForm::clearStats()
 {
-    correctStatusLabel->setText ("");
-    cardboxStatusLabel->setText ("");
-    questionStatsLabel->setText ("");
+    correctStatusLabel->setText(QString());
+    cardboxStatusLabel->setText(QString());
+    questionStatsLabel->setText(QString());
 }
 
 //---------------------------------------------------------------------------
@@ -1155,7 +1149,7 @@ QuizForm::clearStats()
 void
 QuizForm::clearTimerDisplay()
 {
-    timerLabel->setText ("");
+    timerLabel->setText(QString());
 }
 
 //---------------------------------------------------------------------------
@@ -1190,7 +1184,7 @@ QuizForm::minimizeCanvas()
 //! @param question the question
 //---------------------------------------------------------------------------
 void
-QuizForm::setQuestionLabel (const QString& question, const QString& order)
+QuizForm::setQuestionLabel(const QString& question, const QString& order)
 {
     QString displayQuestion (question);
     QuizSpec quizSpec = quizEngine->getQuizSpec();
@@ -1217,16 +1211,16 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
         else {
             QList<QChar> qchars;
             for (int i = 0; i < length; ++i)
-                qchars.append (displayQuestion.at (i));
+                qchars.append(displayQuestion.at(i));
 
             if (letterOrder == Defs::QUIZ_LETTERS_VOWELS_FIRST) {
-                qSort (qchars.begin(), qchars.end(), vowelsFirstCmp);
+                qSort(qchars.begin(), qchars.end(), vowelsFirstCmp);
             }
             else if (letterOrder == Defs::QUIZ_LETTERS_CONSONANTS_FIRST) {
-                qSort (qchars.begin(), qchars.end(), consonantsFirstCmp);
+                qSort(qchars.begin(), qchars.end(), consonantsFirstCmp);
             }
             else if (letterOrder == Defs::QUIZ_LETTERS_ALPHA) {
-                qSort (qchars.begin(), qchars.end(), alphabeticalCmp);
+                qSort(qchars.begin(), qchars.end(), alphabeticalCmp);
             }
 
             char chars[MAX_WORD_LEN + 1];
@@ -1244,18 +1238,18 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
 
     QWidget* currentWidget = questionStack->currentWidget();
     if (currentWidget == questionCanvas) {
-        questionCanvas->setText (displayQuestion);
-        questionLabel->setText ("");
-        questionSpecLabel->setText ("");
+        questionCanvas->setText(displayQuestion);
+        questionLabel->setText(QString());
+        questionSpecLabel->setText(QString());
     }
     else if (currentWidget == questionLabel) {
-        questionLabel->setText (displayQuestion);
-        questionSpecLabel->setText ("");
+        questionLabel->setText(displayQuestion);
+        questionSpecLabel->setText(QString());
         clearCanvas();
     }
     else if (currentWidget == questionSpecLabel) {
-        questionSpecLabel->setText (displayQuestion);
-        questionLabel->setText ("");
+        questionSpecLabel->setText(displayQuestion);
+        questionLabel->setText(QString());
         clearCanvas();
     }
 
@@ -1272,10 +1266,10 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
 //! @param total the total number of correct answers
 //---------------------------------------------------------------------------
 void
-QuizForm::setCorrectStatus (int correct, int total)
+QuizForm::setCorrectStatus(int correct, int total)
 {
-    correctStatusLabel->setText ("Correct: " + QString::number (correct) +
-                                 " of " + QString::number (total));
+    correctStatusLabel->setText("Correct: " + QString::number(correct) +
+                                " of " + QString::number(total));
 }
 
 //---------------------------------------------------------------------------
@@ -1287,27 +1281,27 @@ QuizForm::setCorrectStatus (int correct, int total)
 //! @param total the total number of correct answers
 //---------------------------------------------------------------------------
 void
-QuizForm::setQuestionStatus (const QuizDatabase::QuestionData& data)
+QuizForm::setQuestionStatus(const QuizDatabase::QuestionData& data)
 {
     if (!data.valid)
         return;
 
     if (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod) {
         QDateTime nextDate;
-        nextDate.setTime_t (data.nextScheduled);
+        nextDate.setTime_t(data.nextScheduled);
         QDateTime now = QDateTime::currentDateTime();
-        int numDays = now.daysTo (nextDate);
+        int numDays = now.daysTo(nextDate);
 
         int origCardbox = origQuestionData.cardbox;
 
         QString format = "yyyy-MM-dd hh:mm:ss";
-        QString text = "<b>Old Cardbox:</b> " + QString::number (origCardbox) +
-            ", <b>New Cardbox:</b> " + QString::number (data.cardbox) +
-            ", <b>Next Scheduled:</b> " + nextDate.toString (format) +
-            " (" + QString::number (numDays) + " day" +
-            (numDays == 1 ? QString() : QString ("s")) + ")";
+        QString text = "<b>Old Cardbox:</b> " + QString::number(origCardbox) +
+            ", <b>New Cardbox:</b> " + QString::number(data.cardbox) +
+            ", <b>Next Scheduled:</b> " + nextDate.toString(format) +
+            " (" + QString::number(numDays) + " day" +
+            (numDays == 1 ? QString() : QString("s")) + ")";
 
-        cardboxStatusLabel->setText (text);
+        cardboxStatusLabel->setText(text);
     }
 
     if (MainSettings::getQuizShowQuestionStats()) {
@@ -1320,39 +1314,38 @@ QuizForm::setQuestionStatus (const QuizDatabase::QuestionData& data)
         if (data.streak == 0)
             streak = "none";
         else if (data.streak > 0)
-            streak = QString::number (data.streak) + " correct";
+            streak = QString::number(data.streak) + " correct";
         else if (data.streak < 0)
-            streak = QString::number (-data.streak) + " incorrect";
+            streak = QString::number(-data.streak) + " incorrect";
 
         QString lastCorrect = "never";
         if (data.lastCorrect) {
 
             QDateTime lastCorrectDate;
-            lastCorrectDate.setTime_t (data.lastCorrect);
+            lastCorrectDate.setTime_t(data.lastCorrect);
             QDateTime now = QDateTime::currentDateTime();
-            int numDays = now.daysTo (lastCorrectDate);
+            int numDays = now.daysTo(lastCorrectDate);
 
             QString format = "yyyy-MM-dd hh:mm:ss";
             QString delta;
-            QString daysStr = (abs (numDays) == 1 ? QString ("day")
-                                                  : QString ("days"));
+            QString daysStr = (abs(numDays) == 1 ? QString("day")
+                                                 : QString("days"));
             if (numDays == 0)
                 delta = "today";
             else if (numDays < 0)
-                delta = QString::number (-numDays) + " " + daysStr + " ago";
+                delta = QString::number(-numDays) + " " + daysStr + " ago";
             else if (numDays > 0)
-                delta = QString::number (numDays) + " " + daysStr + " from now";
+                delta = QString::number(numDays) + " " + daysStr + " from now";
 
-            lastCorrect = lastCorrectDate.toString (format) + " (" +
-                delta + ")";
+            lastCorrect = lastCorrectDate.toString(format) + " (" + delta + ")";
         }
 
         QString text = "<b>Overall:</b> " +
-            QString::number (correct) + "/" + QString::number (total) + " (" +
-            QString::number (pct, 'f', 1) + "%), <b>Streak:</b> " + streak +
+            QString::number(correct) + "/" + QString::number(total) + " (" +
+            QString::number(pct, 'f', 1) + "%), <b>Streak:</b> " + streak +
             ", <b>Last Correct:</b> " + lastCorrect;
 
-        questionStatsLabel->setText (text);
+        questionStatsLabel->setText(text);
         questionStatsLabel->show();
     }
     else {
@@ -1369,14 +1362,14 @@ void
 QuizForm::updateStatusString()
 {
     QString status = "Question " +
-        QString::number (quizEngine->getQuestionIndex() + 1) + "/" +
-        QString::number (quizEngine->numQuestions());
+        QString::number(quizEngine->getQuestionIndex() + 1) + "/" +
+        QString::number(quizEngine->numQuestions());
     if (MainSettings::getQuizShowNumResponses()) {
         status += ", Correct: " +
-            QString::number (quizEngine->getQuestionCorrect()) + "/" +
-            QString::number (quizEngine->getQuestionTotal());
+            QString::number(quizEngine->getQuestionCorrect()) + "/" +
+            QString::number(quizEngine->getQuestionTotal());
     }
-    setStatusString (status);
+    setStatusString(status);
 }
 
 //---------------------------------------------------------------------------
@@ -1387,8 +1380,8 @@ QuizForm::updateStatusString()
 void
 QuizForm::updateQuestionDisplay()
 {
-    bool wordListRecall = (quizEngine->getQuizSpec().getType()
-                           == QuizSpec::QuizWordListRecall);
+    bool wordListRecall =
+        (quizEngine->getQuizSpec().getType() == QuizSpec::QuizWordListRecall);
 
     QWidget* newWidget = questionCanvas;
 
@@ -1398,8 +1391,8 @@ QuizForm::updateQuestionDisplay()
         newWidget = (wordListRecall ? questionSpecLabel : questionLabel);
     }
 
-    questionStack->setCurrentWidget (newWidget);
-    setQuestionLabel (quizEngine->getQuestion());
+    questionStack->setCurrentWidget(newWidget);
+    setQuestionLabel(quizEngine->getQuestion());
 }
 
 //---------------------------------------------------------------------------
@@ -1412,9 +1405,9 @@ void
 QuizForm::updateQuestionStatus()
 {
     QString question = quizEngine->getQuestion();
-    QuizDatabase::QuestionData data = db->getQuestionData (question);
+    QuizDatabase::QuestionData data = db->getQuestionData(question);
     if (data.valid)
-        setQuestionStatus (data);
+        setQuestionStatus(data);
 }
 
 //---------------------------------------------------------------------------
@@ -1425,11 +1418,11 @@ QuizForm::updateQuestionStatus()
 void
 QuizForm::startDisplayingCorrectAnswers()
 {
-    questionCanvas->setDragDropEnabled (false);
+    questionCanvas->setDragDropEnabled(false);
     currentDisplayAnswer = -1;
     displayNextCorrectAnswer();
     if (responseModel->rowCount() > 1)
-        displayAnswerTimer->start (5000);
+        displayAnswerTimer->start(5000);
 }
 
 //---------------------------------------------------------------------------
@@ -1442,7 +1435,7 @@ QuizForm::stopDisplayingCorrectAnswers()
 {
     if (displayAnswerTimer->isActive())
         displayAnswerTimer->stop();
-    questionCanvas->setDragDropEnabled (true);
+    questionCanvas->setDragDropEnabled(true);
 }
 
 //---------------------------------------------------------------------------
@@ -1457,12 +1450,11 @@ QuizForm::displayNextCorrectAnswer()
     if (currentDisplayAnswer >= responseModel->rowCount())
         currentDisplayAnswer = 0;
 
-    QString answer = responseModel->data
-        (responseModel->index (currentDisplayAnswer,
-                               WordTableModel::WORD_COLUMN),
-         Qt::EditRole).toString();
+    QString answer = responseModel->data(
+        responseModel->index(currentDisplayAnswer, WordTableModel::WORD_COLUMN),
+        Qt::EditRole).toString();
 
-    setQuestionLabel (answer, "foo");
+    setQuestionLabel(answer, "foo");
 }
 
 //---------------------------------------------------------------------------
@@ -1476,7 +1468,7 @@ QuizForm::selectInputArea()
 {
     if (inputLine->isVisible() && inputLine->isEnabled()) {
         inputLine->setFocus();
-        inputLine->setSelection (0, inputLine->text().length());
+        inputLine->setSelection(0, inputLine->text().length());
     }
     else if (checkResponseButton->isEnabled()) {
         checkResponseButton->setFocus();
@@ -1509,11 +1501,10 @@ QuizForm::promptToSaveChanges()
     QString caption = "Save Quiz?";
     QString message = "This quiz " + quizName + "has unsaved changes.  "
         "Would you like to save it?";
-    message = Auxil::dialogWordWrap (message);
-    int code = QMessageBox::warning (this, caption, message,
-                                     QMessageBox::Yes | QMessageBox::No |
-                                     QMessageBox::Cancel,
-                                     QMessageBox::Yes);
+    message = Auxil::dialogWordWrap(message);
+    int code = QMessageBox::warning(this, caption, message,
+                                    QMessageBox::Yes | QMessageBox::No |
+                                    QMessageBox::Cancel, QMessageBox::Yes);
 
     bool ok = false;
     switch (code) {
@@ -1543,7 +1534,7 @@ QuizForm::promptToSaveChanges()
 //! Called when the quiz form receives a key press event.
 //---------------------------------------------------------------------------
 void
-QuizForm::keyPressEvent (QKeyEvent* event)
+QuizForm::keyPressEvent(QKeyEvent* event)
 {
     if (event->modifiers() == Qt::NoModifier) {
         switch (event->key()) {
@@ -1581,7 +1572,7 @@ QuizForm::keyPressEvent (QKeyEvent* event)
                 {
                     markCorrectClicked();
                 }
-                db->setCardbox (quizEngine->getQuestion(), cardbox);
+                db->setCardbox(quizEngine->getQuestion(), cardbox);
                 updateQuestionStatus();
             }
         }
@@ -1596,12 +1587,12 @@ QuizForm::keyPressEvent (QKeyEvent* event)
 //! Set the status string.
 //---------------------------------------------------------------------------
 void
-QuizForm::setStatusString (const QString& status)
+QuizForm::setStatusString(const QString& status)
 {
     if (status == statusString)
         return;
     statusString = status;
-    emit statusChanged (status);
+    emit statusChanged(status);
 }
 
 //---------------------------------------------------------------------------
@@ -1612,7 +1603,7 @@ QuizForm::setStatusString (const QString& status)
 //! \param seconds the number of seconds to display
 //---------------------------------------------------------------------------
 void
-QuizForm::setTimerDisplay (int seconds)
+QuizForm::setTimerDisplay(int seconds)
 {
     int hours = 0;
     int minutes = 0;
@@ -1626,10 +1617,10 @@ QuizForm::setTimerDisplay (int seconds)
     }
     QString text;
     if (hours > 0)
-        text.sprintf ("%d:%02d:%02d", hours, minutes, seconds);
+        text.sprintf("%d:%02d:%02d", hours, minutes, seconds);
     else
-        text.sprintf ("%02d:%02d", minutes, seconds);
-    timerLabel->setText (text);
+        text.sprintf("%02d:%02d", minutes, seconds);
+    timerLabel->setText(text);
 }
 
 //---------------------------------------------------------------------------
@@ -1640,10 +1631,10 @@ QuizForm::setTimerDisplay (int seconds)
 //! @param name the name of the quiz
 //---------------------------------------------------------------------------
 void
-QuizForm::setQuizName (const QString& name)
+QuizForm::setQuizName(const QString& name)
 {
-    quizNameLabel->setText (name);
-    emit titleChanged (getTitle());
+    quizNameLabel->setText(name);
+    emit titleChanged(getTitle());
 }
 
 //---------------------------------------------------------------------------
@@ -1654,12 +1645,12 @@ QuizForm::setQuizName (const QString& name)
 //! @param filename the filename
 //---------------------------------------------------------------------------
 void
-QuizForm::setQuizNameFromFilename (const QString& filename)
+QuizForm::setQuizNameFromFilename(const QString& filename)
 {
     QString quizName (filename);
-    quizName.remove (QRegExp ("^.*/"));
-    quizName.remove (QRegExp ("\\.zzq$"));
-    setQuizName (quizName);
+    quizName.remove(QRegExp("^.*/"));
+    quizName.remove(QRegExp("\\.zzq$"));
+    setQuizName(quizName);
 }
 
 //---------------------------------------------------------------------------
@@ -1671,11 +1662,11 @@ QuizForm::setQuizNameFromFilename (const QString& filename)
 //! @param b whether there are unsaved changes
 //---------------------------------------------------------------------------
 void
-QuizForm::setUnsavedChanges (bool b)
+QuizForm::setUnsavedChanges(bool b)
 {
     unsavedChanges = b;
-    saveQuizButton->setEnabled (b);
-    emit saveEnabledChanged (b);
+    saveQuizButton->setEnabled(b);
+    emit saveEnabledChanged(b);
 }
 
 //---------------------------------------------------------------------------
@@ -1686,9 +1677,9 @@ QuizForm::setUnsavedChanges (bool b)
 //! @param color the new color
 //---------------------------------------------------------------------------
 void
-QuizForm::setBackgroundColor (const QColor& color)
+QuizForm::setBackgroundColor(const QColor& color)
 {
-    questionCanvas->setPalette (QPalette (color));
+    questionCanvas->setPalette(QPalette(color));
 }
 
 //---------------------------------------------------------------------------
@@ -1699,12 +1690,12 @@ QuizForm::setBackgroundColor (const QColor& color)
 //! @param theme the name of the theme
 //---------------------------------------------------------------------------
 void
-QuizForm::setTileTheme (const QString& theme)
+QuizForm::setTileTheme(const QString& theme)
 {
     if ((questionStack->currentWidget() == questionCanvas)
         && (theme != tileTheme))
     {
-        questionCanvas->setTileTheme (theme);
+        questionCanvas->setTileTheme(theme);
         updateQuestionDisplay();
     }
     tileTheme = theme;
@@ -1721,8 +1712,8 @@ void
 QuizForm::reflowLayout()
 {
     QString text = correctStatusLabel->text();
-    correctStatusLabel->setText ("foo blah blah");
-    correctStatusLabel->setText (text);
+    correctStatusLabel->setText("foo blah blah");
+    correctStatusLabel->setText(text);
     questionCanvas->update();
 }
 
@@ -1737,29 +1728,29 @@ QuizForm::reflowLayout()
 //! @return true if the response could be valid, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizForm::responseMatchesQuestion (const QString& response) const
+QuizForm::responseMatchesQuestion(const QString& response) const
 {
     QString question = quizEngine->getQuestion();
     QuizSpec spec = quizEngine->getQuizSpec();
     switch (spec.getType()) {
         case QuizSpec::QuizAnagrams:
         return ((response.length() == question.length()) &&
-            (Auxil::getAlphagram (response) ==
-             Auxil::getAlphagram (question)));
+            (Auxil::getAlphagram(response) ==
+             Auxil::getAlphagram(question)));
 
         case QuizSpec::QuizAnagramsWithHooks: {
-            if (response.count (QChar (':')) != 2)
+            if (response.count(QChar(':')) != 2)
                 return false;
-            QString word = response.section (":", 1, 1);
+            QString word = response.section(":", 1, 1);
             return ((word.length() == question.length()) &&
-                (Auxil::getAlphagram (word) ==
-                 Auxil::getAlphagram (question)));
+                (Auxil::getAlphagram(word) ==
+                 Auxil::getAlphagram(question)));
         }
 
         case QuizSpec::QuizHooks:
         return ((response.length() == (question.length() + 1)) &&
-                ((question == response.right (question.length())) ||
-                 (question == response.left (question.length()))));
+                ((question == response.right(question.length())) ||
+                 (question == response.left(question.length()))));
 
         default: break;
     }
@@ -1775,12 +1766,12 @@ QuizForm::responseMatchesQuestion (const QString& response) const
 //! @param quizType the quiz type
 //---------------------------------------------------------------------------
 void
-QuizForm::connectToDatabase (const QString& lexicon, const QString& quizType)
+QuizForm::connectToDatabase(const QString& lexicon, const QString& quizType)
 {
     if (db && db->isValid())
         return;
 
-    db = new QuizDatabase (lexicon, quizType);
+    db = new QuizDatabase(lexicon, quizType);
     if (!db->isValid()) {
         delete db;
         db = 0;
@@ -1808,17 +1799,17 @@ QuizForm::disconnectDatabase()
 //! \param correct whether to record a correct or incorrect response
 //---------------------------------------------------------------------------
 void
-QuizForm::recordQuestionStats (bool correct)
+QuizForm::recordQuestionStats(bool correct)
 {
     if (!db || !db->isValid())
         return;
 
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
-        setUnsavedChanges (true);
+        setUnsavedChanges(true);
 
     QuizSpec::QuizMethod method = quizEngine->getQuizSpec().getMethod();
     bool updateCardbox = (method == QuizSpec::CardboxQuizMethod);
-    db->recordResponse (quizEngine->getQuestion(), correct, updateCardbox);
+    db->recordResponse(quizEngine->getQuestion(), correct, updateCardbox);
 }
 
 //---------------------------------------------------------------------------
@@ -1830,13 +1821,13 @@ QuizForm::recordQuestionStats (bool correct)
 //! \param event the timer event
 //---------------------------------------------------------------------------
 void
-QuizForm::timerEvent (QTimerEvent* event)
+QuizForm::timerEvent(QTimerEvent* event)
 {
     if ((event->timerId() != timerId) || timerPaused)
         return;
 
     --timerRemaining;
-    setTimerDisplay (timerRemaining);
+    setTimerDisplay(timerRemaining);
     if (timerRemaining == 0) {
         bool old = checkBringsJudgment;
         checkBringsJudgment = true;
