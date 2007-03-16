@@ -440,6 +440,7 @@ MainWindow::tryAutoImport (QSplashScreen* splash)
         prefixMap["OWL2+LWL"] = "/north-american/owl2-lwl";
         prefixMap["OSPD4+LWL"] = "/north-american/ospd4-lwl";
         prefixMap["OSWI"] = "/british/oswi";
+        prefixMap["CSW"] = "/british/csw";
         prefixMap["ODS"] = "/french/ods4";
 
         if (prefixMap.contains (lexicon)) {
@@ -1021,6 +1022,7 @@ MainWindow::getLexiconPrefix (const QString& lexicon)
     pmap["OWL2+LWL"] = "/north-american/owl2-lwl";
     pmap["OSPD4+LWL"] = "/north-american/ospd4-lwl";
     pmap["OSWI"] = "/british/oswi";
+    pmap["CSW"] = "/british/csw";
     pmap["ODS"] = "/french/ods4";
     return pmap.contains (lexicon) ? pmap.value (lexicon) : QString::null;
 }

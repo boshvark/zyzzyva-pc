@@ -1108,5 +1108,7 @@ Auxil::lexiconToDate (const QString& lexicon)
         return QDate (2006, 3, 1);
     if (lexicon == "OSWI")
         return QDate (2002, 1, 14);
+    if (lexicon == "CSW")
+        return QDate (2007, 5, 1);
     return QDate();
 }
