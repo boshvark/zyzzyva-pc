@@ -78,7 +78,7 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
 
     shiftQuestionsButton = new QRadioButton;
     Q_CHECK_PTR(shiftQuestionsButton);
-    shiftQuestionsButton->setText("Shift words to resize backlog: ");
+    shiftQuestionsButton->setText("Reschedule words so this many are ready now:");
     connect(shiftQuestionsButton, SIGNAL(toggled(bool)),
             SLOT(shiftQuestionsButtonToggled(bool)));
     methodGroup->addButton(shiftQuestionsButton);
@@ -92,7 +92,8 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
 
     rescheduleQuestionsButton = new QRadioButton;
     Q_CHECK_PTR(rescheduleQuestionsButton);
-    rescheduleQuestionsButton->setText("Reschedule words according to cardbox");
+    rescheduleQuestionsButton->setText("Reschedule words according to "
+                                       "their cardbox");
     methodGroup->addButton(rescheduleQuestionsButton);
     mainVlay->addWidget(rescheduleQuestionsButton);
 
@@ -114,7 +115,7 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(selectSearchButton);
     connect(selectSearchButton, SIGNAL(toggled(bool)),
             SLOT(useSearchButtonToggled(bool)));
-    selectSearchButton->setText("Reschedule words matching search "
+    selectSearchButton->setText("Reschedule only words matching search "
                                 "specification");
     selectGroup->addButton(selectSearchButton);
     mainVlay->addWidget(selectSearchButton);
