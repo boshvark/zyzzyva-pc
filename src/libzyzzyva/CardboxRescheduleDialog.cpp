@@ -27,6 +27,8 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <QButtonGroup>
+#include <QFrame>
 #include <QLabel>
 #include <QVBoxLayout>
 
@@ -67,18 +69,55 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizHooks));
     quizTypeHlay->addWidget(quizTypeCombo);
 
-    rescheduleAllButton = new QRadioButton;
-    Q_CHECK_PTR(rescheduleAllButton);
-    rescheduleAllButton->setText("Reschedule all words");
-    mainVlay->addWidget(rescheduleAllButton);
+    QButtonGroup* methodGroup = new QButtonGroup(this);
+    Q_CHECK_PTR(methodGroup);
 
-    rescheduleSearchButton = new QRadioButton;
-    Q_CHECK_PTR(rescheduleSearchButton);
-    connect(rescheduleSearchButton, SIGNAL(toggled(bool)),
+    QHBoxLayout* backlogHlay = new QHBoxLayout;
+    Q_CHECK_PTR(backlogHlay);
+    mainVlay->addLayout(backlogHlay);
+
+    shiftQuestionsButton = new QRadioButton;
+    Q_CHECK_PTR(shiftQuestionsButton);
+    shiftQuestionsButton->setText("Shift words to resize backlog: ");
+    connect(shiftQuestionsButton, SIGNAL(toggled(bool)),
+            SLOT(shiftQuestionsButtonToggled(bool)));
+    methodGroup->addButton(shiftQuestionsButton);
+    backlogHlay->addWidget(shiftQuestionsButton);
+
+    backlogSbox = new QSpinBox;
+    Q_CHECK_PTR(backlogSbox);
+    backlogSbox->setMinimum(1);
+    backlogSbox->setMaximum(999999);
+    backlogHlay->addWidget(backlogSbox);
+
+    rescheduleQuestionsButton = new QRadioButton;
+    Q_CHECK_PTR(rescheduleQuestionsButton);
+    rescheduleQuestionsButton->setText("Reschedule words according to cardbox");
+    methodGroup->addButton(rescheduleQuestionsButton);
+    mainVlay->addWidget(rescheduleQuestionsButton);
+
+    QFrame* hline = new QFrame;
+    Q_CHECK_PTR(hline);
+    hline->setFrameShape(QFrame::HLine);
+    mainVlay->addWidget(hline);
+
+    QButtonGroup* selectGroup = new QButtonGroup(this);
+    Q_CHECK_PTR(selectGroup);
+
+    selectAllButton = new QRadioButton;
+    Q_CHECK_PTR(selectAllButton);
+    selectAllButton->setText("Reschedule all words");
+    selectGroup->addButton(selectAllButton);
+    mainVlay->addWidget(selectAllButton);
+
+    selectSearchButton = new QRadioButton;
+    Q_CHECK_PTR(selectSearchButton);
+    connect(selectSearchButton, SIGNAL(toggled(bool)),
             SLOT(useSearchButtonToggled(bool)));
-    rescheduleSearchButton->setText("Reschedule words matching search "
-                                    "specification");
-    mainVlay->addWidget(rescheduleSearchButton);
+    selectSearchButton->setText("Reschedule words matching search "
+                                "specification");
+    selectGroup->addButton(selectSearchButton);
+    mainVlay->addWidget(selectSearchButton);
 
     searchSpecGbox = new QGroupBox("Search Specification");
     Q_CHECK_PTR(searchSpecGbox);
@@ -110,7 +149,8 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     buttonHlay->addWidget(cancelButton);
 
     setWindowTitle(DIALOG_CAPTION);
-    rescheduleAllButton->setChecked(true);
+    shiftQuestionsButton->setChecked(true);
+    selectAllButton->setChecked(true);
     searchSpecGbox->setEnabled(false);
 }
 
@@ -128,16 +168,43 @@ CardboxRescheduleDialog::getQuizType() const
 }
 
 //---------------------------------------------------------------------------
+//  getShiftQuestions
+//
+//! Determine whether questions are to be shifted, as opposed to completely
+//! rescheduled.
+//
+//! @return true if questions should be shifted, false otherwise
+//---------------------------------------------------------------------------
+bool
+CardboxRescheduleDialog::getShiftQuestions() const
+{
+    return shiftQuestionsButton->isChecked();
+}
+
+//---------------------------------------------------------------------------
+//  getBacklogSize
+//
+//! Determine the desired backlog size.
+//
+//! @return the backlog size
+//---------------------------------------------------------------------------
+int
+CardboxRescheduleDialog::getBacklogSize() const
+{
+    return backlogSbox->value();
+}
+
+//---------------------------------------------------------------------------
 //  getRescheduleAll
 //
-//! Determine whether all questions are to be rescheduled
+//! Determine whether all questions are to be rescheduled.
 //
-//! @return true if all questions should be rescheduled
+//! @return true if all questions should be rescheduled, false otherwise
 //---------------------------------------------------------------------------
 bool
 CardboxRescheduleDialog::getRescheduleAll() const
 {
-    return rescheduleAllButton->isChecked();
+    return selectAllButton->isChecked();
 }
 
 //---------------------------------------------------------------------------
@@ -151,6 +218,20 @@ SearchSpec
 CardboxRescheduleDialog::getSearchSpec() const
 {
     return searchSpecForm->getSearchSpec();
+}
+
+//---------------------------------------------------------------------------
+//  shiftQuestionsButtonToggled
+//
+//! Called when the state of the Shift Backlog button is toggled.  Enable or
+//! disable the backlog size spin box.
+//
+//! @param checked true if the button is checked
+//---------------------------------------------------------------------------
+void
+CardboxRescheduleDialog::shiftQuestionsButtonToggled(bool checked)
+{
+    backlogSbox->setEnabled(checked);
 }
 
 //---------------------------------------------------------------------------
