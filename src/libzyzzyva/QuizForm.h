@@ -28,6 +28,7 @@
 #include "ActionForm.h"
 #include "QuizTimerSpec.h"
 #include "QuizDatabase.h"
+#include "QuizSpec.h"
 #include <QCheckBox>
 #include <QImage>
 #include <QKeyEvent>
@@ -43,7 +44,6 @@ class QuizCanvas;
 class QuizDatabase;
 class QuizEngine;
 class QuizQuestionLabel;
-class QuizSpec;
 class WordEngine;
 class WordLineEdit;
 class WordTableModel;
@@ -120,6 +120,7 @@ class QuizForm : public ActionForm
     void connectToDatabase(const QString& lexicon, const QString& quizType);
     void disconnectDatabase();
     void recordQuestionStats(bool correct);
+    bool customLetterOrderAllowed(QuizSpec::QuizType quizType) const;
 
     void timerEvent(QTimerEvent* event);
 
