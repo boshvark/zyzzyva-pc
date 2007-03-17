@@ -540,21 +540,7 @@ QuizForm::newQuiz (const QuizSpec& spec)
     timerSpec = spec.getTimerSpec();
 
     // Enable or disable Alpha and Random buttons depending on Quiz type
-    bool enableLetterOrder = false;
-    switch (spec.getType()) {
-        case QuizSpec::QuizAnagrams:
-        case QuizSpec::QuizAnagramsWithHooks:
-        case QuizSpec::QuizSubanagrams:
-        case QuizSpec::QuizAnagramJumble:
-        case QuizSpec::QuizSubanagramJumble:
-        case QuizSpec::QuizAnagramHooks:
-        enableLetterOrder = true;
-        break;
-
-        default:
-        enableLetterOrder = false;
-        break;
-    }
+    bool enableLetterOrder = customLetterOrderAllowed (spec.getType());
     letterOrderLabel->setEnabled (enableLetterOrder);
     alphaOrderButton->setEnabled (enableLetterOrder);
     randomOrderButton->setEnabled (enableLetterOrder);
@@ -1182,7 +1168,7 @@ QuizForm::minimizeCanvas()
 }
 
 //---------------------------------------------------------------------------
-//  setQuestionLabel
+//  etQuestionLabel
 //
 //! Display the current question in the question label area.
 //
@@ -1196,7 +1182,9 @@ QuizForm::setQuestionLabel (const QString& question, const QString& order)
     QuizSpec::QuizType type = quizSpec.getType();
 
     // Anagram Quiz: Order letters according to preference
-    if (type == QuizSpec::QuizAnagrams) {
+
+    // Order letters except for certain quiz types
+    if (customLetterOrderAllowed (type)) {
         QString letterOrder (order);
         if (letterOrder.isEmpty())
             letterOrder = MainSettings::getQuizLetterOrder();
@@ -1817,6 +1805,23 @@ QuizForm::recordQuestionStats (bool correct)
     QuizSpec::QuizMethod method = quizEngine->getQuizSpec().getMethod();
     bool updateCardbox = (method == QuizSpec::CardboxQuizMethod);
     db->recordResponse (quizEngine->getQuestion(), correct, updateCardbox);
+}
+
+//---------------------------------------------------------------------------
+//  customLetterOrderAllowed
+//
+//! Determine whether order of quiz question letters is allowed for a certain
+//! quiz type.
+//
+//! @param quizType the quiz type
+//! @return true if letter ordering is allowed, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizForm::customLetterOrderAllowed (QuizSpec::QuizType quizType) const
+{
+    return ((quizType != QuizSpec::QuizPatterns) &&
+            (quizType != QuizSpec::QuizHooks) &&
+            (quizType != QuizSpec::QuizWordListRecall));
 }
 
 //---------------------------------------------------------------------------
