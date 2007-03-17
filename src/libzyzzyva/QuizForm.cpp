@@ -1163,7 +1163,7 @@ QuizForm::minimizeCanvas()
 }
 
 //---------------------------------------------------------------------------
-//  etQuestionLabel
+//  setQuestionLabel
 //
 //! Display the current question in the question label area.
 //
@@ -1175,8 +1175,6 @@ QuizForm::setQuestionLabel(const QString& question, const QString& order)
     QString displayQuestion (question);
     QuizSpec quizSpec = quizEngine->getQuizSpec();
     QuizSpec::QuizType type = quizSpec.getType();
-
-    // Anagram Quiz: Order letters according to preference
 
     // Order letters except for certain quiz types
     if (customLetterOrderAllowed(type)) {
