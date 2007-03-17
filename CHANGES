@@ -1,3 +1,14 @@
+Version 1.0.3
+Released 2007-03-17, from /branches/1.0.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/1.0.3
+
+User-visible changes:
+ * CSW lexicon
+ * Cardbox Shift method of rescheduling cardbox questions
+ * Fix letter-ordering bug during Anagrams With Hooks quiz
+ * Fix broken search for words with no vowels
+
+
 Version 1.0.2
 Released 2007-01-27, from /branches/1.0.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/1.0.2
