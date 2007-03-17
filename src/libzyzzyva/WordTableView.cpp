@@ -807,7 +807,7 @@ WordTableView::viewportEvent (QEvent* e)
             if (!toolTipText.isEmpty())
                 QToolTip::showText (helpEvent->globalPos(), toolTipText);
         }
-        break;
+        return true;
 
         default:
         QTreeView::viewportEvent (e);
