@@ -350,7 +350,7 @@ SearchSpec::optimize()
                 minNumVowels = minValue;
             if (maxValue < maxNumVowels)
                 maxNumVowels = maxValue;
-            if ((minNumVowels > MAX_WORD_LEN) || (maxNumVowels <= 0) ||
+            if ((minNumVowels > MAX_WORD_LEN) || (maxNumVowels < 0) ||
                 (minNumVowels > maxNumVowels))
             {
                 conditions.clear();
