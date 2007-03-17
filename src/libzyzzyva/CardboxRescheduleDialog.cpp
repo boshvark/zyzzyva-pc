@@ -78,7 +78,7 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
 
     shiftQuestionsButton = new QRadioButton;
     Q_CHECK_PTR(shiftQuestionsButton);
-    shiftQuestionsButton->setText("Reschedule words so this many are ready now:");
+    shiftQuestionsButton->setText("Shift words so this many are ready now:");
     connect(shiftQuestionsButton, SIGNAL(toggled(bool)),
             SLOT(shiftQuestionsButtonToggled(bool)));
     methodGroup->addButton(shiftQuestionsButton);
