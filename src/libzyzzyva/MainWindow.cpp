@@ -804,19 +804,22 @@ MainWindow::rescheduleCardboxRequested()
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
         QString quizType = dialog->getQuizType();
-        bool rescheduleAll = dialog->getRescheduleAll();
-        SearchSpec searchSpec = dialog->getSearchSpec();
         QString lexicon = wordEngine->getLexiconName();
 
         QStringList words;
-        if (!rescheduleAll) {
+        if (!dialog->getRescheduleAll()) {
+            SearchSpec searchSpec = dialog->getSearchSpec();
             words = wordEngine->search (searchSpec, true);
             if (words.isEmpty())
                 return;
         }
 
+        bool shiftBacklog = dialog->getShiftQuestions();
+        int backlogSize = shiftBacklog ? dialog->getBacklogSize() : 0;
+
         QApplication::setOverrideCursor (Qt::WaitCursor);
-        int numRescheduled = rescheduleCardbox (words, lexicon, quizType);
+        int numRescheduled = rescheduleCardbox (words, lexicon, quizType,
+                                                shiftBacklog, backlogSize);
         QApplication::restoreOverrideCursor();
 
         QString questionStr = numRescheduled == 1 ? QString ("question")
@@ -1266,7 +1269,8 @@ MainWindow::rebuildDatabase()
 //---------------------------------------------------------------------------
 int
 MainWindow::rescheduleCardbox (const QStringList& words, const QString&
-                               lexicon, const QString& quizType) const
+                               lexicon, const QString& quizType, bool
+                               shiftQuestions, int backlog) const
 {
     QuizSpec::QuizType type = Auxil::stringToQuizType (quizType);
     if (type == QuizSpec::UnknownQuizType)
@@ -1298,7 +1302,8 @@ MainWindow::rescheduleCardbox (const QStringList& words, const QString&
     if (!db.isValid())
         return false;
 
-    return db.rescheduleCardbox (questions);
+    return (shiftQuestions ? db.shiftCardbox (questions, backlog)
+                           : db.rescheduleCardbox (questions));
 }
 
 //---------------------------------------------------------------------------

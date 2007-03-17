@@ -92,7 +92,8 @@ class MainWindow : public QMainWindow
     // QuizDatabase class?
     bool rebuildDatabase();
     int rescheduleCardbox (const QStringList& words, const QString& lexicon,
-                           const QString& quizType) const;
+                           const QString& quizType, bool shiftQuestions,
+                           int backlog = 0) const;
 
     protected:
     virtual void closeEvent (QCloseEvent* event);

@@ -31,6 +31,7 @@
 #include <QGroupBox>
 #include <QListWidget>
 #include <QRadioButton>
+#include <QSpinBox>
 
 class SearchSpecForm;
 
@@ -43,16 +44,22 @@ class CardboxRescheduleDialog : public QDialog
 
     public:
     QString getQuizType() const;
+    bool getShiftQuestions() const;
+    int getBacklogSize() const;
     bool getRescheduleAll() const;
     SearchSpec getSearchSpec() const;
 
     public slots:
+    void shiftQuestionsButtonToggled (bool checked);
     void useSearchButtonToggled (bool checked);
 
     private:
     QComboBox* quizTypeCombo;
-    QRadioButton* rescheduleAllButton;
-    QRadioButton* rescheduleSearchButton;
+    QRadioButton* shiftQuestionsButton;
+    QSpinBox* backlogSbox;
+    QRadioButton* rescheduleQuestionsButton;
+    QRadioButton* selectAllButton;
+    QRadioButton* selectSearchButton;
     QGroupBox* searchSpecGbox;
     SearchSpecForm* searchSpecForm;
 };
