@@ -287,6 +287,14 @@ SearchSpec::optimize()
                     break;
                 }
 
+                else if (ss == SetNewInCsw) {
+                    SearchCondition addCondition = condition;
+                    addCondition.type = SearchCondition::InWordList;
+                    addCondition.stringValue = Auxil::getNewInCswString();
+                    newConditions.append(addCondition);
+                    break;
+                }
+
                 else if (!negated) {
                     SearchCondition addCondition;
                     switch (ss) {
