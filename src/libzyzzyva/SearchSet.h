@@ -40,7 +40,8 @@ enum SearchSet {
     SetTypeTwoEights,
     SetTypeThreeEights,
     SetEightsFromSevenLetterStems,
-    SetNewInOwl2
+    SetNewInOwl2,
+    SetNewInCsw
 };
 
 #endif // ZYZZYVA_SEARCH_SET_H

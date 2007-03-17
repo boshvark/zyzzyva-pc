@@ -44,6 +44,7 @@ const QString SET_TYPE_THREE_EIGHTS_STRING = "Type III Eights";
 const QString SET_EIGHTS_FROM_SEVEN_STEMS_STRING =
               "Eights From Seven-Letter Stems";
 const QString SET_NEW_IN_OWL2_STRING = "New in OWL2";
+const QString SET_NEW_IN_CSW_STRING = "New in CSW";
 
 const QString SEARCH_TYPE_PATTERN_MATCH = "Pattern Match";
 const QString SEARCH_TYPE_ANAGRAM_MATCH = "Anagram Match";
@@ -228,6 +229,35 @@ QString
 Auxil::getNewInOwl2String()
 {
     QFile file (Auxil::getWordsDir() + "/north-american/owl2-new-words.txt");
+    if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
+        return QString::null;
+
+    QStringList words;
+    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    while (file.readLine (buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
+        line = line.simplified();
+        if (!line.length() || (line.at (0) == '#'))
+            continue;
+        QString word = line.section (' ', 0, 0);
+        words.append (word);
+    }
+    delete[] buffer;
+
+    return words.join (" ");
+}
+
+//---------------------------------------------------------------------------
+//  getNewInCswString
+//
+//! Read all new CSW words into a string, separated by spaces.  XXX: Right
+//! now this is hard-coded to load a certain file for a specific purpose.
+//! This whole concept should be more flexible.
+//---------------------------------------------------------------------------
+QString
+Auxil::getNewInCswString()
+{
+    QFile file (Auxil::getWordsDir() + "/british/csw-new-words.txt");
     if (!file.open (QIODevice::ReadOnly | QIODevice::Text))
         return QString::null;
 
@@ -576,6 +606,8 @@ Auxil::stringToSearchSet (const QString& string)
         return SetEightsFromSevenLetterStems;
     else if (string == SET_NEW_IN_OWL2_STRING)
         return SetNewInOwl2;
+    else if (string == SET_NEW_IN_CSW_STRING)
+        return SetNewInCsw;
     else
         return UnknownSearchSet;
 }
@@ -605,6 +637,7 @@ Auxil::searchSetToString (SearchSet ss)
         case SetEightsFromSevenLetterStems:
             return SET_EIGHTS_FROM_SEVEN_STEMS_STRING;
         case SetNewInOwl2: return SET_NEW_IN_OWL2_STRING;
+        case SetNewInCsw: return SET_NEW_IN_CSW_STRING;
         default: return SET_UNKNOWN_STRING;
     }
 }
