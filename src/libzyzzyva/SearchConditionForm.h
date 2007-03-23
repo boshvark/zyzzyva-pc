@@ -50,6 +50,8 @@ class SearchConditionForm : public QWidget
     signals:
     void returnPressed();
     void contentsChanged();
+    void addClicked();
+    void deleteClicked();
 
     public slots:
     void typeChanged(const QString&);

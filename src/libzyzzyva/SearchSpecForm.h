@@ -28,6 +28,7 @@
 #include <QFrame>
 #include <QList>
 #include <QRadioButton>
+#include <QSignalMapper>
 #include <QVBoxLayout>
 #include <set>
 
@@ -50,8 +51,8 @@ class SearchSpecForm : public QFrame
 
     public slots:
     void contentsChangedSlot();
-    void addConditionForm();
-    void removeConditionForm();
+    void insertConditionForm(int index);
+    void removeConditionForm(int index);
     void loadSearch();
     void saveSearch();
     void selectInputArea();
@@ -64,6 +65,8 @@ class SearchSpecForm : public QFrame
     ZPushButton* saveButton;
     QVBoxLayout* conditionVlay;
     QList<SearchConditionForm*> conditionForms;
+    QSignalMapper* addMapper;
+    QSignalMapper* deleteMapper;
 };
 
 #endif // ZYZZYVA_SEARCH_SPEC_FORM_H

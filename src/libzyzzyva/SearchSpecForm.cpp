@@ -98,13 +98,13 @@ SearchSpecForm::SearchSpecForm(QWidget* parent, Qt::WFlags f)
     moreButton = new ZPushButton("&More");
     Q_CHECK_PTR(moreButton);
     moreButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(moreButton, SIGNAL(clicked()), SLOT(addConditionForm()));
+    //connect(moreButton, SIGNAL(clicked()), SLOT(addConditionForm()));
     buttonHlay->addWidget(moreButton);
 
     fewerButton = new ZPushButton("Fewe&r");
     Q_CHECK_PTR(fewerButton);
     fewerButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(fewerButton, SIGNAL(clicked()), SLOT(removeConditionForm()));
+    //connect(fewerButton, SIGNAL(clicked()), SLOT(removeConditionForm()));
     buttonHlay->addWidget(fewerButton);
 
     buttonHlay->addStretch(1);
@@ -125,7 +125,15 @@ SearchSpecForm::SearchSpecForm(QWidget* parent, Qt::WFlags f)
     fewerButton->setEnabled(false);
     saveButton->setEnabled(false);
 
-    addConditionForm();
+    addMapper = new QSignalMapper(this);
+    Q_CHECK_PTR(addMapper);
+    connect(addMapper, SIGNAL(mapped(int)), SLOT(insertConditionForm(int)));
+
+    deleteMapper = new QSignalMapper(this);
+    Q_CHECK_PTR(deleteMapper);
+    connect(deleteMapper, SIGNAL(mapped(int)), SLOT(removeConditionForm(int)));
+
+    insertConditionForm(0);
 }
 
 //---------------------------------------------------------------------------
@@ -163,13 +171,13 @@ SearchSpecForm::setSearchSpec(const SearchSpec& spec)
     if (spec.conditions.empty())
         return;
 
-    while (!conditionForms.isEmpty())
-        removeConditionForm();
+    qDeleteAll(conditionForms);
+    conditionForms.clear();
 
     //conjunctionRadio->setChecked(spec->conjunction);
     QListIterator<SearchCondition> cit (spec.conditions);
     while (cit.hasNext()) {
-        addConditionForm();
+        insertConditionForm(conditionForms.size());
         conditionForms.last()->setSearchCondition(cit.next());
     }
 
@@ -209,22 +217,37 @@ SearchSpecForm::contentsChangedSlot()
 }
 
 //---------------------------------------------------------------------------
-//  addConditionForm
+//  insertConditionForm
 //
-//! Add a condition form to the bottom of the layout.
+//! Insert a condition form into the layout.
+//
+//! @param index the index where the form should be inserted
 //---------------------------------------------------------------------------
 void
-SearchSpecForm::addConditionForm()
+SearchSpecForm::insertConditionForm(int index)
 {
     if (conditionForms.size() == MAX_CONDITIONS)
         return;
+
+    // Remap signals for any search condition forms after the one to be
+    // inserted
+    for (int i = index; i < conditionForms.size(); ++i) {
+        SearchConditionForm* form = conditionForms[i];
+        addMapper->setMapping(form, i + 2);
+        deleteMapper->setMapping(form, i + 1);
+    }
 
     SearchConditionForm* form = new SearchConditionForm(this);
     Q_CHECK_PTR(form);
     connect(form, SIGNAL(returnPressed()), SIGNAL(returnPressed()));
     connect(form, SIGNAL(contentsChanged()), SIGNAL(contentsChanged()));
-    conditionVlay->addWidget(form);
-    conditionForms.append(form);
+    connect(form, SIGNAL(addClicked()), addMapper, SLOT(map()));
+    addMapper->setMapping(form, index + 1);
+    connect(form, SIGNAL(deleteClicked()), deleteMapper, SLOT(map()));
+    deleteMapper->setMapping(form, index);
+
+    conditionVlay->insertWidget(index, form);
+    conditionForms.insert(index, form);
 
     fewerButton->setEnabled(conditionForms.size() > 1);
     if (conditionForms.size() == MAX_CONDITIONS)
@@ -236,17 +259,27 @@ SearchSpecForm::addConditionForm()
 //---------------------------------------------------------------------------
 //  removeConditionForm
 //
-//! Remove a condition form from the bottom of the layout.
+//! Remove a condition form from the layout.
+//
+//! @param index the index of the form to be removed
 //---------------------------------------------------------------------------
 void
-SearchSpecForm::removeConditionForm()
+SearchSpecForm::removeConditionForm(int index)
 {
-    if (conditionForms.isEmpty())
+    if ((index < 0) || (index >= conditionForms.size()))
         return;
 
-    SearchConditionForm* form = conditionForms.last();
+    // Remap signals for any search condition forms after the one to be
+    // inserted
+    for (int i = index + 1; i < conditionForms.size(); ++i) {
+        SearchConditionForm* form = conditionForms[i];
+        addMapper->setMapping(form, i);
+        deleteMapper->setMapping(form, i - 1);
+    }
+
+    SearchConditionForm* form = conditionForms.value(index);
     delete form;
-    conditionForms.removeLast();
+    conditionForms.removeAt(index);
 
     moreButton->setEnabled(true);
     if (conditionForms.size() == 1)

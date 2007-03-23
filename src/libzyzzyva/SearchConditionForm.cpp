@@ -235,12 +235,13 @@ SearchConditionForm::SearchConditionForm(QWidget* parent, Qt::WFlags f)
     deleteButton = new QToolButton;
     Q_CHECK_PTR(deleteButton);
     deleteButton->setIcon(QIcon(":/minus-icon"));
-    //deleteButton->setSizePolicy(
+    connect(deleteButton, SIGNAL(clicked()), SIGNAL(deleteClicked()));
     mainHlay->addWidget(deleteButton);
 
     addButton = new QToolButton;
     Q_CHECK_PTR(addButton);
     addButton->setIcon(QIcon(":/plus-icon"));
+    connect(addButton, SIGNAL(clicked()), SIGNAL(addClicked()));
     mainHlay->addWidget(addButton);
 }
 
