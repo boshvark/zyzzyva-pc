@@ -30,6 +30,7 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QStackedWidget>
+#include <QToolButton>
 #include <set>
 
 class SearchCondition;
@@ -81,6 +82,8 @@ class SearchConditionForm : public QWidget
     QString         paramWordListString;
     WordValidator*  letterValidator;
     WordValidator*  patternValidator;
+    QToolButton*    addButton;
+    QToolButton*    deleteButton;
 
     bool legacy;
 };

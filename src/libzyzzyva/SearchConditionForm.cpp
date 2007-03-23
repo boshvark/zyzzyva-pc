@@ -231,6 +231,17 @@ SearchConditionForm::SearchConditionForm(QWidget* parent, Qt::WFlags f)
     connect(paramWordListButton, SIGNAL(clicked()), SLOT(editListClicked()));
     paramWordListHlay->addWidget(paramWordListButton);
     paramStack->addWidget(paramWordListWidget);
+
+    deleteButton = new QToolButton;
+    Q_CHECK_PTR(deleteButton);
+    deleteButton->setIcon(QIcon(":/minus-icon"));
+    //deleteButton->setSizePolicy(
+    mainHlay->addWidget(deleteButton);
+
+    addButton = new QToolButton;
+    Q_CHECK_PTR(addButton);
+    addButton->setIcon(QIcon(":/plus-icon"));
+    mainHlay->addWidget(addButton);
 }
 
 //---------------------------------------------------------------------------

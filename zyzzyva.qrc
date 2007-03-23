@@ -17,5 +17,7 @@
     <file alias="right-arrow-icon">images/right-arrow-large.png</file>
     <file alias="judge-acceptable">images/judge-acceptable.png</file>
     <file alias="judge-unacceptable">images/judge-unacceptable.png</file>
+    <file alias="plus-icon">images/plus-icon-small.png</file>
+    <file alias="minus-icon">images/minus-icon-small.png</file>
 </qresource>
 </RCC>
