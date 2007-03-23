@@ -1347,14 +1347,25 @@ QuizForm::setQuestionStatus(const QuizDatabase::QuestionData& data)
 void
 QuizForm::updateStatusString()
 {
-    QString status = "Question " +
-        QString::number(quizEngine->getQuestionIndex() + 1) + "/" +
-        QString::number(quizEngine->numQuestions());
+    QString status;
+
+    if (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod) {
+        status = "Questions remaining: " +
+            QString::number(quizEngine->numQuestions());
+    }
+
+    else {
+        status = "Question " +
+            QString::number(quizEngine->getQuestionIndex() + 1) + "/" +
+            QString::number(quizEngine->numQuestions());
+    }
+
     if (MainSettings::getQuizShowNumResponses()) {
         status += ", Correct: " +
             QString::number(quizEngine->getQuestionCorrect()) + "/" +
             QString::number(quizEngine->getQuestionTotal());
     }
+
     setStatusString(status);
 }
 
