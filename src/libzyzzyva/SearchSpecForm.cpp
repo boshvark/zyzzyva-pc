@@ -95,18 +95,6 @@ SearchSpecForm::SearchSpecForm(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(buttonHlay);
     mainVlay->addLayout(buttonHlay);
 
-    moreButton = new ZPushButton("&More");
-    Q_CHECK_PTR(moreButton);
-    moreButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    //connect(moreButton, SIGNAL(clicked()), SLOT(addConditionForm()));
-    buttonHlay->addWidget(moreButton);
-
-    fewerButton = new ZPushButton("Fewe&r");
-    Q_CHECK_PTR(fewerButton);
-    fewerButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    //connect(fewerButton, SIGNAL(clicked()), SLOT(removeConditionForm()));
-    buttonHlay->addWidget(fewerButton);
-
     buttonHlay->addStretch(1);
 
     loadButton = new ZPushButton("L&oad Search...");
@@ -122,7 +110,6 @@ SearchSpecForm::SearchSpecForm(QWidget* parent, Qt::WFlags f)
     buttonHlay->addWidget(saveButton);
 
     connect(this, SIGNAL(contentsChanged()), SLOT(contentsChangedSlot()));
-    fewerButton->setEnabled(false);
     saveButton->setEnabled(false);
 
     addMapper = new QSignalMapper(this);
@@ -178,11 +165,11 @@ SearchSpecForm::setSearchSpec(const SearchSpec& spec)
     QListIterator<SearchCondition> cit (spec.conditions);
     while (cit.hasNext()) {
         insertConditionForm(conditionForms.size());
-        conditionForms.last()->setSearchCondition(cit.next());
+        SearchConditionForm* conditionForm = conditionForms.last();
+        conditionForm->setSearchCondition(cit.next());
+        //conditionForm->setAddEnabled(spec.conditions.size() < MAX_CONDITIONS);
+        //conditionForm->setDeleteEnabled(spec.conditions.size() > 1);
     }
-
-    fewerButton->setEnabled(conditionForms.size() > 1);
-    moreButton->setEnabled(conditionForms.size() < MAX_CONDITIONS);
 }
 
 //---------------------------------------------------------------------------
@@ -249,9 +236,18 @@ SearchSpecForm::insertConditionForm(int index)
     conditionVlay->insertWidget(index, form);
     conditionForms.insert(index, form);
 
-    fewerButton->setEnabled(conditionForms.size() > 1);
-    if (conditionForms.size() == MAX_CONDITIONS)
-        moreButton->setEnabled(false);
+    if (conditionForms.size() == 1) {
+        form->setDeleteEnabled(false);
+    }
+    else {
+        QListIterator<SearchConditionForm*> it (conditionForms);
+        while (it.hasNext()) {
+            SearchConditionForm* conditionForm = it.next();
+            conditionForm->setDeleteEnabled(true);
+            if (conditionForms.size() == MAX_CONDITIONS)
+                conditionForm->setAddEnabled(false);
+        }
+    }
 
     contentsChanged();
 }
@@ -281,9 +277,16 @@ SearchSpecForm::removeConditionForm(int index)
     delete form;
     conditionForms.removeAt(index);
 
-    moreButton->setEnabled(true);
-    if (conditionForms.size() == 1)
-        fewerButton->setEnabled(false);
+    if (conditionForms.size() == 1) {
+        conditionForms.first()->setDeleteEnabled(false);
+    }
+    else {
+        QListIterator<SearchConditionForm*> it (conditionForms);
+        while (it.hasNext()) {
+            SearchConditionForm* conditionForm = it.next();
+            conditionForm->setAddEnabled(true);
+        }
+    }
 
     contentsChanged();
 }

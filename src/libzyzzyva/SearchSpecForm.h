@@ -59,8 +59,6 @@ class SearchSpecForm : public QFrame
 
     private:
     //QRadioButton* conjunctionRadio;
-    ZPushButton* moreButton;
-    ZPushButton* fewerButton;
     ZPushButton* loadButton;
     ZPushButton* saveButton;
     QVBoxLayout* conditionVlay;

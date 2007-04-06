@@ -623,6 +623,32 @@ SearchConditionForm::selectInputArea()
 }
 
 //---------------------------------------------------------------------------
+//  setAddEnabled
+//
+//! Enable or disable the add button.
+//
+//! @param enable true to enable the button, false to disable it
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::setAddEnabled(bool enable)
+{
+    addButton->setEnabled(enable);
+}
+
+//---------------------------------------------------------------------------
+//  setDeleteEnabled
+//
+//! Enable or disable the delete button.
+//
+//! @param enable true to enable the button, false to disable it
+//---------------------------------------------------------------------------
+void
+SearchConditionForm::setDeleteEnabled(bool enable)
+{
+    deleteButton->setEnabled(enable);
+}
+
+//---------------------------------------------------------------------------
 //  setWordListString
 //
 //! Set the value of the word list string, and update the word list line to
