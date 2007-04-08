@@ -25,13 +25,15 @@
 #ifndef ZYZZYVA_WORD_VARIATION_DIALOG_H
 #define ZYZZYVA_WORD_VARIATION_DIALOG_H
 
+#include "SearchSpec.h"
+#include "WordTableModel.h"
 #include "WordVariationType.h"
 #include <QDialog>
+#include <QList>
 #include <QLabel>
 
 class DefinitionLabel;
 class WordEngine;
-class WordTableModel;
 class WordTableView;
 class ZPushButton;
 
@@ -46,6 +48,8 @@ class WordVariationDialog : public QDialog
 
     private:
     void setWordVariation(const QString& word, WordVariationType variation);
+    QList<WordTableModel::WordItem> getWordItems(const QList<SearchSpec>&
+                                                 searchSpecs) const;
     bool needsRightList(WordVariationType variation);
 
     private:

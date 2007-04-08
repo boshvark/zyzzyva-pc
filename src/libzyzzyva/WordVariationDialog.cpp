@@ -27,7 +27,6 @@
 #include "DefinitionLabel.h"
 #include "MainSettings.h"
 #include "WordEngine.h"
-#include "WordTableModel.h"
 #include "WordTableView.h"
 #include "ZPushButton.h"
 #include <QApplication>
@@ -117,7 +116,7 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& word,
     buttonHlay->addWidget(closeButton);
 
     setWordVariation(word, variation);
-    resize(minimumSizeHint().width() * 3, 500);
+    resize(minimumSizeHint().width() * 5, 500);
 
     closeButton->setFocus();
 }
@@ -261,103 +260,40 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-
-    QMap<QString, QString> wordMap;
-    QStringList wordList;
-    QListIterator<SearchSpec> lit (leftSpecs);
-    while (lit.hasNext()) {
-        wordList = wordEngine->search(lit.next(), false);
-        QStringListIterator wit (wordList);
-        while (wit.hasNext()) {
-            QString str = wit.next();
-            if ((str == word) && (variation == VariationExtensions))
-                continue;
-            wordMap.insert(str.toUpper(), str);
-        }
-    }
-
-    QList<WordTableModel::WordItem> wordItems;
-    QMapIterator<QString, QString> mit (wordMap);
-    while (mit.hasNext()) {
-        mit.next();
-        QString value = mit.value();
-        QList<QChar> wildcardChars;
-        for (int i = 0; i < value.length(); ++i) {
-            QChar c = value[i];
-            if (c.isLower())
-                wildcardChars.append(c);
-        }
-        QString wildcard;
-        if (!wildcardChars.isEmpty()) {
-            qSort(wildcardChars);
-            QChar c;
-            foreach (c, wildcardChars)
-                wildcard.append(c.toUpper());
-        }
-        wordItems.append(WordTableModel::WordItem(
-            mit.key(), WordTableModel::WordNormal, wildcard));
-    }
+    // Populate the top list
+    QList<WordTableModel::WordItem> wordItems = getWordItems(leftSpecs);
 
     // FIXME: Probably not the right way to get alphabetical sorting instead
     // of alphagram sorting
     if (forceAlphabetSort)
         MainSettings::setWordListGroupByAnagrams(false);
     leftModel->addWords(wordItems);
+    if (variation == VariationExtensions)
+        leftModel->removeWord(word);
     if (forceAlphabetSort)
         MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
-    int leftWords = wordMap.size();
+    int leftWords = leftModel->rowCount();
     leftTitle += " : " + QString::number(leftWords) + " word";
     if (leftWords != 1)
         leftTitle += "s";
     leftLabel->setText(leftTitle);
 
+    // Populate the bottom list
     if (!rightSpecs.empty()) {
-        wordMap.clear();
-        QListIterator<SearchSpec> rit (rightSpecs);
-        while (rit.hasNext()) {
-            wordList = wordEngine->search(rit.next(), false);
-            QStringListIterator wit (wordList);
-            while (wit.hasNext()) {
-                QString str = wit.next();
-                if ((str == word) && (variation == VariationExtensions))
-                    continue;
-                wordMap.insert(str.toUpper(), str);
-            }
-        }
-
-        wordItems.clear();
-        QList<WordTableModel::WordItem> wordItems;
-        QMapIterator<QString, QString> mit (wordMap);
-        while (mit.hasNext()) {
-            mit.next();
-            QString value = mit.value();
-            QList<QChar> wildcardChars;
-            for (int i = 0; i < value.length(); ++i) {
-                QChar c = value[i];
-                if (c.isLower())
-                    wildcardChars.append(c);
-            }
-            QString wildcard;
-            if (!wildcardChars.isEmpty()) {
-                qSort(wildcardChars);
-                QChar c;
-                foreach (c, wildcardChars)
-                    wildcard.append(c.toUpper());
-            }
-            wordItems.append(WordTableModel::WordItem(
-                mit.key(), WordTableModel::WordNormal, wildcard));
-        }
+        wordItems = getWordItems(rightSpecs);
 
         // FIXME: Probably not the right way to get alphabetical sorting
         // instead of alphagram sorting
         if (forceAlphabetSort)
             MainSettings::setWordListGroupByAnagrams(false);
         rightModel->addWords(wordItems);
+        if (variation == VariationExtensions)
+            rightModel->removeWord(word);
         if (forceAlphabetSort)
             MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
-        int rightWords = wordMap.size();
+        int rightWords = rightModel->rowCount();
         rightTitle += " : " + QString::number(rightWords) + " word";
         if (rightWords != 1)
             rightTitle += "s";
@@ -384,4 +320,52 @@ WordVariationDialog::needsRightList(WordVariationType variation)
         case VariationExtensions: return true;
         default: return false;
     }
+}
+
+//---------------------------------------------------------------------------
+//  getWordItems
+//
+//! Construct a list of word items to be inserted into a word list, based on
+//! the results of a list of searches.
+//
+//! @param searchSpecs the list of search specifications
+//! @return a list of word items
+//---------------------------------------------------------------------------
+QList<WordTableModel::WordItem>
+WordVariationDialog::getWordItems(const QList<SearchSpec>& searchSpecs) const
+{
+    QList<WordTableModel::WordItem> wordItems;
+    QMap<QString, QString> wordMap;
+    QListIterator<SearchSpec> lit (searchSpecs);
+    while (lit.hasNext()) {
+        QStringList wordList = wordEngine->search(lit.next(), false);
+        QStringListIterator wit (wordList);
+        while (wit.hasNext()) {
+            QString str = wit.next();
+            wordMap.insert(str.toUpper(), str);
+        }
+    }
+
+    QMapIterator<QString, QString> mit (wordMap);
+    while (mit.hasNext()) {
+        mit.next();
+        QString value = mit.value();
+        QList<QChar> wildcardChars;
+        for (int i = 0; i < value.length(); ++i) {
+            QChar c = value[i];
+            if (c.isLower())
+                wildcardChars.append(c);
+        }
+        QString wildcard;
+        if (!wildcardChars.isEmpty()) {
+            qSort(wildcardChars);
+            QChar c;
+            foreach (c, wildcardChars)
+                wildcard.append(c.toUpper());
+        }
+        wordItems.append(WordTableModel::WordItem(
+            mit.key(), WordTableModel::WordNormal, wildcard));
+    }
+
+    return wordItems;
 }
