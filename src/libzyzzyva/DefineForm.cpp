@@ -153,20 +153,46 @@ DefineForm::defineWord()
     QString word = wordLine->text();
     if (word.isEmpty())
         return;
+
     bool acceptable = engine->isAcceptable(word);
     QString resultStr = acceptable ?
                         QString("<font color=\"blue\">Acceptable</font>") :
                         QString("<font color=\"red\">Unacceptable</font>");
 
+    // Get definition
+    QString definition;
     if (acceptable) {
-        QString definition = engine->getDefinition(word);
+        definition = engine->getDefinition(word);
         if (definition.isEmpty())
             definition = EMPTY_DEFINITION;
-        resultStr += "<br>" + definition;
     }
     else {
         word += "*";
     }
+
+    SearchSpec spec;
+    SearchCondition condition;
+
+    // Get anagrams
+    condition.type = SearchCondition::AnagramMatch;
+    condition.stringValue = word;
+    spec.conditions.append(condition);
+    QStringList anagrams = engine->search(spec, true);
+
+
+
+
+
+    if (!definition.isEmpty())
+        resultStr += "<br><b>Definition</b>: " + definition;
+
+    if (!anagrams.isEmpty()) {
+        resultStr += "<br><b>Anagrams</b>: " + anagrams.join(", ");
+    }
+
+
+
+
 
     resultBox->setText(resultStr);
     resultBox->setTitle(word);
