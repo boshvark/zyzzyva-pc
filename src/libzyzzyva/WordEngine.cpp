@@ -1555,10 +1555,14 @@ WordEngine::getConditionPhase(const SearchCondition& condition) const
         return PostConditionPhase;
 
         case SearchCondition::PatternMatch:
-        if (condition.stringValue.contains("["))
-            return WordGraphPhase;
-        else
+        if (condition.stringValue.startsWith("*") &&
+            condition.stringValue.endsWith("*") &&
+            !condition.stringValue.contains("["))
+        {
             return DatabasePhase;
+        }
+        else
+            return WordGraphPhase;
 
         default:
         return UnknownPhase;
