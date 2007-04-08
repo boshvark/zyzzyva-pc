@@ -276,6 +276,11 @@ WordEngine::databaseSearch(const SearchSpec& optimizedSpec,
     while (cit.hasNext()) {
         SearchCondition condition = cit.next();
         switch (condition.type) {
+            case SearchCondition::PatternMatch:
+            if (condition.stringValue.contains("["))
+                break;
+            // fall through...
+
             case SearchCondition::Length:
             case SearchCondition::InWordList:
             case SearchCondition::NumVowels:
@@ -294,6 +299,16 @@ WordEngine::databaseSearch(const SearchSpec& optimizedSpec,
         }
 
         switch (condition.type) {
+            case SearchCondition::PatternMatch: {
+                // XXX: eventually, account for negated condition
+                if (condition.stringValue.contains("["))
+                    break;
+                QString str =
+                    condition.stringValue.replace("?", "_").replace("*", "%");
+                queryStr += " word LIKE '" + str + "'";
+            }
+            break;
+
             case SearchCondition::ProbabilityOrder: {
                 // Lax boundaries
                 if (condition.boolValue) {
@@ -593,8 +608,6 @@ WordEngine::search(const SearchSpec& spec, bool allCaps) const
     int postConditions = 0;
     int wordGraphConditions = 0;
     int databaseConditions = 0;
-    int wildcardConditions = 0;
-    int nonWildcardConditions = 0;
     int lengthConditions = 0;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
@@ -607,12 +620,14 @@ WordEngine::search(const SearchSpec& spec, bool allCaps) const
             ++postConditions;
             break;
 
-            case SearchCondition::AnagramMatch:
             case SearchCondition::PatternMatch:
-            if (condition.stringValue.contains("*"))
-                ++wildcardConditions;
+            if (condition.stringValue.contains("["))
+                ++wordGraphConditions;
             else
-                ++nonWildcardConditions;
+                ++databaseConditions;
+            break;
+
+            case SearchCondition::AnagramMatch:
             ++wordGraphConditions;
             break;
 
