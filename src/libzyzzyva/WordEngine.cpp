@@ -605,83 +605,45 @@ WordEngine::search(const SearchSpec& spec, bool allCaps) const
     optimizedSpec.optimize();
 
     // Discover which kinds of search conditions are present
-    int postConditions = 0;
-    int wordGraphConditions = 0;
-    int databaseConditions = 0;
+    QMap<ConditionPhase, int> phaseCounts;
     int lengthConditions = 0;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
         SearchCondition condition = cit.next();
-        switch (condition.type) {
-            case SearchCondition::BelongToGroup:
-            case SearchCondition::Prefix:
-            case SearchCondition::Suffix:
-            case SearchCondition::LimitByProbabilityOrder:
-            ++postConditions;
-            break;
-
-            case SearchCondition::PatternMatch:
-            if (condition.stringValue.contains("["))
-                ++wordGraphConditions;
-            else
-                ++databaseConditions;
-            break;
-
-            case SearchCondition::AnagramMatch:
-            ++wordGraphConditions;
-            break;
-
-            case SearchCondition::SubanagramMatch:
-            case SearchCondition::ConsistOf:
-            ++wordGraphConditions;
-            break;
-
-            case SearchCondition::Length:
+        ConditionPhase phase = getConditionPhase(condition);
+        ++phaseCounts[phase];
+        if (condition.type == SearchCondition::Length)
             ++lengthConditions;
-            ++databaseConditions;
-            break;
-
-            case SearchCondition::InWordList:
-            case SearchCondition::NumVowels:
-            case SearchCondition::IncludeLetters:
-            case SearchCondition::ProbabilityOrder:
-            case SearchCondition::NumUniqueLetters:
-            case SearchCondition::PointValue:
-            case SearchCondition::NumAnagrams:
-            ++databaseConditions;
-            break;
-
-            default:
-            break;
-        }
     }
 
     // Do not search the database based on Length conditions that were only
     // added by SearchSpec::optimize to optimize word graph searches
-    if ((wordGraphConditions) &&
-        (databaseConditions >= 1) && (lengthConditions == databaseConditions))
+    if ((phaseCounts.contains(WordGraphPhase)) && lengthConditions &&
+        (lengthConditions == phaseCounts.value(DatabasePhase)))
     {
-        --databaseConditions;
+        --phaseCounts[DatabasePhase];
     }
 
     // Search the word graph if necessary
     QStringList resultList;
-    if (wordGraphConditions || !databaseConditions) {
+    if (phaseCounts.contains(WordGraphPhase) ||
+        !phaseCounts.contains(DatabasePhase))
+    {
         resultList = wordGraphSearch(optimizedSpec);
         if (resultList.isEmpty())
             return resultList;
     }
 
     // Search the database if necessary, passing word graph results
-    if (databaseConditions) {
+    if (phaseCounts.contains(DatabasePhase)) {
         resultList = databaseSearch(optimizedSpec,
-                                    wordGraphConditions ? &resultList : 0);
+            phaseCounts.contains(WordGraphPhase) ? &resultList : 0);
         if (resultList.isEmpty())
             return resultList;
     }
 
     // Check post conditions if necessary
-    if (postConditions) {
+    if (phaseCounts.contains(PostConditionPhase)) {
         resultList = applyPostConditions(optimizedSpec, resultList);
     }
 
@@ -1556,4 +1518,49 @@ WordEngine::addDefinition(const QString& word, const QString& definition)
         defMap.insert(make_pair(pos, def));
     }
     definitions.insert(make_pair(word, defMap));
+}
+
+//---------------------------------------------------------------------------
+//  getConditionPhase
+//
+//! Determine the search phase during which a search condition should be
+//! considered.
+//
+//! @param condition the search condition
+//! @return the appropriate search phase
+//---------------------------------------------------------------------------
+WordEngine::ConditionPhase
+WordEngine::getConditionPhase(const SearchCondition& condition) const
+{
+    switch (condition.type) {
+        case SearchCondition::AnagramMatch:
+        case SearchCondition::SubanagramMatch:
+        case SearchCondition::ConsistOf:
+        return WordGraphPhase;
+
+        case SearchCondition::Length:
+        case SearchCondition::InWordList:
+        case SearchCondition::NumVowels:
+        case SearchCondition::IncludeLetters:
+        case SearchCondition::ProbabilityOrder:
+        case SearchCondition::NumUniqueLetters:
+        case SearchCondition::PointValue:
+        case SearchCondition::NumAnagrams:
+        return DatabasePhase;
+
+        case SearchCondition::BelongToGroup:
+        case SearchCondition::Prefix:
+        case SearchCondition::Suffix:
+        case SearchCondition::LimitByProbabilityOrder:
+        return PostConditionPhase;
+
+        case SearchCondition::PatternMatch:
+        if (condition.stringValue.contains("["))
+            return WordGraphPhase;
+        else
+            return DatabasePhase;
+
+        default:
+        return UnknownPhase;
+    }
 }

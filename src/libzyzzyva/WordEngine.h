@@ -92,6 +92,14 @@ class WordEngine : public QObject
     int getPointValue(const QString& word) const;
 
     private:
+    enum ConditionPhase {
+        UnknownPhase = 0,
+        WordGraphPhase,
+        DatabasePhase,
+        PostConditionPhase
+    };
+
+    private:
     void addToCache(const QStringList& words) const;
     bool matchesConditions(const QString& word, const QList<SearchCondition>&
                            conditions) const;
@@ -103,6 +111,7 @@ class WordEngine : public QObject
                                QStringList* wordList = 0) const;
     QStringList applyPostConditions(const SearchSpec& optimizedSpec, const
                                     QStringList& wordList) const;
+    ConditionPhase getConditionPhase(const SearchCondition& condition) const;
 
     private:
     QString lexiconName;
