@@ -233,7 +233,7 @@ Auxil::getNewInOwl2String()
         return QString();
 
     QStringList words;
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    char* buffer = new char[MAX_INPUT_LINE_LEN];
     while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
         line = line.simplified();
@@ -262,7 +262,7 @@ Auxil::getNewInCswString()
         return QString();
 
     QStringList words;
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    char* buffer = new char[MAX_INPUT_LINE_LEN];
     while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
         line = line.simplified();

@@ -1559,7 +1559,7 @@ MainWindow::newQuizFromWordFile(const QString& filename)
         return;
 
     QStringList words;
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    char* buffer = new char[MAX_INPUT_LINE_LEN];
     while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
         line = line.simplified();
@@ -1644,7 +1644,7 @@ MainWindow::importChecksums(const QString& filename)
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return checksums;
 
-    char* buffer = new char [MAX_INPUT_LINE_LEN];
+    char* buffer = new char[MAX_INPUT_LINE_LEN];
     while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
         checksums.append(line.toUShort());

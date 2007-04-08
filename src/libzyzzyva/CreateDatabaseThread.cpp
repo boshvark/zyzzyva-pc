@@ -362,7 +362,7 @@ CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
     QMap<QString, QString> definitionMap;
     QFile definitionFile (definitionFilename);
     if (definitionFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        char* buffer = new char [MAX_INPUT_LINE_LEN];
+        char* buffer = new char[MAX_INPUT_LINE_LEN];
         while (definitionFile.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
             QString line (buffer);
             line = line.simplified();
