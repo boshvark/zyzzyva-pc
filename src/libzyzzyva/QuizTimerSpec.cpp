@@ -40,7 +40,7 @@ const QString XML_DURATION_ATTR = "duration";
 QString
 QuizTimerSpec::asString() const
 {
-    return (type == NoTimer) ? QString::null
+    return (type == NoTimer) ? QString()
                              : "Timer: " + QString::number(duration) +
                                " seconds " + typeToString(type);
 }
@@ -113,7 +113,7 @@ QuizTimerSpec::typeToString(QuizTimerType t) const
     switch (t) {
         case PerQuestion: return PER_QUESTION_TYPE;
         case PerResponse: return PER_RESPONSE_TYPE;
-        default: return QString::null;
+        default: return QString();
     }
 }
 

@@ -230,7 +230,7 @@ Auxil::getNewInOwl2String()
 {
     QFile file (Auxil::getWordsDir() + "/north-american/owl2-new-words.txt");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return QString::null;
+        return QString();
 
     QStringList words;
     char* buffer = new char [MAX_INPUT_LINE_LEN];
@@ -259,7 +259,7 @@ Auxil::getNewInCswString()
 {
     QFile file (Auxil::getWordsDir() + "/british/csw-new-words.txt");
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return QString::null;
+        return QString();
 
     QStringList words;
     char* buffer = new char [MAX_INPUT_LINE_LEN];
@@ -784,7 +784,7 @@ Auxil::searchTypeToString(SearchCondition::SearchType type)
         case SearchCondition::LimitByProbabilityOrder:
         return SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER;
 
-        default: return QString::null;
+        default: return QString();
     }
 }
 
@@ -830,7 +830,7 @@ Auxil::quizTypeToString(QuizSpec::QuizType t)
         case QuizSpec::QuizWordListRecall:
         return QUIZ_TYPE_WORD_LIST_RECALL;
 
-        default: return QString::null;
+        default: return QString();
     }
 }
 
@@ -887,7 +887,7 @@ Auxil::quizMethodToString(QuizSpec::QuizMethod m)
         case QuizSpec::CardboxQuizMethod:
         return QUIZ_METHOD_CARDBOX;
 
-        default: return QString::null;
+        default: return QString();
     }
 }
 
@@ -928,7 +928,7 @@ Auxil::quizSourceTypeToString(QuizSpec::QuizSourceType s)
         case QuizSpec::CardboxReadySource:
         return QUIZ_SOURCE_CARDBOX_READY;
 
-        default: return QString::null;
+        default: return QString();
     }
 }
 
@@ -978,7 +978,7 @@ Auxil::quizQuestionOrderToString(QuizSpec::QuestionOrder o)
         case QuizSpec::ScheduleOrder:
         return QUIZ_ORDER_SCHEDULE;
 
-        default: return QString::null;
+        default: return QString();
     }
 }
 
@@ -1044,7 +1044,7 @@ Auxil::wordAttributeToString(WordAttribute attr)
         case WordAttrDoubleExtensions:
         return WORD_ATTR_DOUBLE_EXTENSIONS;
 
-        default: return QString::null;
+        default: return QString();
     }
 }
 
@@ -1099,7 +1099,7 @@ Auxil::wordListFormatToString(WordListFormat format)
         case WordListAnagramQuestionAnswer:
         return WORD_LIST_FORMAT_QUESTION_ANSWER;
 
-        default: return QString::null;
+        default: return QString();
     }
 }
 

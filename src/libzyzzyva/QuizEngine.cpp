@@ -368,7 +368,7 @@ QuizEngine::markQuestionAsMissed()
 QString
 QuizEngine::getQuestion() const
 {
-    return (questionIndex >= quizQuestions.size()) ? QString::null:
+    return (questionIndex >= quizQuestions.size()) ? QString():
         quizQuestions.at(questionIndex);
 }
 

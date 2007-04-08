@@ -264,7 +264,7 @@ NewQuizDialog::getQuizSpec()
         (quizMethod != QuizSpec::CardboxQuizMethod))
     {
         quizSpec.setProgress(QuizProgress());
-        quizSpec.setFilename(QString::null);
+        quizSpec.setFilename(QString());
     }
 
     return quizSpec;
@@ -564,7 +564,7 @@ NewQuizDialog::disableProgress()
 void
 NewQuizDialog::clearFilename()
 {
-    quizSpec.setFilename(QString::null);
+    quizSpec.setFilename(QString());
 }
 
 //---------------------------------------------------------------------------

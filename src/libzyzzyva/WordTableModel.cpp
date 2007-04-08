@@ -335,7 +335,7 @@ WordTableModel::data(const QModelIndex& index, int role) const
 
         case DEFINITION_COLUMN:
         return MainSettings::getWordListShowDefinitions() ?
-            wordEngine->getDefinition(wordUpper) : QString::null;
+            wordEngine->getDefinition(wordUpper) : QString();
 
         default: return word;
     }
@@ -366,26 +366,26 @@ WordTableModel::headerData(int section, Qt::Orientation orientation, int
         switch (section) {
             case WILDCARD_MATCH_COLUMN:
             return MainSettings::getWordListGroupByAnagrams() ?
-                WILDCARD_MATCH_HEADER : QString::null;
+                WILDCARD_MATCH_HEADER : QString();
 
             case PROBABILITY_ORDER_COLUMN:
             return MainSettings::getWordListShowProbabilityOrder() ?
-                PROBABILITY_ORDER_HEADER : QString::null;
+                PROBABILITY_ORDER_HEADER : QString();
 
             case FRONT_HOOK_COLUMN:
             return MainSettings::getWordListShowHooks() ?
-                FRONT_HOOK_HEADER : QString::null;
+                FRONT_HOOK_HEADER : QString();
 
             case BACK_HOOK_COLUMN:
             return MainSettings::getWordListShowHooks() ?
-                BACK_HOOK_HEADER : QString::null;
+                BACK_HOOK_HEADER : QString();
 
             case WORD_COLUMN:
             return WORD_HEADER;
 
             case DEFINITION_COLUMN:
             return MainSettings::getWordListShowDefinitions() ?
-                DEFINITION_HEADER : QString::null;
+                DEFINITION_HEADER : QString();
 
             default:
             return "Unknown";

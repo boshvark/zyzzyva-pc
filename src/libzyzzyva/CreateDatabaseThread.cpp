@@ -605,7 +605,7 @@ CreateDatabaseThread::getSubDefinition(const QString& word, const QString&
                                        pos) const
 {
     if (!definitions.contains(word))
-        return QString::null;
+        return QString();
 
     QString definition = definitions[word];
     QRegExp posRegex (QString("\\[(\\w+)"));
@@ -621,7 +621,7 @@ CreateDatabaseThread::getSubDefinition(const QString& word, const QString&
         }
     }
 
-    return QString::null;
+    return QString();
 }
 
 

@@ -34,7 +34,7 @@
 class LetterBag
 {
     public:
-    LetterBag(const QString& distribution = QString::null);
+    LetterBag(const QString& distribution = QString());
     ~LetterBag() { }
 
     double getProbability(const QString& word) const;
@@ -43,7 +43,7 @@ class LetterBag
     int getLetterValue(const QChar& letter) const;
     void setLetterValue(const QChar& letter, int value);
 
-    void resetContents(const QString& distribution = QString::null);
+    void resetContents(const QString& distribution = QString());
     void insertLetter(const QChar& letter);
     bool drawLetter(const QChar& letter);
     QString lookRandomLetters(int num);

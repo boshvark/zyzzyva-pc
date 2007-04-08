@@ -112,7 +112,7 @@ CardboxForm::getTitle() const
 QString
 CardboxForm::getStatusString() const
 {
-    return QString::null;
+    return QString();
 }
 
 //---------------------------------------------------------------------------

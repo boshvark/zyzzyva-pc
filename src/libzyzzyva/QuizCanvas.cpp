@@ -72,7 +72,7 @@ QuizCanvas::QuizCanvas(QWidget* parent)
 void
 QuizCanvas::clear()
 {
-    setText(QString::null);
+    setText(QString());
 }
 
 //---------------------------------------------------------------------------
@@ -93,7 +93,7 @@ QuizCanvas::setText(const QString& text)
     QListIterator<QLabel*> it (labels);
     while (it.hasNext()) {
         QLabel* label = it.next();
-        label->setObjectName(QString::null);
+        label->setObjectName(QString());
         label->close();
     }
 
@@ -354,7 +354,7 @@ QuizCanvas::mousePressEvent(QMouseEvent* event)
     child->setPixmap(tempPixmap);
 
     if (drag->start(Qt::CopyAction | Qt::MoveAction) == Qt::MoveAction) {
-        child->setObjectName(QString::null);
+        child->setObjectName(QString());
         child->close();
     }
     else {

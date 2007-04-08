@@ -47,7 +47,7 @@ class WordTableModel : public QAbstractTableModel
         public:
         WordItem() : type(WordNormal) { init(); }
         WordItem(const QString& w, WordType t = WordNormal,
-                 const QString& wc = QString::null)
+                 const QString& wc = QString())
             : word(w), type(t), wildcard(wc) { init(); }
         void init();
         QString getWord() const { return word; }

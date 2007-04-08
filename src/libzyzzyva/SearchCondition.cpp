@@ -49,7 +49,7 @@ QString
 SearchCondition::asString() const
 {
     if (type == UnknownSearchType)
-        return QString::null;
+        return QString();
 
     QString str;
     if (negated)

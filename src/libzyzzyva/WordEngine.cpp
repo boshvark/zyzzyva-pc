@@ -808,7 +808,7 @@ WordEngine::getNumWords() const
 //
 //! @param word the word whose definition to look up
 //! @param replaceLinks whether to resolve links to other definitions
-//! @return the definition, or QString::null if no definition
+//! @return the definition, or empty String if no definition
 //---------------------------------------------------------------------------
 QString
 WordEngine::getDefinition(const QString& word, bool replaceLinks) const
@@ -837,7 +837,7 @@ WordEngine::getDefinition(const QString& word, bool replaceLinks) const
         map<QString, multimap<QString, QString> >::const_iterator it =
             definitions.find(word);
         if (it == definitions.end())
-            return QString::null;
+            return QString();
 
         const multimap<QString, QString>& mmap = it->second;
         multimap<QString, QString>::const_iterator mit;

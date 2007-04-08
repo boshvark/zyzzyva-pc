@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     : QMainWindow(parent, f), wordEngine(new WordEngine()),
       settingsDialog(new SettingsDialog(this)),
       aboutDialog(new AboutDialog(this)),
-      helpDialog(new HelpDialog(QString::null, this))
+      helpDialog(new HelpDialog(QString(), this))
 {
     if (splash) {
         splash->showMessage("Creating interface...",
@@ -476,7 +476,7 @@ MainWindow::tryAutoImport(QSplashScreen* splash)
             // warning!
         }
 
-        lexiconError = QString::null;
+        lexiconError = QString();
 
         importDawg(importFile, lexicon, false, &lexiconError,
                    &expectedForwardChecksum);
@@ -939,7 +939,7 @@ MainWindow::closeCurrentTab()
     tabStack->removeTab(tabStack->indexOf(w));
     delete w;
     if (tabStack->count() == 0) {
-        messageLabel->setText(QString::null);
+        messageLabel->setText(QString());
         closeButton->hide();
     }
 }
@@ -1047,7 +1047,7 @@ MainWindow::getLexiconPrefix(const QString& lexicon)
     pmap["OSWI"] = "/british/oswi";
     pmap["CSW"] = "/british/csw";
     pmap["ODS"] = "/french/ods4";
-    return pmap.contains(lexicon) ? pmap.value(lexicon) : QString::null;
+    return pmap.value(lexicon);
 }
 
 //---------------------------------------------------------------------------
@@ -1057,7 +1057,7 @@ MainWindow::getLexiconPrefix(const QString& lexicon)
 //! Also create the db directory if it doesn't already exist.  FIXME: That
 //! should be done somewhere else!
 //
-//! @return the database filename, or QString::null if error
+//! @return the database filename, or empty string if error
 //---------------------------------------------------------------------------
 QString
 MainWindow::getDatabaseFilename()
@@ -1066,7 +1066,7 @@ MainWindow::getDatabaseFilename()
     if (lexicon != "Custom") {
         QString lexiconPrefix = getLexiconPrefix(lexicon);
         if (lexiconPrefix.isEmpty())
-            return QString::null;
+            return QString();
     }
 
     QString dbPath = Auxil::getUserDir() + "/lexicons";

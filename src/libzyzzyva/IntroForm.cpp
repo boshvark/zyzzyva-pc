@@ -85,5 +85,5 @@ IntroForm::getTitle() const
 QString
 IntroForm::getStatusString() const
 {
-    return QString::null;
+    return QString();
 }

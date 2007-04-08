@@ -390,7 +390,7 @@ SearchSpecForm::saveSearch()
 
     QDomImplementation implementation;
     QDomDocument document (implementation.createDocumentType("zyzzyva-search",
-        QString::null, "http://pietdepsi.com/dtd/zyzzyva-search.dtd"));
+        QString(), "http://pietdepsi.com/dtd/zyzzyva-search.dtd"));
 
     document.appendChild(getSearchSpec().asDomElement());
 

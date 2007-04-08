@@ -50,8 +50,8 @@ class ActionForm : public QFrame
     virtual ~ActionForm() { }
     virtual ActionFormType getType() const { return type; }
     virtual QIcon getIcon() const { return QIcon(); }
-    virtual QString getTitle() const { return QString::null; }
-    virtual QString getStatusString() const { return QString::null; }
+    virtual QString getTitle() const { return QString(); }
+    virtual QString getStatusString() const { return QString(); }
     virtual bool isSaveEnabled() const { return false; }
 
     public slots:

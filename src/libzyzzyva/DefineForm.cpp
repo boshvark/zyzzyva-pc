@@ -126,7 +126,7 @@ DefineForm::getTitle() const
 QString
 DefineForm::getStatusString() const
 {
-    return QString::null;
+    return QString();
 }
 
 //---------------------------------------------------------------------------

@@ -106,7 +106,7 @@ class QuizForm : public ActionForm
     void minimizeCanvas();
     void setNumCanvasTiles(int num);
     void setQuestionLabel(const QString& question, const QString& order =
-                          QString::null);
+                          QString());
     void setCorrectStatus(int correct, int total);
     void setQuestionStatus(const QuizDatabase::QuestionData& data);
     void setStatusString(const QString& status);
