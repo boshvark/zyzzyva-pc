@@ -1597,7 +1597,7 @@ QuizForm::setStatusString(const QString& status)
 //
 //! Display a number of seconds in the timer label.
 //
-//! \param seconds the number of seconds to display
+//! @param seconds the number of seconds to display
 //---------------------------------------------------------------------------
 void
 QuizForm::setTimerDisplay(int seconds)
@@ -1792,8 +1792,7 @@ QuizForm::disconnectDatabase()
 //
 //! Record statistics for the current quiz question.
 //
-//! \param question the question whose statistics to record
-//! \param correct whether to record a correct or incorrect response
+//! @param correct whether to record a correct or incorrect response
 //---------------------------------------------------------------------------
 void
 QuizForm::recordQuestionStats(bool correct)
@@ -1832,7 +1831,7 @@ QuizForm::customLetterOrderAllowed(QuizSpec::QuizType quizType) const
 //! Reimplementation of QObject::timerEvent.  Called when a timer event
 //! occurs.  Decrements the time remaining, unless the timer is paused.
 //
-//! \param event the timer event
+//! @param event the timer event
 //---------------------------------------------------------------------------
 void
 QuizForm::timerEvent(QTimerEvent* event)
