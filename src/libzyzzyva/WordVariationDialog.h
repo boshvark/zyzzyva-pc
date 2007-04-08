@@ -50,17 +50,20 @@ class WordVariationDialog : public QDialog
     void setWordVariation(const QString& word, WordVariationType variation);
     QList<WordTableModel::WordItem> getWordItems(const QList<SearchSpec>&
                                                  searchSpecs) const;
-    bool needsRightList(WordVariationType variation);
+    int getNumLists(WordVariationType variation);
 
     private:
     WordEngine*      wordEngine;
     DefinitionLabel* wordLabel;
-    QLabel*          leftLabel;
-    QLabel*          rightLabel;
-    WordTableView*   leftView;
-    WordTableModel*  leftModel;
-    WordTableView*   rightView;
-    WordTableModel*  rightModel;
+    QLabel*          topLabel;
+    QLabel*          middleLabel;
+    QLabel*          bottomLabel;
+    WordTableView*   topView;
+    WordTableModel*  topModel;
+    WordTableView*   middleView;
+    WordTableModel*  middleModel;
+    WordTableView*   bottomView;
+    WordTableModel*  bottomModel;
     ZPushButton*     closeButton;
 };
 

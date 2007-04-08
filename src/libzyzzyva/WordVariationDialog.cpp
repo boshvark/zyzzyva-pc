@@ -50,8 +50,11 @@ using namespace Defs;
 WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& word,
                                          WordVariationType variation,
                                          QWidget* parent, Qt::WFlags f)
-    : QDialog(parent, f), wordEngine(we)
+    : QDialog(parent, f), wordEngine(we), topView(0), topModel(0),
+    middleView(0), middleModel(0), bottomView(0), bottomModel(0)
 {
+    int numLists = getNumLists(variation);
+
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
@@ -70,35 +73,52 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& word,
 
     labelHlay->addStretch(1);
 
-    leftLabel = new QLabel;
-    Q_CHECK_PTR(leftLabel);
-    mainVlay->addWidget(leftLabel);
+    topLabel = new QLabel;
+    Q_CHECK_PTR(topLabel);
+    mainVlay->addWidget(topLabel);
 
-    leftView = new WordTableView(wordEngine);
-    Q_CHECK_PTR(leftView);
-    mainVlay->addWidget(leftView);
+    topView = new WordTableView(wordEngine);
+    Q_CHECK_PTR(topView);
+    mainVlay->addWidget(topView);
 
-    leftModel = new WordTableModel(wordEngine, this);
-    Q_CHECK_PTR(leftModel);
-    connect(leftModel, SIGNAL(wordsChanged()),
-            leftView, SLOT(resizeItemsToContents()));
-    leftView->setModel(leftModel);
+    topModel = new WordTableModel(wordEngine, this);
+    Q_CHECK_PTR(topModel);
+    connect(topModel, SIGNAL(wordsChanged()),
+            topView, SLOT(resizeItemsToContents()));
+    topView->setModel(topModel);
 
-    // Only add the right-hand list if necessary
-    if (needsRightList(variation)) {
-        rightLabel = new QLabel;
-        Q_CHECK_PTR(rightLabel);
-        mainVlay->addWidget(rightLabel);
+    // Only add the middle list if necessary
+    if (numLists > 1) {
+        middleLabel = new QLabel;
+        Q_CHECK_PTR(middleLabel);
+        mainVlay->addWidget(middleLabel);
 
-        rightView = new WordTableView(wordEngine);
-        Q_CHECK_PTR(rightView);
-        mainVlay->addWidget(rightView);
+        middleView = new WordTableView(wordEngine);
+        Q_CHECK_PTR(middleView);
+        mainVlay->addWidget(middleView);
 
-        rightModel = new WordTableModel(wordEngine, this);
-        Q_CHECK_PTR(rightModel);
-        connect(rightModel, SIGNAL(wordsChanged()),
-                rightView, SLOT(resizeItemsToContents()));
-        rightView->setModel(rightModel);
+        middleModel = new WordTableModel(wordEngine, this);
+        Q_CHECK_PTR(middleModel);
+        connect(middleModel, SIGNAL(wordsChanged()),
+                middleView, SLOT(resizeItemsToContents()));
+        middleView->setModel(middleModel);
+    }
+
+    // Only add the bottom list if necessary
+    if (numLists > 2) {
+        bottomLabel = new QLabel;
+        Q_CHECK_PTR(bottomLabel);
+        mainVlay->addWidget(bottomLabel);
+
+        bottomView = new WordTableView(wordEngine);
+        Q_CHECK_PTR(bottomView);
+        mainVlay->addWidget(bottomView);
+
+        bottomModel = new WordTableModel(wordEngine, this);
+        Q_CHECK_PTR(bottomModel);
+        connect(bottomModel, SIGNAL(wordsChanged()),
+                bottomView, SLOT(resizeItemsToContents()));
+        bottomView->setModel(bottomModel);
     }
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
@@ -144,11 +164,12 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
 {
     bool forceAlphabetSort = false;
     bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-    QString title, leftTitle, rightTitle;
+    QString title, topTitle, middleTitle, bottomTitle;
     SearchSpec spec;
     SearchCondition condition;
-    QList<SearchSpec> leftSpecs;
-    QList<SearchSpec> rightSpecs;
+    QList<SearchSpec> topSpecs;
+    QList<SearchSpec> middleSpecs;
+    QList<SearchSpec> bottomSpecs;
     switch (variation) {
 
         case VariationAnagrams:
@@ -156,8 +177,8 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
         condition.type = SearchCondition::AnagramMatch;
         condition.stringValue = word;
         spec.conditions.append(condition);
-        leftSpecs.append(spec);
-        leftTitle = "Anagrams";
+        topSpecs.append(spec);
+        topTitle = "Anagrams";
         break;
 
         case VariationSubanagrams:
@@ -165,8 +186,8 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
         condition.type = SearchCondition::SubanagramMatch;
         condition.stringValue = word;
         spec.conditions.append(condition);
-        leftSpecs.append(spec);
-        leftTitle = "Subanagrams";
+        topSpecs.append(spec);
+        topTitle = "Subanagrams";
         forceAlphabetSort = true;
         break;
 
@@ -175,13 +196,13 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
         condition.type = SearchCondition::PatternMatch;
         condition.stringValue = "?" + word;
         spec.conditions.append(condition);
-        leftSpecs.append(spec);
+        topSpecs.append(spec);
         condition.stringValue = word + "?";
         spec.conditions.clear();
         spec.conditions.append(condition);
-        rightSpecs.append(spec);
-        leftTitle = "Front Hooks";
-        rightTitle = "Back Hooks";
+        middleSpecs.append(spec);
+        topTitle = "Front Hooks";
+        middleTitle = "Back Hooks";
         forceAlphabetSort = true;
         break;
 
@@ -190,8 +211,8 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
         condition.type = SearchCondition::AnagramMatch;
         condition.stringValue = "?" + word;
         spec.conditions.append(condition);
-        leftSpecs.append(spec);
-        leftTitle = "Anagram Hooks";
+        topSpecs.append(spec);
+        topTitle = "Anagram Hooks";
         break;
 
         case VariationBlankAnagrams:
@@ -202,9 +223,9 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
                 word.right(word.length() - i - 1);
             spec.conditions.clear();
             spec.conditions.append(condition);
-            leftSpecs.append(spec);
+            topSpecs.append(spec);
         }
-        leftTitle = "Blank Anagrams";
+        topTitle = "Blank Anagrams";
         break;
 
         case VariationBlankMatches:
@@ -215,24 +236,29 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
                 word.right(word.length() - i - 1);
             spec.conditions.clear();
             spec.conditions.append(condition);
-            leftSpecs.append(spec);
+            topSpecs.append(spec);
         }
-        leftTitle = "Blank Matches";
+        topTitle = "Blank Matches";
         forceAlphabetSort = true;
         break;
 
         case VariationExtensions:
         title = "Extensions for: " + word;
         condition.type = SearchCondition::PatternMatch;
-        condition.stringValue = "*" + word;
+        condition.stringValue = "*?" + word;
         spec.conditions.append(condition);
-        leftSpecs.append(spec);
-        condition.stringValue = word + "*";
+        topSpecs.append(spec);
+        condition.stringValue = word + "?*";
         spec.conditions.clear();
         spec.conditions.append(condition);
-        rightSpecs.append(spec);
-        leftTitle = "Front Extensions";
-        rightTitle = "Back Extensions";
+        middleSpecs.append(spec);
+        condition.stringValue = "*?" + word + "?*";
+        spec.conditions.clear();
+        spec.conditions.append(condition);
+        bottomSpecs.append(spec);
+        topTitle = "Front Extensions";
+        middleTitle = "Back Extensions";
+        bottomTitle = "Double Extensions";
         forceAlphabetSort = true;
         break;
 
@@ -244,9 +270,9 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
                 word.mid(i, 1) + word.right(word.length() - i - 2);
             spec.conditions.clear();
             spec.conditions.append(condition);
-            leftSpecs.append(spec);
+            topSpecs.append(spec);
         }
-        leftTitle = "Transpositions";
+        topTitle = "Transpositions";
         break;
 
         default: break;
@@ -261,65 +287,61 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
     // Populate the top list
-    QList<WordTableModel::WordItem> wordItems = getWordItems(leftSpecs);
+    QList<WordTableModel::WordItem> wordItems = getWordItems(topSpecs);
 
     // FIXME: Probably not the right way to get alphabetical sorting instead
     // of alphagram sorting
     if (forceAlphabetSort)
         MainSettings::setWordListGroupByAnagrams(false);
-    leftModel->addWords(wordItems);
-    if (variation == VariationExtensions)
-        leftModel->removeWord(word);
+    topModel->addWords(wordItems);
     if (forceAlphabetSort)
         MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
-    int leftWords = leftModel->rowCount();
-    leftTitle += " : " + QString::number(leftWords) + " word";
-    if (leftWords != 1)
-        leftTitle += "s";
-    leftLabel->setText(leftTitle);
+    int topWords = topModel->rowCount();
+    topTitle += " : " + QString::number(topWords) + " word";
+    if (topWords != 1)
+        topTitle += "s";
+    topLabel->setText(topTitle);
 
-    // Populate the bottom list
-    if (!rightSpecs.empty()) {
-        wordItems = getWordItems(rightSpecs);
+    // Populate the middle list
+    if (!middleSpecs.empty()) {
+        wordItems = getWordItems(middleSpecs);
 
         // FIXME: Probably not the right way to get alphabetical sorting
         // instead of alphagram sorting
         if (forceAlphabetSort)
             MainSettings::setWordListGroupByAnagrams(false);
-        rightModel->addWords(wordItems);
-        if (variation == VariationExtensions)
-            rightModel->removeWord(word);
+        middleModel->addWords(wordItems);
         if (forceAlphabetSort)
             MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
-        int rightWords = rightModel->rowCount();
-        rightTitle += " : " + QString::number(rightWords) + " word";
-        if (rightWords != 1)
-            rightTitle += "s";
-        rightLabel->setText(rightTitle);
+        int middleWords = middleModel->rowCount();
+        middleTitle += " : " + QString::number(middleWords) + " word";
+        if (middleWords != 1)
+            middleTitle += "s";
+        middleLabel->setText(middleTitle);
+    }
+
+    // Populate the bottom list
+    if (!bottomSpecs.empty()) {
+        wordItems = getWordItems(bottomSpecs);
+
+        // FIXME: Probably not the right way to get alphabetical sorting
+        // instead of alphagram sorting
+        if (forceAlphabetSort)
+            MainSettings::setWordListGroupByAnagrams(false);
+        bottomModel->addWords(wordItems);
+        if (forceAlphabetSort)
+            MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
+
+        int bottomWords = bottomModel->rowCount();
+        bottomTitle += " : " + QString::number(bottomWords) + " word";
+        if (bottomWords != 1)
+            bottomTitle += "s";
+        bottomLabel->setText(bottomTitle);
     }
 
     QApplication::restoreOverrideCursor();
-}
-
-//---------------------------------------------------------------------------
-//  needsRightList
-//
-//! Determine whether the right-hand list is needed for a word variation type.
-//
-//! @param variation the variation type
-//! @return true if the variation type requires a right-hand list, false
-//! otherwise
-//---------------------------------------------------------------------------
-bool
-WordVariationDialog::needsRightList(WordVariationType variation)
-{
-    switch (variation) {
-        case VariationHooks:
-        case VariationExtensions: return true;
-        default: return false;
-    }
 }
 
 //---------------------------------------------------------------------------
@@ -368,4 +390,22 @@ WordVariationDialog::getWordItems(const QList<SearchSpec>& searchSpecs) const
     }
 
     return wordItems;
+}
+
+//---------------------------------------------------------------------------
+//  getNumLists
+//
+//! Determine how many lists should be displayed for a word variation type.
+//
+//! @param variation the variation type
+//! @return the number of lists
+//---------------------------------------------------------------------------
+int
+WordVariationDialog::getNumLists(WordVariationType variation)
+{
+    switch (variation) {
+        case VariationHooks: return 2;
+        case VariationExtensions: return 3;
+        default: return 1;
+    }
 }
