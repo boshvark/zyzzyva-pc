@@ -158,7 +158,7 @@ JudgeDialog::JudgeDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     QString lexicon = engine->getLexiconName();
     QDate date = Auxil::lexiconToDate(lexicon);
-    QString dateStr = "";
+    QString dateStr;
     if (date.isValid())
         dateStr = date.toString("MMMM d, yyyy");
     QLabel* lexiconLabel = new QLabel("Lexicon: " + lexicon + "\n" + dateStr);

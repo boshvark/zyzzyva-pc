@@ -51,37 +51,6 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     mainVlay->setSpacing(SPACING);
     Q_CHECK_PTR(mainVlay);
 
-    QLabel* label = new QLabel(
-        "Shift cardbox questions so the backlog contains a certain number "
-        "of questions.  Currently this is hard-coded to reschedule all "
-        "questions in the Anagrams cardbox.");
-    Q_CHECK_PTR(label);
-    label->setWordWrap(true);
-    mainVlay->addWidget(label);
-
-    // Shift area
-    QHBoxLayout* shiftHlay = new QHBoxLayout;
-    Q_CHECK_PTR(shiftHlay);
-    shiftHlay->setSpacing(SPACING);
-    mainVlay->addLayout(shiftHlay);
-
-    QLabel* shiftLabel = new QLabel("Desired backlog size:");
-    Q_CHECK_PTR(shiftLabel);
-    shiftHlay->addWidget(shiftLabel);
-
-    backlogSbox = new QSpinBox;
-    Q_CHECK_PTR(backlogSbox);
-    backlogSbox->setMinimum(1);
-    backlogSbox->setMaximum(999999);
-    shiftHlay->addWidget(backlogSbox);
-
-    ZPushButton* shiftButton = new ZPushButton;
-    Q_CHECK_PTR(shiftButton);
-    shiftButton->setText("&Shift");
-    shiftButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(shiftButton, SIGNAL(clicked()), SLOT(shiftClicked()));
-    shiftHlay->addWidget(shiftButton);
-
     QHBoxLayout* cardboxHlay = new QHBoxLayout;
     Q_CHECK_PTR(cardboxHlay);
     cardboxHlay->setSpacing(SPACING);
@@ -144,30 +113,6 @@ QString
 CardboxForm::getStatusString() const
 {
     return QString::null;
-}
-
-//---------------------------------------------------------------------------
-//  shiftClicked
-//
-//! Called when the Delay button is clicked.  Delay the cardbox contents.
-//---------------------------------------------------------------------------
-void
-CardboxForm::shiftClicked()
-{
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
-    int desiredBacklog = backlogSbox->value();
-    QString lexicon = wordEngine->getLexiconName();
-    QString quizType = "Anagrams";
-    // do some searching to get a limiting list of questions
-    QStringList questions;
-
-    QuizDatabase db (lexicon, quizType);
-    db.shiftCardbox(questions, desiredBacklog);
-
-    refreshClicked();
-
-    QApplication::restoreOverrideCursor();
 }
 
 //---------------------------------------------------------------------------

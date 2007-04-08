@@ -819,7 +819,7 @@ WordEngine::getDefinition(const QString& word, bool replaceLinks) const
     if (info.isValid()) {
         if (replaceLinks) {
             QStringList defs = info.definition.split(" / ");
-            definition = "";
+            definition = QString();
             QString def;
             foreach (def, defs) {
                 if (!definition.isEmpty())

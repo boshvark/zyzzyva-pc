@@ -447,7 +447,7 @@ QuizForm::responseEntered()
 
     QuizEngine::ResponseStatus status = quizEngine->respond(response);
     QString displayResponse = response;
-    QString statusStr = "";
+    QString statusStr;
 
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
         setUnsavedChanges(true);

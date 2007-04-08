@@ -321,7 +321,7 @@ WordGraph::search(const SearchSpec& spec) const
         {
             wildcard = unmatched.contains('*');
             if (wildcard)
-                unmatched = unmatched.replace('*', "");
+                unmatched = unmatched.replace('*', QString());
 
             QRegExp re ("\\[[^\\]]*\\][A-Z]");
             int pos = 0;
@@ -647,7 +647,7 @@ WordGraph::matchesSpec(QString word, const SearchSpec& spec) const
                     int index = tmpWord.indexOf(condition.stringValue.at(i));
                     if ((index < 0) ^ condition.negated)
                         return false;
-                    tmpWord.replace(index, 1, "");
+                    tmpWord.replace(index, 1, QString());
                 }
             }
             break;
@@ -933,7 +933,7 @@ WordGraph::searchOld(const SearchSpec& spec) const
         {
             wildcard = unmatched.contains('*');
             if (wildcard)
-                unmatched = unmatched.replace('*', "");
+                unmatched = unmatched.replace('*', QString());
 
             QRegExp re ("\\[[^\\]]*\\][A-Z]");
             int pos = 0;

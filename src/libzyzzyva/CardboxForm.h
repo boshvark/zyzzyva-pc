@@ -27,7 +27,6 @@
 
 #include "ActionForm.h"
 #include <QLabel>
-#include <QSpinBox>
 #include <QSqlQueryModel>
 #include <QTreeView>
 
@@ -44,7 +43,6 @@ class CardboxForm : public ActionForm
     QString getStatusString() const;
 
     public slots:
-    void shiftClicked();
     void refreshClicked();
     void quizSpecChanged();
 
@@ -53,7 +51,6 @@ class CardboxForm : public ActionForm
     QuizDatabase*   quizDatabase;
     QSqlQueryModel* cardboxCountModel;
     QSqlQueryModel* cardboxDaysModel;
-    QSpinBox*       backlogSbox;
     QTreeView*      cardboxCountView;
     QTreeView*      cardboxDaysView;
 };
