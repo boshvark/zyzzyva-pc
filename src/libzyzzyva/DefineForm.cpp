@@ -159,6 +159,9 @@ DefineForm::defineWord()
                         QString("<font color=\"blue\">Acceptable</font>") :
                         QString("<font color=\"red\">Unacceptable</font>");
 
+    // FIXME: if the word is acceptable, get as much information as possible
+    // from WordEngine::getWordInfo, not getDefinition, etc. separately
+
     // Get definition
     QString definition;
     if (acceptable) {
