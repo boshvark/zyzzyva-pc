@@ -256,7 +256,7 @@ IscConnectionThread::keepAliveTimeout()
 //! @return an array of bytes to be sent to the server
 //---------------------------------------------------------------------------
 QByteArray
-IscConnectionThread::encodeMessage (const QString& message)
+IscConnectionThread::encodeMessage(const QString& message)
 {
     int length = message.length() + 2;
     unsigned char high = (length & 0xff00) >> 8;
