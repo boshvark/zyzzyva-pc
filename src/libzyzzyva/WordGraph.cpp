@@ -31,8 +31,6 @@
 #include <map>
 #include <stack>
 
-#include <QtDebug>
-
 const long TERMINAL_NODE = 0;
 const long ROOT_NODE = 1;
 

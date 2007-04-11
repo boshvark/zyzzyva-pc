@@ -39,8 +39,6 @@
 #include <QTextStream>
 #include <QVBoxLayout>
 
-#include <QtDebug>
-
 const QString DIALOG_CAPTION = "New Quiz";
 const QString TIMER_PER_QUESTION = "per question";
 const QString TIMER_PER_RESPONSE = "per response";

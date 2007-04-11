@@ -59,7 +59,6 @@
 #include <QSqlQuery>
 #include <QToolBar>
 
-#include <QtDebug>
 #include "LetterBag.h"
 
 MainWindow* MainWindow::instance = 0;
@@ -1769,5 +1768,5 @@ void
 MainWindow::doTest()
 {
     LetterBag letterBag;
-    qDebug() << "*** doTest!";
+    qDebug("*** doTest!");
 }

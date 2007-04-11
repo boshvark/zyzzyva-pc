@@ -23,8 +23,6 @@
 #include "CrosswordGameBoard.h"
 #include "Defs.h"
 
-#include <QtDebug>
-
 using namespace Defs;
 
 const int NUM_ROWS = 15;

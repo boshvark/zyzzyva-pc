@@ -26,8 +26,6 @@
 #include "Rand.h"
 #include "Auxil.h"
 
-#include <QtDebug>
-
 const int KEEP_ALIVE_INTERVAL = 31000;
 
 //---------------------------------------------------------------------------

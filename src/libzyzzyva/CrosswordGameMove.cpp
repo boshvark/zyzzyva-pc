@@ -25,8 +25,6 @@
 #include "Auxil.h"
 #include "Defs.h"
 
-#include <QtDebug>
-
 using namespace Defs;
 
 //---------------------------------------------------------------------------
