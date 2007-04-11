@@ -27,11 +27,11 @@
 
 #include "WordGraph.h"
 #include <QMap>
+#include <QMultiMap>
+#include <QSet>
 #include <QString>
 #include <QStringList>
 #include <QSqlDatabase>
-#include <map>
-#include <set>
 
 class WordEngine : public QObject
 {
@@ -77,7 +77,7 @@ class WordEngine : public QObject
     bool isAcceptable(const QString& word) const;
     QStringList search(const SearchSpec& spec, bool allCaps) const;
     QStringList wordGraphSearch(const SearchSpec& spec) const;
-    QStringList alphagrams(const QStringList& list) const;
+    QStringList alphagrams(const QStringList& strList) const;
     int getNumWords() const;
     WordInfo getWordInfo(const QString& word) const;
     QString getDefinition(const QString& word, bool replaceLinks = true) const;
@@ -116,10 +116,10 @@ class WordEngine : public QObject
     private:
     QString lexiconName;
     WordGraph graph;
-    std::map<QString, std::multimap<QString, QString> > definitions;
-    std::map<int, QStringList> stems;
+    QMap<QString, QMultiMap<QString, QString> > definitions;
+    QMap<int, QStringList> stems;
     QMap<QString, int> numAnagramsMap;
-    std::map< int, std::set<QString> > stemAlphagrams;
+    QMap<int, QSet<QString> > stemAlphagrams;
     mutable QMap<QString, WordInfo> wordCache;
 
     QSqlDatabase* db;

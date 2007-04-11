@@ -32,13 +32,8 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QVariant>
-#include <set>
 
 using namespace Defs;
-using std::set;
-using std::map;
-using std::make_pair;
-using std::multimap;
 
 //---------------------------------------------------------------------------
 //  clearCache
@@ -213,7 +208,7 @@ WordEngine::importStems(const QString& filename, QString* errString)
     // XXX: At some point, may want to consider allowing words of varying
     // lengths to be in the same file?
     QStringList words;
-    set<QString> alphagrams;
+    QSet<QString> alphagrams;
     int imported = 0;
     int length = 0;
     char* buffer = new char[MAX_INPUT_LINE_LEN];
@@ -237,19 +232,8 @@ WordEngine::importStems(const QString& filename, QString* errString)
     delete[] buffer;
 
     // Insert the stem list into the map, or append to an existing stem list
-    map<int, QStringList>::iterator it = stems.find(length);
-    if (it == stems.end()) {
-        stems.insert(make_pair(length, words));
-        stemAlphagrams.insert(make_pair(length, alphagrams));
-    }
-    else {
-        it->second += words;
-        std::map< int, set<QString> >::iterator it =
-            stemAlphagrams.find(length);
-        set<QString>::iterator sit;
-        for (sit = alphagrams.begin(); sit != alphagrams.end(); ++sit)
-            (it->second).insert(*sit);
-    }
+    stems[length] += words;
+    stemAlphagrams[length].unite(alphagrams);
 
     return imported;
 }
@@ -686,22 +670,16 @@ WordEngine::wordGraphSearch(const SearchSpec& optimizedSpec) const
 //! @return a list of alphagrams
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::alphagrams(const QStringList& list) const
+WordEngine::alphagrams(const QStringList& strList) const
 {
-    QStringList alphagrams;
-    QStringList::const_iterator it;
-
-    // Insert into a set first, to remove duplicates
-    set<QString> seen;
-    for (it = list.begin(); it != list.end(); ++it) {
-        seen.insert(Auxil::getAlphagram(*it));
+    // Insert into a set to remove duplicates
+    QSet<QString> alphaSet;
+    QString str;
+    foreach (str, strList) {
+        alphaSet.insert(Auxil::getAlphagram(str));
     }
 
-    set<QString>::iterator sit;
-    for (sit = seen.begin(); sit != seen.end(); ++sit) {
-        alphagrams << *sit;
-    }
-    return alphagrams;
+    return alphaSet.toList();
 }
 
 //---------------------------------------------------------------------------
@@ -811,21 +789,20 @@ WordEngine::getDefinition(const QString& word, bool replaceLinks) const
     }
 
     else {
-        map<QString, multimap<QString, QString> >::const_iterator it =
-            definitions.find(word);
-        if (it == definitions.end())
+        if (!definitions.contains(word))
             return QString();
 
-        const multimap<QString, QString>& mmap = it->second;
-        multimap<QString, QString>::const_iterator mit;
-        for (mit = mmap.begin(); mit != mmap.end(); ++mit) {
+        const QMultiMap<QString, QString>& mmap = definitions.value(word);
+        QMapIterator<QString, QString> it (mmap);
+        while (it.hasNext()) {
+            it.next();
             if (!definition.isEmpty()) {
                 if (replaceLinks)
                     definition += "\n";
                 else
                     definition += " / ";
             }
-            definition += mit->second;
+            definition += it.value();
         }
         return definition;
     }
@@ -857,16 +834,18 @@ WordEngine::getFrontHookLetters(const QString& word) const
         condition.stringValue = "?" + word;
         spec.conditions.append(condition);
 
-        // Put first letter of each word in a set, for alphabetical order
+        // Get and sort first letters of each word
         QStringList words = search(spec, true);
-        set<QChar> letters;
-        QStringList::iterator it;
-        for (it = words.begin(); it != words.end(); ++it)
-            letters.insert((*it).at(0).toLower());
+        QString str;
+        QList<QChar> letters;
+        foreach (str, words) {
+            letters.append(str.at(0).toLower());
+        }
+        qSort(letters);
 
-        set<QChar>::iterator sit;
-        for (sit = letters.begin(); sit != letters.end(); ++sit)
-            ret += *sit;
+        QListIterator<QChar> it (letters);
+        while (it.hasNext())
+            ret += it.next();
     }
 
     return ret;
@@ -898,16 +877,18 @@ WordEngine::getBackHookLetters(const QString& word) const
         condition.stringValue = word + "?";
         spec.conditions.append(condition);
 
-        // Put first letter of each word in a set, for alphabetical order
+        // Get and sort last letters of each word
         QStringList words = search(spec, true);
-        set<QChar> letters;
-        QStringList::iterator it;
-        for (it = words.begin(); it != words.end(); ++it)
-            letters.insert((*it).at((*it).length() - 1).toLower());
+        QString str;
+        QList<QChar> letters;
+        foreach (str, words) {
+            letters.append(str.at(str.length() - 1).toLower());
+        }
+        qSort(letters);
 
-        set<QChar>::iterator sit;
-        for (sit = letters.begin(); sit != letters.end(); ++sit)
-            ret += *sit;
+        QListIterator<QChar> it (letters);
+        while (it.hasNext())
+            ret += it.next();
     }
 
     return ret;
@@ -1070,19 +1051,17 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
             if (word.length() != 7)
                 return false;
 
-            std::map< int, set<QString> >::const_iterator it =
-                stemAlphagrams.find(word.length() - 1);
-            if (it == stemAlphagrams.end())
+            if (!stemAlphagrams.contains(word.length() - 1))
                 return false;
 
-            const set<QString>& alphaset = it->second;
+            const QSet<QString>& alphaSet = stemAlphagrams[word.length() - 1];
             QString agram = Auxil::getAlphagram(word);
-            set<QString>::const_iterator ait;
             for (int i = 0; i < int(agram.length()); ++i) {
-                ait = alphaset.find(agram.left(i) +
-                                    agram.right(agram.length() - i - 1));
-                if (ait != alphaset.end())
+                if (alphaSet.contains(agram.left(i) +
+                                      agram.right(agram.length() - i - 1)))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -1091,20 +1070,18 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
             if (word.length() != 8)
                 return false;
 
-            std::map< int, set<QString> >::const_iterator it =
-                stemAlphagrams.find(word.length() - 2);
-            if (it == stemAlphagrams.end())
+            if (!stemAlphagrams.contains(word.length() - 2))
                 return false;
-
-            QString agram = Auxil::getAlphagram(word);
 
             // Compare the letters of the word with the letters of each
             // alphagram, ensuring that no more than two letters in the word
             // are missing from the alphagram.
-            const set<QString>& alphaset = it->second;
-            set<QString>::const_iterator ait;
-            for (ait = alphaset.begin(); ait != alphaset.end(); ++ait) {
-                QString setAlphagram = *ait;
+            QString agram = Auxil::getAlphagram(word);
+            const QSet<QString>& alphaSet = stemAlphagrams[word.length() - 2];
+
+            QSetIterator<QString> it (alphaSet);
+            while (it.hasNext()) {
+                QString setAlphagram = it.next();
                 int missing = 0;
                 int saIndex = 0;
                 for (int i = 0; (i < int(agram.length())) &&
@@ -1174,19 +1151,17 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
             if (word.length() != 8)
                 return false;
 
-            std::map< int, set<QString> >::const_iterator it =
-                stemAlphagrams.find(word.length() - 1);
-            if (it == stemAlphagrams.end())
+            if (!stemAlphagrams.contains(word.length() - 1))
                 return false;
 
-            const set<QString>& alphaset = it->second;
             QString agram = Auxil::getAlphagram(word);
-            set<QString>::const_iterator ait;
+            const QSet<QString>& alphaSet = stemAlphagrams[word.length() - 1];
             for (int i = 0; i < int(agram.length()); ++i) {
-                ait = alphaset.find(agram.left(i) +
-                                    agram.right(agram.length() - i - 1));
-                if (ait != alphaset.end())
+                if (alphaSet.contains(agram.left(i) +
+                                      agram.right(agram.length() - i - 1)))
+                {
                     return true;
+                }
             }
             return false;
         }
@@ -1323,8 +1298,7 @@ QStringList
 WordEngine::nonGraphSearch(const SearchSpec& spec) const
 {
     QStringList wordList;
-    set<QString> finalWordSet;
-    set<QString>::iterator sit;
+    QSet<QString> finalWordSet;
     int conditionNum = 0;
 
     const int MAX_ANAGRAMS = 65535;
@@ -1397,11 +1371,12 @@ WordEngine::nonGraphSearch(const SearchSpec& spec) const
             continue;
         QStringList words = condition.stringValue.split(QChar(' '));
 
-        set<QString> wordSet;
-        QStringList::iterator wit;
-        for (wit = words.begin(); wit != words.end(); ++wit) {
-            if (isAcceptable(*wit))
-                wordSet.insert(*wit);
+        QSet<QString> wordSet;
+        QStringListIterator wit (words);
+        while (wit.hasNext()) {
+            QString word = wit.next();
+            if (isAcceptable(word))
+                wordSet.insert(word);
         }
 
         // Combine search result set with words already found
@@ -1410,20 +1385,14 @@ WordEngine::nonGraphSearch(const SearchSpec& spec) const
         }
 
         else if (spec.conjunction) {
-            set<QString> conjunctionSet;
-            for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
-                if (finalWordSet.find(*sit) != finalWordSet.end())
-                    conjunctionSet.insert(*sit);
-            }
-            if (conjunctionSet.empty())
+            QSet<QString> conjunctionSet = finalWordSet & wordSet;
+            if (conjunctionSet.isEmpty())
                 return wordList;
             finalWordSet = conjunctionSet;
         }
 
         else {
-            for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
-                finalWordSet.insert(*sit);
-            }
+            finalWordSet += wordSet;
         }
 
         ++conditionNum;
@@ -1433,7 +1402,7 @@ WordEngine::nonGraphSearch(const SearchSpec& spec) const
     // of anagrams.  If some words are already in the finalWordSet, then only
     // test those words.  Otherwise, run through the map of number of anagrams
     // and pull out all words matching the conditions.
-    if (!finalWordSet.empty() &&
+    if (!finalWordSet.isEmpty() &&
         ((minAnagrams > 0) || (maxAnagrams < MAX_ANAGRAMS)) ||
         ((minNumVowels > 0) || (maxNumVowels < MAX_WORD_LEN)) ||
         ((minNumUniqueLetters > 0) || (maxNumUniqueLetters < MAX_WORD_LEN)) ||
@@ -1448,9 +1417,10 @@ WordEngine::nonGraphSearch(const SearchSpec& spec) const
         bool testPointValue = ((minPointValue > 0) ||
                                (minPointValue < 10 * MAX_WORD_LEN));
 
-        set<QString> wordSet;
-        for (sit = finalWordSet.begin(); sit != finalWordSet.end(); ++sit) {
-            QString word = *sit;
+        QSet<QString> wordSet;
+        QSetIterator<QString> it (finalWordSet);
+        while (it.hasNext()) {
+            QString word = it.next();
 
             if (testAnagrams) {
                 int numAnagrams = getNumAnagrams(word);
@@ -1483,12 +1453,7 @@ WordEngine::nonGraphSearch(const SearchSpec& spec) const
         finalWordSet = wordSet;
     }
 
-    // Transform word set into word list and return it
-    for (sit = finalWordSet.begin(); sit != finalWordSet.end(); ++sit) {
-        wordList << *sit;
-    }
-
-    return wordList;
+    return finalWordSet.toList();
 }
 
 //---------------------------------------------------------------------------
@@ -1507,7 +1472,7 @@ WordEngine::addDefinition(const QString& word, const QString& definition)
         return;
 
     QRegExp posRegex (QString("\\[(\\w+)"));
-    multimap<QString, QString> defMap;
+    QMultiMap<QString, QString> defMap;
     QStringList defs = definition.split(" / ");
     QString def;
     foreach (def, defs) {
@@ -1515,9 +1480,9 @@ WordEngine::addDefinition(const QString& word, const QString& definition)
         if (posRegex.indexIn(def, 0) >= 0) {
             pos = posRegex.cap(1);
         }
-        defMap.insert(make_pair(pos, def));
+        defMap.insert(pos, def);
     }
-    definitions.insert(make_pair(word, defMap));
+    definitions.insert(word, defMap);
 }
 
 //---------------------------------------------------------------------------
