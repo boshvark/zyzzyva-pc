@@ -27,7 +27,6 @@
 
 #include <QDomElement>
 #include <QString>
-#include <set>
 
 class SearchCondition
 {

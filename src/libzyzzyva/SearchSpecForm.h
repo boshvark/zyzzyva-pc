@@ -30,7 +30,6 @@
 #include <QRadioButton>
 #include <QSignalMapper>
 #include <QVBoxLayout>
-#include <set>
 
 class SearchConditionForm;
 class SearchSpec;

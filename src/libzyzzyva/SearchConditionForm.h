@@ -31,7 +31,6 @@
 #include <QSpinBox>
 #include <QStackedWidget>
 #include <QToolButton>
-#include <set>
 
 class SearchCondition;
 class WordLineEdit;

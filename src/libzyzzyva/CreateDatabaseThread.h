@@ -29,7 +29,6 @@
 #include <QString>
 #include <QSqlDatabase>
 #include <QThread>
-#include <map>
 
 class WordEngine;
 
