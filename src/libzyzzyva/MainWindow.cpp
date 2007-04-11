@@ -1094,7 +1094,7 @@ MainWindow::connectToDatabase()
 
     if (dbFile.exists()) {
         Rand rng;
-        rng.srand(std::time(0), Auxil::getPid());
+        rng.srand(QDateTime::currentDateTime().toTime_t(), Auxil::getPid());
         unsigned int r = rng.rand();
         QString dbConnectionName = "MainWindow" + QString::number(r);
         {

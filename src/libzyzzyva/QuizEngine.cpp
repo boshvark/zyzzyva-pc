@@ -129,7 +129,7 @@ QuizEngine::newQuiz(const QuizSpec& spec)
             case QuizSpec::RandomOrder: {
                 unsigned int seed = spec.getRandomSeed();
                 if (!seed)
-                    seed = std::time(0);
+                    seed = QDateTime::currentDateTime().toTime_t();
                 unsigned int seed2 = spec.getRandomSeed2();
                 if (!seed2)
                     seed2 = Auxil::getPid();

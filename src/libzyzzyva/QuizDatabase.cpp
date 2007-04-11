@@ -64,7 +64,7 @@ QuizDatabase::QuizDatabase(const QString& lexicon, const QString& quizType)
     QString dbFilename = dirName + "/" + quizType + ".db";
 
     // Get random connection name
-    rng.srand(std::time(0), Auxil::getPid());
+    rng.srand(QDateTime::currentDateTime().toTime_t(), Auxil::getPid());
     unsigned int r = rng.rand();
     dbConnectionName = "quiz" + QString::number(r);
     db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE",
@@ -174,7 +174,7 @@ QuizDatabase::recordResponse(const QString& question, bool correct,
                 data.streak = 1;
             else
                 ++data.streak;
-            data.lastCorrect = std::time(0);
+            data.lastCorrect = QDateTime::currentDateTime().toTime_t();
         }
         else {
             ++data.numIncorrect;
@@ -195,7 +195,8 @@ QuizDatabase::recordResponse(const QString& question, bool correct,
         data.numCorrect = (correct ? 1 : 0);
         data.numIncorrect = (correct ? 0 : 1);
         data.streak = (correct ? 1 : -1);
-        data.lastCorrect = (correct ? std::time(0) : 0);
+        data.lastCorrect = (correct ? QDateTime::currentDateTime().toTime_t()
+                                    : 0);
         // XXX: Fix difficulty ratings!
         data.difficulty = 50;
         if (updateCardbox) {
@@ -457,7 +458,7 @@ QuizDatabase::shiftCardbox(const QStringList& questions, int desiredBacklog)
         ++index;
     }
 
-    unsigned int now = std::time(0);
+    unsigned int now = QDateTime::currentDateTime().toTime_t();
     int shiftSeconds = now - pegNextScheduled;
 
     QSqlQuery updateQuery (*db);
@@ -493,7 +494,7 @@ QStringList
 QuizDatabase::getAllReadyQuestions()
 {
     QStringList readyQuestions;
-    unsigned int now = std::time(0);
+    unsigned int now = QDateTime::currentDateTime().toTime_t();
 
     QString queryStr = "SELECT question FROM questions WHERE "
         "next_scheduled <= " + QString::number(now) +
@@ -524,7 +525,7 @@ QuizDatabase::getReadyQuestions(const QStringList& questions)
 {
     QStringList readyQuestions;
 
-    unsigned int now = std::time(0);
+    unsigned int now = QDateTime::currentDateTime().toTime_t();
 
     QString inString;
     QString question;
@@ -660,7 +661,7 @@ QuizDatabase::calculateNextScheduled(int cardbox)
     // scheduled between 8 and 16 hours in the future.
     if (randDays)
         numDays += rng.rand(randDays * 2) - randDays;
-    unsigned int now = std::time(0);
+    unsigned int now = QDateTime::currentDateTime().toTime_t();
     int nextSeconds = (daySeconds * numDays) - halfDaySeconds;
     int halfWindow = cardbox ? halfDaySeconds : 60 * 60 * 4;
     int randSeconds = rng.rand(2 * halfWindow) - halfWindow;

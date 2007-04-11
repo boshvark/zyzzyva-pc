@@ -140,7 +140,8 @@ CardboxForm::refreshClicked()
 
     // Refresh upcoming word counts
     if (cardboxDaysModel) {
-        unsigned int now = std::time(0);
+        unsigned int now = QDateTime::currentDateTime().toTime_t();
+
         QString queryStr =
             "SELECT round((next_scheduled - 43200.0 - %1) / 86400) AS days, "
             "count(*) FROM questions WHERE cardbox NOT NULL GROUP BY days";

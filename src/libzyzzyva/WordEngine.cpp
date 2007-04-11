@@ -65,7 +65,7 @@ bool
 WordEngine::connectToDatabase(const QString& filename, QString* errString)
 {
     Rand rng;
-    rng.srand(std::time(0), Auxil::getPid());
+    rng.srand(QDateTime::currentDateTime().toTime_t(), Auxil::getPid());
     unsigned int r = rng.rand();
     dbConnectionName = "WordEngine" + QString::number(r);
 
