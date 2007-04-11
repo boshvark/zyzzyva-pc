@@ -293,12 +293,12 @@ QuizEngine::respond(const QString& response)
         }
     }
 
-    if (correctResponses.find(word) == correctResponses.end()) {
+    if (!correctResponses.contains(word)) {
         addQuestionIncorrect(response);
         return Incorrect;
     }
 
-    if (correctUserResponses.find(word) != correctUserResponses.end())
+    if (correctUserResponses.contains(word))
         return Duplicate;
 
     addQuestionCorrect(word);
@@ -314,7 +314,7 @@ void
 QuizEngine::markQuestionAsCorrect()
 {
     // Remove any incorrect answers the user may have already had
-    int numIncorrect = incorrectUserResponses.size();
+    int numIncorrect = incorrectUserResponses.count();
     quizIncorrect -= numIncorrect;
 
     QuizProgress progress = quizSpec.getProgress();
@@ -347,7 +347,7 @@ void
 QuizEngine::markQuestionAsMissed()
 {
     // Remove any correct answers the user may have already had
-    int numCorrect = correctUserResponses.size();
+    int numCorrect = correctUserResponses.count();
     quizCorrect -= numCorrect;
 
     correctUserResponses.clear();
@@ -382,15 +382,14 @@ QuizEngine::getQuestion() const
 QStringList
 QuizEngine::getMissed() const
 {
-    QStringList responses;
-    std::set<QString>::const_iterator it, uit;
-    for (it = correctResponses.begin(); it != correctResponses.end(); ++it) {
-        uit = correctUserResponses.find(*it);
-        if (uit == correctUserResponses.end())
-            responses << *it;
+    QStringList missedWords;
+    QSetIterator<QString> it (correctResponses);
+    while (it.hasNext()) {
+        QString word = it.next();
+        if (!correctUserResponses.contains(word))
+            missedWords.append(word);
     }
-
-    return responses;
+    return missedWords;
 }
 
 //---------------------------------------------------------------------------
@@ -459,11 +458,8 @@ QuizEngine::prepareQuestion()
         answers += wordEngine->search(spec, true);
     }
 
-    QStringList::iterator it;
-    for (it = answers.begin(); it != answers.end(); ++it) {
-        correctResponses.insert(*it);
-    }
-    quizTotal += correctResponses.size();
+    correctResponses += answers.toSet();
+    quizTotal += correctResponses.count();
 }
 
 //---------------------------------------------------------------------------

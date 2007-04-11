@@ -50,7 +50,7 @@ QuizProgress::isEmpty() const
 {
     return ((question == 0) && (correct == 0) && (incorrect == 0) &&
             (missed == 0) && (questionComplete == false) &&
-            questionCorrectWords.empty() && incorrectWords.isEmpty() &&
+            questionCorrectWords.isEmpty() && incorrectWords.isEmpty() &&
             missedWords.isEmpty());
 }
 
@@ -183,16 +183,16 @@ QuizProgress::asDomElement() const
     topElement.setAttribute(XML_QUESTION_COMPLETE_ATTR,
         (questionComplete ? QString ("true") : QString ("false")));
 
-    if (!questionCorrectWords.empty()) {
+    if (!questionCorrectWords.isEmpty()) {
         QDomElement questionCorrectElement = doc.createElement(
             XML_QUESTION_CORRECT_RESPONSES_ELEMENT);
         topElement.appendChild(questionCorrectElement);
-        set<QString>::const_iterator it;
-        for (it = questionCorrectWords.begin();
-             it != questionCorrectWords.end(); ++it)
-        {
+
+        QSetIterator<QString> it (questionCorrectWords);
+        while (it.hasNext()) {
+            QString word = it.next();
             QDomElement elem = doc.createElement(XML_RESPONSE_ELEMENT);
-            elem.setAttribute(XML_RESPONSE_WORD_ATTR, *it);
+            elem.setAttribute(XML_RESPONSE_WORD_ATTR, word);
             questionCorrectElement.appendChild(elem);
         }
     }

@@ -27,7 +27,7 @@
 
 #include <QDomElement>
 #include <QMap>
-#include <set>
+#include <QSet>
 
 class QuizProgress
 {
@@ -56,8 +56,7 @@ class QuizProgress
     int getNumMissed() const { return missed; }
     bool getQuestionComplete() const { return questionComplete; }
 
-    std::set<QString> getQuestionCorrect() const {
-        return questionCorrectWords; }
+    QSet<QString> getQuestionCorrect() const { return questionCorrectWords; }
     QMap<QString, int> getIncorrect() const { return incorrectWords; }
     QMap<QString, int> getMissed() const { return missedWords; }
 
@@ -70,7 +69,7 @@ class QuizProgress
     int incorrect;
     int missed;
     bool questionComplete;
-    std::set<QString> questionCorrectWords;
+    QSet<QString> questionCorrectWords;
     QMap<QString, int> incorrectWords;
     QMap<QString, int> missedWords;
 };

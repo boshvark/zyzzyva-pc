@@ -28,9 +28,9 @@
 
 #include "QuizSpec.h"
 #include "Rand.h"
+#include <QSet>
 #include <QString>
 #include <QStringList>
-#include <set>
 
 class WordEngine;
 
@@ -65,7 +65,7 @@ class QuizEngine
     int getQuizTotal() const { return quizTotal; }
     int getQuizCorrect() const { return quizCorrect; }
     int getQuizIncorrect() const { return quizIncorrect; }
-    std::set<QString> getQuestionCorrectResponses() const {
+    QSet<QString> getQuestionCorrectResponses() const {
         return correctUserResponses; }
     QStringList getQuestionIncorrectResponses() const {
         return incorrectUserResponses; }
@@ -84,10 +84,10 @@ class QuizEngine
     void addQuestionIncorrect(const QString& response);
 
     private:
-    WordEngine*       wordEngine;
-    std::set<QString> correctResponses;
-    std::set<QString> correctUserResponses;
-    QStringList       incorrectUserResponses;
+    WordEngine*   wordEngine;
+    QSet<QString> correctResponses;
+    QSet<QString> correctUserResponses;
+    QStringList   incorrectUserResponses;
 
     int quizTotal;
     int quizCorrect;

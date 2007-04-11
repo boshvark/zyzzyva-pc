@@ -1033,13 +1033,14 @@ QuizForm::startQuestion()
     QString question = quizEngine->getQuestion();
     origQuestionData = db->getQuestionData(question);
 
-    std::set<QString> correct = quizEngine->getQuestionCorrectResponses();
-    if (!correct.empty()) {
-        std::set<QString>::iterator it;
+    QSet<QString> correct = quizEngine->getQuestionCorrectResponses();
+    if (!correct.isEmpty()) {
         QList<WordTableModel::WordItem> wordItems;
-        for (it = correct.begin(); it != correct.end(); ++it) {
+        QSetIterator<QString> it (correct);
+        while (it.hasNext()) {
+            QString word = it.next();
             wordItems.append(
-                WordTableModel::WordItem(*it, WordTableModel::WordCorrect));
+                WordTableModel::WordItem(word, WordTableModel::WordCorrect));
         }
 
         // FIXME: Probably not the right way to get alphabetical sorting
