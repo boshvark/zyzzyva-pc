@@ -41,6 +41,7 @@ class QuizSpec
         QuizAnagrams,
         QuizAnagramsWithHooks,
         QuizSubanagrams,
+        QuizBuild,
         QuizAnagramJumble,
         QuizSubanagramJumble,
         QuizHooks,
@@ -58,7 +59,8 @@ class QuizSpec
     enum QuizSourceType {
         UnknownSource = 0,
         SearchSource,
-        CardboxReadySource
+        CardboxReadySource,
+        RandomLettersSource
     };
 
     enum QuestionOrder {

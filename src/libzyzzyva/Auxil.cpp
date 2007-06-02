@@ -85,6 +85,7 @@ const QString QUIZ_TYPE_PATTERNS = "Patterns";
 const QString QUIZ_TYPE_ANAGRAMS = "Anagrams";
 const QString QUIZ_TYPE_ANAGRAMS_WITH_HOOKS = "Anagrams with Hooks";
 const QString QUIZ_TYPE_SUBANAGRAMS = "Subanagrams";
+const QString QUIZ_TYPE_BUILD = "Build";
 const QString QUIZ_TYPE_ANAGRAM_JUMBLE = "Anagram Jumble";
 const QString QUIZ_TYPE_SUBANAGRAM_JUMBLE = "Subanagram Jumble";
 const QString QUIZ_TYPE_HOOKS = "Hooks";
@@ -97,6 +98,7 @@ const QString QUIZ_METHOD_CARDBOX = "Cardbox";
 
 const QString QUIZ_SOURCE_SEARCH = "search";
 const QString QUIZ_SOURCE_CARDBOX_READY = "cardbox-ready";
+const QString QUIZ_SOURCE_RANDOM_LETTERS = "random-letters";
 
 const QString QUIZ_ORDER_UNKNOWN = "Unknown";
 const QString QUIZ_ORDER_RANDOM = "Random";
@@ -812,6 +814,9 @@ Auxil::quizTypeToString(QuizSpec::QuizType t)
         case QuizSpec::QuizSubanagrams:
         return QUIZ_TYPE_SUBANAGRAMS;
 
+        case QuizSpec::QuizBuild:
+        return QUIZ_TYPE_BUILD;
+
         case QuizSpec::QuizAnagramJumble:
         return QUIZ_TYPE_ANAGRAM_JUMBLE;
 
@@ -853,6 +858,8 @@ Auxil::stringToQuizType(const QString& s)
         return QuizSpec::QuizAnagramsWithHooks;
     else if (s == QUIZ_TYPE_SUBANAGRAMS)
         return QuizSpec::QuizSubanagrams;
+    else if (s == QUIZ_TYPE_BUILD)
+        return QuizSpec::QuizBuild;
     else if (s == QUIZ_TYPE_ANAGRAM_JUMBLE)
         return QuizSpec::QuizAnagramJumble;
     else if (s == QUIZ_TYPE_SUBANAGRAM_JUMBLE)
@@ -928,6 +935,9 @@ Auxil::quizSourceTypeToString(QuizSpec::QuizSourceType s)
         case QuizSpec::CardboxReadySource:
         return QUIZ_SOURCE_CARDBOX_READY;
 
+        case QuizSpec::RandomLettersSource:
+        return QUIZ_SOURCE_RANDOM_LETTERS;
+
         default: return QString();
     }
 }
@@ -947,6 +957,8 @@ Auxil::stringToQuizSourceType(const QString& s)
         return QuizSpec::SearchSource;
     else if (s == QUIZ_SOURCE_CARDBOX_READY)
         return QuizSpec::CardboxReadySource;
+    else if (s == QUIZ_SOURCE_RANDOM_LETTERS)
+        return QuizSpec::RandomLettersSource;
     else
         return QuizSpec::UnknownSource;
 }
