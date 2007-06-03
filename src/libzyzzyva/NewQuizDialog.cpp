@@ -126,6 +126,7 @@ NewQuizDialog::NewQuizDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     QHBoxLayout* responseHlay = new QHBoxLayout(buildWidget);
     Q_CHECK_PTR(responseHlay);
+    responseHlay->setMargin(0);
 
     QLabel* responseLabel = new QLabel("Response length:");
     Q_CHECK_PTR(responseLabel);
@@ -157,6 +158,7 @@ NewQuizDialog::NewQuizDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     QVBoxLayout* searchVlay = new QVBoxLayout(searchWidget);
     Q_CHECK_PTR(searchVlay);
+    searchVlay->setMargin(0);
 
     allCardboxButton = new QRadioButton;
     Q_CHECK_PTR(allCardboxButton);
