@@ -80,7 +80,20 @@ QuizEngine::newQuiz(const QuizSpec& spec)
 {
     QStringList questions;
 
-    if (spec.getQuizSourceType() == QuizSpec::CardboxReadySource) {
+    if (spec.getQuizSourceType() == QuizSpec::RandomLettersSource) {
+        LetterBag bag;
+
+        // FIXME: get rid of all this hard-coded junk!
+
+        for (int i = 0; i < 1000; ++i) {
+            QString question = Auxil::getAlphagram(bag.lookRandomLetters(7));
+            quizQuestions.append(question);
+        }
+
+        quizSpec = spec;
+    }
+
+    else if (spec.getQuizSourceType() == QuizSpec::CardboxReadySource) {
         QString lexicon = spec.getLexicon();
         QString quizType = Auxil::quizTypeToString(spec.getType());
         QuizDatabase* db = new QuizDatabase(lexicon, quizType);
@@ -427,13 +440,46 @@ void
 QuizEngine::prepareQuestion()
 {
     clearQuestion();
-    QString question = getQuestion();
+    QString question = getQuestion().replace("_", "?");
 
     QStringList answers;
     QuizSpec::QuizType type = quizSpec.getType();
 
     if (type == QuizSpec::QuizWordListRecall)
         answers = wordEngine->search(quizSpec.getSearchSpec(), true);
+    else if (type == QuizSpec::QuizBuild) {
+        int min = quizSpec.getResponseMinLength();
+        int max = quizSpec.getResponseMaxLength();
+        int qlen = question.length();
+
+        if (min <= qlen) {
+            SearchSpec spec;
+            SearchCondition condition;
+            condition.type = SearchCondition::Length;
+            condition.minValue = min;
+            condition.maxValue = qlen;
+            spec.conditions.append(condition);
+            condition = SearchCondition();
+            condition.type = SearchCondition::SubanagramMatch;
+            condition.stringValue = question;
+            spec.conditions.append(condition);
+            answers += wordEngine->search(spec, true);
+        }
+
+        if (max > qlen) {
+            SearchSpec spec;
+            SearchCondition condition;
+            condition.type = SearchCondition::Length;
+            condition.minValue = qlen + 1;
+            condition.maxValue = max;
+            spec.conditions.append(condition);
+            condition = SearchCondition();
+            condition.type = SearchCondition::AnagramMatch;
+            condition.stringValue = question + "*";
+            spec.conditions.append(condition);
+            answers += wordEngine->search(spec, true);
+        }
+    }
     else if ((type == QuizSpec::QuizAnagrams) ||
              (type == QuizSpec::QuizAnagramsWithHooks))
     {
