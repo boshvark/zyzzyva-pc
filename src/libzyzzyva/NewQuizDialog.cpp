@@ -72,6 +72,7 @@ NewQuizDialog::NewQuizDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
     typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizAnagrams));
     typeCombo->addItem(
         Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
+    typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizBuild));
     typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizWordListRecall));
     typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizHooks));
     typeCombo->setCurrentIndex(typeCombo->findText(
@@ -115,22 +116,64 @@ NewQuizDialog::NewQuizDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
             SLOT(questionOrderActivated(const QString&)));
     questionOrderHlay->addWidget(questionOrderCombo);
 
+    sourceStack = new QStackedWidget;
+    Q_CHECK_PTR(sourceStack);
+    mainVlay->addWidget(sourceStack);
+
+    buildWidget = new QWidget;
+    Q_CHECK_PTR(buildWidget);
+    sourceStack->addWidget(buildWidget);
+
+    QHBoxLayout* responseHlay = new QHBoxLayout(buildWidget);
+    Q_CHECK_PTR(responseHlay);
+
+    QLabel* responseLabel = new QLabel("Response length:");
+    Q_CHECK_PTR(responseLabel);
+    responseHlay->addWidget(responseLabel);
+
+    QLabel* responseMinLabel = new QLabel("Min:");
+    Q_CHECK_PTR(responseMinLabel);
+    responseHlay->addWidget(responseMinLabel);
+
+    responseMinSbox = new QSpinBox;
+    Q_CHECK_PTR(responseMinSbox);
+    responseMinSbox->setMinimum(0);
+    responseMinSbox->setMaximum(MAX_WORD_LEN);
+    responseHlay->addWidget(responseMinSbox);
+
+    QLabel* responseMaxLabel = new QLabel("Max:");
+    Q_CHECK_PTR(responseMaxLabel);
+    responseHlay->addWidget(responseMaxLabel);
+
+    responseMaxSbox = new QSpinBox;
+    Q_CHECK_PTR(responseMaxSbox);
+    responseMaxSbox->setMinimum(0);
+    responseMaxSbox->setMaximum(MAX_WORD_LEN);
+    responseHlay->addWidget(responseMaxSbox);
+
+    searchWidget = new QWidget;
+    Q_CHECK_PTR(searchWidget);
+    sourceStack->addWidget(searchWidget);
+
+    QVBoxLayout* searchVlay = new QVBoxLayout(searchWidget);
+    Q_CHECK_PTR(searchVlay);
+
     allCardboxButton = new QRadioButton;
     Q_CHECK_PTR(allCardboxButton);
     allCardboxButton->setText("Use all available words");
     allCardboxButton->setChecked(true);
-    mainVlay->addWidget(allCardboxButton);
+    searchVlay->addWidget(allCardboxButton);
 
     useSearchButton = new QRadioButton;
     Q_CHECK_PTR(useSearchButton);
     useSearchButton->setText("Use only words matching search specification");
     connect(useSearchButton, SIGNAL(toggled(bool)),
             SLOT(useSearchButtonToggled(bool)));
-    mainVlay->addWidget(useSearchButton);
+    searchVlay->addWidget(useSearchButton);
 
     searchSpecGbox = new QGroupBox("Search Specification");
     Q_CHECK_PTR(searchSpecGbox);
-    mainVlay->addWidget(searchSpecGbox);
+    searchVlay->addWidget(searchSpecGbox);
 
     QHBoxLayout* specHlay = new QHBoxLayout(searchSpecGbox);
     Q_CHECK_PTR(specHlay);
@@ -230,21 +273,32 @@ NewQuizDialog::getQuizSpec()
 {
     QuizSpec::QuizMethod quizMethod =
         Auxil::stringToQuizMethod(methodCombo->currentText());
+    QuizSpec::QuizType quizType =
+        Auxil::stringToQuizType(typeCombo->currentText());
 
     quizSpec.setLexicon(wordEngine->getLexiconName());
-    quizSpec.setType(Auxil::stringToQuizType(typeCombo->currentText()));
+    quizSpec.setType(quizType);
     quizSpec.setMethod(quizMethod);
     quizSpec.setQuestionOrder(
         Auxil::stringToQuizQuestionOrder(questionOrderCombo->currentText()));
 
-    if ((quizMethod == QuizSpec::CardboxQuizMethod) &&
-        allCardboxButton->isChecked())
+    if (quizType == QuizSpec::QuizBuild) {
+        quizSpec.setQuizSourceType(QuizSpec::RandomLettersSource);
+    }
+    else if ((quizMethod == QuizSpec::CardboxQuizMethod) &&
+              allCardboxButton->isChecked())
     {
         quizSpec.setQuizSourceType(QuizSpec::CardboxReadySource);
     }
     else {
         quizSpec.setQuizSourceType(QuizSpec::SearchSource);
         quizSpec.setSearchSpec(searchSpecForm->getSearchSpec());
+    }
+
+    QWidget* widget = sourceStack->currentWidget();
+    if (widget == buildWidget) {
+        quizSpec.setResponseMinLength(responseMinSbox->value());
+        quizSpec.setResponseMaxLength(responseMaxSbox->value());
     }
 
     QuizTimerSpec timerSpec;
@@ -298,6 +352,14 @@ NewQuizDialog::setQuizSpec(const QuizSpec& spec)
         searchSpecForm->setSearchSpec(SearchSpec());
     }
 
+    int responseMin = spec.getResponseMinLength();
+    if (responseMin)
+        responseMinSbox->setValue(responseMin);
+
+    int responseMax = spec.getResponseMaxLength();
+    if (responseMax)
+        responseMaxSbox->setValue(responseMax);
+
     timerCbox->setChecked(false);
     timerSbox->setValue(0);
     timerCombo->setCurrentIndex(timerCombo->findText(TIMER_PER_RESPONSE));
@@ -331,7 +393,7 @@ NewQuizDialog::setQuizSpec(const QuizSpec& spec)
 //
 //! Called when the contents of the Quiz Type combo box are changed.  Disable
 //! the Random checkbox if the Word List Recall type is selected.  Also change
-//! the method to Standard if the Word List Recall type is selected.
+//! the method to Standard if the Build or Word List Recall type is selected.
 //
 //! @param text the text in the combo box
 //---------------------------------------------------------------------------
@@ -339,7 +401,8 @@ void
 NewQuizDialog::typeActivated(const QString& text)
 {
     QuizSpec::QuizType type = Auxil::stringToQuizType(text);
-    if (type == QuizSpec::QuizWordListRecall) {
+    if ((type == QuizSpec::QuizWordListRecall) || (type == QuizSpec::QuizBuild))
+    {
         methodCombo->setEnabled(false);
         methodCombo->setCurrentIndex(methodCombo->findText(
             Auxil::quizMethodToString(QuizSpec::StandardQuizMethod)));
@@ -586,13 +649,16 @@ NewQuizDialog::updateForm()
         questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
             Auxil::quizQuestionOrderToString(QuizSpec::ScheduleOrder)));
 
+        sourceStack->setCurrentWidget(searchWidget);
         allCardboxButton->show();
         useSearchButton->show();
         searchSpecGbox->setEnabled(useSearchButton->isChecked());
     }
 
     else {
-        if (type == QuizSpec::QuizWordListRecall) {
+        if ((type == QuizSpec::QuizWordListRecall) ||
+            (type == QuizSpec::QuizBuild))
+        {
             questionOrderCombo->setEnabled(false);
             questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
                 Auxil::quizQuestionOrderToString(QuizSpec::RandomOrder)));
@@ -605,7 +671,14 @@ NewQuizDialog::updateForm()
 
         allCardboxButton->hide();
         useSearchButton->hide();
-        searchSpecGbox->setEnabled(true);
+
+        if (type == QuizSpec::QuizBuild) {
+            sourceStack->setCurrentWidget(buildWidget);
+        }
+        else {
+            sourceStack->setCurrentWidget(searchWidget);
+            searchSpecGbox->setEnabled(true);
+        }
     }
 }
 

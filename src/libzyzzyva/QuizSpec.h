@@ -75,7 +75,8 @@ class QuizSpec
     QuizSpec() : type(QuizAnagrams), method(StandardQuizMethod),
                  sourceType(SearchSource), questionOrder(RandomOrder),
                  randomSeed(0), randomSeed2(0),
-                 randomAlgorithm(Rand::MarsagliaMwc) { }
+                 randomAlgorithm(Rand::MarsagliaMwc),
+                 responseMinLength(0), responseMaxLength(0) { }
     ~QuizSpec() { }
 
     QString asString() const;
@@ -95,6 +96,8 @@ class QuizSpec
     void setRandomSeed(unsigned int i) { randomSeed = i; }
     void setRandomSeed2(unsigned int i) { randomSeed2 = i; }
     void setRandomAlgorithm(int i) { randomAlgorithm = i; }
+    void setResponseMinLength(int i) { responseMinLength = i; }
+    void setResponseMaxLength(int i) { responseMaxLength = i; }
     void setFilename(const QString& fname) { filename = fname; }
 
     void addIncorrect(const QString& word) { progress.addIncorrect(word); }
@@ -111,6 +114,8 @@ class QuizSpec
     unsigned int getRandomSeed() const { return randomSeed; }
     unsigned int getRandomSeed2() const { return randomSeed2; }
     int getRandomAlgorithm() const { return randomAlgorithm; }
+    int getResponseMinLength() const { return responseMinLength; }
+    int getResponseMaxLength() const { return responseMaxLength; }
     QString getFilename() const { return filename; }
 
     private:
@@ -125,6 +130,8 @@ class QuizSpec
     unsigned int randomSeed;
     unsigned int randomSeed2;
     int randomAlgorithm;
+    int responseMinLength;
+    int responseMaxLength;
     QString filename;
 };
 

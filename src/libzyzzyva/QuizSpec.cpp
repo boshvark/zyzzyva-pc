@@ -43,6 +43,9 @@ const QString XML_RANDOMIZER_ELEMENT = "randomizer";
 const QString XML_RANDOMIZER_SEED_ATTR = "seed";
 const QString XML_RANDOMIZER_SEED2_ATTR = "seed2";
 const QString XML_RANDOMIZER_ALGORITHM_ATTR = "algorithm";
+const QString XML_RESPONSE_ELEMENT = "response";
+const QString XML_RESPONSE_MIN_LENGTH_ATTR = "min-length";
+const QString XML_RESPONSE_MAX_LENGTH_ATTR = "max-length";
 const QString XML_TIMER_ELEMENT = "timer";
 const QString XML_TIMER_TIMEOUT_ATTR = "timeout";
 const QString XML_TIMER_PERIOD_ATTR = "period";
@@ -119,6 +122,19 @@ QuizSpec::asDomElement() const
         randomElement.setAttribute(XML_RANDOMIZER_ALGORITHM_ATTR,
                                    randomAlgorithm);
         topElement.appendChild(randomElement);
+    }
+
+    if (responseMinLength || responseMaxLength) {
+        QDomElement responseElement = doc.createElement(XML_RESPONSE_ELEMENT);
+        if (responseMinLength) {
+            responseElement.setAttribute(XML_RESPONSE_MIN_LENGTH_ATTR,
+                                         responseMinLength);
+        }
+        if (responseMaxLength) {
+            responseElement.setAttribute(XML_RESPONSE_MAX_LENGTH_ATTR,
+                                         responseMaxLength);
+        }
+        topElement.appendChild(responseElement);
     }
 
     if (timerSpec.getType() != NoTimer)
@@ -212,6 +228,26 @@ QuizSpec::fromDomElement(const QDomElement& element, QString*)
                 if (!tmpSearchSpec.fromDomElement(searchElem))
                     return false;
                 tmpSpec.setSearchSpec(tmpSearchSpec);
+            }
+        }
+
+        else if (tag == XML_RESPONSE_ELEMENT) {
+            if (elem.hasAttribute(XML_RESPONSE_MIN_LENGTH_ATTR)) {
+                bool ok = false;
+                int value = elem.attribute(
+                    XML_RESPONSE_MIN_LENGTH_ATTR).toInt(&ok);
+                if (!ok)
+                    return false;
+                tmpSpec.setResponseMinLength(value);
+            }
+
+            if (elem.hasAttribute(XML_RESPONSE_MAX_LENGTH_ATTR)) {
+                bool ok = false;
+                int value = elem.attribute(
+                    XML_RESPONSE_MAX_LENGTH_ATTR).toInt(&ok);
+                if (!ok)
+                    return false;
+                tmpSpec.setResponseMaxLength(value);
             }
         }
 

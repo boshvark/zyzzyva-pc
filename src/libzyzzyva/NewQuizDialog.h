@@ -33,6 +33,7 @@
 #include <QGroupBox>
 #include <QLineEdit>
 #include <QRadioButton>
+#include <QStackedWidget>
 #include <QSpinBox>
 
 class SearchSpec;
@@ -71,6 +72,11 @@ class NewQuizDialog : public QDialog
     QComboBox*      methodCombo;
     QCheckBox*      progressCbox;
     QComboBox*      questionOrderCombo;
+    QStackedWidget* sourceStack;
+    QWidget*        buildWidget;
+    QSpinBox*       responseMinSbox;
+    QSpinBox*       responseMaxSbox;
+    QWidget*        searchWidget;
     QRadioButton*   allCardboxButton;
     QRadioButton*   useSearchButton;
     QGroupBox*      searchSpecGbox;
