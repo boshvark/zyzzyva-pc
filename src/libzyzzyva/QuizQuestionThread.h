@@ -26,8 +26,11 @@
 #define ZYZZYVA_QUIZ_QUESTION_THREAD_H
 
 #include <QMap>
+#include <QMutex>
+#include <QQueue>
 #include <QString>
 #include <QThread>
+#include <QWaitCondition>
 
 #include "QuizSpec.h"
 
@@ -37,20 +40,28 @@ class QuizQuestionThread : public QThread
 {
     Q_OBJECT
     public:
-    QuizQuestionThread(WordEngine* e, const QuizSpec& qs, QObject* parent = 0)
-        : QThread(parent), wordEngine(e), quizSpec(qs) { }
-    ~QuizQuestionThread() { }
+    QuizQuestionThread(WordEngine* e, QObject* parent = 0)
+        : QThread(parent), wordEngine(e), abort(false) { }
+    ~QuizQuestionThread();
 
-    QStringList getAnswers(const QString& question);
+    void setQuizSpec(const QuizSpec& qs);
     void fetchAnswers(const QString& question);
-    void removeAnswers(const QString& question);
+    QStringList getAnswers(const QString& question);
+
+    signals:
+    void fetchedAnswers(const QString& question, const QStringList& answers);
 
     protected:
     void run();
 
     WordEngine* wordEngine;
     QuizSpec quizSpec;
-    QMap<QString, QStringList> answers;
+
+    QQueue<QString> queue;
+
+    bool abort;
+    QMutex mutex;
+    QWaitCondition condition;
 };
 
 #endif // ZYZZYVA_QUIZ_QUESTION_THREAD_H
