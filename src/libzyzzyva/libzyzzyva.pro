@@ -76,6 +76,7 @@ SOURCES = \
     QuizEngine.cpp \
     QuizForm.cpp \
     QuizProgress.cpp \
+    QuizQuestionThread.cpp \
     QuizSpec.cpp \
     QuizTimerSpec.cpp \
     Rand.cpp \
@@ -125,6 +126,7 @@ HEADERS = \
     QuizCanvas.h \
     QuizForm.h \
     QuizQuestionLabel.h \
+    QuizQuestionThread.h \
     SearchForm.h \
     SearchConditionForm.h \
     SearchSpecForm.h \
