@@ -128,6 +128,7 @@ SettingsDialog::SettingsDialog (QWidget* parent, Qt::WFlags f)
     autoImportLexiconCombo->addItem ("OWL+LWL");
     autoImportLexiconCombo->addItem ("OWL2+LWL");
     autoImportLexiconCombo->addItem ("OSPD4+LWL");
+    autoImportLexiconCombo->addItem ("Volost");
     autoImportLexiconCombo->addItem ("OSWI");
     autoImportLexiconCombo->addItem ("CSW");
     autoImportLexiconCombo->addItem ("ODS");
