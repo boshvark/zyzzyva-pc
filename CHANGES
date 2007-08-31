@@ -1,9 +1,12 @@
 Version 1.0.5
-Released 2007-06-02, from /branches/1.0.x
+Released 2007-09-01, from /branches/1.0.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/1.0.5
 
 User-visible changes:
+ * Remove inflections of GODDAM and GODDAMN from OSPD4 lexicon
  * Remove PHOCOMELIES from CSW lexicon
+ * Fix several word definitions
+ * Add Volost lexicon
 
 
 Version 1.0.4
