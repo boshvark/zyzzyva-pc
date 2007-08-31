@@ -25,14 +25,11 @@
 
 #include "QuizEngine.h"
 #include "QuizDatabase.h"
-#include "QuizQuestionThread.h"
 #include "LetterBag.h"
 #include "WordEngine.h"
 #include "Auxil.h"
 #include <cstdlib>
 #include <ctime>
-
-const int FETCH_AHEAD_ANSWERS = 5;
 
 //---------------------------------------------------------------------------
 //  probabilityCmp
@@ -65,20 +62,9 @@ probabilityCmp(const QString& a, const QString& b)
 //! Constructor.
 //---------------------------------------------------------------------------
 QuizEngine::QuizEngine(WordEngine* e)
-    : wordEngine(e), questionThread(new QuizQuestionThread(e)), quizTotal(0),
-    quizCorrect(0), quizIncorrect(0), questionIndex(0)
+    : wordEngine(e), quizTotal(0), quizCorrect(0), quizIncorrect(0),
+    questionIndex(0)
 {
-    questionThread->start();
-}
-
-//---------------------------------------------------------------------------
-//  ~QuizEngine
-//
-//! Destructor.
-//---------------------------------------------------------------------------
-QuizEngine::~QuizEngine()
-{
-    delete questionThread;
 }
 
 //---------------------------------------------------------------------------
@@ -92,7 +78,7 @@ QuizEngine::~QuizEngine()
 bool
 QuizEngine::newQuiz(const QuizSpec& spec)
 {
-    questionThread->setQuizSpec(spec);
+    QStringList questions;
 
     if (spec.getQuizSourceType() == QuizSpec::RandomLettersSource) {
         LetterBag bag;
@@ -123,8 +109,6 @@ QuizEngine::newQuiz(const QuizSpec& spec)
     }
 
     else {
-        QStringList questions;
-
         // Anagram Quiz: The search spec is used to select the list of words.
         // Their alphagrams are used as quiz questions, and their anagrams are
         // used as quiz answers.
@@ -218,10 +202,6 @@ QuizEngine::newQuiz(const QuizSpec& spec)
     quizCorrect = progress.getNumCorrect();
     quizIncorrect = progress.getNumIncorrect();
     quizTotal = quizCorrect + progress.getNumMissed();
-
-    // Get answers to the current question
-    QString question = getQuestion();
-    questionAnswers[question] = questionThread->getAnswers(question);
 
     prepareQuestion();
 
@@ -439,20 +419,6 @@ QuizEngine::onLastQuestion() const
 }
 
 //---------------------------------------------------------------------------
-//  fetchedAnswers
-//
-//! Called when the question thread has fetched answers for a quiz question.
-//
-//! @param question the question
-//! @param answers the answers
-//---------------------------------------------------------------------------
-void
-QuizEngine::fetchedAnswers(const QString& question, const QStringList& answers)
-{
-    questionAnswers[question] = answers;
-}
-
-//---------------------------------------------------------------------------
 //  clearQuestion
 //
 //! Clear all answers and user responses.
@@ -474,33 +440,72 @@ void
 QuizEngine::prepareQuestion()
 {
     clearQuestion();
-    fetchQuestionAnswers(FETCH_AHEAD_ANSWERS);
+    QString question = getQuestion().replace("_", "?");
 
-    QString question = getQuestion();
-    if (!questionAnswers.contains(question))
-        questionAnswers[question] = questionThread->getAnswers(question);
+    QStringList answers;
+    QuizSpec::QuizType type = quizSpec.getType();
 
-    QStringList answers = questionAnswers.value(getQuestion());
+    if (type == QuizSpec::QuizWordListRecall)
+        answers = wordEngine->search(quizSpec.getSearchSpec(), true);
+    else if (type == QuizSpec::QuizBuild) {
+        int min = quizSpec.getResponseMinLength();
+        int max = quizSpec.getResponseMaxLength();
+        int qlen = question.length();
+
+        if (min <= qlen) {
+            SearchSpec spec;
+            SearchCondition condition;
+            condition.type = SearchCondition::Length;
+            condition.minValue = min;
+            condition.maxValue = qlen;
+            spec.conditions.append(condition);
+            condition = SearchCondition();
+            condition.type = SearchCondition::SubanagramMatch;
+            condition.stringValue = question;
+            spec.conditions.append(condition);
+            answers += wordEngine->search(spec, true);
+        }
+
+        if (max > qlen) {
+            SearchSpec spec;
+            SearchCondition condition;
+            condition.type = SearchCondition::Length;
+            condition.minValue = qlen + 1;
+            condition.maxValue = max;
+            spec.conditions.append(condition);
+            condition = SearchCondition();
+            condition.type = SearchCondition::AnagramMatch;
+            condition.stringValue = question + "*";
+            spec.conditions.append(condition);
+            answers += wordEngine->search(spec, true);
+        }
+    }
+    else if ((type == QuizSpec::QuizAnagrams) ||
+             (type == QuizSpec::QuizAnagramsWithHooks))
+    {
+        SearchCondition condition;
+        condition.type = SearchCondition::AnagramMatch;
+        condition.stringValue = question;
+        SearchSpec spec;
+        spec.conditions.append(condition);
+        answers = wordEngine->search(spec, true);
+    }
+    else if (type == QuizSpec::QuizHooks) {
+        SearchCondition condition;
+        condition.type = SearchCondition::PatternMatch;
+        condition.stringValue = "?" + question;
+        SearchSpec spec;
+        spec.conditions.append(condition);
+        answers = wordEngine->search(spec, true);
+
+        spec.conditions.clear();
+        condition.stringValue = question + "?";
+        spec.conditions.append(condition);
+        answers += wordEngine->search(spec, true);
+    }
+
     correctResponses += answers.toSet();
     quizTotal += correctResponses.count();
-}
-
-//---------------------------------------------------------------------------
-//  fetchQuestionAnswers
-//
-//! Fetch answers to the upcoming questions.
-//---------------------------------------------------------------------------
-void
-QuizEngine::fetchQuestionAnswers(int numQuestions)
-{
-    int tmpIndex = questionIndex;
-    for (int i = 0; (i < numQuestions) && (tmpIndex < quizQuestions.size());
-         ++i, ++tmpIndex)
-    {
-        QString question = quizQuestions.at(tmpIndex);
-        if (!questionAnswers.contains(question))
-            questionThread->fetchAnswers(question);
-    }
 }
 
 //---------------------------------------------------------------------------

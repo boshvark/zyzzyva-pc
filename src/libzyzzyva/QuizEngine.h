@@ -32,7 +32,6 @@
 #include <QString>
 #include <QStringList>
 
-class QuizQuestionThread;
 class WordEngine;
 
 class QuizEngine
@@ -46,7 +45,7 @@ class QuizEngine
 
     public:
     QuizEngine(WordEngine* e);
-    ~QuizEngine();
+    ~QuizEngine() { }
 
     bool newQuiz(const QuizSpec& spec);
     bool nextQuestion();
@@ -78,19 +77,14 @@ class QuizEngine
         quizSpec.setFilename(filename);
     }
 
-    public slots:
-    void fetchedAnswers(const QString& question, const QStringList& answers);
-
     private:
     void clearQuestion();
     void prepareQuestion();
-    void fetchQuestionAnswers(int numQuestions);
     void addQuestionCorrect(const QString& response);
     void addQuestionIncorrect(const QString& response);
 
     private:
     WordEngine*   wordEngine;
-    QuizQuestionThread* questionThread;
     QSet<QString> correctResponses;
     QSet<QString> correctUserResponses;
     QStringList   incorrectUserResponses;
@@ -103,8 +97,6 @@ class QuizEngine
     QuizSpec    quizSpec;
     QStringList quizQuestions;
     int         questionIndex;
-
-    QMap<QString, QStringList> questionAnswers;
 };
 
 #endif // ZYZZYVA_QUIZ_ENGINE_H
