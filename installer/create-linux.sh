@@ -23,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #-----------------------------------------------------------------------------
 
-QTVER=4.1.5
+QTVER=4.3.1
 QTDIR=/usr/local/Trolltech/Qt-$QTVER
 OUTDIR=installer/linux
 
