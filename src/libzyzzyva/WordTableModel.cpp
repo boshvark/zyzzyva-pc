@@ -26,6 +26,7 @@
 #include "WordEngine.h"
 #include "MainSettings.h"
 #include "Auxil.h"
+#include <QBrush>
 
 using namespace std;
 
@@ -39,6 +40,19 @@ const QString DEFINITION_HEADER = "Definition";
 const int ITEM_MARGIN = 5;
 const int DEFAULT_COLUMN_WIDTH = 100;
 const int NUM_COLUMNS = 6;
+
+const QColor VALID_NORMAL_WORD_FOREGROUND = Qt::black;
+const QColor VALID_NORMAL_WORD_BACKGROUND = Qt::white;
+const QColor VALID_NORMAL_ALTERNATE_FOREGROUND = Qt::black;
+const QColor VALID_NORMAL_ALTERNATE_BACKGROUND = Qt::lightGray;
+const QColor VALID_CORRECT_WORD_FOREGROUND = Qt::black;
+const QColor VALID_CORRECT_WORD_BACKGROUND = Qt::white;
+const QColor VALID_MISSED_WORD_FOREGROUND = Qt::black;
+const QColor VALID_MISSED_WORD_BACKGROUND = Qt::cyan;
+const QColor LAST_ADDED_WORD_FOREGROUND = Qt::black;
+const QColor LAST_ADDED_WORD_BACKGROUND = Qt::green;
+const QColor INVALID_WORD_FOREGROUND = Qt::black;
+const QColor INVALID_WORD_BACKGROUND = Qt::red;
 
 //---------------------------------------------------------------------------
 //  lessThan
@@ -260,85 +274,162 @@ WordTableModel::data(const QModelIndex& index, int role) const
     if ((index.row() < 0) || (index.row() >= wordList.count()))
         return QVariant();
 
-    if (role == Qt::UserRole)
-        return wordList.at(index.row()).getType();
-
-    if ((role != Qt::DisplayRole) && (role != Qt::EditRole))
-        return QVariant();
-
     WordItem& wordItem = wordList[index.row()];
-    QString word = wordItem.getWord();
-    if (word.isEmpty())
-        return QString();
+    WordType type = (lastAddedIndex == index.row()) ? WordLastAdded
+        : wordItem.getType();
 
-    QString wordUpper = word.toUpper();
-    switch (index.column()) {
-        case WILDCARD_MATCH_COLUMN:
-        return wordItem.getWildcard();
+    switch (role) {
+        case Qt::UserRole:
+        return type;
 
-        case PROBABILITY_ORDER_COLUMN: {
-            if (!MainSettings::getWordListShowProbabilityOrder()) {
+        case Qt::ForegroundRole: {
+            QColor color;
+            switch (type) {
+                case WordTableModel::WordNormal:
+                color = VALID_NORMAL_WORD_FOREGROUND;
+                break;
+                case WordTableModel::WordNormalAlternate:
+                color = VALID_NORMAL_ALTERNATE_FOREGROUND;
+                break;
+                case WordTableModel::WordCorrect:
+                color = VALID_CORRECT_WORD_FOREGROUND;
+                break;
+                case WordTableModel::WordMissed:
+                color = VALID_MISSED_WORD_FOREGROUND;
+                break;
+                case WordTableModel::WordIncorrect:
+                color = INVALID_WORD_FOREGROUND;
+                break;
+                case WordTableModel::WordLastAdded:
+                color = LAST_ADDED_WORD_FOREGROUND;
+                break;
+                default: break;
+            }
+            return QBrush(color);
+        }
+
+        case Qt::BackgroundRole: {
+            QColor color;
+            switch (type) {
+                case WordTableModel::WordNormal:
+                color = VALID_NORMAL_WORD_BACKGROUND;
+                break;
+                case WordTableModel::WordNormalAlternate:
+                color = VALID_NORMAL_ALTERNATE_BACKGROUND;
+                break;
+                case WordTableModel::WordCorrect:
+                color = VALID_CORRECT_WORD_BACKGROUND;
+                break;
+                case WordTableModel::WordMissed:
+                color = VALID_MISSED_WORD_BACKGROUND;
+                break;
+                case WordTableModel::WordIncorrect:
+                color = INVALID_WORD_BACKGROUND;
+                break;
+                case WordTableModel::WordLastAdded:
+                color = LAST_ADDED_WORD_BACKGROUND;
+                break;
+                default: break;
+            }
+            return QBrush(color);
+        }
+
+        case Qt::TextAlignmentRole: {
+            int flags = Qt::AlignVCenter;
+            switch (index.column()) {
+                case WordTableModel::FRONT_HOOK_COLUMN:
+                case WordTableModel::PROBABILITY_ORDER_COLUMN:
+                flags |= Qt::AlignRight;
+                break;
+
+                default:
+                flags |= Qt::AlignLeft;
+                break;
+            }
+            return flags;
+        }
+
+        case Qt::DisplayRole:
+        case Qt::EditRole: {
+            QString word = wordItem.getWord();
+            if (word.isEmpty())
                 return QString();
-            }
 
-            if (!wordItem.probabilityOrderIsValid()) {
-                int p = wordEngine->getProbabilityOrder(wordUpper);
-                if (p)
-                    wordItem.setProbabilityOrder(p);
-            }
+            QString wordUpper = word.toUpper();
+            switch (index.column()) {
+                case WILDCARD_MATCH_COLUMN:
+                return wordItem.getWildcard();
 
-            int probOrder = wordItem.getProbabilityOrder();
-            return (probOrder ? QString::number(probOrder) : QString());
-        }
+                case PROBABILITY_ORDER_COLUMN: {
+                    if (!MainSettings::getWordListShowProbabilityOrder()) {
+                        return QString();
+                    }
 
-        case FRONT_HOOK_COLUMN:
-        if (!MainSettings::getWordListShowHooks()) {
-            return QString();
-        }
-        else if (!wordItem.hooksAreValid()) {
-            wordItem.setHooks(wordEngine->getFrontHookLetters(wordUpper),
-                              wordEngine->getBackHookLetters(wordUpper));
-        }
-        return wordItem.getFrontHooks();
+                    if (!wordItem.probabilityOrderIsValid()) {
+                        int p = wordEngine->getProbabilityOrder(wordUpper);
+                        if (p)
+                            wordItem.setProbabilityOrder(p);
+                    }
 
-        case BACK_HOOK_COLUMN:
-        if (!MainSettings::getWordListShowHooks()) {
-            return QString();
-        }
-        else if (!wordItem.hooksAreValid()) {
-            wordItem.setHooks(wordEngine->getFrontHookLetters(wordUpper),
-                              wordEngine->getBackHookLetters(wordUpper));
-        }
-        return wordItem.getBackHooks();
-
-        case WORD_COLUMN:
-        if (role == Qt::EditRole) {
-            return wordUpper;
-        }
-        else if (role == Qt::DisplayRole) {
-            if (MainSettings::getWordListShowHookParents()) {
-                if (!wordItem.parentHooksAreValid()) {
-                    wordItem.setParentHooks(isFrontHook(wordUpper),
-                                            isBackHook(wordUpper));
+                    int probOrder = wordItem.getProbabilityOrder();
+                    return (probOrder ? QString::number(probOrder) : QString());
                 }
-                return (wordItem.getFrontParentHook() ? PARENT_HOOK_CHAR
-                                                      : QChar(' '))
-                       + word
-                       + (wordItem.getBackParentHook() ? PARENT_HOOK_CHAR
-                                                       : QChar(' '));
-            }
-            else
+
+                case FRONT_HOOK_COLUMN:
+                if (!MainSettings::getWordListShowHooks()) {
+                    return QString();
+                }
+                else if (!wordItem.hooksAreValid()) {
+                    wordItem.setHooks(wordEngine->getFrontHookLetters(wordUpper),
+                                      wordEngine->getBackHookLetters(wordUpper));
+                }
+                return wordItem.getFrontHooks();
+
+                case BACK_HOOK_COLUMN:
+                if (!MainSettings::getWordListShowHooks()) {
+                    return QString();
+                }
+                else if (!wordItem.hooksAreValid()) {
+                    wordItem.setHooks(wordEngine->getFrontHookLetters(wordUpper),
+                                      wordEngine->getBackHookLetters(wordUpper));
+                }
+                return wordItem.getBackHooks();
+
+                case WORD_COLUMN:
+                if (role == Qt::EditRole) {
+                    return wordUpper;
+                }
+                else if (role == Qt::DisplayRole) {
+                    if (MainSettings::getWordListShowHookParents()) {
+                        if (!wordItem.parentHooksAreValid()) {
+                            wordItem.setParentHooks(isFrontHook(wordUpper),
+                                                    isBackHook(wordUpper));
+                        }
+                        return (wordItem.getFrontParentHook() ? PARENT_HOOK_CHAR
+                                : QChar(' '))
+                            + word
+                            + (wordItem.getBackParentHook() ? PARENT_HOOK_CHAR
+                               : QChar(' '));
+                    }
+                    else
+                        return word;
+                }
+                else
+                    return word;
+
+                case DEFINITION_COLUMN:
+                return MainSettings::getWordListShowDefinitions() ?
+                    wordEngine->getDefinition(wordUpper) : QString();
+
+                default:
                 return word;
+            }
         }
-        else
-            return word;
 
-        case DEFINITION_COLUMN:
-        return MainSettings::getWordListShowDefinitions() ?
-            wordEngine->getDefinition(wordUpper) : QString();
-
-        default: return word;
+        default:
+        return QVariant();
     }
+
 }
 
 //---------------------------------------------------------------------------

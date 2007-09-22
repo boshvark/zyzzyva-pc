@@ -142,6 +142,8 @@ class WordTableModel : public QAbstractTableModel
     };
 
     static const QChar PARENT_HOOK_CHAR;
+    static const int ITEM_XPADDING;
+    static const int ITEM_YPADDING;
 };
 
 #endif // ZYZZYVA_WORD_TABLE_MODEL_H

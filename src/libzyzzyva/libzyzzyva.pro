@@ -90,7 +90,6 @@ SOURCES = \
     WordGraph.cpp \
     WordListDialog.cpp \
     WordListSaveDialog.cpp \
-    WordTableDelegate.cpp \
     WordTableModel.cpp \
     WordTableView.cpp \
     WordValidator.cpp \
@@ -134,7 +133,6 @@ HEADERS = \
     WordLineEdit.h \
     WordListDialog.h \
     WordListSaveDialog.h \
-    WordTableDelegate.h \
     WordTableModel.h \
     WordTableView.h \
     WordTextEdit.h \

@@ -33,7 +33,6 @@
 #include "SearchSpec.h"
 #include "WordEngine.h"
 #include "WordListSaveDialog.h"
-#include "WordTableDelegate.h"
 #include "WordTableModel.h"
 #include "WordVariationDialog.h"
 #include "WordVariationType.h"
@@ -50,6 +49,9 @@
 
 using namespace std;
 
+const int WordTableModel::ITEM_XPADDING = 5;
+const int WordTableModel::ITEM_YPADDING = 0;
+
 //---------------------------------------------------------------------------
 //  WordTableView
 //
@@ -64,9 +66,6 @@ WordTableView::WordTableView(WordEngine* e, QWidget* parent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::SingleSelection);
     setRootIsDecorated(false);
-
-    WordTableDelegate* delegate = new WordTableDelegate(this);
-    setItemDelegate(delegate);
 
     // FIXME: Once Trolltech fixes the assert in QHeaderView, continue with
     // statements like these
@@ -823,7 +822,7 @@ int
 WordTableView::sizeHintForColumn(int column) const
 {
     return QAbstractItemView::sizeHintForColumn(column) +
-        (2 * WordTableDelegate::ITEM_XPADDING);
+        (2 * WordTableModel::ITEM_XPADDING);
 }
 
 //---------------------------------------------------------------------------
@@ -841,5 +840,5 @@ int
 WordTableView::sizeHintForRow(int row) const
 {
     return QAbstractItemView::sizeHintForRow(row) +
-        (2 * WordTableDelegate::ITEM_YPADDING);
+        (2 * WordTableModel::ITEM_YPADDING);
 }
