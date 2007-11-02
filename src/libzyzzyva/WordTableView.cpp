@@ -186,7 +186,7 @@ WordTableView::exportRequested()
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString error;
-    bool ok = exportFile (filename, format, attributes, &error);
+    bool ok = exportFile(filename, format, attributes, &error);
     QApplication::restoreOverrideCursor();
     if (!ok) {
         QString caption = "Error Saving Word List";
