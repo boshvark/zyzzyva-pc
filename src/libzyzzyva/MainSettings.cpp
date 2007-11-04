@@ -25,7 +25,10 @@
 #include "MainSettings.h"
 #include "Auxil.h"
 #include "Defs.h"
+#include <QApplication>
+#include <QDesktopWidget>
 #include <QDir>
+#include <QRect>
 #include <QSettings>
 
 MainSettings* MainSettings::instance = new MainSettings();
@@ -87,11 +90,32 @@ MainSettings::readSettings()
     QSettings settings;
     settings.beginGroup (SETTINGS_MAIN);
 
-    instance->mainWindowPos =
-        settings.value (SETTINGS_MAIN_WINDOW_POS, QPoint (50, 50)).toPoint();
-    instance->mainWindowSize
-        = settings.value (SETTINGS_MAIN_WINDOW_SIZE,
-                          QSize (640, 480)).toSize();
+    QPoint defaultPos (50, 50);
+    QSize defaultSize (640, 480);
+
+    // Get desktop geometry and validate position, size settings to make sure
+    // the window will appear on-screen
+    // XXX: This may have problems with virtual desktops, need to test
+    QRect srect = qApp->desktop()->availableGeometry();
+    QPoint pos = settings.value(SETTINGS_MAIN_WINDOW_POS, defaultPos).toPoint();
+    QSize size = settings.value(SETTINGS_MAIN_WINDOW_SIZE, defaultSize).toSize();
+
+    // Validate and correct window position
+    if ((pos.x() < 0) || (pos.y() < 0) ||
+        (pos.x() > srect.width()) || (pos.y() > srect.height()))
+    {
+        pos = defaultPos;
+    }
+
+    // Validate and correct window size
+    if ((size.width() < 0) || (size.height() < 0) ||
+        (size.width() > srect.width()) || (size.height() > srect.height()))
+    {
+        size = defaultSize;
+    }
+
+    instance->mainWindowPos = pos;
+    instance->mainWindowSize = size;
 
     instance->programVersion
         = settings.value (SETTINGS_PROGRAM_VERSION).toString();
