@@ -230,9 +230,9 @@ QuizEngine::nextQuestion()
     // next question during a cardbox quiz.  This works, but can be very slow
     // when the user has limited the quiz with a search specification.  Do
     // something smarter here!
-    if (quizSpec.getMethod() == QuizSpec::CardboxQuizMethod) {
-        return newQuiz(quizSpec);
-    }
+    //if (quizSpec.getMethod() == QuizSpec::CardboxQuizMethod) {
+    //    return newQuiz(quizSpec);
+    //}
 
     if (onLastQuestion())
         return false;

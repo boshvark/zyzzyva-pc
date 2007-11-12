@@ -1350,16 +1350,16 @@ QuizForm::updateStatusString()
 {
     QString status;
 
-    if (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod) {
-        status = "Questions remaining: " +
-            QString::number(quizEngine->numQuestions());
-    }
+    //if (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod) {
+    //    status = "Questions remaining: " +
+    //        QString::number(quizEngine->numQuestions());
+    //}
 
-    else {
+    //else {
         status = "Question " +
             QString::number(quizEngine->getQuestionIndex() + 1) + "/" +
             QString::number(quizEngine->numQuestions());
-    }
+    //}
 
     if (MainSettings::getQuizShowNumResponses()) {
         status += ", Correct: " +
