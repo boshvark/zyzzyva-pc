@@ -4,7 +4,7 @@
 #
 # Create a Linux directory for the installer to use.
 #
-# Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -23,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #-----------------------------------------------------------------------------
 
-QTVER=4.1.5
+QTVER=4.3.2
 QTDIR=/usr/local/Trolltech/Qt-$QTVER
 OUTDIR=installer/linux
 
