@@ -4,7 +4,7 @@
 #
 # Create a Linux directory for the installer to use.
 #
-# Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #

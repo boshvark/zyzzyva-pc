@@ -3,7 +3,7 @@ rem create-windows.sh
 rem
 rem Create a Windows directory for the installer to use.
 rem
-rem Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+rem Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 rem
 rem This file is part of Zyzzyva.
 rem
