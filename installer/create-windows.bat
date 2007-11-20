@@ -26,7 +26,9 @@ setlocal
 
 set QTVER=4.3.2
 set QTDIR=C:\Qt\%QTVER%
-set OUTDIR=installer\windows
+set INSTDIR=installer
+set PLATFORM=windows
+set OUTDIR=%INSTDIR%\%PLATFORM%
 
 qmake
 make
