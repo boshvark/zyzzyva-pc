@@ -23,7 +23,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #-----------------------------------------------------------------------------
 
-ZVER=1.0.5
+ZVER=1.0.6
 OUTDIR=$HOME/dev/zyzzyva-install
 DMGFILE=$OUTDIR/Zyzzyva-$ZVER-osx-installer.dmg
 
