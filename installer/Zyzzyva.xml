@@ -155,6 +155,9 @@
                             <origin>/Users/mthelen/dev/zyzzyva-install/windows/QtCore4.dll</origin>
                         </distributionFile>
                         <distributionFile>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/QtAssistantClient4.dll</origin>
+                        </distributionFile>
+                        <distributionFile>
                             <origin>/Users/mthelen/dev/zyzzyva-install/windows/mingwm10.dll</origin>
                         </distributionFile>
                         <distributionFile>
@@ -168,9 +171,6 @@
                         </distributionFile>
                         <distributionDirectory>
                             <origin>/Users/mthelen/dev/zyzzyva-install/windows/data</origin>
-                        </distributionDirectory>
-                        <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/sqldrivers</origin>
                         </distributionDirectory>
                         <distributionDirectory>
                             <origin>/Users/mthelen/dev/zyzzyva-install/windows/images</origin>
