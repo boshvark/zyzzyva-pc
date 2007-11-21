@@ -37,16 +37,13 @@ mkdir %OUTDIR%
 
 rem Copy Qt libraries
 copy %QTDIR%\bin\assistant.exe %OUTDIR%
+copy %QTDIR%\bin\QtAssistantClient4.dll %OUTDIR%
 copy %QTDIR%\bin\QtCore4.dll %OUTDIR%
 copy %QTDIR%\bin\QtGui4.dll %OUTDIR%
 copy %QTDIR%\bin\QtNetwork4.dll %OUTDIR%
 copy %QTDIR%\bin\QtSql4.dll %OUTDIR%
 copy %QTDIR%\bin\QtXml4.dll %OUTDIR%
 copy %QTDIR%\bin\mingwm10.dll %OUTDIR%
-
-rem Copy Qt plugins
-mkdir %OUTDIR%\sqldrivers
-copy %QTDIR%\plugins\sqldrivers\qsqlite.dll %OUTDIR%\sqldrivers
 
 rem Copy Zyzzyva images
 mkdir %OUTDIR%\images
