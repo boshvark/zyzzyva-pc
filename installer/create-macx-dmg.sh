@@ -53,14 +53,8 @@ find $OUTDIR -type d -name '.svn' -print0 | xargs -0 rm -rf
 
 # Copy Assistant client into bundle
 echo "Copying Assistant client into bundle..."
-cp $QTDIR/bin/assistant.app/Contents/MacOS/assistant \
+cp -r $QTDIR/bin/assistant.app \
     $OUTDIR/Zyzzyva.app/Contents/MacOS
-
-# Copy assistant.icns into bundle
-echo "Copying assistant.icns into bundle..."
-mkdir -p $OUTDIR/Zyzzyva.app/Contents/Resources
-cp $QTDIR/bin/assistant.app/Contents/Resources/assistant.icns \
-    $OUTDIR/Zyzzyva.app/Contents/Resources
 
 # Create Contents/Frameworks directory in bundle
 echo "Creating Contents/Frameworks directory in bundle..."

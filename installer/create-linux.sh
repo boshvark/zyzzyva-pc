@@ -32,10 +32,10 @@ make
 
 mkdir -p $OUTDIR/bin
 
-cp /usr/lib/gcc/i686-pc-linux-gnu/4.1.1/libstdc++.so.6 $OUTDIR/bin
-cp /usr/lib/gcc/i686-pc-linux-gnu/4.1.1/libgcc_s.so.1 $OUTDIR/bin
-cp /usr/lib/libmysqlclient.so.14 $OUTDIR/bin
+cp /usr/lib/libstdc++.so.6 $OUTDIR/bin
+cp /lib/libgcc_s.so.1 $OUTDIR/bin
 cp -d $QTDIR/lib/libQt{Core,Gui,Network,Sql,Xml}.so* $OUTDIR/bin
+rm $OUTDIR/bin/*.debug
 cp -d $QTDIR/bin/assistant $OUTDIR/bin
 cp -d bin/libzyzzyva.so* $OUTDIR/bin
 cp -d bin/zyzzyva $OUTDIR/bin
