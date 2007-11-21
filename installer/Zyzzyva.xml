@@ -173,6 +173,9 @@
                             <origin>/Users/mthelen/dev/zyzzyva-install/windows/data</origin>
                         </distributionDirectory>
                         <distributionDirectory>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/sqldrivers</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
                             <origin>/Users/mthelen/dev/zyzzyva-install/windows/images</origin>
                         </distributionDirectory>
                     </distributionFileList>
