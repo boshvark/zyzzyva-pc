@@ -101,7 +101,9 @@ QuizEngine::newQuiz(const QuizSpec& spec)
             delete db;
             return false;
         }
-        quizQuestions = db->getAllReadyQuestions();
+        bool zeroFirst = (spec.getQuestionOrder() ==
+                          QuizSpec::ScheduleZeroFirstOrder);
+        quizQuestions = db->getReadyQuestions(QStringList(), zeroFirst);
         delete db;
         if (quizQuestions.isEmpty())
             return false;
@@ -173,7 +175,8 @@ QuizEngine::newQuiz(const QuizSpec& spec)
             }
             break;
 
-            case QuizSpec::ScheduleOrder: {
+            case QuizSpec::ScheduleOrder:
+            case QuizSpec::ScheduleZeroFirstOrder: {
                 QString lexicon = spec.getLexicon();
                 QString quizType = Auxil::quizTypeToString(spec.getType());
                 QuizDatabase* db = new QuizDatabase(lexicon, quizType);
@@ -182,8 +185,11 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                     return false;
                 }
 
-                quizQuestions = db->getReadyQuestions(quizQuestions);
+                bool zeroFirst = (quizSpec.getQuestionOrder() ==
+                                  QuizSpec::ScheduleZeroFirstOrder);
+                quizQuestions = db->getReadyQuestions(quizQuestions, zeroFirst);
                 delete db;
+
                 if (quizQuestions.isEmpty())
                     return false;
             }

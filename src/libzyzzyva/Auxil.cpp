@@ -105,6 +105,7 @@ const QString QUIZ_ORDER_RANDOM = "Random";
 const QString QUIZ_ORDER_ALPHABETICAL = "Alphabetical";
 const QString QUIZ_ORDER_PROBABILITY = "Probability";
 const QString QUIZ_ORDER_SCHEDULE = "Schedule";
+const QString QUIZ_ORDER_SCHEDULE_ZERO_FIRST = "Schedule (Cardbox 0 First)";
 
 const QString WORD_ATTR_WORD = "Word";
 const QString WORD_ATTR_DEFINITION = "Definition";
@@ -990,6 +991,9 @@ Auxil::quizQuestionOrderToString(QuizSpec::QuestionOrder o)
         case QuizSpec::ScheduleOrder:
         return QUIZ_ORDER_SCHEDULE;
 
+        case QuizSpec::ScheduleZeroFirstOrder:
+        return QUIZ_ORDER_SCHEDULE_ZERO_FIRST;
+
         default: return QString();
     }
 }
@@ -1013,6 +1017,8 @@ Auxil::stringToQuizQuestionOrder(const QString& s)
         return QuizSpec::ProbabilityOrder;
     else if (s == QUIZ_ORDER_SCHEDULE)
         return QuizSpec::ScheduleOrder;
+    else if (s == QUIZ_ORDER_SCHEDULE_ZERO_FIRST)
+        return QuizSpec::ScheduleZeroFirstOrder;
     else
         return QuizSpec::UnknownOrder;
 }

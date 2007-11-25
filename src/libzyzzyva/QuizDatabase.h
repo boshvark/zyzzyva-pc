@@ -63,8 +63,7 @@ class QuizDatabase
     void setCardbox(const QString& question, int cardbox);
     int rescheduleCardbox(const QStringList& questions);
     int shiftCardbox(const QStringList& questions, int desiredBacklog);
-    QStringList getAllReadyQuestions();
-    QStringList getReadyQuestions(const QStringList& questions);
+    QStringList getReadyQuestions(const QStringList& questions, bool zeroFirst);
     QuestionData getQuestionData(const QString& question);
 
     const QSqlDatabase* getDatabase() const;

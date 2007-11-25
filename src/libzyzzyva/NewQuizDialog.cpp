@@ -647,7 +647,7 @@ NewQuizDialog::updateForm()
     if (method == QuizSpec::CardboxQuizMethod) {
         progressCbox->setEnabled(false);
         progressCbox->setChecked(false);
-        questionOrderCombo->setEnabled(false);
+        questionOrderCombo->setEnabled(true);
         questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
             Auxil::quizQuestionOrderToString(QuizSpec::ScheduleOrder)));
 
@@ -714,6 +714,8 @@ NewQuizDialog::fillQuestionOrderCombo(const QString& method)
         questionOrderCombo->clear();
         questionOrderCombo->addItem(
             Auxil::quizQuestionOrderToString(QuizSpec::ScheduleOrder));
+        questionOrderCombo->addItem(
+            Auxil::quizQuestionOrderToString(QuizSpec::ScheduleZeroFirstOrder));
         break;
 
         default: break;

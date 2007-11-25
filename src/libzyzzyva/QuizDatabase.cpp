@@ -483,20 +483,25 @@ QuizDatabase::shiftCardbox(const QStringList& questions, int desiredBacklog)
 }
 
 //---------------------------------------------------------------------------
-//  getAllReadyQuestions
+//  getReadyQuestions
 //
-//! Get a list of all questions that are ready for review.  The questions are
-//! returned in their scheduled order.
+//! Get a list of questions that are ready for review, from a subset of
+//! possible questions.  The questions are returned in their scheduled order.
 //
+//! @param questions the list of possible questions, or empty if all questions
+//! should be retrieved
+//! @param zeroFirst whether to put cardbox 0 questions before all others
 //! @return the list of ready questions, in scheduled order
 //---------------------------------------------------------------------------
 QStringList
-QuizDatabase::getAllReadyQuestions()
+QuizDatabase::getReadyQuestions(const QStringList& questions, bool zeroFirst)
 {
-    QStringList readyQuestions;
     unsigned int now = QDateTime::currentDateTime().toTime_t();
 
-    QString queryStr = "SELECT question FROM questions WHERE "
+    bool selectAll = questions.isEmpty();
+    QSet<QString> questionSet = questions.toSet();
+
+    QString queryStr = "SELECT question, cardbox FROM questions WHERE "
         "next_scheduled <= " + QString::number(now) +
         " ORDER BY next_scheduled";
 
@@ -504,53 +509,23 @@ QuizDatabase::getAllReadyQuestions()
     query.prepare(queryStr);
     query.exec();
 
-    while (query.next()) {
-        readyQuestions.append(query.value(0).toString());
-    }
-
-    return readyQuestions;
-}
-
-//---------------------------------------------------------------------------
-//  getReadyQuestions
-//
-//! Get a list of questions that are ready for review, from a subset of
-//! possible questions.  The questions are returned in their scheduled order.
-//
-//! @param questions the list of possible questions
-//! @return the list of ready questions, in scheduled order
-//---------------------------------------------------------------------------
-QStringList
-QuizDatabase::getReadyQuestions(const QStringList& questions)
-{
+    QStringList zeroQuestions;
     QStringList readyQuestions;
-
-    unsigned int now = QDateTime::currentDateTime().toTime_t();
-
-    QString inString;
-    QString question;
-    foreach (question, questions) {
-        if (inString.isEmpty())
-            inString += "(";
-        else
-            inString += ",";
-        inString += "'" + question + "'";
-    }
-    inString += ")";
-
-    QString queryStr = "SELECT question FROM questions WHERE "
-        "next_scheduled <= " + QString::number(now) + " AND "
-        "question IN " + inString + " ORDER BY next_scheduled";
-
-    QSqlQuery query (*db);
-    query.prepare(queryStr);
-    query.exec();
-
     while (query.next()) {
-        readyQuestions.append(query.value(0).toString());
+        const QString& question = query.value(0).toString();
+
+        // Skip questions that weren't in the parameter question list
+        if (!selectAll && !questionSet.contains(question))
+            continue;
+
+        int cardbox = query.value(1).toInt();
+        if (zeroFirst && (cardbox == 0))
+            zeroQuestions.append(question);
+        else
+            readyQuestions.append(question);
     }
 
-    return readyQuestions;
+    return zeroFirst ? zeroQuestions + readyQuestions : readyQuestions;
 }
 
 //---------------------------------------------------------------------------
