@@ -501,8 +501,9 @@ QuizDatabase::getReadyQuestions(const QStringList& questions, bool zeroFirst)
     bool selectAll = questions.isEmpty();
     QSet<QString> questionSet = questions.toSet();
 
+    QString zQueryStr = zeroFirst ? QString(" OR cardbox = 0") : QString();
     QString queryStr = "SELECT question, cardbox FROM questions WHERE "
-        "next_scheduled <= " + QString::number(now) +
+        "next_scheduled <= " + QString::number(now) + zQueryStr +
         " ORDER BY next_scheduled";
 
     QSqlQuery query (*db);
