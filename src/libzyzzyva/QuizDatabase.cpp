@@ -695,7 +695,11 @@ QuizDatabase::setQuestionData(const QString& question, const QuestionData&
         }
 
         query.bindValue(questionBindNum, question);
-        query.exec();
+        bool ok = query.exec();
+        if (!ok) {
+            qDebug("Update query failed: %s",
+                   query.lastError().text().toUtf8().constData());
+        }
     }
 
     // Question data does not exist, so insert it
