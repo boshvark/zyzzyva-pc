@@ -33,6 +33,7 @@
 using namespace Defs;
 
 const QString TITLE_PREFIX = "Cardbox";
+const int REFRESH_MSECS = 120000;
 
 //---------------------------------------------------------------------------
 //  CardboxForm
@@ -44,7 +45,8 @@ const QString TITLE_PREFIX = "Cardbox";
 //---------------------------------------------------------------------------
 CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     : ActionForm(CardboxFormType, parent, f), wordEngine(e),
-    quizDatabase(0), cardboxCountModel(0), cardboxDaysModel(0)
+    quizDatabase(0), cardboxCountModel(0), cardboxDaysModel(0),
+    cardboxContentsModel(0)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(MARGIN);
@@ -64,6 +66,10 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(cardboxDaysView);
     cardboxHlay->addWidget(cardboxDaysView);
 
+    cardboxContentsView = new QTreeView;
+    Q_CHECK_PTR(cardboxContentsView);
+    mainVlay->addWidget(cardboxContentsView);
+
     ZPushButton* refreshButton = new ZPushButton;
     Q_CHECK_PTR(refreshButton);
     refreshButton->setText("&Refresh");
@@ -74,6 +80,9 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     mainVlay->addStretch(0);
 
     quizSpecChanged();
+
+    //connect(&refreshTimer, SIGNAL(timeout()), SLOT(refreshClicked()));
+    //refreshTimer.start(REFRESH_MSECS);
 }
 
 //---------------------------------------------------------------------------
@@ -123,6 +132,7 @@ CardboxForm::getStatusString() const
 void
 CardboxForm::refreshClicked()
 {
+    qDebug("CardboxForm::refreshClicked");
     if (!quizDatabase)
         return;
 
@@ -148,6 +158,31 @@ CardboxForm::refreshClicked()
         cardboxDaysModel->setQuery(queryStr.arg(now), *sqlDb);
         cardboxDaysModel->setHeaderData(0, Qt::Horizontal, "Days");
         cardboxDaysModel->setHeaderData(1, Qt::Horizontal, "Count");
+    }
+
+    // Refresh cardbox contents
+    if (cardboxContentsModel) {
+        QString queryStr =
+            "SELECT question, cardbox, correct, incorrect, streak, "
+            "next_scheduled FROM questions WHERE cardbox NOT NULL "
+            "ORDER BY next_scheduled";
+
+
+        //cardboxContentsModel->select();
+
+        cardboxContentsModel->setQuery(queryStr, *sqlDb);
+        //while (cardboxContentsModel->canFetchMore()) {
+        //    qDebug("Fetching more for cardbox contents model");
+        //    cardboxContentsModel->fetchMore();
+        //}
+
+        //cardboxContentsModel->setSort(7, Qt::AscendingOrder);
+        cardboxContentsModel->setHeaderData(0, Qt::Horizontal, "Question");
+        cardboxContentsModel->setHeaderData(1, Qt::Horizontal, "Cardbox");
+        cardboxContentsModel->setHeaderData(2, Qt::Horizontal, "Correct");
+        cardboxContentsModel->setHeaderData(3, Qt::Horizontal, "Incorrect");
+        cardboxContentsModel->setHeaderData(4, Qt::Horizontal, "Streak");
+        cardboxContentsModel->setHeaderData(5, Qt::Horizontal, "Next Scheduled");
     }
 
     QApplication::restoreOverrideCursor();
@@ -177,6 +212,26 @@ CardboxForm::quizSpecChanged()
     cardboxDaysModel = new QSqlQueryModel;
     Q_CHECK_PTR(cardboxDaysModel);
     cardboxDaysView->setModel(cardboxDaysModel);
+
+    //const QSqlDatabase* sqlDb = quizDatabase->getDatabase();
+    delete cardboxContentsModel;
+    cardboxContentsModel = new QSqlQueryModel;
+    //cardboxContentsModel = new QSqlTableModel(this, *sqlDb);
+    Q_CHECK_PTR(cardboxContentsModel);
+
+    //cardboxContentsModel->setTable("questions");
+    //cardboxContentsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    //cardboxContentsModel->setSort(7, Qt::AscendingOrder);
+    //cardboxContentsModel->setHeaderData(0, Qt::Horizontal, "Question");
+    //cardboxContentsModel->setHeaderData(1, Qt::Horizontal, "Correct");
+    //cardboxContentsModel->setHeaderData(2, Qt::Horizontal, "Incorrect");
+    //cardboxContentsModel->setHeaderData(3, Qt::Horizontal, "Streak");
+    //cardboxContentsModel->setHeaderData(4, Qt::Horizontal, "Last Correct");
+    //cardboxContentsModel->setHeaderData(5, Qt::Horizontal, "Difficulty");
+    //cardboxContentsModel->setHeaderData(6, Qt::Horizontal, "Cardbox");
+    //cardboxContentsModel->setHeaderData(7, Qt::Horizontal, "Next Scheduled");
+
+    cardboxContentsView->setModel(cardboxContentsModel);
 
     refreshClicked();
 }

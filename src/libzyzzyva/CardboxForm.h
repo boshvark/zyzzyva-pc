@@ -28,6 +28,8 @@
 #include "ActionForm.h"
 #include <QLabel>
 #include <QSqlQueryModel>
+#include <QSqlTableModel>
+#include <QTimer>
 #include <QTreeView>
 
 class QuizDatabase;
@@ -51,8 +53,13 @@ class CardboxForm : public ActionForm
     QuizDatabase*   quizDatabase;
     QSqlQueryModel* cardboxCountModel;
     QSqlQueryModel* cardboxDaysModel;
+    QSqlQueryModel* cardboxContentsModel;
+    //QSqlTableModel* cardboxContentsModel;
     QTreeView*      cardboxCountView;
     QTreeView*      cardboxDaysView;
+    QTreeView*      cardboxContentsView;
+
+    //QTimer refreshTimer;
 };
 
 #endif // ZYZZYVA_CARDBOX_FORM_H
