@@ -29,7 +29,6 @@
 #include "WordEngine.h"
 #include "Auxil.h"
 #include <cstdlib>
-#include <ctime>
 
 //---------------------------------------------------------------------------
 //  probabilityCmp
