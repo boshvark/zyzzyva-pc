@@ -150,6 +150,7 @@ DEV=$(echo $DEVS | cut -f 1 -d ' ')
 hdiutil detach $DEV > /dev/null
 hdiutil internet-enable -yes Zyzzyva.dmg > /dev/null
 hdiutil convert Zyzzyva.dmg -format UDZO -o Zyzzyva-output.dmg > /dev/null
+# 10.3.9 uses -format ADC
 mv Zyzzyva-output.dmg Zyzzyva.dmg
 mv Zyzzyva.dmg $OUTDIR
 
