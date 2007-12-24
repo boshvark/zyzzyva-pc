@@ -70,9 +70,8 @@ DefinitionBox::init()
     definitionLabel = new DefinitionLabel;
     Q_CHECK_PTR(definitionLabel);
     definitionLabel->setWordWrap(true);
+    definitionLabel->setAlignment(Qt::AlignTop);
     mainVlay->addWidget(definitionLabel);
-
-    mainVlay->addStretch(1);
 }
 
 //---------------------------------------------------------------------------
