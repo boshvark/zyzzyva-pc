@@ -35,6 +35,7 @@
 using namespace Defs;
 
 const QString TITLE_PREFIX = "Definition";
+const QString NONE_STR = "(none)";
 
 //---------------------------------------------------------------------------
 //  DefineForm
@@ -168,9 +169,7 @@ DefineForm::defineWord()
         definition = engine->getDefinition(word);
         if (definition.isEmpty())
             definition = EMPTY_DEFINITION;
-    }
-    else {
-        word += "*";
+        resultStr += "<br><b>Definition:</b> " + definition;
     }
 
     SearchSpec spec;
@@ -181,21 +180,55 @@ DefineForm::defineWord()
     condition.stringValue = word;
     spec.conditions.append(condition);
     QStringList anagrams = engine->search(spec, true);
+    anagrams.removeAll(word);
+    QString anagramsStr = anagrams.isEmpty() ? NONE_STR :
+        QString("(%1): ").arg(anagrams.count()) + anagrams.join(", ");
+    resultStr += "<br><b>Anagrams:</b> " + anagramsStr;
 
+    // Get front hooks
+    QString fHooks = engine->getFrontHookLetters(word).toUpper();
+    QString fHookStr = fHooks.isEmpty() ? NONE_STR :
+        QString("(%1): ").arg(fHooks.length()) + fHooks;
+    resultStr += "<br><b>Front Hooks:</b> " + fHookStr;
 
+    // Get back hooks
+    QString bHooks = engine->getBackHookLetters(word).toUpper();
+    QString bHookStr = bHooks.isEmpty() ? NONE_STR :
+        QString("(%1): ").arg(bHooks.length()) + bHooks;
+    resultStr += "<br><b>Back Hooks:</b> " + bHookStr;
 
+    // Get front extensions
+    spec.conditions.clear();
+    condition.type = SearchCondition::PatternMatch;
+    condition.stringValue = "*?" + word;
+    spec.conditions.append(condition);
+    QStringList fExts = engine->search(spec, true);
+    QString fExtStr = fExts.isEmpty() ? NONE_STR :
+        QString("(%1): ").arg(fExts.count()) +
+        fExts.replaceInStrings(QRegExp(word + "$"), "-").join(", ");
+    resultStr += "<br><b>Front Extensions:</b> " + fExtStr;
 
+    // Get back extensions
+    spec.conditions.clear();
+    condition.type = SearchCondition::PatternMatch;
+    condition.stringValue = word + "?*";
+    spec.conditions.append(condition);
+    QStringList bExts = engine->search(spec, true);
+    QString bExtStr = bExts.isEmpty() ? NONE_STR :
+        QString("(%1): ").arg(bExts.count()) +
+        bExts.replaceInStrings(QRegExp("^" + word), "-").join(", ");
+    resultStr += "<br><b>Back Extensions:</b> " + bExtStr;
 
-    if (!definition.isEmpty())
-        resultStr += "<br><b>Definition</b>: " + definition;
-
-    if (!anagrams.isEmpty()) {
-        resultStr += "<br><b>Anagrams</b>: " + anagrams.join(", ");
-    }
-
-
-
-
+    // Get double extensions
+    spec.conditions.clear();
+    condition.type = SearchCondition::PatternMatch;
+    condition.stringValue = "*?" + word + "?*";
+    spec.conditions.append(condition);
+    QStringList dExts = engine->search(spec, true);
+    QString dExtStr = dExts.isEmpty() ? NONE_STR :
+        QString("(%1): ").arg(dExts.count()) +
+        dExts.replaceInStrings(QRegExp(word), "-").join(", ");
+    resultStr += "<br><b>Double Extensions:</b> " + dExtStr;
 
     resultBox->setText(resultStr);
     resultBox->setTitle(word);
