@@ -124,8 +124,6 @@ class WordEngine : public QObject
 
     QSqlDatabase* db;
     QString dbConnectionName;
-
-    QMap<QString, QString> definitionMap;
 };
 
 #endif // ZYZZYVA_WORD_ENGINE_H
