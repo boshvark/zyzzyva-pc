@@ -3,7 +3,7 @@
 //
 // The main settings for the word study application.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -46,14 +46,18 @@ class MainSettings
     static void setMainWindowSize(QSize s) { instance->mainWindowSize = s; }
     static bool getUseAutoImport() { return instance->useAutoImport; }
     static void setUseAutoImport(bool b) { instance->useAutoImport = b; }
-    static QString getAutoImportLexicon() {
-        return instance->autoImportLexicon; }
-    static void setAutoImportLexicon(const QString& str) {
-        instance->autoImportLexicon = str; }
+    static QStringList getAutoImportLexicons() {
+        return instance->autoImportLexicons; }
+    static void setAutoImportLexicons(const QStringList& slist) {
+        instance->autoImportLexicons = slist; }
     static QString getAutoImportFile() {
         return instance->autoImportFile; }
     static void setAutoImportFile(const QString& str) {
         instance->autoImportFile = str; }
+    static QString getDefaultLexicon() {
+        return instance->defaultLexicon; }
+    static void setDefaultLexicon(const QString& s) {
+        instance->defaultLexicon = s; }
     static bool getDisplayWelcome() { return instance->displayWelcome; }
     static void setDisplayWelcome(bool b) { instance->displayWelcome = b; }
     static QString getUserDataDir() { return instance->userDataDir; }
@@ -171,8 +175,9 @@ class MainSettings
     QPoint mainWindowPos;
     QSize mainWindowSize;
     bool useAutoImport;
-    QString autoImportLexicon;
+    QStringList autoImportLexicons;
     QString autoImportFile;
+    QString defaultLexicon;
     bool displayWelcome;
     QString userDataDir;
     bool useTileTheme;

@@ -3,7 +3,7 @@
 //
 // The settings dialog for the word study application.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -277,7 +277,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     letterOrderCombo->addItem(Defs::QUIZ_LETTERS_ALPHA);
     letterOrderCombo->addItem(Defs::QUIZ_LETTERS_RANDOM);
     letterOrderCombo->addItem(Defs::QUIZ_LETTERS_VOWELS_FIRST);
-    letterOrderCombo->addItem(Defs::QUIZ_LETTERS_CONSONANTS_FIRST); 
+    letterOrderCombo->addItem(Defs::QUIZ_LETTERS_CONSONANTS_FIRST);
     letterOrderCombo->setCurrentIndex(0);
 
     QHBoxLayout* quizBackgroundColorHlay = new QHBoxLayout;
@@ -649,7 +649,10 @@ SettingsDialog::readSettings()
     autoImportCbox->setChecked(autoImport);
     autoImportCboxToggled(autoImport);
 
-    QString autoImportLexicon = MainSettings::getAutoImportLexicon();
+    // Hack:: redo this section entirely... simply display current lexicon
+    // information and provide a button to pop up the lexicon selection dialog
+    //QString autoImportLexicon = MainSettings::getAutoImportLexicon();
+    QString autoImportLexicon = MainSettings::getDefaultLexicon();
     int index = autoImportLexiconCombo->findText(autoImportLexicon);
     autoImportLexiconCombo->setCurrentIndex(index >= 0 ? index : 0);
     autoImportLexiconActivated(autoImportLexiconCombo->currentText());
@@ -750,7 +753,9 @@ void
 SettingsDialog::writeSettings()
 {
     MainSettings::setUseAutoImport(autoImportCbox->isChecked());
-    MainSettings::setAutoImportLexicon(autoImportLexiconCombo->currentText());
+    // Hack:: this needs to be changed
+    //MainSettings::setAutoImportLexicon(autoImportLexiconCombo->currentText());
+    MainSettings::setDefaultLexicon(autoImportLexiconCombo->currentText());
     MainSettings::setAutoImportFile(autoImportCustomLine->text());
     MainSettings::setDisplayWelcome(displayWelcomeCbox->isChecked());
     MainSettings::setUserDataDir(userDataDirLine->text());

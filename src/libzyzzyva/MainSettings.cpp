@@ -3,7 +3,7 @@
 //
 // The main settings for the word study application.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -39,6 +39,8 @@ const QString SETTINGS_MAIN_WINDOW_POS = "main_window_pos";
 const QString SETTINGS_MAIN_WINDOW_SIZE = "main_window_size";
 const QString SETTINGS_IMPORT = "autoimport";
 const QString SETTINGS_IMPORT_LEXICON = "autoimport_lexicon";
+const QString SETTINGS_IMPORT_LEXICONS = "autoimport_lexicons";
+const QString SETTINGS_DEFAULT_LEXICON = "default_lexicon";
 const QString SETTINGS_IMPORT_FILE = "autoimport_file";
 const QString SETTINGS_DISPLAY_WELCOME = "display_welcome";
 const QString SETTINGS_USER_DATA_DIR = "user_data_dir";
@@ -71,7 +73,7 @@ const QString SETTINGS_QUIZ_CYCLE_ANSWERS = "quiz_cycle_answers";
 const QString SETTINGS_QUIZ_RECORD_STATS = "quiz_record_stats";
 const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
 const QString SETTINGS_JUDGE_SAVE_LOG = "judge_save_log";
-const QString DEFAULT_AUTO_IMPORT_LEXICON = "OWL2+LWL";
+const QString DEFAULT_DEFAULT_LEXICON = "OWL2+LWL";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb(0, 0, 127);
@@ -121,17 +123,24 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_PROGRAM_VERSION).toString();
 
     instance->useAutoImport = settings.value(SETTINGS_IMPORT, true).toBool();
-    instance->autoImportLexicon
-        = settings.value(SETTINGS_IMPORT_LEXICON,
-                         DEFAULT_AUTO_IMPORT_LEXICON).toString();
+
+    // Get default lexicon, either from current setting or old one
+    instance->defaultLexicon
+        = settings.value(SETTINGS_DEFAULT_LEXICON).toString();
+    if (instance->defaultLexicon.isEmpty()) {
+        instance->defaultLexicon
+            = settings.value(SETTINGS_IMPORT_LEXICON).toString();
+        if (instance->defaultLexicon.isEmpty())
+            instance->defaultLexicon = DEFAULT_DEFAULT_LEXICON;
+    }
 
     // Kludge to update the names of renamed lexicons
-    if (instance->autoImportLexicon == "OWL")
-        instance->autoImportLexicon = "OWL+LWL";
-    else if (instance->autoImportLexicon == "OWL2")
-        instance->autoImportLexicon = "OWL2+LWL";
-    else if (instance->autoImportLexicon == "SOWPODS")
-        instance->autoImportLexicon = "OSWI";
+    if (instance->defaultLexicon == "OWL")
+        instance->defaultLexicon = "OWL+LWL";
+    else if (instance->defaultLexicon == "OWL2")
+        instance->defaultLexicon = "OWL2+LWL";
+    else if (instance->defaultLexicon == "SOWPODS")
+        instance->defaultLexicon = "OSWI";
 
     instance->autoImportFile
         = settings.value(SETTINGS_IMPORT_FILE).toString();
@@ -226,7 +235,7 @@ MainSettings::writeSettings()
 
     settings.setValue(SETTINGS_PROGRAM_VERSION, instance->programVersion);
     settings.setValue(SETTINGS_IMPORT, instance->useAutoImport);
-    settings.setValue(SETTINGS_IMPORT_LEXICON, instance->autoImportLexicon);
+    //settings.setValue(SETTINGS_IMPORT_LEXICON, instance->autoImportLexicon);
     settings.setValue(SETTINGS_IMPORT_FILE, instance->autoImportFile);
     settings.setValue(SETTINGS_DISPLAY_WELCOME, instance->displayWelcome);
     settings.setValue(SETTINGS_USER_DATA_DIR, instance->userDataDir);

@@ -425,7 +425,10 @@ MainWindow::tryAutoImport(QSplashScreen* splash)
 
     // FIXME: This should not be part of the MainWindow class.  Lexicons (and
     // mapping lexicons to actual files) should be handled by someone else.
-    QString lexicon = MainSettings::getAutoImportLexicon();
+    //QString lexicon = MainSettings::getAutoImportLexicon();
+
+    // Hack:: import multiple lexicons here, not just the default one
+    QString lexicon = MainSettings::getDefaultLexicon();
     QString importFile;
     QString reverseImportFile;
     QString definitionFile;
@@ -697,9 +700,9 @@ MainWindow::doJudgeAction()
 void
 MainWindow::editSettings()
 {
-    QString lexicon;
+    //QString lexicon;
     if (settingsDialog->exec() == QDialog::Accepted) {
-        lexicon = MainSettings::getAutoImportLexicon();
+        //lexicon = MainSettings::getAutoImportLexicon();
         settingsDialog->writeSettings();
     }
     else {
@@ -707,15 +710,15 @@ MainWindow::editSettings()
     }
     readSettings(false);
 
-    if (!lexicon.isEmpty() &&
-        (lexicon != MainSettings::getAutoImportLexicon()))
-    {
-        QString caption = "Zyzzyva Restart Necessary";
-        QString message = "Your lexicon settings have changed.  For the new "
-            "settings to take effect, please restart Zyzzyva.";
-        message = Auxil::dialogWordWrap(message);
-        QMessageBox::information(this, caption, message);
-    }
+    //if (!lexicon.isEmpty() &&
+    //    (lexicon != MainSettings::getAutoImportLexicon()))
+    //{
+    //    QString caption = "Zyzzyva Restart Necessary";
+    //    QString message = "Your lexicon settings have changed.  For the new "
+    //        "settings to take effect, please restart Zyzzyva.";
+    //    message = Auxil::dialogWordWrap(message);
+    //    QMessageBox::information(this, caption, message);
+    //}
 }
 
 //---------------------------------------------------------------------------
