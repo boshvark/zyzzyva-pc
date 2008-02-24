@@ -51,6 +51,8 @@ const QString JUDGE_PREFS_ITEM = "Word Judge";
 const QString FONT_PREFS_ITEM = "Fonts";
 const QString WORD_LIST_PREFS_ITEM = "Word Tables";
 
+const QString LEXICON_SEP = "<br>";
+
 const int FONT_MAIN_BUTTON = 1;
 const int FONT_WORD_LISTS_BUTTON = 2;
 const int FONT_QUIZ_LABEL_BUTTON = 3;
@@ -118,7 +120,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(autoImportLexiconHlay);
     autoImportVlay->addLayout(autoImportLexiconHlay);
 
-    autoImportCbox = new QCheckBox("Automatically load lexicons:");
+    autoImportCbox = new QCheckBox("Load lexicons: ");
     Q_CHECK_PTR(autoImportCbox);
     connect(autoImportCbox, SIGNAL(toggled(bool)),
             SLOT(autoImportCboxToggled(bool)));
@@ -126,12 +128,11 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     autoImportLabel = new QLabel;
     Q_CHECK_PTR(autoImportLabel);
-    autoImportLabel->setWordWrap(true);
     autoImportLexiconHlay->addWidget(autoImportLabel);
 
-    autoImportButton = new QToolButton;
+    autoImportButton = new ZPushButton;
     Q_CHECK_PTR(autoImportButton);
-    autoImportButton->setText("...");
+    autoImportButton->setText("Edit...");
     connect(autoImportButton, SIGNAL(clicked()),
             SLOT(selectLexiconsClicked()));
     autoImportLexiconHlay->addWidget(autoImportButton);
@@ -663,14 +664,8 @@ SettingsDialog::readSettings()
     autoImportCboxToggled(autoImport);
 
     QStringList autoImportLexicons = MainSettings::getAutoImportLexicons();
-    // Hack:: need to fix this
-    QString importText = autoImportLexicons.join(", ") + " Default: " +
-        MainSettings::getDefaultLexicon();
-    autoImportLabel->setText(importText);
-    //QString defaultLexicon = MainSettings::getDefaultLexicon();
-
-    //autoImportLexiconCombo->setCurrentIndex(index >= 0 ? index : 0);
-    //autoImportLexiconActivated(autoImportLexiconCombo->currentText());
+    QString defaultLexicon = MainSettings::getDefaultLexicon();
+    fillLexiconImportLabel(autoImportLexicons, defaultLexicon);
 
     QString autoImportFile = MainSettings::getAutoImportFile();
     autoImportCustomLine->setText(autoImportFile);
@@ -893,14 +888,29 @@ SettingsDialog::autoImportLexiconActivated(const QString& text)
 void
 SettingsDialog::selectLexiconsClicked()
 {
+    QString autoImportText = autoImportLabel->text();
+    QString defaultLexicon;
+
+    QRegExp defaultRegex ("<b>(\\S+)</b>");
+    if (autoImportText.contains(defaultRegex)) {
+        defaultLexicon = defaultRegex.cap(1);
+        autoImportText.replace(defaultRegex, "\\1");
+    }
+    QStringList importLexicons = autoImportText.split(LEXICON_SEP);
+
     LexiconSelectDialog* dialog = new LexiconSelectDialog;
     Q_CHECK_PTR(dialog);
+    dialog->setImportLexicons(importLexicons);
+    dialog->setDefaultLexicon(defaultLexicon);
 
     int code = dialog->exec();
-
+    if (code == QDialog::Accepted) {
+        QStringList lexicons = dialog->getImportLexicons();
+        QString defaultLexicon = dialog->getDefaultLexicon();
+        fillLexiconImportLabel(lexicons, defaultLexicon);
+    }
 
     delete dialog;
-
 }
 
 //---------------------------------------------------------------------------
@@ -1036,6 +1046,33 @@ SettingsDialog::chooseQuizBackgroundColorButtonClicked()
         quizBackgroundColorLine->setPalette(palette);
         quizBackgroundColor = color;
     }
+}
+
+//---------------------------------------------------------------------------
+//  fillLexiconImportLabel
+//
+//! Fill the Lexicon Import label with a list of lexicons to import and a
+//! default lexicon.
+//
+//! @param lexicons the list of lexicons to import
+//! @param defaultLexicon the default lexicon
+//---------------------------------------------------------------------------
+void
+SettingsDialog::fillLexiconImportLabel(const QStringList& lexicons, const
+                                       QString& defaultLexicon)
+{
+    QString importText;
+    QStringListIterator it (lexicons);
+    while (it.hasNext()) {
+        const QString& lexicon = it.next();
+
+        if (!importText.isEmpty())
+            importText += LEXICON_SEP;
+
+        importText += (lexicon == defaultLexicon) ?
+            QString("<b>%1</b>").arg(lexicon) : lexicon;
+    }
+    autoImportLabel->setText(importText);
 }
 
 //---------------------------------------------------------------------------

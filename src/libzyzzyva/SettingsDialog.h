@@ -33,7 +33,8 @@
 #include <QListWidget>
 #include <QSettings>
 #include <QStackedWidget>
-#include <QToolButton>
+
+class ZPushButton;
 
 class SettingsDialog : public QDialog
 {
@@ -60,6 +61,8 @@ class SettingsDialog : public QDialog
     void chooseQuizBackgroundColorButtonClicked();
 
     private:
+    void fillLexiconImportLabel(const QStringList& lexicons, const QString&
+                                defaultLexicon);
     void fillThemeCombo();
     void updateJudgeLogDirLabel();
 
@@ -75,8 +78,7 @@ class SettingsDialog : public QDialog
 
     QCheckBox*   autoImportCbox;
     QLabel*      autoImportLabel;
-    QToolButton* autoImportButton;
-    //QComboBox*   autoImportLexiconCombo;
+    ZPushButton* autoImportButton;
     QWidget*     autoImportCustomWidget;
     QLineEdit*   autoImportCustomLine;
     QCheckBox*   displayWelcomeCbox;

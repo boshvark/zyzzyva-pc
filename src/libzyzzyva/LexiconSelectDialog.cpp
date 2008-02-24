@@ -26,9 +26,12 @@
 #include "Defs.h"
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
+#include <QSet>
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Select Lexicons";
+const QString INSTRUCTION_TEXT = "Select the lexicons to be loaded each time "
+    "the program is started, and the default lexicon to be used.";
 
 using namespace Defs;
 
@@ -46,6 +49,12 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     Q_CHECK_PTR(mainVlay);
 
+    QLabel* instructionLabel = new QLabel;
+    Q_CHECK_PTR(instructionLabel);
+    instructionLabel->setWordWrap(true);
+    instructionLabel->setText(INSTRUCTION_TEXT);
+    mainVlay->addWidget(instructionLabel);
+
     QGridLayout* mainGlay = new QGridLayout;
     Q_CHECK_PTR(mainGlay);
     mainVlay->addLayout(mainGlay);
@@ -53,12 +62,12 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
     QLabel* defaultLabel = new QLabel;
     Q_CHECK_PTR(defaultLabel);
     defaultLabel->setText("Default");
-    mainGlay->addWidget(defaultLabel, 0, 0);
+    mainGlay->addWidget(defaultLabel, 0, 0, Qt::AlignHCenter);
 
     QLabel* loadLabel = new QLabel;
     Q_CHECK_PTR(loadLabel);
     loadLabel->setText("Load");
-    mainGlay->addWidget(loadLabel, 0, 1);
+    mainGlay->addWidget(loadLabel, 0, 1, Qt::AlignHCenter);
 
     QStringList validLexicons;
     validLexicons.append("OWL2+LWL");
@@ -75,8 +84,10 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
 
         QRadioButton* radioButton = new QRadioButton;
         Q_CHECK_PTR(radioButton);
+        connect(radioButton, SIGNAL(clicked(bool)),
+                SLOT(defaultLexiconChanged()));
         mainGlay->addWidget(radioButton, row, 0, Qt::AlignHCenter);
-        radioButtonLexicons.insert(radioButton, lexicon);
+        lexiconRadioButtons.insert(lexicon, radioButton);
 
         QCheckBox* checkBox = new QCheckBox;
         Q_CHECK_PTR(checkBox);
@@ -120,7 +131,16 @@ LexiconSelectDialog::~LexiconSelectDialog()
 QStringList
 LexiconSelectDialog::getImportLexicons() const
 {
-    return QStringList();
+    QStringList lexicons;
+    QMapIterator<QString, QCheckBox*> it (lexiconCheckBoxes);
+    while (it.hasNext()) {
+        it.next();
+        const QString& lexicon = it.key();
+        QCheckBox* checkBox = it.value();
+        if (checkBox->checkState() == Qt::Checked)
+            lexicons.append(lexicon);
+    }
+    return lexicons;
 }
 
 //---------------------------------------------------------------------------
@@ -133,6 +153,14 @@ LexiconSelectDialog::getImportLexicons() const
 QString
 LexiconSelectDialog::getDefaultLexicon() const
 {
+    QMapIterator<QString, QRadioButton*> it (lexiconRadioButtons);
+    while (it.hasNext()) {
+        it.next();
+        const QString& lexicon = it.key();
+        QRadioButton* radioButton = it.value();
+        if (radioButton->isChecked())
+            return lexicon;
+    }
     return QString();
 }
 
@@ -146,6 +174,15 @@ LexiconSelectDialog::getDefaultLexicon() const
 void
 LexiconSelectDialog::setImportLexicons(const QStringList& lexicons)
 {
+    QSet<QString> lexiconSet = lexicons.toSet();
+    QMapIterator<QString, QCheckBox*> it (lexiconCheckBoxes);
+    while (it.hasNext()) {
+        it.next();
+        const QString& lexicon = it.key();
+        QCheckBox* checkBox = it.value();
+        checkBox->setCheckState(lexiconSet.contains(lexicon) ? Qt::Checked
+                                : Qt::Unchecked);
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -158,6 +195,15 @@ LexiconSelectDialog::setImportLexicons(const QStringList& lexicons)
 void
 LexiconSelectDialog::setDefaultLexicon(const QString& lexicon)
 {
+    QRadioButton* radioButton = lexiconRadioButtons.value(lexicon);
+    if (!radioButton)
+        return;
+    radioButton->setChecked(true);
+
+    QCheckBox* checkBox = lexiconCheckBoxes.value(lexicon);
+    if (!checkBox)
+        return;
+    checkBox->setCheckState(Qt::Checked);
 }
 
 //---------------------------------------------------------------------------
@@ -168,4 +214,17 @@ LexiconSelectDialog::setDefaultLexicon(const QString& lexicon)
 void
 LexiconSelectDialog::defaultLexiconChanged()
 {
+    QMapIterator<QString, QRadioButton*> it (lexiconRadioButtons);
+    while (it.hasNext()) {
+        it.next();
+        const QString& lexicon = it.key();
+        QRadioButton* radioButton = it.value();
+        if (radioButton->isChecked()) {
+            QCheckBox* checkBox = lexiconCheckBoxes.value(lexicon);
+            if (!checkBox)
+                return;
+            checkBox->setCheckState(Qt::Checked);
+            return;
+        }
+    }
 }

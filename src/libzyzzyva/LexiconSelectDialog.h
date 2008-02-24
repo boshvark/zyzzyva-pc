@@ -49,7 +49,7 @@ class LexiconSelectDialog : public QDialog
     void defaultLexiconChanged();
 
     private:
-    QMap<QRadioButton*, QString> radioButtonLexicons;
+    QMap<QString, QRadioButton*> lexiconRadioButtons;
     QMap<QString, QCheckBox*> lexiconCheckBoxes;
 };
 
