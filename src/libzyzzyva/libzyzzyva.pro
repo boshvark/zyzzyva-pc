@@ -68,6 +68,7 @@ SOURCES = \
     IscConverter.cpp \
     JudgeDialog.cpp \
     LetterBag.cpp \
+    LexiconSelectDialog.cpp \
     MainSettings.cpp \
     MainWindow.cpp \
     NewQuizDialog.cpp \
@@ -119,6 +120,7 @@ HEADERS = \
     IntroForm.h \
     IscConnectionThread.h \
     JudgeDialog.h \
+    LexiconSelectDialog.h \
     MainWindow.h \
     NewQuizDialog.h \
     QuizCanvas.h \

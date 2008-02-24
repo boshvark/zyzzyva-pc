@@ -24,6 +24,7 @@
 
 #include "SettingsDialog.h"
 #include "MainSettings.h"
+#include "LexiconSelectDialog.h"
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -117,27 +118,39 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(autoImportLexiconHlay);
     autoImportVlay->addLayout(autoImportLexiconHlay);
 
-    autoImportCbox = new QCheckBox("Automatically load a lexicon:");
+    autoImportCbox = new QCheckBox("Automatically load lexicons:");
     Q_CHECK_PTR(autoImportCbox);
     connect(autoImportCbox, SIGNAL(toggled(bool)),
             SLOT(autoImportCboxToggled(bool)));
     autoImportLexiconHlay->addWidget(autoImportCbox);
 
-    autoImportLexiconCombo = new QComboBox;
-    Q_CHECK_PTR(autoImportLexiconCombo);
-    autoImportLexiconCombo->addItem("OWL+LWL");
-    autoImportLexiconCombo->addItem("OWL2+LWL");
-    autoImportLexiconCombo->addItem("OSPD4+LWL");
-    autoImportLexiconCombo->addItem("Volost");
-    autoImportLexiconCombo->addItem("OSWI");
-    autoImportLexiconCombo->addItem("CSW");
-    autoImportLexiconCombo->addItem("ODS");
-    autoImportLexiconCombo->addItem("Custom");
-    autoImportLexiconCombo->setCurrentIndex(
-        autoImportLexiconCombo->findText("OWL2+LWL"));
-    connect(autoImportLexiconCombo, SIGNAL(activated(const QString&)),
-            SLOT(autoImportLexiconActivated(const QString&)));
-    autoImportLexiconHlay->addWidget(autoImportLexiconCombo);
+    autoImportLabel = new QLabel;
+    Q_CHECK_PTR(autoImportLabel);
+    autoImportLabel->setWordWrap(true);
+    autoImportLexiconHlay->addWidget(autoImportLabel);
+
+    autoImportButton = new QToolButton;
+    Q_CHECK_PTR(autoImportButton);
+    autoImportButton->setText("...");
+    connect(autoImportButton, SIGNAL(clicked()),
+            SLOT(selectLexiconsClicked()));
+    autoImportLexiconHlay->addWidget(autoImportButton);
+
+    //autoImportLexiconCombo = new QComboBox;
+    //Q_CHECK_PTR(autoImportLexiconCombo);
+    //autoImportLexiconCombo->addItem("OWL+LWL");
+    //autoImportLexiconCombo->addItem("OWL2+LWL");
+    //autoImportLexiconCombo->addItem("OSPD4+LWL");
+    //autoImportLexiconCombo->addItem("Volost");
+    //autoImportLexiconCombo->addItem("OSWI");
+    //autoImportLexiconCombo->addItem("CSW");
+    //autoImportLexiconCombo->addItem("ODS");
+    //autoImportLexiconCombo->addItem("Custom");
+    //autoImportLexiconCombo->setCurrentIndex(
+    //    autoImportLexiconCombo->findText("OWL2+LWL"));
+    //connect(autoImportLexiconCombo, SIGNAL(activated(const QString&)),
+    //        SLOT(autoImportLexiconActivated(const QString&)));
+    //autoImportLexiconHlay->addWidget(autoImportLexiconCombo);
 
     autoImportCustomWidget = new QWidget;
     Q_CHECK_PTR(autoImportCustomWidget);
@@ -649,13 +662,15 @@ SettingsDialog::readSettings()
     autoImportCbox->setChecked(autoImport);
     autoImportCboxToggled(autoImport);
 
-    // Hack:: redo this section entirely... simply display current lexicon
-    // information and provide a button to pop up the lexicon selection dialog
-    //QString autoImportLexicon = MainSettings::getAutoImportLexicon();
-    QString autoImportLexicon = MainSettings::getDefaultLexicon();
-    int index = autoImportLexiconCombo->findText(autoImportLexicon);
-    autoImportLexiconCombo->setCurrentIndex(index >= 0 ? index : 0);
-    autoImportLexiconActivated(autoImportLexiconCombo->currentText());
+    QStringList autoImportLexicons = MainSettings::getAutoImportLexicons();
+    // Hack:: need to fix this
+    QString importText = autoImportLexicons.join(", ") + " Default: " +
+        MainSettings::getDefaultLexicon();
+    autoImportLabel->setText(importText);
+    //QString defaultLexicon = MainSettings::getDefaultLexicon();
+
+    //autoImportLexiconCombo->setCurrentIndex(index >= 0 ? index : 0);
+    //autoImportLexiconActivated(autoImportLexiconCombo->currentText());
 
     QString autoImportFile = MainSettings::getAutoImportFile();
     autoImportCustomLine->setText(autoImportFile);
@@ -755,7 +770,7 @@ SettingsDialog::writeSettings()
     MainSettings::setUseAutoImport(autoImportCbox->isChecked());
     // Hack:: this needs to be changed
     //MainSettings::setAutoImportLexicon(autoImportLexiconCombo->currentText());
-    MainSettings::setDefaultLexicon(autoImportLexiconCombo->currentText());
+    //MainSettings::setDefaultLexicon(autoImportLexiconCombo->currentText());
     MainSettings::setAutoImportFile(autoImportCustomLine->text());
     MainSettings::setDisplayWelcome(displayWelcomeCbox->isChecked());
     MainSettings::setUserDataDir(userDataDirLine->text());
@@ -843,11 +858,15 @@ SettingsDialog::autoImportBrowseButtonClicked()
 void
 SettingsDialog::autoImportCboxToggled(bool on)
 {
-    autoImportLexiconCombo->setEnabled(on);
-    if (on)
-        autoImportLexiconActivated(autoImportLexiconCombo->currentText());
-    else
-        autoImportCustomWidget->setEnabled(false);
+    autoImportLabel->setEnabled(on);
+    autoImportButton->setEnabled(on);
+
+    //autoImportLexiconCombo->setEnabled(on);
+    //if (on)
+    //    autoImportLexiconActivated(autoImportLexiconCombo->currentText());
+    //else
+    //    autoImportCustomWidget->setEnabled(false);
+    autoImportCustomWidget->setEnabled(false);
 }
 
 //---------------------------------------------------------------------------
@@ -863,6 +882,25 @@ SettingsDialog::autoImportLexiconActivated(const QString& text)
 {
     bool customActive = (text == "Custom");
     autoImportCustomWidget->setEnabled(customActive);
+}
+
+//---------------------------------------------------------------------------
+//  selectLexiconsClicked
+//
+//! Slot called when the Select Lexicons button is clicked.  Display the
+//! lexicon selection dialog.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::selectLexiconsClicked()
+{
+    LexiconSelectDialog* dialog = new LexiconSelectDialog;
+    Q_CHECK_PTR(dialog);
+
+    int code = dialog->exec();
+
+
+    delete dialog;
+
 }
 
 //---------------------------------------------------------------------------

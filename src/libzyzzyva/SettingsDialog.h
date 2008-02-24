@@ -3,7 +3,7 @@
 //
 // The settings dialog for the word study application.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -33,6 +33,7 @@
 #include <QListWidget>
 #include <QSettings>
 #include <QStackedWidget>
+#include <QToolButton>
 
 class SettingsDialog : public QDialog
 {
@@ -49,6 +50,7 @@ class SettingsDialog : public QDialog
     void autoImportBrowseButtonClicked();
     void autoImportCboxToggled(bool on);
     void autoImportLexiconActivated(const QString& text);
+    void selectLexiconsClicked();
     void userDataDirBrowseButtonClicked();
     void userDataDirChanged(const QString& text);
     void themeCboxToggled(bool on);
@@ -72,7 +74,9 @@ class SettingsDialog : public QDialog
     QWidget*     wordListPrefWidget;
 
     QCheckBox*   autoImportCbox;
-    QComboBox*   autoImportLexiconCombo;
+    QLabel*      autoImportLabel;
+    QToolButton* autoImportButton;
+    //QComboBox*   autoImportLexiconCombo;
     QWidget*     autoImportCustomWidget;
     QLineEdit*   autoImportCustomLine;
     QCheckBox*   displayWelcomeCbox;
