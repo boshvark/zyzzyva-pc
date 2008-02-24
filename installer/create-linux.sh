@@ -23,9 +23,13 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 #-----------------------------------------------------------------------------
 
+set -e
+
 QTVER=4.3.2
 QTDIR=/usr/local/Trolltech/Qt-$QTVER
-OUTDIR=installer/linux
+INSTDIR=installer
+PLATFORM=linux
+OUTDIR=$INSTDIR/$PLATFORM
 
 $QTDIR/bin/qmake
 make
@@ -53,5 +57,9 @@ cp images/zyzzyva*x*.{png,ico,bmp} $OUTDIR/images
 
 cp -r data $OUTDIR
 find $OUTDIR/data -type d -name '.svn' -print0 | xargs -0 rm -rf
+
+pushd $INSTDIR
+tar -czf $PLATFORM.tar.gz $PLATFORM
+popd
 
 #perl -pi -e "\$f = '$OUTDIR';s/\@\@EXECUTABLE\@\@/zyzzyva/g; s/\@\@INSTALLDIR\@\@/\$f/g;" $OUTDIR/zyzzyva.sh
