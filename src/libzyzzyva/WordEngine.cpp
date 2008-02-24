@@ -3,7 +3,7 @@
 //
 // A class to handle the loading and searching of words.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -38,34 +38,40 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 //  clearCache
 //
-//! Clear the word information cache.
+//! Clear the word information cache for a lexicon.
+//
+//! @param lexicon the name of the lexicon
 //---------------------------------------------------------------------------
 void
-WordEngine::clearCache() const
+WordEngine::clearCache(const QString& lexicon) const
 {
-    //qDebug("Clearing the cache...");
-    wordCache.clear();
+    if (!lexiconData.contains(lexicon))
+        return;
+
+    lexiconData[lexicon].wordCache.clear();
 }
 
 //---------------------------------------------------------------------------
 //  connectToDatabase
 //
-//! Initialize the database connection.
+//! Initialize the database connection for a lexicon.
 //
+//! @param lexicon the name of the lexicon
 //! @param filename the name of the database file
 //! @param errString returns the error string in case of error
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::connectToDatabase(const QString& filename, QString* errString)
+WordEngine::connectToDatabase(const QString& lexicon, const QString& filename,
+                              QString* errString)
 {
     Rand rng;
     rng.srand(QDateTime::currentDateTime().toTime_t(), Auxil::getPid());
     unsigned int r = rng.rand();
-    dbConnectionName = "WordEngine" + QString::number(r);
+    QString dbConnectionName = "WordEngine" + QString::number(r);
 
-    db = new QSqlDatabase(QSqlDatabase::addDatabase("QSQLITE",
-                                                    dbConnectionName));
+    QSqlDatabase* db = new QSqlDatabase(
+        QSqlDatabase::addDatabase("QSQLITE", dbConnectionName));
     db->setDatabaseName(filename);
     bool ok = db->open();
 
@@ -73,29 +79,39 @@ WordEngine::connectToDatabase(const QString& filename, QString* errString)
         dbConnectionName = QString();
         if (errString)
             *errString = db->lastError().text();
+        // delete db?
         return false;
     }
 
+    LexiconData& data = lexiconData[lexicon];
+    data.db = db;
+    data.dbConnectionName = dbConnectionName;
     return true;
 }
 
 //---------------------------------------------------------------------------
 //  disconnectFromDatabase
 //
-//! Remove the database connection.
+//! Remove the database connection for a lexicon.
 //
+//! @param lexicon the name of the lexicon
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::disconnectFromDatabase()
+WordEngine::disconnectFromDatabase(const QString& lexicon)
 {
+    if (!lexiconData.contains(lexicon))
+        return true;
+
+    QSqlDatabase* db = lexiconData[lexicon].db;
+    QString dbConnectionName = lexiconData[lexicon].dbConnectionName;
     if (!db || !db->isOpen() || dbConnectionName.isEmpty())
         return true;
 
     delete db;
-    db = 0;
+    lexiconData[lexicon].db = 0;
     QSqlDatabase::removeDatabase(dbConnectionName);
-    dbConnectionName.clear();
+    lexiconData[lexicon].dbConnectionName.clear();
     return true;
 }
 
@@ -105,16 +121,21 @@ WordEngine::disconnectFromDatabase()
 //! Import words from a text file.  The file is assumed to be in plain text
 //! format, containing one word per line.
 //
+//! @param lexicon the name of the lexicon
 //! @param filename the name of the file to import
-//! @param lexName the name of the lexicon
 //! @param loadDefinitions whether to load word definitions
 //! @param errString returns the error string in case of error
 //! @return the number of words imported
 //---------------------------------------------------------------------------
 int
-WordEngine::importTextFile(const QString& filename, const QString& lexName,
+WordEngine::importTextFile(const QString& lexicon, const QString& filename,
                            bool loadDefinitions, QString* errString)
 {
+    if (!lexiconData.contains(lexicon))
+        lexiconData[lexicon].graph = new WordGraph;
+
+    WordGraph* graph = lexiconData[lexicon].graph;
+
     QFile file (filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         if (errString) {
@@ -133,22 +154,20 @@ WordEngine::importTextFile(const QString& filename, const QString& lexName,
             continue;
         QString word = line.section(' ', 0, 0).toUpper();
 
-        if (!graph.containsWord(word)) {
+        if (!graph->containsWord(word)) {
             QString alpha = Auxil::getAlphagram(word);
-            ++numAnagramsMap[alpha];
+            ++lexiconData[lexicon].numAnagramsMap[alpha];
         }
 
-        graph.addWord(word);
+        graph->addWord(word);
         if (loadDefinitions) {
             QString definition = line.section(' ', 1);
-            addDefinition(word, definition);
+            addDefinition(lexicon, word, definition);
         }
         ++imported;
     }
 
     delete[] buffer;
-
-    lexiconName = lexName;
     return imported;
 }
 
@@ -158,43 +177,42 @@ WordEngine::importTextFile(const QString& filename, const QString& lexName,
 //! Import words from a DAWG file as generated by Graham Toal's dawgutils
 //! programs: http://www.gtoal.com/wordgames/dawgutils/
 //
+//! @param lexicon the name of the lexicon
 //! @param filename the name of the DAWG file to import
-//! @param lexName the name of the lexicon
 //! @param reverse whether the DAWG contains reversed words
 //! @param errString returns the error string in case of error
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::importDawgFile(const QString& filename, const QString& lexName,
+WordEngine::importDawgFile(const QString& lexicon, const QString& filename,
                            bool reverse, QString* errString, quint16*
                            expectedChecksum)
 {
-    bool ok = graph.importDawgFile(filename, reverse, errString,
-                                   expectedChecksum);
+    if (!lexiconData.contains(lexicon))
+        lexiconData[lexicon].graph = new WordGraph;
 
-    if (!ok)
-        return false;
-
-    if (!reverse)
-        lexiconName = lexName;
-
-    return true;
+    WordGraph* graph = lexiconData[lexicon].graph;
+    bool ok = graph->importDawgFile(filename, reverse, errString,
+                                    expectedChecksum);
+    return ok;
 }
 
 //---------------------------------------------------------------------------
 //  importStems
 //
-//! Import stems from a file.  The file is assumed to be in plain text format,
-//! containing one stem per line.  The file is also assumed to contain stems
-//! of equal length.  All stems of different length than the first stem will
-//! be discarded.
+//! Import stems for a lexicon from a file.  The file is assumed to be in
+//! plain text format, containing one stem per line.  The file is also assumed
+//! to contain stems of equal length.  All stems of different length than the
+//! first stem will be discarded.
 //
+//! @param lexicon the name of the lexicon
 //! @param filename the name of the file to import
 //! @param errString returns the error string in case of error
 //! @return the number of stems imported
 //---------------------------------------------------------------------------
 int
-WordEngine::importStems(const QString& filename, QString* errString)
+WordEngine::importStems(const QString& lexicon, const QString& filename,
+                        QString* errString)
 {
     QFile file (filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -232,9 +250,9 @@ WordEngine::importStems(const QString& filename, QString* errString)
     delete[] buffer;
 
     // Insert the stem list into the map, or append to an existing stem list
-    stems[length] += words;
-    stemAlphagrams[length].unite(alphagrams);
-
+    LexiconData& data = lexiconData[lexicon];
+    data.stems[length] += words;
+    data.stemAlphagrams[length].unite(alphagrams);
     return imported;
 }
 
@@ -245,14 +263,18 @@ WordEngine::importStems(const QString& filename, QString* errString)
 //! If a word list is provided, also ensure that result words are in that
 //! list.
 //
+//! @param lexicon the name of the lexicon
 //! @param optimizedSpec the search spec
 //! @param wordList optional list of words that results must be in
 //! @return a list of words matching the search spec
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::databaseSearch(const SearchSpec& optimizedSpec,
-                           const QStringList* wordList) const
+WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
+                           optimizedSpec, const QStringList* wordList) const
 {
+    if (!lexiconData.contains(lexicon) || !lexiconData[lexicon].db)
+        return QStringList();
+
     // Build SQL query string
     QString queryStr = "SELECT word FROM words WHERE";
     bool foundCondition = false;
@@ -417,6 +439,7 @@ WordEngine::databaseSearch(const SearchSpec& optimizedSpec,
 
     // Query the database
     QStringList resultList;
+    QSqlDatabase* db = lexiconData[lexicon].db;
     QSqlQuery query (queryStr, *db);
     while (query.next()) {
         QString word = query.value(0).toString();
@@ -440,15 +463,15 @@ WordEngine::databaseSearch(const SearchSpec& optimizedSpec,
 //! @return a list of words matching the search spec
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::applyPostConditions(const SearchSpec& optimizedSpec, const
-                                QStringList& wordList) const
+WordEngine::applyPostConditions(const QString& lexicon,
+    const SearchSpec& optimizedSpec, const QStringList& wordList) const
 {
     QStringList returnList = wordList;
 
     // Check special postconditions
     QStringList::iterator wit;
     for (wit = returnList.begin(); wit != returnList.end();) {
-        if (matchesConditions(*wit, optimizedSpec.conditions))
+        if (matchesConditions(lexicon, *wit, optimizedSpec.conditions))
             ++wit;
         else
             wit = returnList.erase(wit);
@@ -562,15 +585,19 @@ WordEngine::applyPostConditions(const SearchSpec& optimizedSpec, const
 //---------------------------------------------------------------------------
 //  isAcceptable
 //
-//! Determine whether a word is acceptable.
+//! Determine whether a word is acceptable in a lexicon.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word to look up
 //! @return true if acceptable, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::isAcceptable(const QString& word) const
+WordEngine::isAcceptable(const QString& lexicon, const QString& word) const
 {
-    return graph.containsWord(word);
+    if (!lexiconData.contains(lexicon))
+        return false;
+
+    return lexiconData[lexicon].graph->containsWord(word);
 }
 
 //---------------------------------------------------------------------------
@@ -578,13 +605,18 @@ WordEngine::isAcceptable(const QString& word) const
 //
 //! Search for acceptable words matching a search specification.
 //
+//! @param lexicon the name of the lexicon
 //! @param spec the search specification
 //! @param allCaps whether to ensure the words in the list are all caps
 //! @return a list of acceptable words
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::search(const SearchSpec& spec, bool allCaps) const
+WordEngine::search(const QString& lexicon, const SearchSpec& spec, bool
+                   allCaps) const
 {
+    if (!lexiconData.contains(lexicon))
+        return QStringList();
+
     SearchSpec optimizedSpec = spec;
     optimizedSpec.optimize();
 
@@ -613,14 +645,14 @@ WordEngine::search(const SearchSpec& spec, bool allCaps) const
     if (phaseCounts.contains(WordGraphPhase) ||
         !phaseCounts.contains(DatabasePhase))
     {
-        resultList = wordGraphSearch(optimizedSpec);
+        resultList = wordGraphSearch(lexicon, optimizedSpec);
         if (resultList.isEmpty())
             return resultList;
     }
 
     // Search the database if necessary, passing word graph results
     if (phaseCounts.contains(DatabasePhase)) {
-        resultList = databaseSearch(optimizedSpec,
+        resultList = databaseSearch(lexicon, optimizedSpec,
             phaseCounts.contains(WordGraphPhase) ? &resultList : 0);
         if (resultList.isEmpty())
             return resultList;
@@ -628,7 +660,7 @@ WordEngine::search(const SearchSpec& spec, bool allCaps) const
 
     // Check post conditions if necessary
     if (phaseCounts.contains(PostConditionPhase)) {
-        resultList = applyPostConditions(optimizedSpec, resultList);
+        resultList = applyPostConditions(lexicon, optimizedSpec, resultList);
     }
 
     // Convert to all caps if necessary
@@ -639,8 +671,8 @@ WordEngine::search(const SearchSpec& spec, bool allCaps) const
     }
 
     if (!resultList.isEmpty()) {
-        clearCache();
-        addToCache(resultList);
+        clearCache(lexicon);
+        addToCache(lexicon, resultList);
     }
 
     return resultList;
@@ -651,13 +683,18 @@ WordEngine::search(const SearchSpec& spec, bool allCaps) const
 //
 //! Search the word graph for words matching the conditions in a search spec.
 //
+//! @param lexicon the name of the lexicon
 //! @param optimizedSpec the search spec
 //! @return a list of words
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::wordGraphSearch(const SearchSpec& optimizedSpec) const
+WordEngine::wordGraphSearch(const QString& lexicon, const SearchSpec&
+                            optimizedSpec) const
 {
-    return graph.search(optimizedSpec);
+    if (!lexiconData.contains(lexicon))
+        return QStringList();
+
+    return lexiconData[lexicon].graph->search(optimizedSpec);
 }
 
 //---------------------------------------------------------------------------
@@ -689,22 +726,27 @@ WordEngine::alphagrams(const QStringList& strList) const
 //! information for future queries.  Fail if the information is not in the
 //! cache and the database is not open.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word
 //! @return information about the word from the database
 //---------------------------------------------------------------------------
 WordEngine::WordInfo
-WordEngine::getWordInfo(const QString& word) const
+WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
 {
     if (word.isEmpty())
         return WordInfo();
 
-    if (wordCache.contains(word)) {
+    if (!lexiconData.contains(lexicon))
+        return WordInfo();
+
+    if (lexiconData[lexicon].wordCache.contains(word)) {
         //qDebug("Cache HIT: |%s|", word.toUtf8().data());
-        return wordCache[word];
+        return lexiconData[lexicon].wordCache[word];
     }
     //qDebug("Cache MISS: |%s|", word.toUtf8().data());
 
     WordInfo info;
+    QSqlDatabase* db = lexiconData[lexicon].db;
     if (!db || !db->isOpen())
         return info;
 
@@ -729,7 +771,7 @@ WordEngine::getWordInfo(const QString& word) const
         info.frontHooks          = query.value(7).toString();
         info.backHooks           = query.value(8).toString();
         info.definition          = query.value(9).toString();
-        wordCache[word] = info;
+        lexiconData[lexicon].wordCache[word] = info;
     }
 
     return info;
@@ -740,11 +782,16 @@ WordEngine::getWordInfo(const QString& word) const
 //
 //! Return a word count for the current lexicon.
 //
+//! @param lexicon the name of the lexicon
 //! @return the word count
 //---------------------------------------------------------------------------
 int
-WordEngine::getNumWords() const
+WordEngine::getNumWords(const QString& lexicon) const
 {
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    QSqlDatabase* db = lexiconData[lexicon].db;
     if (db && db->isOpen()) {
         QString qstr = "SELECT count(*) FROM words";
         QSqlQuery query (qstr, *db);
@@ -752,7 +799,8 @@ WordEngine::getNumWords() const
             return query.value(0).toInt();
     }
     else
-        return graph.getNumWords();
+        return lexiconData[lexicon].graph->getNumWords();
+
     return 0;
 }
 
@@ -761,16 +809,21 @@ WordEngine::getNumWords() const
 //
 //! Return the definition associated with a word.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word whose definition to look up
 //! @param replaceLinks whether to resolve links to other definitions
 //! @return the definition, or empty String if no definition
 //---------------------------------------------------------------------------
 QString
-WordEngine::getDefinition(const QString& word, bool replaceLinks) const
+WordEngine::getDefinition(const QString& lexicon, const QString& word,
+                          bool replaceLinks) const
 {
+    if (!lexiconData.contains(lexicon))
+        return QString();
+
     QString definition;
 
-    WordInfo info = getWordInfo(word);
+    WordInfo info = getWordInfo(lexicon, word);
     if (info.isValid()) {
         if (replaceLinks) {
             QStringList defs = info.definition.split(" / ");
@@ -789,10 +842,11 @@ WordEngine::getDefinition(const QString& word, bool replaceLinks) const
     }
 
     else {
-        if (!definitions.contains(word))
+        if (!lexiconData[lexicon].definitions.contains(word))
             return QString();
 
-        const QMultiMap<QString, QString>& mmap = definitions.value(word);
+        const QMultiMap<QString, QString>& mmap =
+            lexiconData[lexicon].definitions.value(word);
         QMapIterator<QString, QString> it (mmap);
         while (it.hasNext()) {
             it.next();
@@ -814,15 +868,17 @@ WordEngine::getDefinition(const QString& word, bool replaceLinks) const
 //! Get a string of letters that can be added to the front of a word to make
 //! other valid words.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word, assumed to be upper case
 //! @return a string containing lower case letters representing front hooks
 //---------------------------------------------------------------------------
 QString
-WordEngine::getFrontHookLetters(const QString& word) const
+WordEngine::getFrontHookLetters(const QString& lexicon, const QString& word)
+    const
 {
     QString ret;
 
-    WordInfo info = getWordInfo(word);
+    WordInfo info = getWordInfo(lexicon, word);
     if (info.isValid()) {
         ret = info.frontHooks;
     }
@@ -835,7 +891,7 @@ WordEngine::getFrontHookLetters(const QString& word) const
         spec.conditions.append(condition);
 
         // Get and sort first letters of each word
-        QStringList words = search(spec, true);
+        QStringList words = search(lexicon, spec, true);
         QString str;
         QList<QChar> letters;
         foreach (str, words) {
@@ -857,15 +913,16 @@ WordEngine::getFrontHookLetters(const QString& word) const
 //! Get a string of letters that can be added to the back of a word to make
 //! other valid words.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word, assumed to be upper case
 //! @return a string containing lower case letters representing back hooks
 //---------------------------------------------------------------------------
 QString
-WordEngine::getBackHookLetters(const QString& word) const
+WordEngine::getBackHookLetters(const QString& lexicon, const QString& word) const
 {
     QString ret;
 
-    WordInfo info = getWordInfo(word);
+    WordInfo info = getWordInfo(lexicon, word);
     if (info.isValid()) {
         ret = info.backHooks;
     }
@@ -878,7 +935,7 @@ WordEngine::getBackHookLetters(const QString& word) const
         spec.conditions.append(condition);
 
         // Get and sort last letters of each word
-        QStringList words = search(spec, true);
+        QStringList words = search(lexicon, spec, true);
         QString str;
         QList<QChar> letters;
         foreach (str, words) {
@@ -899,12 +956,17 @@ WordEngine::getBackHookLetters(const QString& word) const
 //
 //! Add information about a list of words to the cache.
 //
+//! @param lexicon the name of the lexicon
 //! @param words the list of words
 //---------------------------------------------------------------------------
 void
-WordEngine::addToCache(const QStringList& words) const
+WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
 {
-    if (words.isEmpty() || !db || !db->isOpen())
+    if (words.isEmpty() || !lexiconData.contains(lexicon))
+        return;
+
+    QSqlDatabase* db = lexiconData[lexicon].db;
+    if (!db || !db->isOpen())
         return;
 
     QString qstr = "SELECT word, probability_order, min_probability_order, "
@@ -937,7 +999,7 @@ WordEngine::addToCache(const QStringList& words) const
         info.frontHooks          = query.value(8).toString();
         info.backHooks           = query.value(9).toString();
         info.definition          = query.value(10).toString();
-        wordCache[info.word] = info;
+        lexiconData[lexicon].wordCache[info.word] = info;
     }
 }
 
@@ -948,19 +1010,23 @@ WordEngine::addToCache(const QStringList& words) const
 //! list are tested.  Only the conditions that cannot be easily tested in
 //! WordGraph::search are tested here.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word to be tested
 //! @param conditions the list of conditions to test
 //! @return true if the word matches all special conditions, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::matchesConditions(const QString& word, const
-                              QList<SearchCondition>& conditions) const
+WordEngine::matchesConditions(const QString& lexicon, const QString& word,
+                              const QList<SearchCondition>& conditions) const
 {
     // FIXME: For conditions that can be tested by querying the database, a
     // query should be constructed that tests all the conditions as part of a
     // single WHERE clause.  This should be much more efficient than testing
     // each condition on each word individually, which requires several
     // queries.
+
+    if (!lexiconData.contains(lexicon))
+        return false;
 
     QString wordUpper = word.toUpper();
     QListIterator<SearchCondition> it (conditions);
@@ -970,13 +1036,13 @@ WordEngine::matchesConditions(const QString& word, const
         switch (condition.type) {
 
             case SearchCondition::Prefix:
-            if ((!isAcceptable(condition.stringValue + wordUpper))
+            if ((!isAcceptable(lexicon, condition.stringValue + wordUpper))
                 ^ condition.negated)
                 return false;
             break;
 
             case SearchCondition::Suffix:
-            if ((!isAcceptable(wordUpper + condition.stringValue))
+            if ((!isAcceptable(lexicon, wordUpper + condition.stringValue))
                 ^ condition.negated)
                 return false;
             break;
@@ -986,7 +1052,8 @@ WordEngine::matchesConditions(const QString& word, const
                     Auxil::stringToSearchSet(condition.stringValue);
                 if (searchSet == UnknownSearchSet)
                     continue;
-                if (!isSetMember(wordUpper, searchSet) ^ condition.negated)
+                if (!isSetMember(lexicon, wordUpper, searchSet)
+                    ^ condition.negated)
                     return false;
             }
             break;
@@ -1004,13 +1071,18 @@ WordEngine::matchesConditions(const QString& word, const
 //! Determine whether a word is a member of a set.  Assumes the word has
 //! already been determined to be acceptable.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word to look up
 //! @param ss the search set
 //! @return true if a member of the set, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::isSetMember(const QString& word, SearchSet ss) const
+WordEngine::isSetMember(const QString& lexicon, const QString& word,
+                        SearchSet ss) const
 {
+    if (!lexiconData.contains(lexicon))
+        return false;
+
     static QString typeTwoChars = "AAADEEEEGIIILNNOORRSSTTU";
     static int typeTwoCharsLen = typeTwoChars.length();
     static LetterBag letterBag("A:9 B:2 C:2 D:4 E:12 F:2 G:3 H:2 I:9 J:1 "
@@ -1023,14 +1095,14 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
 
     switch (ss) {
         case SetHookWords:
-        return (isAcceptable(word.left(word.length() - 1)) ||
-                isAcceptable(word.right(word.length() - 1)));
+        return (isAcceptable(lexicon, word.left(word.length() - 1)) ||
+                isAcceptable(lexicon, word.right(word.length() - 1)));
 
         case SetFrontHooks:
-        return isAcceptable(word.right(word.length() - 1));
+        return isAcceptable(lexicon, word.right(word.length() - 1));
 
         case SetBackHooks:
-        return isAcceptable(word.left(word.length() - 1));
+        return isAcceptable(lexicon, word.left(word.length() - 1));
 
         case SetHighFives: {
             if (word.length() != 5)
@@ -1051,11 +1123,13 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
             if (word.length() != 7)
                 return false;
 
-            if (!stemAlphagrams.contains(word.length() - 1))
+            if (!lexiconData[lexicon].stemAlphagrams.contains(word.length() - 1))
                 return false;
 
-            const QSet<QString>& alphaSet = stemAlphagrams[word.length() - 1];
             QString agram = Auxil::getAlphagram(word);
+            const QSet<QString>& alphaSet =
+                lexiconData[lexicon].stemAlphagrams[word.length() - 1];
+
             for (int i = 0; i < int(agram.length()); ++i) {
                 if (alphaSet.contains(agram.left(i) +
                                       agram.right(agram.length() - i - 1)))
@@ -1070,14 +1144,15 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
             if (word.length() != 8)
                 return false;
 
-            if (!stemAlphagrams.contains(word.length() - 2))
+            if (!lexiconData[lexicon].stemAlphagrams.contains(word.length() - 2))
                 return false;
 
             // Compare the letters of the word with the letters of each
             // alphagram, ensuring that no more than two letters in the word
             // are missing from the alphagram.
             QString agram = Auxil::getAlphagram(word);
-            const QSet<QString>& alphaSet = stemAlphagrams[word.length() - 2];
+            const QSet<QString>& alphaSet =
+                lexiconData[lexicon].stemAlphagrams[word.length() - 2];
 
             QSetIterator<QString> it (alphaSet);
             while (it.hasNext()) {
@@ -1122,9 +1197,8 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
                     wc = alphagram[wi];
                 }
             }
-            return (ok && !isSetMember(word, (ss == SetTypeTwoSevens ?
-                                              SetTypeOneSevens :
-                                              SetTypeOneEights)));
+            return (ok && !isSetMember(lexicon, word,
+                (ss == SetTypeTwoSevens ? SetTypeOneSevens : SetTypeOneEights)));
         }
 
         case SetTypeThreeSevens: {
@@ -1133,8 +1207,8 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
 
             double combos = letterBag.getNumCombinations(word);
             return ((combos >= typeThreeSevenCombos) &&
-                    !isSetMember(word, SetTypeOneSevens) &&
-                    !isSetMember(word, SetTypeTwoSevens));
+                    !isSetMember(lexicon, word, SetTypeOneSevens) &&
+                    !isSetMember(lexicon, word, SetTypeTwoSevens));
         }
 
         case SetTypeThreeEights: {
@@ -1143,19 +1217,21 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
 
             double combos = letterBag.getNumCombinations(word);
             return ((combos >= typeThreeEightCombos) &&
-                    !isSetMember(word, SetTypeOneEights) &&
-                    !isSetMember(word, SetTypeTwoEights));
+                    !isSetMember(lexicon, word, SetTypeOneEights) &&
+                    !isSetMember(lexicon, word, SetTypeTwoEights));
         }
 
         case SetEightsFromSevenLetterStems: {
             if (word.length() != 8)
                 return false;
 
-            if (!stemAlphagrams.contains(word.length() - 1))
+            if (!lexiconData[lexicon].stemAlphagrams.contains(word.length() - 1))
                 return false;
 
             QString agram = Auxil::getAlphagram(word);
-            const QSet<QString>& alphaSet = stemAlphagrams[word.length() - 1];
+            const QSet<QString>& alphaSet =
+                lexiconData[lexicon].stemAlphagrams[word.length() - 1];
+
             for (int i = 0; i < int(agram.length()); ++i) {
                 if (alphaSet.contains(agram.left(i) +
                                       agram.right(agram.length() - i - 1)))
@@ -1166,7 +1242,6 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
             return false;
         }
 
-
         default: return false;
     }
 }
@@ -1176,20 +1251,24 @@ WordEngine::isSetMember(const QString& word, SearchSet ss) const
 //
 //! Determine the number of valid anagrams of a word.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word
 //! @return the number of valid anagrams
 //---------------------------------------------------------------------------
 int
-WordEngine::getNumAnagrams(const QString& word) const
+WordEngine::getNumAnagrams(const QString& lexicon, const QString& word) const
 {
-    WordInfo info = getWordInfo(word);
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
     if (info.isValid()) {
         return info.numAnagrams;
     }
 
     else {
         QString alpha = Auxil::getAlphagram(word);
-        return numAnagramsMap.contains(alpha) ? numAnagramsMap[alpha] : 0;
+        return lexiconData[lexicon].numAnagramsMap.value(alpha);
     }
 }
 
@@ -1198,13 +1277,18 @@ WordEngine::getNumAnagrams(const QString& word) const
 //
 //! Get the probability order for a word.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word
 //! @return the probability order
 //---------------------------------------------------------------------------
 int
-WordEngine::getProbabilityOrder(const QString& word) const
+WordEngine::getProbabilityOrder(const QString& lexicon, const QString& word)
+    const
 {
-    WordInfo info = getWordInfo(word);
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
     return info.isValid() ? info.probabilityOrder : 0;
 }
 
@@ -1213,13 +1297,18 @@ WordEngine::getProbabilityOrder(const QString& word) const
 //
 //! Get the minimum probability order for a word.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word
 //! @return the probability order
 //---------------------------------------------------------------------------
 int
-WordEngine::getMinProbabilityOrder(const QString& word) const
+WordEngine::getMinProbabilityOrder(const QString& lexicon, const QString&
+                                   word) const
 {
-    WordInfo info = getWordInfo(word);
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
     return info.isValid() ? info.minProbabilityOrder : 0;
 }
 
@@ -1228,13 +1317,18 @@ WordEngine::getMinProbabilityOrder(const QString& word) const
 //
 //! Get the maximum probability order for a word.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word
 //! @return the probability order
 //---------------------------------------------------------------------------
 int
-WordEngine::getMaxProbabilityOrder(const QString& word) const
+WordEngine::getMaxProbabilityOrder(const QString& lexicon, const QString&
+                                   word) const
 {
-    WordInfo info = getWordInfo(word);
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
     return info.isValid() ? info.maxProbabilityOrder : 0;
 }
 
@@ -1243,13 +1337,15 @@ WordEngine::getMaxProbabilityOrder(const QString& word) const
 //
 //! Get the number of vowels in a word.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word
 //! @return the number of vowels
 //---------------------------------------------------------------------------
 int
-WordEngine::getNumVowels(const QString& word) const
+WordEngine::getNumVowels(const QString& lexicon, const QString& word) const
 {
-    WordInfo info = getWordInfo(word);
+    // No test of lexiconData because we want to calculate if even not cached
+    WordInfo info = getWordInfo(lexicon, word);
     return info.isValid() ? info.numVowels : Auxil::getNumVowels(word);
 }
 
@@ -1258,13 +1354,15 @@ WordEngine::getNumVowels(const QString& word) const
 //
 //! Get the number of unique letters in a word.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word
 //! @return the number of unique letters
 //---------------------------------------------------------------------------
 int
-WordEngine::getNumUniqueLetters(const QString& word) const
+WordEngine::getNumUniqueLetters(const QString& lexicon, const QString& word) const
 {
-    WordInfo info = getWordInfo(word);
+    // No test of lexiconData because we want to calculate if even not cached
+    WordInfo info = getWordInfo(lexicon, word);
     return info.isValid() ? info.numUniqueLetters
                           : Auxil::getNumUniqueLetters(word);
 }
@@ -1274,13 +1372,17 @@ WordEngine::getNumUniqueLetters(const QString& word) const
 //
 //! Get the point value for a word.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word
 //! @return the point value
 //---------------------------------------------------------------------------
 int
-WordEngine::getPointValue(const QString& word) const
+WordEngine::getPointValue(const QString& lexicon, const QString& word) const
 {
-    WordInfo info = getWordInfo(word);
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
     return info.isValid() ? info.pointValue : 0;
 }
 
@@ -1290,12 +1392,12 @@ WordEngine::getPointValue(const QString& word) const
 //! Search for valid words matching conditions that can be matched without
 //! searching the word graph.
 //
+//! @param lexicon the name of the lexicon
 //! @param spec the search specification
-//
 //! @return a list of acceptable words matching the In Word List conditions
 //---------------------------------------------------------------------------
 QStringList
-WordEngine::nonGraphSearch(const SearchSpec& spec) const
+WordEngine::nonGraphSearch(const QString& lexicon, const SearchSpec& spec) const
 {
     QStringList wordList;
     QSet<QString> finalWordSet;
@@ -1369,13 +1471,13 @@ WordEngine::nonGraphSearch(const SearchSpec& spec) const
         // words for acceptability and combine the word lists
         if (condition.type != SearchCondition::InWordList)
             continue;
-        QStringList words = condition.stringValue.split(QChar(' '));
 
+        QStringList words = condition.stringValue.split(QChar(' '));
         QSet<QString> wordSet;
         QStringListIterator wit (words);
         while (wit.hasNext()) {
             QString word = wit.next();
-            if (isAcceptable(word))
+            if (isAcceptable(lexicon, word))
                 wordSet.insert(word);
         }
 
@@ -1423,26 +1525,26 @@ WordEngine::nonGraphSearch(const SearchSpec& spec) const
             QString word = it.next();
 
             if (testAnagrams) {
-                int numAnagrams = getNumAnagrams(word);
+                int numAnagrams = getNumAnagrams(lexicon, word);
                 if ((numAnagrams < minAnagrams) || (numAnagrams > maxAnagrams))
                     continue;
             }
 
             if (testNumVowels) {
-                int numVowels = getNumVowels(word);
+                int numVowels = getNumVowels(lexicon, word);
                 if ((numVowels < minNumVowels) || (numVowels > maxNumVowels))
                     continue;
             }
 
             if (testNumUniqueLetters) {
-                int numUniqueLetters = getNumUniqueLetters(word);
+                int numUniqueLetters = getNumUniqueLetters(lexicon, word);
                 if ((numUniqueLetters < minNumUniqueLetters) ||
                     (numUniqueLetters > maxNumUniqueLetters))
                     continue;
             }
 
             if (testPointValue) {
-                int pointValue = getPointValue(word);
+                int pointValue = getPointValue(lexicon, word);
                 if ((pointValue < minPointValue) ||
                     (pointValue > maxPointValue))
                     continue;
@@ -1462,14 +1564,19 @@ WordEngine::nonGraphSearch(const SearchSpec& spec) const
 //! Add a word with its definition.  Parse the definition and separate its
 //! parts of speech.
 //
+//! @param lexicon the name of the lexicon
 //! @param word the word
 //! @param definition the definition
 //---------------------------------------------------------------------------
 void
-WordEngine::addDefinition(const QString& word, const QString& definition)
+WordEngine::addDefinition(const QString& lexicon, const QString& word,
+                          const QString& definition)
 {
-    if (word.isEmpty() || definition.isEmpty())
+    if (word.isEmpty() || definition.isEmpty() ||
+        !lexiconData.contains(lexicon))
+    {
         return;
+    }
 
     QRegExp posRegex (QString("\\[(\\w+)"));
     QMultiMap<QString, QString> defMap;
@@ -1482,7 +1589,7 @@ WordEngine::addDefinition(const QString& word, const QString& definition)
         }
         defMap.insert(pos, def);
     }
-    definitions.insert(word, defMap);
+    lexiconData[lexicon].definitions.insert(word, defMap);
 }
 
 //---------------------------------------------------------------------------

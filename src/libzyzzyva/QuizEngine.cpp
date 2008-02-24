@@ -4,7 +4,7 @@
 // The engine for generating quizzes and keeping track of the user's
 // performance on each quiz.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -29,6 +29,8 @@
 #include "WordEngine.h"
 #include "Auxil.h"
 #include <cstdlib>
+
+#include "Hack.h"
 
 //---------------------------------------------------------------------------
 //  probabilityCmp
@@ -78,6 +80,7 @@ bool
 QuizEngine::newQuiz(const QuizSpec& spec)
 {
     QStringList questions;
+    QString lexicon = spec.getLexicon();
 
     if (spec.getQuizSourceType() == QuizSpec::RandomLettersSource) {
         LetterBag bag;
@@ -93,7 +96,6 @@ QuizEngine::newQuiz(const QuizSpec& spec)
     }
 
     else if (spec.getQuizSourceType() == QuizSpec::CardboxReadySource) {
-        QString lexicon = spec.getLexicon();
         QString quizType = Auxil::quizTypeToString(spec.getType());
         QuizDatabase* db = new QuizDatabase(lexicon, quizType);
         if (!db->isValid()) {
@@ -117,12 +119,12 @@ QuizEngine::newQuiz(const QuizSpec& spec)
         if ((type == QuizSpec::QuizAnagrams) ||
             (type == QuizSpec::QuizAnagramsWithHooks))
         {
-            questions = wordEngine->search(spec.getSearchSpec(), true);
+            questions = wordEngine->search(lexicon, spec.getSearchSpec(), true);
             questions = wordEngine->alphagrams(questions);
         }
 
         else if (type == QuizSpec::QuizHooks) {
-            questions = wordEngine->search(spec.getSearchSpec(), true);
+            questions = wordEngine->search(lexicon, spec.getSearchSpec(), true);
         }
 
         else if (type == QuizSpec::QuizWordListRecall) {
@@ -303,8 +305,12 @@ QuizEngine::respond(const QString& response)
         word = sections.at(1);
         QString backHooks = Auxil::getAlphagram(sections.at(2));
 
-        if ((frontHooks.toLower() != wordEngine->getFrontHookLetters(word))
-            || (backHooks.toLower() != wordEngine->getBackHookLetters(word)))
+        QString lexicon = Hack::LEXICON;
+        QString frontAnswers = wordEngine->getFrontHookLetters(lexicon, word);
+        QString backAnswers = wordEngine->getBackHookLetters(lexicon, word);
+
+        if ((frontHooks.toLower() != frontAnswers) ||
+            (backHooks.toLower() != backAnswers))
         {
             addQuestionIncorrect(response);
             return Incorrect;
@@ -449,9 +455,10 @@ QuizEngine::prepareQuestion()
 
     QStringList answers;
     QuizSpec::QuizType type = quizSpec.getType();
+    QString lexicon = Hack::LEXICON;
 
     if (type == QuizSpec::QuizWordListRecall)
-        answers = wordEngine->search(quizSpec.getSearchSpec(), true);
+        answers = wordEngine->search(lexicon, quizSpec.getSearchSpec(), true);
     else if (type == QuizSpec::QuizBuild) {
         int min = quizSpec.getResponseMinLength();
         int max = quizSpec.getResponseMaxLength();
@@ -468,7 +475,7 @@ QuizEngine::prepareQuestion()
             condition.type = SearchCondition::SubanagramMatch;
             condition.stringValue = question;
             spec.conditions.append(condition);
-            answers += wordEngine->search(spec, true);
+            answers += wordEngine->search(lexicon, spec, true);
         }
 
         if (max > qlen) {
@@ -482,7 +489,7 @@ QuizEngine::prepareQuestion()
             condition.type = SearchCondition::AnagramMatch;
             condition.stringValue = question + "*";
             spec.conditions.append(condition);
-            answers += wordEngine->search(spec, true);
+            answers += wordEngine->search(lexicon, spec, true);
         }
     }
     else if ((type == QuizSpec::QuizAnagrams) ||
@@ -493,7 +500,7 @@ QuizEngine::prepareQuestion()
         condition.stringValue = question;
         SearchSpec spec;
         spec.conditions.append(condition);
-        answers = wordEngine->search(spec, true);
+        answers = wordEngine->search(lexicon, spec, true);
     }
     else if (type == QuizSpec::QuizHooks) {
         SearchCondition condition;
@@ -501,12 +508,12 @@ QuizEngine::prepareQuestion()
         condition.stringValue = "?" + question;
         SearchSpec spec;
         spec.conditions.append(condition);
-        answers = wordEngine->search(spec, true);
+        answers = wordEngine->search(lexicon, spec, true);
 
         spec.conditions.clear();
         condition.stringValue = question + "?";
         spec.conditions.append(condition);
-        answers += wordEngine->search(spec, true);
+        answers += wordEngine->search(lexicon, spec, true);
     }
 
     correctResponses += answers.toSet();

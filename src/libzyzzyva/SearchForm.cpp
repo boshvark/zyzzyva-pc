@@ -3,7 +3,7 @@
 //
 // A form for searching for words, patterns, anagrams, etc.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -37,6 +37,8 @@
 #include <QHBoxLayout>
 #include <QSplitter>
 #include <QTimer>
+
+#include "Hack.h"
 
 using namespace Defs;
 
@@ -185,7 +187,9 @@ SearchForm::search()
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    QStringList wordList = wordEngine->search(specForm->getSearchSpec(), false);
+    QString lexicon = Hack::LEXICON;
+    QStringList wordList =
+        wordEngine->search(lexicon, specForm->getSearchSpec(), false);
 
     if (!wordList.empty()) {
 
@@ -241,7 +245,7 @@ SearchForm::search()
             WordTableModel::WordItem wordItem
                 (word, WordTableModel::WordNormal, wildcard);
 
-            int probOrder = wordEngine->getProbabilityOrder(wordUpper);
+            int probOrder = wordEngine->getProbabilityOrder(lexicon, wordUpper);
             wordItem.setProbabilityOrder(probOrder);
 
             wordItems.append(wordItem);

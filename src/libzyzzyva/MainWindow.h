@@ -3,7 +3,7 @@
 //
 // The main window for the word study application.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -102,8 +102,8 @@ class MainWindow : public QMainWindow
     private:
     void makeUserDirs();
     void renameLexicon(const QString& oldName, const QString& newName);
-    int  importText(const QString& file, const QString& lexiconName);
-    bool importDawg(const QString& file, const QString& lexiconName,
+    int  importText(const QString& lexiconName, const QString& file);
+    bool importDawg(const QString& lexiconName, const QString& file,
                     bool reverse = false, QString* errString = 0,
                     quint16* expectedChecksum = 0);
     QList<quint16> importChecksums(const QString& file);

@@ -3,7 +3,7 @@
 //
 // A dialog for displaying variations of a word, such as hooks, anagrams, etc.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,6 +34,8 @@
 #include <QLabel>
 #include <QList>
 #include <QVBoxLayout>
+
+#include "Hack.h"
 
 using namespace Defs;
 
@@ -279,7 +281,7 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
     }
 
 
-    if (!wordEngine->isAcceptable(word))
+    if (!wordEngine->isAcceptable(Hack::LEXICON, word))
         title += "*";
     setWindowTitle(title);
     wordLabel->setText(title);
@@ -360,7 +362,8 @@ WordVariationDialog::getWordItems(const QList<SearchSpec>& searchSpecs) const
     QMap<QString, QString> wordMap;
     QListIterator<SearchSpec> lit (searchSpecs);
     while (lit.hasNext()) {
-        QStringList wordList = wordEngine->search(lit.next(), false);
+        QStringList wordList = wordEngine->search(Hack::LEXICON, lit.next(),
+                                                  false);
         QStringListIterator wit (wordList);
         while (wit.hasNext()) {
             QString str = wit.next();

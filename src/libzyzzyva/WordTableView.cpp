@@ -3,7 +3,7 @@
 //
 // A class derived from QTableView, used to display word lists.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -46,6 +46,8 @@
 #include <QSignalMapper>
 #include <QTextStream>
 #include <QToolTip>
+
+#include "Hack.h"
 
 using namespace std;
 
@@ -455,7 +457,7 @@ WordTableView::getExportStrings(QModelIndex& index, const
         switch (attribute) {
             case WordAttrWord:
             column = WordTableModel::WORD_COLUMN;
-            break; 
+            break;
 
             case WordAttrDefinition:
             column = WordTableModel::DEFINITION_COLUMN;
@@ -617,7 +619,8 @@ WordTableView::hookToolTipText(const QString& word, const QString& hooks,
         if (!text.isEmpty())
             text += "\n\n";
 
-        text += hookWord + " : " + wordEngine->getDefinition(hookWord);
+        text += hookWord + " : " +
+            wordEngine->getDefinition(Hack::LEXICON, hookWord);
     }
 
     return text;

@@ -3,7 +3,7 @@
 //
 // The main window for the word study application.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -60,6 +60,8 @@
 #include <QToolBar>
 
 #include "LetterBag.h"
+
+#include "Hack.h"
 
 MainWindow* MainWindow::instance = 0;
 
@@ -478,13 +480,13 @@ MainWindow::tryAutoImport(QSplashScreen* splash)
 
         lexiconError = QString();
 
-        importDawg(importFile, lexicon, false, &lexiconError,
+        importDawg(lexicon, importFile, false, &lexiconError,
                    &expectedForwardChecksum);
-        importDawg(reverseImportFile, lexicon, true, &lexiconError,
+        importDawg(lexicon, reverseImportFile, true, &lexiconError,
                    &expectedReverseChecksum);
     }
     else
-        importText(importFile, lexicon);
+        importText(lexicon, importFile);
 
     if (splash) {
         splash->showMessage("Loading stems...",
@@ -508,7 +510,7 @@ MainWindow::importInteractive()
 
     if (file.isNull())
         return;
-    int imported = importText(file, "Custom");
+    int imported = importText("Custom", file);
     if (imported < 0)
         return;
     QString caption = IMPORT_COMPLETE_TITLE;
@@ -791,7 +793,8 @@ MainWindow::viewVariation(int variation)
 void
 MainWindow::rebuildDatabaseRequested()
 {
-    QString lexicon = wordEngine->getLexiconName();
+    //QString lexicon = wordEngine->getLexiconName();
+    QString lexicon = Hack::LEXICON;
     QString caption = "Rebuild Database";
     QString message = "You have requested that Zyzzyva rebuild its database "
         "for the current lexicon (" + lexicon + ").  This may take several "
@@ -823,12 +826,13 @@ MainWindow::rescheduleCardboxRequested()
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
         QString quizType = dialog->getQuizType();
-        QString lexicon = wordEngine->getLexiconName();
+        //QString lexicon = wordEngine->getLexiconName();
+        QString lexicon = Hack::LEXICON;
 
         QStringList words;
         if (!dialog->getRescheduleAll()) {
             SearchSpec searchSpec = dialog->getSearchSpec();
-            words = wordEngine->search(searchSpec, true);
+            words = wordEngine->search(lexicon, searchSpec, true);
             if (words.isEmpty())
                 return;
         }
@@ -1063,7 +1067,8 @@ MainWindow::getLexiconPrefix(const QString& lexicon)
 QString
 MainWindow::getDatabaseFilename()
 {
-    QString lexicon = wordEngine->getLexiconName();
+    //QString lexicon = wordEngine->getLexiconName();
+    QString lexicon = Hack::LEXICON;
     if (lexicon != "Custom") {
         QString lexiconPrefix = getLexiconPrefix(lexicon);
         if (lexiconPrefix.isEmpty())
@@ -1085,7 +1090,8 @@ void
 MainWindow::connectToDatabase()
 {
     QString dbFilename = getDatabaseFilename();
-    QString lexicon = wordEngine->getLexiconName();
+    //QString lexicon = wordEngine->getLexiconName();
+    QString lexicon = Hack::LEXICON;
 
     bool createDatabase = false;
     QFile dbFile (dbFilename);
@@ -1167,7 +1173,7 @@ MainWindow::connectToDatabase()
     bool useDb = !createDatabase || rebuildDatabase();
     QString dbError;
     if (useDb) {
-        bool ok = wordEngine->connectToDatabase(dbFilename, &dbError);
+        bool ok = wordEngine->connectToDatabase(lexicon, dbFilename, &dbError);
         if (!ok) {
             QString caption = "Database Connection Error";
             QString message = "Unable to connect to database:\n" + dbError;
@@ -1177,7 +1183,7 @@ MainWindow::connectToDatabase()
         }
     }
 
-    setNumWords(wordEngine->getNumWords());
+    setNumWords(wordEngine->getNumWords(lexicon));
 }
 
 //---------------------------------------------------------------------------
@@ -1192,7 +1198,8 @@ bool
 MainWindow::rebuildDatabase()
 {
     QString dbFilename = getDatabaseFilename();
-    QString lexicon = wordEngine->getLexiconName();
+    //QString lexicon = wordEngine->getLexiconName();
+    QString lexicon = Hack::LEXICON;
 
     QString definitionFilename;
     if (lexicon == "Custom") {
@@ -1208,7 +1215,7 @@ MainWindow::rebuildDatabase()
     QString path = fileInfo.path();
     QString tmpDbFilename = path + "/orig-" + file;
 
-    wordEngine->disconnectFromDatabase();
+    wordEngine->disconnectFromDatabase(lexicon);
     QFile dbFile (dbFilename);
     QFile tmpDbFile (tmpDbFilename);
 
@@ -1371,7 +1378,8 @@ MainWindow::closeEvent(QCloseEvent* event)
 void
 MainWindow::setNumWords(int num)
 {
-    QString label = wordEngine->getLexiconName();
+    //QString label = wordEngine->getLexiconName();
+    QString label = Hack::LEXICON;
 
     if (label.isEmpty())
         label = "No lexicon loaded";
@@ -1583,7 +1591,8 @@ MainWindow::newQuizFromWordFile(const QString& filename)
 
     QuizSpec quizSpec;
     quizSpec.setType(QuizSpec::QuizAnagrams);
-    quizSpec.setLexicon(wordEngine->getLexiconName());
+    //quizSpec.setLexicon(wordEngine->getLexiconName());
+    quizSpec.setLexicon(Hack::LEXICON);
     quizSpec.setSearchSpec(searchSpec);
 
     newQuizForm(quizSpec);
@@ -1594,18 +1603,18 @@ MainWindow::newQuizFromWordFile(const QString& filename)
 //
 //! Import words from a DAWG file.
 //
-//! @param file the file to import words from
 //! @param lexiconName the name of the lexicon
+//! @param file the file to import words from
 //! @param reverse whether the DAWG contains reversed words
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-MainWindow::importDawg(const QString& file, const QString& lexiconName, bool
+MainWindow::importDawg(const QString& lexiconName, const QString& file, bool
                        reverse, QString* errString, quint16*
                        expectedChecksum)
 {
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    bool ok = wordEngine->importDawgFile(file, lexiconName, reverse,
+    bool ok = wordEngine->importDawgFile(lexiconName, file, reverse,
                                          errString, expectedChecksum);
     QApplication::restoreOverrideCursor();
 
@@ -1716,16 +1725,16 @@ MainWindow::renameLexicon(const QString& oldName, const QString& newName)
 //
 //! Import words from a text file.
 //
-//! @param file the file to import words from
 //! @param lexiconName the name of the lexicon
+//! @param file the file to import words from
 //! @return the number of imported words
 //---------------------------------------------------------------------------
 int
-MainWindow::importText(const QString& file, const QString& lexiconName)
+MainWindow::importText(const QString& lexiconName, const QString& file)
 {
     QString err;
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    int imported = wordEngine->importTextFile(file, lexiconName, true);
+    int imported = wordEngine->importTextFile(lexiconName, file, true);
     QApplication::restoreOverrideCursor();
 
     setNumWords(imported);
@@ -1753,7 +1762,7 @@ MainWindow::importStems()
     QStringList::iterator it;
     int totalImported = 0;
     for (it = stemFiles.begin(); it != stemFiles.end(); ++it) {
-        int imported = wordEngine->importStems(*it, &err);
+        int imported = wordEngine->importStems(Hack::LEXICON, *it, &err);
         totalImported += imported;
     }
     QApplication::restoreOverrideCursor();

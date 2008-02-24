@@ -3,7 +3,7 @@
 //
 // A class for creating a database in the background.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -72,7 +72,7 @@ CreateDatabaseThread::runPrivate()
         // - One for reading each word's definitions
         // - Two for inserting each word's values into the database
         // - Two total for creating indexes
-        int numWords = wordEngine->getNumWords();
+        int numWords = wordEngine->getNumWords(lexiconName);
         int baseProgress = numWords * 5 / 99;
         numSteps = numWords * 5 + baseProgress + 1;
         emit steps(numSteps);
@@ -173,7 +173,8 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
         searchSpec.conditions[0].maxValue = length;
 
         // Do a word graph search because we're still building the database!
-        QStringList words = wordEngine->wordGraphSearch(searchSpec);
+        QStringList words = wordEngine->wordGraphSearch(lexiconName,
+                                                        searchSpec);
 
         query.prepare("INSERT INTO words (word, length, combinations, "
                       "alphagram, num_unique_letters, num_vowels, "
@@ -203,9 +204,9 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
             QString front, back;
             QString letter;
             foreach (letter, letters) {
-                if (wordEngine->isAcceptable(letter + word))
+                if (wordEngine->isAcceptable(lexiconName, letter + word))
                     front += letter;
-                if (wordEngine->isAcceptable(word + letter))
+                if (wordEngine->isAcceptable(lexiconName, word + letter))
                     back += letter;
             }
 

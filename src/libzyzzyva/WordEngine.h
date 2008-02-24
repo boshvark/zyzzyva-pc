@@ -3,7 +3,7 @@
 //
 // A class to handle the loading and searching of words.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -60,36 +60,62 @@ class WordEngine : public QObject
         QString definition;
     };
 
+    class LexiconData {
+        public:
+        LexiconData() : graph(0), db(0) { }
+
+        public:
+        QString name;
+        QMap<QString, QMultiMap<QString, QString> > definitions;
+        QMap<int, QStringList> stems;
+        QMap<QString, int> numAnagramsMap;
+        QMap<int, QSet<QString> > stemAlphagrams;
+        mutable QMap<QString, WordInfo> wordCache;
+        WordGraph* graph;
+        QSqlDatabase* db;
+        QString dbConnectionName;
+    };
+
     public:
     WordEngine(QObject* parent = 0)
-        : QObject(parent), db(0) { }
+        : QObject(parent) { }
     ~WordEngine() { }
 
-    void clearCache() const;
-    bool connectToDatabase(const QString& filename, QString* errString = 0);
-    bool disconnectFromDatabase();
-    int importTextFile(const QString& filename, const QString& lexName, bool
+    bool connectToDatabase(const QString& lexicon, const QString& filename,
+                           QString* errString = 0);
+    bool disconnectFromDatabase(const QString& lexicon);
+    int importTextFile(const QString& lexicon, const QString& filename, bool
                        loadDefinitions = true, QString* errString = 0);
-    bool importDawgFile(const QString& filename, const QString& lexName, bool
+    bool importDawgFile(const QString& lexicon, const QString& filename, bool
                         reverse = false, QString* errString = 0, quint16*
                         expectedChecksum = 0);
-    int importStems(const QString& filename, QString* errString = 0);
-    bool isAcceptable(const QString& word) const;
-    QStringList search(const SearchSpec& spec, bool allCaps) const;
-    QStringList wordGraphSearch(const SearchSpec& spec) const;
+    int importStems(const QString& lexicon, const QString& filename,
+                    QString* errString = 0);
+    bool isAcceptable(const QString& lexicon, const QString& word) const;
+    QStringList search(const QString& lexicon, const SearchSpec& spec,
+                       bool allCaps) const;
+    QStringList wordGraphSearch(const QString& lexicon, const SearchSpec&
+                                spec) const;
     QStringList alphagrams(const QStringList& strList) const;
-    int getNumWords() const;
-    WordInfo getWordInfo(const QString& word) const;
-    QString getDefinition(const QString& word, bool replaceLinks = true) const;
-    QString getLexiconName() const { return lexiconName; }
-    QString getFrontHookLetters(const QString& word) const;
-    QString getBackHookLetters(const QString& word) const;
-    int getProbabilityOrder(const QString& word) const;
-    int getMinProbabilityOrder(const QString& word) const;
-    int getMaxProbabilityOrder(const QString& word) const;
-    int getNumVowels(const QString& word) const;
-    int getNumUniqueLetters(const QString& word) const;
-    int getPointValue(const QString& word) const;
+    int getNumWords(const QString& lexicon) const;
+    WordInfo getWordInfo(const QString& lexicon, const QString& word) const;
+    QString getDefinition(const QString& lexicon, const QString& word,
+                          bool replaceLinks = true) const;
+    QString getFrontHookLetters(const QString& lexicon, const QString& word)
+        const;
+    QString getBackHookLetters(const QString& lexicon, const QString& word)
+        const;
+    int getProbabilityOrder(const QString& lexicon, const QString& word)
+        const;
+    int getMinProbabilityOrder(const QString& lexicon, const QString& word)
+        const;
+    int getMaxProbabilityOrder(const QString& lexicon, const QString& word)
+        const;
+    // XXX: Lexicon parameter doesn't really make sense here, but it is
+    // retained to use word info caching
+    int getNumVowels(const QString& lexicon, const QString& word) const;
+    int getNumUniqueLetters(const QString& lexicon, const QString& word) const;
+    int getPointValue(const QString& lexicon, const QString& word) const;
 
     private:
     enum ConditionPhase {
@@ -100,30 +126,27 @@ class WordEngine : public QObject
     };
 
     private:
-    void addToCache(const QStringList& words) const;
-    bool matchesConditions(const QString& word, const QList<SearchCondition>&
-                           conditions) const;
-    bool isSetMember(const QString& word, SearchSet ss) const;
-    int getNumAnagrams(const QString& word) const;
-    QStringList nonGraphSearch(const SearchSpec& spec) const;
-    void addDefinition(const QString& word, const QString& definition);
-    QStringList databaseSearch(const SearchSpec& optimizedSpec, const
-                               QStringList* wordList = 0) const;
-    QStringList applyPostConditions(const SearchSpec& optimizedSpec, const
-                                    QStringList& wordList) const;
+    void clearCache(const QString& lexicon) const;
+    void addToCache(const QString& lexicon, const QStringList& words) const;
+    bool matchesConditions(const QString& lexicon, const QString& word,
+                           const QList<SearchCondition>& conditions) const;
+    bool isSetMember(const QString& lexicon, const QString& word,
+                     SearchSet ss) const;
+    int getNumAnagrams(const QString& lexicon, const QString& word) const;
+    QStringList nonGraphSearch(const QString& lexicon,
+                               const SearchSpec& spec) const;
+    void addDefinition(const QString& lexicon, const QString& word,
+                       const QString& definition);
+    QStringList databaseSearch(const QString& lexicon, const SearchSpec&
+                               optimizedSpec, const QStringList* wordList = 0)
+                               const;
+    QStringList applyPostConditions(const QString& lexicon, const SearchSpec&
+                                    optimizedSpec, const QStringList&
+                                    wordList) const;
     ConditionPhase getConditionPhase(const SearchCondition& condition) const;
 
     private:
-    QString lexiconName;
-    WordGraph graph;
-    QMap<QString, QMultiMap<QString, QString> > definitions;
-    QMap<int, QStringList> stems;
-    QMap<QString, int> numAnagramsMap;
-    QMap<int, QSet<QString> > stemAlphagrams;
-    mutable QMap<QString, WordInfo> wordCache;
-
-    QSqlDatabase* db;
-    QString dbConnectionName;
+    QMap<QString, LexiconData> lexiconData;
 };
 
 #endif // ZYZZYVA_WORD_ENGINE_H

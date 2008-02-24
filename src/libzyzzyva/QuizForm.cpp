@@ -3,7 +3,7 @@
 //
 // A form for quizzing the user.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -51,6 +51,8 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
+
+#include "Hack.h"
 
 using namespace Defs;
 
@@ -817,11 +819,13 @@ QuizForm::checkResponseClicked()
         while (it.hasNext()) {
             QString word = it.next();
             QString response = word;
+            QString lexicon = Hack::LEXICON;
 
             if (quizType == QuizSpec::QuizAnagramsWithHooks) {
-                response = wordEngine->getFrontHookLetters(word).toUpper()
+                response =
+                    wordEngine->getFrontHookLetters(lexicon, word).toUpper()
                     + ":" + word + ":"
-                    + wordEngine->getBackHookLetters(word).toUpper();
+                    + wordEngine->getBackHookLetters(lexicon, word).toUpper();
             }
 
             quizEngine->respond(response);

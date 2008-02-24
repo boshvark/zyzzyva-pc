@@ -3,7 +3,7 @@
 //
 // A class for testing the WordEngine class.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -47,6 +47,8 @@ class WordEngineTest : public QObject
 
 };
 
+QString TEST_LEXICON = "OWL2-LWL";
+
 //---------------------------------------------------------------------------
 //  tryImport
 //
@@ -69,9 +71,9 @@ WordEngineTest::tryImport()
     if (!ok)
         return;
 
-    engine.importStems(Auxil::getWordsDir() +
+    engine.importStems(TEST_LEXICON, Auxil::getWordsDir() +
                        "/north-american/6-letter-stems.txt");
-    engine.importStems(Auxil::getWordsDir() +
+    engine.importStems(TEST_LEXICON, Auxil::getWordsDir() +
                        "/north-american/7-letter-stems.txt");
 
     MainSettings::setLetterDistribution("A:9 B:2 C:2 D:4 E:12 F:2 G:3 H:2 "
@@ -156,7 +158,7 @@ WordEngineTest::testSearch()
     qSort(expectedResults);
 
     // Do the search and test the results
-    QStringList foundResults = engine.search(spec, true);
+    QStringList foundResults = engine.search(TEST_LEXICON, spec, true);
     qSort(foundResults);
 
     QCOMPARE(foundResults, expectedResults);

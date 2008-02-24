@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -38,6 +38,8 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include <QVBoxLayout>
+
+#include "Hack.h"
 
 const QString DIALOG_CAPTION = "New Quiz";
 const QString TIMER_PER_QUESTION = "per question";
@@ -278,7 +280,8 @@ NewQuizDialog::getQuizSpec()
     QuizSpec::QuizType quizType =
         Auxil::stringToQuizType(typeCombo->currentText());
 
-    quizSpec.setLexicon(wordEngine->getLexiconName());
+    //quizSpec.setLexicon(wordEngine->getLexiconName());
+    quizSpec.setLexicon(Hack::LEXICON);
     quizSpec.setType(quizType);
     quizSpec.setMethod(quizMethod);
     quizSpec.setQuestionOrder(
@@ -528,7 +531,8 @@ NewQuizDialog::loadQuiz()
     }
 
     QString quizLexicon = spec.getLexicon();
-    QString currentLexicon = wordEngine->getLexiconName();
+    //QString currentLexicon = wordEngine->getLexiconName();
+    QString currentLexicon = Hack::LEXICON;
 
     if (quizLexicon != currentLexicon) {
         if (quizLexicon.isEmpty())

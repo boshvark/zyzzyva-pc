@@ -3,7 +3,7 @@
 //
 // A form for querying and editing the contents of the cardbox system.
 //
-// Copyright 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -29,6 +29,8 @@
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
+
+#include "Hack.h"
 
 using namespace Defs;
 
@@ -142,7 +144,7 @@ CardboxForm::refreshClicked()
     // Refresh cardbox count list
     if (cardboxCountModel) {
         QString queryStr = "SELECT cardbox, count(*) FROM questions "
-            "WHERE cardbox NOT NULL GROUP BY cardbox"; 
+            "WHERE cardbox NOT NULL GROUP BY cardbox";
         cardboxCountModel->setQuery(queryStr, *sqlDb);
         cardboxCountModel->setHeaderData(0, Qt::Horizontal, "Cardbox");
         cardboxCountModel->setHeaderData(1, Qt::Horizontal, "Count");
@@ -196,7 +198,9 @@ CardboxForm::refreshClicked()
 void
 CardboxForm::quizSpecChanged()
 {
-    QString lexicon = wordEngine->getLexiconName();
+    // FIXME: get default lexicon from settings
+    //QString lexicon = wordEngine->getLexiconName();
+    QString lexicon = Hack::LEXICON;
     QString quizType = "Anagrams";
 
     delete quizDatabase;

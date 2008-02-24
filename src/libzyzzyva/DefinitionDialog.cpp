@@ -3,7 +3,7 @@
 //
 // The dialog for word definitions.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -31,6 +31,8 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
+#include "Hack.h"
+
 const QString DIALOG_CAPTION_PREFIX = "Define : ";
 
 using namespace Defs;
@@ -54,7 +56,7 @@ DefinitionDialog::DefinitionDialog(WordEngine* e, const QString& word,
     mainVlay->setSpacing(SPACING);
     Q_CHECK_PTR(mainVlay);
 
-    bool acceptable = engine->isAcceptable(word);
+    bool acceptable = engine->isAcceptable(Hack::LEXICON, word);
     QString wordAcceptable = acceptable ? word : word + "*";
 
     DefinitionBox* defBox = new DefinitionBox;
@@ -78,7 +80,7 @@ DefinitionDialog::DefinitionDialog(WordEngine* e, const QString& word,
 
     setWindowTitle(DIALOG_CAPTION_PREFIX + wordAcceptable);
 
-    QString definition = engine->getDefinition(word);
+    QString definition = engine->getDefinition(Hack::LEXICON, word);
     if (definition.isEmpty()) {
         definition = acceptable ? EMPTY_DEFINITION :
             QString("<font color=\"red\">Unacceptable</font>");

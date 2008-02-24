@@ -3,7 +3,7 @@
 //
 // A model for representing word lists.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -27,6 +27,8 @@
 #include "MainSettings.h"
 #include "Auxil.h"
 #include <QBrush>
+
+#include "Hack.h"
 
 using namespace std;
 
@@ -366,7 +368,8 @@ WordTableModel::data(const QModelIndex& index, int role) const
                     }
 
                     if (!wordItem.probabilityOrderIsValid()) {
-                        int p = wordEngine->getProbabilityOrder(wordUpper);
+                        int p = wordEngine->getProbabilityOrder(Hack::LEXICON,
+                                                                wordUpper);
                         if (p)
                             wordItem.setProbabilityOrder(p);
                     }
@@ -380,8 +383,11 @@ WordTableModel::data(const QModelIndex& index, int role) const
                     return QString();
                 }
                 else if (!wordItem.hooksAreValid()) {
-                    wordItem.setHooks(wordEngine->getFrontHookLetters(wordUpper),
-                                      wordEngine->getBackHookLetters(wordUpper));
+                    wordItem.setHooks(
+                        wordEngine->getFrontHookLetters(Hack::LEXICON,
+                                                        wordUpper),
+                        wordEngine->getBackHookLetters(Hack::LEXICON,
+                                                       wordUpper));
                 }
                 return wordItem.getFrontHooks();
 
@@ -390,8 +396,11 @@ WordTableModel::data(const QModelIndex& index, int role) const
                     return QString();
                 }
                 else if (!wordItem.hooksAreValid()) {
-                    wordItem.setHooks(wordEngine->getFrontHookLetters(wordUpper),
-                                      wordEngine->getBackHookLetters(wordUpper));
+                    wordItem.setHooks(
+                        wordEngine->getFrontHookLetters(Hack::LEXICON,
+                                                        wordUpper),
+                        wordEngine->getBackHookLetters(Hack::LEXICON,
+                                                       wordUpper));
                 }
                 return wordItem.getBackHooks();
 
@@ -419,7 +428,8 @@ WordTableModel::data(const QModelIndex& index, int role) const
 
                 case DEFINITION_COLUMN:
                 return MainSettings::getWordListShowDefinitions() ?
-                    wordEngine->getDefinition(wordUpper) : QString();
+                    wordEngine->getDefinition(Hack::LEXICON, wordUpper) :
+                    QString();
 
                 default:
                 return word;
@@ -561,8 +571,10 @@ WordTableModel::setData(const QModelIndex& index, const QVariant& value, int
             word.setWord(value.toString());
             if (MainSettings::getWordListShowHooks()) {
                 word.setHooks(
-                    wordEngine->getFrontHookLetters(word.getWord().toUpper()),
-                    wordEngine->getBackHookLetters(word.getWord().toUpper()));
+                    wordEngine->getFrontHookLetters(Hack::LEXICON,
+                                                    word.getWord().toUpper()),
+                    wordEngine->getBackHookLetters(Hack::LEXICON,
+                                                   word.getWord().toUpper()));
             }
             if (MainSettings::getWordListShowHookParents()) {
                 word.setParentHooks(
@@ -682,7 +694,8 @@ WordTableModel::markAlternates()
 bool
 WordTableModel::isFrontHook(const QString& word) const
 {
-    return wordEngine->isAcceptable(word.right(word.length() - 1));
+    return wordEngine->isAcceptable(Hack::LEXICON,
+                                    word.right(word.length() - 1));
 }
 
 //---------------------------------------------------------------------------
@@ -697,7 +710,8 @@ WordTableModel::isFrontHook(const QString& word) const
 bool
 WordTableModel::isBackHook(const QString& word) const
 {
-    return wordEngine->isAcceptable(word.left(word.length() - 1));
+    return wordEngine->isAcceptable(Hack::LEXICON,
+                                    word.left(word.length() - 1));
 }
 
 //---------------------------------------------------------------------------

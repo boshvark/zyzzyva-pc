@@ -4,7 +4,7 @@
 // A full-screen dialog for Word Judge functionality, in which the user can
 // very easily judge the validity of one or more words.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -38,6 +38,8 @@
 #include <QTextCursor>
 #include <QTextStream>
 #include <QVBoxLayout>
+
+#include "Hack.h"
 
 const int FORM_FONT_PIXEL_SIZE = 55;
 const int TITLE_FONT_PIXEL_SIZE = 40;
@@ -156,7 +158,8 @@ JudgeDialog::JudgeDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     titleHlay->addStretch(1);
 
-    QString lexicon = engine->getLexiconName();
+    //QString lexicon = engine->getLexiconName();
+    QString lexicon = Hack::LEXICON;
     QDate date = Auxil::lexiconToDate(lexicon);
     QString dateStr;
     if (date.isValid())
@@ -294,7 +297,7 @@ JudgeDialog::judgeWord()
     QStringList::iterator it;
     QString wordStr;
     for (it = words.begin(); it != words.end(); ++it) {
-        bool wordAcceptable = engine->isAcceptable(*it);
+        bool wordAcceptable = engine->isAcceptable(Hack::LEXICON, *it);
 
         if (wordAcceptable)
             acceptableWords.append(*it);
@@ -346,7 +349,8 @@ JudgeDialog::judgeWord()
         return;
 
     QString logDirName = MainSettings::getUserDataDir() + "/judge/" +
-        engine->getLexiconName();
+        //engine->getLexiconName();
+        Hack::LEXICON;
     QDir logDir (logDirName);
 
     if (!logDir.exists() && !logDir.mkdir(logDirName)) {
