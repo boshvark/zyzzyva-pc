@@ -3,7 +3,7 @@
 //
 // A class to represent a quiz specification.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -325,7 +325,7 @@ QuizSpec::fromXmlFile(QFile& file, QString* errStr)
         if (errStr) {
             *errStr = "Error in quiz file, line " +
                       QString::number(errorLine) + ", column " +
-                      QString::number(errorColumn) + ": " + 
+                      QString::number(errorColumn) + ": " +
                       errorMsg;
         }
         return false;

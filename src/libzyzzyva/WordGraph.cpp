@@ -3,7 +3,7 @@
 //
 // A Directed Acyclic Word Graph class.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -240,7 +240,7 @@ WordGraph::search(const SearchSpec& spec) const
             case SearchCondition::PatternMatch:
             case SearchCondition::AnagramMatch:
             case SearchCondition::SubanagramMatch:
-            matchConditions.append(condition); 
+            matchConditions.append(condition);
             if (condition.stringValue.contains("?") ||
                 condition.stringValue.contains("["))
                 ++numWildcardConditions;
@@ -398,7 +398,7 @@ WordGraph::search(const SearchSpec& spec) const
                         else {
                             if (*edge & M_END_OF_NODE)
                                 break;
-                            else 
+                            else
                                 continue;
                         }
 
@@ -852,7 +852,7 @@ WordGraph::searchOld(const SearchSpec& spec) const
             case SearchCondition::PatternMatch:
             case SearchCondition::AnagramMatch:
             case SearchCondition::SubanagramMatch:
-            matchConditions.append(condition); 
+            matchConditions.append(condition);
             if (condition.stringValue.contains("?") ||
                 condition.stringValue.contains("["))
                 ++numWildcardConditions;
