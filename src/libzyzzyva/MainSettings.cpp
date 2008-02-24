@@ -134,6 +134,12 @@ MainSettings::readSettings()
             instance->defaultLexicon = DEFAULT_DEFAULT_LEXICON;
     }
 
+    instance->autoImportLexicons
+        = settings.value(SETTINGS_IMPORT_LEXICONS).toStringList();
+
+    // Hack:: remove this when settings are actually saved
+    instance->autoImportLexicons << "OWL2+LWL" << "OWL+LWL" << "CSW";
+
     // Kludge to update the names of renamed lexicons
     if (instance->defaultLexicon == "OWL")
         instance->defaultLexicon = "OWL+LWL";
