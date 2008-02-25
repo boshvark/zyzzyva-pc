@@ -56,6 +56,8 @@ class MainWindow : public QMainWindow
     void fileOpenRequested(const QString& filename);
     void processArguments(const QStringList& args);
     void tryAutoImport();
+    void tryConnectToDatabases();
+    void processDatabaseErrors();
     void importInteractive();
     void newQuizFormInteractive();
     void newQuizFormInteractive(const QuizSpec& quizSpec);
@@ -86,12 +88,13 @@ class MainWindow : public QMainWindow
 
     public:
     QString getLexiconPrefix(const QString& lexicon);
-    QString getDatabaseFilename();
-    void connectToDatabase();
+    QString getDatabaseFilename(const QString& lexicon);
+    int tryConnectToDatabase(const QString& lexicon);
+    bool connectToDatabase(const QString& lexicon);
     // FIXME: these probably belong with WordTableView::addToCardbox in a
     // separate class for manipulating quiz databases.  Hm, how about the
     // QuizDatabase class?
-    bool rebuildDatabase();
+    bool rebuildDatabase(const QString& lexicon, bool promptSuccess = true);
     int rescheduleCardbox(const QStringList& words, const QString& lexicon,
                           const QString& quizType, bool shiftQuestions,
                           int backlog = 0) const;
@@ -118,6 +121,15 @@ class MainWindow : public QMainWindow
     void newQuizFromWordFile(const QString& filename);
 
     private:
+    enum LexiconDatabaseError {
+        DbNoError = 0,
+        DbOutOfDate,
+        DbOpenError,
+        DbConnectionError,
+        DbDoesNotExist
+    };
+
+    private:
     QSplashScreen* splashScreen;
     WordEngine*  wordEngine;
     QTabWidget*  tabStack;
@@ -132,6 +144,7 @@ class MainWindow : public QMainWindow
     HelpDialog*     helpDialog;
 
     QString lexiconError;
+    QMap<QString, int> dbErrors;
 
     static MainWindow*  instance;
 };

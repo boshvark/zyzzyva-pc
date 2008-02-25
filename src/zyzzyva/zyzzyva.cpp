@@ -3,7 +3,7 @@
 //
 // The main Zyzzyva program.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -46,24 +46,12 @@ int main(int argc, char** argv)
 
     MainWindow* window = new MainWindow(0, splash);
 
-    // Connect to database if it exists
-    QString dbFilename = window->getDatabaseFilename();
-    bool dbExists = QFile(dbFilename).exists();
-    if (dbExists) {
-        splash->showMessage("Connecting to database...",
-                            Qt::AlignHCenter | Qt::AlignBottom);
-        qApp->processEvents();
-        window->connectToDatabase();
-    }
-
     window->show();
     splash->finish(window);
     delete splash;
 
-    // Try to create database if it does not exist
-    if (!dbExists) {
-        window->connectToDatabase();
-    }
+    // Now that the splash screen is gone, process any database errors
+    window->processDatabaseErrors();
 
     // Handle command-line arguments
     if (argc > 1) {

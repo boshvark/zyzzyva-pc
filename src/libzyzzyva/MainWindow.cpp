@@ -354,6 +354,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     setWindowIcon(QIcon(":/zyzzyva-32x32"));
 
     tryAutoImport();
+    tryConnectToDatabases();
     setNumWords(0);
 
     if (!instance)
@@ -453,6 +454,101 @@ MainWindow::tryAutoImport()
 
     setSplashMessage("Loading stems...");
     importStems();
+}
+
+//---------------------------------------------------------------------------
+//  tryConnectToDatabases
+//
+//! Try to connect to databases, but do not prompt the user to create ones
+//! that do not exist or otherwise cannot be opened.
+//---------------------------------------------------------------------------
+void
+MainWindow::tryConnectToDatabases()
+{
+    QStringList lexicons = MainSettings::getAutoImportLexicons();
+    QStringListIterator it (lexicons);
+    while (it.hasNext()) {
+        const QString& lexicon = it.next();
+        int error = tryConnectToDatabase(lexicon);
+        if (error != DbNoError)
+            dbErrors.insert(lexicon, error);
+    }
+}
+
+//---------------------------------------------------------------------------
+//  processDatabaseErrors
+//
+//! Try to connect to databases, but do not prompt the user to create ones
+//! that do not exist.
+//---------------------------------------------------------------------------
+void
+MainWindow::processDatabaseErrors()
+{
+    if (dbErrors.isEmpty())
+        return;
+
+    QString caption = "Build databases?";
+    QString message =
+        "For certain searches and quizzes to work correctly, Zyzzyva "
+        "must have a database of information about each lexicon in use.  "
+        "Creating or updating these databases make take several minutes, "
+        "but it will only need to be done once.  Here are the steps that "
+        "Zyzzyva will need to take:\n\n%1\n"
+        "Perform these actions now?";
+
+    QMap<int, QString> errorActions;
+    errorActions.insert(DbOutOfDate, "Database needs to be updated");
+    errorActions.insert(DbOpenError, "Database needs to be rebuilt");
+    errorActions.insert(DbDoesNotExist, "Database needs to be created");
+
+    QString actionText;
+    QMapIterator<QString, int> it (dbErrors);
+    while (it.hasNext()) {
+        it.next();
+        const QString& lexicon = it.key();
+        int error = it.value();
+        actionText += lexicon + " - " + errorActions.value(error) + "\n";
+    }
+
+    message = Auxil::dialogWordWrap(message.arg(actionText));
+
+    int code = QMessageBox::question(this, caption, message,
+                                     QMessageBox::Yes | QMessageBox::No,
+                                     QMessageBox::Yes);
+    if (code != QMessageBox::Yes)
+        return;
+
+    QStringList successes;
+    QStringList failures;
+    it.toFront();
+    while (it.hasNext()) {
+        it.next();
+        const QString& lexicon = it.key();
+        bool ok = rebuildDatabase(lexicon, false);
+        // FIXME: do something if DB creation fails!
+        if (!ok) {
+            failures.append(lexicon);
+            continue;
+        }
+
+        ok = connectToDatabase(lexicon);
+        if (ok)
+            successes.append(lexicon);
+        else
+            failures.append(lexicon);
+    }
+
+    QString resultMessage;
+    if (!successes.isEmpty()) {
+        resultMessage += "These databases were successfully created: " +
+            successes.join(", ") + ".";
+    }
+    if (!failures.isEmpty()) {
+        resultMessage += "These databases encountered errors: " +
+            failures.join(", ") + ".";
+    }
+
+    QMessageBox::information(this, "Database Creation Result", resultMessage);
 }
 
 //---------------------------------------------------------------------------
@@ -751,7 +847,6 @@ MainWindow::viewVariation(int variation)
 void
 MainWindow::rebuildDatabaseRequested()
 {
-    //QString lexicon = wordEngine->getLexiconName();
     QString lexicon = Hack::LEXICON;
     QString caption = "Rebuild Database";
     QString message = "You have requested that Zyzzyva rebuild its database "
@@ -766,8 +861,8 @@ MainWindow::rebuildDatabaseRequested()
         return;
     }
 
-    rebuildDatabase();
-    connectToDatabase();
+    rebuildDatabase(lexicon);
+    connectToDatabase(lexicon);
 }
 
 //---------------------------------------------------------------------------
@@ -1016,17 +1111,16 @@ MainWindow::getLexiconPrefix(const QString& lexicon)
 //---------------------------------------------------------------------------
 //  getDatabaseFilename
 //
-//! Return the database filename that should be used for the current lexicon.
-//! Also create the db directory if it doesn't already exist.  FIXME: That
-//! should be done somewhere else!
+//! Return the database filename that should be used for a lexicon.  Also
+//! create the db directory if it doesn't already exist.  FIXME: That should
+//! be done somewhere else!
 //
+//! @param lexicon the lexicon name
 //! @return the database filename, or empty string if error
 //---------------------------------------------------------------------------
 QString
-MainWindow::getDatabaseFilename()
+MainWindow::getDatabaseFilename(const QString& lexicon)
 {
-    //QString lexicon = wordEngine->getLexiconName();
-    QString lexicon = Hack::LEXICON;
     if (lexicon != "Custom") {
         QString lexiconPrefix = getLexiconPrefix(lexicon);
         if (lexiconPrefix.isEmpty())
@@ -1040,28 +1134,28 @@ MainWindow::getDatabaseFilename()
 }
 
 //---------------------------------------------------------------------------
-//  connectToDatabase
+//  tryConnectToDatabase
 //
-//! Connect to the database.  Create the database if necessary.
+//! Try to connect to a lexicon database.
+//
+//! @param lexicon the lexicon name
+//! @return the error code
 //---------------------------------------------------------------------------
-void
-MainWindow::connectToDatabase()
+int
+MainWindow::tryConnectToDatabase(const QString& lexicon)
 {
-    QString dbFilename = getDatabaseFilename();
-    //QString lexicon = wordEngine->getLexiconName();
-    QString lexicon = Hack::LEXICON;
+    setSplashMessage(QString("Connecting to %1 database...").arg(lexicon));
 
-    bool createDatabase = false;
+    QString dbFilename = getDatabaseFilename(lexicon);
     QFile dbFile (dbFilename);
 
-    QString message;
-    QString caption;
-
+    // Make sure DB file exists, can be opened, and is up-to-date
     if (dbFile.exists()) {
         Rand rng;
         rng.srand(QDateTime::currentDateTime().toTime_t(), Auxil::getPid());
         unsigned int r = rng.rand();
-        QString dbConnectionName = "MainWindow" + QString::number(r);
+        QString dbConnectionName = "MainWindow_" + lexicon + "_" +
+            QString::number(r);
         {
             QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",
                                                         dbConnectionName);
@@ -1076,29 +1170,12 @@ MainWindow::connectToDatabase()
                     dbVersion = query.value(0).toInt();
 
                 if (dbVersion < CURRENT_DATABASE_VERSION) {
-                    caption = "Update database?";
-                    message =
-                        "The database exists but is out of date.  "
-                        "For certain searches and quizzes to work correctly, "
-                        "Zyzzyva must create an updated database of "
-                        "information about the current lexicon (" + lexicon +
-                        ").  This may take several minutes, but "
-                        "it will only need to be done once.\n\n"
-                        "Update the database now?";
+                    return DbOutOfDate;
                 }
-
             }
 
             else {
-                caption = "Rebuild database?";
-                message =
-                    "The database exists but Zyzzyva cannot connect to it.  "
-                    "For certain searches and quizzes to work correctly, "
-                    "Zyzzyva must create a database of information about "
-                    "the current lexicon (" + lexicon + ").  This may take "
-                    "several minutes, but it will only need to be done "
-                    "once.\n\n"
-                    "Rebuild the database now?";
+                return DbOpenError;
             }
         }
 
@@ -1106,59 +1183,54 @@ MainWindow::connectToDatabase()
     }
 
     else {
-        caption = "Create database?";
-        message =
-            "For certain searches and quizzes to work correctly, Zyzzyva "
-            "must create a database of information about the current "
-            "lexicon (" + lexicon + ").  This may take several minutes, "
-            "but it will only need to be done once.\n\n"
-            "This database is not needed if you only want to use the "
-            "Word Judge mode.\n\n"
-            "Create the database now?";
+        return DbDoesNotExist;
     }
 
-    if (!message.isEmpty()) {
-        message = Auxil::dialogWordWrap(message);
-        int code = QMessageBox::question(this, caption, message,
-                                         QMessageBox::Yes | QMessageBox::No,
-                                         QMessageBox::Yes);
-        if (code != QMessageBox::Yes) {
-            return;
-        }
-        createDatabase = true;
-    }
+    // Everything seems okay, so actually try to connect
+    bool ok = connectToDatabase(lexicon);
+    if (!ok)
+        return DbConnectionError;
 
-    bool useDb = !createDatabase || rebuildDatabase();
+    return DbNoError;
+}
+
+//---------------------------------------------------------------------------
+//  connectToDatabase
+//
+//! Connect to the database for a lexicon.
+//
+//! @param lexicon the lexicon name
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+MainWindow::connectToDatabase(const QString& lexicon)
+{
+    QString dbFilename = getDatabaseFilename(lexicon);
     QString dbError;
-    if (useDb) {
-        bool ok = wordEngine->connectToDatabase(lexicon, dbFilename, &dbError);
-        if (!ok) {
-            QString caption = "Database Connection Error";
-            QString message = "Unable to connect to database:\n" + dbError;
-            message = Auxil::dialogWordWrap(message);
-            QMessageBox::warning(this, caption, message);
-            return;
-        }
+    bool ok = wordEngine->connectToDatabase(lexicon, dbFilename, &dbError);
+    if (!ok) {
+        QString caption = "Database Connection Error";
+        QString message = "Unable to connect to database:\n" + dbError;
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
+        return false;
     }
-
-    setNumWords(wordEngine->getNumWords(lexicon));
+    return true;
 }
 
 //---------------------------------------------------------------------------
 //  rebuildDatabase
 //
-//! Rebuild the database for the current lexicon.  Also display a progress
-//! dialog.
+//! Rebuild the database for a lexicon.  Also display a progress dialog.
 //
+//! @param lexicon the lexicon name
+//! @param promptSuccess whether to display a message on success
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-MainWindow::rebuildDatabase()
+MainWindow::rebuildDatabase(const QString& lexicon, bool promptSuccess)
 {
-    QString dbFilename = getDatabaseFilename();
-    //QString lexicon = wordEngine->getLexiconName();
-    QString lexicon = Hack::LEXICON;
-
+    QString dbFilename = getDatabaseFilename(lexicon);
     QString definitionFilename;
     if (lexicon == "Custom") {
         definitionFilename = MainSettings::getAutoImportFile();
@@ -1233,7 +1305,7 @@ MainWindow::rebuildDatabase()
             tmpDbFile.rename(dbFilename);
         return false;
     }
-    else {
+    else if (promptSuccess) {
         QMessageBox::information(this, "Database Created",
                                  "The " + lexicon + " database was "
                                  "successfully created.");
@@ -1572,7 +1644,6 @@ MainWindow::importDawg(const QString& lexicon, const QString& file, bool
                        reverse, QString* errString, quint16*
                        expectedChecksum)
 {
-    qDebug("importDawg: %s", lexicon.toUtf8().constData());
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     bool ok = wordEngine->importDawgFile(lexicon, file, reverse,
                                          errString, expectedChecksum);

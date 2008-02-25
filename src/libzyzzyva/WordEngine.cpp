@@ -68,7 +68,8 @@ WordEngine::connectToDatabase(const QString& lexicon, const QString& filename,
     Rand rng;
     rng.srand(QDateTime::currentDateTime().toTime_t(), Auxil::getPid());
     unsigned int r = rng.rand();
-    QString dbConnectionName = "WordEngine" + QString::number(r);
+    QString dbConnectionName = "WordEngine_" + lexicon + "_" +
+        QString::number(r);
 
     QSqlDatabase* db = new QSqlDatabase(
         QSqlDatabase::addDatabase("QSQLITE", dbConnectionName));
@@ -110,6 +111,8 @@ WordEngine::disconnectFromDatabase(const QString& lexicon)
 
     delete db;
     lexiconData[lexicon].db = 0;
+    qDebug("WordEngine::disconnectFromDatabase, removing: %s",
+           dbConnectionName.toUtf8().constData());
     QSqlDatabase::removeDatabase(dbConnectionName);
     lexiconData[lexicon].dbConnectionName.clear();
     return true;
