@@ -84,6 +84,8 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
 
         QRadioButton* radioButton = new QRadioButton;
         Q_CHECK_PTR(radioButton);
+        if (row == 1)
+            radioButton->setChecked(true);
         connect(radioButton, SIGNAL(clicked(bool)),
                 SLOT(defaultLexiconChanged()));
         mainGlay->addWidget(radioButton, row, 0, Qt::AlignHCenter);
@@ -91,6 +93,10 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
 
         QCheckBox* checkBox = new QCheckBox;
         Q_CHECK_PTR(checkBox);
+        if (row == 1)
+            checkBox->setCheckState(Qt::Checked);
+        connect(checkBox, SIGNAL(stateChanged(int)),
+                SLOT(importLexiconsChanged(int)));
         mainGlay->addWidget(checkBox, row, 1, Qt::AlignHCenter);
         lexiconCheckBoxes.insert(lexicon, checkBox);
 
@@ -204,6 +210,55 @@ LexiconSelectDialog::setDefaultLexicon(const QString& lexicon)
     if (!checkBox)
         return;
     checkBox->setCheckState(Qt::Checked);
+}
+
+//---------------------------------------------------------------------------
+//  importLexiconsChanged
+//
+//! Called when the import lexicon selection is changed.  Ensure that at least
+//! one lexicon is selected, and that the default lexicon is one of the
+//! selected lexicons.
+//
+//! @param state the new checkbox state of the changed checkbox
+//---------------------------------------------------------------------------
+void
+LexiconSelectDialog::importLexiconsChanged(int state)
+{
+    if (state == Qt::Checked)
+        return;
+
+    // If this checkbox has been unchecked, but it was the last checked box,
+    // then make it checked again
+    QCheckBox* senderCheckBox = static_cast<QCheckBox*>(sender());
+    QString checkedLexicon;
+    QString senderLexicon;
+    QMapIterator<QString, QCheckBox*> it (lexiconCheckBoxes);
+    while (it.hasNext()) {
+        it.next();
+        const QString& lexicon = it.key();
+        QCheckBox* checkBox = it.value();
+        if (checkedLexicon.isEmpty() && (checkBox->checkState() == Qt::Checked))
+            checkedLexicon = lexicon;
+        else if (checkBox == senderCheckBox)
+            senderLexicon = lexicon;
+    }
+    if (checkedLexicon.isEmpty()) {
+        senderCheckBox->setCheckState(Qt::Checked);
+        return;
+    }
+
+    // If checkbox has been unchecked and corresponding radio button is
+    // checked as default, then move the default to another lexicon that is
+    // checked
+    QRadioButton* radioButton = lexiconRadioButtons.value(senderLexicon);
+    if (!radioButton)
+        return;
+    if (radioButton->isChecked()) {
+        radioButton = lexiconRadioButtons.value(checkedLexicon);
+        if (!radioButton)
+            return;
+        radioButton->setChecked(true);
+    }
 }
 
 //---------------------------------------------------------------------------
