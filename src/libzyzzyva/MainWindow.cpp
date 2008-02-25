@@ -89,16 +89,12 @@ using namespace Defs;
 //! @param f widget flags
 //---------------------------------------------------------------------------
 MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
-    : QMainWindow(parent, f), wordEngine(new WordEngine()),
-      settingsDialog(new SettingsDialog(this)),
+    : QMainWindow(parent, f), splashScreen(splash),
+      wordEngine(new WordEngine()), settingsDialog(new SettingsDialog(this)),
       aboutDialog(new AboutDialog(this)),
       helpDialog(new HelpDialog(QString(), this))
 {
-    if (splash) {
-        splash->showMessage("Creating interface...",
-                            Qt::AlignHCenter | Qt::AlignBottom);
-        qApp->processEvents();
-    }
+    setSplashMessage("Creating interface...");
 
     // File Menu
     QMenu* fileMenu = menuBar()->addMenu("&File");
@@ -348,26 +344,16 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     Q_CHECK_PTR(lexiconLabel);
     statusBar()->addWidget(lexiconLabel, 1);
 
-    if (splash) {
-        splash->showMessage("Reading settings...",
-                            Qt::AlignHCenter | Qt::AlignBottom);
-        qApp->processEvents();
-    }
-
+    setSplashMessage("Reading settings...");
     readSettings(true);
 
-    if (splash) {
-        splash->showMessage("Creating data files...",
-                            Qt::AlignHCenter | Qt::AlignBottom);
-        qApp->processEvents();
-    }
-
+    setSplashMessage("Creating data files...");
     makeUserDirs();
 
     setWindowTitle(APPLICATION_TITLE);
     setWindowIcon(QIcon(":/zyzzyva-32x32"));
 
-    tryAutoImport(splash);
+    tryAutoImport();
     setNumWords(0);
 
     if (!instance)
@@ -379,6 +365,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     connect(helpDialog, SIGNAL(error(const QString&)),
             SLOT(helpDialogError(const QString&)));
 
+    splashScreen = 0;
     QTimer::singleShot(0, this, SLOT(displayLexiconError()));
 }
 
@@ -425,16 +412,12 @@ MainWindow::processArguments(const QStringList& args)
 //! preferences.
 //---------------------------------------------------------------------------
 void
-MainWindow::tryAutoImport(QSplashScreen* splash)
+MainWindow::tryAutoImport()
 {
     if (!MainSettings::getUseAutoImport())
         return;
 
-    if (splash) {
-        splash->showMessage("Loading lexicons...",
-                            Qt::AlignHCenter | Qt::AlignBottom);
-        qApp->processEvents();
-    }
+    setSplashMessage("Loading lexicons...");
 
     // If no auto import lexicons are set, prompt the user with a lexicon
     // selection dialog
@@ -462,76 +445,13 @@ MainWindow::tryAutoImport(QSplashScreen* splash)
     // mapping lexicons to actual files) should be handled by someone else.
     //QString lexicon = MainSettings::getAutoImportLexicon();
 
-    // Hack:: import multiple lexicons here, not just the default one
-    QString lexicon = MainSettings::getDefaultLexicon();
-    QString importFile;
-    QString reverseImportFile;
-    QString definitionFile;
-    QString numWordsFile;
-    QString numAnagramsFile;
-    QString checksumFile;
-    bool dawg = true;
-    if (lexicon == "Custom") {
-        importFile = MainSettings::getAutoImportFile();
-        dawg = false;
-    }
-    else {
-        QMap<QString, QString> prefixMap;
-        prefixMap["OWL+LWL"] = "/north-american/owl-lwl";
-        prefixMap["OWL2+LWL"] = "/north-american/owl2-lwl";
-        prefixMap["OSPD4+LWL"] = "/north-american/ospd4-lwl";
-        prefixMap["Volost"] = "/north-american/volost";
-        prefixMap["OSWI"] = "/british/oswi";
-        prefixMap["CSW"] = "/british/csw";
-        prefixMap["ODS"] = "/french/ods4";
-
-        if (prefixMap.contains(lexicon)) {
-            QString prefix = Auxil::getWordsDir() + prefixMap.value(lexicon);
-            importFile =        prefix + ".dwg";
-            reverseImportFile = prefix + "-r.dwg";
-            checksumFile =      prefix + "-checksums.txt";
-        }
+    QStringListIterator it (lexicons);
+    while (it.hasNext()) {
+        const QString& lexicon = it.next();
+        importLexicon(lexicon);
     }
 
-    if (importFile.isEmpty())
-        return;
-
-    QString splashMessage = "Loading " + lexicon + " lexicon...";
-    if (splash) {
-        splash->showMessage(splashMessage,
-                            Qt::AlignHCenter | Qt::AlignBottom);
-        qApp->processEvents();
-    }
-
-    if (dawg) {
-        quint16 expectedForwardChecksum = 0;
-        quint16 expectedReverseChecksum = 0;
-
-        QList<quint16> checksums = importChecksums (checksumFile);
-        if (checksums.size() >= 2) {
-            expectedForwardChecksum = checksums[0];
-            expectedReverseChecksum = checksums[1];
-        }
-        else {
-            // warning!
-        }
-
-        lexiconError = QString();
-
-        importDawg(lexicon, importFile, false, &lexiconError,
-                   &expectedForwardChecksum);
-        importDawg(lexicon, reverseImportFile, true, &lexiconError,
-                   &expectedReverseChecksum);
-    }
-    else
-        importText(lexicon, importFile);
-
-    if (splash) {
-        splash->showMessage("Loading stems...",
-                            Qt::AlignHCenter | Qt::AlignBottom);
-        qApp->processEvents();
-    }
-
+    setSplashMessage("Loading stems...");
     importStems();
 }
 
@@ -1641,18 +1561,20 @@ MainWindow::newQuizFromWordFile(const QString& filename)
 //
 //! Import words from a DAWG file.
 //
-//! @param lexiconName the name of the lexicon
+//! @param lexicon the name of the lexicon
 //! @param file the file to import words from
 //! @param reverse whether the DAWG contains reversed words
+//! @param errString return error string
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-MainWindow::importDawg(const QString& lexiconName, const QString& file, bool
+MainWindow::importDawg(const QString& lexicon, const QString& file, bool
                        reverse, QString* errString, quint16*
                        expectedChecksum)
 {
+    qDebug("importDawg: %s", lexicon.toUtf8().constData());
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    bool ok = wordEngine->importDawgFile(lexiconName, file, reverse,
+    bool ok = wordEngine->importDawgFile(lexicon, file, reverse,
                                          errString, expectedChecksum);
     QApplication::restoreOverrideCursor();
 
@@ -1664,14 +1586,8 @@ MainWindow::importDawg(const QString& lexiconName, const QString& file, bool
         // Pop up warning, and ask user whether to proceed.
     }
 
-
-
     // If failure, notify the user and bail out
 
-    if (!reverse) {
-        //setNumWords(imported);
-        setWindowTitle(APPLICATION_TITLE + " - " + lexiconName);
-    }
     return ok;
 }
 
@@ -1680,8 +1596,7 @@ MainWindow::importDawg(const QString& lexiconName, const QString& file, bool
 //
 //! Import words from a text file.
 //
-//! @param file the file to import words from
-//! @param lexiconName the name of the lexicon
+//! @param filename the file to import words from
 //! @return the number of imported words
 //---------------------------------------------------------------------------
 QList<quint16>
@@ -1698,6 +1613,23 @@ MainWindow::importChecksums(const QString& filename)
         checksums.append(line.toUShort());
     }
     return checksums;
+}
+
+//---------------------------------------------------------------------------
+//  setSplashMessage
+//
+//! Display a message on the splash screen if available.
+//
+//! @param message the message
+//---------------------------------------------------------------------------
+void
+MainWindow::setSplashMessage(const QString& message)
+{
+    if (!splashScreen)
+        return;
+
+    splashScreen->showMessage(message, Qt::AlignHCenter | Qt::AlignBottom);
+    qApp->processEvents();
 }
 
 //---------------------------------------------------------------------------
@@ -1759,24 +1691,98 @@ MainWindow::renameLexicon(const QString& oldName, const QString& newName)
 }
 
 //---------------------------------------------------------------------------
+//  importLexicon
+//
+//! Import a lexicon.
+//
+//! @param lexicon the name of the lexicon
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+MainWindow::importLexicon(const QString& lexicon)
+{
+    QString importFile;
+    QString reverseImportFile;
+    QString definitionFile;
+    QString numWordsFile;
+    QString numAnagramsFile;
+    QString checksumFile;
+    bool ok = true;
+    bool dawg = true;
+    if (lexicon == "Custom") {
+        importFile = MainSettings::getAutoImportFile();
+        dawg = false;
+    }
+    else {
+        QMap<QString, QString> prefixMap;
+        prefixMap["OWL+LWL"] = "/north-american/owl-lwl";
+        prefixMap["OWL2+LWL"] = "/north-american/owl2-lwl";
+        prefixMap["OSPD4+LWL"] = "/north-american/ospd4-lwl";
+        prefixMap["Volost"] = "/north-american/volost";
+        prefixMap["OSWI"] = "/british/oswi";
+        prefixMap["CSW"] = "/british/csw";
+        prefixMap["ODS"] = "/french/ods4";
+
+        if (prefixMap.contains(lexicon)) {
+            QString prefix = Auxil::getWordsDir() + prefixMap.value(lexicon);
+            importFile =        prefix + ".dwg";
+            reverseImportFile = prefix + "-r.dwg";
+            checksumFile =      prefix + "-checksums.txt";
+        }
+    }
+
+    if (importFile.isEmpty())
+        return false;
+
+    QString splashMessage = "Loading " + lexicon + " lexicon...";
+    setSplashMessage(splashMessage);
+
+    if (dawg) {
+        quint16 expectedForwardChecksum = 0;
+        quint16 expectedReverseChecksum = 0;
+
+        QList<quint16> checksums = importChecksums (checksumFile);
+        if (checksums.size() >= 2) {
+            expectedForwardChecksum = checksums[0];
+            expectedReverseChecksum = checksums[1];
+        }
+        else {
+            // warning!
+            ok = false;
+        }
+
+        lexiconError = QString();
+
+        ok = ok && importDawg(lexicon, importFile, false, &lexiconError,
+                              &expectedForwardChecksum);
+
+        ok = ok && importDawg(lexicon, reverseImportFile, true, &lexiconError,
+                              &expectedReverseChecksum);
+    }
+    else
+        ok = importText(lexicon, importFile);
+
+    return ok;
+}
+
+//---------------------------------------------------------------------------
 //  importText
 //
 //! Import words from a text file.
 //
-//! @param lexiconName the name of the lexicon
+//! @param lexicon the name of the lexicon
 //! @param file the file to import words from
 //! @return the number of imported words
 //---------------------------------------------------------------------------
 int
-MainWindow::importText(const QString& lexiconName, const QString& file)
+MainWindow::importText(const QString& lexicon, const QString& file)
 {
     QString err;
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    int imported = wordEngine->importTextFile(lexiconName, file, true);
+    int imported = wordEngine->importTextFile(lexicon, file, true);
     QApplication::restoreOverrideCursor();
 
     setNumWords(imported);
-    setWindowTitle(APPLICATION_TITLE + " - " + lexiconName);
     return imported;
 }
 

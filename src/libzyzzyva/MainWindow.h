@@ -55,7 +55,7 @@ class MainWindow : public QMainWindow
     public slots:
     void fileOpenRequested(const QString& filename);
     void processArguments(const QStringList& args);
-    void tryAutoImport(QSplashScreen* splash);
+    void tryAutoImport();
     void importInteractive();
     void newQuizFormInteractive();
     void newQuizFormInteractive(const QuizSpec& quizSpec);
@@ -100,10 +100,12 @@ class MainWindow : public QMainWindow
     virtual void closeEvent(QCloseEvent* event);
 
     private:
+    void setSplashMessage(const QString& message);
     void makeUserDirs();
     void renameLexicon(const QString& oldName, const QString& newName);
-    int  importText(const QString& lexiconName, const QString& file);
-    bool importDawg(const QString& lexiconName, const QString& file,
+    bool importLexicon(const QString& lexicon);
+    int  importText(const QString& lexicon, const QString& file);
+    bool importDawg(const QString& lexicon, const QString& file,
                     bool reverse = false, QString* errString = 0,
                     quint16* expectedChecksum = 0);
     QList<quint16> importChecksums(const QString& file);
@@ -116,6 +118,7 @@ class MainWindow : public QMainWindow
     void newQuizFromWordFile(const QString& filename);
 
     private:
+    QSplashScreen* splashScreen;
     WordEngine*  wordEngine;
     QTabWidget*  tabStack;
     QToolButton* closeButton;
