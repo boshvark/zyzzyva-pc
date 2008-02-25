@@ -61,8 +61,10 @@ class SettingsDialog : public QDialog
     void chooseQuizBackgroundColorButtonClicked();
 
     private:
-    void fillLexiconImportLabel(const QStringList& lexicons, const QString&
-                                defaultLexicon);
+    void setImportLexicons(const QStringList& lexicons, const QString&
+                           defaultLexicon);
+    void getImportLexicons(QStringList& lexicons, QString& defaultLexicon)
+        const;
     void fillThemeCombo();
     void updateJudgeLogDirLabel();
 

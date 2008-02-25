@@ -665,7 +665,7 @@ SettingsDialog::readSettings()
 
     QStringList autoImportLexicons = MainSettings::getAutoImportLexicons();
     QString defaultLexicon = MainSettings::getDefaultLexicon();
-    fillLexiconImportLabel(autoImportLexicons, defaultLexicon);
+    setImportLexicons(autoImportLexicons, defaultLexicon);
 
     QString autoImportFile = MainSettings::getAutoImportFile();
     autoImportCustomLine->setText(autoImportFile);
@@ -763,9 +763,13 @@ void
 SettingsDialog::writeSettings()
 {
     MainSettings::setUseAutoImport(autoImportCbox->isChecked());
-    // Hack:: this needs to be changed
-    //MainSettings::setAutoImportLexicon(autoImportLexiconCombo->currentText());
-    //MainSettings::setDefaultLexicon(autoImportLexiconCombo->currentText());
+
+    QStringList importLexicons;
+    QString defaultLexicon;
+    getImportLexicons(importLexicons, defaultLexicon);
+    MainSettings::setAutoImportLexicons(importLexicons);
+    MainSettings::setDefaultLexicon(defaultLexicon);
+
     MainSettings::setAutoImportFile(autoImportCustomLine->text());
     MainSettings::setDisplayWelcome(displayWelcomeCbox->isChecked());
     MainSettings::setUserDataDir(userDataDirLine->text());
@@ -888,15 +892,9 @@ SettingsDialog::autoImportLexiconActivated(const QString& text)
 void
 SettingsDialog::selectLexiconsClicked()
 {
-    QString autoImportText = autoImportLabel->text();
     QString defaultLexicon;
-
-    QRegExp defaultRegex ("<b>(\\S+)</b>");
-    if (autoImportText.contains(defaultRegex)) {
-        defaultLexicon = defaultRegex.cap(1);
-        autoImportText.replace(defaultRegex, "\\1");
-    }
-    QStringList importLexicons = autoImportText.split(LEXICON_SEP);
+    QStringList importLexicons;
+    getImportLexicons(importLexicons, defaultLexicon);
 
     LexiconSelectDialog* dialog = new LexiconSelectDialog;
     Q_CHECK_PTR(dialog);
@@ -907,7 +905,7 @@ SettingsDialog::selectLexiconsClicked()
     if (code == QDialog::Accepted) {
         QStringList lexicons = dialog->getImportLexicons();
         QString defaultLexicon = dialog->getDefaultLexicon();
-        fillLexiconImportLabel(lexicons, defaultLexicon);
+        setImportLexicons(lexicons, defaultLexicon);
     }
 
     delete dialog;
@@ -1049,17 +1047,17 @@ SettingsDialog::chooseQuizBackgroundColorButtonClicked()
 }
 
 //---------------------------------------------------------------------------
-//  fillLexiconImportLabel
+//  setImportLexicons
 //
-//! Fill the Lexicon Import label with a list of lexicons to import and a
-//! default lexicon.
+//! Set the contents of the Lexicon Import label with a list of lexicons to
+//! import and a default lexicon.
 //
 //! @param lexicons the list of lexicons to import
 //! @param defaultLexicon the default lexicon
 //---------------------------------------------------------------------------
 void
-SettingsDialog::fillLexiconImportLabel(const QStringList& lexicons, const
-                                       QString& defaultLexicon)
+SettingsDialog::setImportLexicons(const QStringList& lexicons, const QString&
+                                  defaultLexicon)
 {
     QString importText;
     QStringListIterator it (lexicons);
@@ -1073,6 +1071,28 @@ SettingsDialog::fillLexiconImportLabel(const QStringList& lexicons, const
             QString("<b>%1</b>").arg(lexicon) : lexicon;
     }
     autoImportLabel->setText(importText);
+}
+
+//---------------------------------------------------------------------------
+//  getImportLexicons
+//
+//! Determine the import lexicons and default lexicon from the contents of the
+//! import lexicon label.
+//
+//! @param lexicons return the list of import lexicons
+//! @param defaultlexicon return the default lexicon
+//---------------------------------------------------------------------------
+void
+SettingsDialog::getImportLexicons(QStringList& lexicons, QString&
+                                  defaultLexicon) const
+{
+    QRegExp defaultRegex ("<b>(\\S+)</b>");
+    QString autoImportText = autoImportLabel->text();
+    if (autoImportText.contains(defaultRegex)) {
+        defaultLexicon = defaultRegex.cap(1);
+        autoImportText.replace(defaultRegex, "\\1");
+    }
+    lexicons = autoImportText.split(LEXICON_SEP);
 }
 
 //---------------------------------------------------------------------------
