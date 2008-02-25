@@ -33,6 +33,7 @@
 #include "HelpDialog.h"
 #include "IntroForm.h"
 #include "JudgeDialog.h"
+#include "LexiconSelectDialog.h"
 #include "MainSettings.h"
 #include "NewQuizDialog.h"
 #include "QuizEngine.h"
@@ -348,12 +349,18 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     statusBar()->addWidget(lexiconLabel, 1);
 
     if (splash) {
-        splash->showMessage("Creating data files...",
+        splash->showMessage("Reading settings...",
                             Qt::AlignHCenter | Qt::AlignBottom);
         qApp->processEvents();
     }
 
     readSettings(true);
+
+    if (splash) {
+        splash->showMessage("Creating data files...",
+                            Qt::AlignHCenter | Qt::AlignBottom);
+        qApp->processEvents();
+    }
 
     makeUserDirs();
 
@@ -422,6 +429,34 @@ MainWindow::tryAutoImport(QSplashScreen* splash)
 {
     if (!MainSettings::getUseAutoImport())
         return;
+
+    if (splash) {
+        splash->showMessage("Loading lexicons...",
+                            Qt::AlignHCenter | Qt::AlignBottom);
+        qApp->processEvents();
+    }
+
+    // If no auto import lexicons are set, prompt the user with a lexicon
+    // selection dialog
+    QStringList lexicons = MainSettings::getAutoImportLexicons();
+    if (lexicons.isEmpty()) {
+        LexiconSelectDialog* dialog = new LexiconSelectDialog;
+        Q_CHECK_PTR(dialog);
+
+        QString defaultLexicon = MainSettings::getDefaultLexicon();
+        lexicons << defaultLexicon;
+
+        dialog->setImportLexicons(lexicons);
+        dialog->setDefaultLexicon(defaultLexicon);
+
+        int code = dialog->exec();
+        if (code == QDialog::Accepted) {
+            MainSettings::setAutoImportLexicons(dialog->getImportLexicons());
+            MainSettings::setDefaultLexicon(dialog->getDefaultLexicon());
+        }
+
+        delete dialog;
+    }
 
     // FIXME: This should not be part of the MainWindow class.  Lexicons (and
     // mapping lexicons to actual files) should be handled by someone else.
