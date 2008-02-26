@@ -3,7 +3,7 @@ rem create-windows.sh
 rem
 rem Create a Windows directory for the installer to use.
 rem
-rem Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+rem Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 rem
 rem This file is part of Zyzzyva.
 rem
@@ -24,7 +24,7 @@ rem -------------------------------------------------------------------------
 
 setlocal
 
-set QTVER=4.3.2
+set QTVER=4.3.4
 set QTDIR=C:\Qt\%QTVER%
 set INSTDIR=installer
 set PLATFORM=windows
