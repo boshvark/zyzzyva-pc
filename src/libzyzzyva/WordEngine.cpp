@@ -111,8 +111,6 @@ WordEngine::disconnectFromDatabase(const QString& lexicon)
 
     delete db;
     lexiconData[lexicon].db = 0;
-    qDebug("WordEngine::disconnectFromDatabase, removing: %s",
-           dbConnectionName.toUtf8().constData());
     QSqlDatabase::removeDatabase(dbConnectionName);
     lexiconData[lexicon].dbConnectionName.clear();
     return true;
