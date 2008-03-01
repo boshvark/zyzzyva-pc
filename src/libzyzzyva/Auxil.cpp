@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -55,6 +55,7 @@ const QString SEARCH_TYPE_SUFFIX = "Takes Suffix";
 const QString SEARCH_TYPE_INCLUDE_LETTERS = "Includes Letters";
 const QString SEARCH_TYPE_CONSIST_OF = "Consists of";
 const QString SEARCH_TYPE_BELONG_TO_GROUP = "Belongs to Group";
+const QString SEARCH_TYPE_IN_LEXICON = "In Lexicon";
 const QString SEARCH_TYPE_IN_WORD_LIST = "In Word List";
 const QString SEARCH_TYPE_NUM_ANAGRAMS = "Number of Anagrams";
 const QString SEARCH_TYPE_NUM_VOWELS = "Number of Vowels";
@@ -674,6 +675,8 @@ Auxil::stringToSearchType(const QString& string)
         return SearchCondition::ConsistOf;
     else if (string == SEARCH_TYPE_BELONG_TO_GROUP)
         return SearchCondition::BelongToGroup;
+    else if (string == SEARCH_TYPE_IN_LEXICON)
+        return SearchCondition::InLexicon;
     else if (string == SEARCH_TYPE_IN_WORD_LIST)
         return SearchCondition::InWordList;
     else if (string == SEARCH_TYPE_NUM_ANAGRAMS)
@@ -762,6 +765,9 @@ Auxil::searchTypeToString(SearchCondition::SearchType type)
 
         case SearchCondition::BelongToGroup:
         return SEARCH_TYPE_BELONG_TO_GROUP;
+
+        case SearchCondition::InLexicon:
+        return SEARCH_TYPE_IN_LEXICON;
 
         case SearchCondition::InWordList:
         return SEARCH_TYPE_IN_WORD_LIST;
