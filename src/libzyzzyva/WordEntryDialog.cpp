@@ -3,7 +3,7 @@
 //
 // A dialog for getting a word from the user.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -49,7 +49,7 @@ WordEntryDialog::WordEntryDialog(QWidget* parent, Qt::WFlags f)
     wordValidator(new WordValidator(this))
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR (mainVlay);
+    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
 

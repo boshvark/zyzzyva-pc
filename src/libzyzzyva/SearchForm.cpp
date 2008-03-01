@@ -62,7 +62,7 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     mainHlay->setSpacing(SPACING);
 
     QVBoxLayout* specVlay = new QVBoxLayout;
-    Q_CHECK_PTR (specVlay);
+    Q_CHECK_PTR(specVlay);
     specVlay->setSpacing(SPACING);
     mainHlay->addLayout(specVlay);
 
