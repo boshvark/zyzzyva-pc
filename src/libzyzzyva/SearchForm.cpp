@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "SearchForm.h"
+#include "LexiconSelectWidget.h"
 #include "MainSettings.h"
 #include "SearchSpecForm.h"
 #include "WordEngine.h"
@@ -73,19 +74,9 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     lexiconHlay->addStretch(1);
 
-    QLabel* lexiconLabel = new QLabel;
-    Q_CHECK_PTR(lexiconLabel);
-    lexiconLabel->setText("Lexicon:");
-    lexiconHlay->addWidget(lexiconLabel);
-
-    lexiconCombo = new QComboBox;
-    Q_CHECK_PTR(lexiconCombo);
-    QStringList lexicons = MainSettings::getAutoImportLexicons();
-    lexiconCombo->addItems(lexicons);
-    QString defaultLexicon = MainSettings::getDefaultLexicon();
-    int defaultIndex = lexiconCombo->findText(defaultLexicon);
-    lexiconCombo->setCurrentIndex((defaultIndex < 0) ? 0 : defaultIndex);
-    lexiconHlay->addWidget(lexiconCombo);
+    lexiconWidget = new LexiconSelectWidget;
+    Q_CHECK_PTR(lexiconWidget);
+    lexiconHlay->addWidget(lexiconWidget);
 
     lexiconHlay->addStretch(1);
 
@@ -201,7 +192,7 @@ SearchForm::search()
     if (spec.conditions.empty())
         return;
 
-    QString lexicon = lexiconCombo->currentText();
+    QString lexicon = lexiconWidget->getSelectedLexicon();
 
     searchButton->setEnabled(false);
     resultModel->removeRows(0, resultModel->rowCount());

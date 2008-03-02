@@ -30,6 +30,7 @@
 #include <QComboBox>
 #include <QLabel>
 
+class LexiconSelectWidget;
 class SearchSpecForm;
 class WordEngine;
 class WordTableModel;
@@ -54,7 +55,7 @@ class SearchForm : public ActionForm
 
     private:
     WordEngine*     wordEngine;
-    QComboBox*      lexiconCombo;
+    LexiconSelectWidget* lexiconWidget;
     SearchSpecForm* specForm;
     QCheckBox*      lowerCaseCbox;
     WordTableView*  resultView;
