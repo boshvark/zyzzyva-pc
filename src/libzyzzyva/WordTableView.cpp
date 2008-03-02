@@ -618,8 +618,10 @@ QString
 WordTableView::hookToolTipText(const QString& word, const QString& hooks,
                                bool front) const
 {
-    QString text;
+    WordTableModel* wordModel = static_cast<WordTableModel*>(model());
+    QString lexicon = wordModel->getLexicon();
 
+    QString text;
     QString hook;
     foreach (hook, hooks) {
         QString hookWord = (front ? (hook.toUpper() + word)
@@ -628,7 +630,7 @@ WordTableView::hookToolTipText(const QString& word, const QString& hooks,
             text += "\n\n";
 
         text += hookWord + " : " +
-            wordEngine->getDefinition(Hack::LEXICON, hookWord);
+            wordEngine->getDefinition(lexicon, hookWord);
     }
 
     return text;

@@ -66,6 +66,29 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     specVlay->setSpacing(SPACING);
     mainHlay->addLayout(specVlay);
 
+    QHBoxLayout* lexiconHlay = new QHBoxLayout;
+    Q_CHECK_PTR(lexiconHlay);
+    lexiconHlay->setSpacing(SPACING);
+    specVlay->addLayout(lexiconHlay);
+
+    lexiconHlay->addStretch(1);
+
+    QLabel* lexiconLabel = new QLabel;
+    Q_CHECK_PTR(lexiconLabel);
+    lexiconLabel->setText("Lexicon:");
+    lexiconHlay->addWidget(lexiconLabel);
+
+    lexiconCombo = new QComboBox;
+    Q_CHECK_PTR(lexiconCombo);
+    QStringList lexicons = MainSettings::getAutoImportLexicons();
+    lexiconCombo->addItems(lexicons);
+    QString defaultLexicon = MainSettings::getDefaultLexicon();
+    int defaultIndex = lexiconCombo->findText(defaultLexicon);
+    lexiconCombo->setCurrentIndex((defaultIndex < 0) ? 0 : defaultIndex);
+    lexiconHlay->addWidget(lexiconCombo);
+
+    lexiconHlay->addStretch(1);
+
     specForm = new SearchSpecForm;
     Q_CHECK_PTR(specForm);
     connect(specForm, SIGNAL(returnPressed()), SLOT(search()));
@@ -178,8 +201,11 @@ SearchForm::search()
     if (spec.conditions.empty())
         return;
 
+    QString lexicon = lexiconCombo->currentText();
+
     searchButton->setEnabled(false);
     resultModel->removeRows(0, resultModel->rowCount());
+    resultModel->setLexicon(lexicon);
 
     statusString = "Searching...";
     emit statusChanged(statusString);
@@ -187,7 +213,6 @@ SearchForm::search()
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 
-    QString lexicon = Hack::LEXICON;
     QStringList wordList =
         wordEngine->search(lexicon, specForm->getSearchSpec(), false);
 

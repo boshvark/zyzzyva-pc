@@ -3,7 +3,7 @@
 //
 // A model for representing word lists.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -112,6 +112,8 @@ class WordTableModel : public QAbstractTableModel
     bool setData(const QModelIndex& index, const QVariant& value, int role =
                  Qt::EditRole);
     void sort(int column, Qt::SortOrder order = Qt::AscendingOrder);
+    QString getLexicon() const { return lexicon; }
+    void setLexicon(const QString& lex) { lexicon = lex; }
     int getLastAddedIndex() const { return lastAddedIndex; }
     void clearLastAddedIndex();
 
@@ -128,6 +130,7 @@ class WordTableModel : public QAbstractTableModel
 
     private:
     WordEngine* wordEngine;
+    QString lexicon;
     mutable QList<WordItem> wordList;
     int lastAddedIndex;
 

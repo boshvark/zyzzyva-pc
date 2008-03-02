@@ -3,7 +3,7 @@
 //
 // A form for searching for words, patterns, anagrams, etc.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -27,6 +27,7 @@
 
 #include "ActionForm.h"
 #include <QCheckBox>
+#include <QComboBox>
 #include <QLabel>
 
 class SearchSpecForm;
@@ -53,6 +54,7 @@ class SearchForm : public ActionForm
 
     private:
     WordEngine*     wordEngine;
+    QComboBox*      lexiconCombo;
     SearchSpecForm* specForm;
     QCheckBox*      lowerCaseCbox;
     WordTableView*  resultView;

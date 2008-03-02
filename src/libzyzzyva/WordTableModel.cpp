@@ -107,7 +107,8 @@ lessThan(const WordTableModel::WordItem& a,
 //! @param parent the parent object
 //---------------------------------------------------------------------------
 WordTableModel::WordTableModel(WordEngine* e, QObject* parent)
-    : QAbstractTableModel(parent), wordEngine(e), lastAddedIndex(-1)
+    : QAbstractTableModel(parent), wordEngine(e),
+    lexicon(MainSettings::getDefaultLexicon()), lastAddedIndex(-1)
 {
 }
 
@@ -368,7 +369,7 @@ WordTableModel::data(const QModelIndex& index, int role) const
                     }
 
                     if (!wordItem.probabilityOrderIsValid()) {
-                        int p = wordEngine->getProbabilityOrder(Hack::LEXICON,
+                        int p = wordEngine->getProbabilityOrder(lexicon,
                                                                 wordUpper);
                         if (p)
                             wordItem.setProbabilityOrder(p);
@@ -384,10 +385,8 @@ WordTableModel::data(const QModelIndex& index, int role) const
                 }
                 else if (!wordItem.hooksAreValid()) {
                     wordItem.setHooks(
-                        wordEngine->getFrontHookLetters(Hack::LEXICON,
-                                                        wordUpper),
-                        wordEngine->getBackHookLetters(Hack::LEXICON,
-                                                       wordUpper));
+                        wordEngine->getFrontHookLetters(lexicon, wordUpper),
+                        wordEngine->getBackHookLetters(lexicon, wordUpper));
                 }
                 return wordItem.getFrontHooks();
 
@@ -397,10 +396,8 @@ WordTableModel::data(const QModelIndex& index, int role) const
                 }
                 else if (!wordItem.hooksAreValid()) {
                     wordItem.setHooks(
-                        wordEngine->getFrontHookLetters(Hack::LEXICON,
-                                                        wordUpper),
-                        wordEngine->getBackHookLetters(Hack::LEXICON,
-                                                       wordUpper));
+                        wordEngine->getFrontHookLetters(lexicon, wordUpper),
+                        wordEngine->getBackHookLetters(lexicon, wordUpper));
                 }
                 return wordItem.getBackHooks();
 
@@ -428,7 +425,7 @@ WordTableModel::data(const QModelIndex& index, int role) const
 
                 case DEFINITION_COLUMN:
                 return MainSettings::getWordListShowDefinitions() ?
-                    wordEngine->getDefinition(Hack::LEXICON, wordUpper) :
+                    wordEngine->getDefinition(lexicon, wordUpper) :
                     QString();
 
                 default:
@@ -571,9 +568,9 @@ WordTableModel::setData(const QModelIndex& index, const QVariant& value, int
             word.setWord(value.toString());
             if (MainSettings::getWordListShowHooks()) {
                 word.setHooks(
-                    wordEngine->getFrontHookLetters(Hack::LEXICON,
+                    wordEngine->getFrontHookLetters(lexicon,
                                                     word.getWord().toUpper()),
-                    wordEngine->getBackHookLetters(Hack::LEXICON,
+                    wordEngine->getBackHookLetters(lexicon,
                                                    word.getWord().toUpper()));
             }
             if (MainSettings::getWordListShowHookParents()) {
@@ -694,8 +691,7 @@ WordTableModel::markAlternates()
 bool
 WordTableModel::isFrontHook(const QString& word) const
 {
-    return wordEngine->isAcceptable(Hack::LEXICON,
-                                    word.right(word.length() - 1));
+    return wordEngine->isAcceptable(lexicon, word.right(word.length() - 1));
 }
 
 //---------------------------------------------------------------------------
@@ -710,8 +706,7 @@ WordTableModel::isFrontHook(const QString& word) const
 bool
 WordTableModel::isBackHook(const QString& word) const
 {
-    return wordEngine->isAcceptable(Hack::LEXICON,
-                                    word.left(word.length() - 1));
+    return wordEngine->isAcceptable(lexicon, word.left(word.length() - 1));
 }
 
 //---------------------------------------------------------------------------
