@@ -46,7 +46,7 @@ LexiconSelectWidget::LexiconSelectWidget(QWidget* parent, Qt::WFlags f)
     QHBoxLayout* mainHlay = new QHBoxLayout(this);
     Q_CHECK_PTR(mainHlay);
     mainHlay->setSpacing(SPACING);
-    mainHlay->setMargin(MARGIN);
+    mainHlay->setMargin(0);
 
     QLabel* label = new QLabel;
     Q_CHECK_PTR(label);
