@@ -44,6 +44,13 @@ mkdir -p $OUTDIR/Zyzzyva.app/Contents/Frameworks
 echo "Copying Zyzzyva executable into bundle..."
 cp -r bin/Zyzzyva.app/Contents/* $OUTDIR/Zyzzyva.app/Contents
 
+# Change link location for libzyzzyva in executable
+echo "Changing link location for libzyzzyva in Zyzzyva executable..."
+install_name_tool -change \
+    libzyzzyva.1.dylib \
+    @executable_path/../Frameworks/libzyzzyva.1.dylib \
+    $OUTDIR/Zyzzyva.app/Contents/MacOS/Zyzzyva
+
 # Copy zyzzyva.tap unless it's already there
 if [ ! -e $OUTDIR/Zyzzyva.app/Contents/MacOS/zyzzyva.top ]; then
     echo "Copying zyzzyva.top into bundle..."
@@ -61,6 +68,13 @@ fi
 echo "Copying libzyzzyva into bundle..."
 cp bin/libzyzzyva.1.dylib $OUTDIR/Zyzzyva.app/Contents/Frameworks
 
+# Change reference to framework in libzyzzyva
+echo "Changing link location for $i.framework in libzyzzyva..."
+install_name_tool -change \
+    $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
+    @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
+    $OUTDIR/Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+
 # Copy Qt libs to Frameworks directory unless they're already there
 if [ "$COPYQT" = "yes" ]; then
 
@@ -68,13 +82,6 @@ if [ "$COPYQT" = "yes" ]; then
     echo "Copying Assistant client into bundle..."
     cp -r $QTDIR/bin/assistant.app \
         $OUTDIR/Zyzzyva.app/Contents/MacOS
-
-    # Change link location for libzyzzyva in executable
-    echo "Changing link location for libzyzzyva in Zyzzyva executable..."
-    install_name_tool -change \
-        libzyzzyva.1.dylib \
-        @executable_path/../Frameworks/libzyzzyva.1.dylib \
-        $OUTDIR/Zyzzyva.app/Contents/MacOS/Zyzzyva
 
     # Copy Qt frameworks into bundle and tell the executable to link to them
     for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistant ; do
@@ -97,13 +104,6 @@ if [ "$COPYQT" = "yes" ]; then
         install_name_tool \
             -id @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
             $OUTDIR/Zyzzyva.app/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
-
-        # Change reference to framework in libzyzzyva
-        echo "Changing link location for $i.framework in libzyzzyva..."
-        install_name_tool -change \
-            $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
-            @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
-            $OUTDIR/Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
 
         # Change link locations for framework in executable
         echo "Changing link location for $i.framework in Zyzzyva executable..."
