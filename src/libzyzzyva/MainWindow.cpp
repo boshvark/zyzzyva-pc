@@ -783,7 +783,7 @@ MainWindow::viewDefinition()
 {
     WordEntryDialog* entryDialog = new WordEntryDialog(this);
     Q_CHECK_PTR(entryDialog);
-    entryDialog->setWindowTitle("Word Word Definition");
+    entryDialog->setWindowTitle("Word Definition");
     entryDialog->resize(entryDialog->minimumSizeHint().width() * 2,
                         entryDialog->minimumSizeHint().height());
     int code = entryDialog->exec();
