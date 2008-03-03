@@ -32,7 +32,6 @@ OUTDIR=$(pwd)/installer/macosx
 if [ ! -e $OUTDIR/Zyzzyva.app/Contents/Frameworks ]; then
     COPYQT="yes"
 fi
-echo "COPYQT: |$COPYQT|"
 
 echo "Running QMake..."
 $QTDIR/bin/qmake
