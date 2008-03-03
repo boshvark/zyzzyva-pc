@@ -22,6 +22,7 @@
 
 #include "DefineForm.h"
 #include "DefinitionBox.h"
+#include "LexiconSelectWidget.h"
 #include "WordEngine.h"
 #include "WordLineEdit.h"
 #include "WordValidator.h"
@@ -54,6 +55,19 @@ DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
     Q_CHECK_PTR(mainVlay);
+
+    QHBoxLayout* lexiconHlay = new QHBoxLayout;
+    Q_CHECK_PTR(lexiconHlay);
+    lexiconHlay->setSpacing(SPACING);
+    mainVlay->addLayout(lexiconHlay);
+
+    lexiconHlay->addStretch(1);
+
+    lexiconWidget = new LexiconSelectWidget;
+    Q_CHECK_PTR(lexiconWidget);
+    lexiconHlay->addWidget(lexiconWidget);
+
+    lexiconHlay->addStretch(1);
 
     QHBoxLayout* lookupHlay = new QHBoxLayout;
     lookupHlay->setSpacing(SPACING);
@@ -157,7 +171,7 @@ DefineForm::defineWord()
     if (word.isEmpty())
         return;
 
-    QString lexicon = Hack::LEXICON;
+    QString lexicon = lexiconWidget->getSelectedLexicon();
 
     bool acceptable = engine->isAcceptable(lexicon, word);
     QString resultStr = acceptable ?

@@ -3,7 +3,7 @@
 //
 // A form for looking up and displaying word definitions.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -29,6 +29,7 @@
 #include "ZPushButton.h"
 
 class DefinitionBox;
+class LexiconSelectWidget;
 class WordEngine;
 class WordLineEdit;
 
@@ -48,6 +49,7 @@ class DefineForm : public ActionForm
 
     private:
     WordEngine*    engine;
+    LexiconSelectWidget* lexiconWidget;
     WordLineEdit*  wordLine;
     ZPushButton*   defineButton;
     DefinitionBox* resultBox;
