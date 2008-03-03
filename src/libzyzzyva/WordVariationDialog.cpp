@@ -44,15 +44,17 @@ using namespace Defs;
 //
 //! Constructor.
 //
+//! @param we the word engine
+//! @param lex the lexicon
+//! @param word the word
+//! @param variation the variation type
 //! @param parent the parent widget
-//! @param name the name of this widget
-//! @param modal whether the dialog is modal
 //! @param f widget flags
 //---------------------------------------------------------------------------
-WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& word,
-                                         WordVariationType variation,
-                                         QWidget* parent, Qt::WFlags f)
-    : QDialog(parent, f), wordEngine(we), topView(0), topModel(0),
+WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& lex,
+    const QString& word, WordVariationType variation, QWidget* parent,
+    Qt::WFlags f)
+    : QDialog(parent, f), wordEngine(we), lexicon(lex), topView(0), topModel(0),
     middleView(0), middleModel(0), bottomView(0), bottomModel(0)
 {
     int numLists = getNumLists(variation);
@@ -83,7 +85,7 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& word,
     Q_CHECK_PTR(topView);
     mainVlay->addWidget(topView);
 
-    topModel = new WordTableModel(wordEngine, this);
+    topModel = new WordTableModel(wordEngine, lexicon, this);
     Q_CHECK_PTR(topModel);
     connect(topModel, SIGNAL(wordsChanged()),
             topView, SLOT(resizeItemsToContents()));
@@ -99,7 +101,7 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& word,
         Q_CHECK_PTR(middleView);
         mainVlay->addWidget(middleView);
 
-        middleModel = new WordTableModel(wordEngine, this);
+        middleModel = new WordTableModel(wordEngine, lexicon, this);
         Q_CHECK_PTR(middleModel);
         connect(middleModel, SIGNAL(wordsChanged()),
                 middleView, SLOT(resizeItemsToContents()));
@@ -116,7 +118,7 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& word,
         Q_CHECK_PTR(bottomView);
         mainVlay->addWidget(bottomView);
 
-        bottomModel = new WordTableModel(wordEngine, this);
+        bottomModel = new WordTableModel(wordEngine, lexicon, this);
         Q_CHECK_PTR(bottomModel);
         connect(bottomModel, SIGNAL(wordsChanged()),
                 bottomView, SLOT(resizeItemsToContents()));
@@ -280,8 +282,7 @@ WordVariationDialog::setWordVariation(const QString& word, WordVariationType
         default: break;
     }
 
-
-    if (!wordEngine->isAcceptable(Hack::LEXICON, word))
+    if (!wordEngine->isAcceptable(lexicon, word))
         title += "*";
     setWindowTitle(title);
     wordLabel->setText(title);
@@ -362,8 +363,7 @@ WordVariationDialog::getWordItems(const QList<SearchSpec>& searchSpecs) const
     QMap<QString, QString> wordMap;
     QListIterator<SearchSpec> lit (searchSpecs);
     while (lit.hasNext()) {
-        QStringList wordList = wordEngine->search(Hack::LEXICON, lit.next(),
-                                                  false);
+        QStringList wordList = wordEngine->search(lexicon, lit.next(), false);
         QStringListIterator wit (wordList);
         while (wit.hasNext()) {
             QString str = wit.next();

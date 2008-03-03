@@ -788,11 +788,13 @@ MainWindow::viewDefinition()
                         entryDialog->minimumSizeHint().height());
     int code = entryDialog->exec();
     QString word = entryDialog->getWord();
+    QString lexicon = entryDialog->getLexicon();
     delete entryDialog;
     if ((code != QDialog::Accepted) || word.isEmpty())
         return;
 
-    DefinitionDialog* dialog = new DefinitionDialog(wordEngine, word, this);
+    DefinitionDialog* dialog = new DefinitionDialog(wordEngine, lexicon, word,
+                                                    this);
     Q_CHECK_PTR(dialog);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->show();
@@ -827,13 +829,14 @@ MainWindow::viewVariation(int variation)
                         entryDialog->minimumSizeHint().height());
     int code = entryDialog->exec();
     QString word = entryDialog->getWord();
+    QString lexicon = entryDialog->getLexicon();
     delete entryDialog;
     if ((code != QDialog::Accepted) || word.isEmpty())
         return;
 
     WordVariationType type = static_cast<WordVariationType>(variation);
-    WordVariationDialog* dialog = new WordVariationDialog(wordEngine, word,
-                                                          type, this);
+    WordVariationDialog* dialog = new WordVariationDialog(wordEngine, lexicon,
+                                                          word, type, this);
     Q_CHECK_PTR(dialog);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->show();

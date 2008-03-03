@@ -3,7 +3,7 @@
 //
 // A dialog for getting a word from the user.
 //
-// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -28,6 +28,7 @@
 #include <QDialog>
 #include <QLineEdit>
 
+class LexiconSelectWidget;
 class WordValidator;
 
 class WordEntryDialog : public QDialog
@@ -38,8 +39,10 @@ class WordEntryDialog : public QDialog
     ~WordEntryDialog();
 
     QString getWord() const { return wordLine->text(); }
+    QString getLexicon() const;
 
     private:
+    LexiconSelectWidget* lexiconWidget;
     QLineEdit*     wordLine;
     WordValidator* wordValidator;
 };

@@ -231,7 +231,7 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(responseView);
     mainVlay->addWidget(responseView);
 
-    responseModel = new WordTableModel(wordEngine, this);
+    responseModel = new WordTableModel(wordEngine, Hack::LEXICON, this);
     Q_CHECK_PTR(responseModel);
     connect(responseModel, SIGNAL(wordsChanged()),
             responseView, SLOT(resizeItemsToContents()));

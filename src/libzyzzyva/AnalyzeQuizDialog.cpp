@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,6 +34,8 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
+
+#include "Hack.h"
 
 const QString DIALOG_CAPTION = "Analyze Quiz";
 const QString MISSED_LABEL_PREFIX = "Missed : ";
@@ -82,7 +84,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog(QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR(missedView);
     mainVlay->addWidget(missedView);
 
-    missedModel = new WordTableModel(wordEngine, this);
+    missedModel = new WordTableModel(wordEngine, Hack::LEXICON, this);
     Q_CHECK_PTR(missedModel);
     connect(missedModel, SIGNAL(wordsChanged()),
             missedView, SLOT(resizeItemsToContents()));
@@ -107,7 +109,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog(QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR(incorrectView);
     mainVlay->addWidget(incorrectView);
 
-    incorrectModel = new WordTableModel(wordEngine, this);
+    incorrectModel = new WordTableModel(wordEngine, Hack::LEXICON, this);
     Q_CHECK_PTR(incorrectModel);
     connect(incorrectModel, SIGNAL(wordsChanged()),
             incorrectView, SLOT(resizeItemsToContents()));

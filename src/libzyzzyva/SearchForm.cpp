@@ -106,7 +106,8 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(resultView);
     specVlay->addWidget(resultView, 1);
 
-    resultModel = new WordTableModel(wordEngine, this);
+    resultModel = new WordTableModel(wordEngine,
+        lexiconWidget->getSelectedLexicon(), this);
     Q_CHECK_PTR(resultModel);
     connect(resultModel, SIGNAL(wordsChanged()),
             resultView, SLOT(resizeItemsToContents()));

@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "WordEntryDialog.h"
+#include "LexiconSelectWidget.h"
 #include "WordValidator.h"
 #include "ZPushButton.h"
 #include "Defs.h"
@@ -52,6 +53,10 @@ WordEntryDialog::WordEntryDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
+
+    lexiconWidget = new LexiconSelectWidget;
+    Q_CHECK_PTR(lexiconWidget);
+    mainVlay->addWidget(lexiconWidget);
 
     QHBoxLayout* lineHlay = new QHBoxLayout;
     Q_CHECK_PTR(lineHlay);
@@ -99,4 +104,17 @@ WordEntryDialog::WordEntryDialog(QWidget* parent, Qt::WFlags f)
 WordEntryDialog::~WordEntryDialog()
 {
     delete wordValidator;
+}
+
+//---------------------------------------------------------------------------
+//  getLexicon
+//
+//! Return the selected lexicon.
+//
+//! @return the selected lexicon
+//---------------------------------------------------------------------------
+QString
+WordEntryDialog::getLexicon() const
+{
+    return lexiconWidget->getSelectedLexicon();
 }

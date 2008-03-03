@@ -43,12 +43,14 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param e the word engine to use for looking up definitions
+//! @param lexicon the lexicon to use
 //! @param word the word to define
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-DefinitionDialog::DefinitionDialog(WordEngine* e, const QString& word,
-                                   QWidget* parent, Qt::WFlags f)
+DefinitionDialog::DefinitionDialog(WordEngine* e, const QString& lexicon,
+                                   const QString& word, QWidget* parent,
+                                   Qt::WFlags f)
     : QDialog(parent, f), engine(e)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
@@ -56,7 +58,7 @@ DefinitionDialog::DefinitionDialog(WordEngine* e, const QString& word,
     mainVlay->setSpacing(SPACING);
     Q_CHECK_PTR(mainVlay);
 
-    bool acceptable = engine->isAcceptable(Hack::LEXICON, word);
+    bool acceptable = engine->isAcceptable(lexicon, word);
     QString wordAcceptable = acceptable ? word : word + "*";
 
     DefinitionBox* defBox = new DefinitionBox;
@@ -80,7 +82,7 @@ DefinitionDialog::DefinitionDialog(WordEngine* e, const QString& word,
 
     setWindowTitle(DIALOG_CAPTION_PREFIX + wordAcceptable);
 
-    QString definition = engine->getDefinition(Hack::LEXICON, word);
+    QString definition = engine->getDefinition(lexicon, word);
     if (definition.isEmpty()) {
         definition = acceptable ? EMPTY_DEFINITION :
             QString("<font color=\"red\">Unacceptable</font>");

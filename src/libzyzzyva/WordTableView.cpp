@@ -101,8 +101,11 @@ WordTableView::viewDefinition()
 {
     QModelIndex index = currentIndex();
     index = index.sibling(index.row(), WordTableModel::WORD_COLUMN);
-    QString word = model()->data(index, Qt::EditRole).toString();
-    DefinitionDialog* dialog = new DefinitionDialog(wordEngine, word, this);
+    WordTableModel* wordModel = static_cast<WordTableModel*>(model());
+    QString word = wordModel->data(index, Qt::EditRole).toString();
+    QString lexicon = wordModel->getLexicon();
+    DefinitionDialog* dialog = new DefinitionDialog(wordEngine, lexicon, word,
+                                                    this);
     Q_CHECK_PTR(dialog);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->show();
@@ -120,10 +123,12 @@ WordTableView::viewVariation(int variation)
 {
     QModelIndex index = currentIndex();
     index = index.sibling(index.row(), WordTableModel::WORD_COLUMN);
-    QString word = model()->data(index, Qt::EditRole).toString();
+    WordTableModel* wordModel = static_cast<WordTableModel*>(model());
+    QString word = wordModel->data(index, Qt::EditRole).toString();
+    QString lexicon = wordModel->getLexicon();
     WordVariationType type = static_cast<WordVariationType>(variation);
-    WordVariationDialog* dialog = new WordVariationDialog(wordEngine, word,
-                                                          type, this);
+    WordVariationDialog* dialog = new WordVariationDialog(wordEngine, lexicon,
+                                                          word, type, this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     Q_CHECK_PTR(dialog);
     dialog->show();
