@@ -113,7 +113,6 @@ class MainWindow : public QMainWindow
                     quint16* expectedChecksum = 0);
     QList<quint16> importChecksums(const QString& file);
     int  importStems();
-    void setNumWords(int num);
     void readSettings(bool useGeometry);
     void writeSettings();
     void newTab(ActionForm* form);
@@ -135,7 +134,6 @@ class MainWindow : public QMainWindow
     QTabWidget*  tabStack;
     QToolButton* closeButton;
     QLabel*      messageLabel;
-    QLabel*      lexiconLabel;
 
     QAction*     saveAction;
 

@@ -338,11 +338,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     messageLabel = new QLabel;
     Q_CHECK_PTR(messageLabel);
-    statusBar()->addWidget(messageLabel, 2);
-
-    lexiconLabel = new QLabel;
-    Q_CHECK_PTR(lexiconLabel);
-    statusBar()->addWidget(lexiconLabel, 1);
+    statusBar()->addWidget(messageLabel);
 
     setSplashMessage("Reading settings...");
     readSettings(true);
@@ -355,7 +351,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     tryAutoImport();
     tryConnectToDatabases();
-    setNumWords(0);
 
     if (!instance)
         instance = this;
@@ -1401,27 +1396,6 @@ MainWindow::closeEvent(QCloseEvent* event)
 }
 
 //---------------------------------------------------------------------------
-//  setNumWords
-//
-//! Update the label displaying the number of words loaded.
-//
-//! @param num the new number of words loaded
-//---------------------------------------------------------------------------
-void
-MainWindow::setNumWords(int num)
-{
-    //QString label = wordEngine->getLexiconName();
-    QString label = Hack::LEXICON;
-
-    if (label.isEmpty())
-        label = "No lexicon loaded";
-    else if (num)
-        label += " - " + QString::number(num) + " words";
-
-    lexiconLabel->setText(label);
-}
-
-//---------------------------------------------------------------------------
 //  readSettings
 //
 //! Read application settings.
@@ -1854,8 +1828,6 @@ MainWindow::importText(const QString& lexicon, const QString& file)
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     int imported = wordEngine->importTextFile(lexicon, file, true);
     QApplication::restoreOverrideCursor();
-
-    setNumWords(imported);
     return imported;
 }
 
