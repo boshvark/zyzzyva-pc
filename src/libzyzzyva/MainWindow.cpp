@@ -882,8 +882,7 @@ MainWindow::rescheduleCardboxRequested()
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
         QString quizType = dialog->getQuizType();
-        //QString lexicon = wordEngine->getLexiconName();
-        QString lexicon = Hack::LEXICON;
+        QString lexicon = dialog->getLexicon();
 
         QStringList words;
         if (!dialog->getRescheduleAll()) {

@@ -3,7 +3,7 @@
 //
 // A dialog for rescheduling words within the cardbox system.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -33,6 +33,7 @@
 #include <QRadioButton>
 #include <QSpinBox>
 
+class LexiconSelectWidget;
 class SearchSpecForm;
 
 class CardboxRescheduleDialog : public QDialog
@@ -43,6 +44,7 @@ class CardboxRescheduleDialog : public QDialog
     ~CardboxRescheduleDialog() { }
 
     public:
+    QString getLexicon() const;
     QString getQuizType() const;
     bool getShiftQuestions() const;
     int getBacklogSize() const;
@@ -54,6 +56,7 @@ class CardboxRescheduleDialog : public QDialog
     void useSearchButtonToggled(bool checked);
 
     private:
+    LexiconSelectWidget* lexiconWidget;
     QComboBox* quizTypeCombo;
     QRadioButton* shiftQuestionsButton;
     QSpinBox* backlogSbox;

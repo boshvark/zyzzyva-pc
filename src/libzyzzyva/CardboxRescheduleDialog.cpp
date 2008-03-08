@@ -3,7 +3,7 @@
 //
 // A dialog for rescheduling words within the cardbox system.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "CardboxRescheduleDialog.h"
+#include "LexiconSelectWidget.h"
 #include "SearchSpecForm.h"
 #include "ZPushButton.h"
 #include "Auxil.h"
@@ -51,6 +52,10 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
     Q_CHECK_PTR(mainVlay);
+
+    lexiconWidget = new LexiconSelectWidget;
+    Q_CHECK_PTR(lexiconWidget);
+    mainVlay->addWidget(lexiconWidget);
 
     QHBoxLayout* quizTypeHlay = new QHBoxLayout;
     Q_CHECK_PTR(quizTypeHlay);
@@ -153,6 +158,19 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     shiftQuestionsButton->setChecked(true);
     selectAllButton->setChecked(true);
     searchSpecGbox->setEnabled(false);
+}
+
+//---------------------------------------------------------------------------
+//  getLexicon
+//
+//! Return the lexicon chosen by the user.
+//
+//! @return the lexicon
+//---------------------------------------------------------------------------
+QString
+CardboxRescheduleDialog::getLexicon() const
+{
+    return lexiconWidget->getSelectedLexicon();
 }
 
 //---------------------------------------------------------------------------
