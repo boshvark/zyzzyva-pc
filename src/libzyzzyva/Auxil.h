@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_AUXIL_H
 #define ZYZZYVA_AUXIL_H
 
+#include "LexiconStyle.h"
 #include "QuizSpec.h"
 #include "SearchCondition.h"
 #include "SearchSet.h"
@@ -72,6 +73,8 @@ namespace Auxil {
     WordAttribute stringToWordAttribute(const QString& string);
     QString wordListFormatToString(WordListFormat format);
     WordListFormat stringToWordListFormat(const QString& string);
+    QString lexiconStyleToString(const LexiconStyle& style);
+    LexiconStyle stringToLexiconStyle(const QString& string);
     QDate lexiconToDate(const QString& lexicon);
 }
 

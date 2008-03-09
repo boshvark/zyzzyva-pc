@@ -26,19 +26,26 @@
 #ifndef ZYZZYVA_LEXICON_STYLE_H
 #define ZYZZYVA_LEXICON_STYLE_H
 
-#include <QColor>
-#include <QFont>
+//#include <QColor>
+//#include <QFont>
 #include <QString>
 
 class LexiconStyle
 {
     public:
+    LexiconStyle() : inCompareLexicon(false) { }
+    bool isValid() const {
+        return (!lexicon.isEmpty() && !compareLexicon.isEmpty() &&
+            !symbol.isEmpty());
+    }
+
+    public:
     QString lexicon;
     QString compareLexicon;
     bool    inCompareLexicon;
     QString symbol;
-    QFont   font;
-    QColor  color;
+    //QFont   font;
+    //QColor  color;
 };
 
 #endif // ZYZZYVA_LEXICON_STYLE_H

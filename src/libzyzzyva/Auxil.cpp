@@ -1147,6 +1147,47 @@ Auxil::stringToWordListFormat(const QString& s)
 }
 
 //---------------------------------------------------------------------------
+//  lexiconStyleToString
+//
+//! Convert a lexicon style to a string representation.
+//
+//! @param style the lexicon style
+//! @return the string representation
+//---------------------------------------------------------------------------
+QString
+Auxil::lexiconStyleToString(const LexiconStyle& style)
+{
+    return style.lexicon + " and " +
+        (style.inCompareLexicon ? QString() : QString("not ")) +
+        style.compareLexicon + ": symbol " +
+        style.symbol;
+}
+
+//---------------------------------------------------------------------------
+//  stringToLexiconStyle
+//
+//! Convert a string representation to a lexicon style.
+//
+//! @param s the string representation
+//! @return the lexicon style
+//---------------------------------------------------------------------------
+LexiconStyle
+Auxil::stringToLexiconStyle(const QString& s)
+{
+    QRegExp regex("^(\\S+)\\s+and\\s+(not\\s+)?(\\S+):\\s+symbol\\s+(\\S+)");
+    int pos = regex.indexIn(s);
+    if (pos < 0)
+        return LexiconStyle();
+
+    LexiconStyle style;
+    style.lexicon = regex.cap(1);
+    style.compareLexicon = regex.cap(3);
+    style.inCompareLexicon = regex.cap(2).isEmpty();
+    style.symbol = regex.cap(4);
+    return style;
+}
+
+//---------------------------------------------------------------------------
 //  lexiconToDate
 //
 //! Convert a lexicon name to the date the lexicon was last updated

@@ -56,6 +56,8 @@ const QString SETTINGS_SHOW_PROBABILITY_ORDER
 const QString SETTINGS_SHOW_HOOKS = "wordlist_show_hooks";
 const QString SETTINGS_SHOW_HOOK_PARENTS = "wordlist_show_hook_parents";
 const QString SETTINGS_SHOW_DEFINITIONS = "wordlist_show_definitions";
+const QString SETTINGS_USE_LEXICON_STYLES = "wordlist_use_lexicon_styles";
+const QString SETTINGS_LEXICON_STYLES = "wordlist_lexicon_styles";
 const QString SETTINGS_USE_TILE_THEME = "use_tile_theme";
 const QString SETTINGS_TILE_THEME = "tile_theme";
 const QString SETTINGS_QUIZ_LETTER_ORDER = "quiz_letter_order";
@@ -77,6 +79,11 @@ const QString DEFAULT_DEFAULT_LEXICON = "OWL2+LWL";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb(0, 0, 127);
+const QString DEFAULT_LEXICON_STYLES =
+    "OWL2+LWL and not OWL+LWL: symbol %\n"
+    "OWL2+LWL and not OSPD4+LWL: symbol !\n"
+    "CSW and not OWL2+LWL: symbol #\n"
+    "CSW and not OSWI: symbol ^";
 const QString DEFAULT_LETTER_DISTRIBUTION = "A:9 B:2 C:2 D:4 E:12 F:2 G:3 "
     "H:2 I:9 J:1 K:1 L:4 M:2 N:6 O:8 P:2 Q:1 R:6 S:4 T:6 U:4 V:2 W:2 X:1 "
     "Y:2 Z:1 _:2";
@@ -212,6 +219,24 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_SHOW_HOOK_PARENTS, true).toBool();
     instance->wordListShowDefinitions
         = settings.value(SETTINGS_SHOW_DEFINITIONS, true).toBool();
+
+    instance->wordListUseLexiconStyles
+        = settings.value(SETTINGS_USE_LEXICON_STYLES, true).toBool();
+
+    QString lexiconStyleStr
+        = settings.value(SETTINGS_LEXICON_STYLES,
+                         DEFAULT_LEXICON_STYLES).toString();
+    instance->wordListLexiconStyles.clear();
+    QString str;
+    foreach (str, lexiconStyleStr.split(QChar('\n'))) {
+        qDebug("Read string: |%s|", str.toUtf8().constData());
+        LexiconStyle style = Auxil::stringToLexiconStyle(str);
+        if (!style.isValid())
+            continue;
+        instance->wordListLexiconStyles.append(style);
+        qDebug("Read style:  |%s|",
+               Auxil::lexiconStyleToString(style).toUtf8().constData());
+    }
 
     instance->letterDistribution
         = settings.value(SETTINGS_LETTER_DISTRIBUTION,
