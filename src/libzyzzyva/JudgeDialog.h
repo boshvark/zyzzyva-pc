@@ -4,7 +4,7 @@
 // A full-screen dialog for Word Judge functionality, in which the user can
 // very easily judge the validity of one or more words.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -40,7 +40,8 @@ class JudgeDialog : public QDialog
 {
     Q_OBJECT
     public:
-    JudgeDialog(WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
+    JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent = 0,
+                Qt::WFlags f = 0);
 
     public slots:
     void textChanged();
@@ -56,6 +57,7 @@ class JudgeDialog : public QDialog
 
     private:
     WordEngine*     engine;
+    QString         lexicon;
     QStackedWidget* widgetStack;
     QWidget*        inputWidget;
     QLabel*         instLabel;

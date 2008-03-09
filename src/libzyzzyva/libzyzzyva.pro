@@ -68,6 +68,7 @@ SOURCES = \
     IscConnectionThread.cpp \
     IscConverter.cpp \
     JudgeDialog.cpp \
+    JudgeSelectDialog.cpp \
     LetterBag.cpp \
     LexiconSelectDialog.cpp \
     LexiconSelectWidget.cpp \
@@ -123,6 +124,7 @@ HEADERS = \
     IntroForm.h \
     IscConnectionThread.h \
     JudgeDialog.h \
+    JudgeSelectDialog.h \
     LexiconSelectDialog.h \
     LexiconSelectWidget.h \
     MainWindow.h \

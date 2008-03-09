@@ -34,6 +34,7 @@
 #include "HelpDialog.h"
 #include "IntroForm.h"
 #include "JudgeDialog.h"
+#include "JudgeSelectDialog.h"
 #include "LexiconSelectDialog.h"
 #include "MainSettings.h"
 #include "NewQuizDialog.h"
@@ -717,20 +718,19 @@ MainWindow::doSaveAction()
 void
 MainWindow::doJudgeAction()
 {
-    QString caption = "Entering Full Screen Word Judge";
-    QString message = "You are now entering the full screen Word Judge mode.  "
-                      "To exit full screen mode, press ESC while holding the "
-                      "Shift key.";
-    message = Auxil::dialogWordWrap(message);
-    int code = QMessageBox::information(this, caption, message,
-                                        QMessageBox::Ok | QMessageBox::Cancel,
-                                        QMessageBox::Ok);
-
-    if (code != QMessageBox::Ok)
+    JudgeSelectDialog* selectDialog = new JudgeSelectDialog(this);
+    Q_CHECK_PTR(selectDialog);
+    int code = selectDialog->exec();
+    if (code != QDialog::Accepted) {
+        delete selectDialog;
         return;
+    }
+
+    QString lexicon = selectDialog->getLexicon();
+    delete selectDialog;
 
     QApplication::setOverrideCursor(Qt::BlankCursor);
-    JudgeDialog* dialog = new JudgeDialog(wordEngine, this);
+    JudgeDialog* dialog = new JudgeDialog(wordEngine, lexicon, this);
     Q_CHECK_PTR(dialog);
     dialog->exec();
     delete dialog;

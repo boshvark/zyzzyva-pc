@@ -69,11 +69,14 @@ using namespace Defs;
 //
 //! Constructor.
 //
+//! @param e the word engine
+//! @param lexi the lexicon to use
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-JudgeDialog::JudgeDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : QDialog(parent, f), engine(e), clearResultsHold(0)
+JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
+                         Qt::WFlags f)
+    : QDialog(parent, f), engine(e), lexicon(lex), clearResultsHold(0)
 {
     QFont formFont = qApp->font();
     formFont.setPixelSize(FORM_FONT_PIXEL_SIZE);
@@ -158,8 +161,6 @@ JudgeDialog::JudgeDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     titleHlay->addStretch(1);
 
-    //QString lexicon = engine->getLexiconName();
-    QString lexicon = Hack::LEXICON;
     QDate date = Auxil::lexiconToDate(lexicon);
     QString dateStr;
     if (date.isValid())
@@ -297,7 +298,7 @@ JudgeDialog::judgeWord()
     QStringList::iterator it;
     QString wordStr;
     for (it = words.begin(); it != words.end(); ++it) {
-        bool wordAcceptable = engine->isAcceptable(Hack::LEXICON, *it);
+        bool wordAcceptable = engine->isAcceptable(lexicon, *it);
 
         if (wordAcceptable)
             acceptableWords.append(*it);
@@ -348,9 +349,7 @@ JudgeDialog::judgeWord()
     if (!MainSettings::getJudgeSaveLog())
         return;
 
-    QString logDirName = MainSettings::getUserDataDir() + "/judge/" +
-        //engine->getLexiconName();
-        Hack::LEXICON;
+    QString logDirName = MainSettings::getUserDataDir() + "/judge/" + lexicon;
     QDir logDir (logDirName);
 
     if (!logDir.exists() && !logDir.mkdir(logDirName)) {
