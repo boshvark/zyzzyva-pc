@@ -106,8 +106,7 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(resultView);
     specVlay->addWidget(resultView, 1);
 
-    resultModel = new WordTableModel(wordEngine,
-        lexiconWidget->getSelectedLexicon(), this);
+    resultModel = new WordTableModel(wordEngine, this);
     Q_CHECK_PTR(resultModel);
     connect(resultModel, SIGNAL(wordsChanged()),
             resultView, SLOT(resizeItemsToContents()));
@@ -193,7 +192,7 @@ SearchForm::search()
     if (spec.conditions.empty())
         return;
 
-    QString lexicon = lexiconWidget->getSelectedLexicon();
+    QString lexicon = lexiconWidget->getCurrentLexicon();
 
     searchButton->setEnabled(false);
     resultModel->removeRows(0, resultModel->rowCount());

@@ -170,7 +170,7 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
 QString
 CardboxRescheduleDialog::getLexicon() const
 {
-    return lexiconWidget->getSelectedLexicon();
+    return lexiconWidget->getCurrentLexicon();
 }
 
 //---------------------------------------------------------------------------

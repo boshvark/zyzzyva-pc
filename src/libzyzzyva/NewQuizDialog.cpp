@@ -23,10 +23,10 @@
 //---------------------------------------------------------------------------
 
 #include "NewQuizDialog.h"
+#include "LexiconSelectWidget.h"
 #include "QuizSpec.h"
 #include "SearchSpec.h"
 #include "SearchSpecForm.h"
-#include "WordEngine.h"
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -56,11 +56,15 @@ using namespace Defs;
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-NewQuizDialog::NewQuizDialog(WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : QDialog(parent, f), wordEngine(e)
+NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
+    : QDialog(parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     Q_CHECK_PTR(mainVlay);
+
+    lexiconWidget = new LexiconSelectWidget;
+    Q_CHECK_PTR(lexiconWidget);
+    mainVlay->addWidget(lexiconWidget);
 
     QHBoxLayout* typeHlay = new QHBoxLayout;
     Q_CHECK_PTR(typeHlay);
@@ -280,8 +284,7 @@ NewQuizDialog::getQuizSpec()
     QuizSpec::QuizType quizType =
         Auxil::stringToQuizType(typeCombo->currentText());
 
-    //quizSpec.setLexicon(wordEngine->getLexiconName());
-    quizSpec.setLexicon(Hack::LEXICON);
+    quizSpec.setLexicon(lexiconWidget->getCurrentLexicon());
     quizSpec.setType(quizType);
     quizSpec.setMethod(quizMethod);
     quizSpec.setQuestionOrder(
@@ -337,6 +340,8 @@ NewQuizDialog::getQuizSpec()
 void
 NewQuizDialog::setQuizSpec(const QuizSpec& spec)
 {
+    bool lexiconOk = lexiconWidget->setCurrentLexicon(spec.getLexicon());
+
     // Set method before type, because type may end up changing the method
     methodCombo->setCurrentIndex(methodCombo->findText(
         Auxil::quizMethodToString(spec.getMethod())));
@@ -391,6 +396,14 @@ NewQuizDialog::setQuizSpec(const QuizSpec& spec)
         progressCbox->setChecked(true);
     }
     quizSpec = spec;
+
+    // Display warning of lexicon could not be selected
+    if (!lexiconOk) {
+        QString caption = "Error Setting Lexicon";
+        QString message = "Cannot open lexicon '" + spec.getLexicon() + "'";
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, caption, message);
+    }
 }
 
 //---------------------------------------------------------------------------
@@ -528,32 +541,6 @@ NewQuizDialog::loadQuiz()
         message = Auxil::dialogWordWrap(message);
         QMessageBox::warning(this, caption, message);
         return;
-    }
-
-    QString quizLexicon = spec.getLexicon();
-    //QString currentLexicon = wordEngine->getLexiconName();
-    QString currentLexicon = Hack::LEXICON;
-
-    if (quizLexicon != currentLexicon) {
-        if (quizLexicon.isEmpty())
-            quizLexicon = "unspecified";
-
-        QString caption = "Lexicon Mismatch";
-        QString message = "The lexicon associated with the quiz is "
-                          + quizLexicon + ", but the current lexicon is "
-                          + currentLexicon + ".  "
-                          "If a different lexicon is used, the quiz may "
-                          "encounter problems.\n\n"
-                          "Are you sure you want to proceed?";
-        message = Auxil::dialogWordWrap(message);
-        int code = QMessageBox::warning(this, caption, message,
-                                        QMessageBox::Yes | QMessageBox::No,
-                                        QMessageBox::No);
-
-        if (code != QMessageBox::Yes)
-            return;
-
-        spec.setLexicon(currentLexicon);
     }
 
     setQuizSpec(spec);

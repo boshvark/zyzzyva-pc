@@ -116,5 +116,5 @@ WordEntryDialog::~WordEntryDialog()
 QString
 WordEntryDialog::getLexicon() const
 {
-    return lexiconWidget->getSelectedLexicon();
+    return lexiconWidget->getCurrentLexicon();
 }

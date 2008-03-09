@@ -171,7 +171,7 @@ DefineForm::defineWord()
     if (word.isEmpty())
         return;
 
-    QString lexicon = lexiconWidget->getSelectedLexicon();
+    QString lexicon = lexiconWidget->getCurrentLexicon();
 
     bool acceptable = engine->isAcceptable(lexicon, word);
     QString resultStr = acceptable ?

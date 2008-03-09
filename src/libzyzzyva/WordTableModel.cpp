@@ -105,13 +105,10 @@ lessThan(const WordTableModel::WordItem& a,
 //! Constructor.
 //
 //! @param e the word engine
-//! @param lex the lexicon
 //! @param parent the parent object
 //---------------------------------------------------------------------------
-WordTableModel::WordTableModel(WordEngine* e, const QString& lex, QObject*
-                               parent)
-    : QAbstractTableModel(parent), wordEngine(e), lexicon(lex),
-    lastAddedIndex(-1)
+WordTableModel::WordTableModel(WordEngine* e, QObject* parent)
+    : QAbstractTableModel(parent), wordEngine(e), lastAddedIndex(-1)
 {
 }
 

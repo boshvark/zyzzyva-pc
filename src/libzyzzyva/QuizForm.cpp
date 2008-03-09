@@ -231,7 +231,7 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(responseView);
     mainVlay->addWidget(responseView);
 
-    responseModel = new WordTableModel(wordEngine, Hack::LEXICON, this);
+    responseModel = new WordTableModel(wordEngine, this);
     Q_CHECK_PTR(responseModel);
     connect(responseModel, SIGNAL(wordsChanged()),
             responseView, SLOT(resizeItemsToContents()));
@@ -575,6 +575,7 @@ QuizForm::newQuiz(const QuizSpec& spec)
     connectToDatabase(lexicon, quizType);
 
     quizTypeLabel->setText(quizType);
+    responseModel->setLexicon(lexicon);
     startQuestion();
     analyzeDialog->newQuiz(spec);
 
@@ -720,7 +721,7 @@ QuizForm::newQuizClicked()
     if (!promptToSaveChanges())
         return;
 
-    NewQuizDialog* dialog = new NewQuizDialog(wordEngine, this);
+    NewQuizDialog* dialog = new NewQuizDialog(this);
     Q_CHECK_PTR(dialog);
     QuizSpec spec = quizEngine->getQuizSpec();
     spec.setProgress(QuizProgress());
@@ -795,7 +796,8 @@ QuizForm::nextQuestionClicked()
 void
 QuizForm::checkResponseClicked()
 {
-    QuizSpec::QuizType quizType = quizEngine->getQuizSpec().getType();
+    const QuizSpec& quizSpec = quizEngine->getQuizSpec();
+    QuizSpec::QuizType quizType = quizSpec.getType();
 
     // Mark question missed if all correct answers were given, but an
     // incorrect answer was also given
@@ -819,7 +821,7 @@ QuizForm::checkResponseClicked()
         while (it.hasNext()) {
             QString word = it.next();
             QString response = word;
-            QString lexicon = Hack::LEXICON;
+            QString lexicon = quizSpec.getLexicon();
 
             if (quizType == QuizSpec::QuizAnagramsWithHooks) {
                 response =

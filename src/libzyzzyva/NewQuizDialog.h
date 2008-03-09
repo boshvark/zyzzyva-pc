@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -36,16 +36,16 @@
 #include <QStackedWidget>
 #include <QSpinBox>
 
+class LexiconSelectWidget;
 class SearchSpec;
 class SearchSpecForm;
-class WordEngine;
 class ZPushButton;
 
 class NewQuizDialog : public QDialog
 {
     Q_OBJECT
     public:
-    NewQuizDialog(WordEngine* e, QWidget* parent = 0, Qt::WFlags f = 0);
+    NewQuizDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~NewQuizDialog() { }
 
     QuizSpec getQuizSpec();
@@ -68,6 +68,7 @@ class NewQuizDialog : public QDialog
     void fillQuestionOrderCombo(const QString& method);
 
     private:
+    LexiconSelectWidget* lexiconWidget;
     QComboBox*      typeCombo;
     QComboBox*      methodCombo;
     QCheckBox*      progressCbox;
@@ -89,7 +90,6 @@ class NewQuizDialog : public QDialog
     QComboBox*      timerCombo;
 
     QuizSpec        quizSpec;
-    WordEngine*     wordEngine;
 };
 
 #endif // ZYZZYVA_NEW_QUIZ_DIALOG_H

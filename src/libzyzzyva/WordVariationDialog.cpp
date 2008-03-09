@@ -85,8 +85,9 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& lex,
     Q_CHECK_PTR(topView);
     mainVlay->addWidget(topView);
 
-    topModel = new WordTableModel(wordEngine, lexicon, this);
+    topModel = new WordTableModel(wordEngine, this);
     Q_CHECK_PTR(topModel);
+    topModel->setLexicon(lexicon);
     connect(topModel, SIGNAL(wordsChanged()),
             topView, SLOT(resizeItemsToContents()));
     topView->setModel(topModel);
@@ -101,8 +102,9 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& lex,
         Q_CHECK_PTR(middleView);
         mainVlay->addWidget(middleView);
 
-        middleModel = new WordTableModel(wordEngine, lexicon, this);
+        middleModel = new WordTableModel(wordEngine, this);
         Q_CHECK_PTR(middleModel);
+        middleModel->setLexicon(lexicon);
         connect(middleModel, SIGNAL(wordsChanged()),
                 middleView, SLOT(resizeItemsToContents()));
         middleView->setModel(middleModel);
@@ -118,8 +120,9 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& lex,
         Q_CHECK_PTR(bottomView);
         mainVlay->addWidget(bottomView);
 
-        bottomModel = new WordTableModel(wordEngine, lexicon, this);
+        bottomModel = new WordTableModel(wordEngine, this);
         Q_CHECK_PTR(bottomModel);
+        bottomModel->setLexicon(lexicon);
         connect(bottomModel, SIGNAL(wordsChanged()),
                 bottomView, SLOT(resizeItemsToContents()));
         bottomView->setModel(bottomModel);

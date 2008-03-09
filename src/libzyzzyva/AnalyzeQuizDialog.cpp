@@ -84,7 +84,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog(QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR(missedView);
     mainVlay->addWidget(missedView);
 
-    missedModel = new WordTableModel(wordEngine, Hack::LEXICON, this);
+    missedModel = new WordTableModel(wordEngine, this);
     Q_CHECK_PTR(missedModel);
     connect(missedModel, SIGNAL(wordsChanged()),
             missedView, SLOT(resizeItemsToContents()));
@@ -109,7 +109,7 @@ AnalyzeQuizDialog::AnalyzeQuizDialog(QuizEngine* qe, WordEngine* we, QWidget*
     Q_CHECK_PTR(incorrectView);
     mainVlay->addWidget(incorrectView);
 
-    incorrectModel = new WordTableModel(wordEngine, Hack::LEXICON, this);
+    incorrectModel = new WordTableModel(wordEngine, this);
     Q_CHECK_PTR(incorrectModel);
     connect(incorrectModel, SIGNAL(wordsChanged()),
             incorrectView, SLOT(resizeItemsToContents()));
@@ -145,6 +145,8 @@ void
 AnalyzeQuizDialog::newQuiz(const QuizSpec& spec)
 {
     questionLabel->setText(spec.asString());
+    missedModel->setLexicon(spec.getLexicon());
+    incorrectModel->setLexicon(spec.getLexicon());
     clearMissed();
     clearIncorrect();
 

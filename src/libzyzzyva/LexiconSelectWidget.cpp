@@ -70,13 +70,32 @@ LexiconSelectWidget::~LexiconSelectWidget()
 }
 
 //---------------------------------------------------------------------------
-//  getSelectedLexicon
+//  setCurrentLexicon
 //
-//! Update the list of available lexicons.  If a lexicon is selected, try to
-//! keep that lexicon selected.  Otherwise, select the default lexicon.
+//! Select a lexicon.
+//
+//! @param lexicon the lexicon to select
+//---------------------------------------------------------------------------
+bool
+LexiconSelectWidget::setCurrentLexicon(const QString& lexicon)
+{
+    int index = lexiconCombo->findText(lexicon);
+    if (index < 0)
+        return false;
+
+    lexiconCombo->setCurrentIndex(index);
+    return true;
+}
+
+//---------------------------------------------------------------------------
+//  getCurrentLexicon
+//
+//! Determine the currently selected lexicon.
+//
+//! @return the current lexicon
 //---------------------------------------------------------------------------
 QString
-LexiconSelectWidget::getSelectedLexicon() const
+LexiconSelectWidget::getCurrentLexicon() const
 {
     return lexiconCombo->currentText();
 }

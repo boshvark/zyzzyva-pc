@@ -305,7 +305,7 @@ QuizEngine::respond(const QString& response)
         word = sections.at(1);
         QString backHooks = Auxil::getAlphagram(sections.at(2));
 
-        QString lexicon = Hack::LEXICON;
+        QString lexicon = quizSpec.getLexicon();
         QString frontAnswers = wordEngine->getFrontHookLetters(lexicon, word);
         QString backAnswers = wordEngine->getBackHookLetters(lexicon, word);
 
@@ -455,7 +455,7 @@ QuizEngine::prepareQuestion()
 
     QStringList answers;
     QuizSpec::QuizType type = quizSpec.getType();
-    QString lexicon = Hack::LEXICON;
+    QString lexicon = quizSpec.getLexicon();
 
     if (type == QuizSpec::QuizWordListRecall)
         answers = wordEngine->search(lexicon, quizSpec.getSearchSpec(), true);

@@ -92,7 +92,7 @@ class WordTableModel : public QAbstractTableModel
 
     Q_OBJECT
     public:
-    WordTableModel(WordEngine* e, const QString& lex, QObject* parent = 0);
+    WordTableModel(WordEngine* e, QObject* parent = 0);
     ~WordTableModel();
 
     bool clear();

@@ -576,7 +576,7 @@ MainWindow::importInteractive()
 void
 MainWindow::newQuizFormInteractive()
 {
-    NewQuizDialog* dialog = new NewQuizDialog(wordEngine, this);
+    NewQuizDialog* dialog = new NewQuizDialog(this);
     Q_CHECK_PTR(dialog);
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
@@ -594,7 +594,7 @@ MainWindow::newQuizFormInteractive()
 void
 MainWindow::newQuizFormInteractive(const QuizSpec& quizSpec)
 {
-    NewQuizDialog* dialog = new NewQuizDialog(wordEngine, this);
+    NewQuizDialog* dialog = new NewQuizDialog(this);
     Q_CHECK_PTR(dialog);
     dialog->setQuizSpec(quizSpec);
     int code = dialog->exec();
@@ -1597,8 +1597,7 @@ MainWindow::newQuizFromWordFile(const QString& filename)
 
     QuizSpec quizSpec;
     quizSpec.setType(QuizSpec::QuizAnagrams);
-    //quizSpec.setLexicon(wordEngine->getLexiconName());
-    quizSpec.setLexicon(Hack::LEXICON);
+    quizSpec.setLexicon(MainSettings::getDefaultLexicon());
     quizSpec.setSearchSpec(searchSpec);
 
     newQuizForm(quizSpec);

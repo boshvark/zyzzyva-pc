@@ -35,7 +35,8 @@ class LexiconSelectWidget : public QWidget
     LexiconSelectWidget(QWidget* parent = 0, Qt::WFlags f = 0);
     ~LexiconSelectWidget();
 
-    QString getSelectedLexicon() const;
+    bool setCurrentLexicon(const QString& lexicon);
+    QString getCurrentLexicon() const;
 
     public slots:
     void updateLexicons();
