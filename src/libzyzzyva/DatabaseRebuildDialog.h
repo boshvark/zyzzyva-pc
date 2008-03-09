@@ -26,7 +26,6 @@
 #define ZYZZYVA_DATABASE_REBUILD_DIALOG_H
 
 #include <QDialog>
-#include <QLineEdit>
 
 class LexiconSelectWidget;
 
