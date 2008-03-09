@@ -127,6 +127,7 @@ class WordTableModel : public QAbstractTableModel
     bool isBackHook(const QString& word) const;
     QString getFrontHookLetters(const QString& word) const;
     QString getBackHookLetters(const QString& word) const;
+    QString getLexiconSymbols(const QString& word) const;
 
     private:
     WordEngine* wordEngine;

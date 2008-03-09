@@ -404,19 +404,22 @@ WordTableModel::data(const QModelIndex& index, int role) const
                     return wordUpper;
                 }
                 else if (role == Qt::DisplayRole) {
+                    QString str (word);
                     if (MainSettings::getWordListShowHookParents()) {
                         if (!wordItem.parentHooksAreValid()) {
                             wordItem.setParentHooks(isFrontHook(wordUpper),
                                                     isBackHook(wordUpper));
                         }
-                        return (wordItem.getFrontParentHook() ? PARENT_HOOK_CHAR
+                        str = (wordItem.getFrontParentHook() ? PARENT_HOOK_CHAR
                                 : QChar(' '))
-                            + word
+                            + str
                             + (wordItem.getBackParentHook() ? PARENT_HOOK_CHAR
                                : QChar(' '));
                     }
-                    else
-                        return word;
+                    if (MainSettings::getWordListUseLexiconStyles()) {
+                        str += getLexiconSymbols(word);
+                    }
+                    return str;
                 }
                 else
                     return word;
@@ -705,6 +708,36 @@ bool
 WordTableModel::isBackHook(const QString& word) const
 {
     return wordEngine->isAcceptable(lexicon, word.left(word.length() - 1));
+}
+
+//---------------------------------------------------------------------------
+//  getLexiconSymbols
+//
+//! Get lexicon symbols to be appended to a word to denote that the word
+//! belongs to certain lexicon combinations.
+//
+//! @param word the word, assumed to be upper case
+//! @return true a string containing all applicable lexicon symbols
+//---------------------------------------------------------------------------
+QString
+WordTableModel::getLexiconSymbols(const QString& word) const
+{
+    QString symbolStr;
+
+    // FIXME: instead of querying settings and iterating for every word, the
+    // WordTableModel should cache a styles to be applied, and the cache
+    // should be updated whenever settings are changed
+    QListIterator<LexiconStyle> it (MainSettings::getWordListLexiconStyles());
+    while (it.hasNext()) {
+        const LexiconStyle& style = it.next();
+        if (style.lexicon != lexicon)
+            continue;
+
+        bool acceptable = wordEngine->isAcceptable(style.compareLexicon, word);
+        if (!(acceptable ^ style.inCompareLexicon))
+            symbolStr += style.symbol;
+    }
+    return symbolStr;
 }
 
 //---------------------------------------------------------------------------
