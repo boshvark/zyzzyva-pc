@@ -25,6 +25,8 @@
 #include "SettingsDialog.h"
 #include "MainSettings.h"
 #include "LexiconSelectDialog.h"
+#include "LexiconStyle.h"
+#include "LexiconStyleDialog.h"
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -133,8 +135,9 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     autoImportButton = new ZPushButton;
     Q_CHECK_PTR(autoImportButton);
     autoImportButton->setText("Edit...");
+    autoImportButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(autoImportButton, SIGNAL(clicked()),
-            SLOT(selectLexiconsClicked()));
+            SLOT(chooseLexiconsClicked()));
     autoImportLexiconHlay->addWidget(autoImportButton);
 
     //autoImportLexiconCombo = new QComboBox;
@@ -583,6 +586,28 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(showDefinitionCbox);
     wordListDisplayVlay->addWidget(showDefinitionCbox);
 
+    lexiconStyleCbox = new QCheckBox("Show lexicon symbols");
+    Q_CHECK_PTR(lexiconStyleCbox);
+    connect(lexiconStyleCbox, SIGNAL(toggled(bool)),
+            SLOT(lexiconStyleCboxToggled(bool)));
+    wordListDisplayVlay->addWidget(lexiconStyleCbox);
+
+    QHBoxLayout* lexiconStyleHlay = new QHBoxLayout;
+    Q_CHECK_PTR(lexiconStyleHlay);
+    wordListDisplayVlay->addLayout(lexiconStyleHlay);
+
+    lexiconStyleLabel = new QLabel;
+    Q_CHECK_PTR(lexiconStyleLabel);
+    lexiconStyleHlay->addWidget(lexiconStyleLabel);
+
+    lexiconStyleButton = new ZPushButton;
+    Q_CHECK_PTR(lexiconStyleButton);
+    lexiconStyleButton->setText("Edit...");
+    lexiconStyleButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(lexiconStyleButton, SIGNAL(clicked()),
+            SLOT(chooseLexiconStyleClicked()));
+    lexiconStyleHlay->addWidget(lexiconStyleButton);
+
     QGroupBox* wordListSortGbox = new QGroupBox("Sorting and Grouping");
     Q_CHECK_PTR(wordListSortGbox);
     wordListPrefVlay->addWidget(wordListSortGbox);
@@ -751,6 +776,12 @@ SettingsDialog::readSettings()
     showHookParentsCbox->setChecked(MainSettings::getWordListShowHookParents());
     showDefinitionCbox->setChecked(MainSettings::getWordListShowDefinitions());
 
+    bool useLexiconStyles = MainSettings::getWordListUseLexiconStyles();
+    lexiconStyleCbox->setChecked(useLexiconStyles);
+    lexiconStyleCboxToggled(useLexiconStyles);
+
+    setLexiconStyles(MainSettings::getWordListLexiconStyles());
+
     updateJudgeLogDirLabel();
 }
 
@@ -884,19 +915,19 @@ SettingsDialog::autoImportLexiconActivated(const QString& text)
 }
 
 //---------------------------------------------------------------------------
-//  selectLexiconsClicked
+//  chooseLexiconsClicked
 //
-//! Slot called when the Select Lexicons button is clicked.  Display the
+//! Slot called when the Choose Lexicons button is clicked.  Display the
 //! lexicon selection dialog.
 //---------------------------------------------------------------------------
 void
-SettingsDialog::selectLexiconsClicked()
+SettingsDialog::chooseLexiconsClicked()
 {
     QString defaultLexicon;
     QStringList importLexicons;
     getImportLexicons(importLexicons, defaultLexicon);
 
-    LexiconSelectDialog* dialog = new LexiconSelectDialog;
+    LexiconSelectDialog* dialog = new LexiconSelectDialog(this);
     Q_CHECK_PTR(dialog);
     dialog->setImportLexicons(importLexicons);
     dialog->setDefaultLexicon(defaultLexicon);
@@ -1047,6 +1078,44 @@ SettingsDialog::chooseQuizBackgroundColorButtonClicked()
 }
 
 //---------------------------------------------------------------------------
+//  lexiconStyleCboxToggled
+//
+//! Slot called when the Lexicon Style check box is toggled.  Enable or
+//! disable the lexicon style edit area.
+//
+//! @param on true if the check box is on, false if it is off
+//---------------------------------------------------------------------------
+void
+SettingsDialog::lexiconStyleCboxToggled(bool on)
+{
+    lexiconStyleLabel->setEnabled(on);
+    lexiconStyleButton->setEnabled(on);
+}
+
+//---------------------------------------------------------------------------
+//  chooseLexiconStyleClicked
+//
+//! Slot called when the Choose Lexicon Style button is clicked.  Display the
+//! lexicon style selection dialog.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::chooseLexiconStyleClicked()
+{
+    QList<LexiconStyle> styles = getLexiconStyles();
+
+    LexiconStyleDialog* dialog = new LexiconStyleDialog(this);
+    Q_CHECK_PTR(dialog);
+    dialog->setLexiconStyles(styles);
+
+    int code = dialog->exec();
+    if (code == QDialog::Accepted) {
+        setLexiconStyles(dialog->getLexiconStyles());
+    }
+
+    delete dialog;
+}
+
+//---------------------------------------------------------------------------
 //  setImportLexicons
 //
 //! Set the contents of the Lexicon Import label with a list of lexicons to
@@ -1093,6 +1162,51 @@ SettingsDialog::getImportLexicons(QStringList& lexicons, QString&
         autoImportText.replace(defaultRegex, "\\1");
     }
     lexicons = autoImportText.split(LEXICON_SEP);
+}
+
+//---------------------------------------------------------------------------
+//  setLexiconStyles
+//
+//! Set the contents of the Lexicon Style label with a list of lexicon styles.
+//
+//! @param styles the list of lexicon styles
+//---------------------------------------------------------------------------
+void
+SettingsDialog::setLexiconStyles(const QList<LexiconStyle>& styles)
+{
+    //QString importText;
+    //QStringListIterator it (lexicons);
+    //while (it.hasNext()) {
+    //    const QString& lexicon = it.next();
+
+    //    if (!importText.isEmpty())
+    //        importText += LEXICON_SEP;
+
+    //    importText += (lexicon == defaultLexicon) ?
+    //        QString("<b>%1</b>").arg(lexicon) : lexicon;
+    //}
+    //autoImportLabel->setText(importText);
+}
+
+//---------------------------------------------------------------------------
+//  getLexiconStyles
+//
+//! Determine the lexicon styles from the contents of the lexicon style label.
+//
+//! @return the list of lexicon styles
+//---------------------------------------------------------------------------
+QList<LexiconStyle>
+SettingsDialog::getLexiconStyles() const
+{
+    return QList<LexiconStyle>();
+
+    //QRegExp defaultRegex ("<b>(\\S+)</b>");
+    //QString autoImportText = autoImportLabel->text();
+    //if (autoImportText.contains(defaultRegex)) {
+    //    defaultLexicon = defaultRegex.cap(1);
+    //    autoImportText.replace(defaultRegex, "\\1");
+    //}
+    //lexicons = autoImportText.split(LEXICON_SEP);
 }
 
 //---------------------------------------------------------------------------

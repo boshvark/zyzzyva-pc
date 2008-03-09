@@ -25,7 +25,9 @@
 #ifndef ZYZZYVA_MAIN_SETTINGS_H
 #define ZYZZYVA_MAIN_SETTINGS_H
 
+#include "LexiconStyle.h"
 #include <QColor>
+#include <QList>
 #include <QPoint>
 #include <QSize>
 #include <QString>
@@ -149,6 +151,14 @@ class MainSettings
         return instance->wordListShowDefinitions; }
     static void setWordListShowDefinitions(bool b) {
         instance->wordListShowDefinitions = b; }
+    static bool getWordListUseLexiconStyles() {
+        return instance->wordListUseLexiconStyles; }
+    static void setWordListUseLexiconStyles(bool b) {
+        instance->wordListUseLexiconStyles = b; }
+    static QList<LexiconStyle> getWordListLexiconStyles() {
+        return instance->wordListLexiconStyles; }
+    static void setWordListLexiconStyles(const QList<LexiconStyle>& slist) {
+        instance->wordListLexiconStyles = slist; }
     static QString getLetterDistribution() {
         return instance->letterDistribution; }
     static void setLetterDistribution(const QString& str) {
@@ -162,7 +172,8 @@ class MainSettings
                      wordListSortByProbabilityOrder(false),
                      wordListShowHooks(false),
                      wordListShowHookParents(false),
-                     wordListShowDefinitions(false), judgeSaveLog(true) { }
+                     wordListShowDefinitions(false),
+                     wordListUseLexiconStyles(false), judgeSaveLog(true) { }
     ~MainSettings() { }
 
     // private and undefined
@@ -205,6 +216,8 @@ class MainSettings
     bool wordListShowHooks;
     bool wordListShowHookParents;
     bool wordListShowDefinitions;
+    bool wordListUseLexiconStyles;
+    QList<LexiconStyle> wordListLexiconStyles;
     QString letterDistribution;
     bool judgeSaveLog;
 };

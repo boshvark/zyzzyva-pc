@@ -34,6 +34,7 @@
 #include <QSettings>
 #include <QStackedWidget>
 
+class LexiconStyle;
 class ZPushButton;
 
 class SettingsDialog : public QDialog
@@ -51,7 +52,7 @@ class SettingsDialog : public QDialog
     void autoImportBrowseButtonClicked();
     void autoImportCboxToggled(bool on);
     void autoImportLexiconActivated(const QString& text);
-    void selectLexiconsClicked();
+    void chooseLexiconsClicked();
     void userDataDirBrowseButtonClicked();
     void userDataDirChanged(const QString& text);
     void themeCboxToggled(bool on);
@@ -59,12 +60,16 @@ class SettingsDialog : public QDialog
     void judgeSaveLogCboxToggled(bool on);
     void chooseFontButtonClicked(int button);
     void chooseQuizBackgroundColorButtonClicked();
+    void lexiconStyleCboxToggled(bool on);
+    void chooseLexiconStyleClicked();
 
     private:
     void setImportLexicons(const QStringList& lexicons, const QString&
                            defaultLexicon);
     void getImportLexicons(QStringList& lexicons, QString& defaultLexicon)
         const;
+    void setLexiconStyles(const QList<LexiconStyle>& styleStr);
+    QList<LexiconStyle> getLexiconStyles() const;
     void fillThemeCombo();
     void updateJudgeLogDirLabel();
 
@@ -113,6 +118,9 @@ class SettingsDialog : public QDialog
     QCheckBox*   showHookParentsCbox;
     QCheckBox*   showHooksCbox;
     QCheckBox*   showDefinitionCbox;
+    QCheckBox*   lexiconStyleCbox;
+    QLabel*      lexiconStyleLabel;
+    ZPushButton* lexiconStyleButton;
 
     QColor       quizBackgroundColor;
     QString      origUserDataDir;
