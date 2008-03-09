@@ -28,6 +28,7 @@
 #include "CardboxRescheduleDialog.h"
 #include "CreateDatabaseThread.h"
 #include "CrosswordGameForm.h"
+#include "DatabaseRebuildDialog.h"
 #include "DefinitionDialog.h"
 #include "DefineForm.h"
 #include "HelpDialog.h"
@@ -845,22 +846,16 @@ MainWindow::viewVariation(int variation)
 void
 MainWindow::rebuildDatabaseRequested()
 {
-    QString lexicon = Hack::LEXICON;
-    QString caption = "Rebuild Database";
-    QString message = "You have requested that Zyzzyva rebuild its database "
-        "for the current lexicon (" + lexicon + ").  This may take several "
-        "minutes.\n\nRebuild the database now?";
-    message = Auxil::dialogWordWrap(message);
+    DatabaseRebuildDialog* dialog = new DatabaseRebuildDialog(this);
+    Q_CHECK_PTR(dialog);
 
-    int code = QMessageBox::question(this, caption, message,
-                                     QMessageBox::Yes | QMessageBox::No,
-                                     QMessageBox::Yes);
-    if (code != QMessageBox::Yes) {
-        return;
+    int code = dialog->exec();
+    if (code == QDialog::Accepted) {
+        QString lexicon = dialog->getLexicon();
+        rebuildDatabase(lexicon);
+        connectToDatabase(lexicon);
     }
-
-    rebuildDatabase(lexicon);
-    connectToDatabase(lexicon);
+    delete dialog;
 }
 
 //---------------------------------------------------------------------------
