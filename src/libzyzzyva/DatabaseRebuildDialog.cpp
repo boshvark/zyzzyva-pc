@@ -27,7 +27,6 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include <QDialogButtonBox>
-#include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
 
