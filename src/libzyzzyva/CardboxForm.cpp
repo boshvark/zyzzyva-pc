@@ -21,6 +21,7 @@
 //---------------------------------------------------------------------------
 
 #include "CardboxForm.h"
+#include "LexiconSelectWidget.h"
 #include "QuizDatabase.h"
 #include "WordEngine.h"
 #include "ZPushButton.h"
@@ -48,12 +49,37 @@ const int REFRESH_MSECS = 120000;
 CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     : ActionForm(CardboxFormType, parent, f), wordEngine(e),
     quizDatabase(0), cardboxCountModel(0), cardboxDaysModel(0),
-    cardboxContentsModel(0)
+    cardboxContentsModel(0), dbDirty(true)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainVlay);
+
+    lexiconWidget = new LexiconSelectWidget;
+    Q_CHECK_PTR(lexiconWidget);
+    connect(lexiconWidget->getComboBox(), SIGNAL(activated(int)),
+            SLOT(quizSpecChanged()));
+    mainVlay->addWidget(lexiconWidget);
+
+    QHBoxLayout* quizTypeHlay = new QHBoxLayout;
+    Q_CHECK_PTR(quizTypeHlay);
+    quizTypeHlay->setSpacing(SPACING);
+    mainVlay->addLayout(quizTypeHlay);
+
+    QLabel* quizTypeLabel = new QLabel;
+    Q_CHECK_PTR(quizTypeLabel);
+    quizTypeLabel->setText("Quiz Type:");
+    quizTypeHlay->addWidget(quizTypeLabel);
+
+    quizTypeCombo = new QComboBox;
+    Q_CHECK_PTR(quizTypeCombo);
+    quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizAnagrams));
+    quizTypeCombo->addItem(
+        Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
+    quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizHooks));
+    connect(quizTypeCombo, SIGNAL(activated(int)), SLOT(quizSpecChanged()));
+    quizTypeHlay->addWidget(quizTypeCombo);
 
     QHBoxLayout* cardboxHlay = new QHBoxLayout;
     Q_CHECK_PTR(cardboxHlay);
@@ -135,6 +161,14 @@ void
 CardboxForm::refreshClicked()
 {
     qDebug("CardboxForm::refreshClicked");
+
+    if (dbDirty) {
+        delete quizDatabase;
+        QString lexicon = lexiconWidget->getCurrentLexicon();
+        QString quizType = quizTypeCombo->currentText();
+        quizDatabase = new QuizDatabase(lexicon, quizType);
+        Q_CHECK_PTR(quizDatabase);
+    }
     if (!quizDatabase)
         return;
 
@@ -142,86 +176,52 @@ CardboxForm::refreshClicked()
     const QSqlDatabase* sqlDb = quizDatabase->getDatabase();
 
     // Refresh cardbox count list
-    if (cardboxCountModel) {
-        QString queryStr = "SELECT cardbox, count(*) FROM questions "
-            "WHERE cardbox NOT NULL GROUP BY cardbox";
-        cardboxCountModel->setQuery(queryStr, *sqlDb);
-        cardboxCountModel->setHeaderData(0, Qt::Horizontal, "Cardbox");
-        cardboxCountModel->setHeaderData(1, Qt::Horizontal, "Count");
+    if (!cardboxCountModel) {
+        cardboxCountModel = new QSqlQueryModel;
+        Q_CHECK_PTR(cardboxCountModel);
+        cardboxCountView->setModel(cardboxCountModel);
     }
+    QString queryStr = "SELECT cardbox, count(*) FROM questions "
+        "WHERE cardbox NOT NULL GROUP BY cardbox";
+    cardboxCountModel->setQuery(queryStr, *sqlDb);
+    cardboxCountModel->setHeaderData(0, Qt::Horizontal, "Cardbox");
+    cardboxCountModel->setHeaderData(1, Qt::Horizontal, "Count");
 
     // Refresh upcoming word counts
-    if (cardboxDaysModel) {
-        unsigned int now = QDateTime::currentDateTime().toTime_t();
-
-        QString queryStr =
-            "SELECT round((next_scheduled - 43200.0 - %1) / 86400) AS days, "
-            "count(*) FROM questions WHERE cardbox NOT NULL GROUP BY days";
-        cardboxDaysModel->setQuery(queryStr.arg(now), *sqlDb);
-        cardboxDaysModel->setHeaderData(0, Qt::Horizontal, "Days");
-        cardboxDaysModel->setHeaderData(1, Qt::Horizontal, "Count");
+    if (!cardboxDaysModel) {
+        cardboxDaysModel = new QSqlQueryModel;
+        Q_CHECK_PTR(cardboxDaysModel);
+        cardboxDaysView->setModel(cardboxDaysModel);
     }
+    queryStr =
+        "SELECT round((next_scheduled - 43200.0 - %1) / 86400) AS days, "
+        "count(*) FROM questions WHERE cardbox NOT NULL GROUP BY days";
+    unsigned int now = QDateTime::currentDateTime().toTime_t();
+    cardboxDaysModel->setQuery(queryStr.arg(now), *sqlDb);
+    cardboxDaysModel->setHeaderData(0, Qt::Horizontal, "Days");
+    cardboxDaysModel->setHeaderData(1, Qt::Horizontal, "Count");
 
     // Refresh cardbox contents
-    if (cardboxContentsModel) {
-        QString queryStr =
-            "SELECT question, cardbox, correct, incorrect, streak, "
-            "next_scheduled FROM questions WHERE cardbox NOT NULL "
-            "ORDER BY next_scheduled";
 
-
-        //cardboxContentsModel->select();
-
-        cardboxContentsModel->setQuery(queryStr, *sqlDb);
-        //while (cardboxContentsModel->canFetchMore()) {
-        //    qDebug("Fetching more for cardbox contents model");
-        //    cardboxContentsModel->fetchMore();
-        //}
-
-        //cardboxContentsModel->setSort(7, Qt::AscendingOrder);
-        cardboxContentsModel->setHeaderData(0, Qt::Horizontal, "Question");
-        cardboxContentsModel->setHeaderData(1, Qt::Horizontal, "Cardbox");
-        cardboxContentsModel->setHeaderData(2, Qt::Horizontal, "Correct");
-        cardboxContentsModel->setHeaderData(3, Qt::Horizontal, "Incorrect");
-        cardboxContentsModel->setHeaderData(4, Qt::Horizontal, "Streak");
-        cardboxContentsModel->setHeaderData(5, Qt::Horizontal, "Next Scheduled");
+    if (!cardboxContentsModel) {
+        //const QSqlDatabase* sqlDb = quizDatabase->getDatabase();
+        cardboxContentsModel = new QSqlQueryModel;
+        //cardboxContentsModel = new QSqlTableModel(this, *sqlDb);
+        Q_CHECK_PTR(cardboxContentsModel);
+        cardboxContentsView->setModel(cardboxContentsModel);
     }
+    queryStr =
+        "SELECT question, cardbox, correct, incorrect, streak, "
+        "next_scheduled FROM questions WHERE cardbox NOT NULL "
+        "ORDER BY next_scheduled";
 
-    QApplication::restoreOverrideCursor();
-}
+    //cardboxContentsModel->select();
 
-//---------------------------------------------------------------------------
-//  quizSpecChanged
-//
-//! Called when the Lexicon or Quiz Type is changed by the user.
-//---------------------------------------------------------------------------
-void
-CardboxForm::quizSpecChanged()
-{
-    // FIXME: get default lexicon from settings
-    //QString lexicon = wordEngine->getLexiconName();
-    QString lexicon = Hack::LEXICON;
-    QString quizType = "Anagrams";
-
-    delete quizDatabase;
-    quizDatabase = new QuizDatabase(lexicon, quizType);
-    Q_CHECK_PTR(quizDatabase);
-
-    delete cardboxCountModel;
-    cardboxCountModel = new QSqlQueryModel;
-    Q_CHECK_PTR(cardboxCountModel);
-    cardboxCountView->setModel(cardboxCountModel);
-
-    delete cardboxDaysModel;
-    cardboxDaysModel = new QSqlQueryModel;
-    Q_CHECK_PTR(cardboxDaysModel);
-    cardboxDaysView->setModel(cardboxDaysModel);
-
-    //const QSqlDatabase* sqlDb = quizDatabase->getDatabase();
-    delete cardboxContentsModel;
-    cardboxContentsModel = new QSqlQueryModel;
-    //cardboxContentsModel = new QSqlTableModel(this, *sqlDb);
-    Q_CHECK_PTR(cardboxContentsModel);
+    cardboxContentsModel->setQuery(queryStr, *sqlDb);
+    //while (cardboxContentsModel->canFetchMore()) {
+    //    qDebug("Fetching more for cardbox contents model");
+    //    cardboxContentsModel->fetchMore();
+    //}
 
     //cardboxContentsModel->setTable("questions");
     //cardboxContentsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
@@ -235,7 +235,24 @@ CardboxForm::quizSpecChanged()
     //cardboxContentsModel->setHeaderData(6, Qt::Horizontal, "Cardbox");
     //cardboxContentsModel->setHeaderData(7, Qt::Horizontal, "Next Scheduled");
 
-    cardboxContentsView->setModel(cardboxContentsModel);
+    //cardboxContentsModel->setSort(7, Qt::AscendingOrder);
+    cardboxContentsModel->setHeaderData(0, Qt::Horizontal, "Question");
+    cardboxContentsModel->setHeaderData(1, Qt::Horizontal, "Cardbox");
+    cardboxContentsModel->setHeaderData(2, Qt::Horizontal, "Correct");
+    cardboxContentsModel->setHeaderData(3, Qt::Horizontal, "Incorrect");
+    cardboxContentsModel->setHeaderData(4, Qt::Horizontal, "Streak");
+    cardboxContentsModel->setHeaderData(5, Qt::Horizontal, "Next Scheduled");
 
-    refreshClicked();
+    QApplication::restoreOverrideCursor();
+}
+
+//---------------------------------------------------------------------------
+//  quizSpecChanged
+//
+//! Called when the Lexicon or Quiz Type is changed by the user.
+//---------------------------------------------------------------------------
+void
+CardboxForm::quizSpecChanged()
+{
+    dbDirty = true;
 }

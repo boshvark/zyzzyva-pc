@@ -35,6 +35,7 @@ class LexiconSelectWidget : public QWidget
     LexiconSelectWidget(QWidget* parent = 0, Qt::WFlags f = 0);
     ~LexiconSelectWidget();
 
+    const QComboBox* getComboBox() const { return lexiconCombo; }
     bool setCurrentLexicon(const QString& lexicon);
     QString getCurrentLexicon() const;
 

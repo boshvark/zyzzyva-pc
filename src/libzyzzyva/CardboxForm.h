@@ -3,7 +3,7 @@
 //
 // A form for querying and editing the contents of the cardbox system.
 //
-// Copyright 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -26,12 +26,14 @@
 #define ZYZZYVA_CARDBOX_FORM_H
 
 #include "ActionForm.h"
+#include <QComboBox>
 #include <QLabel>
 #include <QSqlQueryModel>
 #include <QSqlTableModel>
 #include <QTimer>
 #include <QTreeView>
 
+class LexiconSelectWidget;
 class QuizDatabase;
 class WordEngine;
 
@@ -51,6 +53,8 @@ class CardboxForm : public ActionForm
     private:
     WordEngine*     wordEngine;
     QuizDatabase*   quizDatabase;
+    LexiconSelectWidget* lexiconWidget;
+    QComboBox*      quizTypeCombo;
     QSqlQueryModel* cardboxCountModel;
     QSqlQueryModel* cardboxDaysModel;
     QSqlQueryModel* cardboxContentsModel;
@@ -58,6 +62,8 @@ class CardboxForm : public ActionForm
     QTreeView*      cardboxCountView;
     QTreeView*      cardboxDaysView;
     QTreeView*      cardboxContentsView;
+
+    bool dbDirty;
 
     //QTimer refreshTimer;
 };
