@@ -205,15 +205,15 @@ WordEngine::importDawgFile(const QString& lexicon, const QString& filename,
 //! plain text format, containing one stem per line.  The file is also assumed
 //! to contain stems of equal length.  All stems of different length than the
 //! first stem will be discarded.
+//! FIXME: Currently this imports a single set of stems for all lexicons.
 //
-//! @param lexicon the name of the lexicon
+////@param lexicon the name of the lexicon
 //! @param filename the name of the file to import
 //! @param errString returns the error string in case of error
 //! @return the number of stems imported
 //---------------------------------------------------------------------------
 int
-WordEngine::importStems(const QString& lexicon, const QString& filename,
-                        QString* errString)
+WordEngine::importStems(const QString& filename, QString* errString)
 {
     QFile file (filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -251,9 +251,12 @@ WordEngine::importStems(const QString& lexicon, const QString& filename,
     delete[] buffer;
 
     // Insert the stem list into the map, or append to an existing stem list
-    LexiconData& data = lexiconData[lexicon];
-    data.stems[length] += words;
-    data.stemAlphagrams[length].unite(alphagrams);
+    QString lexicon;
+    foreach (lexicon, lexiconData.keys()) {
+        LexiconData& data = lexiconData[lexicon];
+        data.stems[length] += words;
+        data.stemAlphagrams[length].unite(alphagrams);
+    }
     return imported;
 }
 

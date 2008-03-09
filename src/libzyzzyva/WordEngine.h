@@ -89,8 +89,7 @@ class WordEngine : public QObject
     bool importDawgFile(const QString& lexicon, const QString& filename, bool
                         reverse = false, QString* errString = 0, quint16*
                         expectedChecksum = 0);
-    int importStems(const QString& lexicon, const QString& filename,
-                    QString* errString = 0);
+    int importStems(const QString& filename, QString* errString = 0);
     bool isAcceptable(const QString& lexicon, const QString& word) const;
     QStringList search(const QString& lexicon, const SearchSpec& spec,
                        bool allCaps) const;

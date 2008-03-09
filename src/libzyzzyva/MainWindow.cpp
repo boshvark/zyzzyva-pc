@@ -1850,7 +1850,7 @@ MainWindow::importStems()
     QStringList::iterator it;
     int totalImported = 0;
     for (it = stemFiles.begin(); it != stemFiles.end(); ++it) {
-        int imported = wordEngine->importStems(Hack::LEXICON, *it, &err);
+        int imported = wordEngine->importStems(*it, &err);
         totalImported += imported;
     }
     QApplication::restoreOverrideCursor();
