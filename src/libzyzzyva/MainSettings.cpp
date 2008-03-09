@@ -227,15 +227,11 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_LEXICON_STYLES,
                          DEFAULT_LEXICON_STYLES).toString();
     instance->wordListLexiconStyles.clear();
-    QString str;
-    foreach (str, lexiconStyleStr.split(QChar('\n'))) {
-        qDebug("Read string: |%s|", str.toUtf8().constData());
+    foreach (QString str, lexiconStyleStr.split(QChar('\n'))) {
         LexiconStyle style = Auxil::stringToLexiconStyle(str);
         if (!style.isValid())
             continue;
         instance->wordListLexiconStyles.append(style);
-        qDebug("Read style:  |%s|",
-               Auxil::lexiconStyleToString(style).toUtf8().constData());
     }
 
     instance->letterDistribution
@@ -307,6 +303,19 @@ MainSettings::writeSettings()
                       instance->wordListShowHookParents);
     settings.setValue(SETTINGS_SHOW_DEFINITIONS,
                       instance->wordListShowDefinitions);
+    settings.setValue(SETTINGS_USE_LEXICON_STYLES,
+                      instance->wordListUseLexiconStyles);
+
+    QString lexiconStyleStr;
+    QListIterator<LexiconStyle> it (instance->wordListLexiconStyles);
+    while (it.hasNext()) {
+        const LexiconStyle& style = it.next();
+        if (!lexiconStyleStr.isEmpty())
+            lexiconStyleStr += "\n";
+        lexiconStyleStr += Auxil::lexiconStyleToString(style);
+    }
+    settings.setValue(SETTINGS_LEXICON_STYLES, lexiconStyleStr);
+
     settings.setValue(SETTINGS_LETTER_DISTRIBUTION,
                       instance->letterDistribution);
     settings.setValue(SETTINGS_JUDGE_SAVE_LOG, instance->judgeSaveLog);

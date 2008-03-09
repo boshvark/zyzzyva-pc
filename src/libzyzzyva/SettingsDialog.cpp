@@ -834,6 +834,7 @@ SettingsDialog::writeSettings()
     MainSettings::setWordListShowHooks(showHooksCbox->isChecked());
     MainSettings::setWordListShowHookParents(showHookParentsCbox->isChecked());
     MainSettings::setWordListShowDefinitions(showDefinitionCbox->isChecked());
+    MainSettings::setWordListLexiconStyles(getLexiconStyles());
     MainSettings::writeSettings();
 }
 
@@ -1102,7 +1103,6 @@ void
 SettingsDialog::chooseLexiconStyleClicked()
 {
     QList<LexiconStyle> styles = getLexiconStyles();
-
     LexiconStyleDialog* dialog = new LexiconStyleDialog(this);
     Q_CHECK_PTR(dialog);
     dialog->setLexiconStyles(styles);
@@ -1111,7 +1111,6 @@ SettingsDialog::chooseLexiconStyleClicked()
     if (code == QDialog::Accepted) {
         setLexiconStyles(dialog->getLexiconStyles());
     }
-
     delete dialog;
 }
 
@@ -1174,18 +1173,15 @@ SettingsDialog::getImportLexicons(QStringList& lexicons, QString&
 void
 SettingsDialog::setLexiconStyles(const QList<LexiconStyle>& styles)
 {
-    //QString importText;
-    //QStringListIterator it (lexicons);
-    //while (it.hasNext()) {
-    //    const QString& lexicon = it.next();
-
-    //    if (!importText.isEmpty())
-    //        importText += LEXICON_SEP;
-
-    //    importText += (lexicon == defaultLexicon) ?
-    //        QString("<b>%1</b>").arg(lexicon) : lexicon;
-    //}
-    //autoImportLabel->setText(importText);
+    QString str;
+    QListIterator<LexiconStyle> it (styles);
+    while (it.hasNext()) {
+        const LexiconStyle& style = it.next();
+        if (!str.isEmpty())
+            str += "\n";
+        str += Auxil::lexiconStyleToString(style);
+    }
+    lexiconStyleLabel->setText(str);
 }
 
 //---------------------------------------------------------------------------
@@ -1198,15 +1194,14 @@ SettingsDialog::setLexiconStyles(const QList<LexiconStyle>& styles)
 QList<LexiconStyle>
 SettingsDialog::getLexiconStyles() const
 {
-    return QList<LexiconStyle>();
-
-    //QRegExp defaultRegex ("<b>(\\S+)</b>");
-    //QString autoImportText = autoImportLabel->text();
-    //if (autoImportText.contains(defaultRegex)) {
-    //    defaultLexicon = defaultRegex.cap(1);
-    //    autoImportText.replace(defaultRegex, "\\1");
-    //}
-    //lexicons = autoImportText.split(LEXICON_SEP);
+    QList<LexiconStyle> styles;
+    foreach (QString str, lexiconStyleLabel->text().split(QChar('\n'))) {
+        LexiconStyle style = Auxil::stringToLexiconStyle(str);
+        if (!style.isValid())
+            continue;
+        styles.append(style);
+    }
+    return styles;
 }
 
 //---------------------------------------------------------------------------
