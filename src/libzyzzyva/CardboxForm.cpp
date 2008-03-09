@@ -31,8 +31,6 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include "Hack.h"
-
 using namespace Defs;
 
 const QString TITLE_PREFIX = "Cardbox";

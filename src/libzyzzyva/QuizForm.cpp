@@ -52,8 +52,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 
-#include "Hack.h"
-
 using namespace Defs;
 
 const QString TITLE_PREFIX = "Quiz";

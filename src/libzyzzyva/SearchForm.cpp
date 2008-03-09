@@ -39,8 +39,6 @@
 #include <QSplitter>
 #include <QTimer>
 
-#include "Hack.h"
-
 using namespace Defs;
 
 const QString TITLE_PREFIX = "Search";

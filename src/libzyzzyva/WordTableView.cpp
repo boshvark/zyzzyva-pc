@@ -47,8 +47,6 @@
 #include <QTextStream>
 #include <QToolTip>
 
-#include "Hack.h"
-
 using namespace std;
 
 const int WordTableModel::ITEM_XPADDING = 5;

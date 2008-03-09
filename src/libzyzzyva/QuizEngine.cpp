@@ -30,8 +30,6 @@
 #include "Auxil.h"
 #include <cstdlib>
 
-#include "Hack.h"
-
 //---------------------------------------------------------------------------
 //  probabilityCmp
 //

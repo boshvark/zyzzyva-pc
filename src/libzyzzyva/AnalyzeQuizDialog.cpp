@@ -35,8 +35,6 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-#include "Hack.h"
-
 const QString DIALOG_CAPTION = "Analyze Quiz";
 const QString MISSED_LABEL_PREFIX = "Missed : ";
 const QString INCORRECT_LABEL_PREFIX = "Incorrect : ";

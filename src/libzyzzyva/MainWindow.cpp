@@ -64,8 +64,6 @@
 
 #include "LetterBag.h"
 
-#include "Hack.h"
-
 MainWindow* MainWindow::instance = 0;
 
 const QString APPLICATION_TITLE = "Zyzzyva";

@@ -39,8 +39,6 @@
 #include <QTextStream>
 #include <QVBoxLayout>
 
-#include "Hack.h"
-
 const int FORM_FONT_PIXEL_SIZE = 55;
 const int TITLE_FONT_PIXEL_SIZE = 40;
 const int INSTRUCTION_FONT_PIXEL_SIZE = 40;

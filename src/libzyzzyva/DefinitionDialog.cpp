@@ -31,8 +31,6 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-#include "Hack.h"
-
 const QString DIALOG_CAPTION_PREFIX = "Define : ";
 
 using namespace Defs;

@@ -35,8 +35,6 @@
 #include <QList>
 #include <QVBoxLayout>
 
-#include "Hack.h"
-
 using namespace Defs;
 
 //---------------------------------------------------------------------------

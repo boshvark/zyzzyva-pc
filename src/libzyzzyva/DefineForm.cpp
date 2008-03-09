@@ -33,8 +33,6 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-#include "Hack.h"
-
 using namespace Defs;
 
 const QString TITLE_PREFIX = "Definition";

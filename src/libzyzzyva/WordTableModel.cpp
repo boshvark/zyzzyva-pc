@@ -28,8 +28,6 @@
 #include "Auxil.h"
 #include <QBrush>
 
-#include "Hack.h"
-
 using namespace std;
 
 const QChar WordTableModel::PARENT_HOOK_CHAR = '-';
