@@ -421,9 +421,14 @@ WordTableModel::data(const QModelIndex& index, int role) const
                             + (wordItem.getBackParentHook() ? PARENT_HOOK_CHAR
                                : QChar(' '));
                     }
-                    //if (MainSettings::getWordListUseLexiconStyles()) {
-                    //    str += wordEngine->getLexiconSymbols(lexicon, word);
-                    //}
+                    if (MainSettings::getWordListUseLexiconStyles()) {
+                        if (!wordItem.lexiconSymbolsAreValid()) {
+                            wordItem.setLexiconSymbols(
+                                wordEngine->getLexiconSymbols(lexicon,
+                                                              wordUpper));
+                        }
+                        str += wordItem.getLexiconSymbols();
+                    }
                     return str;
                 }
                 else
@@ -582,6 +587,10 @@ WordTableModel::setData(const QModelIndex& index, const QVariant& value, int
                 word.setParentHooks(
                     wordEngine->getIsFrontHook(lexicon, wordUpper),
                     wordEngine->getIsBackHook(lexicon, wordUpper));
+            }
+            if (MainSettings::getWordListUseLexiconStyles()) {
+                word.setLexiconSymbols(
+                    wordEngine->getLexiconSymbols(lexicon, wordUpper));
             }
         }
         else if (index.column() == PROBABILITY_ORDER_COLUMN) {
@@ -755,6 +764,7 @@ WordTableModel::WordItem::init()
     hooksValid = false;
     parentHooksValid = false;
     probabilityOrderValid = false;
+    lexiconSymbolsValid = false;
     frontParentHook = false;
     backParentHook = false;
     probabilityOrder = 0;
@@ -772,6 +782,20 @@ WordTableModel::WordItem::setProbabilityOrder(int p)
 {
     probabilityOrder = p;
     probabilityOrderValid = true;
+}
+
+//---------------------------------------------------------------------------
+//  setLexiconSymbols
+//
+//! Set lexicon symbols of a word item.
+//
+//! @param s the lexicon symbols
+//---------------------------------------------------------------------------
+void
+WordTableModel::WordItem::setLexiconSymbols(const QString& s)
+{
+    lexiconSymbols = s;
+    lexiconSymbolsValid = true;
 }
 
 //---------------------------------------------------------------------------
