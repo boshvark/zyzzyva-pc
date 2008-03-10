@@ -25,7 +25,7 @@
 
 set -e
 
-QTVER=4.3.4
+QTVER=4.3.2
 QTDIR=/usr/local/Trolltech/Qt-$QTVER
 INSTDIR=installer
 PLATFORM=linux

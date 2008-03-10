@@ -24,7 +24,7 @@ rem -------------------------------------------------------------------------
 
 setlocal
 
-set QTVER=4.3.4
+set QTVER=4.3.2
 set QTDIR=C:\Qt\%QTVER%
 set INSTDIR=installer
 set PLATFORM=windows
