@@ -76,7 +76,8 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
     typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizAnagrams));
     typeCombo->addItem(
         Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
-    typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizBuild));
+    // Commented out until it can be fully implemented
+    //typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizBuild));
     typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizWordListRecall));
     typeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizHooks));
     typeCombo->setCurrentIndex(typeCombo->findText(
