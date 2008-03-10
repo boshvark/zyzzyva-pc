@@ -230,8 +230,7 @@ AnalyzeQuizDialog::addMissed(const QStringList& words, bool update)
         return;
 
     QList<WordTableModel::WordItem> wordItems;
-    QString word;
-    foreach (word, words) {
+    foreach (QString word, words) {
         wordItems.append(WordTableModel::WordItem(word,
                                                   WordTableModel::WordMissed));
     }
@@ -301,8 +300,7 @@ AnalyzeQuizDialog::addIncorrect(const QStringList& words, bool update)
         return;
 
     QList<WordTableModel::WordItem> wordItems;
-    QString word;
-    foreach (word, words) {
+    foreach (QString word, words) {
         wordItems.append(
             WordTableModel::WordItem(word, WordTableModel::WordIncorrect));
     }

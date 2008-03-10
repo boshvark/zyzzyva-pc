@@ -225,9 +225,7 @@ SearchForm::search()
 
         // Create a list of WordItem objects from the words
         QList<WordTableModel::WordItem> wordItems;
-        QString word;
-        foreach (word, wordList) {
-
+        foreach (QString word, wordList) {
             QString wildcard;
             if (hasAnagramCondition) {
                 // Get wildcard characters
@@ -239,8 +237,7 @@ SearchForm::search()
                 }
                 if (!wildcardChars.isEmpty()) {
                     qSort(wildcardChars);
-                    QChar c;
-                    foreach (c, wildcardChars)
+                    foreach (QChar c, wildcardChars)
                         wildcard.append(c.toUpper());
                 }
             }

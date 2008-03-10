@@ -3,7 +3,7 @@
 //
 // A class for holding instances of letters.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -220,8 +220,7 @@ LetterBag::resetContents (const QString& distribution)
     totalLetters = 0;
     letterFrequencies.clear();
 
-    QString str;
-    foreach (str, strList) {
+    foreach (QString str, strList) {
         QChar letter = str.section(":", 0, 0)[0];
         int frequency = str.section(":", 1, 1).toInt();
         letterFrequencies.insert(letter, frequency);

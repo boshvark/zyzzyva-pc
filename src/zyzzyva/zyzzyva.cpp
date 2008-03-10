@@ -64,8 +64,7 @@ int main(int argc, char** argv)
 
     // Handle file open requests
     QStringList files = app.getFileOpenRequests();
-    QString file;
-    foreach (file, files) {
+    foreach (QString file, files) {
         window->fileOpenRequested(file);
     }
     app.clearFileOpenRequests();

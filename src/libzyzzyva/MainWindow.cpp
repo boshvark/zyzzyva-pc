@@ -396,8 +396,7 @@ MainWindow::fileOpenRequested(const QString& filename)
 void
 MainWindow::processArguments(const QStringList& args)
 {
-    QString arg;
-    foreach (arg, args)
+    foreach (QString arg, args)
         fileOpenRequested(arg);
 }
 

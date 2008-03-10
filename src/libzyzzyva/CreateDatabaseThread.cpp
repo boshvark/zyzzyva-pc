@@ -198,8 +198,7 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
         transactionQuery.exec("BEGIN TRANSACTION");
 
         // Insert words with length, combinations, hooks
-        QString word;
-        foreach (word, words) {
+        foreach (QString word, words) {
             double combinations = letterBag.getNumCombinations(word);
             int numUniqueLetters = Auxil::getNumUniqueLetters(word);
             int numVowels = Auxil::getNumVowels(word);
@@ -216,8 +215,7 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
                 numAnagramsMap[alphagram] = 1;
 
             QString front, back;
-            QString letter;
-            foreach (letter, letters) {
+            foreach (QString letter, letters) {
                 if (wordEngine->isAcceptable(lexiconName, letter + word))
                     front += letter;
                 if (wordEngine->isAcceptable(lexiconName, word + letter))
@@ -270,7 +268,7 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
         query.prepare("UPDATE words SET num_anagrams=? WHERE word=?");
 
         transactionQuery.exec("BEGIN TRANSACTION");
-        foreach (word, words) {
+        foreach (QString word, words) {
             QString alphagram = Auxil::getAlphagram(word);
             query.bindValue(0, numAnagramsMap[alphagram]);
             query.bindValue(1, word);
@@ -491,8 +489,7 @@ CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase& db, int& stepNum)
 
         QStringList defs = definition.split(" / ");
         QString newDefinition;
-        QString def;
-        foreach (def, defs) {
+        foreach (QString def, defs) {
             if (!newDefinition.isEmpty())
                 newDefinition += "\n";
             newDefinition += replaceDefinitionLinks(def, MAX_DEFINITION_LINKS);
@@ -645,8 +642,7 @@ CreateDatabaseThread::getSubDefinition(const QString& word, const QString&
     QString definition = definitions[word];
     QRegExp posRegex (QString("\\[(\\w+)"));
     QStringList defs = definition.split(" / ");
-    QString def;
-    foreach (def, defs) {
+    foreach (QString def, defs) {
         if ((posRegex.indexIn(def, 0) > 0) &&
             (posRegex.cap(1) == pos))
         {

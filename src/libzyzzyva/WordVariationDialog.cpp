@@ -385,8 +385,7 @@ WordVariationDialog::getWordItems(const QList<SearchSpec>& searchSpecs) const
         QString wildcard;
         if (!wildcardChars.isEmpty()) {
             qSort(wildcardChars);
-            QChar c;
-            foreach (c, wildcardChars)
+            foreach (QChar c, wildcardChars)
                 wildcard.append(c.toUpper());
         }
         wordItems.append(WordTableModel::WordItem(

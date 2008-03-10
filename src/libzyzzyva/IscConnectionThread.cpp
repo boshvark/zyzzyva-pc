@@ -3,7 +3,7 @@
 //
 // A class for managing an ISC connection in the background.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -228,8 +228,7 @@ IscConnectionThread::socketReadyRead()
 {
     QByteArray bytes = socket->readAll();
     QStringList messages = decodeMessage(bytes);
-    QString message;
-    foreach (message, messages) {
+    foreach (QString message, messages) {
         receiveMessage(message);
     }
 }

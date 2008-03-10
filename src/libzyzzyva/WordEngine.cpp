@@ -572,8 +572,7 @@ WordEngine::applyPostConditions(const QString& lexicon,
         LetterBag bag;
         QMap<QString, QString> probMap;
 
-        QString word;
-        foreach (word, returnList) {
+        foreach (QString word, returnList) {
             // FIXME: change this radix for new probability sorting - leave
             // alone for old probability sorting
             QString radix;
@@ -755,8 +754,7 @@ WordEngine::alphagrams(const QStringList& strList) const
 {
     // Insert into a set to remove duplicates
     QSet<QString> alphaSet;
-    QString str;
-    foreach (str, strList) {
+    foreach (QString str, strList) {
         alphaSet.insert(Auxil::getAlphagram(str));
     }
 
@@ -875,8 +873,7 @@ WordEngine::getDefinition(const QString& lexicon, const QString& word,
         if (replaceLinks) {
             QStringList defs = info.definition.split(" / ");
             definition = QString();
-            QString def;
-            foreach (def, defs) {
+            foreach (QString def, defs) {
                 if (!definition.isEmpty())
                     definition += "\n";
                 definition += def;
@@ -939,9 +936,8 @@ WordEngine::getFrontHookLetters(const QString& lexicon, const QString& word)
 
         // Get and sort first letters of each word
         QStringList words = search(lexicon, spec, true);
-        QString str;
         QList<QChar> letters;
-        foreach (str, words) {
+        foreach (QString str, words) {
             letters.append(str.at(0).toLower());
         }
         qSort(letters);
@@ -983,9 +979,8 @@ WordEngine::getBackHookLetters(const QString& lexicon, const QString& word) cons
 
         // Get and sort last letters of each word
         QStringList words = search(lexicon, spec, true);
-        QString str;
         QList<QChar> letters;
-        foreach (str, words) {
+        foreach (QString str, words) {
             letters.append(str.at(str.length() - 1).toLower());
         }
         qSort(letters);
@@ -1684,8 +1679,7 @@ WordEngine::addDefinition(const QString& lexicon, const QString& word,
     QRegExp posRegex (QString("\\[(\\w+)"));
     QMultiMap<QString, QString> defMap;
     QStringList defs = definition.split(" / ");
-    QString def;
-    foreach (def, defs) {
+    foreach (QString def, defs) {
         QString pos;
         if (posRegex.indexIn(def, 0) >= 0) {
             pos = posRegex.cap(1);

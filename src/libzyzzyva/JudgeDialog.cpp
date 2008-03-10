@@ -356,12 +356,11 @@ JudgeDialog::judgeWord()
     }
 
     // Log challenge results to files
-    QString word;
     if (!acceptableWords.empty()) {
         QFile file (logDirName + "/acceptable.txt");
         file.open(QIODevice::Append | QIODevice::Text);
         QTextStream stream (&file);
-        foreach (word, acceptableWords) {
+        foreach (QString word, acceptableWords) {
             stream << word;
             endl(stream);
         }
@@ -371,7 +370,7 @@ JudgeDialog::judgeWord()
         QFile file (logDirName + "/unacceptable.txt");
         file.open(QIODevice::Append | QIODevice::Text);
         QTextStream stream (&file);
-        foreach (word, unacceptableWords) {
+        foreach (QString word, unacceptableWords) {
             stream << word;
             endl(stream);
         }
@@ -382,7 +381,7 @@ JudgeDialog::judgeWord()
     QTextStream stream (&file);
     stream << QDateTime::currentDateTime().toString("[yyyy-MM-dd hh:mm:ss] ")
         << (acceptable ? "acceptable   +++" : "unacceptable ---");
-    foreach (word, words) {
+    foreach (QString word, words) {
         stream << " " << word;
     }
     endl(stream);

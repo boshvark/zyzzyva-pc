@@ -625,8 +625,7 @@ WordTableView::hookToolTipText(const QString& word, const QString& hooks,
     QString lexicon = wordModel->getLexicon();
 
     QString text;
-    QString hook;
-    foreach (hook, hooks) {
+    foreach (QString hook, hooks) {
         QString hookWord = (front ? (hook.toUpper() + word)
                                   : (word + hook.toUpper()));
         if (!text.isEmpty())

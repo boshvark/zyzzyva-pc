@@ -175,8 +175,7 @@ WordTableModel::addWords(const QList<WordItem>& words)
     bool ok = insertRows(row, words.size());
     if (!ok)
         return false;
-    WordItem word;
-    foreach (word, words) {
+    foreach (WordItem word, words) {
     //qDebug("WordTableModel::addWords B");
         addWordPrivate(word, row);
         ++row;
