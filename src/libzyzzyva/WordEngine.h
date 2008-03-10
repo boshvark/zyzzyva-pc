@@ -87,12 +87,14 @@ class WordEngine : public QObject
     bool connectToDatabase(const QString& lexicon, const QString& filename,
                            QString* errString = 0);
     bool disconnectFromDatabase(const QString& lexicon);
+    bool databaseIsConnected(const QString& lexicon) const;
     int importTextFile(const QString& lexicon, const QString& filename, bool
                        loadDefinitions = true, QString* errString = 0);
     bool importDawgFile(const QString& lexicon, const QString& filename, bool
                         reverse = false, QString* errString = 0, quint16*
                         expectedChecksum = 0);
-    int importStems(const QString& filename, QString* errString = 0);
+    int importStems(const QString& lexicon, const QString& filename,
+                    QString* errString = 0);
     bool lexiconIsLoaded(const QString& lexicon) const;
     bool isAcceptable(const QString& lexicon, const QString& word) const;
     QStringList search(const QString& lexicon, const SearchSpec& spec,

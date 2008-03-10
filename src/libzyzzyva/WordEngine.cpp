@@ -117,6 +117,20 @@ WordEngine::disconnectFromDatabase(const QString& lexicon)
 }
 
 //---------------------------------------------------------------------------
+//  databaseIsConnected
+//
+//! Determine whether a lexicon database is connected.
+//
+//! @param lexicon the name of the lexicon
+//! @return true if the database is connected, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::databaseIsConnected(const QString& lexicon) const
+{
+    return (lexiconData.contains(lexicon) && lexiconData[lexicon]->db);
+}
+
+//---------------------------------------------------------------------------
 //  importTextFile
 //
 //! Import words from a text file.  The file is assumed to be in plain text
@@ -209,7 +223,6 @@ WordEngine::importDawgFile(const QString& lexicon, const QString& filename,
 //! plain text format, containing one stem per line.  The file is also assumed
 //! to contain stems of equal length.  All stems of different length than the
 //! first stem will be discarded.
-//! FIXME: Currently this imports a single set of stems for all lexicons.
 //
 ////@param lexicon the name of the lexicon
 //! @param filename the name of the file to import
@@ -217,8 +230,12 @@ WordEngine::importDawgFile(const QString& lexicon, const QString& filename,
 //! @return the number of stems imported
 //---------------------------------------------------------------------------
 int
-WordEngine::importStems(const QString& filename, QString* errString)
+WordEngine::importStems(const QString& lexicon, const QString& filename,
+                        QString* errString)
 {
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
     QFile file (filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
         if (errString) {
@@ -255,12 +272,9 @@ WordEngine::importStems(const QString& filename, QString* errString)
     delete[] buffer;
 
     // Insert the stem list into the map, or append to an existing stem list
-    QString lexicon;
-    foreach (lexicon, lexiconData.keys()) {
-        LexiconData* data = lexiconData[lexicon];
-        data->stems[length] += words;
-        data->stemAlphagrams[length].unite(alphagrams);
-    }
+    LexiconData* data = lexiconData[lexicon];
+    data->stems[length] += words;
+    data->stemAlphagrams[length].unite(alphagrams);
     return imported;
 }
 

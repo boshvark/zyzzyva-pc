@@ -439,16 +439,11 @@ MainWindow::tryAutoImport()
 
     // FIXME: This should not be part of the MainWindow class.  Lexicons (and
     // mapping lexicons to actual files) should be handled by someone else.
-    //QString lexicon = MainSettings::getAutoImportLexicon();
-
     QStringListIterator it (lexicons);
     while (it.hasNext()) {
         const QString& lexicon = it.next();
         importLexicon(lexicon);
     }
-
-    setSplashMessage("Loading stems...");
-    importStems();
 }
 
 //---------------------------------------------------------------------------
@@ -745,9 +740,9 @@ MainWindow::doJudgeAction()
 void
 MainWindow::editSettings()
 {
-    //QString lexicon;
+    QSet<QString> lexicons;
     if (settingsDialog->exec() == QDialog::Accepted) {
-        //lexicon = MainSettings::getAutoImportLexicon();
+        lexicons = MainSettings::getAutoImportLexicons().toSet();
         settingsDialog->writeSettings();
     }
     else {
@@ -755,15 +750,23 @@ MainWindow::editSettings()
     }
     readSettings(false);
 
-    //if (!lexicon.isEmpty() &&
-    //    (lexicon != MainSettings::getAutoImportLexicon()))
-    //{
-    //    QString caption = "Zyzzyva Restart Necessary";
-    //    QString message = "Your lexicon settings have changed.  For the new "
-    //        "settings to take effect, please restart Zyzzyva.";
-    //    message = Auxil::dialogWordWrap(message);
-    //    QMessageBox::information(this, caption, message);
-    //}
+    // Load any new lexicons that have been selected, but do not unload any
+    // that have been deselected, because they might be in use (by a quiz, for
+    // example).
+    QSet<QString> currLexicons = MainSettings::getAutoImportLexicons().toSet();
+    QSet<QString> addedLexicons = currLexicons - lexicons;
+    if (!addedLexicons.isEmpty()) {
+        QSetIterator<QString> it (addedLexicons);
+        while (it.hasNext()) {
+            const QString& lexicon = it.next();
+            importLexicon(lexicon);
+        }
+        tryConnectToDatabases();
+        processDatabaseErrors();
+    }
+
+    // Call this to get original tab status message back
+    currentTabChanged(0);
 }
 
 //---------------------------------------------------------------------------
@@ -1010,6 +1013,9 @@ MainWindow::currentTabChanged(int)
             DefineForm* defineForm = static_cast<DefineForm*>(form);
             defineForm->selectInputArea();
         }
+
+        // FIXME: select input area for all kinds of tabs!?
+
         status = form->getStatusString();
         saveEnabled = form->isSaveEnabled();
     }
@@ -1134,6 +1140,9 @@ MainWindow::getDatabaseFilename(const QString& lexicon)
 int
 MainWindow::tryConnectToDatabase(const QString& lexicon)
 {
+    if (wordEngine->databaseIsConnected(lexicon))
+        return DbNoError;
+
     setSplashMessage(QString("Connecting to %1 database...").arg(lexicon));
 
     QString dbFilename = getDatabaseFilename(lexicon);
@@ -1664,10 +1673,11 @@ MainWindow::importChecksums(const QString& filename)
 void
 MainWindow::setSplashMessage(const QString& message)
 {
-    if (!splashScreen)
-        return;
+    if (splashScreen)
+        splashScreen->showMessage(message, Qt::AlignHCenter | Qt::AlignBottom);
+    else
+        messageLabel->setText(message);
 
-    splashScreen->showMessage(message, Qt::AlignHCenter | Qt::AlignBottom);
     qApp->processEvents();
 }
 
@@ -1801,6 +1811,8 @@ MainWindow::importLexicon(const QString& lexicon)
     else
         ok = importText(lexicon, importFile);
 
+    importStems(lexicon);
+
     return ok;
 }
 
@@ -1832,7 +1844,7 @@ MainWindow::importText(const QString& lexicon, const QString& file)
 //! @return the number of imported stems
 //---------------------------------------------------------------------------
 int
-MainWindow::importStems()
+MainWindow::importStems(const QString& lexicon)
 {
     QStringList stemFiles;
     stemFiles << (Auxil::getWordsDir() + "/north-american/6-letter-stems.txt");
@@ -1843,7 +1855,7 @@ MainWindow::importStems()
     QStringList::iterator it;
     int totalImported = 0;
     for (it = stemFiles.begin(); it != stemFiles.end(); ++it) {
-        int imported = wordEngine->importStems(*it, &err);
+        int imported = wordEngine->importStems(lexicon, *it, &err);
         totalImported += imported;
     }
     QApplication::restoreOverrideCursor();

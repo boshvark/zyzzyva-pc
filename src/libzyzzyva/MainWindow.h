@@ -107,12 +107,12 @@ class MainWindow : public QMainWindow
     void makeUserDirs();
     void renameLexicon(const QString& oldName, const QString& newName);
     bool importLexicon(const QString& lexicon);
-    int  importText(const QString& lexicon, const QString& file);
+    int importText(const QString& lexicon, const QString& file);
     bool importDawg(const QString& lexicon, const QString& file,
                     bool reverse = false, QString* errString = 0,
                     quint16* expectedChecksum = 0);
     QList<quint16> importChecksums(const QString& file);
-    int  importStems();
+    int importStems(const QString& lexicon);
     void readSettings(bool useGeometry);
     void writeSettings();
     void newTab(ActionForm* form);
