@@ -26,6 +26,7 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include <QDialogButtonBox>
+#include <QFileDialog>
 #include <QHBoxLayout>
 #include <QSet>
 #include <QVBoxLayout>
@@ -113,6 +114,10 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
         if (row == 1)
             checkBox->setCheckState(Qt::Checked);
         mainGlay->addWidget(checkBox, row, 1, Qt::AlignHCenter);
+        if (lexicon == "Custom") {
+            connect(checkBox, SIGNAL(stateChanged(int)),
+                    SLOT(customStateChanged(int)));
+        }
         lexiconCheckBoxes.insert(lexicon, checkBox);
 
         QLabel* lexiconLabel = new QLabel;
@@ -120,20 +125,40 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
         lexiconLabel->setText(lexicon);
         mainGlay->addWidget(lexiconLabel, row, 2);
 
-        QString lexiconOrigin = Auxil::lexiconToOrigin(lexicon);
-        if (!lexiconOrigin.isEmpty()) {
-            QLabel* originLabel = new QLabel;
-            Q_CHECK_PTR(originLabel);
-            originLabel->setText(lexiconOrigin);
-            mainGlay->addWidget(originLabel, row, 3);
-        }
+        // Create custom lexicon chooser for custom lexicon, or origin/date
+        // labels for other lexicons
+        if (lexicon == "Custom") {
+            customLexiconLine = new QLineEdit;
+            Q_CHECK_PTR(customLexiconLine);
+            customLexiconLine->setEnabled(false);
+            mainGlay->addWidget(customLexiconLine, row, 3);
 
-        QDate lexiconDate = Auxil::lexiconToDate(lexicon);
-        if (lexiconDate.isValid()) {
-            QLabel* dateLabel = new QLabel;
-            Q_CHECK_PTR(dateLabel);
-            dateLabel->setText(lexiconDate.toString("MMMM d, yyyy"));
-            mainGlay->addWidget(dateLabel, row, 4);
+            customLexiconButton = new QPushButton;
+            Q_CHECK_PTR(customLexiconButton);
+            customLexiconButton->setText("Browse...");
+            customLexiconButton->setSizePolicy(QSizePolicy::Fixed,
+                                               QSizePolicy::Fixed);
+            customLexiconButton->setEnabled(false);
+            connect(customLexiconButton, SIGNAL(clicked()),
+                    SLOT(customBrowseButtonClicked()));
+            mainGlay->addWidget(customLexiconButton, row, 4);
+        }
+        else {
+            QString lexiconOrigin = Auxil::lexiconToOrigin(lexicon);
+            if (!lexiconOrigin.isEmpty()) {
+                QLabel* originLabel = new QLabel;
+                Q_CHECK_PTR(originLabel);
+                originLabel->setText(lexiconOrigin);
+                mainGlay->addWidget(originLabel, row, 3);
+            }
+
+            QDate lexiconDate = Auxil::lexiconToDate(lexicon);
+            if (lexiconDate.isValid()) {
+                QLabel* dateLabel = new QLabel;
+                Q_CHECK_PTR(dateLabel);
+                dateLabel->setText(lexiconDate.toString("MMMM d, yyyy"));
+                mainGlay->addWidget(dateLabel, row, 4);
+            }
         }
     }
 
@@ -204,6 +229,19 @@ LexiconSelectDialog::getDefaultLexicon() const
 }
 
 //---------------------------------------------------------------------------
+//  getCustomLexiconFile
+//
+//! Determine the file to be used as a custom lexicon.
+//
+//! @return the custom lexicon file
+//---------------------------------------------------------------------------
+QString
+LexiconSelectDialog::getCustomLexiconFile() const
+{
+    return customLexiconLine->text();
+}
+
+//---------------------------------------------------------------------------
 //  setImportLexicons
 //
 //! Set the lexicons that are to be imported.
@@ -244,6 +282,50 @@ LexiconSelectDialog::setDefaultLexicon(const QString& lexicon)
         return;
     checkBox->setCheckState(Qt::Checked);
     checkBox->setEnabled(false);
+}
+
+//---------------------------------------------------------------------------
+//  setCustomLexiconFile
+//
+//! Set the file to be used as a custom lexicon.
+//
+//! @param filename the custom lexicon file
+//---------------------------------------------------------------------------
+void
+LexiconSelectDialog::setCustomLexiconFile(const QString& filename)
+{
+    customLexiconLine->setText(filename);
+}
+
+//---------------------------------------------------------------------------
+//  customStateChanged
+//
+//! Called when the state of the Custom checkbox changes.  Enable or disable
+//! the custom line and button appropriately.
+//
+//! @param state the new checkbox state
+//---------------------------------------------------------------------------
+void
+LexiconSelectDialog::customStateChanged(int state)
+{
+    bool enable = (state == Qt::Checked);
+    customLexiconLine->setEnabled(enable);
+    customLexiconButton->setEnabled(enable);
+}
+
+//---------------------------------------------------------------------------
+//  customBrowseButtonClicked
+//
+//! Called when the Browse button for the custom lexicon is clicked.
+//---------------------------------------------------------------------------
+void
+LexiconSelectDialog::customBrowseButtonClicked()
+{
+    QString file = QFileDialog::getOpenFileName(this, IMPORT_CHOOSER_TITLE,
+        Auxil::getWordsDir(), "All Files (*.*)");
+
+    if (!file.isNull())
+        customLexiconLine->setText(file);
 }
 
 //---------------------------------------------------------------------------

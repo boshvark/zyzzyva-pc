@@ -129,10 +129,6 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
             SLOT(autoImportCboxToggled(bool)));
     autoImportLexiconHlay->addWidget(autoImportCbox);
 
-    autoImportLabel = new QLabel;
-    Q_CHECK_PTR(autoImportLabel);
-    autoImportLexiconHlay->addWidget(autoImportLabel);
-
     autoImportButton = new ZPushButton;
     Q_CHECK_PTR(autoImportButton);
     autoImportButton->setText("Edit...");
@@ -141,21 +137,9 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
             SLOT(chooseLexiconsClicked()));
     autoImportLexiconHlay->addWidget(autoImportButton);
 
-    //autoImportLexiconCombo = new QComboBox;
-    //Q_CHECK_PTR(autoImportLexiconCombo);
-    //autoImportLexiconCombo->addItem("OWL+LWL");
-    //autoImportLexiconCombo->addItem("OWL2+LWL");
-    //autoImportLexiconCombo->addItem("OSPD4+LWL");
-    //autoImportLexiconCombo->addItem("Volost");
-    //autoImportLexiconCombo->addItem("OSWI");
-    //autoImportLexiconCombo->addItem("CSW");
-    //autoImportLexiconCombo->addItem("ODS");
-    //autoImportLexiconCombo->addItem("Custom");
-    //autoImportLexiconCombo->setCurrentIndex(
-    //    autoImportLexiconCombo->findText("OWL2+LWL"));
-    //connect(autoImportLexiconCombo, SIGNAL(activated(const QString&)),
-    //        SLOT(autoImportLexiconActivated(const QString&)));
-    //autoImportLexiconHlay->addWidget(autoImportLexiconCombo);
+    autoImportLabel = new QLabel;
+    Q_CHECK_PTR(autoImportLabel);
+    autoImportVlay->addWidget(autoImportLabel);
 
     autoImportCustomWidget = new QWidget;
     Q_CHECK_PTR(autoImportCustomWidget);
@@ -172,13 +156,8 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     autoImportCustomLine = new QLineEdit;
     Q_CHECK_PTR(autoImportCustomLine);
+    autoImportCustomLine->setReadOnly(true);
     autoImportCustomHlay->addWidget(autoImportCustomLine);
-
-    ZPushButton* autoImportBrowseButton = new ZPushButton("Browse...");
-    Q_CHECK_PTR(autoImportBrowseButton);
-    connect(autoImportBrowseButton, SIGNAL(clicked()),
-            SLOT(autoImportBrowseButtonClicked()));
-    autoImportCustomHlay->addWidget(autoImportBrowseButton);
 
     QGroupBox* userDataDirGbox = new QGroupBox("Data Directory");
     Q_CHECK_PTR(userDataDirGbox);
@@ -692,7 +671,6 @@ SettingsDialog::readSettings()
 
     bool autoImport = MainSettings::getUseAutoImport();
     autoImportCbox->setChecked(autoImport);
-    autoImportCboxToggled(autoImport);
 
     QStringList autoImportLexicons = MainSettings::getAutoImportLexicons();
     QString defaultLexicon = MainSettings::getDefaultLexicon();
@@ -808,7 +786,6 @@ SettingsDialog::writeSettings()
     getImportLexicons(importLexicons, defaultLexicon);
     MainSettings::setAutoImportLexicons(importLexicons);
     MainSettings::setDefaultLexicon(defaultLexicon);
-
     MainSettings::setAutoImportFile(autoImportCustomLine->text());
     MainSettings::setDisplayWelcome(displayWelcomeCbox->isChecked());
     MainSettings::setUserDataDir(userDataDirLine->text());
@@ -872,23 +849,6 @@ SettingsDialog::navTextChanged(const QString& text)
 }
 
 //---------------------------------------------------------------------------
-//  autoImportBrowseButtonClicked
-//
-//! Slot called when the Auto Import Browse button is clicked.  Create a file
-//! chooser dialog and place the name of the chosen file in the auto-import
-//! line edit.
-//---------------------------------------------------------------------------
-void
-SettingsDialog::autoImportBrowseButtonClicked()
-{
-    QString file = QFileDialog::getOpenFileName(this, IMPORT_CHOOSER_TITLE,
-        Auxil::getWordsDir(), "All Files (*.*)");
-
-    if (!file.isNull())
-        autoImportCustomLine->setText(file);
-}
-
-//---------------------------------------------------------------------------
 //  autoImportCboxToggled
 //
 //! Slot called when the Auto Import check box is toggled.  Enable or
@@ -902,12 +862,10 @@ SettingsDialog::autoImportCboxToggled(bool on)
     autoImportLabel->setEnabled(on);
     autoImportButton->setEnabled(on);
 
-    //autoImportLexiconCombo->setEnabled(on);
-    //if (on)
-    //    autoImportLexiconActivated(autoImportLexiconCombo->currentText());
-    //else
-    //    autoImportCustomWidget->setEnabled(false);
-    autoImportCustomWidget->setEnabled(false);
+    QStringList lexicons;
+    QString defaultLexicon;
+    getImportLexicons(lexicons, defaultLexicon);
+    autoImportCustomWidget->setEnabled(lexicons.contains("Custom"));
 }
 
 //---------------------------------------------------------------------------
@@ -942,12 +900,14 @@ SettingsDialog::chooseLexiconsClicked()
     Q_CHECK_PTR(dialog);
     dialog->setImportLexicons(importLexicons);
     dialog->setDefaultLexicon(defaultLexicon);
+    dialog->setCustomLexiconFile(autoImportCustomLine->text());
 
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
         QStringList lexicons = dialog->getImportLexicons();
         QString defaultLexicon = dialog->getDefaultLexicon();
         setImportLexicons(lexicons, defaultLexicon);
+        autoImportCustomLine->setText(dialog->getCustomLexiconFile());
     }
 
     delete dialog;
@@ -1149,6 +1109,7 @@ SettingsDialog::setImportLexicons(const QStringList& lexicons, const QString&
             QString("<b>%1</b>").arg(lexicon) : lexicon;
     }
     autoImportLabel->setText(importText);
+    autoImportCboxToggled(autoImportCbox->isChecked());
 }
 
 //---------------------------------------------------------------------------

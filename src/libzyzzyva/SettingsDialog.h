@@ -49,7 +49,6 @@ class SettingsDialog : public QDialog
 
     public slots:
     void navTextChanged(const QString& text);
-    void autoImportBrowseButtonClicked();
     void autoImportCboxToggled(bool on);
     void autoImportLexiconActivated(const QString& text);
     void chooseLexiconsClicked();

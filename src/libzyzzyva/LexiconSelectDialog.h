@@ -30,7 +30,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMap>
-#include <QToolButton>
+#include <QPushButton>
 #include <QRadioButton>
 
 class LexiconSelectDialog : public QDialog
@@ -42,15 +42,21 @@ class LexiconSelectDialog : public QDialog
 
     QStringList getImportLexicons() const;
     QString getDefaultLexicon() const;
+    QString getCustomLexiconFile() const;
     void setImportLexicons(const QStringList& lexicons);
     void setDefaultLexicon(const QString& lexicon);
+    void setCustomLexiconFile(const QString& filename);
 
     public slots:
+    void customStateChanged(int state);
+    void customBrowseButtonClicked();
     void defaultLexiconChanged();
 
     private:
     QMap<QString, QRadioButton*> lexiconRadioButtons;
     QMap<QString, QCheckBox*> lexiconCheckBoxes;
+    QLineEdit* customLexiconLine;
+    QPushButton* customLexiconButton;
 };
 
 #endif // ZYZZYVA_LEXICON_SELECT_DIALOG_H
