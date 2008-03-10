@@ -171,18 +171,14 @@ bool
 WordTableModel::addWords(const QList<WordItem>& words)
 {
     int row = rowCount();
-    //qDebug("WordTableModel::addWords A");
     bool ok = insertRows(row, words.size());
     if (!ok)
         return false;
     foreach (WordItem word, words) {
-    //qDebug("WordTableModel::addWords B");
         addWordPrivate(word, row);
         ++row;
     }
-    //qDebug("WordTableModel::addWords C");
     sort(WORD_COLUMN);
-    //qDebug("WordTableModel::addWords D");
     lastAddedIndex = -1;
     emit wordsChanged();
     return true;
