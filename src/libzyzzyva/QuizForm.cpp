@@ -572,7 +572,7 @@ QuizForm::newQuiz(const QuizSpec& spec)
     QString quizType = Auxil::quizTypeToString(spec.getType());
     connectToDatabase(lexicon, quizType);
 
-    quizTypeLabel->setText(quizType);
+    quizTypeLabel->setText(lexicon + " - " + quizType);
     responseModel->setLexicon(lexicon);
     startQuestion();
     analyzeDialog->newQuiz(spec);
