@@ -24,6 +24,7 @@
 
 #include "CreateDatabaseThread.h"
 #include "LetterBag.h"
+#include "MainSettings.h"
 #include "WordEngine.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -67,14 +68,13 @@ CreateDatabaseThread::runPrivate()
         emit(steps(100));
         emit(progress(1));
 
-        // Total number of progress steps is number of words times 4.
-        // - One for finding each word's stats
-        // - One for reading each word's definitions
-        // - Two for inserting each word's values into the database
-        // - Two total for creating indexes
+        // Total number of progress steps is number of words times the number
+        // of lines that increment stepNum in all the code that is called
+        // below.
+        int stepNumIncs = 5;
         int numWords = wordEngine->getNumWords(lexiconName);
-        int baseProgress = numWords * 5 / 99;
-        numSteps = numWords * 5 + baseProgress + 1;
+        int baseProgress = numWords * stepNumIncs / 99;
+        numSteps = numWords * stepNumIncs + baseProgress + 1;
         emit steps(numSteps);
         int stepNum = baseProgress;
         emit progress(stepNum);
@@ -165,6 +165,17 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
     SearchSpec searchSpec;
     searchSpec.conditions.append(searchCondition);
 
+    QList<LexiconStyle> lexStyles = MainSettings::getWordListLexiconStyles();
+    QMutableListIterator<LexiconStyle> it (lexStyles);
+    while (it.hasNext()) {
+        const LexiconStyle& style = it.next();
+        if ((style.lexicon != lexiconName) ||
+            !wordEngine->lexiconIsLoaded(style.compareLexicon))
+        {
+            it.remove();
+        }
+    }
+
     QSqlQuery transactionQuery (db);
     QSqlQuery query (db);
 
@@ -181,8 +192,8 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
         query.prepare("INSERT INTO words (word, length, combinations, "
                       "alphagram, num_unique_letters, num_vowels, "
                       "point_value, front_hooks, back_hooks, "
-                      "is_front_hook, is_back_hook) "
-                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                      "is_front_hook, is_back_hook, lexicon_symbols) "
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         transactionQuery.exec("BEGIN TRANSACTION");
 
@@ -218,6 +229,18 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
             int isBackHook = wordEngine->isAcceptable(
                 lexiconName, word.left(word.length() - 1)) ? 1 : 0;
 
+            QString symbolStr;
+            if (!lexStyles.isEmpty()) {
+                QListIterator<LexiconStyle> it (lexStyles);
+                while (it.hasNext()) {
+                    const LexiconStyle& style = it.next();
+                    bool acceptable =
+                        wordEngine->isAcceptable(style.compareLexicon, word);
+                    if (!(acceptable ^ style.inCompareLexicon))
+                        symbolStr += style.symbol;
+                }
+            }
+
             query.bindValue(0, word);
             query.bindValue(1, length);
             query.bindValue(2, combinations);
@@ -229,6 +252,7 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
             query.bindValue(8, back.toLower());
             query.bindValue(9, isFrontHook);
             query.bindValue(10, isBackHook);
+            query.bindValue(11, symbolStr);
             query.exec();
 
             if ((stepNum % 1000) == 0) {

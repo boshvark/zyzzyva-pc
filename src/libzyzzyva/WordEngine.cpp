@@ -599,6 +599,20 @@ WordEngine::applyPostConditions(const QString& lexicon,
 }
 
 //---------------------------------------------------------------------------
+//  lexiconIsLoaded
+//
+//! Determine whether a lexicon is loaded.
+//
+//! @param lexicon the name of the lexicon
+//! @return true if the lexicon is loaded, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::lexiconIsLoaded(const QString& lexicon) const
+{
+    return lexiconData.contains(lexicon);
+}
+
+//---------------------------------------------------------------------------
 //  isAcceptable
 //
 //! Determine whether a word is acceptable in a lexicon.

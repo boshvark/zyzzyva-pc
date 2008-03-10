@@ -93,6 +93,7 @@ class WordEngine : public QObject
                         reverse = false, QString* errString = 0, quint16*
                         expectedChecksum = 0);
     int importStems(const QString& filename, QString* errString = 0);
+    bool lexiconIsLoaded(const QString& lexicon) const;
     bool isAcceptable(const QString& lexicon, const QString& word) const;
     QStringList search(const QString& lexicon, const SearchSpec& spec,
                        bool allCaps) const;
