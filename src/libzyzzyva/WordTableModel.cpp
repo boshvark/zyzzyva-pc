@@ -171,15 +171,19 @@ bool
 WordTableModel::addWords(const QList<WordItem>& words)
 {
     int row = rowCount();
+    //qDebug("WordTableModel::addWords A");
     bool ok = insertRows(row, words.size());
     if (!ok)
         return false;
     WordItem word;
     foreach (word, words) {
+    //qDebug("WordTableModel::addWords B");
         addWordPrivate(word, row);
         ++row;
     }
+    //qDebug("WordTableModel::addWords C");
     sort(WORD_COLUMN);
+    //qDebug("WordTableModel::addWords D");
     lastAddedIndex = -1;
     emit wordsChanged();
     return true;
@@ -407,8 +411,9 @@ WordTableModel::data(const QModelIndex& index, int role) const
                     QString str (word);
                     if (MainSettings::getWordListShowHookParents()) {
                         if (!wordItem.parentHooksAreValid()) {
-                            wordItem.setParentHooks(isFrontHook(wordUpper),
-                                                    isBackHook(wordUpper));
+                            wordItem.setParentHooks(
+                                wordEngine->getIsFrontHook(lexicon, wordUpper),
+                                wordEngine->getIsBackHook(lexicon, wordUpper));
                         }
                         str = (wordItem.getFrontParentHook() ? PARENT_HOOK_CHAR
                                 : QChar(' '))
@@ -416,9 +421,9 @@ WordTableModel::data(const QModelIndex& index, int role) const
                             + (wordItem.getBackParentHook() ? PARENT_HOOK_CHAR
                                : QChar(' '));
                     }
-                    if (MainSettings::getWordListUseLexiconStyles()) {
-                        str += getLexiconSymbols(word);
-                    }
+                    //if (MainSettings::getWordListUseLexiconStyles()) {
+                    //    str += wordEngine->getLexiconSymbols(lexicon, word);
+                    //}
                     return str;
                 }
                 else
@@ -567,17 +572,16 @@ WordTableModel::setData(const QModelIndex& index, const QVariant& value, int
         else if (index.column() == WORD_COLUMN) {
             WordItem& word = wordList[index.row()];
             word.setWord(value.toString());
+            QString wordUpper = word.getWord().toUpper();
             if (MainSettings::getWordListShowHooks()) {
                 word.setHooks(
-                    wordEngine->getFrontHookLetters(lexicon,
-                                                    word.getWord().toUpper()),
-                    wordEngine->getBackHookLetters(lexicon,
-                                                   word.getWord().toUpper()));
+                    wordEngine->getFrontHookLetters(lexicon, wordUpper),
+                    wordEngine->getBackHookLetters(lexicon, wordUpper));
             }
             if (MainSettings::getWordListShowHookParents()) {
                 word.setParentHooks(
-                    isFrontHook(word.getWord().toUpper()),
-                    isBackHook(word.getWord().toUpper()));
+                    wordEngine->getIsFrontHook(lexicon, wordUpper),
+                    wordEngine->getIsBackHook(lexicon, wordUpper));
             }
         }
         else if (index.column() == PROBABILITY_ORDER_COLUMN) {
@@ -680,65 +684,65 @@ WordTableModel::markAlternates()
     }
 }
 
-//---------------------------------------------------------------------------
-//  isFrontHook
+////---------------------------------------------------------------------------
+////  isFrontHook
+////
+////! Determine whether a word is a front hook.  A word is a front hook if its
+////! first letter can be removed to form a valid word.
+////
+////! @param word the word, assumed to be upper case
+////! @return true if the word is a front hook, false otherwise
+////---------------------------------------------------------------------------
+//bool
+//WordTableModel::isFrontHook(const QString& word) const
+//{
+//    return wordEngine->isAcceptable(lexicon, word.right(word.length() - 1));
+//}
 //
-//! Determine whether a word is a front hook.  A word is a front hook if its
-//! first letter can be removed to form a valid word.
+////---------------------------------------------------------------------------
+////  isBackHook
+////
+////! Determine whether a word is a back hook.  A word is a back hook if its
+////! last letter can be removed to form a valid word.
+////
+////! @param word the word, assumed to be upper case
+////! @return true if the word is a back hook, false otherwise
+////---------------------------------------------------------------------------
+//bool
+//WordTableModel::isBackHook(const QString& word) const
+//{
+//    return wordEngine->isAcceptable(lexicon, word.left(word.length() - 1));
+//}
 //
-//! @param word the word, assumed to be upper case
-//! @return true if the word is a front hook, false otherwise
-//---------------------------------------------------------------------------
-bool
-WordTableModel::isFrontHook(const QString& word) const
-{
-    return wordEngine->isAcceptable(lexicon, word.right(word.length() - 1));
-}
-
-//---------------------------------------------------------------------------
-//  isBackHook
+////---------------------------------------------------------------------------
+////  getLexiconSymbols
+////
+////! Get lexicon symbols to be appended to a word to denote that the word
+////! belongs to certain lexicon combinations.
+////
+////! @param word the word, assumed to be upper case
+////! @return true a string containing all applicable lexicon symbols
+////---------------------------------------------------------------------------
+//QString
+//WordTableModel::getLexiconSymbols(const QString& word) const
+//{
+//    QString symbolStr;
 //
-//! Determine whether a word is a back hook.  A word is a back hook if its
-//! last letter can be removed to form a valid word.
+//    // FIXME: instead of querying settings and iterating for every word, the
+//    // WordTableModel should cache a styles to be applied, and the cache
+//    // should be updated whenever settings are changed
+//    QListIterator<LexiconStyle> it (MainSettings::getWordListLexiconStyles());
+//    while (it.hasNext()) {
+//        const LexiconStyle& style = it.next();
+//        if (style.lexicon != lexicon)
+//            continue;
 //
-//! @param word the word, assumed to be upper case
-//! @return true if the word is a back hook, false otherwise
-//---------------------------------------------------------------------------
-bool
-WordTableModel::isBackHook(const QString& word) const
-{
-    return wordEngine->isAcceptable(lexicon, word.left(word.length() - 1));
-}
-
-//---------------------------------------------------------------------------
-//  getLexiconSymbols
-//
-//! Get lexicon symbols to be appended to a word to denote that the word
-//! belongs to certain lexicon combinations.
-//
-//! @param word the word, assumed to be upper case
-//! @return true a string containing all applicable lexicon symbols
-//---------------------------------------------------------------------------
-QString
-WordTableModel::getLexiconSymbols(const QString& word) const
-{
-    QString symbolStr;
-
-    // FIXME: instead of querying settings and iterating for every word, the
-    // WordTableModel should cache a styles to be applied, and the cache
-    // should be updated whenever settings are changed
-    QListIterator<LexiconStyle> it (MainSettings::getWordListLexiconStyles());
-    while (it.hasNext()) {
-        const LexiconStyle& style = it.next();
-        if (style.lexicon != lexicon)
-            continue;
-
-        bool acceptable = wordEngine->isAcceptable(style.compareLexicon, word);
-        if (!(acceptable ^ style.inCompareLexicon))
-            symbolStr += style.symbol;
-    }
-    return symbolStr;
-}
+//        bool acceptable = wordEngine->isAcceptable(style.compareLexicon, word);
+//        if (!(acceptable ^ style.inCompareLexicon))
+//            symbolStr += style.symbol;
+//    }
+//    return symbolStr;
+//}
 
 //---------------------------------------------------------------------------
 //  init

@@ -109,7 +109,9 @@ CreateDatabaseThread::createTables(QSqlDatabase& db)
         "alphagram varchar(16), num_anagrams integer, "
         "num_unique_letters integer, num_vowels integer, "
         "point_value integer, front_hooks varchar(32), "
-        "back_hooks varchar(32), definition varchar(256))");
+        "back_hooks varchar(32), is_front_hook integer, "
+        "is_back_hook integer, lexicon_symbols varchar(16), "
+        "definition varchar(256))");
 
     query.exec("CREATE TABLE db_version (version integer)");
     query.exec("INSERT into db_version (version) VALUES (" +
@@ -178,8 +180,9 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
 
         query.prepare("INSERT INTO words (word, length, combinations, "
                       "alphagram, num_unique_letters, num_vowels, "
-                      "point_value, front_hooks, back_hooks) "
-                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                      "point_value, front_hooks, back_hooks, "
+                      "is_front_hook, is_back_hook) "
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         transactionQuery.exec("BEGIN TRANSACTION");
 
@@ -210,6 +213,11 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
                     back += letter;
             }
 
+            int isFrontHook = wordEngine->isAcceptable(
+                lexiconName, word.right(word.length() - 1)) ? 1 : 0;
+            int isBackHook = wordEngine->isAcceptable(
+                lexiconName, word.left(word.length() - 1)) ? 1 : 0;
+
             query.bindValue(0, word);
             query.bindValue(1, length);
             query.bindValue(2, combinations);
@@ -219,6 +227,8 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
             query.bindValue(6, pointValue);
             query.bindValue(7, front.toLower());
             query.bindValue(8, back.toLower());
+            query.bindValue(9, isFrontHook);
+            query.bindValue(10, isBackHook);
             query.exec();
 
             if ((stepNum % 1000) == 0) {

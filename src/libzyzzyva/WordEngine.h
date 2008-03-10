@@ -57,6 +57,9 @@ class WordEngine : public QObject
         int pointValue;
         QString frontHooks;
         QString backHooks;
+        bool isFrontHook;
+        bool isBackHook;
+        QString lexiconSymbols;
         QString definition;
     };
 
@@ -115,6 +118,9 @@ class WordEngine : public QObject
     int getNumVowels(const QString& lexicon, const QString& word) const;
     int getNumUniqueLetters(const QString& lexicon, const QString& word) const;
     int getPointValue(const QString& lexicon, const QString& word) const;
+    bool getIsFrontHook(const QString& lexicon, const QString& word) const;
+    bool getIsBackHook(const QString& lexicon, const QString& word) const;
+    QString getLexiconSymbols(const QString& lexicon, const QString& word) const;
 
     private:
     enum ConditionPhase {
@@ -127,8 +133,8 @@ class WordEngine : public QObject
     private:
     void clearCache(const QString& lexicon) const;
     void addToCache(const QString& lexicon, const QStringList& words) const;
-    bool matchesConditions(const QString& lexicon, const QString& word,
-                           const QList<SearchCondition>& conditions) const;
+    bool matchesPostConditions(const QString& lexicon, const QString& word,
+                               const QList<SearchCondition>& conditions) const;
     bool isSetMember(const QString& lexicon, const QString& word,
                      SearchSet ss) const;
     int getNumAnagrams(const QString& lexicon, const QString& word) const;

@@ -285,34 +285,16 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
         SearchCondition condition = cit.next();
-        switch (condition.type) {
-            case SearchCondition::PatternMatch:
-            if (condition.stringValue.contains("["))
-                break;
-            // fall through...
+        if (getConditionPhase(condition) != DatabasePhase)
+            continue;
 
-            case SearchCondition::Length:
-            case SearchCondition::InWordList:
-            case SearchCondition::NumVowels:
-            case SearchCondition::IncludeLetters:
-            case SearchCondition::ProbabilityOrder:
-            case SearchCondition::NumUniqueLetters:
-            case SearchCondition::PointValue:
-            case SearchCondition::NumAnagrams:
-            if (foundCondition)
-                queryStr += " AND";
-            foundCondition = true;
-            break;
-
-            default:
-            break;
-        }
+        if (foundCondition)
+            queryStr += " AND";
+        foundCondition = true;
 
         switch (condition.type) {
             case SearchCondition::PatternMatch: {
                 // XXX: eventually, account for negated condition
-                if (condition.stringValue.contains("["))
-                    break;
                 QString str =
                     condition.stringValue.replace("?", "_").replace("*", "%");
                 queryStr += " word LIKE '" + str + "'";
@@ -398,6 +380,32 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             }
             break;
 
+            case SearchCondition::BelongToGroup: {
+                SearchSet searchSet =
+                    Auxil::stringToSearchSet(condition.stringValue);
+                int target = condition.negated ? 0 : 1;
+                switch (searchSet) {
+                    case SetFrontHooks:
+                    queryStr += " is_front_hook=" + QString::number(target);
+                    break;
+
+                    case SetBackHooks:
+                    queryStr += " is_back_hook=" + QString::number(target);
+                    break;
+
+                    case SetHookWords:
+                    if (condition.negated)
+                        queryStr += " (is_front_hook=0 AND is_back_hook=0)";
+                    else
+                        queryStr += " (is_front_hook=1 OR is_back_hook=1)";
+                    break;
+
+                    default:
+                    break;
+                }
+            }
+            break;
+
             case SearchCondition::InWordList: {
                 queryStr += " word";
                 if (condition.negated)
@@ -475,7 +483,7 @@ WordEngine::applyPostConditions(const QString& lexicon,
     // Check special postconditions
     QStringList::iterator wit;
     for (wit = returnList.begin(); wit != returnList.end();) {
-        if (matchesConditions(lexicon, *wit, optimizedSpec.conditions))
+        if (matchesPostConditions(lexicon, *wit, optimizedSpec.conditions))
             ++wit;
         else
             wit = returnList.erase(wit);
@@ -756,8 +764,8 @@ WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
 
     QString qstr = "SELECT probability_order, min_probability_order, "
         "max_probability_order, num_vowels, num_unique_letters, num_anagrams, "
-        "point_value, front_hooks, back_hooks, definition FROM words "
-        "WHERE word=?";
+        "point_value, front_hooks, back_hooks, is_front_hook, is_back_hook, "
+        "lexicon_symbols, definition FROM words WHERE word=?";
     QSqlQuery query (*db);
     query.prepare(qstr);
     query.bindValue(0, word);
@@ -774,7 +782,10 @@ WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
         info.pointValue          = query.value(6).toInt();
         info.frontHooks          = query.value(7).toString();
         info.backHooks           = query.value(8).toString();
-        info.definition          = query.value(9).toString();
+        info.isFrontHook         = query.value(9).toBool();
+        info.isBackHook          = query.value(10).toBool();
+        info.lexiconSymbols      = query.value(11).toString();
+        info.definition          = query.value(12).toString();
         lexiconData[lexicon].wordCache[word] = info;
     }
 
@@ -1008,7 +1019,7 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
 }
 
 //---------------------------------------------------------------------------
-//  matchesConditions
+//  matchesPostConditions
 //
 //! Test whether a word matches certain conditions.  Not all conditions in the
 //! list are tested.  Only the conditions that cannot be easily tested in
@@ -1020,15 +1031,9 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
 //! @return true if the word matches all special conditions, false otherwise
 //---------------------------------------------------------------------------
 bool
-WordEngine::matchesConditions(const QString& lexicon, const QString& word,
-                              const QList<SearchCondition>& conditions) const
+WordEngine::matchesPostConditions(const QString& lexicon, const QString& word,
+                                  const QList<SearchCondition>& conditions) const
 {
-    // FIXME: For conditions that can be tested by querying the database, a
-    // query should be constructed that tests all the conditions as part of a
-    // single WHERE clause.  This should be much more efficient than testing
-    // each condition on each word individually, which requires several
-    // queries.
-
     if (!lexiconData.contains(lexicon))
         return false;
 
@@ -1036,6 +1041,8 @@ WordEngine::matchesConditions(const QString& lexicon, const QString& word,
     QListIterator<SearchCondition> it (conditions);
     while (it.hasNext()) {
         const SearchCondition& condition = it.next();
+        if (getConditionPhase(condition) != PostConditionPhase)
+            continue;
 
         switch (condition.type) {
 
@@ -1391,6 +1398,63 @@ WordEngine::getPointValue(const QString& lexicon, const QString& word) const
 }
 
 //---------------------------------------------------------------------------
+//  getIsFrontHook
+//
+//! Determine whether a word is a front hook.
+//
+//! @param lexicon the name of the lexicon
+//! @param word the word
+//! @return true if the word is a front hook, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::getIsFrontHook(const QString& lexicon, const QString& word) const
+{
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
+    return info.isValid() ? info.isFrontHook : false;
+}
+
+//---------------------------------------------------------------------------
+//  getIsBackHook
+//
+//! Determine whether a word is a back hook.
+//
+//! @param lexicon the name of the lexicon
+//! @param word the word
+//! @return true if the word is a back hook, false otherwise
+//---------------------------------------------------------------------------
+bool
+WordEngine::getIsBackHook(const QString& lexicon, const QString& word) const
+{
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
+    return info.isValid() ? info.isBackHook : false;
+}
+
+//---------------------------------------------------------------------------
+//  getLexiconSymbols
+//
+//! Get lexicon symbols to be displayed along with this word.
+//
+//! @param lexicon the name of the lexicon
+//! @param word the word
+//! @return a lexicon symbol string
+//---------------------------------------------------------------------------
+QString
+WordEngine::getLexiconSymbols(const QString& lexicon, const QString& word) const
+{
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
+    return info.isValid() ? info.lexiconSymbols : QString();
+}
+
+//---------------------------------------------------------------------------
 //  nonGraphSearch
 //
 //! Search for valid words matching conditions that can be matched without
@@ -1624,7 +1688,6 @@ WordEngine::getConditionPhase(const SearchCondition& condition) const
         case SearchCondition::NumAnagrams:
         return DatabasePhase;
 
-        case SearchCondition::BelongToGroup:
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
         case SearchCondition::LimitByProbabilityOrder:
@@ -1639,6 +1702,18 @@ WordEngine::getConditionPhase(const SearchCondition& condition) const
         }
         else
             return WordGraphPhase;
+
+        case SearchCondition::BelongToGroup: {
+            SearchSet searchSet =
+                Auxil::stringToSearchSet(condition.stringValue);
+            if ((searchSet == SetHookWords) || (searchSet == SetFrontHooks) ||
+                (searchSet == SetBackHooks))
+            {
+                return DatabasePhase;
+            }
+            else
+                return PostConditionPhase;
+        }
 
         default:
         return UnknownPhase;
