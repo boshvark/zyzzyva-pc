@@ -48,7 +48,7 @@ WordEngine::clearCache(const QString& lexicon) const
     if (!lexiconData.contains(lexicon))
         return;
 
-    lexiconData[lexicon].wordCache.clear();
+    lexiconData[lexicon]->wordCache.clear();
 }
 
 //---------------------------------------------------------------------------
@@ -84,9 +84,9 @@ WordEngine::connectToDatabase(const QString& lexicon, const QString& filename,
         return false;
     }
 
-    LexiconData& data = lexiconData[lexicon];
-    data.db = db;
-    data.dbConnectionName = dbConnectionName;
+    LexiconData* data = lexiconData[lexicon];
+    data->db = db;
+    data->dbConnectionName = dbConnectionName;
     return true;
 }
 
@@ -104,15 +104,15 @@ WordEngine::disconnectFromDatabase(const QString& lexicon)
     if (!lexiconData.contains(lexicon))
         return true;
 
-    QSqlDatabase* db = lexiconData[lexicon].db;
-    QString dbConnectionName = lexiconData[lexicon].dbConnectionName;
+    QSqlDatabase* db = lexiconData[lexicon]->db;
+    QString dbConnectionName = lexiconData[lexicon]->dbConnectionName;
     if (!db || !db->isOpen() || dbConnectionName.isEmpty())
         return true;
 
     delete db;
-    lexiconData[lexicon].db = 0;
+    lexiconData[lexicon]->db = 0;
     QSqlDatabase::removeDatabase(dbConnectionName);
-    lexiconData[lexicon].dbConnectionName.clear();
+    lexiconData[lexicon]->dbConnectionName.clear();
     return true;
 }
 
@@ -132,10 +132,12 @@ int
 WordEngine::importTextFile(const QString& lexicon, const QString& filename,
                            bool loadDefinitions, QString* errString)
 {
-    if (!lexiconData.contains(lexicon))
-        lexiconData[lexicon].graph = new WordGraph;
+    if (!lexiconData.contains(lexicon)) {
+        lexiconData[lexicon] = new LexiconData;
+        lexiconData[lexicon]->graph = new WordGraph;
+    }
 
-    WordGraph* graph = lexiconData[lexicon].graph;
+    WordGraph* graph = lexiconData[lexicon]->graph;
 
     QFile file (filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -157,7 +159,7 @@ WordEngine::importTextFile(const QString& lexicon, const QString& filename,
 
         if (!graph->containsWord(word)) {
             QString alpha = Auxil::getAlphagram(word);
-            ++lexiconData[lexicon].numAnagramsMap[alpha];
+            ++lexiconData[lexicon]->numAnagramsMap[alpha];
         }
 
         graph->addWord(word);
@@ -189,10 +191,12 @@ WordEngine::importDawgFile(const QString& lexicon, const QString& filename,
                            bool reverse, QString* errString, quint16*
                            expectedChecksum)
 {
-    if (!lexiconData.contains(lexicon))
-        lexiconData[lexicon].graph = new WordGraph;
+    if (!lexiconData.contains(lexicon)) {
+        lexiconData[lexicon] = new LexiconData;
+        lexiconData[lexicon]->graph = new WordGraph;
+    }
 
-    WordGraph* graph = lexiconData[lexicon].graph;
+    WordGraph* graph = lexiconData[lexicon]->graph;
     bool ok = graph->importDawgFile(filename, reverse, errString,
                                     expectedChecksum);
     return ok;
@@ -253,9 +257,9 @@ WordEngine::importStems(const QString& filename, QString* errString)
     // Insert the stem list into the map, or append to an existing stem list
     QString lexicon;
     foreach (lexicon, lexiconData.keys()) {
-        LexiconData& data = lexiconData[lexicon];
-        data.stems[length] += words;
-        data.stemAlphagrams[length].unite(alphagrams);
+        LexiconData* data = lexiconData[lexicon];
+        data->stems[length] += words;
+        data->stemAlphagrams[length].unite(alphagrams);
     }
     return imported;
 }
@@ -276,7 +280,7 @@ QStringList
 WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
                            optimizedSpec, const QStringList* wordList) const
 {
-    if (!lexiconData.contains(lexicon) || !lexiconData[lexicon].db)
+    if (!lexiconData.contains(lexicon) || !lexiconData[lexicon]->db)
         return QStringList();
 
     // Build SQL query string
@@ -451,7 +455,7 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
 
     // Query the database
     QStringList resultList;
-    QSqlDatabase* db = lexiconData[lexicon].db;
+    QSqlDatabase* db = lexiconData[lexicon]->db;
     QSqlQuery query (queryStr, *db);
     while (query.next()) {
         QString word = query.value(0).toString();
@@ -609,7 +613,7 @@ WordEngine::isAcceptable(const QString& lexicon, const QString& word) const
     if (!lexiconData.contains(lexicon))
         return false;
 
-    return lexiconData[lexicon].graph->containsWord(word);
+    return lexiconData[lexicon]->graph->containsWord(word);
 }
 
 //---------------------------------------------------------------------------
@@ -706,7 +710,7 @@ WordEngine::wordGraphSearch(const QString& lexicon, const SearchSpec&
     if (!lexiconData.contains(lexicon))
         return QStringList();
 
-    return lexiconData[lexicon].graph->search(optimizedSpec);
+    return lexiconData[lexicon]->graph->search(optimizedSpec);
 }
 
 //---------------------------------------------------------------------------
@@ -751,14 +755,14 @@ WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
     if (!lexiconData.contains(lexicon))
         return WordInfo();
 
-    if (lexiconData[lexicon].wordCache.contains(word)) {
+    if (lexiconData[lexicon]->wordCache.contains(word)) {
         //qDebug("Cache HIT: |%s|", word.toUtf8().data());
-        return lexiconData[lexicon].wordCache[word];
+        return lexiconData[lexicon]->wordCache[word];
     }
     //qDebug("Cache MISS: |%s|", word.toUtf8().data());
 
     WordInfo info;
-    QSqlDatabase* db = lexiconData[lexicon].db;
+    QSqlDatabase* db = lexiconData[lexicon]->db;
     if (!db || !db->isOpen())
         return info;
 
@@ -786,7 +790,7 @@ WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
         info.isBackHook          = query.value(10).toBool();
         info.lexiconSymbols      = query.value(11).toString();
         info.definition          = query.value(12).toString();
-        lexiconData[lexicon].wordCache[word] = info;
+        lexiconData[lexicon]->wordCache[word] = info;
     }
 
     return info;
@@ -806,7 +810,7 @@ WordEngine::getNumWords(const QString& lexicon) const
     if (!lexiconData.contains(lexicon))
         return 0;
 
-    QSqlDatabase* db = lexiconData[lexicon].db;
+    QSqlDatabase* db = lexiconData[lexicon]->db;
     if (db && db->isOpen()) {
         QString qstr = "SELECT count(*) FROM words";
         QSqlQuery query (qstr, *db);
@@ -814,7 +818,7 @@ WordEngine::getNumWords(const QString& lexicon) const
             return query.value(0).toInt();
     }
     else
-        return lexiconData[lexicon].graph->getNumWords();
+        return lexiconData[lexicon]->graph->getNumWords();
 
     return 0;
 }
@@ -857,11 +861,11 @@ WordEngine::getDefinition(const QString& lexicon, const QString& word,
     }
 
     else {
-        if (!lexiconData[lexicon].definitions.contains(word))
+        if (!lexiconData[lexicon]->definitions.contains(word))
             return QString();
 
         const QMultiMap<QString, QString>& mmap =
-            lexiconData[lexicon].definitions.value(word);
+            lexiconData[lexicon]->definitions.value(word);
         QMapIterator<QString, QString> it (mmap);
         while (it.hasNext()) {
             it.next();
@@ -980,7 +984,7 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
     if (words.isEmpty() || !lexiconData.contains(lexicon))
         return;
 
-    QSqlDatabase* db = lexiconData[lexicon].db;
+    QSqlDatabase* db = lexiconData[lexicon]->db;
     if (!db || !db->isOpen())
         return;
 
@@ -1017,7 +1021,7 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
         info.isBackHook          = query.value(11).toBool();
         info.lexiconSymbols      = query.value(12).toString();
         info.definition          = query.value(13).toString();
-        lexiconData[lexicon].wordCache[info.word] = info;
+        lexiconData[lexicon]->wordCache[info.word] = info;
     }
 }
 
@@ -1137,12 +1141,12 @@ WordEngine::isSetMember(const QString& lexicon, const QString& word,
             if (word.length() != 7)
                 return false;
 
-            if (!lexiconData[lexicon].stemAlphagrams.contains(word.length() - 1))
+            if (!lexiconData[lexicon]->stemAlphagrams.contains(word.length() - 1))
                 return false;
 
             QString agram = Auxil::getAlphagram(word);
             const QSet<QString>& alphaSet =
-                lexiconData[lexicon].stemAlphagrams[word.length() - 1];
+                lexiconData[lexicon]->stemAlphagrams[word.length() - 1];
 
             for (int i = 0; i < int(agram.length()); ++i) {
                 if (alphaSet.contains(agram.left(i) +
@@ -1158,7 +1162,7 @@ WordEngine::isSetMember(const QString& lexicon, const QString& word,
             if (word.length() != 8)
                 return false;
 
-            if (!lexiconData[lexicon].stemAlphagrams.contains(word.length() - 2))
+            if (!lexiconData[lexicon]->stemAlphagrams.contains(word.length() - 2))
                 return false;
 
             // Compare the letters of the word with the letters of each
@@ -1166,7 +1170,7 @@ WordEngine::isSetMember(const QString& lexicon, const QString& word,
             // are missing from the alphagram.
             QString agram = Auxil::getAlphagram(word);
             const QSet<QString>& alphaSet =
-                lexiconData[lexicon].stemAlphagrams[word.length() - 2];
+                lexiconData[lexicon]->stemAlphagrams[word.length() - 2];
 
             QSetIterator<QString> it (alphaSet);
             while (it.hasNext()) {
@@ -1239,12 +1243,12 @@ WordEngine::isSetMember(const QString& lexicon, const QString& word,
             if (word.length() != 8)
                 return false;
 
-            if (!lexiconData[lexicon].stemAlphagrams.contains(word.length() - 1))
+            if (!lexiconData[lexicon]->stemAlphagrams.contains(word.length() - 1))
                 return false;
 
             QString agram = Auxil::getAlphagram(word);
             const QSet<QString>& alphaSet =
-                lexiconData[lexicon].stemAlphagrams[word.length() - 1];
+                lexiconData[lexicon]->stemAlphagrams[word.length() - 1];
 
             for (int i = 0; i < int(agram.length()); ++i) {
                 if (alphaSet.contains(agram.left(i) +
@@ -1282,7 +1286,7 @@ WordEngine::getNumAnagrams(const QString& lexicon, const QString& word) const
 
     else {
         QString alpha = Auxil::getAlphagram(word);
-        return lexiconData[lexicon].numAnagramsMap.value(alpha);
+        return lexiconData[lexicon]->numAnagramsMap.value(alpha);
     }
 }
 
@@ -1660,7 +1664,7 @@ WordEngine::addDefinition(const QString& lexicon, const QString& word,
         }
         defMap.insert(pos, def);
     }
-    lexiconData[lexicon].definitions.insert(word, defMap);
+    lexiconData[lexicon]->definitions.insert(word, defMap);
 }
 
 //---------------------------------------------------------------------------

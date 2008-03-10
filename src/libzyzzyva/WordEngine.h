@@ -151,7 +151,7 @@ class WordEngine : public QObject
     ConditionPhase getConditionPhase(const SearchCondition& condition) const;
 
     private:
-    QMap<QString, LexiconData> lexiconData;
+    QMap<QString, LexiconData*> lexiconData;
 };
 
 #endif // ZYZZYVA_WORD_ENGINE_H
