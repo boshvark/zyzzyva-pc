@@ -75,6 +75,7 @@ namespace Auxil {
     WordListFormat stringToWordListFormat(const QString& string);
     QString lexiconStyleToString(const LexiconStyle& style);
     LexiconStyle stringToLexiconStyle(const QString& string);
+    QString lexiconToOrigin(const QString& lexicon);
     QDate lexiconToDate(const QString& lexicon);
 }
 

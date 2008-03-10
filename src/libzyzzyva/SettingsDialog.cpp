@@ -1,4 +1,5 @@
 //---------------------------------------------------------------------------
+//
 // SettingsDialog.cpp
 //
 // The settings dialog for the word study application.

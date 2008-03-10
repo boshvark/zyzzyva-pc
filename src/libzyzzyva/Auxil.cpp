@@ -1188,9 +1188,37 @@ Auxil::stringToLexiconStyle(const QString& s)
 }
 
 //---------------------------------------------------------------------------
+//  lexiconToOrigin
+//
+//! Convert a lexicon name to the origin of the lexicon.
+//
+//! @param s the lexicon name
+//! @return the lexicon origin
+//---------------------------------------------------------------------------
+QString
+Auxil::lexiconToOrigin(const QString& lexicon)
+{
+    if (lexicon == "OWL+LWL")
+        return "North American";
+    if (lexicon == "OWL2+LWL")
+        return "North American";
+    if (lexicon == "OSPD4+LWL")
+        return "North American (School)";
+    if (lexicon == "OSWI")
+        return "British";
+    if (lexicon == "CSW")
+        return "British";
+    if (lexicon == "ODS")
+        return "French";
+    if (lexicon == "Volost")
+        return "Antarctic";
+    return QString();
+}
+
+//---------------------------------------------------------------------------
 //  lexiconToDate
 //
-//! Convert a lexicon name to the date the lexicon was last updated
+//! Convert a lexicon name to the date the lexicon was last updated.
 //
 //! @param s the lexicon name
 //! @return the date the lexicon was last modified
@@ -1208,6 +1236,8 @@ Auxil::lexiconToDate(const QString& lexicon)
         return QDate(2002, 1, 14);
     if (lexicon == "CSW")
         return QDate(2007, 5, 15);
+    if (lexicon == "ODS")
+        return QDate(2004, 1, 1);
     if (lexicon == "Volost")
         return QDate(2007, 4, 1);
     return QDate();

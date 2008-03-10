@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "LexiconSelectDialog.h"
+#include "Auxil.h"
 #include "Defs.h"
 #include <QDialogButtonBox>
 #include <QHBoxLayout>
@@ -59,15 +60,30 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(mainGlay);
     mainVlay->addLayout(mainGlay);
 
-    QLabel* defaultLabel = new QLabel;
-    Q_CHECK_PTR(defaultLabel);
-    defaultLabel->setText("Default");
-    mainGlay->addWidget(defaultLabel, 0, 0, Qt::AlignHCenter);
+    QLabel* defaultHeaderLabel = new QLabel;
+    Q_CHECK_PTR(defaultHeaderLabel);
+    defaultHeaderLabel->setText("Default");
+    mainGlay->addWidget(defaultHeaderLabel, 0, 0, Qt::AlignHCenter);
 
-    QLabel* loadLabel = new QLabel;
-    Q_CHECK_PTR(loadLabel);
-    loadLabel->setText("Load");
-    mainGlay->addWidget(loadLabel, 0, 1, Qt::AlignHCenter);
+    QLabel* loadHeaderLabel = new QLabel;
+    Q_CHECK_PTR(loadHeaderLabel);
+    loadHeaderLabel->setText("Load");
+    mainGlay->addWidget(loadHeaderLabel, 0, 1, Qt::AlignHCenter);
+
+    QLabel* lexiconHeaderLabel = new QLabel;
+    Q_CHECK_PTR(lexiconHeaderLabel);
+    lexiconHeaderLabel->setText("Lexicon");
+    mainGlay->addWidget(lexiconHeaderLabel, 0, 2, Qt::AlignHCenter);
+
+    QLabel* originHeaderLabel = new QLabel;
+    Q_CHECK_PTR(originHeaderLabel);
+    originHeaderLabel->setText("Origin");
+    mainGlay->addWidget(originHeaderLabel, 0, 3, Qt::AlignHCenter);
+
+    QLabel* dateHeaderLabel = new QLabel;
+    Q_CHECK_PTR(dateHeaderLabel);
+    dateHeaderLabel->setText("Date");
+    mainGlay->addWidget(dateHeaderLabel, 0, 4, Qt::AlignHCenter);
 
     QStringList validLexicons;
     validLexicons.append("OWL2+LWL");
@@ -77,6 +93,7 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
     validLexicons.append("ODS");
     validLexicons.append("OWL+LWL");
     validLexicons.append("OSWI");
+    validLexicons.append("Custom");
 
     QStringListIterator it (validLexicons);
     for (int row = 1; it.hasNext(); ++row) {
@@ -98,11 +115,29 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
         mainGlay->addWidget(checkBox, row, 1, Qt::AlignHCenter);
         lexiconCheckBoxes.insert(lexicon, checkBox);
 
-        QLabel* label = new QLabel;
-        Q_CHECK_PTR(label);
-        label->setText(lexicon);
-        mainGlay->addWidget(label, row, 2);
+        QLabel* lexiconLabel = new QLabel;
+        Q_CHECK_PTR(lexiconLabel);
+        lexiconLabel->setText(lexicon);
+        mainGlay->addWidget(lexiconLabel, row, 2);
+
+        QString lexiconOrigin = Auxil::lexiconToOrigin(lexicon);
+        if (!lexiconOrigin.isEmpty()) {
+            QLabel* originLabel = new QLabel;
+            Q_CHECK_PTR(originLabel);
+            originLabel->setText(lexiconOrigin);
+            mainGlay->addWidget(originLabel, row, 3);
+        }
+
+        QDate lexiconDate = Auxil::lexiconToDate(lexicon);
+        if (lexiconDate.isValid()) {
+            QLabel* dateLabel = new QLabel;
+            Q_CHECK_PTR(dateLabel);
+            dateLabel->setText(lexiconDate.toString("MMMM d, yyyy"));
+            mainGlay->addWidget(dateLabel, row, 4);
+        }
     }
+
+    mainVlay->addStretch(1);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
     Q_CHECK_PTR(buttonBox);
