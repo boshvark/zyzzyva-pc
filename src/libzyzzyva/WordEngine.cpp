@@ -986,8 +986,8 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
 
     QString qstr = "SELECT word, probability_order, min_probability_order, "
         "max_probability_order, num_vowels, num_unique_letters, num_anagrams, "
-        "point_value, front_hooks, back_hooks, definition FROM words "
-        "WHERE word IN (";
+        "point_value, front_hooks, back_hooks, is_front_hook, is_back_hook, "
+        "lexicon_symbols, definition FROM words WHERE word IN (";
 
     QStringListIterator it (words);
     for (int i = 0; it.hasNext(); ++i) {
@@ -1013,7 +1013,10 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
         info.pointValue          = query.value(7).toInt();
         info.frontHooks          = query.value(8).toString();
         info.backHooks           = query.value(9).toString();
-        info.definition          = query.value(10).toString();
+        info.isFrontHook         = query.value(10).toBool();
+        info.isBackHook          = query.value(11).toBool();
+        info.lexiconSymbols      = query.value(12).toString();
+        info.definition          = query.value(13).toString();
         lexiconData[lexicon].wordCache[info.word] = info;
     }
 }
