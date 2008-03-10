@@ -1474,6 +1474,14 @@ CrosswordGameForm::threadSocketError(QAbstractSocket::SocketError error)
         errorMsg = "Unsupported socket operation.";
         break;
 
+        case QAbstractSocket::ProxyAuthenticationRequiredError:
+        errorMsg = "Proxy authentication error.";
+        break;
+
+        case QAbstractSocket::UnfinishedSocketOperationError:
+        errorMsg = "Unfinished socket operation.";
+        break;
+
         case QAbstractSocket::UnknownSocketError:
         errorMsg = "Unknown socket error.";
         break;
