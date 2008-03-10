@@ -46,7 +46,6 @@ class LexiconSelectDialog : public QDialog
     void setDefaultLexicon(const QString& lexicon);
 
     public slots:
-    void importLexiconsChanged(int state);
     void defaultLexiconChanged();
 
     private:
