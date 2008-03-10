@@ -56,6 +56,7 @@ const QString SETTINGS_SHOW_PROBABILITY_ORDER
 const QString SETTINGS_SHOW_HOOKS = "wordlist_show_hooks";
 const QString SETTINGS_SHOW_HOOK_PARENTS = "wordlist_show_hook_parents";
 const QString SETTINGS_SHOW_DEFINITIONS = "wordlist_show_definitions";
+const QString SETTINGS_LOWER_CASE_WILDCARDS = "wordlist_lower_case_wildcards";
 const QString SETTINGS_USE_LEXICON_STYLES = "wordlist_use_lexicon_styles";
 const QString SETTINGS_LEXICON_STYLES = "wordlist_lexicon_styles";
 const QString SETTINGS_USE_TILE_THEME = "use_tile_theme";
@@ -219,6 +220,8 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_SHOW_HOOK_PARENTS, true).toBool();
     instance->wordListShowDefinitions
         = settings.value(SETTINGS_SHOW_DEFINITIONS, true).toBool();
+    instance->wordListLowerCaseWildcards
+        = settings.value(SETTINGS_LOWER_CASE_WILDCARDS, false).toBool();
 
     instance->wordListUseLexiconStyles
         = settings.value(SETTINGS_USE_LEXICON_STYLES, true).toBool();
@@ -303,6 +306,8 @@ MainSettings::writeSettings()
                       instance->wordListShowHookParents);
     settings.setValue(SETTINGS_SHOW_DEFINITIONS,
                       instance->wordListShowDefinitions);
+    settings.setValue(SETTINGS_LOWER_CASE_WILDCARDS,
+                      instance->wordListLowerCaseWildcards);
     settings.setValue(SETTINGS_USE_LEXICON_STYLES,
                       instance->wordListUseLexiconStyles);
 

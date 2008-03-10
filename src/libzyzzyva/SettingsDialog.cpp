@@ -587,6 +587,11 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(showDefinitionCbox);
     wordListDisplayVlay->addWidget(showDefinitionCbox);
 
+    lowerCaseWildcardsCbox =
+        new QCheckBox("Use lower-case for wildcard matches");
+    Q_CHECK_PTR(lowerCaseWildcardsCbox);
+    wordListDisplayVlay->addWidget(lowerCaseWildcardsCbox);
+
     lexiconStyleCbox = new QCheckBox("Show lexicon symbols");
     Q_CHECK_PTR(lexiconStyleCbox);
     connect(lexiconStyleCbox, SIGNAL(toggled(bool)),
@@ -776,6 +781,8 @@ SettingsDialog::readSettings()
     showHooksCbox->setChecked(MainSettings::getWordListShowHooks());
     showHookParentsCbox->setChecked(MainSettings::getWordListShowHookParents());
     showDefinitionCbox->setChecked(MainSettings::getWordListShowDefinitions());
+    lowerCaseWildcardsCbox->setChecked(
+        MainSettings::getWordListLowerCaseWildcards());
 
     bool useLexiconStyles = MainSettings::getWordListUseLexiconStyles();
     lexiconStyleCbox->setChecked(useLexiconStyles);
@@ -835,6 +842,8 @@ SettingsDialog::writeSettings()
     MainSettings::setWordListShowHooks(showHooksCbox->isChecked());
     MainSettings::setWordListShowHookParents(showHookParentsCbox->isChecked());
     MainSettings::setWordListShowDefinitions(showDefinitionCbox->isChecked());
+    MainSettings::setWordListLowerCaseWildcards(
+        lowerCaseWildcardsCbox->isChecked());
     MainSettings::setWordListLexiconStyles(getLexiconStyles());
     MainSettings::writeSettings();
 }

@@ -84,11 +84,6 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect(specForm, SIGNAL(contentsChanged()), SLOT(specChanged()));
     specVlay->addWidget(specForm);
 
-    lowerCaseCbox = new QCheckBox("Use &lower-case letters for wildcard "
-                                  "matches");
-    Q_CHECK_PTR(lowerCaseCbox);
-    specVlay->addWidget(lowerCaseCbox);
-
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     Q_CHECK_PTR(buttonHlay);
     buttonHlay->setSpacing(SPACING);
@@ -253,7 +248,7 @@ SearchForm::search()
             QString wordUpper = word.toUpper();
 
             // Convert to all caps if necessary
-            if (!lowerCaseCbox->isChecked())
+            if (!MainSettings::getWordListLowerCaseWildcards())
                 word = wordUpper;
 
             WordTableModel::WordItem wordItem

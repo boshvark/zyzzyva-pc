@@ -57,7 +57,6 @@ class SearchForm : public ActionForm
     WordEngine*     wordEngine;
     LexiconSelectWidget* lexiconWidget;
     SearchSpecForm* specForm;
-    QCheckBox*      lowerCaseCbox;
     WordTableView*  resultView;
     WordTableModel* resultModel;
     ZPushButton*    searchButton;

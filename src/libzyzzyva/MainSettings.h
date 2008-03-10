@@ -151,6 +151,10 @@ class MainSettings
         return instance->wordListShowDefinitions; }
     static void setWordListShowDefinitions(bool b) {
         instance->wordListShowDefinitions = b; }
+    static bool getWordListLowerCaseWildcards() {
+        return instance->wordListLowerCaseWildcards; }
+    static void setWordListLowerCaseWildcards(bool b) {
+        instance->wordListLowerCaseWildcards = b; }
     static bool getWordListUseLexiconStyles() {
         return instance->wordListUseLexiconStyles; }
     static void setWordListUseLexiconStyles(bool b) {
@@ -216,6 +220,7 @@ class MainSettings
     bool wordListShowHooks;
     bool wordListShowHookParents;
     bool wordListShowDefinitions;
+    bool wordListLowerCaseWildcards;
     bool wordListUseLexiconStyles;
     QList<LexiconStyle> wordListLexiconStyles;
     QString letterDistribution;

@@ -118,6 +118,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   showHookParentsCbox;
     QCheckBox*   showHooksCbox;
     QCheckBox*   showDefinitionCbox;
+    QCheckBox*   lowerCaseWildcardsCbox;
     QCheckBox*   lexiconStyleCbox;
     QLabel*      lexiconStyleLabel;
     ZPushButton* lexiconStyleButton;
