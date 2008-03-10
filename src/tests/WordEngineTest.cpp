@@ -71,9 +71,9 @@ WordEngineTest::tryImport()
     if (!ok)
         return;
 
-    engine.importStems(Auxil::getWordsDir() +
+    engine.importStems(TEST_LEXICON, Auxil::getWordsDir() +
                        "/north-american/6-letter-stems.txt");
-    engine.importStems(Auxil::getWordsDir() +
+    engine.importStems(TEST_LEXICON, Auxil::getWordsDir() +
                        "/north-american/7-letter-stems.txt");
 
     MainSettings::setLetterDistribution("A:9 B:2 C:2 D:4 E:12 F:2 G:3 H:2 "
