@@ -455,6 +455,9 @@ MainWindow::tryAutoImport()
 void
 MainWindow::tryConnectToDatabases()
 {
+    if (!MainSettings::getUseAutoImport())
+        return;
+
     QStringList lexicons = MainSettings::getAutoImportLexicons();
     QStringListIterator it (lexicons);
     while (it.hasNext()) {
@@ -740,9 +743,13 @@ MainWindow::doJudgeAction()
 void
 MainWindow::editSettings()
 {
-    QSet<QString> lexicons;
+    bool settingsChanged = false;
+    bool oldAutoImport = false;
+    QSet<QString> oldLexicons;
     if (settingsDialog->exec() == QDialog::Accepted) {
-        lexicons = MainSettings::getAutoImportLexicons().toSet();
+        settingsChanged = true;
+        oldAutoImport = MainSettings::getUseAutoImport();
+        oldLexicons = MainSettings::getAutoImportLexicons().toSet();
         settingsDialog->writeSettings();
     }
     else {
@@ -750,11 +757,17 @@ MainWindow::editSettings()
     }
     readSettings(false);
 
+    bool newAutoImport = MainSettings::getUseAutoImport();
+    if (!settingsChanged || !newAutoImport)
+        return;
+
     // Load any new lexicons that have been selected, but do not unload any
     // that have been deselected, because they might be in use (by a quiz, for
-    // example).
-    QSet<QString> currLexicons = MainSettings::getAutoImportLexicons().toSet();
-    QSet<QString> addedLexicons = currLexicons - lexicons;
+    // example).  If auto import was turned on, then all lexicons are new.
+    QSet<QString> newLexicons = MainSettings::getAutoImportLexicons().toSet();
+    QSet<QString> addedLexicons =(newAutoImport && !oldAutoImport) ?
+        newLexicons : newLexicons - oldLexicons;
+
     if (!addedLexicons.isEmpty()) {
         QSetIterator<QString> it (addedLexicons);
         while (it.hasNext()) {
@@ -1673,6 +1686,7 @@ MainWindow::importChecksums(const QString& filename)
 void
 MainWindow::setSplashMessage(const QString& message)
 {
+    //qDebug("Splash message: |%s|", message.toUtf8().constData());
     if (splashScreen)
         splashScreen->showMessage(message, Qt::AlignHCenter | Qt::AlignBottom);
     else
@@ -1750,6 +1764,9 @@ MainWindow::renameLexicon(const QString& oldName, const QString& newName)
 bool
 MainWindow::importLexicon(const QString& lexicon)
 {
+    if (wordEngine->lexiconIsLoaded(lexicon))
+        return true;
+
     QString importFile;
     QString reverseImportFile;
     QString definitionFile;
