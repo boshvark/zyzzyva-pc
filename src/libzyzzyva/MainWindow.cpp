@@ -745,10 +745,12 @@ MainWindow::editSettings()
     bool settingsChanged = false;
     bool oldAutoImport = false;
     QSet<QString> oldLexicons;
+    QString oldCustomFile;
     if (settingsDialog->exec() == QDialog::Accepted) {
         settingsChanged = true;
         oldAutoImport = MainSettings::getUseAutoImport();
         oldLexicons = MainSettings::getAutoImportLexicons().toSet();
+        oldCustomFile = MainSettings::getAutoImportFile();
         settingsDialog->writeSettings();
     }
     else {
@@ -764,8 +766,13 @@ MainWindow::editSettings()
     // that have been deselected, because they might be in use (by a quiz, for
     // example).  If auto import was turned on, then all lexicons are new.
     QSet<QString> newLexicons = MainSettings::getAutoImportLexicons().toSet();
-    QSet<QString> addedLexicons =(newAutoImport && !oldAutoImport) ?
+    QSet<QString> addedLexicons = (newAutoImport && !oldAutoImport) ?
         newLexicons : newLexicons - oldLexicons;
+
+    // Custom database needs to be rebuilt if custom lexicon file changed
+    QString newCustomFile = MainSettings::getAutoImportFile();
+    if ((oldCustomFile != newCustomFile) && newLexicons.contains("Custom"))
+        addedLexicons.insert("Custom");
 
     if (!addedLexicons.isEmpty()) {
         QSetIterator<QString> it (addedLexicons);
@@ -776,6 +783,7 @@ MainWindow::editSettings()
         tryConnectToDatabases();
         processDatabaseErrors();
     }
+
 
     // Call this to get original tab status message back
     currentTabChanged(0);
@@ -1152,13 +1160,14 @@ MainWindow::getDatabaseFilename(const QString& lexicon)
 int
 MainWindow::tryConnectToDatabase(const QString& lexicon)
 {
-    if (wordEngine->databaseIsConnected(lexicon))
+    if (wordEngine->databaseIsConnected(lexicon) && (lexicon != "Custom"))
         return DbNoError;
 
     setSplashMessage(QString("Connecting to %1 database...").arg(lexicon));
 
     QString dbFilename = getDatabaseFilename(lexicon);
     QFile dbFile (dbFilename);
+    int dbError = DbNoError;
 
     // Make sure DB file exists, can be opened, and is up-to-date
     if (dbFile.exists()) {
@@ -1167,7 +1176,7 @@ MainWindow::tryConnectToDatabase(const QString& lexicon)
         unsigned int r = rng.rand();
         QString dbConnectionName = "MainWindow_" + lexicon + "_" +
             QString::number(r);
-        {
+        do {
             QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",
                                                         dbConnectionName);
             db.setDatabaseName(dbFilename);
@@ -1181,21 +1190,41 @@ MainWindow::tryConnectToDatabase(const QString& lexicon)
                     dbVersion = query.value(0).toInt();
 
                 if (dbVersion < CURRENT_DATABASE_VERSION) {
-                    return DbOutOfDate;
+                    dbError = DbOutOfDate;
+                    break;
                 }
             }
 
             else {
-                return DbOpenError;
+                dbError = DbOpenError;
+                break;
             }
-        }
+
+            // For custom lexicon, check to see if lexicon file has changed -
+            // if it has, the database is out of date
+            if (lexicon == "Custom") {
+                QString qstr = "SELECT file FROM lexicon_file";
+                QSqlQuery query (qstr, db);
+                QString lexiconFile;
+                if (query.next())
+                    lexiconFile = query.value(0).toString();
+
+                if (lexiconFile != wordEngine->getLexiconFile(lexicon)) {
+                    dbError = DbOutOfDate;
+                    break;
+                }
+            }
+        } while (false);
 
         QSqlDatabase::removeDatabase(dbConnectionName);
     }
 
     else {
-        return DbDoesNotExist;
+        dbError = DbDoesNotExist;
     }
+
+    if (dbError != DbNoError)
+        return dbError;
 
     // Everything seems okay, so actually try to connect
     bool ok = connectToDatabase(lexicon);
@@ -1763,9 +1792,6 @@ MainWindow::renameLexicon(const QString& oldName, const QString& newName)
 bool
 MainWindow::importLexicon(const QString& lexicon)
 {
-    if (wordEngine->lexiconIsLoaded(lexicon))
-        return true;
-
     QString importFile;
     QString reverseImportFile;
     QString definitionFile;
@@ -1777,8 +1803,17 @@ MainWindow::importLexicon(const QString& lexicon)
     if (lexicon == "Custom") {
         importFile = MainSettings::getAutoImportFile();
         dawg = false;
+
+        if (wordEngine->lexiconIsLoaded(lexicon)) {
+            QString lexiconFile = wordEngine->getLexiconFile(lexicon);
+            if (lexiconFile == importFile)
+                return true;
+        }
     }
     else {
+        if (wordEngine->lexiconIsLoaded(lexicon))
+            return true;
+
         QMap<QString, QString> prefixMap;
         prefixMap["OWL+LWL"] = "/north-american/owl-lwl";
         prefixMap["OWL2+LWL"] = "/north-american/owl2-lwl";

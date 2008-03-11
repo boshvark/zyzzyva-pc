@@ -121,6 +121,11 @@ CreateDatabaseThread::createTables(QSqlDatabase& db)
     query.prepare("INSERT into lexicon_date (date) VALUES (?)");
     query.bindValue(0, Auxil::lexiconToDate(lexiconName));
     query.exec();
+
+    query.exec("CREATE TABLE lexicon_file (file varchar(256))");
+    query.prepare("INSERT into lexicon_file (file) VALUES (?)");
+    query.bindValue(0, wordEngine->getLexiconFile(lexiconName));
+    query.exec();
 }
 
 //---------------------------------------------------------------------------

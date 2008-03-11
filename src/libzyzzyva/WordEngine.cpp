@@ -146,12 +146,15 @@ int
 WordEngine::importTextFile(const QString& lexicon, const QString& filename,
                            bool loadDefinitions, QString* errString)
 {
-    if (!lexiconData.contains(lexicon)) {
+    // Delete old word graph if it exists
+    if (lexiconData.contains(lexicon))
+        delete lexiconData[lexicon]->graph;
+    else
         lexiconData[lexicon] = new LexiconData;
-        lexiconData[lexicon]->graph = new WordGraph;
-    }
 
-    WordGraph* graph = lexiconData[lexicon]->graph;
+    WordGraph* graph = new WordGraph;
+    lexiconData[lexicon]->graph = graph;
+    lexiconData[lexicon]->lexiconFile = filename;
 
     QFile file (filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -847,6 +850,24 @@ WordEngine::getNumWords(const QString& lexicon) const
         return lexiconData[lexicon]->graph->getNumWords();
 
     return 0;
+}
+
+//---------------------------------------------------------------------------
+//  getLexiconFile
+//
+//! Get the text file associated with a lexicon, if applicable.  This is
+//! normally only meaningful for custom lexicons.
+//
+//! @param lexicon the name of the lexicon
+//! @return the lexicon file
+//---------------------------------------------------------------------------
+QString
+WordEngine::getLexiconFile(const QString& lexicon) const
+{
+    if (!lexiconData.contains(lexicon))
+        return QString();
+
+    return lexiconData[lexicon]->lexiconFile;
 }
 
 //---------------------------------------------------------------------------

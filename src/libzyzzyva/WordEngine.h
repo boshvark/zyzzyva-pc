@@ -69,6 +69,7 @@ class WordEngine : public QObject
 
         public:
         QString name;
+        QString lexiconFile;
         QMap<QString, QMultiMap<QString, QString> > definitions;
         QMap<int, QStringList> stems;
         QMap<QString, int> numAnagramsMap;
@@ -103,6 +104,7 @@ class WordEngine : public QObject
                                 spec) const;
     QStringList alphagrams(const QStringList& strList) const;
     int getNumWords(const QString& lexicon) const;
+    QString getLexiconFile(const QString& lexicon) const;
     WordInfo getWordInfo(const QString& lexicon, const QString& word) const;
     QString getDefinition(const QString& lexicon, const QString& word,
                           bool replaceLinks = true) const;
