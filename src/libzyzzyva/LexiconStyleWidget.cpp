@@ -29,6 +29,7 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QRegExpValidator>
+#include <QToolButton>
 
 using namespace Defs;
 
@@ -101,6 +102,12 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
     symbolLine->setMaxLength(MAX_SYMBOL_LENGTH);
     symbolLine->setValidator(new QRegExpValidator(QRegExp("^\\S+$"), this));
     mainHlay->addWidget(symbolLine);
+
+    QToolButton* deleteButton = new QToolButton;
+    Q_CHECK_PTR(deleteButton);
+    deleteButton->setIcon(QIcon(":/minus-icon"));
+    connect(deleteButton, SIGNAL(clicked()), SIGNAL(deleteClicked()));
+    mainHlay->addWidget(deleteButton);
 }
 
 //---------------------------------------------------------------------------

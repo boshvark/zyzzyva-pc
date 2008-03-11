@@ -28,6 +28,7 @@
 
 #include <QDialog>
 #include <QList>
+#include <QSignalMapper>
 #include <QVBoxLayout>
 
 class LexiconStyle;
@@ -43,9 +44,15 @@ class LexiconStyleDialog : public QDialog
     QList<LexiconStyle> getLexiconStyles() const;
     void setLexiconStyles(const QList<LexiconStyle>& styles);
 
+    public slots:
+    void addButtonClicked();
+    void insertStyleWidget(int index);
+    void removeStyleWidget(int index);
+
     private:
-    QVBoxLayout* mainVlay;
+    QVBoxLayout* symbolVlay;
     QList<LexiconStyleWidget*> styleWidgets;
+    QSignalMapper* deleteMapper;
 };
 
 #endif // ZYZZYVA_LEXICON_STYLE_DIALOG_H

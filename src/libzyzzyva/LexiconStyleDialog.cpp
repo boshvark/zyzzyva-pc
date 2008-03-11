@@ -28,13 +28,15 @@
 #include "LexiconStyleWidget.h"
 #include "Defs.h"
 #include <QDialogButtonBox>
+#include <QGroupBox>
+#include <QHBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 
 const QString DIALOG_CAPTION = "Select Lexicon Styles";
 const QString INSTRUCTION_TEXT =
     "Specify the styles to be used for displaying words that belong "
     "to certain combinations of lexicons.";
-const int INSERT_WIDGET_INDEX = 1;
 
 using namespace Defs;
 
@@ -49,7 +51,7 @@ using namespace Defs;
 LexiconStyleDialog::LexiconStyleDialog(QWidget* parent, Qt::WFlags f)
     : QDialog(parent, f)
 {
-    mainVlay = new QVBoxLayout(this);
+    QVBoxLayout* mainVlay = new QVBoxLayout(this);
     Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
@@ -60,6 +62,30 @@ LexiconStyleDialog::LexiconStyleDialog(QWidget* parent, Qt::WFlags f)
     instructionLabel->setText(INSTRUCTION_TEXT);
     mainVlay->addWidget(instructionLabel);
 
+    QHBoxLayout* symbolHlay = new QHBoxLayout;
+    Q_CHECK_PTR(symbolHlay);
+    symbolHlay->setSpacing(SPACING);
+    mainVlay->addLayout(symbolHlay);
+    mainVlay->setStretchFactor(symbolHlay, 1);
+
+    symbolVlay = new QVBoxLayout;
+    Q_CHECK_PTR(symbolVlay);
+    symbolVlay->setSpacing(SPACING);
+    symbolHlay->addLayout(symbolVlay);
+
+    QHBoxLayout* addButtonHlay = new QHBoxLayout;
+    Q_CHECK_PTR(addButtonHlay);
+    mainVlay->addLayout(addButtonHlay);
+
+    QPushButton* addButton = new QPushButton;
+    Q_CHECK_PTR(addButton);
+    addButton->setText("&Add");
+    addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(addButton, SIGNAL(clicked()), SLOT(addButtonClicked()));
+    addButtonHlay->addWidget(addButton);
+
+    addButtonHlay->addStretch(1);
+
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
     Q_CHECK_PTR(buttonBox);
     buttonBox->setOrientation(Qt::Horizontal);
@@ -68,6 +94,10 @@ LexiconStyleDialog::LexiconStyleDialog(QWidget* parent, Qt::WFlags f)
     connect(buttonBox, SIGNAL(accepted()), SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), SLOT(reject()));
     mainVlay->addWidget(buttonBox);
+
+    deleteMapper = new QSignalMapper(this);
+    Q_CHECK_PTR(deleteMapper);
+    connect(deleteMapper, SIGNAL(mapped(int)), SLOT(removeStyleWidget(int)));
 
     setWindowTitle(DIALOG_CAPTION);
 }
@@ -95,7 +125,10 @@ LexiconStyleDialog::getLexiconStyles() const
     QListIterator<LexiconStyleWidget*> it (styleWidgets);
     while (it.hasNext()) {
         LexiconStyleWidget* widget = it.next();
-        styles.append(widget->getLexiconStyle());
+        LexiconStyle style = widget->getLexiconStyle();
+        if (!style.isValid())
+            continue;
+        styles.append(style);
     }
     return styles;
 }
@@ -114,12 +147,65 @@ LexiconStyleDialog::setLexiconStyles(const QList<LexiconStyle>& styles)
     styleWidgets.clear();
 
     QListIterator<LexiconStyle> it (styles);
-    for (int index = INSERT_WIDGET_INDEX; it.hasNext(); ++index) {
+    for (int index = 0; it.hasNext(); ++index) {
         const LexiconStyle& style = it.next();
-        LexiconStyleWidget* widget = new LexiconStyleWidget;
-        Q_CHECK_PTR(widget);
+        insertStyleWidget(index);
+        LexiconStyleWidget* widget = styleWidgets[index];
         widget->setLexiconStyle(style);
-        styleWidgets.append(widget);
-        mainVlay->insertWidget(index, widget);
     }
+}
+
+//---------------------------------------------------------------------------
+//  addButtonClicked
+//
+//! Called when the More button is clicked.  Add a new style widget.
+//---------------------------------------------------------------------------
+void
+LexiconStyleDialog::addButtonClicked()
+{
+    insertStyleWidget(styleWidgets.count());
+
+    // FIXME: how the frack do I resize the dialog appropriately?
+    // NewQuizDialog doesn't seem to have a problem.  What am I doing wrong?
+    //show();
+    //adjustSize();
+    //resize(width(), minimumSize().height());
+    //resize(baseSize());
+}
+
+//---------------------------------------------------------------------------
+//  insertStyleWidget
+//
+//! Insert a new style widget at the specified index.
+//
+//! @param index the index to insert the new widget
+//---------------------------------------------------------------------------
+void
+LexiconStyleDialog::insertStyleWidget(int index)
+{
+    LexiconStyleWidget* widget = new LexiconStyleWidget;
+    Q_CHECK_PTR(widget);
+
+    connect(widget, SIGNAL(deleteClicked()), deleteMapper, SLOT(map()));
+    deleteMapper->setMapping(widget, index);
+
+    symbolVlay->insertWidget(index, widget);
+    styleWidgets.insert(index, widget);
+}
+
+//---------------------------------------------------------------------------
+//  removeStyleWidget
+//
+//! Remove the style widget at the specified index.
+//
+//! @param index the index of the widget to remove
+//---------------------------------------------------------------------------
+void
+LexiconStyleDialog::removeStyleWidget(int index)
+{
+    if (index >= styleWidgets.count())
+        return;
+
+    delete styleWidgets[index];
+    styleWidgets.removeAt(index);
 }

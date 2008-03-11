@@ -37,6 +37,9 @@ class LexiconStyleWidget : public QWidget {
     bool setLexiconStyle(const LexiconStyle& style);
     LexiconStyle getLexiconStyle() const;
 
+    signals:
+    void deleteClicked();
+
     private:
     QComboBox* lexiconCombo;
     QComboBox* conjunctionCombo;

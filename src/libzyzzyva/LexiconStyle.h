@@ -36,7 +36,7 @@ class LexiconStyle
     LexiconStyle() : inCompareLexicon(false) { }
     bool isValid() const {
         return (!lexicon.isEmpty() && !compareLexicon.isEmpty() &&
-            !symbol.isEmpty());
+            !symbol.isEmpty() && (lexicon != compareLexicon));
     }
 
     public:
