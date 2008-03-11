@@ -769,6 +769,9 @@ MainWindow::editSettings()
     QSet<QString> addedLexicons = (newAutoImport && !oldAutoImport) ?
         newLexicons : newLexicons - oldLexicons;
 
+    // FIXME: also determine lexicons that need to be rebuilt based on
+    // lexicon style (symbol) changes
+
     // Custom database needs to be rebuilt if custom lexicon file changed
     QString newCustomFile = MainSettings::getAutoImportFile();
     if ((oldCustomFile != newCustomFile) && newLexicons.contains("Custom"))

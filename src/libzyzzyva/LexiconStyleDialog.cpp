@@ -25,15 +25,16 @@
 
 #include "LexiconStyleDialog.h"
 #include "LexiconStyle.h"
+#include "LexiconStyleWidget.h"
 #include "Defs.h"
 #include <QDialogButtonBox>
 #include <QLabel>
-#include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Select Lexicon Styles";
-const QString INSTRUCTION_TEXT = "XXXXXXXXXXXX - FIXME - XXXXXXXXXXXX"
-    "Select the lexicons to be loaded each time "
-    "the program is started, and the default lexicon to be used.";
+const QString INSTRUCTION_TEXT =
+    "Specify the styles to be used for displaying words that belong "
+    "to certain combinations of lexicons.";
+const int INSERT_WIDGET_INDEX = 1;
 
 using namespace Defs;
 
@@ -48,65 +49,16 @@ using namespace Defs;
 LexiconStyleDialog::LexiconStyleDialog(QWidget* parent, Qt::WFlags f)
     : QDialog(parent, f)
 {
-    QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    mainVlay = new QVBoxLayout(this);
     Q_CHECK_PTR(mainVlay);
+    mainVlay->setMargin(MARGIN);
+    mainVlay->setSpacing(SPACING);
 
     QLabel* instructionLabel = new QLabel;
     Q_CHECK_PTR(instructionLabel);
     instructionLabel->setWordWrap(true);
     instructionLabel->setText(INSTRUCTION_TEXT);
     mainVlay->addWidget(instructionLabel);
-
-//    QGridLayout* mainGlay = new QGridLayout;
-//    Q_CHECK_PTR(mainGlay);
-//    mainVlay->addLayout(mainGlay);
-//
-//    QLabel* defaultLabel = new QLabel;
-//    Q_CHECK_PTR(defaultLabel);
-//    defaultLabel->setText("Default");
-//    mainGlay->addWidget(defaultLabel, 0, 0, Qt::AlignHCenter);
-//
-//    QLabel* loadLabel = new QLabel;
-//    Q_CHECK_PTR(loadLabel);
-//    loadLabel->setText("Load");
-//    mainGlay->addWidget(loadLabel, 0, 1, Qt::AlignHCenter);
-//
-//    QStringList validLexicons;
-//    validLexicons.append("OWL2+LWL");
-//    validLexicons.append("OSPD4+LWL");
-//    validLexicons.append("CSW");
-//    validLexicons.append("Volost");
-//    validLexicons.append("ODS");
-//    validLexicons.append("OWL+LWL");
-//    validLexicons.append("OSWI");
-//
-//    QStringListIterator it (validLexicons);
-//    for (int row = 1; it.hasNext(); ++row) {
-//        const QString& lexicon = it.next();
-//
-//        QRadioButton* radioButton = new QRadioButton;
-//        Q_CHECK_PTR(radioButton);
-//        if (row == 1)
-//            radioButton->setChecked(true);
-//        connect(radioButton, SIGNAL(clicked(bool)),
-//                SLOT(defaultLexiconChanged()));
-//        mainGlay->addWidget(radioButton, row, 0, Qt::AlignHCenter);
-//        lexiconRadioButtons.insert(lexicon, radioButton);
-//
-//        QCheckBox* checkBox = new QCheckBox;
-//        Q_CHECK_PTR(checkBox);
-//        if (row == 1)
-//            checkBox->setCheckState(Qt::Checked);
-//        connect(checkBox, SIGNAL(stateChanged(int)),
-//                SLOT(importLexiconsChanged(int)));
-//        mainGlay->addWidget(checkBox, row, 1, Qt::AlignHCenter);
-//        lexiconCheckBoxes.insert(lexicon, checkBox);
-//
-//        QLabel* label = new QLabel;
-//        Q_CHECK_PTR(label);
-//        label->setText(lexicon);
-//        mainGlay->addWidget(label, row, 2);
-//    }
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
     Q_CHECK_PTR(buttonBox);
@@ -139,7 +91,13 @@ LexiconStyleDialog::~LexiconStyleDialog()
 QList<LexiconStyle>
 LexiconStyleDialog::getLexiconStyles() const
 {
-    return QList<LexiconStyle>();
+    QList<LexiconStyle> styles;
+    QListIterator<LexiconStyleWidget*> it (styleWidgets);
+    while (it.hasNext()) {
+        LexiconStyleWidget* widget = it.next();
+        styles.append(widget->getLexiconStyle());
+    }
+    return styles;
 }
 
 //---------------------------------------------------------------------------
@@ -152,4 +110,16 @@ LexiconStyleDialog::getLexiconStyles() const
 void
 LexiconStyleDialog::setLexiconStyles(const QList<LexiconStyle>& styles)
 {
+    qDeleteAll(styleWidgets);
+    styleWidgets.clear();
+
+    QListIterator<LexiconStyle> it (styles);
+    for (int index = INSERT_WIDGET_INDEX; it.hasNext(); ++index) {
+        const LexiconStyle& style = it.next();
+        LexiconStyleWidget* widget = new LexiconStyleWidget;
+        Q_CHECK_PTR(widget);
+        widget->setLexiconStyle(style);
+        styleWidgets.append(widget);
+        mainVlay->insertWidget(index, widget);
+    }
 }

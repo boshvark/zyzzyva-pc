@@ -73,6 +73,7 @@ SOURCES = \
     LexiconSelectDialog.cpp \
     LexiconSelectWidget.cpp \
     LexiconStyleDialog.cpp \
+    LexiconStyleWidget.cpp \
     MainSettings.cpp \
     MainWindow.cpp \
     NewQuizDialog.cpp \
@@ -129,6 +130,7 @@ HEADERS = \
     LexiconSelectDialog.h \
     LexiconSelectWidget.h \
     LexiconStyleDialog.h \
+    LexiconStyleWidget.h \
     MainWindow.h \
     NewQuizDialog.h \
     QuizCanvas.h \

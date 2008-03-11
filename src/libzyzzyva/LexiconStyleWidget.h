@@ -1,8 +1,7 @@
 //---------------------------------------------------------------------------
-// LexiconStyleDialog.h
+// LexiconStyleWidget.h
 //
-// A dialog for selecting specialized display styles for words that belong to
-// a particular combination of lexicons.
+// A widget for specifying a lexicon style.
 //
 // Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
 //
@@ -23,30 +22,27 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_LEXICON_STYLE_DIALOG_H
-#define ZYZZYVA_LEXICON_STYLE_DIALOG_H
+#ifndef ZYZZYVA_LEXICON_STYLE_WIDGET_H
+#define ZYZZYVA_LEXICON_STYLE_WIDGET_H
 
-#include <QDialog>
-#include <QList>
-#include <QVBoxLayout>
+#include <QComboBox>
+#include <QLineEdit>
 
 class LexiconStyle;
-class LexiconStyleWidget;
 
-class LexiconStyleDialog : public QDialog
-{
+class LexiconStyleWidget : public QWidget {
     Q_OBJECT
     public:
-    LexiconStyleDialog(QWidget* parent = 0, Qt::WFlags f = 0);
-    ~LexiconStyleDialog();
-
-    QList<LexiconStyle> getLexiconStyles() const;
-    void setLexiconStyles(const QList<LexiconStyle>& styles);
+    LexiconStyleWidget(QWidget* parent = 0, Qt::WFlags f = 0);
+    bool setLexiconStyle(const LexiconStyle& style);
+    LexiconStyle getLexiconStyle() const;
 
     private:
-    QVBoxLayout* mainVlay;
-    QList<LexiconStyleWidget*> styleWidgets;
+    QComboBox* lexiconCombo;
+    QComboBox* conjunctionCombo;
+    QComboBox* compareLexiconCombo;
+    QLineEdit* symbolLine;
 };
 
-#endif // ZYZZYVA_LEXICON_STYLE_DIALOG_H
+#endif // ZYZZYVA_LEXICON_STYLE_WIDGET_H
 
