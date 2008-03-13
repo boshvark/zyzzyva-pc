@@ -219,6 +219,11 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
             else
                 numAnagramsMap[alphagram] = 1;
 
+            int isFrontHook = wordEngine->isAcceptable(
+                lexiconName, word.right(word.length() - 1)) ? 1 : 0;
+            int isBackHook = wordEngine->isAcceptable(
+                lexiconName, word.left(word.length() - 1)) ? 1 : 0;
+
             QString front, back;
             foreach (QString letter, letters) {
                 if (wordEngine->isAcceptable(lexiconName, letter + word))
@@ -227,11 +232,7 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
                     back += letter;
             }
 
-            int isFrontHook = wordEngine->isAcceptable(
-                lexiconName, word.right(word.length() - 1)) ? 1 : 0;
-            int isBackHook = wordEngine->isAcceptable(
-                lexiconName, word.left(word.length() - 1)) ? 1 : 0;
-
+            // Populate words and hooks with symbols
             QString symbolStr;
             if (!lexStyles.isEmpty()) {
                 QListIterator<LexiconStyle> it (lexStyles);
@@ -241,6 +242,42 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
                         wordEngine->isAcceptable(style.compareLexicon, word);
                     if (!(acceptable ^ style.inCompareLexicon))
                         symbolStr += style.symbol;
+                }
+
+                // Populate front hooks with symbols
+                for (int i = 0; i < front.length(); ++i) {
+                    QChar c = front[i];
+                    QString hookWord = c.toUpper() + word;
+
+                    it.toFront();
+                    while (it.hasNext()) {
+                        const LexiconStyle& style = it.next();
+                        bool acceptable = wordEngine->isAcceptable(
+                            style.compareLexicon, hookWord);
+
+                        if (!(acceptable ^ style.inCompareLexicon)) {
+                            front.insert(i + 1, style.symbol);
+                            i += style.symbol.length();
+                        }
+                    }
+                }
+
+                // Populate back hooks with symbols
+                for (int i = 0; i < back.length(); ++i) {
+                    QChar c = back[i];
+                    QString hookWord = word + c.toUpper();
+
+                    it.toFront();
+                    while (it.hasNext()) {
+                        const LexiconStyle& style = it.next();
+                        bool acceptable = wordEngine->isAcceptable(
+                            style.compareLexicon, hookWord);
+
+                        if (!(acceptable ^ style.inCompareLexicon)) {
+                            back.insert(i + 1, style.symbol);
+                            i += style.symbol.length();
+                        }
+                    }
                 }
             }
 
