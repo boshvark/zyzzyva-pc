@@ -625,14 +625,21 @@ WordTableView::hookToolTipText(const QString& word, const QString& hooks,
     QString lexicon = wordModel->getLexicon();
 
     QString text;
-    foreach (QString hook, hooks) {
+    int offset = 0;
+    QRegExp regex("([A-Za-z])([^A-Za-z]*)?");
+    while ((offset = regex.indexIn(hooks, offset)) >= 0) {
+        QString hook = regex.cap(1);
+        QString symbols = regex.cap(2);
         QString hookWord = (front ? (hook.toUpper() + word)
                                   : (word + hook.toUpper()));
+
         if (!text.isEmpty())
             text += "\n\n";
 
-        text += hookWord + " : " +
+        text += hookWord + symbols + " : " +
             wordEngine->getDefinition(lexicon, hookWord);
+
+        offset += regex.cap(0).length();
     }
 
     return text;
