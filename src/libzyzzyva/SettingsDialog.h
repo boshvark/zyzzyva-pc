@@ -30,8 +30,10 @@
 #include <QDialog>
 #include <QLabel>
 #include <QLineEdit>
+#include <QList>
 #include <QListWidget>
 #include <QSettings>
+#include <QSpinBox>
 #include <QStackedWidget>
 
 class LexiconStyle;
@@ -78,6 +80,7 @@ class SettingsDialog : public QDialog
 
     QWidget*     generalPrefWidget;
     QWidget*     quizPrefWidget;
+    QWidget*     cardboxPrefWidget;
     QWidget*     judgePrefWidget;
     QWidget*     fontPrefWidget;
     QWidget*     wordListPrefWidget;
@@ -103,6 +106,8 @@ class SettingsDialog : public QDialog
     QCheckBox*   quizAutoEndAfterIncorrectCbox;
     QCheckBox*   quizMarkMissedAfterIncorrectCbox;
     QCheckBox*   quizCycleAnswersCbox;
+    QList<QSpinBox*> cardboxScheduleSboxList;
+    QList<QSpinBox*> cardboxWindowSboxList;
     QCheckBox*   judgeSaveLogCbox;
     QWidget*     judgeLogDirWidget;
     QLabel*      judgeLogDirLabel;

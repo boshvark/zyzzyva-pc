@@ -50,6 +50,7 @@ const QString JUDGE_LOG_CHOOSER_TITLE = "Choose a Log Directory";
 
 const QString GENERAL_PREFS_ITEM = "General";
 const QString QUIZ_PREFS_ITEM = "Quiz";
+const QString CARDBOX_PREFS_ITEM = "Cardbox";
 const QString JUDGE_PREFS_ITEM = "Word Judge";
 const QString FONT_PREFS_ITEM = "Fonts";
 const QString WORD_LIST_PREFS_ITEM = "Word Tables";
@@ -349,6 +350,78 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     quizPrefVlay->addStretch(2);
 
+    // Cardbox Prefs
+    cardboxPrefWidget = new QWidget;
+    Q_CHECK_PTR(cardboxPrefWidget);
+    navStack->addWidget(cardboxPrefWidget);
+
+    QVBoxLayout* cardboxPrefVlay = new QVBoxLayout(cardboxPrefWidget);
+    Q_CHECK_PTR(cardboxPrefVlay);
+    cardboxPrefVlay->setMargin(0);
+
+    QLabel* cardboxPrefLabel = new QLabel(CARDBOX_PREFS_ITEM);
+    Q_CHECK_PTR(cardboxPrefLabel);
+    cardboxPrefLabel->setFrameShape(QFrame::StyledPanel);
+    cardboxPrefVlay->addWidget(cardboxPrefLabel);
+
+    QGroupBox* cardboxScheduleGbox = new QGroupBox("Schedule");
+    Q_CHECK_PTR(cardboxScheduleGbox);
+    cardboxPrefVlay->addWidget(cardboxScheduleGbox);
+    cardboxPrefVlay->setStretchFactor(cardboxScheduleGbox, 1);
+
+    QGridLayout* cardboxScheduleGlay = new QGridLayout(cardboxScheduleGbox);
+    Q_CHECK_PTR(cardboxScheduleGlay);
+    cardboxScheduleGlay->setMargin(MARGIN);
+    cardboxScheduleGlay->setSpacing(SPACING);
+
+    int numColsPerCardbox = 4;
+    int cardboxesPerCol = 8;
+    int maxCardbox = 15;
+
+    QLabel* cardboxScheduleLabel = new QLabel;
+    Q_CHECK_PTR(cardboxScheduleLabel);
+    cardboxScheduleLabel->setWordWrap(true);
+    cardboxScheduleLabel->setText(
+        "Questions in each cardbox are scheduled for the specified number of "
+        "days in the future, plus or minus the associated window of days.");
+    cardboxScheduleGlay->addWidget(cardboxScheduleLabel, 0, 0, 1,
+        numColsPerCardbox * ((maxCardbox + 1) / cardboxesPerCol));
+
+    for (int i = 0; i <= maxCardbox; ++i) {
+        int col = (i / cardboxesPerCol) * numColsPerCardbox;
+        int row = (i % cardboxesPerCol) + 1;
+
+        QLabel* label = new QLabel;
+        Q_CHECK_PTR(label);
+        QString numStr = QString::number(i);
+        if (i == maxCardbox)
+            numStr += "+";
+        label->setText(QString("Cardbox %1:").arg(numStr));
+        cardboxScheduleGlay->addWidget(label, row, col);
+
+        QSpinBox* scheduleSbox = new QSpinBox;
+        Q_CHECK_PTR(scheduleSbox);
+        scheduleSbox->setMinimum(1);
+        scheduleSbox->setMaximum(9999);
+        cardboxScheduleGlay->addWidget(scheduleSbox, row, col + 1);
+        cardboxScheduleSboxList.append(scheduleSbox);
+
+        QLabel* plusMinusLabel = new QLabel;
+        Q_CHECK_PTR(plusMinusLabel);
+        plusMinusLabel->setTextFormat(Qt::RichText);
+        plusMinusLabel->setText("&#177;");
+        cardboxScheduleGlay->addWidget(plusMinusLabel, row, col + 2);
+
+        QSpinBox* windowSbox = new QSpinBox;
+        Q_CHECK_PTR(windowSbox);
+        windowSbox->setMinimum(1);
+        windowSbox->setMaximum(99999);
+        cardboxScheduleGlay->addWidget(windowSbox, row, col + 3);
+        cardboxWindowSboxList.append(windowSbox);
+    }
+
+    cardboxPrefVlay->addStretch(2);
+
     // Word Judge Prefs
     judgePrefWidget = new QWidget;
     Q_CHECK_PTR(judgePrefWidget);
@@ -637,6 +710,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     // Add nav list items
     new QListWidgetItem(GENERAL_PREFS_ITEM, navList);
     new QListWidgetItem(QUIZ_PREFS_ITEM, navList);
+    new QListWidgetItem(CARDBOX_PREFS_ITEM, navList);
     new QListWidgetItem(JUDGE_PREFS_ITEM, navList);
     new QListWidgetItem(FONT_PREFS_ITEM, navList);
     new QListWidgetItem(WORD_LIST_PREFS_ITEM, navList);
@@ -840,6 +914,8 @@ SettingsDialog::navTextChanged(const QString& text)
         navStack->setCurrentWidget(generalPrefWidget);
     else if (text == QUIZ_PREFS_ITEM)
         navStack->setCurrentWidget(quizPrefWidget);
+    else if (text == CARDBOX_PREFS_ITEM)
+        navStack->setCurrentWidget(cardboxPrefWidget);
     else if (text == JUDGE_PREFS_ITEM)
         navStack->setCurrentWidget(judgePrefWidget);
     else if (text == FONT_PREFS_ITEM)
