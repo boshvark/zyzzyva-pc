@@ -3,7 +3,7 @@
 //
 // A form for specifying a search condition.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "SearchConditionForm.h"
+#include "MainSettings.h"
 #include "SearchSet.h"
 #include "WordLineEdit.h"
 #include "WordListDialog.h"
@@ -70,6 +71,7 @@ SearchConditionForm::SearchConditionForm(QWidget* parent, Qt::WFlags f)
           << Auxil::searchTypeToString(SearchCondition::PatternMatch)
           << Auxil::searchTypeToString(SearchCondition::SubanagramMatch)
           << Auxil::searchTypeToString(SearchCondition::Length)
+          << Auxil::searchTypeToString(SearchCondition::InLexicon)
           << Auxil::searchTypeToString(SearchCondition::InWordList)
           << Auxil::searchTypeToString(SearchCondition::BelongToGroup)
           << Auxil::searchTypeToString(SearchCondition::NumVowels)
@@ -295,6 +297,7 @@ SearchConditionForm::getSearchCondition() const
         break;
 
         case SearchCondition::BelongToGroup:
+        case SearchCondition::InLexicon:
         condition.stringValue = paramCbox->currentText();
         break;
 
@@ -364,6 +367,7 @@ SearchConditionForm::setSearchCondition(const SearchCondition& condition)
         break;
 
         case SearchCondition::BelongToGroup:
+        case SearchCondition::InLexicon:
         paramCbox->setCurrentIndex(paramCbox->findText(condition.stringValue));
         break;
 
@@ -531,6 +535,13 @@ SearchConditionForm::typeChanged(const QString& string)
             Auxil::searchSetToString(SetEightsFromSevenLetterStems));
         paramCbox->addItem(Auxil::searchSetToString(SetNewInOwl2));
         paramCbox->addItem(Auxil::searchSetToString(SetNewInCsw));
+        paramStack->setCurrentWidget(paramCboxWidget);
+        break;
+
+        case SearchCondition::InLexicon:
+        negationCbox->setEnabled(true);
+        paramCbox->clear();
+        paramCbox->addItems(MainSettings::getAutoImportLexicons());
         paramStack->setCurrentWidget(paramCboxWidget);
         break;
 

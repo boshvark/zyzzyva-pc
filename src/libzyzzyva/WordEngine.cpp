@@ -1120,6 +1120,12 @@ WordEngine::matchesPostConditions(const QString& lexicon, const QString& word,
             }
             break;
 
+            case SearchCondition::InLexicon:
+            if ((!isAcceptable(condition.stringValue, wordUpper))
+                ^ condition.negated)
+                return false;
+            break;
+
             default: break;
         }
     }
@@ -1740,6 +1746,7 @@ WordEngine::getConditionPhase(const SearchCondition& condition) const
 
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
+        case SearchCondition::InLexicon:
         case SearchCondition::LimitByProbabilityOrder:
         return PostConditionPhase;
 
