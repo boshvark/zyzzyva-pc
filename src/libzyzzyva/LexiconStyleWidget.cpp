@@ -100,7 +100,8 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
     symbolLine = new QLineEdit;
     Q_CHECK_PTR(symbolLine);
     symbolLine->setMaxLength(MAX_SYMBOL_LENGTH);
-    symbolLine->setValidator(new QRegExpValidator(QRegExp("^\\S+$"), this));
+    symbolLine->setValidator(
+        new QRegExpValidator(QRegExp("^[^A-Za-z\\s]+$"), this));
     mainHlay->addWidget(symbolLine);
 
     QToolButton* deleteButton = new QToolButton;
