@@ -401,7 +401,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
         QSpinBox* scheduleSbox = new QSpinBox;
         Q_CHECK_PTR(scheduleSbox);
-        scheduleSbox->setMinimum(1);
+        scheduleSbox->setMinimum(0);
         scheduleSbox->setMaximum(9999);
         cardboxScheduleGlay->addWidget(scheduleSbox, row, col + 1);
         cardboxScheduleSboxList.append(scheduleSbox);
@@ -414,7 +414,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
         QSpinBox* windowSbox = new QSpinBox;
         Q_CHECK_PTR(windowSbox);
-        windowSbox->setMinimum(1);
+        windowSbox->setMinimum(0);
         windowSbox->setMaximum(9999);
         cardboxScheduleGlay->addWidget(windowSbox, row, col + 3);
         cardboxWindowSboxList.append(windowSbox);

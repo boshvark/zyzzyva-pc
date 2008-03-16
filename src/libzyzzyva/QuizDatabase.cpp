@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "QuizDatabase.h"
+#include "MainSettings.h"
 #include "Rand.h"
 #include "Auxil.h"
 #include <QDir>
@@ -611,37 +612,44 @@ QuizDatabase::calculateNextScheduled(int cardbox)
 {
     int daySeconds = 60 * 60 * 24;
     int halfDaySeconds = daySeconds / 2;
+    int halfWindow = halfDaySeconds;
     int numDays = 0;
     int randDays = 0;
-    switch (cardbox) {
-        case 0: numDays = 1; randDays = 0; break;
-        case 1: numDays = 4; randDays = 1; break;
-        case 2: numDays = 7; randDays = 2; break;
-        case 3: numDays = 12; randDays = 3; break;
-        case 4: numDays = 20; randDays = 5; break;
-        case 5: numDays = 30; randDays = 7; break;
-        case 6: numDays = 60; randDays = 10; break;
-        case 7: numDays = 90; randDays = 15; break;
-        case 8: numDays = 150; randDays = 20; break;
-        case 9: numDays = 270; randDays = 30; break;
-        case 10:
-        default: numDays = 480; randDays = 50; break;
+    int adjustSeconds = 0;
+
+    // Only calculate schedule if cardbox specified, otherwise schedule
+    // immediately into cardbox 0
+    if (cardbox >= 0) {
+        QList<int> scheds = MainSettings::getCardboxScheduleList();
+        QList<int> windows = MainSettings::getCardboxWindowList();
+        numDays = (cardbox < scheds.count()) ? scheds[cardbox]
+            : scheds.last();
+        randDays = (cardbox < windows.count()) ? windows[cardbox]
+            : windows.last();
     }
 
     // Get the next scheduled time and perturb it randomly.  First, add or
     // subtract a random number of days so we don't get a bunch of questions
-    // all at once on some future date.  Then add or subtract a random number
-    // of seconds within 12 hours, so the future question order is somewhat
-    // randomized, and each question is equally likely to occur anytime during
-    // the day.  For questions scheduled to be seen 1 day from now, the window
-    // is only 4 hours, so the question is scheduled between 8 and 16 hours in
-    // the future.
+    // all at once on some future date.  Then, if the question is to be
+    // scheduled immediately, randomize the time within an 8-hour window
+    // centered on 4 hours ago.  If the question is to be scheduled for 1 day
+    // from now, use an 8-hour window centered on 12 hours from now.
+    // Otherwise, use a 24-hour window so the future question order is
+    // somewhat randomized, and each question is equally likely to occur
+    // anytime during the day.
+    if (numDays == 0) {
+        adjustSeconds = 60 * 60 * 4;
+        halfWindow = 60 * 60 * 4;
+    }
+    else if (numDays == 1) {
+        adjustSeconds = halfDaySeconds;
+        halfWindow = 60 * 60 * 4;
+    }
+
     if (randDays)
         numDays += rng.rand(randDays * 2) - randDays;
     unsigned int now = QDateTime::currentDateTime().toTime_t();
-    bool tomorrow = (numDays == 1);
-    int nextSeconds = (daySeconds * numDays) - (tomorrow ? halfDaySeconds : 0);
-    int halfWindow = tomorrow ? 60 * 60 * 4 : halfDaySeconds;
+    int nextSeconds = (daySeconds * numDays) - adjustSeconds;
     int randSeconds = rng.rand(2 * halfWindow) - halfWindow;
     int nextScheduled = now + nextSeconds + randSeconds;
     return nextScheduled;
