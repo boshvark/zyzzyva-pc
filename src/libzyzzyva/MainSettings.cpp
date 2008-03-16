@@ -74,12 +74,16 @@ const QString SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT
     = "quiz_mark_missed_after_incorrect";
 const QString SETTINGS_QUIZ_CYCLE_ANSWERS = "quiz_cycle_answers";
 const QString SETTINGS_QUIZ_RECORD_STATS = "quiz_record_stats";
+const QString SETTINGS_CARDBOX_SCHEDULES = "cardbox_schedules";
+const QString SETTINGS_CARDBOX_WINDOWS = "cardbox_windows";
 const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
 const QString SETTINGS_JUDGE_SAVE_LOG = "judge_save_log";
 const QString DEFAULT_DEFAULT_LEXICON = "OWL2+LWL";
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb(0, 0, 127);
+const QString DEFAULT_CARDBOX_SCHEDULES = "1 4 7 12 20 30 60 90 150 270 480";
+const QString DEFAULT_CARDBOX_WINDOWS = "0 1 2 3 5 7 10 15 20 30 50";
 const QString DEFAULT_LEXICON_STYLES =
     "OWL2+LWL and not OWL+LWL: symbol %\n"
     "OWL2+LWL and not OSPD4+LWL: symbol !\n"
@@ -197,6 +201,20 @@ MainSettings::readSettings()
     instance->quizRecordStats
         = settings.value(SETTINGS_QUIZ_RECORD_STATS, true).toBool();
 
+    QString schedStr = settings.value(SETTINGS_CARDBOX_SCHEDULES,
+                                      DEFAULT_CARDBOX_SCHEDULES).toString();
+    instance->cardboxScheduleList.clear();
+    foreach (QString str, schedStr.split(QChar(' '))) {
+        instance->cardboxScheduleList.append(str.toInt());
+    }
+
+    QString windowStr = settings.value(SETTINGS_CARDBOX_WINDOWS,
+                                       DEFAULT_CARDBOX_WINDOWS).toString();
+    instance->cardboxWindowList.clear();
+    foreach (QString str, windowStr.split(QChar(' '))) {
+        instance->cardboxWindowList.append(str.toInt());
+    }
+
     instance->mainFont
         = settings.value(SETTINGS_FONT_MAIN).toString();
     instance->wordListFont
@@ -290,6 +308,24 @@ MainSettings::writeSettings()
                       instance->quizCycleAnswers);
     settings.setValue(SETTINGS_QUIZ_RECORD_STATS,
                       instance->quizRecordStats);
+
+    QString schedStr;
+    foreach (int sched, instance->cardboxScheduleList) {
+        if (!schedStr.isEmpty())
+            schedStr += ' ';
+        schedStr += QString::number(sched);
+    }
+    settings.setValue(SETTINGS_CARDBOX_SCHEDULES, schedStr);
+
+    QString windowStr;
+    foreach (int window, instance->cardboxWindowList) {
+        if (!windowStr.isEmpty())
+            windowStr += ' ';
+        windowStr += QString::number(window);
+    }
+    settings.setValue(SETTINGS_CARDBOX_WINDOWS, windowStr);
+
+
     settings.setValue(SETTINGS_FONT_MAIN, instance->mainFont);
     settings.setValue(SETTINGS_FONT_WORD_LISTS, instance->wordListFont);
     settings.setValue(SETTINGS_FONT_QUIZ_LABEL, instance->quizLabelFont);

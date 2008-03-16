@@ -109,6 +109,14 @@ class MainSettings
         return instance->quizRecordStats; }
     static void setQuizRecordStats(bool b) {
         instance->quizRecordStats = b; }
+    static QList<int> getCardboxScheduleList() {
+        return instance->cardboxScheduleList; }
+    static void setCardboxScheduleList(const QList<int>& slist) {
+        instance->cardboxScheduleList = slist; }
+    static QList<int> getCardboxWindowList() {
+        return instance->cardboxWindowList; }
+    static void setCardboxWindowList(const QList<int>& slist) {
+        instance->cardboxWindowList = slist; }
     static QString getMainFont() { return instance->mainFont; }
     static void setMainFont(const QString& str) { instance->mainFont = str; }
     static QString getWordListFont() { return instance->wordListFont; }
@@ -208,6 +216,8 @@ class MainSettings
     bool quizMarkMissedAfterIncorrect;
     bool quizCycleAnswers;
     bool quizRecordStats;
+    QList<int> cardboxScheduleList;
+    QList<int> cardboxWindowList;
     QString mainFont;
     QString wordListFont;
     QString quizLabelFont;

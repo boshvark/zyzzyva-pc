@@ -415,7 +415,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
         QSpinBox* windowSbox = new QSpinBox;
         Q_CHECK_PTR(windowSbox);
         windowSbox->setMinimum(1);
-        windowSbox->setMaximum(99999);
+        windowSbox->setMaximum(9999);
         cardboxScheduleGlay->addWidget(windowSbox, row, col + 3);
         cardboxWindowSboxList.append(windowSbox);
     }
@@ -806,6 +806,30 @@ SettingsDialog::readSettings()
 
     judgeSaveLogCbox->setChecked(MainSettings::getJudgeSaveLog());
 
+    // Cardbox schedules
+    QList<int> cardboxSchedules = MainSettings::getCardboxScheduleList();
+    int i = 0;
+    int lastSched = 0;
+    foreach (QSpinBox* sbox, cardboxScheduleSboxList) {
+        int sched = (i >= cardboxSchedules.count()) ? lastSched
+            : cardboxSchedules[i];
+        sbox->setValue(sched);
+        lastSched = sched;
+        ++i;
+    }
+
+    // Cardbox windows
+    QList<int> cardboxWindows = MainSettings::getCardboxWindowList();
+    i = 0;
+    int lastWindow = 0;
+    foreach (QSpinBox* sbox, cardboxWindowSboxList) {
+        int window = (i >= cardboxWindows.count()) ? lastWindow
+            : cardboxWindows[i];
+        sbox->setValue(window);
+        lastWindow = window;
+        ++i;
+    }
+
     // Main font
     fontMainLine->setText(MainSettings::getMainFont());
     fontMainLine->home(false);
@@ -880,6 +904,17 @@ SettingsDialog::writeSettings()
     MainSettings::setQuizMarkMissedAfterIncorrect(
         quizMarkMissedAfterIncorrectCbox->isChecked());
     MainSettings::setQuizCycleAnswers(quizCycleAnswersCbox->isChecked());
+
+    QList<int> cardboxSchedules;
+    foreach (QSpinBox* sbox, cardboxScheduleSboxList)
+        cardboxSchedules.append(sbox->value());
+    MainSettings::setCardboxScheduleList(cardboxSchedules);
+
+    QList<int> cardboxWindows;
+    foreach (QSpinBox* sbox, cardboxWindowSboxList)
+        cardboxWindows.append(sbox->value());
+    MainSettings::setCardboxWindowList(cardboxWindows);
+
     MainSettings::setJudgeSaveLog(judgeSaveLogCbox->isChecked());
     MainSettings::setMainFont(fontMainLine->text());
     MainSettings::setWordListFont(fontWordListLine->text());
