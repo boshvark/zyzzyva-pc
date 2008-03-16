@@ -510,37 +510,7 @@ MainWindow::processDatabaseErrors()
     if (code != QMessageBox::Yes)
         return;
 
-    QStringList successes;
-    QStringList failures;
-    it.toFront();
-    while (it.hasNext()) {
-        it.next();
-        const QString& lexicon = it.key();
-        bool ok = rebuildDatabase(lexicon, false);
-        // FIXME: do something if DB creation fails!
-        if (!ok) {
-            failures.append(lexicon);
-            continue;
-        }
-
-        ok = connectToDatabase(lexicon);
-        if (ok)
-            successes.append(lexicon);
-        else
-            failures.append(lexicon);
-    }
-
-    QString resultMessage;
-    if (!successes.isEmpty()) {
-        resultMessage += "These databases were successfully created: " +
-            successes.join(", ") + ".";
-    }
-    if (!failures.isEmpty()) {
-        resultMessage += "These databases encountered errors: " +
-            failures.join(", ") + ".";
-    }
-
-    QMessageBox::information(this, "Database Creation Result", resultMessage);
+    rebuildDatabases(dbErrors.keys());
 }
 
 //---------------------------------------------------------------------------
@@ -881,10 +851,7 @@ MainWindow::rebuildDatabaseRequested()
         else
             lexicons.append(dialog->getLexicon());
 
-        foreach (QString lexicon, lexicons) {
-            rebuildDatabase(lexicon);
-            connectToDatabase(lexicon);
-        }
+        rebuildDatabases(lexicons);
     }
     delete dialog;
 }
@@ -1269,16 +1236,56 @@ MainWindow::connectToDatabase(const QString& lexicon)
 }
 
 //---------------------------------------------------------------------------
+//  rebuildDatabases
+//
+//! Rebuild the databases for a list of lexicons.  Also display a progress
+//! dialog.
+//
+//! @param lexicons the list of lexicons
+//---------------------------------------------------------------------------
+void
+MainWindow::rebuildDatabases(const QStringList& lexicons)
+{
+    QStringList successes;
+    QStringList failures;
+    foreach (QString lexicon, lexicons) {
+        bool ok = rebuildDatabase(lexicon);
+        // FIXME: do something if DB creation fails!
+        if (!ok) {
+            failures.append(lexicon);
+            continue;
+        }
+
+        ok = connectToDatabase(lexicon);
+        if (ok)
+            successes.append(lexicon);
+        else
+            failures.append(lexicon);
+    }
+
+    QString resultMessage;
+    if (!successes.isEmpty()) {
+        resultMessage += "These databases were successfully created: " +
+            successes.join(", ") + ".";
+    }
+    if (!failures.isEmpty()) {
+        resultMessage += "These databases encountered errors: " +
+            failures.join(", ") + ".";
+    }
+
+    QMessageBox::information(this, "Database Creation Result", resultMessage);
+}
+
+//---------------------------------------------------------------------------
 //  rebuildDatabase
 //
 //! Rebuild the database for a lexicon.  Also display a progress dialog.
 //
 //! @param lexicon the lexicon name
-//! @param promptSuccess whether to display a message on success
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-MainWindow::rebuildDatabase(const QString& lexicon, bool promptSuccess)
+MainWindow::rebuildDatabase(const QString& lexicon)
 {
     QString dbFilename = getDatabaseFilename(lexicon);
     QString definitionFilename;
@@ -1354,11 +1361,6 @@ MainWindow::rebuildDatabase(const QString& lexicon, bool promptSuccess)
         if (tmpDbFile.exists())
             tmpDbFile.rename(dbFilename);
         return false;
-    }
-    else if (promptSuccess) {
-        QMessageBox::information(this, "Database Created",
-                                 "The " + lexicon + " database was "
-                                 "successfully created.");
     }
 
     delete thread;

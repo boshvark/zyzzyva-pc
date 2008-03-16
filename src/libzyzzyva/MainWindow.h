@@ -94,7 +94,8 @@ class MainWindow : public QMainWindow
     // FIXME: these probably belong with WordTableView::addToCardbox in a
     // separate class for manipulating quiz databases.  Hm, how about the
     // QuizDatabase class?
-    bool rebuildDatabase(const QString& lexicon, bool promptSuccess = true);
+    void rebuildDatabases(const QStringList& lexicons);
+    bool rebuildDatabase(const QString& lexicon);
     int rescheduleCardbox(const QStringList& words, const QString& lexicon,
                           const QString& quizType, bool shiftQuestions,
                           int backlog = 0) const;
