@@ -3,7 +3,7 @@
 //
 // A class for working with database of quiz performance statistics.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -633,13 +633,15 @@ QuizDatabase::calculateNextScheduled(int cardbox)
     // all at once on some future date.  Then add or subtract a random number
     // of seconds within 12 hours, so the future question order is somewhat
     // randomized, and each question is equally likely to occur anytime during
-    // the day.  For cardbox 0, the window is only 4 hours, so the question is
-    // scheduled between 8 and 16 hours in the future.
+    // the day.  For questions scheduled to be seen 1 day from now, the window
+    // is only 4 hours, so the question is scheduled between 8 and 16 hours in
+    // the future.
     if (randDays)
         numDays += rng.rand(randDays * 2) - randDays;
     unsigned int now = QDateTime::currentDateTime().toTime_t();
-    int nextSeconds = (daySeconds * numDays) - halfDaySeconds;
-    int halfWindow = cardbox ? halfDaySeconds : 60 * 60 * 4;
+    bool tomorrow = (numDays == 1);
+    int nextSeconds = (daySeconds * numDays) - (tomorrow ? halfDaySeconds : 0);
+    int halfWindow = tomorrow ? 60 * 60 * 4 : halfDaySeconds;
     int randSeconds = rng.rand(2 * halfWindow) - halfWindow;
     int nextScheduled = now + nextSeconds + randSeconds;
     return nextScheduled;
