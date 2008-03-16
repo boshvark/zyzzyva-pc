@@ -58,8 +58,22 @@ DatabaseRebuildDialog::DatabaseRebuildDialog(QWidget* parent, Qt::WFlags f)
     instructionLabel->setText(message);
     mainVlay->addWidget(instructionLabel);
 
+    rebuildAllButton = new QRadioButton;
+    Q_CHECK_PTR(rebuildAllButton);
+    rebuildAllButton->setText("Rebuild databases for all lexicons");
+    rebuildAllButton->setChecked(true);
+    connect(rebuildAllButton, SIGNAL(toggled(bool)),
+            SLOT(rebuildAllToggled(bool)));
+    mainVlay->addWidget(rebuildAllButton);
+
+    QRadioButton* rebuildSingleButton = new QRadioButton;
+    Q_CHECK_PTR(rebuildSingleButton);
+    rebuildSingleButton->setText("Rebuild database for a single lexicon");
+    mainVlay->addWidget(rebuildSingleButton);
+
     lexiconWidget = new LexiconSelectWidget;
     Q_CHECK_PTR(lexiconWidget);
+    lexiconWidget->setEnabled(false);
     mainVlay->addWidget(lexiconWidget);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
@@ -84,6 +98,19 @@ DatabaseRebuildDialog::~DatabaseRebuildDialog()
 }
 
 //---------------------------------------------------------------------------
+//  getRebuildAll
+//
+//! Determine whether all databases should be rebuilt for all lexicons.
+//
+//! @return true if Rebuild All is selected, false otherwise
+//---------------------------------------------------------------------------
+bool
+DatabaseRebuildDialog::getRebuildAll() const
+{
+    return rebuildAllButton->isChecked();
+}
+
+//---------------------------------------------------------------------------
 //  getLexicon
 //
 //! Return the selected lexicon.
@@ -94,4 +121,17 @@ QString
 DatabaseRebuildDialog::getLexicon() const
 {
     return lexiconWidget->getCurrentLexicon();
+}
+
+//---------------------------------------------------------------------------
+//  rebuildAllToggled
+//
+//! Called when the Rebuild All button is toggled.
+//
+//! @param on whether the button is checked
+//---------------------------------------------------------------------------
+void
+DatabaseRebuildDialog::rebuildAllToggled(bool on)
+{
+    lexiconWidget->setEnabled(!on);
 }

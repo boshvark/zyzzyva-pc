@@ -875,9 +875,16 @@ MainWindow::rebuildDatabaseRequested()
 
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
-        QString lexicon = dialog->getLexicon();
-        rebuildDatabase(lexicon);
-        connectToDatabase(lexicon);
+        QStringList lexicons;
+        if (dialog->getRebuildAll())
+            lexicons = MainSettings::getAutoImportLexicons();
+        else
+            lexicons.append(dialog->getLexicon());
+
+        foreach (QString lexicon, lexicons) {
+            rebuildDatabase(lexicon);
+            connectToDatabase(lexicon);
+        }
     }
     delete dialog;
 }

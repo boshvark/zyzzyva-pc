@@ -26,6 +26,7 @@
 #define ZYZZYVA_DATABASE_REBUILD_DIALOG_H
 
 #include <QDialog>
+#include <QRadioButton>
 
 class LexiconSelectWidget;
 
@@ -36,9 +37,14 @@ class DatabaseRebuildDialog : public QDialog
     DatabaseRebuildDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~DatabaseRebuildDialog();
 
+    bool getRebuildAll() const;
     QString getLexicon() const;
 
+    public slots:
+    void rebuildAllToggled(bool on);
+
     private:
+    QRadioButton* rebuildAllButton;
     LexiconSelectWidget* lexiconWidget;
 };
 
