@@ -201,45 +201,45 @@ CardboxForm::refreshClicked()
 
     // Refresh cardbox contents
 
-    if (!cardboxContentsModel) {
-        //const QSqlDatabase* sqlDb = quizDatabase->getDatabase();
-        cardboxContentsModel = new QSqlQueryModel;
-        //cardboxContentsModel = new QSqlTableModel(this, *sqlDb);
-        Q_CHECK_PTR(cardboxContentsModel);
-        cardboxContentsView->setModel(cardboxContentsModel);
-    }
-    queryStr =
-        "SELECT question, cardbox, correct, incorrect, streak, "
-        "next_scheduled FROM questions WHERE cardbox NOT NULL "
-        "ORDER BY next_scheduled";
-
-    //cardboxContentsModel->select();
-
-    cardboxContentsModel->setQuery(queryStr, *sqlDb);
-    //while (cardboxContentsModel->canFetchMore()) {
-    //    qDebug("Fetching more for cardbox contents model");
-    //    cardboxContentsModel->fetchMore();
+    //if (!cardboxContentsModel) {
+    //    //const QSqlDatabase* sqlDb = quizDatabase->getDatabase();
+    //    cardboxContentsModel = new QSqlQueryModel;
+    //    //cardboxContentsModel = new QSqlTableModel(this, *sqlDb);
+    //    Q_CHECK_PTR(cardboxContentsModel);
+    //    cardboxContentsView->setModel(cardboxContentsModel);
     //}
+    //queryStr =
+    //    "SELECT question, cardbox, correct, incorrect, streak, "
+    //    "next_scheduled FROM questions WHERE cardbox NOT NULL "
+    //    "ORDER BY next_scheduled";
 
-    //cardboxContentsModel->setTable("questions");
-    //cardboxContentsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    //cardboxContentsModel->setSort(7, Qt::AscendingOrder);
+    ////cardboxContentsModel->select();
+
+    //cardboxContentsModel->setQuery(queryStr, *sqlDb);
+    ////while (cardboxContentsModel->canFetchMore()) {
+    ////    qDebug("Fetching more for cardbox contents model");
+    ////    cardboxContentsModel->fetchMore();
+    ////}
+
+    ////cardboxContentsModel->setTable("questions");
+    ////cardboxContentsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    ////cardboxContentsModel->setSort(7, Qt::AscendingOrder);
+    ////cardboxContentsModel->setHeaderData(0, Qt::Horizontal, "Question");
+    ////cardboxContentsModel->setHeaderData(1, Qt::Horizontal, "Correct");
+    ////cardboxContentsModel->setHeaderData(2, Qt::Horizontal, "Incorrect");
+    ////cardboxContentsModel->setHeaderData(3, Qt::Horizontal, "Streak");
+    ////cardboxContentsModel->setHeaderData(4, Qt::Horizontal, "Last Correct");
+    ////cardboxContentsModel->setHeaderData(5, Qt::Horizontal, "Difficulty");
+    ////cardboxContentsModel->setHeaderData(6, Qt::Horizontal, "Cardbox");
+    ////cardboxContentsModel->setHeaderData(7, Qt::Horizontal, "Next Scheduled");
+
+    ////cardboxContentsModel->setSort(7, Qt::AscendingOrder);
     //cardboxContentsModel->setHeaderData(0, Qt::Horizontal, "Question");
-    //cardboxContentsModel->setHeaderData(1, Qt::Horizontal, "Correct");
-    //cardboxContentsModel->setHeaderData(2, Qt::Horizontal, "Incorrect");
-    //cardboxContentsModel->setHeaderData(3, Qt::Horizontal, "Streak");
-    //cardboxContentsModel->setHeaderData(4, Qt::Horizontal, "Last Correct");
-    //cardboxContentsModel->setHeaderData(5, Qt::Horizontal, "Difficulty");
-    //cardboxContentsModel->setHeaderData(6, Qt::Horizontal, "Cardbox");
-    //cardboxContentsModel->setHeaderData(7, Qt::Horizontal, "Next Scheduled");
-
-    //cardboxContentsModel->setSort(7, Qt::AscendingOrder);
-    cardboxContentsModel->setHeaderData(0, Qt::Horizontal, "Question");
-    cardboxContentsModel->setHeaderData(1, Qt::Horizontal, "Cardbox");
-    cardboxContentsModel->setHeaderData(2, Qt::Horizontal, "Correct");
-    cardboxContentsModel->setHeaderData(3, Qt::Horizontal, "Incorrect");
-    cardboxContentsModel->setHeaderData(4, Qt::Horizontal, "Streak");
-    cardboxContentsModel->setHeaderData(5, Qt::Horizontal, "Next Scheduled");
+    //cardboxContentsModel->setHeaderData(1, Qt::Horizontal, "Cardbox");
+    //cardboxContentsModel->setHeaderData(2, Qt::Horizontal, "Correct");
+    //cardboxContentsModel->setHeaderData(3, Qt::Horizontal, "Incorrect");
+    //cardboxContentsModel->setHeaderData(4, Qt::Horizontal, "Streak");
+    //cardboxContentsModel->setHeaderData(5, Qt::Horizontal, "Next Scheduled");
 
     QApplication::restoreOverrideCursor();
 }
