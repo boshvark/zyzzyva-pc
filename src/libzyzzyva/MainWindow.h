@@ -126,7 +126,8 @@ class MainWindow : public QMainWindow
         DbOutOfDate,
         DbOpenError,
         DbConnectionError,
-        DbDoesNotExist
+        DbDoesNotExist,
+        DbSymbolsOutOfDate
     };
 
     private:

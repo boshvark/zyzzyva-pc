@@ -492,6 +492,8 @@ MainWindow::processDatabaseErrors()
     errorActions.insert(DbOutOfDate, "Database needs to be updated");
     errorActions.insert(DbOpenError, "Database needs to be rebuilt");
     errorActions.insert(DbDoesNotExist, "Database needs to be created");
+    errorActions.insert(DbSymbolsOutOfDate,
+                        "Lexicon symbols need to be updated");
 
     QString actionText;
     QMapIterator<QString, int> it (dbErrors);
@@ -715,12 +717,14 @@ MainWindow::editSettings()
     bool settingsChanged = false;
     bool oldAutoImport = false;
     QSet<QString> oldLexicons;
+    QList<LexiconStyle> oldStyles;
     QString oldCustomFile;
     if (settingsDialog->exec() == QDialog::Accepted) {
         settingsChanged = true;
         oldAutoImport = MainSettings::getUseAutoImport();
         oldLexicons = MainSettings::getAutoImportLexicons().toSet();
         oldCustomFile = MainSettings::getAutoImportFile();
+        oldStyles = MainSettings::getWordListLexiconStyles();
         settingsDialog->writeSettings();
     }
     else {
@@ -739,14 +743,38 @@ MainWindow::editSettings()
     QSet<QString> addedLexicons = (newAutoImport && !oldAutoImport) ?
         newLexicons : newLexicons - oldLexicons;
 
-    // FIXME: also determine lexicons that need to be rebuilt based on
-    // lexicon style (symbol) changes
-
     // Custom database needs to be rebuilt if custom lexicon file changed
     QString newCustomFile = MainSettings::getAutoImportFile();
     if ((oldCustomFile != newCustomFile) && newLexicons.contains("Custom"))
         addedLexicons.insert("Custom");
 
+    // Determine lexicons that need to be rebuilt based on lexicon style
+    // (symbol) changes
+    QSet<QString> symbolLexicons;
+    QList<LexiconStyle> newStyles = MainSettings::getWordListLexiconStyles();
+    if (!oldStyles.isEmpty()) {
+        QMutableListIterator<LexiconStyle> it (oldStyles);
+        while (it.hasNext()) {
+            const LexiconStyle& style = it.next();
+            int removed = newStyles.removeAll(style);
+            if (removed)
+                it.remove();
+            else
+                symbolLexicons.insert(style.lexicon);
+        }
+    }
+    if (!newStyles.isEmpty()) {
+        QListIterator<LexiconStyle> it (newStyles);
+        while (it.hasNext()) {
+            const LexiconStyle& style = it.next();
+            symbolLexicons.insert(style.lexicon);
+        }
+    }
+    symbolLexicons -= addedLexicons;
+    addedLexicons += symbolLexicons;
+
+    // Try to import added lexicons and symbol-changed lexicons
+    bool processNeeded = false;
     if (!addedLexicons.isEmpty()) {
         QSetIterator<QString> it (addedLexicons);
         while (it.hasNext()) {
@@ -754,9 +782,19 @@ MainWindow::editSettings()
             importLexicon(lexicon);
         }
         tryConnectToDatabases();
-        processDatabaseErrors();
     }
 
+    // Add DB errors for database whose symbols need to be updated
+    if (!symbolLexicons.isEmpty()) {
+        processNeeded = true;
+        foreach (QString lexicon, symbolLexicons) {
+            dbErrors.insert(lexicon, DbSymbolsOutOfDate);
+        }
+    }
+
+    // Process all DB errors (connection errors and symbol updates)
+    if (processNeeded)
+        processDatabaseErrors();
 
     // Call this to get original tab status message back
     currentTabChanged(0);
