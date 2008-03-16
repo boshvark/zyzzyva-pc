@@ -38,6 +38,12 @@ class LexiconStyle
         return (!lexicon.isEmpty() && !compareLexicon.isEmpty() &&
             !symbol.isEmpty() && (lexicon != compareLexicon));
     }
+    bool operator==(const LexiconStyle& other) {
+        return ((lexicon == other.lexicon) &&
+                (compareLexicon == other.compareLexicon) &&
+                (inCompareLexicon == other.inCompareLexicon) &&
+                (symbol == other.symbol));
+    }
 
     public:
     QString lexicon;
