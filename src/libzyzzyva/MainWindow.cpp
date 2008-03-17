@@ -1564,6 +1564,7 @@ MainWindow::readSettings(bool useGeometry)
     else if (font.fromString(fontStr)) {
         qApp->setFont(font, "DefinitionBox");
         qApp->setFont(font, "DefinitionLabel");
+        qApp->setFont(font, "DefinitionTextEdit");
     }
     else {
         //qWarning("Cannot set font: " + fontStr);

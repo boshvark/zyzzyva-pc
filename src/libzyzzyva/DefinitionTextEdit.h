@@ -1,7 +1,10 @@
 //---------------------------------------------------------------------------
-// DefinitionBox.h
+// DefinitionTextEdit.h
 //
-// A class derived from QVGroupBox, used to display word definitions.
+// A class derived from QTextEdit, used to display word definitions.  This
+// class currently does nothing special.  It only exists so objects of this
+// class can be distinguished from other QTextEdit objects when applying font
+// settings.
 //
 // Copyright 2004, 2005, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
@@ -22,25 +25,23 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_DEFINITION_BOX_H
-#define ZYZZYVA_DEFINITION_BOX_H
+#ifndef ZYZZYVA_DEFINITION_TEXT_EDIT_H
+#define ZYZZYVA_DEFINITION_TEXT_EDIT_H
 
-#include <QGroupBox>
+#include <QTextEdit>
 
-class DefinitionTextEdit;
-
-class DefinitionBox : public QGroupBox
+class DefinitionTextEdit : public QTextEdit
 {
     Q_OBJECT
     public:
-    DefinitionBox(QWidget* parent = 0);
-    DefinitionBox(const QString& title, QWidget* parent = 0);
-    void setText(const QString& text);
+    DefinitionTextEdit(QWidget* parent = 0)
+        : QTextEdit(parent) { init(); }
+    DefinitionTextEdit(const QString& text, QWidget* parent = 0)
+        : QTextEdit(text, parent) { init(); }
 
-    private:
-    void init();
+    void init() { setReadOnly(true); }
 
-    DefinitionTextEdit* definitionEdit;
+    virtual ~DefinitionTextEdit() { }
 };
 
-#endif // ZYZZYVA_DEFINITION_BOX_H
+#endif // ZYZZYVA_DEFINITION_TEXT_EDIT_H

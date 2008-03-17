@@ -3,7 +3,7 @@
 //
 // A form for looking up and displaying word definitions.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,8 +21,9 @@
 //---------------------------------------------------------------------------
 
 #include "DefinitionBox.h"
-#include "DefinitionLabel.h"
+#include "DefinitionTextEdit.h"
 #include "Defs.h"
+#include <QScrollArea>
 #include <QVBoxLayout>
 
 using namespace Defs;
@@ -63,15 +64,14 @@ void
 DefinitionBox::init()
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
+    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainVlay);
 
-    definitionLabel = new DefinitionLabel;
-    Q_CHECK_PTR(definitionLabel);
-    definitionLabel->setWordWrap(true);
-    definitionLabel->setAlignment(Qt::AlignTop);
-    mainVlay->addWidget(definitionLabel);
+    definitionEdit = new DefinitionTextEdit;
+    Q_CHECK_PTR(definitionEdit);
+    definitionEdit->setWordWrapMode(QTextOption::WordWrap);
+    mainVlay->addWidget(definitionEdit);
 }
 
 //---------------------------------------------------------------------------
@@ -86,5 +86,5 @@ DefinitionBox::setText(const QString& text)
 {
     QString richText (text);
     richText.replace("\n", "<br>");
-    definitionLabel->setText(richText);
+    definitionEdit->setText(richText);
 }

@@ -3,7 +3,7 @@
 #
 # Build configuration file for Zyzzyva using qmake.
 #
-# Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -122,6 +122,7 @@ HEADERS = \
     DefinitionBox.h \
     DefinitionDialog.h \
     DefinitionLabel.h \
+    DefinitionTextEdit.h \
     HelpDialog.h \
     IntroForm.h \
     IscConnectionThread.h \
