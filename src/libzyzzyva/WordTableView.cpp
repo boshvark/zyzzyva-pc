@@ -383,23 +383,13 @@ WordTableView::exportFile(const QString& filename, WordListFormat format,
         return false;
     }
 
-    bool exportInnerHooks = false;
-    QListIterator<WordAttribute> attrIt (attributes);
-    while (attrIt.hasNext()) {
-        if (attrIt.next() == WordAttrInnerHooks) {
-            exportInnerHooks = true;
-            break;
-        }
-    }
-
     QTextStream stream (&file);
 
     if (format == WordListOnePerLine) {
         QModelIndex index = model()->index(0, WordTableModel::WORD_COLUMN);
         for (int i = 0; i < model()->rowCount(); ++i) {
             index = index.sibling(i, WordTableModel::WORD_COLUMN);
-            QStringList strings = getExportStrings(index, attributes,
-                                                   exportInnerHooks);
+            QStringList strings = getExportStrings(index, attributes);
             stream << strings.join("\t");
             endl(stream);
         }
@@ -427,8 +417,7 @@ WordTableView::exportFile(const QString& filename, WordListFormat format,
             while (jt.hasNext()) {
                 int row = jt.next();
                 index = index.sibling(row, WordTableModel::WORD_COLUMN);
-                QStringList strings = getExportStrings(index, attributes,
-                                                       exportInnerHooks);
+                QStringList strings = getExportStrings(index, attributes);
                 stream << "A: " << strings.join(" ");
                 endl(stream);
             }
@@ -447,23 +436,21 @@ WordTableView::exportFile(const QString& filename, WordListFormat format,
 //
 //! @param index the index to use
 //! @param attributes the list of word attributes to export
-//! @param exportInnerHooks whether to add inner hooks to the word
 //
 //! @return an ordered list of strings to be exported
 //---------------------------------------------------------------------------
 QStringList
 WordTableView::getExportStrings(QModelIndex& index, const
-                                QList<WordAttribute>& attributes, bool
-                                exportInnerHooks) const
+                                QList<WordAttribute>& attributes) const
 {
     QListIterator<WordAttribute> attrIt (attributes);
     QStringList strings;
 
+    bool exportInnerHooks = attributes.contains(WordAttrInnerHooks);
+    bool exportSymbols = attributes.contains(WordAttrLexiconSymbols);
+
     while (attrIt.hasNext()) {
         WordAttribute attribute = attrIt.next();
-        if (attribute == WordAttrInnerHooks)
-            continue;
-
         int column = -1;
         switch (attribute) {
             case WordAttrWord:
@@ -492,10 +479,34 @@ WordTableView::getExportStrings(QModelIndex& index, const
         if (column < 0)
             continue;
 
-        index = index.sibling(index.row(), column);
-        QString str;
-        if (exportInnerHooks && (attribute == WordAttrWord)) {
+        index = index.sibling(index.row(), column); QString str;
+
+        // XXX: inner hook and symbols should be stored under separate roles
+        // in the WordTableModel, so they can be easily queried
+
+        // special processing for inner hooks and symbols
+        if ((column == WordTableModel::WORD_COLUMN) &&
+            (exportInnerHooks || exportSymbols))
+        {
             str = model()->data(index, Qt::DisplayRole).toString().toUpper();
+            if (!exportSymbols) {
+                QString ihChar = (MainSettings::getWordListShowHookParents() ?
+                                  QString(".") : QString());
+                QRegExp regex(QString("([A-Z]+%1).*").arg(ihChar));
+                str.replace(regex, "\\1");
+            }
+            else if (!exportInnerHooks &&
+                     MainSettings::getWordListShowHookParents())
+            {
+                str.replace(QRegExp(".([A-Z]+)."), "\\1");
+            }
+        }
+        else if (!exportSymbols &&
+                 ((column == WordTableModel::FRONT_HOOK_COLUMN) ||
+                  (column == WordTableModel::BACK_HOOK_COLUMN)))
+        {
+            str = model()->data(index, Qt::DisplayRole).toString();
+            str.replace(QRegExp("[^A-Za-z]+"), QString());
         }
         else {
             str = model()->data(index, Qt::EditRole).toString();

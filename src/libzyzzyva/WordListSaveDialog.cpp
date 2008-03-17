@@ -3,7 +3,7 @@
 //
 // The dialog for saving a list of words.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -262,6 +262,8 @@ WordListSaveDialog::initializeLists()
         Auxil::wordAttributeToString(WordAttrBackHooks));
     unselectedAttrList->addItem(
         Auxil::wordAttributeToString(WordAttrInnerHooks));
+    unselectedAttrList->addItem(
+        Auxil::wordAttributeToString(WordAttrLexiconSymbols));
     unselectedAttrList->addItem(
         Auxil::wordAttributeToString(WordAttrProbabilityOrder));
 

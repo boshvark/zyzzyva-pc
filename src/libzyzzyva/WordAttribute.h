@@ -3,7 +3,7 @@
 //
 // An enumeration of word attributes.
 //
-// Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -33,6 +33,7 @@ enum WordAttribute
     WordAttrFrontHooks,
     WordAttrBackHooks,
     WordAttrInnerHooks,
+    WordAttrLexiconSymbols,
     WordAttrProbabilityOrder,
     WordAttrFrontExtensions,
     WordAttrBackExtensions,

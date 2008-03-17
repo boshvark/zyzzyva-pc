@@ -3,7 +3,7 @@
 //
 // A class derived from QTableView, used to display word lists.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -62,8 +62,7 @@ class WordTableView : public QTreeView
                     const QList<WordAttribute>& attributes, QString* err)
         const;
     QStringList getExportStrings(QModelIndex& index,
-                                 const QList<WordAttribute>& attributes,
-                                 bool exportInnerHooks) const;
+                                 const QList<WordAttribute>& attributes) const;
     bool addToCardbox(const QStringList& words, const QString& lexicon,
                       const QString& quizType, bool estimateCardbox) const;
     bool removeFromCardbox(const QStringList& words, const QString& lexicon,
