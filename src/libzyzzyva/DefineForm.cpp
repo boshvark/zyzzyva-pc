@@ -23,6 +23,7 @@
 #include "DefineForm.h"
 #include "DefinitionBox.h"
 #include "LexiconSelectWidget.h"
+#include "MainSettings.h"
 #include "WordEngine.h"
 #include "WordLineEdit.h"
 #include "WordValidator.h"
@@ -170,6 +171,7 @@ DefineForm::defineWord()
         return;
 
     QString lexicon = lexiconWidget->getCurrentLexicon();
+    bool showSymbols = MainSettings::getWordListUseLexiconStyles();
 
     bool acceptable = engine->isAcceptable(lexicon, word);
     QString resultStr = acceptable ?
@@ -197,20 +199,31 @@ DefineForm::defineWord()
     spec.conditions.append(condition);
     QStringList anagrams = engine->search(lexicon, spec, true);
     anagrams.removeAll(word);
+    if (showSymbols) {
+        QMutableListIterator<QString> it (anagrams);
+        while (it.hasNext()) {
+            QString& anagram = it.next();
+            anagram.append(engine->getLexiconSymbols(lexicon, anagram));
+        }
+    }
     QString anagramsStr = anagrams.isEmpty() ? NONE_STR :
         QString("(%1): ").arg(anagrams.count()) + anagrams.join(", ");
     resultStr += "<br><b>Anagrams:</b> " + anagramsStr;
 
     // Get front hooks
     QString fHooks = engine->getFrontHookLetters(lexicon, word).toUpper();
+    if (!showSymbols)
+        fHooks.replace(QRegExp("[^A-Z]+"), QString());
     QString fHookStr = fHooks.isEmpty() ? NONE_STR :
-        QString("(%1): ").arg(fHooks.length()) + fHooks;
+        QString("(%1): ").arg(fHooks.count(QRegExp("[A-Z]"))) + fHooks;
     resultStr += "<br><b>Front Hooks:</b> " + fHookStr;
 
     // Get back hooks
     QString bHooks = engine->getBackHookLetters(lexicon, word).toUpper();
+    if (!showSymbols)
+        bHooks.replace(QRegExp("[^A-Z]+"), QString());
     QString bHookStr = bHooks.isEmpty() ? NONE_STR :
-        QString("(%1): ").arg(bHooks.length()) + bHooks;
+        QString("(%1): ").arg(bHooks.count(QRegExp("[A-Z]"))) + bHooks;
     resultStr += "<br><b>Back Hooks:</b> " + bHookStr;
 
     // Get front extensions
@@ -219,9 +232,16 @@ DefineForm::defineWord()
     condition.stringValue = "*?" + word;
     spec.conditions.append(condition);
     QStringList fExts = engine->search(lexicon, spec, true);
+    if (showSymbols) {
+        QMutableListIterator<QString> it (fExts);
+        while (it.hasNext()) {
+            QString& fExt = it.next();
+            fExt.append(engine->getLexiconSymbols(lexicon, fExt));
+        }
+    }
     QString fExtStr = fExts.isEmpty() ? NONE_STR :
         QString("(%1): ").arg(fExts.count()) +
-        fExts.replaceInStrings(QRegExp(word + "$"), "-").join(", ");
+        fExts.replaceInStrings(QRegExp(word + "([^A-Z]*)$"), "-\\1").join(", ");
     resultStr += "<br><b>Front Extensions:</b> " + fExtStr;
 
     // Get back extensions
@@ -230,6 +250,13 @@ DefineForm::defineWord()
     condition.stringValue = word + "?*";
     spec.conditions.append(condition);
     QStringList bExts = engine->search(lexicon, spec, true);
+    if (showSymbols) {
+        QMutableListIterator<QString> it (bExts);
+        while (it.hasNext()) {
+            QString& bExt = it.next();
+            bExt.append(engine->getLexiconSymbols(lexicon, bExt));
+        }
+    }
     QString bExtStr = bExts.isEmpty() ? NONE_STR :
         QString("(%1): ").arg(bExts.count()) +
         bExts.replaceInStrings(QRegExp("^" + word), "-").join(", ");
@@ -241,12 +268,23 @@ DefineForm::defineWord()
     condition.stringValue = "*?" + word + "?*";
     spec.conditions.append(condition);
     QStringList dExts = engine->search(lexicon, spec, true);
+    if (showSymbols) {
+        QMutableListIterator<QString> it (dExts);
+        while (it.hasNext()) {
+            QString& dExt = it.next();
+            dExt.append(engine->getLexiconSymbols(lexicon, dExt));
+        }
+    }
     QString dExtStr = dExts.isEmpty() ? NONE_STR :
         QString("(%1): ").arg(dExts.count()) +
         dExts.replaceInStrings(QRegExp(word), "-").join(", ");
     resultStr += "<br><b>Double Extensions:</b> " + dExtStr;
 
     resultBox->setText(resultStr);
+
+    if (showSymbols)
+        word += engine->getLexiconSymbols(lexicon, word);
+
     resultBox->setTitle(word);
     resultBox->show();
     selectInputArea();
