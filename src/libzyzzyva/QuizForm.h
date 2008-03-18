@@ -33,6 +33,7 @@
 #include <QImage>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QSpinBox>
 #include <QStackedWidget>
 #include <QString>
 #include <QTimer>
@@ -77,6 +78,7 @@ class QuizForm : public ActionForm
     void markMissedClicked();
     void pauseClicked();
     void analyzeClicked();
+    void cardboxMoveClicked();
     void flashcardStateChanged(int state);
     void setTileTheme(const QString& theme);
     void setBackgroundColor(const QColor& color);
@@ -103,6 +105,7 @@ class QuizForm : public ActionForm
     void unpauseTimer();
     void markMissed();
     void markCorrect();
+    void moveToCardbox(int cardbox);
     void clearCanvas();
     void minimizeCanvas();
     void setNumCanvasTiles(int num);
@@ -154,6 +157,9 @@ class QuizForm : public ActionForm
     ZPushButton*  newQuizButton;
     ZPushButton*  saveQuizButton;
     ZPushButton*  analyzeButton;
+    QWidget*      cardboxMoveWidget;
+    QSpinBox*     cardboxMoveSbox;
+    ZPushButton*  cardboxMoveButton;
 
     int timerId;
     int timerRemaining, timerPaused;

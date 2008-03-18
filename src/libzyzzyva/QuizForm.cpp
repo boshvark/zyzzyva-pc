@@ -324,11 +324,31 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     pauseButton->setEnabled(false);
     buttonGlay->addWidget(pauseButton, 0, 3, Qt::AlignHCenter);
 
-    flashcardCbox = new QCheckBox("Flashcard M&ode");
-    Q_CHECK_PTR(flashcardCbox);
-    connect(flashcardCbox, SIGNAL(stateChanged(int)),
-            SLOT(flashcardStateChanged(int)));
-    buttonGlay->addWidget(flashcardCbox, 1, 0, Qt::AlignHCenter);
+    cardboxMoveWidget = new QWidget;
+    Q_CHECK_PTR(cardboxMoveWidget);
+    buttonGlay->addWidget(cardboxMoveWidget, 0, 4, Qt::AlignCenter);
+
+    QHBoxLayout* cardboxMoveHlay = new QHBoxLayout(cardboxMoveWidget);
+    Q_CHECK_PTR(cardboxMoveHlay);
+    cardboxMoveHlay->setMargin(0);
+    cardboxMoveHlay->setSpacing(SPACING);
+
+    QLabel* cardboxMoveLabel = new QLabel;
+    Q_CHECK_PTR(cardboxMoveLabel);
+    cardboxMoveLabel->setText("Cardbox:");
+    cardboxMoveHlay->addWidget(cardboxMoveLabel);
+
+    cardboxMoveSbox = new QSpinBox;
+    Q_CHECK_PTR(cardboxMoveSbox);
+    cardboxMoveSbox->setMinimum(1);
+    cardboxMoveSbox->setMaximum(15);
+    cardboxMoveHlay->addWidget(cardboxMoveSbox);
+
+    cardboxMoveButton = new ZPushButton;
+    Q_CHECK_PTR(cardboxMoveButton);
+    cardboxMoveButton->setText("Move");
+    connect(cardboxMoveButton, SIGNAL(clicked()), SLOT(cardboxMoveClicked()));
+    cardboxMoveHlay->addWidget(cardboxMoveButton);
 
     newQuizButton = new ZPushButton("New &Quiz...");
     Q_CHECK_PTR(newQuizButton);
@@ -347,6 +367,12 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     analyzeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(analyzeButton, SIGNAL(clicked()), SLOT(analyzeClicked()));
     buttonGlay->addWidget(analyzeButton, 1, 3, Qt::AlignHCenter);
+
+    flashcardCbox = new QCheckBox("Flashcard M&ode");
+    Q_CHECK_PTR(flashcardCbox);
+    connect(flashcardCbox, SIGNAL(stateChanged(int)),
+            SLOT(flashcardStateChanged(int)));
+    buttonGlay->addWidget(flashcardCbox, 1, 0, Qt::AlignHCenter);
 
     buttonHlay->addStretch(1);
 
@@ -541,6 +567,9 @@ QuizForm::newQuiz(const QuizSpec& spec)
     letterOrderLabel->setEnabled(enableLetterOrder);
     alphaOrderButton->setEnabled(enableLetterOrder);
     randomOrderButton->setEnabled(enableLetterOrder);
+
+    cardboxMoveWidget->setEnabled(
+        spec.getMethod() == QuizSpec::CardboxQuizMethod);
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     bool ok = quizEngine->newQuiz(spec);
@@ -816,6 +845,23 @@ QuizForm::markCorrect()
 }
 
 //---------------------------------------------------------------------------
+//  moveToCardbox
+//
+//! Move the current question to a specific cardbox.
+//
+//! @param cardbox the cardbox to move the question to
+//---------------------------------------------------------------------------
+void
+QuizForm::moveToCardbox(int cardbox)
+{
+    if (quizEngine->getQuestionCorrect() != quizEngine->getQuestionTotal())
+        markCorrect();
+
+    db->setCardbox(quizEngine->getQuestion(), cardbox);
+    updateQuestionStatus();
+}
+
+//---------------------------------------------------------------------------
 //  nextQuestionClicked
 //
 //! Called when the New Question button is clicked.
@@ -1007,6 +1053,22 @@ void
 QuizForm::analyzeClicked()
 {
     analyzeDialog->show();
+    selectInputArea();
+}
+
+//---------------------------------------------------------------------------
+//  cardboxMoveClicked
+//
+//! Called when the Move to Cardbox button is clicked.
+//---------------------------------------------------------------------------
+void
+QuizForm::cardboxMoveClicked()
+{
+    int cardbox = cardboxMoveSbox->value();
+
+    moveToCardbox(cardbox);
+
+
     selectInputArea();
 }
 
@@ -1590,13 +1652,7 @@ QuizForm::keyPressEvent(QKeyEvent* event)
         if (cardbox) {
             QuizSpec quizSpec = quizEngine->getQuizSpec();
             if (quizSpec.getMethod() == QuizSpec::CardboxQuizMethod) {
-                if (quizEngine->getQuestionCorrect() !=
-                    quizEngine->getQuestionTotal())
-                {
-                    markCorrect();
-                }
-                db->setCardbox(quizEngine->getQuestion(), cardbox);
-                updateQuestionStatus();
+                moveToCardbox(cardbox);
             }
         }
 
