@@ -274,7 +274,6 @@ WordTableView::addToCardboxRequested()
         WordTableModel* wordModel = static_cast<WordTableModel*>(model());
         QString lexicon = wordModel->getLexicon();
         QStringList words = dialog->getWords();
-
         QString quizType = dialog->getQuizType();
         bool estimateCardbox = dialog->getEstimateCardbox();
 
@@ -327,12 +326,9 @@ WordTableView::removeFromCardboxRequested()
 
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
+        WordTableModel* wordModel = static_cast<WordTableModel*>(model());
+        QString lexicon = wordModel->getLexicon();
         QStringList words = dialog->getWords();
-
-        // Hack:: fix this - get lexicon from somewhere else - WordTableModel?
-        //QString lexicon = MainSettings::getAutoImportLexicon();
-        QString lexicon = MainSettings::getDefaultLexicon();
-
         QString quizType = dialog->getQuizType();
 
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
