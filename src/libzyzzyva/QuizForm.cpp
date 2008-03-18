@@ -1056,10 +1056,7 @@ void
 QuizForm::cardboxMoveClicked()
 {
     int cardbox = cardboxMoveSbox->value();
-
     moveToCardbox(cardbox);
-
-
     selectInputArea();
 }
 
