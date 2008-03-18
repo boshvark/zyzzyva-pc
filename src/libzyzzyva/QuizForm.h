@@ -30,6 +30,7 @@
 #include "QuizDatabase.h"
 #include "QuizSpec.h"
 #include <QCheckBox>
+#include <QComboBox>
 #include <QImage>
 #include <QKeyEvent>
 #include <QLabel>
@@ -70,8 +71,7 @@ class QuizForm : public ActionForm
     public slots:
     bool newQuiz(const QuizSpec& spec);
     void responseEntered();
-    void alphaOrderClicked();
-    void randomOrderClicked();
+    void letterOrderClicked();
     void newQuizClicked();
     void nextQuestionClicked();
     void checkResponseClicked();
@@ -147,8 +147,6 @@ class QuizForm : public ActionForm
     DefinitionLabel* cardboxStatusLabel;
     DefinitionLabel* questionStatsLabel;
     QLabel*       letterOrderLabel;
-    ZPushButton*  alphaOrderButton;
-    ZPushButton*  randomOrderButton;
     QCheckBox*    flashcardCbox;
     ZPushButton*  nextQuestionButton;
     ZPushButton*  checkResponseButton;
@@ -159,7 +157,8 @@ class QuizForm : public ActionForm
     ZPushButton*  analyzeButton;
     QWidget*      cardboxMoveWidget;
     QSpinBox*     cardboxMoveSbox;
-    ZPushButton*  cardboxMoveButton;
+    QWidget*      letterOrderWidget;
+    QComboBox*    letterOrderCombo;
 
     int timerId;
     int timerRemaining, timerPaused;

@@ -203,30 +203,6 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     questionSpecLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     questionStack->addWidget(questionSpecLabel);
 
-    QHBoxLayout* letterOrderHlay = new QHBoxLayout;
-    Q_CHECK_PTR(letterOrderHlay);
-    mainVlay->addLayout(letterOrderHlay);
-
-    letterOrderHlay->addStretch(1);
-
-    letterOrderLabel = new QLabel("Letter order:");
-    Q_CHECK_PTR(letterOrderLabel);
-    letterOrderHlay->addWidget(letterOrderLabel);
-
-    alphaOrderButton = new ZPushButton("&Alpha");
-    Q_CHECK_PTR(alphaOrderButton);
-    alphaOrderButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(alphaOrderButton, SIGNAL(clicked()), SLOT(alphaOrderClicked()));
-    letterOrderHlay->addWidget(alphaOrderButton);
-
-    randomOrderButton = new ZPushButton("&Random");
-    Q_CHECK_PTR(randomOrderButton);
-    randomOrderButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(randomOrderButton, SIGNAL(clicked()), SLOT(randomOrderClicked()));
-    letterOrderHlay->addWidget(randomOrderButton);
-
-    letterOrderHlay->addStretch(1);
-
     responseView = new WordTableView(wordEngine);
     Q_CHECK_PTR(responseView);
     mainVlay->addWidget(responseView);
@@ -324,31 +300,11 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     pauseButton->setEnabled(false);
     buttonGlay->addWidget(pauseButton, 0, 3, Qt::AlignHCenter);
 
-    cardboxMoveWidget = new QWidget;
-    Q_CHECK_PTR(cardboxMoveWidget);
-    buttonGlay->addWidget(cardboxMoveWidget, 0, 4, Qt::AlignCenter);
-
-    QHBoxLayout* cardboxMoveHlay = new QHBoxLayout(cardboxMoveWidget);
-    Q_CHECK_PTR(cardboxMoveHlay);
-    cardboxMoveHlay->setMargin(0);
-    cardboxMoveHlay->setSpacing(SPACING);
-
-    QLabel* cardboxMoveLabel = new QLabel;
-    Q_CHECK_PTR(cardboxMoveLabel);
-    cardboxMoveLabel->setText("Cardbox:");
-    cardboxMoveHlay->addWidget(cardboxMoveLabel);
-
-    cardboxMoveSbox = new QSpinBox;
-    Q_CHECK_PTR(cardboxMoveSbox);
-    cardboxMoveSbox->setMinimum(1);
-    cardboxMoveSbox->setMaximum(15);
-    cardboxMoveHlay->addWidget(cardboxMoveSbox);
-
-    cardboxMoveButton = new ZPushButton;
-    Q_CHECK_PTR(cardboxMoveButton);
-    cardboxMoveButton->setText("Move");
-    connect(cardboxMoveButton, SIGNAL(clicked()), SLOT(cardboxMoveClicked()));
-    cardboxMoveHlay->addWidget(cardboxMoveButton);
+    flashcardCbox = new QCheckBox("Flashcard M&ode");
+    Q_CHECK_PTR(flashcardCbox);
+    connect(flashcardCbox, SIGNAL(stateChanged(int)),
+            SLOT(flashcardStateChanged(int)));
+    buttonGlay->addWidget(flashcardCbox, 1, 0, Qt::AlignHCenter);
 
     newQuizButton = new ZPushButton("New &Quiz...");
     Q_CHECK_PTR(newQuizButton);
@@ -368,11 +324,60 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     connect(analyzeButton, SIGNAL(clicked()), SLOT(analyzeClicked()));
     buttonGlay->addWidget(analyzeButton, 1, 3, Qt::AlignHCenter);
 
-    flashcardCbox = new QCheckBox("Flashcard M&ode");
-    Q_CHECK_PTR(flashcardCbox);
-    connect(flashcardCbox, SIGNAL(stateChanged(int)),
-            SLOT(flashcardStateChanged(int)));
-    buttonGlay->addWidget(flashcardCbox, 1, 0, Qt::AlignHCenter);
+    letterOrderWidget = new QWidget;
+    Q_CHECK_PTR(letterOrderWidget);
+    buttonGlay->addWidget(letterOrderWidget, 2, 0, 1, 2, Qt::AlignCenter);
+
+    QHBoxLayout* letterOrderHlay = new QHBoxLayout(letterOrderWidget);
+    Q_CHECK_PTR(letterOrderHlay);
+    letterOrderHlay->setMargin(0);
+    letterOrderHlay->setSpacing(SPACING);
+
+    letterOrderLabel = new QLabel("Letter order:");
+    Q_CHECK_PTR(letterOrderLabel);
+    letterOrderHlay->addWidget(letterOrderLabel);
+
+    letterOrderCombo = new QComboBox;
+    Q_CHECK_PTR(letterOrderCombo);
+    letterOrderCombo->addItem(Defs::QUIZ_LETTERS_ALPHA);
+    letterOrderCombo->addItem(Defs::QUIZ_LETTERS_RANDOM);
+    letterOrderCombo->addItem(Defs::QUIZ_LETTERS_VOWELS_FIRST);
+    letterOrderCombo->addItem(Defs::QUIZ_LETTERS_CONSONANTS_FIRST);
+    QString defaultOrder = MainSettings::getQuizLetterOrder();
+    letterOrderCombo->setCurrentIndex(letterOrderCombo->findText(defaultOrder));
+    letterOrderHlay->addWidget(letterOrderCombo);
+
+    ZPushButton* letterOrderButton = new ZPushButton("&Reorder");
+    Q_CHECK_PTR(letterOrderButton);
+    letterOrderButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(letterOrderButton, SIGNAL(clicked()), SLOT(letterOrderClicked()));
+    letterOrderHlay->addWidget(letterOrderButton);
+
+    cardboxMoveWidget = new QWidget;
+    Q_CHECK_PTR(cardboxMoveWidget);
+    buttonGlay->addWidget(cardboxMoveWidget, 2, 2, 1, 2, Qt::AlignCenter);
+
+    QHBoxLayout* cardboxMoveHlay = new QHBoxLayout(cardboxMoveWidget);
+    Q_CHECK_PTR(cardboxMoveHlay);
+    cardboxMoveHlay->setMargin(0);
+    cardboxMoveHlay->setSpacing(SPACING);
+
+    QLabel* cardboxMoveLabel = new QLabel;
+    Q_CHECK_PTR(cardboxMoveLabel);
+    cardboxMoveLabel->setText("Cardbox:");
+    cardboxMoveHlay->addWidget(cardboxMoveLabel);
+
+    cardboxMoveSbox = new QSpinBox;
+    Q_CHECK_PTR(cardboxMoveSbox);
+    cardboxMoveSbox->setMinimum(1);
+    cardboxMoveSbox->setMaximum(15);
+    cardboxMoveHlay->addWidget(cardboxMoveSbox);
+
+    ZPushButton* cardboxMoveButton = new ZPushButton("Mo&ve");
+    Q_CHECK_PTR(cardboxMoveButton);
+    cardboxMoveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(cardboxMoveButton, SIGNAL(clicked()), SLOT(cardboxMoveClicked()));
+    cardboxMoveHlay->addWidget(cardboxMoveButton);
 
     buttonHlay->addStretch(1);
 
@@ -563,10 +568,7 @@ QuizForm::newQuiz(const QuizSpec& spec)
     timerSpec = spec.getTimerSpec();
 
     // Enable or disable Alpha and Random buttons depending on Quiz type
-    bool enableLetterOrder = customLetterOrderAllowed(spec.getType());
-    letterOrderLabel->setEnabled(enableLetterOrder);
-    alphaOrderButton->setEnabled(enableLetterOrder);
-    randomOrderButton->setEnabled(enableLetterOrder);
+    letterOrderWidget->setEnabled(customLetterOrderAllowed(spec.getType()));
 
     cardboxMoveWidget->setEnabled(
         spec.getMethod() == QuizSpec::CardboxQuizMethod);
@@ -714,26 +716,15 @@ QuizForm::saveRequested()
 }
 
 //---------------------------------------------------------------------------
-//  alphaOrderClicked
+//  letterOrderClicked
 //
-//! Called when the Alpha button is clicked.
+//! Called when the Reorder button is clicked.
 //---------------------------------------------------------------------------
 void
-QuizForm::alphaOrderClicked()
+QuizForm::letterOrderClicked()
 {
-    setQuestionLabel(quizEngine->getQuestion(), Defs::QUIZ_LETTERS_ALPHA);
-    selectInputArea();
-}
-
-//---------------------------------------------------------------------------
-//  randomOrderClicked
-//
-//! Called when the Random button is clicked.
-//---------------------------------------------------------------------------
-void
-QuizForm::randomOrderClicked()
-{
-    setQuestionLabel(quizEngine->getQuestion(), Defs::QUIZ_LETTERS_RANDOM);
+    setQuestionLabel(quizEngine->getQuestion(),
+                     letterOrderCombo->currentText());
     selectInputArea();
 }
 
