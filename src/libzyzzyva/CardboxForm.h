@@ -29,7 +29,6 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QSqlQueryModel>
-#include <QSqlTableModel>
 #include <QTimer>
 #include <QTreeView>
 
@@ -57,11 +56,10 @@ class CardboxForm : public ActionForm
     QComboBox*      quizTypeCombo;
     QSqlQueryModel* cardboxCountModel;
     QSqlQueryModel* cardboxDaysModel;
-    QSqlQueryModel* cardboxContentsModel;
     //QSqlTableModel* cardboxContentsModel;
     QTreeView*      cardboxCountView;
     QTreeView*      cardboxDaysView;
-    QTreeView*      cardboxContentsView;
+    //QTreeView*      cardboxContentsView;
 
     bool dbDirty;
 

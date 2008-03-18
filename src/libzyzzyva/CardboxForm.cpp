@@ -47,7 +47,8 @@ const int REFRESH_MSECS = 120000;
 CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     : ActionForm(CardboxFormType, parent, f), wordEngine(e),
     quizDatabase(0), cardboxCountModel(0), cardboxDaysModel(0),
-    cardboxContentsModel(0), dbDirty(true)
+    //cardboxContentsModel(0),
+    dbDirty(true)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     Q_CHECK_PTR(mainVlay);
@@ -79,22 +80,32 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect(quizTypeCombo, SIGNAL(activated(int)), SLOT(quizSpecChanged()));
     quizTypeHlay->addWidget(quizTypeCombo);
 
-    QHBoxLayout* cardboxHlay = new QHBoxLayout;
-    Q_CHECK_PTR(cardboxHlay);
-    cardboxHlay->setSpacing(SPACING);
-    mainVlay->addLayout(cardboxHlay);
+    QGridLayout* cardboxGlay = new QGridLayout;
+    Q_CHECK_PTR(cardboxGlay);
+    cardboxGlay->setSpacing(SPACING);
+    mainVlay->addLayout(cardboxGlay);
+
+    QLabel* cardboxCountLabel = new QLabel;
+    Q_CHECK_PTR(cardboxCountLabel);
+    cardboxCountLabel->setText("Questions in each cardbox:");
+    cardboxGlay->addWidget(cardboxCountLabel, 0, 0);
 
     cardboxCountView = new QTreeView;
     Q_CHECK_PTR(cardboxCountView);
-    cardboxHlay->addWidget(cardboxCountView);
+    cardboxGlay->addWidget(cardboxCountView, 1, 0);
+
+    QLabel* cardboxDaysLabel = new QLabel;
+    Q_CHECK_PTR(cardboxDaysLabel);
+    cardboxDaysLabel->setText("Questions due in days from today:");
+    cardboxGlay->addWidget(cardboxDaysLabel, 0, 1);
 
     cardboxDaysView = new QTreeView;
     Q_CHECK_PTR(cardboxDaysView);
-    cardboxHlay->addWidget(cardboxDaysView);
+    cardboxGlay->addWidget(cardboxDaysView, 1, 1);
 
-    cardboxContentsView = new QTreeView;
-    Q_CHECK_PTR(cardboxContentsView);
-    mainVlay->addWidget(cardboxContentsView);
+    //cardboxContentsView = new QTreeView;
+    //Q_CHECK_PTR(cardboxContentsView);
+    //mainVlay->addWidget(cardboxContentsView);
 
     ZPushButton* refreshButton = new ZPushButton;
     Q_CHECK_PTR(refreshButton);
@@ -158,8 +169,6 @@ CardboxForm::getStatusString() const
 void
 CardboxForm::refreshClicked()
 {
-    qDebug("CardboxForm::refreshClicked");
-
     if (dbDirty) {
         delete quizDatabase;
         QString lexicon = lexiconWidget->getCurrentLexicon();
@@ -201,10 +210,25 @@ CardboxForm::refreshClicked()
 
     // Refresh cardbox contents
 
+    // Attempt using QSqlTableModel:
+    // XXX: This would be lovely except that SQLite locks the database and
+    // doesn't let go, thus preventing quiz responses from being counted
     //if (!cardboxContentsModel) {
-    //    //const QSqlDatabase* sqlDb = quizDatabase->getDatabase();
+    //    cardboxContentsModel = new QSqlTableModel(this, *sqlDb);
+    //    Q_CHECK_PTR(cardboxContentsModel);
+    //    cardboxContentsView->setModel(cardboxContentsModel);
+    //    cardboxContentsView->setSortingEnabled(true);
+    //    cardboxContentsModel->setTable("questions");
+    //    cardboxContentsModel->select();
+    //    while (cardboxContentsModel->canFetchMore()) {
+    //        qDebug("Fetching more for cardbox contents model");
+    //        cardboxContentsModel->fetchMore();
+    //    }
+    //}
+
+    // Attempt using QSqlQueryModel:
+    //if (!cardboxContentsModel) {
     //    cardboxContentsModel = new QSqlQueryModel;
-    //    //cardboxContentsModel = new QSqlTableModel(this, *sqlDb);
     //    Q_CHECK_PTR(cardboxContentsModel);
     //    cardboxContentsView->setModel(cardboxContentsModel);
     //}
@@ -212,28 +236,13 @@ CardboxForm::refreshClicked()
     //    "SELECT question, cardbox, correct, incorrect, streak, "
     //    "next_scheduled FROM questions WHERE cardbox NOT NULL "
     //    "ORDER BY next_scheduled";
-
-    ////cardboxContentsModel->select();
-
+    //
     //cardboxContentsModel->setQuery(queryStr, *sqlDb);
-    ////while (cardboxContentsModel->canFetchMore()) {
-    ////    qDebug("Fetching more for cardbox contents model");
-    ////    cardboxContentsModel->fetchMore();
-    ////}
-
-    ////cardboxContentsModel->setTable("questions");
-    ////cardboxContentsModel->setEditStrategy(QSqlTableModel::OnManualSubmit);
-    ////cardboxContentsModel->setSort(7, Qt::AscendingOrder);
-    ////cardboxContentsModel->setHeaderData(0, Qt::Horizontal, "Question");
-    ////cardboxContentsModel->setHeaderData(1, Qt::Horizontal, "Correct");
-    ////cardboxContentsModel->setHeaderData(2, Qt::Horizontal, "Incorrect");
-    ////cardboxContentsModel->setHeaderData(3, Qt::Horizontal, "Streak");
-    ////cardboxContentsModel->setHeaderData(4, Qt::Horizontal, "Last Correct");
-    ////cardboxContentsModel->setHeaderData(5, Qt::Horizontal, "Difficulty");
-    ////cardboxContentsModel->setHeaderData(6, Qt::Horizontal, "Cardbox");
-    ////cardboxContentsModel->setHeaderData(7, Qt::Horizontal, "Next Scheduled");
-
-    ////cardboxContentsModel->setSort(7, Qt::AscendingOrder);
+    //while (cardboxContentsModel->canFetchMore()) {
+    //    qDebug("Fetching more for cardbox contents model");
+    //    cardboxContentsModel->fetchMore();
+    //}
+    //
     //cardboxContentsModel->setHeaderData(0, Qt::Horizontal, "Question");
     //cardboxContentsModel->setHeaderData(1, Qt::Horizontal, "Cardbox");
     //cardboxContentsModel->setHeaderData(2, Qt::Horizontal, "Correct");
