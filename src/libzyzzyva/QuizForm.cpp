@@ -57,6 +57,8 @@ using namespace Defs;
 const QString TITLE_PREFIX = "Quiz";
 const QString PAUSE_BUTTON = "&Pause";
 const QString UNPAUSE_BUTTON = "Un&pause";
+const QString MARK_MISSED_BUTTON = "&Mark as Missed";
+const QString MARK_CORRECT_BUTTON = "&Mark as Correct";
 const int TITLE_FONT_PIXEL_SIZE = 20;
 
 //---------------------------------------------------------------------------
@@ -309,7 +311,7 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     checkResponseButton->setEnabled(false);
     buttonGlay->addWidget(checkResponseButton, 0, 1, Qt::AlignHCenter);
 
-    markMissedButton = new ZPushButton("&Mark as Missed");
+    markMissedButton = new ZPushButton(MARK_MISSED_BUTTON);
     Q_CHECK_PTR(markMissedButton);
     markMissedButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(markMissedButton, SIGNAL(clicked()), SLOT(markMissedClicked()));
@@ -767,6 +769,53 @@ QuizForm::unpauseTimer()
 }
 
 //---------------------------------------------------------------------------
+//  markMissed
+//
+//! Mark the current question as missed.
+//---------------------------------------------------------------------------
+void
+QuizForm::markMissed()
+{
+    quizEngine->markQuestionAsMissed();
+    responseModel->clear();
+    markMissedButton->setText(MARK_CORRECT_BUTTON);
+    bool old = checkBringsJudgment;
+    checkBringsJudgment = true;
+    db->undoLastResponse(quizEngine->getQuestion());
+    checkResponseClicked();
+    checkBringsJudgment = old;
+}
+
+//---------------------------------------------------------------------------
+//  markCorrect
+//
+//! Mark the current question as correct.
+//---------------------------------------------------------------------------
+void
+QuizForm::markCorrect()
+{
+    QStringList missed = quizEngine->getMissed();
+    QStringListIterator it (missed);
+    while (it.hasNext()) {
+        analyzeDialog->removeMissed(it.next());
+    }
+
+    QStringList incorrect = quizEngine->getQuestionIncorrectResponses();
+    QStringListIterator jt (incorrect);
+    while (jt.hasNext()) {
+        analyzeDialog->removeIncorrect(jt.next());
+    }
+
+    bool old = checkBringsJudgment;
+    checkBringsJudgment = false;
+    db->undoLastResponse(quizEngine->getQuestion());
+    checkResponseClicked();
+    checkBringsJudgment = old;
+    quizEngine->markQuestionAsCorrect();
+    analyzeDialog->updateStats();
+}
+
+//---------------------------------------------------------------------------
 //  nextQuestionClicked
 //
 //! Called when the New Question button is clicked.
@@ -805,7 +854,7 @@ QuizForm::checkResponseClicked()
         (quizEngine->getQuestionTotal() > 0) &&
         (quizEngine->getQuestionCorrect() == quizEngine->getQuestionTotal()))
     {
-        markMissedClicked();
+        markMissed();
         return;
     }
 
@@ -861,6 +910,7 @@ QuizForm::checkResponseClicked()
     QStringList unanswered = quizEngine->getMissed();
     if (unanswered.empty()) {
         responseModel->clearLastAddedIndex();
+        markMissedButton->setText(MARK_MISSED_BUTTON);
     }
     else {
         QStringList::iterator it;
@@ -879,7 +929,7 @@ QuizForm::checkResponseClicked()
         analyzeDialog->addMissed(unanswered);
         questionCorrect = false;
 
-        markMissedButton->setEnabled(false);
+        markMissedButton->setText(MARK_CORRECT_BUTTON);
     }
 
     if ((quizEngine->numQuestions() > 0) && !quizEngine->onLastQuestion()) {
@@ -914,48 +964,19 @@ QuizForm::checkResponseClicked()
 //---------------------------------------------------------------------------
 //  markMissedClicked
 //
-//! Called when the Mark as Missed button is clicked.
+//! Called when the Mark as Missed button is clicked.  Mark the question as
+//! missed or correct, as appropriate based on the current state of the
+//! button.
 //---------------------------------------------------------------------------
 void
 QuizForm::markMissedClicked()
 {
-    quizEngine->markQuestionAsMissed();
-    responseModel->clear();
-    markMissedButton->setEnabled(false);
-    bool old = checkBringsJudgment;
-    checkBringsJudgment = true;
-    db->undoLastResponse(quizEngine->getQuestion());
-    checkResponseClicked();
-    checkBringsJudgment = old;
-}
+    if (markMissedButton->text() == MARK_MISSED_BUTTON)
+        markMissed();
+    else
+        markCorrect();
 
-//---------------------------------------------------------------------------
-//  markCorrectClicked
-//
-//! Called when the Mark as Correct button is clicked.
-//---------------------------------------------------------------------------
-void
-QuizForm::markCorrectClicked()
-{
-    QStringList missed = quizEngine->getMissed();
-    QStringListIterator it (missed);
-    while (it.hasNext()) {
-        analyzeDialog->removeMissed(it.next());
-    }
-
-    QStringList incorrect = quizEngine->getQuestionIncorrectResponses();
-    QStringListIterator jt (incorrect);
-    while (jt.hasNext()) {
-        analyzeDialog->removeIncorrect(jt.next());
-    }
-
-    bool old = checkBringsJudgment;
-    checkBringsJudgment = false;
-    db->undoLastResponse(quizEngine->getQuestion());
-    checkResponseClicked();
-    checkBringsJudgment = old;
-    quizEngine->markQuestionAsCorrect();
-    analyzeDialog->updateStats();
+    selectInputArea();
 }
 
 //---------------------------------------------------------------------------
@@ -1057,7 +1078,7 @@ QuizForm::startQuestion()
 
     responseStatusLabel->setText(QString());
     checkResponseButton->setEnabled(true);
-    markMissedButton->setEnabled(true);
+    markMissedButton->setText(MARK_MISSED_BUTTON);
     nextQuestionButton->setEnabled(false);
     inputLine->setEnabled(true);
     selectInputArea();
@@ -1572,7 +1593,7 @@ QuizForm::keyPressEvent(QKeyEvent* event)
                 if (quizEngine->getQuestionCorrect() !=
                     quizEngine->getQuestionTotal())
                 {
-                    markCorrectClicked();
+                    markCorrect();
                 }
                 db->setCardbox(quizEngine->getQuestion(), cardbox);
                 updateQuestionStatus();

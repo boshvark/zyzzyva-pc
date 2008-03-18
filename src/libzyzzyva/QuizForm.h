@@ -3,7 +3,7 @@
 //
 // A form for quizzing the user.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -75,7 +75,6 @@ class QuizForm : public ActionForm
     void nextQuestionClicked();
     void checkResponseClicked();
     void markMissedClicked();
-    void markCorrectClicked();
     void pauseClicked();
     void analyzeClicked();
     void flashcardStateChanged(int state);
@@ -102,6 +101,8 @@ class QuizForm : public ActionForm
     void killActiveTimer();
     void pauseTimer();
     void unpauseTimer();
+    void markMissed();
+    void markCorrect();
     void clearCanvas();
     void minimizeCanvas();
     void setNumCanvasTiles(int num);
