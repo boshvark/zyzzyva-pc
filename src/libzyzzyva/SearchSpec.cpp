@@ -322,7 +322,7 @@ SearchSpec::optimize(const QString& lexicon)
 
             case SearchCondition::InLexicon:
             if (inLexicons.contains(stringValue) &&
-                inLexicons[stringValue] != negated)
+                inLexicons[stringValue] == negated)
             {
                 conditions.clear();
                 return;
