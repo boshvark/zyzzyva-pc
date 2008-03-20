@@ -43,8 +43,10 @@ const QString SET_TYPE_TWO_EIGHTS_STRING = "Type II Eights";
 const QString SET_TYPE_THREE_EIGHTS_STRING = "Type III Eights";
 const QString SET_EIGHTS_FROM_SEVEN_STEMS_STRING =
               "Eights From Seven-Letter Stems";
-const QString SET_NEW_IN_OWL2_STRING = "New in OWL2";
-const QString SET_NEW_IN_CSW_STRING = "New in CSW";
+
+// Obsolete search set strings
+const QString SET_OLD_NEW_IN_OWL2_STRING = "New in OWL2";
+const QString SET_OLD_NEW_IN_CSW_STRING = "New in CSW";
 
 const QString SEARCH_TYPE_PATTERN_MATCH = "Pattern Match";
 const QString SEARCH_TYPE_ANAGRAM_MATCH = "Anagram Match";
@@ -221,64 +223,6 @@ Auxil::getThanksString()
 
     thanksString.append(thanksFile.readAll());
     return thanksString;
-}
-
-//---------------------------------------------------------------------------
-//  getNewInOwl2String
-//
-//! Read all new OWL2 words into a string, separated by spaces.  XXX: Right
-//! now this is hard-coded to load a certain file for a specific purpose.
-//! This whole concept should be more flexible.
-//---------------------------------------------------------------------------
-QString
-Auxil::getNewInOwl2String()
-{
-    QFile file (Auxil::getWordsDir() + "/north-american/owl2-new-words.txt");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return QString();
-
-    QStringList words;
-    char* buffer = new char[MAX_INPUT_LINE_LEN];
-    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
-        QString line (buffer);
-        line = line.simplified();
-        if (!line.length() || (line.at(0) == '#'))
-            continue;
-        QString word = line.section(' ', 0, 0);
-        words.append(word);
-    }
-    delete[] buffer;
-
-    return words.join(" ");
-}
-
-//---------------------------------------------------------------------------
-//  getNewInCswString
-//
-//! Read all new CSW words into a string, separated by spaces.  XXX: Right
-//! now this is hard-coded to load a certain file for a specific purpose.
-//! This whole concept should be more flexible.
-//---------------------------------------------------------------------------
-QString
-Auxil::getNewInCswString()
-{
-    QFile file (Auxil::getWordsDir() + "/british/csw-new-words.txt");
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        return QString();
-
-    QStringList words;
-    char* buffer = new char[MAX_INPUT_LINE_LEN];
-    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
-        QString line (buffer);
-        line = line.simplified();
-        if (!line.length() || (line.at(0) == '#'))
-            continue;
-        QString word = line.section(' ', 0, 0);
-        words.append(word);
-    }
-    delete[] buffer;
-
-    return words.join(" ");
 }
 
 //---------------------------------------------------------------------------
@@ -609,10 +553,12 @@ Auxil::stringToSearchSet(const QString& string)
         return SetTypeThreeEights;
     else if (string == SET_EIGHTS_FROM_SEVEN_STEMS_STRING)
         return SetEightsFromSevenLetterStems;
-    else if (string == SET_NEW_IN_OWL2_STRING)
-        return SetNewInOwl2;
-    else if (string == SET_NEW_IN_CSW_STRING)
-        return SetNewInCsw;
+
+    // Obsolete search sets
+    else if (string == SET_OLD_NEW_IN_OWL2_STRING)
+        return SetOldNewInOwl2;
+    else if (string == SET_OLD_NEW_IN_CSW_STRING)
+        return SetOldNewInCsw;
     else
         return UnknownSearchSet;
 }
@@ -641,8 +587,10 @@ Auxil::searchSetToString(SearchSet ss)
         case SetTypeThreeEights: return SET_TYPE_THREE_EIGHTS_STRING;
         case SetEightsFromSevenLetterStems:
             return SET_EIGHTS_FROM_SEVEN_STEMS_STRING;
-        case SetNewInOwl2: return SET_NEW_IN_OWL2_STRING;
-        case SetNewInCsw: return SET_NEW_IN_CSW_STRING;
+
+        // Obsolete search sets
+        case SetOldNewInOwl2: return SET_OLD_NEW_IN_OWL2_STRING;
+        case SetOldNewInCsw: return SET_OLD_NEW_IN_CSW_STRING;
         default: return SET_UNKNOWN_STRING;
     }
 }

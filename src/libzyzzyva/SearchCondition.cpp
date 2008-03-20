@@ -213,11 +213,32 @@ SearchCondition::fromDomElement(const QDomElement& element)
         case InWordList:
         if (!element.hasAttribute(XML_STRING_ATTR))
             return false;
+
         tmpCondition.stringValue = element.attribute(XML_STRING_ATTR);
         if (element.hasAttribute(XML_NEGATED_ATTR)) {
             int n = element.attribute(XML_NEGATED_ATTR).toInt(&ok);
             if (ok)
                 tmpCondition.negated = n ? true : false;
+        }
+
+        // Translate obsolete New in OWL2 condition to In Lexicon condition
+        if ((tmpCondition.type == BelongToGroup) &&
+            (tmpCondition.stringValue ==
+             Auxil::searchSetToString(SetOldNewInOwl2)))
+        {
+            tmpCondition.type = InLexicon;
+            tmpCondition.stringValue = "OWL+LWL";
+            tmpCondition.negated = !tmpCondition.negated;
+        }
+
+        // Translate obsolete New in CSW condition to In Lexicon condition
+        else if ((tmpCondition.type == BelongToGroup) &&
+            (tmpCondition.stringValue ==
+             Auxil::searchSetToString(SetOldNewInCsw)))
+        {
+            tmpCondition.type = InLexicon;
+            tmpCondition.stringValue = "OSWI";
+            tmpCondition.negated = !tmpCondition.negated;
         }
         break;
 

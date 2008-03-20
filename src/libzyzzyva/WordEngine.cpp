@@ -664,7 +664,7 @@ WordEngine::search(const QString& lexicon, const SearchSpec& spec, bool
         return QStringList();
 
     SearchSpec optimizedSpec = spec;
-    optimizedSpec.optimize();
+    optimizedSpec.optimize(lexicon);
 
     // Discover which kinds of search conditions are present
     QMap<ConditionPhase, int> phaseCounts;

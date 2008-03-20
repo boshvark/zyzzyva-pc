@@ -3,7 +3,7 @@
 //
 // An enumeration of match types.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -40,8 +40,10 @@ enum SearchSet {
     SetTypeTwoEights,
     SetTypeThreeEights,
     SetEightsFromSevenLetterStems,
-    SetNewInOwl2,
-    SetNewInCsw
+
+    // Obsolete search sets
+    SetOldNewInOwl2,
+    SetOldNewInCsw
 };
 
 #endif // ZYZZYVA_SEARCH_SET_H

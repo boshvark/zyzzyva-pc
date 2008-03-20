@@ -533,8 +533,6 @@ SearchConditionForm::typeChanged(const QString& string)
         paramCbox->addItem(Auxil::searchSetToString(SetTypeThreeEights));
         paramCbox->addItem(
             Auxil::searchSetToString(SetEightsFromSevenLetterStems));
-        paramCbox->addItem(Auxil::searchSetToString(SetNewInOwl2));
-        paramCbox->addItem(Auxil::searchSetToString(SetNewInCsw));
         paramStack->setCurrentWidget(paramCboxWidget);
         break;
 

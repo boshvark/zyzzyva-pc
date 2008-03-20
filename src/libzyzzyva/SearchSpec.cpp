@@ -3,7 +3,7 @@
 //
 // A class to represent a word search specification.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -149,9 +149,11 @@ SearchSpec::fromDomElement(const QDomElement& element)
 //! minimum length greater than maximum length), and detect constraints
 //! implicit in certain specifications (e.g. Type I Sevens must have a length
 //! of exactly 7 letters).
+//
+//! @param lexicon the lexicon for which this search is to be used
 //---------------------------------------------------------------------------
 void
-SearchSpec::optimize()
+SearchSpec::optimize(const QString& lexicon)
 {
     QList<SearchCondition> newConditions;
     QList<SearchCondition> wildcardConditions;
@@ -169,6 +171,8 @@ SearchSpec::optimize()
     int maxNumUniqueLetters = MAX_WORD_LEN + 1;
     int minPointValue = 0;
     int maxPointValue = 10 * MAX_WORD_LEN + 1;
+    QMap<QString, bool> inLexicons;
+    inLexicon[lexicon] = true;
 
     QListIterator<SearchCondition> it (conditions);
     while (it.hasNext()) {
@@ -279,22 +283,6 @@ SearchSpec::optimize()
                 if (ss == UnknownSearchSet)
                     break;
 
-                else if (ss == SetNewInOwl2) {
-                    SearchCondition addCondition = condition;
-                    addCondition.type = SearchCondition::InWordList;
-                    addCondition.stringValue = Auxil::getNewInOwl2String();
-                    newConditions.append(addCondition);
-                    break;
-                }
-
-                else if (ss == SetNewInCsw) {
-                    SearchCondition addCondition = condition;
-                    addCondition.type = SearchCondition::InWordList;
-                    addCondition.stringValue = Auxil::getNewInCswString();
-                    newConditions.append(addCondition);
-                    break;
-                }
-
                 else if (!negated) {
                     SearchCondition addCondition;
                     switch (ss) {
@@ -329,6 +317,17 @@ SearchSpec::optimize()
                     }
                 }
             }
+            newConditions.append(condition);
+            break;
+
+            case SearchCondition::InLexicon:
+            if (inLexicons.contains(stringValue) &&
+                inLexicons[stringValue] != negated)
+            {
+                conditions.clear();
+                return;
+            }
+            inLexicons[stringValue] = negated;
             newConditions.append(condition);
             break;
 
