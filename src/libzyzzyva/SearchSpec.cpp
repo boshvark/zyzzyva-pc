@@ -172,7 +172,7 @@ SearchSpec::optimize(const QString& lexicon)
     int minPointValue = 0;
     int maxPointValue = 10 * MAX_WORD_LEN + 1;
     QMap<QString, bool> inLexicons;
-    inLexicon[lexicon] = true;
+    inLexicons[lexicon] = true;
 
     QListIterator<SearchCondition> it (conditions);
     while (it.hasNext()) {
