@@ -78,17 +78,21 @@ const QString SETTINGS_CARDBOX_SCHEDULES = "cardbox_schedules";
 const QString SETTINGS_CARDBOX_WINDOWS = "cardbox_windows";
 const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
 const QString SETTINGS_JUDGE_SAVE_LOG = "judge_save_log";
-const QString DEFAULT_DEFAULT_LEXICON = "OWL2+LWL";
+const QString DEFAULT_DEFAULT_LEXICON = Defs::LEXICON_OWL2;
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb(0, 0, 127);
 const QString DEFAULT_CARDBOX_SCHEDULES = "1 4 7 12 20 30 60 90 150 270 480";
 const QString DEFAULT_CARDBOX_WINDOWS = "0 1 2 3 5 7 10 15 20 30 50";
-const QString DEFAULT_LEXICON_STYLES =
-    "OWL2+LWL and not OWL+LWL: symbol %\n"
-    "OWL2+LWL and not OSPD4+LWL: symbol !\n"
-    "CSW and not OWL2+LWL: symbol #\n"
-    "CSW and not OSWI: symbol ^";
+const QString DEFAULT_LEXICON_STYLES = QString(
+    "%1 and not %2: symbol %\n"
+    "%3 and not %4: symbol !\n"
+    "%5 and not %6: symbol #\n"
+    "%7 and not %8: symbol ^")
+    .arg(Defs::LEXICON_OWL2).arg(Defs::LEXICON_OWL)
+    .arg(Defs::LEXICON_OWL2).arg(Defs::LEXICON_OSPD4)
+    .arg(Defs::LEXICON_CSW).arg(Defs::LEXICON_OWL2)
+    .arg(Defs::LEXICON_CSW).arg(Defs::LEXICON_OSWI);
 const QString DEFAULT_LETTER_DISTRIBUTION = "A:9 B:2 C:2 D:4 E:12 F:2 G:3 "
     "H:2 I:9 J:1 K:1 L:4 M:2 N:6 O:8 P:2 Q:1 R:6 S:4 T:6 U:4 V:2 W:2 X:1 "
     "Y:2 Z:1 _:2";

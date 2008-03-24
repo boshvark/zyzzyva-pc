@@ -26,10 +26,11 @@
 #ifndef ZYZZYVA_HACK_H
 #define ZYZZYVA_HACK_H
 
+#include "Defs.h"
 #include <QString>
 
 namespace Hack {
-    const QString LEXICON = "OWL2+LWL";
+    const QString LEXICON = Defs::LEXICON_OWL2;
 }
 
 #endif // ZYZZYVA_HACK_H

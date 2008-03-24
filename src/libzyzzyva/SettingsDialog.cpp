@@ -976,7 +976,7 @@ SettingsDialog::autoImportCboxToggled(bool on)
     QStringList lexicons;
     QString defaultLexicon;
     getImportLexicons(lexicons, defaultLexicon);
-    autoImportCustomWidget->setEnabled(lexicons.contains("Custom"));
+    autoImportCustomWidget->setEnabled(lexicons.contains(LEXICON_CUSTOM));
 }
 
 //---------------------------------------------------------------------------
@@ -990,7 +990,7 @@ SettingsDialog::autoImportCboxToggled(bool on)
 void
 SettingsDialog::autoImportLexiconActivated(const QString& text)
 {
-    bool customActive = (text == "Custom");
+    bool customActive = (text == LEXICON_CUSTOM);
     autoImportCustomWidget->setEnabled(customActive);
 }
 

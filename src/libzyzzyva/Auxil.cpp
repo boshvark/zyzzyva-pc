@@ -1152,21 +1152,21 @@ Auxil::stringToLexiconStyle(const QString& s)
 QString
 Auxil::lexiconToOrigin(const QString& lexicon)
 {
-    if (lexicon == "OWL+LWL")
+    if (lexicon == LEXICON_OWL)
         return "North American";
-    if (lexicon == "OWL2+LWL")
+    if (lexicon == LEXICON_OWL2)
         return "North American";
-    if (lexicon == "OSPD4+LWL")
+    if (lexicon == LEXICON_OSPD4)
         return "North American (School)";
-    if (lexicon == "OSWI")
+    if (lexicon == LEXICON_OSWI)
         return "British";
-    if (lexicon == "CSW")
+    if (lexicon == LEXICON_CSW)
         return "British";
-    if (lexicon == "ODS4")
+    if (lexicon == LEXICON_ODS4)
         return "French";
-    if (lexicon == "ODS5")
+    if (lexicon == LEXICON_ODS5)
         return "French";
-    if (lexicon == "Volost")
+    if (lexicon == LEXICON_VOLOST)
         return "Antarctic";
     return QString();
 }
@@ -1182,21 +1182,21 @@ Auxil::lexiconToOrigin(const QString& lexicon)
 QDate
 Auxil::lexiconToDate(const QString& lexicon)
 {
-    if (lexicon == "OWL+LWL")
+    if (lexicon == LEXICON_OWL)
         return QDate(2003, 7, 1);
-    if (lexicon == "OWL2+LWL")
+    if (lexicon == LEXICON_OWL2)
         return QDate(2006, 3, 1);
-    if (lexicon == "OSPD4+LWL")
+    if (lexicon == LEXICON_OSPD4)
         return QDate(2006, 3, 1);
-    if (lexicon == "OSWI")
+    if (lexicon == LEXICON_OSWI)
         return QDate(2002, 1, 14);
-    if (lexicon == "CSW")
+    if (lexicon == LEXICON_CSW)
         return QDate(2007, 5, 15);
-    if (lexicon == "ODS4")
+    if (lexicon == LEXICON_ODS4)
         return QDate(2004, 1, 1);
-    if (lexicon == "ODS5")
+    if (lexicon == LEXICON_ODS5)
         return QDate(2008, 1, 1);
-    if (lexicon == "Volost")
+    if (lexicon == LEXICON_VOLOST)
         return QDate(2007, 4, 1);
     return QDate();
 }
@@ -1213,19 +1213,23 @@ Auxil::lexiconToDate(const QString& lexicon)
 QString
 Auxil::getUpdatedLexiconName(const QString& oldLexiconName)
 {
-    if (oldLexiconName == "OWL")
-        return "OWL+LWL";
-    else if (oldLexiconName == "OWL2")
-        return "OWL2+LWL";
-    else if (oldLexiconName == "SOWPODS")
-        return "OSWI";
-    else if (oldLexiconName == "ODS")
-        return "ODS4";
-    else if ((oldLexiconName == "Custom") || (oldLexiconName == "OWL+LWL") ||
-             (oldLexiconName == "OWL2+LWL") || (oldLexiconName == "CSW") ||
-             (oldLexiconName == "OSPD4+LWL") || (oldLexiconName == "OSWI") ||
-             (oldLexiconName == "ODS4") || (oldLexiconName == "ODS5") ||
-             (oldLexiconName == "Volost"))
+    if (oldLexiconName == LEXICON_OLD_OWL)
+        return LEXICON_OWL;
+    else if (oldLexiconName == LEXICON_OLD_OWL2)
+        return LEXICON_OWL2;
+    else if (oldLexiconName == LEXICON_OLD_SOWPODS)
+        return LEXICON_OSWI;
+    else if (oldLexiconName == LEXICON_OLD_ODS)
+        return LEXICON_ODS4;
+    else if ((oldLexiconName == LEXICON_CUSTOM) ||
+             (oldLexiconName == LEXICON_OWL) ||
+             (oldLexiconName == LEXICON_OWL2) ||
+             (oldLexiconName == LEXICON_CSW) ||
+             (oldLexiconName == LEXICON_OSPD4) ||
+             (oldLexiconName == LEXICON_OSWI) ||
+             (oldLexiconName == LEXICON_ODS4) ||
+             (oldLexiconName == LEXICON_ODS5) ||
+             (oldLexiconName == LEXICON_VOLOST))
     {
         return oldLexiconName;
     }

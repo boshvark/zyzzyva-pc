@@ -528,7 +528,7 @@ MainWindow::importInteractive()
 
     if (file.isNull())
         return;
-    int imported = importText("Custom", file);
+    int imported = importText(LEXICON_CUSTOM, file);
     if (imported < 0)
         return;
     QString caption = IMPORT_COMPLETE_TITLE;
@@ -745,8 +745,8 @@ MainWindow::editSettings()
 
     // Custom database needs to be rebuilt if custom lexicon file changed
     QString newCustomFile = MainSettings::getAutoImportFile();
-    if ((oldCustomFile != newCustomFile) && newLexicons.contains("Custom"))
-        addedLexicons.insert("Custom");
+    if ((oldCustomFile != newCustomFile) && newLexicons.contains(LEXICON_CUSTOM))
+        addedLexicons.insert(LEXICON_CUSTOM);
 
     // Determine lexicons that need to be rebuilt based on lexicon style
     // (symbol) changes
@@ -1129,14 +1129,14 @@ QString
 MainWindow::getLexiconPrefix(const QString& lexicon)
 {
     QMap<QString, QString> pmap;
-    pmap["OWL+LWL"] = "/north-american/owl-lwl";
-    pmap["OWL2+LWL"] = "/north-american/owl2-lwl";
-    pmap["OSPD4+LWL"] = "/north-american/ospd4-lwl";
-    pmap["Volost"] = "/antarctic/volost";
-    pmap["OSWI"] = "/british/oswi";
-    pmap["CSW"] = "/british/csw";
-    pmap["ODS4"] = "/french/ods4";
-    pmap["ODS5"] = "/french/ods5";
+    pmap[LEXICON_OWL] = "/north-american/owl-lwl";
+    pmap[LEXICON_OWL2] = "/north-american/owl2-lwl";
+    pmap[LEXICON_OSPD4] = "/north-american/ospd4-lwl";
+    pmap[LEXICON_VOLOST] = "/antarctic/volost";
+    pmap[LEXICON_OSWI] = "/british/oswi";
+    pmap[LEXICON_CSW] = "/british/csw";
+    pmap[LEXICON_ODS4] = "/french/ods4";
+    pmap[LEXICON_ODS5] = "/french/ods5";
     return pmap.value(lexicon);
 }
 
@@ -1153,7 +1153,7 @@ MainWindow::getLexiconPrefix(const QString& lexicon)
 QString
 MainWindow::getDatabaseFilename(const QString& lexicon)
 {
-    if (lexicon != "Custom") {
+    if (lexicon != LEXICON_CUSTOM) {
         QString lexiconPrefix = getLexiconPrefix(lexicon);
         if (lexiconPrefix.isEmpty())
             return QString();
@@ -1176,7 +1176,7 @@ MainWindow::getDatabaseFilename(const QString& lexicon)
 int
 MainWindow::tryConnectToDatabase(const QString& lexicon)
 {
-    if (wordEngine->databaseIsConnected(lexicon) && (lexicon != "Custom"))
+    if (wordEngine->databaseIsConnected(lexicon) && (lexicon != LEXICON_CUSTOM))
         return DbNoError;
 
     setSplashMessage(QString("Connecting to %1 database...").arg(lexicon));
@@ -1218,7 +1218,7 @@ MainWindow::tryConnectToDatabase(const QString& lexicon)
 
             // For custom lexicon, check to see if lexicon file has changed -
             // if it has, the database is out of date
-            if (lexicon == "Custom") {
+            if (lexicon == LEXICON_CUSTOM) {
                 QString qstr = "SELECT file FROM lexicon_file";
                 QSqlQuery query (qstr, db);
                 QString lexiconFile;
@@ -1328,7 +1328,7 @@ MainWindow::rebuildDatabase(const QString& lexicon)
 {
     QString dbFilename = getDatabaseFilename(lexicon);
     QString definitionFilename;
-    if (lexicon == "Custom") {
+    if (lexicon == LEXICON_CUSTOM) {
         definitionFilename = MainSettings::getAutoImportFile();
     }
     else {
@@ -1806,9 +1806,9 @@ MainWindow::makeUserDirs()
                        Auxil::getSearchDir() + "/predefined");
     }
 
-    renameLexicon("OWL", "OWL+LWL");
-    renameLexicon("OWL2", "OWL2+LWL");
-    renameLexicon("SOWPODS", "OSWI");
+    renameLexicon(LEXICON_OLD_OWL, LEXICON_OWL);
+    renameLexicon(LEXICON_OLD_OWL2, LEXICON_OWL2);
+    renameLexicon(LEXICON_OLD_SOWPODS, LEXICON_OSWI);
 
     dir.mkpath(Auxil::getQuizDir() + "/saved");
     dir.mkpath(Auxil::getSearchDir() + "/saved");
@@ -1863,7 +1863,7 @@ MainWindow::importLexicon(const QString& lexicon)
     QString checksumFile;
     bool ok = true;
     bool dawg = true;
-    if (lexicon == "Custom") {
+    if (lexicon == LEXICON_CUSTOM) {
         importFile = MainSettings::getAutoImportFile();
         dawg = false;
 
@@ -1878,14 +1878,14 @@ MainWindow::importLexicon(const QString& lexicon)
             return true;
 
         QMap<QString, QString> prefixMap;
-        prefixMap["OWL+LWL"] = "/north-american/owl-lwl";
-        prefixMap["OWL2+LWL"] = "/north-american/owl2-lwl";
-        prefixMap["OSPD4+LWL"] = "/north-american/ospd4-lwl";
-        prefixMap["Volost"] = "/antarctic/volost";
-        prefixMap["OSWI"] = "/british/oswi";
-        prefixMap["CSW"] = "/british/csw";
-        prefixMap["ODS4"] = "/french/ods4";
-        prefixMap["ODS5"] = "/french/ods5";
+        prefixMap[LEXICON_OWL] = "/north-american/owl-lwl";
+        prefixMap[LEXICON_OWL2] = "/north-american/owl2-lwl";
+        prefixMap[LEXICON_OSPD4] = "/north-american/ospd4-lwl";
+        prefixMap[LEXICON_VOLOST] = "/antarctic/volost";
+        prefixMap[LEXICON_OSWI] = "/british/oswi";
+        prefixMap[LEXICON_CSW] = "/british/csw";
+        prefixMap[LEXICON_ODS4] = "/french/ods4";
+        prefixMap[LEXICON_ODS5] = "/french/ods5";
 
         if (prefixMap.contains(lexicon)) {
             QString prefix = Auxil::getWordsDir() + prefixMap.value(lexicon);

@@ -27,6 +27,7 @@
 #include "WordEngine.h"
 #include "MainSettings.h"
 #include "Auxil.h"
+#include "Defs.h"
 
 class WordEngineTest : public QObject
 {
@@ -47,7 +48,7 @@ class WordEngineTest : public QObject
 
 };
 
-QString TEST_LEXICON = "OWL2-LWL";
+QString TEST_LEXICON = Defs::LEXICON_OWL2;
 
 //---------------------------------------------------------------------------
 //  tryImport
@@ -61,13 +62,14 @@ WordEngineTest::tryImport()
         return;
 
     bool ok = engine.importDawgFile(Auxil::getWordsDir() +
-                                    "/north-american/owl2.dwg", "Custom",
-                                    false);
+                                    "/north-american/owl2.dwg",
+                                    Defs::LEXICON_CUSTOM, false);
     if (!ok)
         return;
 
     ok = engine.importDawgFile(Auxil::getWordsDir() +
-                               "/north-american/owl2-r.dwg", "Custom", true);
+                               "/north-american/owl2-r.dwg",
+                               Defs::LEXICON_CUSTOM, true);
     if (!ok)
         return;
 

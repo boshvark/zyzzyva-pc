@@ -87,15 +87,15 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
     mainGlay->addWidget(dateHeaderLabel, 0, 4, Qt::AlignHCenter);
 
     QStringList validLexicons;
-    validLexicons.append("OWL2+LWL");
-    validLexicons.append("OSPD4+LWL");
-    validLexicons.append("CSW");
-    validLexicons.append("ODS5");
-    validLexicons.append("Volost");
-    validLexicons.append("ODS4");
-    validLexicons.append("OWL+LWL");
-    validLexicons.append("OSWI");
-    validLexicons.append("Custom");
+    validLexicons.append(LEXICON_OWL2);
+    validLexicons.append(LEXICON_OSPD4);
+    validLexicons.append(LEXICON_CSW);
+    validLexicons.append(LEXICON_ODS5);
+    validLexicons.append(LEXICON_VOLOST);
+    validLexicons.append(LEXICON_ODS4);
+    validLexicons.append(LEXICON_OWL);
+    validLexicons.append(LEXICON_OSWI);
+    validLexicons.append(LEXICON_CUSTOM);
 
     QStringListIterator it (validLexicons);
     for (int row = 1; it.hasNext(); ++row) {
@@ -115,7 +115,7 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
         if (row == 1)
             checkBox->setCheckState(Qt::Checked);
         mainGlay->addWidget(checkBox, row, 1, Qt::AlignHCenter);
-        if (lexicon == "Custom") {
+        if (lexicon == LEXICON_CUSTOM) {
             connect(checkBox, SIGNAL(stateChanged(int)),
                     SLOT(customStateChanged(int)));
         }
@@ -128,7 +128,7 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
 
         // Create custom lexicon chooser for custom lexicon, or origin/date
         // labels for other lexicons
-        if (lexicon == "Custom") {
+        if (lexicon == LEXICON_CUSTOM) {
             customLexiconLine = new QLineEdit;
             Q_CHECK_PTR(customLexiconLine);
             customLexiconLine->setEnabled(false);

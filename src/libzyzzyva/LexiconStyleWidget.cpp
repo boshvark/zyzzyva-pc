@@ -58,21 +58,21 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
     mainHlay->addWidget(lexiconLabel);
 
     QStringList validLexicons;
-    validLexicons.append("CSW");
-    validLexicons.append("Custom");
-    validLexicons.append("ODS4");
-    validLexicons.append("ODS5");
-    validLexicons.append("OSPD4+LWL");
-    validLexicons.append("OSWI");
-    validLexicons.append("OWL+LWL");
-    validLexicons.append("OWL2+LWL");
-    validLexicons.append("Volost");
+    validLexicons.append(LEXICON_CSW);
+    validLexicons.append(LEXICON_CUSTOM);
+    validLexicons.append(LEXICON_ODS4);
+    validLexicons.append(LEXICON_ODS5);
+    validLexicons.append(LEXICON_OSPD4);
+    validLexicons.append(LEXICON_OSWI);
+    validLexicons.append(LEXICON_OWL);
+    validLexicons.append(LEXICON_OWL2);
+    validLexicons.append(LEXICON_VOLOST);
     qSort(validLexicons);
 
     QString defaultLexicon = MainSettings::getDefaultLexicon();
     int defaultIndex = validLexicons.indexOf(defaultLexicon);
     if (defaultIndex < 0)
-        defaultIndex = validLexicons.indexOf("OWL2+LWL");
+        defaultIndex = validLexicons.indexOf(LEXICON_OWL2);
 
     lexiconCombo = new QComboBox;
     Q_CHECK_PTR(lexiconCombo);
