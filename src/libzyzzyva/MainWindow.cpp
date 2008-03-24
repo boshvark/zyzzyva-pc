@@ -1132,7 +1132,7 @@ MainWindow::getLexiconPrefix(const QString& lexicon)
     pmap["OWL+LWL"] = "/north-american/owl-lwl";
     pmap["OWL2+LWL"] = "/north-american/owl2-lwl";
     pmap["OSPD4+LWL"] = "/north-american/ospd4-lwl";
-    pmap["Volost"] = "/north-american/volost";
+    pmap["Volost"] = "/antarctic/volost";
     pmap["OSWI"] = "/british/oswi";
     pmap["CSW"] = "/british/csw";
     pmap["ODS4"] = "/french/ods4";
@@ -1881,7 +1881,7 @@ MainWindow::importLexicon(const QString& lexicon)
         prefixMap["OWL+LWL"] = "/north-american/owl-lwl";
         prefixMap["OWL2+LWL"] = "/north-american/owl2-lwl";
         prefixMap["OSPD4+LWL"] = "/north-american/ospd4-lwl";
-        prefixMap["Volost"] = "/north-american/volost";
+        prefixMap["Volost"] = "/antarctic/volost";
         prefixMap["OSWI"] = "/british/oswi";
         prefixMap["CSW"] = "/british/csw";
         prefixMap["ODS4"] = "/french/ods4";
