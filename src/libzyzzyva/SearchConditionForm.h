@@ -3,7 +3,7 @@
 //
 // A form for specifying a search condition.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -28,9 +28,9 @@
 #include "SearchCondition.h"
 #include <QCheckBox>
 #include <QComboBox>
+#include <QPushButton>
 #include <QSpinBox>
 #include <QStackedWidget>
-#include <QToolButton>
 
 class SearchCondition;
 class WordLineEdit;
@@ -85,8 +85,8 @@ class SearchConditionForm : public QWidget
     QString         paramWordListString;
     WordValidator*  letterValidator;
     WordValidator*  patternValidator;
-    QToolButton*    addButton;
-    QToolButton*    deleteButton;
+    QPushButton*    addButton;
+    QPushButton*    deleteButton;
 
     bool legacy;
 };
