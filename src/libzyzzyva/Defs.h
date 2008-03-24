@@ -3,7 +3,7 @@
 //
 // Definitions.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -30,7 +30,7 @@
 
 namespace Defs {
     const QString ZYZZYVA_VERSION = "1.1.0";
-    const int CURRENT_DATABASE_VERSION = 2;
+    const int CURRENT_DATABASE_VERSION = 3;
     const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
     const QString EMPTY_DEFINITION = "(no definition)";
     const int DEFINITION_WRAP_LENGTH = 80;
