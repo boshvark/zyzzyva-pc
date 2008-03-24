@@ -1136,6 +1136,7 @@ MainWindow::getLexiconPrefix(const QString& lexicon)
     pmap["OSWI"] = "/british/oswi";
     pmap["CSW"] = "/british/csw";
     pmap["ODS4"] = "/french/ods4";
+    pmap["ODS5"] = "/french/ods5";
     return pmap.value(lexicon);
 }
 
@@ -1719,11 +1720,22 @@ MainWindow::importDawg(const QString& lexicon, const QString& file, bool
     QApplication::restoreOverrideCursor();
 
     if (!ok) {
-        // Pop up warning stating why DAWG could not be loaded.
+        QString message = "Unable to load the " + lexicon + " lexicon.  "
+            "The following errors occurred:\n";
+        if (errString)
+            message += *errString;
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, "Unable to load lexicon", message);
     }
 
     else if (errString && !errString->isEmpty()) {
-        // Pop up warning, and ask user whether to proceed.
+        QString message = "The '" + lexicon + "' lexicon was loaded, but "
+            "the following errors occurred:\n";
+        if (errString)
+            message += *errString;
+        message = Auxil::dialogWordWrap(message);
+        QMessageBox::warning(this, "Lexicon load warning", message);
+        // Ask user whether to proceed...
     }
 
     // If failure, notify the user and bail out
@@ -1873,6 +1885,7 @@ MainWindow::importLexicon(const QString& lexicon)
         prefixMap["OSWI"] = "/british/oswi";
         prefixMap["CSW"] = "/british/csw";
         prefixMap["ODS4"] = "/french/ods4";
+        prefixMap["ODS5"] = "/french/ods5";
 
         if (prefixMap.contains(lexicon)) {
             QString prefix = Auxil::getWordsDir() + prefixMap.value(lexicon);
@@ -1892,12 +1905,18 @@ MainWindow::importLexicon(const QString& lexicon)
         quint16 expectedForwardChecksum = 0;
         quint16 expectedReverseChecksum = 0;
 
-        QList<quint16> checksums = importChecksums (checksumFile);
+        QList<quint16> checksums = importChecksums(checksumFile);
         if (checksums.size() >= 2) {
             expectedForwardChecksum = checksums[0];
             expectedReverseChecksum = checksums[1];
         }
         else {
+            QString message = "Cannot find checksum information for the '" +
+                lexicon + "' lexicon.  The lexicon will be loaded, but it is "
+                "possible the lexicon has been corrupted.";
+            message = Auxil::dialogWordWrap(message);
+            QMessageBox::warning(this, "Unable to find checksums for lexicon",
+                                 message);
             // warning!
             ok = false;
         }

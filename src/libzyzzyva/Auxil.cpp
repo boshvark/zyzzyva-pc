@@ -1164,6 +1164,8 @@ Auxil::lexiconToOrigin(const QString& lexicon)
         return "British";
     if (lexicon == "ODS4")
         return "French";
+    if (lexicon == "ODS5")
+        return "French";
     if (lexicon == "Volost")
         return "Antarctic";
     return QString();
@@ -1192,6 +1194,8 @@ Auxil::lexiconToDate(const QString& lexicon)
         return QDate(2007, 5, 15);
     if (lexicon == "ODS4")
         return QDate(2004, 1, 1);
+    if (lexicon == "ODS5")
+        return QDate(2008, 1, 1);
     if (lexicon == "Volost")
         return QDate(2007, 4, 1);
     return QDate();
@@ -1220,7 +1224,8 @@ Auxil::getUpdatedLexiconName(const QString& oldLexiconName)
     else if ((oldLexiconName == "Custom") || (oldLexiconName == "OWL+LWL") ||
              (oldLexiconName == "OWL2+LWL") || (oldLexiconName == "CSW") ||
              (oldLexiconName == "OSPD4+LWL") || (oldLexiconName == "OSWI") ||
-             (oldLexiconName == "ODS4") || (oldLexiconName == "Volost"))
+             (oldLexiconName == "ODS4") || (oldLexiconName == "ODS5") ||
+             (oldLexiconName == "Volost"))
     {
         return oldLexiconName;
     }
