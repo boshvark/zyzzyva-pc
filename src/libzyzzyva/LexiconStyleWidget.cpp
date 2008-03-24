@@ -28,8 +28,8 @@
 #include "Defs.h"
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 #include <QRegExpValidator>
-#include <QToolButton>
 
 using namespace Defs;
 
@@ -105,7 +105,7 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
         new QRegExpValidator(QRegExp("^[^A-Za-z\\s]+$"), this));
     mainHlay->addWidget(symbolLine);
 
-    QToolButton* deleteButton = new QToolButton;
+    QPushButton* deleteButton = new QPushButton;
     Q_CHECK_PTR(deleteButton);
     deleteButton->setIcon(QIcon(":/minus-icon"));
     connect(deleteButton, SIGNAL(clicked()), SIGNAL(deleteClicked()));
