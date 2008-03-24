@@ -206,6 +206,12 @@ LexiconStyleDialog::removeStyleWidget(int index)
     if (index >= styleWidgets.count())
         return;
 
+    // Remap signals for any widgets after the one to be deleted
+    for (int i = index + 1; i < styleWidgets.size(); ++i) {
+        LexiconStyleWidget* widget = styleWidgets[i];
+        deleteMapper->setMapping(widget, i - 1);
+    }
+
     delete styleWidgets[index];
     styleWidgets.removeAt(index);
 }
