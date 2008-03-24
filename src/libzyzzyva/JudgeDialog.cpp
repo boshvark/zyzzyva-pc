@@ -131,7 +131,7 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     resultVlay->setSpacing(RESULT_SPACING);
     Q_CHECK_PTR(resultVlay);
 
-    resultVlay->insertSpacing(0, RESULT_BORDER_WIDTH * 3);
+    resultVlay->addStretch(1);
 
     resultPixmapLabel = new QLabel;
     Q_CHECK_PTR(resultPixmapLabel);
