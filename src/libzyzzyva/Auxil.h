@@ -75,6 +75,7 @@ namespace Auxil {
     LexiconStyle stringToLexiconStyle(const QString& string);
     QString lexiconToOrigin(const QString& lexicon);
     QDate lexiconToDate(const QString& lexicon);
+    QString getUpdatedLexiconName(const QString& oldLexiconName);
 }
 
 #endif // ZYZZYVA_AUXIL_H

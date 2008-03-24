@@ -60,7 +60,7 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
     QStringList validLexicons;
     validLexicons.append("CSW");
     validLexicons.append("Custom");
-    validLexicons.append("ODS");
+    validLexicons.append("ODS4");
     validLexicons.append("OSPD4+LWL");
     validLexicons.append("OSWI");
     validLexicons.append("OWL+LWL");

@@ -91,7 +91,7 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
     validLexicons.append("OSPD4+LWL");
     validLexicons.append("CSW");
     validLexicons.append("Volost");
-    validLexicons.append("ODS");
+    validLexicons.append("ODS4");
     validLexicons.append("OWL+LWL");
     validLexicons.append("OSWI");
     validLexicons.append("Custom");

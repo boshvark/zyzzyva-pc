@@ -1162,7 +1162,7 @@ Auxil::lexiconToOrigin(const QString& lexicon)
         return "British";
     if (lexicon == "CSW")
         return "British";
-    if (lexicon == "ODS")
+    if (lexicon == "ODS4")
         return "French";
     if (lexicon == "Volost")
         return "Antarctic";
@@ -1190,9 +1190,40 @@ Auxil::lexiconToDate(const QString& lexicon)
         return QDate(2002, 1, 14);
     if (lexicon == "CSW")
         return QDate(2007, 5, 15);
-    if (lexicon == "ODS")
+    if (lexicon == "ODS4")
         return QDate(2004, 1, 1);
     if (lexicon == "Volost")
         return QDate(2007, 4, 1);
     return QDate();
+}
+
+//---------------------------------------------------------------------------
+//  getUpdatedLexiconName
+//
+//! Get the most up-to-date lexicon name for old lexicons that may have been
+//! renamed.
+//
+//! @param oldLexiconName the old lexicon name
+//! @return the current lexicon name
+//---------------------------------------------------------------------------
+QString
+Auxil::getUpdatedLexiconName(const QString& oldLexiconName)
+{
+    if (oldLexiconName == "OWL")
+        return "OWL+LWL";
+    else if (oldLexiconName == "OWL2")
+        return "OWL2+LWL";
+    else if (oldLexiconName == "SOWPODS")
+        return "OSWI";
+    else if (oldLexiconName == "ODS")
+        return "ODS4";
+    else if ((oldLexiconName == "Custom") || (oldLexiconName == "OWL+LWL") ||
+             (oldLexiconName == "OWL2+LWL") || (oldLexiconName == "CSW") ||
+             (oldLexiconName == "OSPD4+LWL") || (oldLexiconName == "OSWI") ||
+             (oldLexiconName == "Volost"))
+    {
+        return oldLexiconName;
+    }
+
+    return QString();
 }

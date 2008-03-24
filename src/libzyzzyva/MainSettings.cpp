@@ -145,17 +145,16 @@ MainSettings::readSettings()
         if (instance->defaultLexicon.isEmpty())
             instance->defaultLexicon = DEFAULT_DEFAULT_LEXICON;
     }
+    instance->defaultLexicon =
+        Auxil::getUpdatedLexiconName(instance->defaultLexicon);
 
     instance->autoImportLexicons
         = settings.value(SETTINGS_IMPORT_LEXICONS).toStringList();
-
-    // Kludge to update the names of renamed lexicons
-    if (instance->defaultLexicon == "OWL")
-        instance->defaultLexicon = "OWL+LWL";
-    else if (instance->defaultLexicon == "OWL2")
-        instance->defaultLexicon = "OWL2+LWL";
-    else if (instance->defaultLexicon == "SOWPODS")
-        instance->defaultLexicon = "OSWI";
+    QMutableListIterator<QString> it (instance->autoImportLexicons);
+    while (it.hasNext()) {
+        const QString& lexicon = it.next();
+        it.setValue(Auxil::getUpdatedLexiconName(lexicon));
+    }
 
     instance->autoImportFile
         = settings.value(SETTINGS_IMPORT_FILE).toString();

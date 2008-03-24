@@ -1135,7 +1135,7 @@ MainWindow::getLexiconPrefix(const QString& lexicon)
     pmap["Volost"] = "/north-american/volost";
     pmap["OSWI"] = "/british/oswi";
     pmap["CSW"] = "/british/csw";
-    pmap["ODS"] = "/french/ods4";
+    pmap["ODS4"] = "/french/ods4";
     return pmap.value(lexicon);
 }
 
@@ -1872,7 +1872,7 @@ MainWindow::importLexicon(const QString& lexicon)
         prefixMap["Volost"] = "/north-american/volost";
         prefixMap["OSWI"] = "/british/oswi";
         prefixMap["CSW"] = "/british/csw";
-        prefixMap["ODS"] = "/french/ods4";
+        prefixMap["ODS4"] = "/french/ods4";
 
         if (prefixMap.contains(lexicon)) {
             QString prefix = Auxil::getWordsDir() + prefixMap.value(lexicon);
