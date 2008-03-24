@@ -1220,7 +1220,7 @@ Auxil::getUpdatedLexiconName(const QString& oldLexiconName)
     else if ((oldLexiconName == "Custom") || (oldLexiconName == "OWL+LWL") ||
              (oldLexiconName == "OWL2+LWL") || (oldLexiconName == "CSW") ||
              (oldLexiconName == "OSPD4+LWL") || (oldLexiconName == "OSWI") ||
-             (oldLexiconName == "Volost"))
+             (oldLexiconName == "ODS4") || (oldLexiconName == "Volost"))
     {
         return oldLexiconName;
     }
