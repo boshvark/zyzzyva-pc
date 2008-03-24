@@ -1809,6 +1809,7 @@ MainWindow::makeUserDirs()
     renameLexicon(LEXICON_OLD_OWL, LEXICON_OWL);
     renameLexicon(LEXICON_OLD_OWL2, LEXICON_OWL2);
     renameLexicon(LEXICON_OLD_SOWPODS, LEXICON_OSWI);
+    renameLexicon(LEXICON_OLD_ODS, LEXICON_ODS4);
 
     dir.mkpath(Auxil::getQuizDir() + "/saved");
     dir.mkpath(Auxil::getSearchDir() + "/saved");
