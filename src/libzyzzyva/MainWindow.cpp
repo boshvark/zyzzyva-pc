@@ -1390,6 +1390,7 @@ MainWindow::rebuildDatabase(const QString& lexicon)
     thread->start();
     dialog->exec();
     thread->quit();
+    thread->wait();
 
     QApplication::restoreOverrideCursor();
 
