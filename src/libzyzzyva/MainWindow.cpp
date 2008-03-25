@@ -429,7 +429,8 @@ MainWindow::tryAutoImport()
 
         int code = dialog->exec();
         if (code == QDialog::Accepted) {
-            MainSettings::setAutoImportLexicons(dialog->getImportLexicons());
+            lexicons = dialog->getImportLexicons();
+            MainSettings::setAutoImportLexicons(lexicons);
             MainSettings::setDefaultLexicon(dialog->getDefaultLexicon());
         }
 
