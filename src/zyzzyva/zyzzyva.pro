@@ -39,7 +39,7 @@ include($$ROOT/zyzzyva.pri)
 RESOURCES = $$ROOT/zyzzyva.qrc
 macx {
     TARGET = Zyzzyva
-    RC_FILE = $$ROOT/images/zyzzyva.icns
+    RC_FILE = $$ROOT/images/zyzzyva-128x128.icns
 }
 
 unix {
