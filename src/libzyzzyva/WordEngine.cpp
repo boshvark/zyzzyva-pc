@@ -65,6 +65,9 @@ bool
 WordEngine::connectToDatabase(const QString& lexicon, const QString& filename,
                               QString* errString)
 {
+    if (!lexiconData.contains(lexicon))
+        return false;
+
     Rand rng;
     rng.srand(QDateTime::currentDateTime().toTime_t(), Auxil::getPid());
     unsigned int r = rng.rand();
