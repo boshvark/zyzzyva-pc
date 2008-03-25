@@ -483,7 +483,7 @@ MainWindow::processDatabaseErrors()
     QString message =
         "For certain searches and quizzes to work correctly, Zyzzyva "
         "must have a database of information about each lexicon in use.  "
-        "Creating or updating these databases make take several minutes, "
+        "Creating or updating these databases may take several minutes, "
         "but it will only need to be done once.  Here are the steps that "
         "Zyzzyva will need to take:\n\n%1\n"
         "Perform these actions now?";
