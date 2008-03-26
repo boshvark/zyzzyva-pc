@@ -276,9 +276,11 @@ WordTableView::addToCardboxRequested()
         QStringList words = dialog->getWords();
         QString quizType = dialog->getQuizType();
         bool estimateCardbox = dialog->getEstimateCardbox();
+        int cardbox = dialog->getSpecifyCardbox();
 
         QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-        bool ok = addToCardbox(words, lexicon, quizType, estimateCardbox);
+        bool ok = addToCardbox(words, lexicon, quizType, estimateCardbox,
+                               cardbox);
         QApplication::restoreOverrideCursor();
 
         if (!ok) {
@@ -526,8 +528,7 @@ WordTableView::getExportStrings(QModelIndex& index, const
 //---------------------------------------------------------------------------
 bool
 WordTableView::addToCardbox(const QStringList& words, const QString& lexicon,
-                            const QString& quizType, bool estimateCardbox)
-const
+    const QString& quizType, bool estimateCardbox, int cardbox) const
 {
     QuizSpec::QuizType type = Auxil::stringToQuizType(quizType);
     if (type == QuizSpec::UnknownQuizType)
@@ -558,7 +559,7 @@ const
     if (!db.isValid())
         return false;
 
-    db.addToCardbox(questions, estimateCardbox);
+    db.addToCardbox(questions, estimateCardbox, cardbox);
     return true;
 }
 

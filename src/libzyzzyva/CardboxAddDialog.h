@@ -3,7 +3,7 @@
 //
 // A dialog for adding words to the cardbox system.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -26,9 +26,10 @@
 #define ZYZZYVA_CARDBOX_ADD_DIALOG_H
 
 #include <QDialog>
-#include <QCheckBox>
 #include <QComboBox>
 #include <QListWidget>
+#include <QRadioButton>
+#include <QSpinBox>
 
 class CardboxAddDialog : public QDialog
 {
@@ -41,11 +42,17 @@ class CardboxAddDialog : public QDialog
     void setWords(const QStringList& words);
     QString getQuizType() const;
     bool getEstimateCardbox() const;
+    int getSpecifyCardbox() const;
     QStringList getWords() const;
+
+    public slots:
+    void specifyToggled(bool on);
 
     private:
     QComboBox* quizTypeCombo;
-    QCheckBox* estimateCbox;
+    QRadioButton* estimateButton;
+    QRadioButton* specifyButton;
+    QSpinBox* specifySbox;
     QListWidget* questionList;
 };
 

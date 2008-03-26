@@ -232,15 +232,18 @@ QuizDatabase::undoLastResponse(const QString& question)
 //! @param question the question to add to the cardbox system
 //! @param estimateCardbox whether to estimate a cardbox based on past
 //! performance
+//! @param cardbox the cardbox to place the question in, if estimateCardbox is
+//! false
 //---------------------------------------------------------------------------
 void
-QuizDatabase::addToCardbox(const QStringList& questions, bool estimateCardbox)
+QuizDatabase::addToCardbox(const QStringList& questions, bool estimateCardbox,
+                           int cardbox)
 {
     QSqlQuery query (*db);
     query.exec("BEGIN TRANSACTION");
     QStringListIterator it (questions);
     while (it.hasNext()) {
-        addToCardbox(it.next(), estimateCardbox);
+        addToCardbox(it.next(), estimateCardbox, cardbox);
     }
     query.exec("COMMIT TRANSACTION");
 }
@@ -254,9 +257,12 @@ QuizDatabase::addToCardbox(const QStringList& questions, bool estimateCardbox)
 //! @param question the question to add to the cardbox system
 //! @param estimateCardbox whether to estimate a cardbox based on past
 //! performance
+//! @param cardbox the cardbox to place the question in, if estimateCardbox is
+//! false
 //---------------------------------------------------------------------------
 void
-QuizDatabase::addToCardbox(const QString& question, bool estimateCardbox)
+QuizDatabase::addToCardbox(const QString& question, bool estimateCardbox,
+                           int cardbox)
 {
     QuestionData data = getQuestionData(question);
 
@@ -269,19 +275,20 @@ QuizDatabase::addToCardbox(const QString& question, bool estimateCardbox)
         if (estimateCardbox && (data.streak > 0))
             data.cardbox = data.streak;
         else
-            data.cardbox = 0;
+            data.cardbox = cardbox;
     }
 
     else {
         data = QuestionData();
         data.valid = true;
-        data.cardbox = 0;
+        data.cardbox = cardbox;
     }
 
     // Move scheduled time back by 16 hours, so questions in cardbox 0 will be
     // available immediately
     data.nextScheduled = calculateNextScheduled(data.cardbox);
-    data.nextScheduled -= 60 * 60 * 16;
+    if (!data.cardbox)
+        data.nextScheduled -= 60 * 60 * 16;
 
     setQuestionData(question, data, true);
 }

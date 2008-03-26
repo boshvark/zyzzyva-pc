@@ -64,7 +64,8 @@ class WordTableView : public QTreeView
     QStringList getExportStrings(QModelIndex& index,
                                  const QList<WordAttribute>& attributes) const;
     bool addToCardbox(const QStringList& words, const QString& lexicon,
-                      const QString& quizType, bool estimateCardbox) const;
+                      const QString& quizType, bool estimateCardbox,
+                      int cardbox = 0) const;
     bool removeFromCardbox(const QStringList& words, const QString& lexicon,
                            const QString& quizType) const;
 

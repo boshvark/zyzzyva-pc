@@ -3,7 +3,7 @@
 //
 // A class for working with database of quiz performance statistics.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -56,8 +56,10 @@ class QuizDatabase
     void recordResponse(const QString& question, bool correct,
                         bool updateCardbox);
     void undoLastResponse(const QString& question);
-    void addToCardbox(const QStringList& questions, bool estimateCardbox);
-    void addToCardbox(const QString& question, bool estimateCardbox);
+    void addToCardbox(const QStringList& questions, bool estimateCardbox,
+                      int cardbox = 0);
+    void addToCardbox(const QString& question, bool estimateCardbox,
+                      int cardbox = 0);
     void removeFromCardbox(const QStringList& questions);
     void removeFromCardbox(const QString& question);
     void setCardbox(const QString& question, int cardbox);

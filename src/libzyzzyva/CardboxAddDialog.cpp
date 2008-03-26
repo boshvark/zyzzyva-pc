@@ -3,7 +3,7 @@
 //
 // A dialog for adding words to the cardbox system.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -55,7 +55,7 @@ CardboxAddDialog::CardboxAddDialog(QWidget* parent, Qt::WFlags f)
 
     QLabel* quizTypeLabel = new QLabel(this);
     Q_CHECK_PTR(quizTypeLabel);
-    quizTypeLabel->setText("Add words to cardbox for quiz type:");
+    quizTypeLabel->setText("Add words for quiz type:");
     quizTypeHlay->addWidget(quizTypeLabel);
 
     quizTypeCombo = new QComboBox(this);
@@ -66,19 +66,38 @@ CardboxAddDialog::CardboxAddDialog(QWidget* parent, Qt::WFlags f)
     quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizHooks));
     quizTypeHlay->addWidget(quizTypeCombo);
 
-    estimateCbox = new QCheckBox("Estimate cardbox based on past performance",
-                                 this);
-    Q_CHECK_PTR(estimateCbox);
-    estimateCbox->setCheckState(Qt::Checked);
-    mainVlay->addWidget(estimateCbox);
+    estimateButton = new QRadioButton;
+    Q_CHECK_PTR(estimateButton);
+    estimateButton->setText("Estimate cardbox based on past performance");
+    estimateButton->setChecked(true);
+    mainVlay->addWidget(estimateButton);
+
+    QHBoxLayout* specifyHlay = new QHBoxLayout;
+    Q_CHECK_PTR(specifyHlay);
+    specifyHlay->setMargin(0);
+    specifyHlay->setSpacing(SPACING);
+    mainVlay->addLayout(specifyHlay);
+
+    specifyButton = new QRadioButton;
+    Q_CHECK_PTR(specifyButton);
+    specifyButton->setText("Specify cardbox:");
+    connect(specifyButton, SIGNAL(toggled(bool)), SLOT(specifyToggled(bool)));
+    specifyHlay->addWidget(specifyButton);
+
+    specifySbox = new QSpinBox;
+    Q_CHECK_PTR(specifySbox);
+    specifySbox->setMinimum(0);
+    specifySbox->setMaximum(15);
+    specifySbox->setEnabled(false);
+    specifyHlay->addWidget(specifySbox);
 
     questionList = new QListWidget(this);
     Q_CHECK_PTR(questionList);
     mainVlay->addWidget(questionList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    buttonHlay->setSpacing(SPACING);
     Q_CHECK_PTR(buttonHlay);
+    buttonHlay->setSpacing(SPACING);
     mainVlay->addLayout(buttonHlay);
 
     ZPushButton* okButton = new ZPushButton("&OK");
@@ -137,7 +156,20 @@ CardboxAddDialog::getQuizType() const
 bool
 CardboxAddDialog::getEstimateCardbox() const
 {
-    return (estimateCbox->checkState() == Qt::Checked);
+    return estimateButton->isChecked();
+}
+
+//---------------------------------------------------------------------------
+//  getSpecifyCardbox
+//
+//! Determine the specific cardbox words should be added to.
+//
+//! @return the specified cardbox
+//---------------------------------------------------------------------------
+int
+CardboxAddDialog::getSpecifyCardbox() const
+{
+    return specifySbox->value();
 }
 
 //---------------------------------------------------------------------------
@@ -155,4 +187,18 @@ CardboxAddDialog::getWords() const
         words.append(questionList->item(i)->text());
     }
     return words;
+}
+
+//---------------------------------------------------------------------------
+//  specifyToggled
+//
+//! Called when the Specify Cardbox button is toggled.  Enable or disable the
+//! specify spinbox.
+//
+//! @return whether the Specify Cardbox button is checked
+//---------------------------------------------------------------------------
+void
+CardboxAddDialog::specifyToggled(bool on)
+{
+    specifySbox->setEnabled(on);
 }
