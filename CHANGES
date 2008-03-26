@@ -1,3 +1,20 @@
+Version 1.1.0
+Released 2008-03-28, from /branches/1.1.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/1.1.0
+
+User-visible changes:
+ * Load multiple lexicons simultaneously
+ * Lexicon symbols, e.g. # for CSW-not-OWL2, % for OWL2-not-OWL, etc.
+ * In Lexicon search condition
+ * Highly-visible icons for "acceptable" and "unacceptable" in Word Judge
+ * Mark as Correct button on the Quiz form
+ * New Cardbox 0 First quiz schedule
+ * Improved cardbox visibility and control
+ * Detailed word information on the Definition form
+ * Updated CSW definitions thanks to Barry Harridge
+ * Updated ODS lexicon thanks to Herve Bohbot
+ * Nice-looking Zyzzyva application icon
+
 Version 1.0.6
 Released 2007-11-20, from /branches/1.0.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/1.0.6
