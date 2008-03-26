@@ -750,7 +750,8 @@ MainWindow::editSettings()
         addedLexicons.insert(LEXICON_CUSTOM);
 
     // Determine lexicons that need to be rebuilt based on lexicon style
-    // (symbol) changes
+    // (symbol) changes - also update lexicons that compare against a lexicon
+    // that was newly added
     QSet<QString> symbolLexicons;
     QList<LexiconStyle> newStyles = MainSettings::getWordListLexiconStyles();
     if (!oldStyles.isEmpty()) {
@@ -758,10 +759,10 @@ MainWindow::editSettings()
         while (it.hasNext()) {
             const LexiconStyle& style = it.next();
             int removed = newStyles.removeAll(style);
-            if (removed)
-                it.remove();
-            else
+            if (!removed || addedLexicons.contains(style.compareLexicon))
                 symbolLexicons.insert(style.lexicon);
+            else
+                it.remove();
         }
     }
     if (!newStyles.isEmpty()) {
