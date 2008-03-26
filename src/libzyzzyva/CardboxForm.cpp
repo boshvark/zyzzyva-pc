@@ -24,6 +24,7 @@
 #include "LexiconSelectWidget.h"
 #include "QuizDatabase.h"
 #include "WordEngine.h"
+#include "WordValidator.h"
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
@@ -80,6 +81,11 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect(quizTypeCombo, SIGNAL(activated(int)), SLOT(quizSpecChanged()));
     quizTypeHlay->addWidget(quizTypeCombo);
 
+    QFrame* topSepFrame = new QFrame;
+    Q_CHECK_PTR(topSepFrame);
+    topSepFrame->setFrameStyle(QFrame::HLine | QFrame::Sunken);
+    mainVlay->addWidget(topSepFrame);
+
     QGridLayout* cardboxGlay = new QGridLayout;
     Q_CHECK_PTR(cardboxGlay);
     cardboxGlay->setSpacing(SPACING);
@@ -114,7 +120,43 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect(refreshButton, SIGNAL(clicked()), SLOT(refreshClicked()));
     mainVlay->addWidget(refreshButton);
 
-    mainVlay->addStretch(0);
+    QFrame* bottomSepFrame = new QFrame;
+    Q_CHECK_PTR(bottomSepFrame);
+    bottomSepFrame->setFrameStyle(QFrame::HLine | QFrame::Sunken);
+    mainVlay->addWidget(bottomSepFrame);
+
+    QHBoxLayout* questionHlay = new QHBoxLayout;
+    Q_CHECK_PTR(questionHlay);
+    questionHlay->setMargin(0);
+    questionHlay->setSpacing(SPACING);
+    mainVlay->addLayout(questionHlay);
+
+    QLabel* questionLabel = new QLabel;
+    Q_CHECK_PTR(questionLabel);
+    questionLabel->setText("Get data for question:");
+    questionHlay->addWidget(questionLabel);
+
+    questionLine = new QLineEdit;
+    Q_CHECK_PTR(questionLine);
+    WordValidator* validator = new WordValidator(questionLine);
+    validator->setOptions(WordValidator::AllowQuestionMarks);
+    questionLine->setValidator(validator);
+    connect(questionLine, SIGNAL(returnPressed()), SLOT(questionDataClicked()));
+    questionHlay->addWidget(questionLine);
+
+    QPushButton* questionButton = new QPushButton;
+    Q_CHECK_PTR(questionButton);
+    questionButton->setText("Get Info");
+    questionButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(questionButton, SIGNAL(clicked()), SLOT(questionDataClicked()));
+    questionHlay->addWidget(questionButton);
+
+    questionDataLabel = new QLabel;
+    Q_CHECK_PTR(questionDataLabel);
+    questionDataLabel->setAlignment(Qt::AlignTop);
+    mainVlay->addWidget(questionDataLabel, 1);
+
+    //mainVlay->addStretch(0);
 
     quizSpecChanged();
 
@@ -169,13 +211,7 @@ CardboxForm::getStatusString() const
 void
 CardboxForm::refreshClicked()
 {
-    if (dbDirty) {
-        delete quizDatabase;
-        QString lexicon = lexiconWidget->getCurrentLexicon();
-        QString quizType = quizTypeCombo->currentText();
-        quizDatabase = new QuizDatabase(lexicon, quizType);
-        Q_CHECK_PTR(quizDatabase);
-    }
+    connectToDatabase();
     if (!quizDatabase)
         return;
 
@@ -262,4 +298,118 @@ void
 CardboxForm::quizSpecChanged()
 {
     dbDirty = true;
+}
+
+//---------------------------------------------------------------------------
+//  questionDataClicked
+//
+//! Called when the Get Info button is clicked.  Display information about the
+//! question being queried.
+//---------------------------------------------------------------------------
+void
+CardboxForm::questionDataClicked()
+{
+    QString question = questionLine->text();
+    if (question.isEmpty())
+        return;
+
+    connectToDatabase();
+
+    QuizSpec::QuizType quizType =
+        Auxil::stringToQuizType(quizTypeCombo->currentText());
+    if ((quizType == QuizSpec::QuizAnagrams) ||
+        (quizType == QuizSpec::QuizAnagramsWithHooks))
+    {
+        question = Auxil::getAlphagram(question);
+    }
+
+    QString resultStr;
+
+    QuizDatabase::QuestionData data = quizDatabase->getQuestionData(question);
+    if (!data.valid) {
+        resultStr = QString("<font color=\"red\">Not in Database</font>");
+    }
+    else {
+        // XXX: This code was basically stolen from QuizForm::setQuestionStats
+        // - should be consolidated somewhere
+        QString streak;
+        if (data.streak == 0)
+            streak = "none";
+        else if (data.streak > 0)
+            streak = QString::number(data.streak) + " correct";
+        else if (data.streak < 0)
+            streak = QString::number(-data.streak) + " incorrect";
+
+        QString lastCorrect = "never";
+        if (data.lastCorrect) {
+
+            QDateTime lastCorrectDate;
+            lastCorrectDate.setTime_t(data.lastCorrect);
+            QDateTime now = QDateTime::currentDateTime();
+            int numDays = now.daysTo(lastCorrectDate);
+
+            QString format = "yyyy-MM-dd hh:mm:ss";
+            QString delta;
+            QString daysStr = (abs(numDays) == 1 ? QString("day")
+                                                 : QString("days"));
+            if (numDays == 0)
+                delta = "today";
+            else if (numDays < 0)
+                delta = QString::number(-numDays) + " " + daysStr + " ago";
+            else if (numDays > 0)
+                delta = QString::number(numDays) + " " + daysStr + " from now";
+
+            lastCorrect = lastCorrectDate.toString(format) + " (" + delta + ")";
+        }
+
+        int correct = data.numCorrect;
+        int incorrect = data.numIncorrect;
+        int total = correct + incorrect;
+        double pct = total ? (correct * 100.0) / total : 0;
+
+        resultStr += question + "<br><b>Overall Record:</b> " +
+            QString::number(correct) + "/" + QString::number(total) +
+            " (" + QString::number(pct, 'f', 1) + "%)<br><b>Streak:</b> " +
+            streak + "<br><b>Last Correct:</b> " + lastCorrect;
+
+
+        if (data.cardbox >= 0) {
+            QDateTime nextDate;
+            nextDate.setTime_t(data.nextScheduled);
+            QDateTime now = QDateTime::currentDateTime();
+            int numDays = now.daysTo(nextDate);
+
+            QString format = "yyyy-MM-dd hh:mm:ss";
+
+            resultStr += "<br><b>Cardbox:</b> " +
+                QString::number(data.cardbox) +
+                "<br><b>Next Scheduled:</b> " + nextDate.toString(format) +
+                " (" + QString::number(numDays) + " day" +
+                (numDays == 1 ? QString() : QString("s")) + ")";
+        }
+    }
+
+    questionDataLabel->setText(resultStr);
+
+    // Select the question input area
+    questionLine->setFocus();
+    questionLine->setSelection(0, questionLine->text().length());
+}
+
+//---------------------------------------------------------------------------
+//  connectToDatabase
+//
+//! Connect to the quiz database, reconnecting if necessary.
+//---------------------------------------------------------------------------
+void
+CardboxForm::connectToDatabase()
+{
+    if (!dbDirty)
+        return;
+
+    delete quizDatabase;
+    QString lexicon = lexiconWidget->getCurrentLexicon();
+    QString quizType = quizTypeCombo->currentText();
+    quizDatabase = new QuizDatabase(lexicon, quizType);
+    Q_CHECK_PTR(quizDatabase);
 }

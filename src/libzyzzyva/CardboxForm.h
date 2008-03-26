@@ -28,6 +28,7 @@
 #include "ActionForm.h"
 #include <QComboBox>
 #include <QLabel>
+#include <QLineEdit>
 #include <QSqlQueryModel>
 #include <QTimer>
 #include <QTreeView>
@@ -48,6 +49,10 @@ class CardboxForm : public ActionForm
     public slots:
     void refreshClicked();
     void quizSpecChanged();
+    void questionDataClicked();
+
+    private:
+    void connectToDatabase();
 
     private:
     WordEngine*     wordEngine;
@@ -60,6 +65,8 @@ class CardboxForm : public ActionForm
     QTreeView*      cardboxCountView;
     QTreeView*      cardboxDaysView;
     //QTreeView*      cardboxContentsView;
+    QLineEdit*      questionLine;
+    QLabel*         questionDataLabel;
 
     bool dbDirty;
 
