@@ -168,6 +168,7 @@ class QuizForm : public ActionForm
     bool checkBringsJudgment;
     bool recordStatsBlocked;
     bool unsavedChanges;
+    int questionMarkedStatus;
 
     QuizDatabase* db;
     QuizDatabase::QuestionData origQuestionData;
@@ -176,6 +177,12 @@ class QuizForm : public ActionForm
     int currentDisplayAnswer;
 
     AnalyzeQuizDialog* analyzeDialog;
+
+    enum {
+        QuestionNotMarked = 0,
+        QuestionMarkedMissed = 1,
+        QuestionMarkedCorrect = 2
+    };
 };
 
 #endif // ZYZZYVA_QUIZ_FORM_H
