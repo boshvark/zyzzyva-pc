@@ -1,0 +1,37 @@
+Detailed instructions of how to build a Zyzzyva installer on OS X.
+This is not totally up to date, but this is the basic process.
+
+- Install Qt 4.3.2.  I usually install it to the default location,
+/usr/local/Trolltech/Qt-4.3.2.
+- Export Zyzzyva x.y.z from
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/x.y.z.  Use "svn
+export" instead of "svn checkout", because we don't want .svn
+directories getting in the way.  Or you can just download the Zyzzyva
+x.y.z source code tarball from the Zyzzyva web site.
+- cd to your Zyzzyva x.y.z directory and run
+installer/create-macx-dmg.sh.  This will build Zyzzyva, creating a
+bundle and dmg in installer/macosx.
+- Get BitRock InstallBuilder Multiplatform 4.1.0 (Enterprise) from
+http://www.bitrock.com/download_installbuilder_download.html.  It must
+be the Enterprise edition, not any of the others.
+- Create a folder called $HOME/dev/zyzzyva-install and move the
+installer/macosx directory into it.
+- Get a tarball of Zyzzyva x.y.z Linux and Windows directories from
+http://zyzzyva.net/packages/tmp/Zyzzyva-x.y.z-linux-windows.tar.gz.
+Unzip it in the zyzzyva-install directory, which will create "linux"
+and "windows" directories.  Without these, the stupid InstallBuilder
+will complain.
+- Edit installer/Zyzzyva.xml, replacing all instances of
+"/Users/mthelen/dev/zyzzyva-install" with the path to your
+zyzzyva-install directory.
+- Start InstallBuilder and choose License->Register License from the
+menu.  Give it the license I have attached to this message.
+- There should be a link in InstallBuilder saying "open an existing
+project".  Click it, and choose installer/Zyzzyva.xml inside your
+Zyzzyva x.y.z directory.
+- Click the Packaging button on the left hand side, choose "Mac OS X"
+as your Build Platform, then click the Build button.  If all is well,
+it should Just Work.
+- Close InstallBuilder, and run
+installer/create-macx-installer-dmg.sh, to create a disk image for the
+installer.  It will be placed in the zyzzyva-install directory.
