@@ -61,6 +61,20 @@ SearchConditionForm::SearchConditionForm(QWidget* parent, Qt::WFlags f)
     mainHlay->setMargin(0);
     mainHlay->setSpacing(SPACING);
 
+    addButton = new QPushButton;
+    Q_CHECK_PTR(addButton);
+    addButton->setIcon(QIcon(":/plus-icon"));
+    addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(addButton, SIGNAL(clicked()), SIGNAL(addClicked()));
+    mainHlay->addWidget(addButton);
+
+    deleteButton = new QPushButton;
+    Q_CHECK_PTR(deleteButton);
+    deleteButton->setIcon(QIcon(":/minus-icon"));
+    deleteButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(deleteButton, SIGNAL(clicked()), SIGNAL(deleteClicked()));
+    mainHlay->addWidget(deleteButton);
+
     negationCbox = new QCheckBox("Not");
     Q_CHECK_PTR(negationCbox);
     negationCbox->setEnabled(false);
@@ -233,20 +247,6 @@ SearchConditionForm::SearchConditionForm(QWidget* parent, Qt::WFlags f)
     connect(paramWordListButton, SIGNAL(clicked()), SLOT(editListClicked()));
     paramWordListHlay->addWidget(paramWordListButton);
     paramStack->addWidget(paramWordListWidget);
-
-    deleteButton = new QPushButton;
-    Q_CHECK_PTR(deleteButton);
-    deleteButton->setIcon(QIcon(":/minus-icon"));
-    deleteButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(deleteButton, SIGNAL(clicked()), SIGNAL(deleteClicked()));
-    mainHlay->addWidget(deleteButton);
-
-    addButton = new QPushButton;
-    Q_CHECK_PTR(addButton);
-    addButton->setIcon(QIcon(":/plus-icon"));
-    addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(addButton, SIGNAL(clicked()), SIGNAL(addClicked()));
-    mainHlay->addWidget(addButton);
 
     typeChanged(typeCbox->currentText());
 }
