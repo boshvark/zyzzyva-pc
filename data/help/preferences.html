@@ -15,12 +15,18 @@
   <a name="auto-load-lexicon">
   <h3>Lexicon</h3>
 
-  <p>Zyzzyva can be configured to open a lexicon automatically each time it
-  starts.  To do so, select the <tt>Automatically open a lexicon</tt> option.
-  Choose the lexicon to load from the list of predefined lexicons, or choose
-  <tt>Custom</tt> to have a customized lexicon loaded.  If <tt>Custom</tt> is
-  chosen, click the <tt>Browse</tt> button to bring up a file browser, from
-  which you can choose the lexicon file to be loaded.</p>
+  <p>Zyzzyva can be configured to open one or more lexicons automatically each
+  time it starts.  To do so, select the <tt>Load lexicons</tt> option.  To
+  edit the list of lexicons, click the <i>Edit</i> button, which will display
+  a lexicon selection window.  Choose the lexicons that should be loaded
+  whenever Zyzzyva starts, with one lexicon as the default lexicon.  The
+  default lexicon is initially selected whenever a lexicon selection is
+  needed, e.g. when performing a search or starting a quiz.</p>
+
+  <p>In addition to the predefined lexicons, a custom lexicon can also be
+  loaded.  <tt>Custom</tt> is chosen, click the <tt>Browse</tt> button to
+  bring up a file browser, from which you can choose the lexicon file to be
+  loaded as the custom lexicon.</p>
 
   <a name="data-directory">
   <h3>Data Directory</h3>
@@ -134,6 +140,29 @@
   being used, it will appear that the tiles have been rearranged to form the
   correct answer.  If there are multiple correct answers, each one will be
   displayed for five seconds in a cycle.</p>
+
+  <a name="cardbox">
+  <h2>Cardbox Preferences</h2>
+
+  <a name="cardbox-schedule">
+  <h3>Cardbox Schedule</h3>
+
+  <p>The cardbox system automatically schedules quiz questions to be seen in a
+  certain number of days, depending on the cardbox in which the question is
+  placed.  Additionally, each cardbox has an associated window of days within
+  which the question is randomly scheduled.  For example, words added to
+  cardbox 5 are normally scheduled to be seen in 30 days, within a window of 7
+  days.  So a word added to cardbox 5 may be scheduled anywhere from 23 to 37
+  days in the future.</p>
+
+  <p>The schedule interval and window for each cardbox is customizable, from
+  cardbox 0 through cardbox 15.  To customize the interval for a cardbox,
+  choose the number of days via the first input area next to the desired
+  cardbox.  To customize the window for a cardbox, choose the window size via
+  the second input area next to the desired cardbox.  After saving these
+  preferences, the new schedule will immediately take effect for any quiz
+  questions that are moved to a particular cardbox.  Questions that are
+  already scheduled in a cardbox will remain unaffacted.</p>
 
   <a name="judge">
   <h2>Word Judge Preferences</h2>
@@ -261,6 +290,34 @@
   automatically display definitions for words in all word tables.  A word's
   definition will appear in a separate column to the right of the word.</p>
 
+  <a name="lower-case-wildcards">
+  <h3>Use lower-case for wildcard matches</h3>
+
+  <p>If the <i>Use lower-case letters for wildcard matches</i> option is
+  selected, any letters matched by a question mark (<tt>?</tt>) or a character
+  class in square brackets (e.g. <tt>[ABC]</tt>) will appear in lower case in
+  search results.  For example, with this option activated, an <i>Anagram
+  Match</i> search of <tt>EXT?</tt> will result in <tt>EXiT</tt>,
+  <tt>nEXT</tt>, <tt>sEXT</tt>, <tt>TEXt</tt>, <tt>vEXT</tt> rather than
+  <tt>EXIT</tt>, <tt>NEXT</tt>, <tt>SEXT</tt>, <tt>TEXT</tt>,
+  <tt>VEXT</tt>.</p>
+
+
+  <a name="show-lexicon-symbols">
+  <h3>Show lexicon symbols</h3>
+
+  <p>If the <i>Show lexicon symbols</i> option is selected, special symbols
+  will be displayed next to words that belong to a certain combination of
+  lexicons.  For example, the <tt>#</tt> symbol is displayed by default when
+  viewing words in the CSW lexicon that are not in the OWL2 lexicon.</p>
+
+  <p>Lexicon symbols can be configured by clicking the <i>Edit</i> button.  On
+  the lexicon symbol configuration window, new symbol configurations can be
+  added by clicking the <i>Add</i> button, and any symbol configuration can be
+  removed by clicking the button with a minus sign next to the configuration.
+  Symbols can be up to three characters long, and will only be displayed when
+  both lexicons from the symbol configuration are loaded.</p>
+
   <a name="save-preferences">
   <h2>Saving Changes to Preferences</h2>
 
@@ -277,7 +334,7 @@
   <td align="right">Next &gt;&gt;</td>
   </tr></table>
 
-  <p>Copyright &copy; 2005, 2006 Michael W Thelen.</p>
+  <p>Copyright &copy; 2005, 2006, 2007, 2008 Michael W Thelen.</p>
 </body>
 </html>
 

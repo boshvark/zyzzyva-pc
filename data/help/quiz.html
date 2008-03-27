@@ -88,8 +88,12 @@
   <p><b>Probability:</b> Questions are presented in probability order.</p>
 
   <p><b>Schedule:</b> Questions are presented in cardbox schedule order.  This
-  is the only question order for Cardbox quizzes, and cannot be used for other
-  kinds of quizzes.</p>
+  question order can only be used for Cardbox quizzes.</p>
+
+  <p><b>Schedule (Cardbox 0 First):</b> Questions are presented in cardbox
+  schedule order, except that questions in cardbox 0 are always presented
+  first regardless of when they are actually scheduled to be seen.  This
+  question order can only be used for Cardbox quizzes.</p>
 
   <p>The <i>Restore progress</i> checkbox is used when loading previously
   saved quizzes.  See <a href="quiz.html#load-save-quiz">Loading and Saving
@@ -137,14 +141,13 @@
   counted as incorrect, click the <i>Mark as Missed</i> button.  This may
   happen if, for example, you guessed the correct answer but weren't sure of
   it.  Marking the response as incorrect will allow it to be noted for later
-  review.</p>
+  review.  If the response was not completely correct, but you would like it
+  to be counted as correct, click the <i>Mark as Correct</i> button.</p>
 
   <p>During an Anagram quiz, the letters of the quiz question can be
-  rearranged by clicking the <i>Alpha</i> or <i>Random</i> buttons.  The
-  <i>Alpha</i> button will arrange the letters in alphabetical order, and the
-  <i>Random</i> button will arrange the letters in random order.  If tile
-  images are being used, they can also be rearranged by dragging the tiles
-  with the mouse.</p>
+  rearranged by choosing a letter ordering from the <i>Letter order</i>
+  dropdown and clicking the <i>Reorder</i> button.  If tile images are being
+  used, they can also be rearranged by dragging the tiles with the mouse.</p>
 
   <p>If the quiz is using a timer, the timer can be paused at any time by
   clicking the <i>Pause</i> button.  Unpause the timer by clicking the
@@ -256,7 +259,8 @@
   often than more difficult questions.  If a question is always answered
   incorrectly, it will be seen every day.</p>
 
-  <p>Here is the full list of schedule intervals for Zyzzyva cardboxes:</p>
+  <p>Here is the full list of default schedule intervals for Zyzzyva
+  cardboxes:</p>
 
   <ul>
   <li>Cardbox 0: 1 day</li>
@@ -279,15 +283,18 @@
   that should be added.  Right-click the word list and choose "Add list to
   Cardbox".  A window will appear, containing the list of words.  Select the
   quiz type for which the words should be added to the cardbox system
-  (Anagrams, Anagrams with Hooks, or Hooks).  Normally all words are added to
-  cardbox 0.  However, if the "Estimate cardbox" option is checked, Zyzzyva
-  will instead place each word in a cardbox corresponding to your past
-  performance on that word.  For example, if you have correctly responded to
-  AEIRSST four times in a row in non-cardbox quizzes, and are adding the word
-  SATIRES to the cardbox system, it will initially be placed in cardbox 4
-  instead of cardbox 0.  This option can be very useful for avoiding
-  unnecessary repetition of relatively easy words, so selecting the "Estimate
-  cardbox" option is recommended.</p>
+  (Anagrams, Anagrams with Hooks, or Hooks).</p>
+
+  <p>All the words in the list can be added to a specific cardbox by selecting
+  the cardbox next to the <i>Specify cardbox</i> label.  Normally all words
+  are added to cardbox 0.  However, if the <i>Estimate cardbox</i> option is
+  checked, Zyzzyva will instead place each word in a cardbox corresponding to
+  your past performance on that word.  For example, if you have correctly
+  responded to AEIRSST four times in a row in non-cardbox quizzes, and are
+  adding the word SATIRES to the cardbox system, it will initially be placed
+  in cardbox 4 instead of cardbox 0.  This option can be very useful for
+  avoiding unnecessary repetition of relatively easy words, so selecting the
+  <i>Estimate cardbox</i> option is recommended.</p>
 
   <p>After the <i>OK</i> button is clicked, the words will be added to the
   cardbox system.  Any words placed in cardbox 0 will be available for
@@ -316,13 +323,15 @@
   <p>Normally, Zyzzyva takes care of assigning questions to their appropriate
   cardboxes throughout the course of a cardbox quiz.  However, at any time
   during a cardbox quiz, the current question can also be manually assigned to
-  a cardbox.  To do so, hold down the <tt>Ctrl</tt> key and press the number
-  of the cardbox to which the question should be moved.  For example, to
-  assign the current question to cardbox 3, press <tt>Ctrl-3</tt>.  To assign
-  the question to cardbox 10, press <tt>Ctrl-0</tt>.  To assign the question
-  to cardbox 0, click the <i>Mark as Missed</i> button.  When manually
-  assigning the current question to a cardbox (other than 0), the question
-  will also be marked as correct.</p>
+  a cardbox.  This can be done by selecting the desired cardbox next to the
+  <i>Cardbox</i> label, and clicking the <i>Move</i> button.  For cardboxes 1
+  through 10, a shortcut for this action is to hold down the <tt>Ctrl</tt> key
+  and press the number of the cardbox to which the question should be moved.
+  For example, to assign the current question to cardbox 3, press
+  <tt>Ctrl-3</tt>.  To assign the question to cardbox 10, press
+  <tt>Ctrl-0</tt>.  To assign the question to cardbox 0, click the <i>Mark as
+  Missed</i> button.  When manually assigning the current question to a
+  cardbox (other than 0), the question will also be marked as correct.</p>
 
   <a name="cardbox-reschedule">
   <h3>Rescheduling Cardbox Questions</h3>
@@ -333,7 +342,7 @@
   <tt>Tools</tt> from the main application menu, then choose <tt>Reschedule
   Cardbox Contents</tt>.  A window will appear, asking which words should be
   rescheduled, and in what way the rescheduling should happen.</p>
-  
+
   <p>The most common way to reschedule is by activating the button that says
   <i>Shift words so this many are ready now</i>.  This will leave all
   scheduled words in order, but will delay them or hasten them appropriately,
@@ -341,7 +350,7 @@
   benefit of rescheduling in this way is that words in higher cardboxes will
   remain in order, so they can still be seen relatively soon after the
   rescheduling.</p>
-  
+
   <p>The other way of rescheduling can be done by activing the button that
   says <i>Reschedule words according to their cardbox</i>.  By choosing this
   method, words in the cardbox system will be rescheduled according to their
@@ -372,9 +381,9 @@
   system, then click <i>OK</i>.  The words will be removed from the cardbox
   system, but quiz statistics about them (number of times correct or
   incorrect, last time correct, etc.) will remain intact.  If the removed
-  words are ever added to the cardbox again with the "Estimate cardbox" option
-  selected, it is likely that they will be added to the same cardboxes they
-  were removed from.</p>
+  words are ever added to the cardbox again with the <i>Estimate cardbox</i>
+  option selected, it is likely that they will be added to the same cardboxes
+  they were removed from.</p>
 
   <hr>
   <table border="0" width="100%"><tr>
@@ -383,5 +392,6 @@
   <td align="right"><a href="judge.html">Next &gt;&gt;</a></td>
   </tr></table>
 
-  <p>Copyright &copy; 2005, 2006, 2007 Michael W Thelen.</p> </body> </html>
-
+  <p>Copyright &copy; 2005, 2006, 2007, 2008 Michael W Thelen.</p>
+</body>
+</html>
