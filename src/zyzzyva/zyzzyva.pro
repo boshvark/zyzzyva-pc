@@ -3,7 +3,7 @@
 #
 # Build configuration file for Zyzzyva tests using qmake.
 #
-# Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2006, 2008 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -46,7 +46,7 @@ unix {
     LIBS = -lzyzzyva -L$$ROOT/bin
 }
 win32 {
-    LIBS = -lzyzzyva1 -L$$ROOT/bin
+    LIBS = -lzyzzyva2 -L$$ROOT/bin
 }
 
 # Source files
