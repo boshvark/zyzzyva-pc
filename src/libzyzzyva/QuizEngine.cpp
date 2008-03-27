@@ -36,23 +36,18 @@
 //! A comparison function that sorts strings based on probability as a primary
 //! key, and alphabetically as a secondary key.
 //
-//! @param a a string
-//! @param b another string
+//! @param a a string/combination pair
+//! @param b another string/combination pair
 //---------------------------------------------------------------------------
 bool
-probabilityCmp(const QString& a, const QString& b)
+probabilityCmp(const QPair<QString, double>& a, const QPair<QString, double>& b)
 {
-    // FIXME: There has to be a more efficient way than this!
-    LetterBag letterBag;
-    double ca = letterBag.getNumCombinations(a);
-    double cb = letterBag.getNumCombinations(b);
-
-    if (ca > cb)
+    if (a.second > b.second)
         return true;
-    else if (cb > ca)
+    else if (b.second > a.second)
         return false;
     else
-        return (a < b);
+        return (a.first < b.first);
 }
 
 //---------------------------------------------------------------------------
@@ -169,8 +164,23 @@ QuizEngine::newQuiz(const QuizSpec& spec)
             break;
 
             case QuizSpec::ProbabilityOrder: {
-                qSort(quizQuestions.begin(), quizQuestions.end(),
+                LetterBag letterBag;
+                QList<QPair<QString, double> > questionPairs;
+
+                foreach (QString question, quizQuestions) {
+                    double combos = letterBag.getNumCombinations(question);
+                    questionPairs.append(qMakePair(question, combos));
+                }
+
+                qSort(questionPairs.begin(), questionPairs.end(),
                       probabilityCmp);
+
+                quizQuestions.clear();
+                QListIterator<QPair<QString, double> > it (questionPairs);
+                while (it.hasNext()) {
+                    const QPair<QString, double>& questionPair = it.next();
+                    quizQuestions.append(questionPair.first);
+                }
             }
             break;
 
