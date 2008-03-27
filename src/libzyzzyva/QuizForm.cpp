@@ -127,9 +127,9 @@ consonantsFirstCmp(const QChar& a, const QChar& b)
 //---------------------------------------------------------------------------
 QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     : ActionForm(QuizFormType, parent, f), wordEngine(we),
-    quizEngine(new QuizEngine(wordEngine)),
-    timerId(0), timerPaused(0), checkBringsJudgment(true),
-    recordStatsBlocked(false), unsavedChanges(false), db(0),
+    quizEngine(new QuizEngine(wordEngine)), timerId(0), timerPaused(0),
+    checkBringsJudgment(true), recordStatsBlocked(false),
+    unsavedChanges(false), questionMarkedStatus(QuestionNotMarked), db(0),
     // FIXME: This dialog should be nonmodal!
     analyzeDialog(new AnalyzeQuizDialog(quizEngine, we, this,
                                         Qt::WindowMinMaxButtonsHint))
@@ -801,6 +801,7 @@ QuizForm::markMissed()
     markMissedButton->setText(MARK_CORRECT_BUTTON);
     bool old = checkBringsJudgment;
     checkBringsJudgment = true;
+    questionMarkedStatus = QuestionMarkedMissed;
     db->undoLastResponse(quizEngine->getQuestion());
     checkResponseClicked();
     checkBringsJudgment = old;
@@ -828,6 +829,7 @@ QuizForm::markCorrect()
 
     bool old = checkBringsJudgment;
     checkBringsJudgment = false;
+    questionMarkedStatus = QuestionMarkedCorrect;
     db->undoLastResponse(quizEngine->getQuestion());
     checkResponseClicked();
     checkBringsJudgment = old;
@@ -885,10 +887,10 @@ QuizForm::checkResponseClicked()
 
     // Mark question missed if all correct answers were given, but an
     // incorrect answer was also given
-    if (MainSettings::getQuizMarkMissedAfterIncorrect() &&
+    if ((questionMarkedStatus == QuestionNotMarked) &&
+        MainSettings::getQuizMarkMissedAfterIncorrect() &&
         (quizType != QuizSpec::QuizWordListRecall) &&
         (quizEngine->getQuestionIncorrect() > 0) &&
-        (quizEngine->getQuestionTotal() > 0) &&
         (quizEngine->getQuestionCorrect() == quizEngine->getQuestionTotal()))
     {
         markMissed();
@@ -943,9 +945,15 @@ QuizForm::checkResponseClicked()
     // FIXME: Count Incorrect answers (not just Missed) as incorrect when
     // recording stats
     bool questionCorrect = true;
-
     QStringList unanswered = quizEngine->getMissed();
-    if (unanswered.empty()) {
+    if (questionMarkedStatus == QuestionMarkedMissed)
+        questionCorrect = false;
+    else if (questionMarkedStatus == QuestionMarkedCorrect)
+        questionCorrect = true;
+    else
+        questionCorrect = unanswered.isEmpty();
+
+    if (questionCorrect) {
         responseModel->clearLastAddedIndex();
         markMissedButton->setText(MARK_MISSED_BUTTON);
     }
@@ -1104,6 +1112,7 @@ QuizForm::startQuestion()
     clearStats();
     updateQuestionDisplay();
     responseModel->clear();
+    questionMarkedStatus = QuestionNotMarked;
 
     QString question = quizEngine->getQuestion();
     origQuestionData = db->getQuestionData(question);
