@@ -26,6 +26,7 @@
 #define ZYZZYVA_QUIZ_DATABASE_H
 
 #include "Rand.h"
+#include <QMap>
 #include <QSqlDatabase>
 #include <QSqlQueryModel>
 #include <QString>
@@ -67,6 +68,8 @@ class QuizDatabase
     int shiftCardbox(const QStringList& questions, int desiredBacklog);
     QStringList getReadyQuestions(const QStringList& questions, bool zeroFirst);
     QuestionData getQuestionData(const QString& question);
+    QMap<int, int> getCardboxCounts();
+    QMap<int, int> getScheduleDayCounts();
 
     const QSqlDatabase* getDatabase() const;
 

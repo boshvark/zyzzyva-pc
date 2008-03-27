@@ -46,10 +46,8 @@ const int REFRESH_MSECS = 120000;
 //! @param f widget flags
 //---------------------------------------------------------------------------
 CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
-    : ActionForm(CardboxFormType, parent, f), wordEngine(e),
-    quizDatabase(0), cardboxCountModel(0), cardboxDaysModel(0),
-    //cardboxContentsModel(0),
-    dbDirty(true)
+    : ActionForm(CardboxFormType, parent, f), wordEngine(e)
+    //cardboxCountModel(0), cardboxDaysModel(0), cardboxContentsModel(0)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     Q_CHECK_PTR(mainVlay);
@@ -58,8 +56,6 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     lexiconWidget = new LexiconSelectWidget;
     Q_CHECK_PTR(lexiconWidget);
-    connect(lexiconWidget->getComboBox(), SIGNAL(activated(int)),
-            SLOT(quizSpecChanged()));
     mainVlay->addWidget(lexiconWidget);
 
     QHBoxLayout* quizTypeHlay = new QHBoxLayout;
@@ -78,7 +74,6 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     quizTypeCombo->addItem(
         Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
     quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizHooks));
-    connect(quizTypeCombo, SIGNAL(activated(int)), SLOT(quizSpecChanged()));
     quizTypeHlay->addWidget(quizTypeCombo);
 
     QFrame* topSepFrame = new QFrame;
@@ -96,18 +91,26 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     cardboxCountLabel->setText("Questions in each cardbox:");
     cardboxGlay->addWidget(cardboxCountLabel, 0, 0);
 
-    cardboxCountView = new QTreeView;
-    Q_CHECK_PTR(cardboxCountView);
-    cardboxGlay->addWidget(cardboxCountView, 1, 0);
+    cardboxCountTree = new QTreeWidget;
+    Q_CHECK_PTR(cardboxCountTree);
+    QStringList cardboxCountTreeHeaders;
+    cardboxCountTreeHeaders.append("Cardbox");
+    cardboxCountTreeHeaders.append("Count");
+    cardboxCountTree->setHeaderLabels(cardboxCountTreeHeaders);
+    cardboxGlay->addWidget(cardboxCountTree, 1, 0);
 
     QLabel* cardboxDaysLabel = new QLabel;
     Q_CHECK_PTR(cardboxDaysLabel);
     cardboxDaysLabel->setText("Questions due in days from today:");
     cardboxGlay->addWidget(cardboxDaysLabel, 0, 1);
 
-    cardboxDaysView = new QTreeView;
-    Q_CHECK_PTR(cardboxDaysView);
-    cardboxGlay->addWidget(cardboxDaysView, 1, 1);
+    cardboxDaysTree = new QTreeWidget;
+    Q_CHECK_PTR(cardboxDaysTree);
+    QStringList cardboxDaysTreeHeaders;
+    cardboxDaysTreeHeaders.append("Days");
+    cardboxDaysTreeHeaders.append("Count");
+    cardboxDaysTree->setHeaderLabels(cardboxDaysTreeHeaders);
+    cardboxGlay->addWidget(cardboxDaysTree, 1, 1);
 
     //cardboxContentsView = new QTreeView;
     //Q_CHECK_PTR(cardboxContentsView);
@@ -157,8 +160,6 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     mainVlay->addWidget(questionDataLabel, 1);
 
     //mainVlay->addStretch(0);
-
-    quizSpecChanged();
 
     //connect(&refreshTimer, SIGNAL(timeout()), SLOT(refreshClicked()));
     //refreshTimer.start(REFRESH_MSECS);
@@ -211,38 +212,37 @@ CardboxForm::getStatusString() const
 void
 CardboxForm::refreshClicked()
 {
-    connectToDatabase();
-    if (!quizDatabase)
+    QString lexicon = lexiconWidget->getCurrentLexicon();
+    QString quizType = quizTypeCombo->currentText();
+    QuizDatabase db (lexicon, quizType);
+    if (!db.isValid()) {
+        // FIXME: pop up a warning
         return;
+    }
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    const QSqlDatabase* sqlDb = quizDatabase->getDatabase();
 
-    // Refresh cardbox count list
-    if (!cardboxCountModel) {
-        cardboxCountModel = new QSqlQueryModel;
-        Q_CHECK_PTR(cardboxCountModel);
-        cardboxCountView->setModel(cardboxCountModel);
+    cardboxCountTree->clear();
+    QMap<int, int> cardboxCounts = db.getCardboxCounts();
+    QMapIterator<int, int> it (cardboxCounts);
+    while (it.hasNext()) {
+        it.next();
+        QStringList strings;
+        strings.append(QString::number(it.key()));
+        strings.append(QString::number(it.value()));
+        cardboxCountTree->addTopLevelItem(new QTreeWidgetItem(strings));
     }
-    QString queryStr = "SELECT cardbox, count(*) FROM questions "
-        "WHERE cardbox NOT NULL GROUP BY cardbox";
-    cardboxCountModel->setQuery(queryStr, *sqlDb);
-    cardboxCountModel->setHeaderData(0, Qt::Horizontal, "Cardbox");
-    cardboxCountModel->setHeaderData(1, Qt::Horizontal, "Count");
 
-    // Refresh upcoming word counts
-    if (!cardboxDaysModel) {
-        cardboxDaysModel = new QSqlQueryModel;
-        Q_CHECK_PTR(cardboxDaysModel);
-        cardboxDaysView->setModel(cardboxDaysModel);
+    cardboxDaysTree->clear();
+    QMap<int, int> dayCounts = db.getScheduleDayCounts();
+    QMapIterator<int, int> jt (dayCounts);
+    while (jt.hasNext()) {
+        jt.next();
+        QStringList strings;
+        strings.append(QString::number(jt.key()));
+        strings.append(QString::number(jt.value()));
+        cardboxDaysTree->addTopLevelItem(new QTreeWidgetItem(strings));
     }
-    queryStr =
-        "SELECT round((next_scheduled - 43200.0 - %1) / 86400) AS days, "
-        "count(*) FROM questions WHERE cardbox NOT NULL GROUP BY days";
-    unsigned int now = QDateTime::currentDateTime().toTime_t();
-    cardboxDaysModel->setQuery(queryStr.arg(now), *sqlDb);
-    cardboxDaysModel->setHeaderData(0, Qt::Horizontal, "Days");
-    cardboxDaysModel->setHeaderData(1, Qt::Horizontal, "Count");
 
     // Refresh cardbox contents
 
@@ -290,17 +290,6 @@ CardboxForm::refreshClicked()
 }
 
 //---------------------------------------------------------------------------
-//  quizSpecChanged
-//
-//! Called when the Lexicon or Quiz Type is changed by the user.
-//---------------------------------------------------------------------------
-void
-CardboxForm::quizSpecChanged()
-{
-    dbDirty = true;
-}
-
-//---------------------------------------------------------------------------
 //  questionDataClicked
 //
 //! Called when the Get Info button is clicked.  Display information about the
@@ -313,19 +302,24 @@ CardboxForm::questionDataClicked()
     if (question.isEmpty())
         return;
 
-    connectToDatabase();
+    QString lexicon = lexiconWidget->getCurrentLexicon();
+    QString quizType = quizTypeCombo->currentText();
+    QuizDatabase db (lexicon, quizType);
+    if (!db.isValid()) {
+        // FIXME: pop up a warning
+        return;
+    }
 
-    QuizSpec::QuizType quizType =
-        Auxil::stringToQuizType(quizTypeCombo->currentText());
-    if ((quizType == QuizSpec::QuizAnagrams) ||
-        (quizType == QuizSpec::QuizAnagramsWithHooks))
+    QuizSpec::QuizType qtype = Auxil::stringToQuizType(quizType);
+    if ((qtype == QuizSpec::QuizAnagrams) ||
+        (qtype == QuizSpec::QuizAnagramsWithHooks))
     {
         question = Auxil::getAlphagram(question);
     }
 
     QString resultStr;
 
-    QuizDatabase::QuestionData data = quizDatabase->getQuestionData(question);
+    QuizDatabase::QuestionData data = db.getQuestionData(question);
     if (!data.valid) {
         resultStr = QString("<font color=\"red\">Not in Database</font>");
     }
@@ -394,22 +388,4 @@ CardboxForm::questionDataClicked()
     // Select the question input area
     questionLine->setFocus();
     questionLine->setSelection(0, questionLine->text().length());
-}
-
-//---------------------------------------------------------------------------
-//  connectToDatabase
-//
-//! Connect to the quiz database, reconnecting if necessary.
-//---------------------------------------------------------------------------
-void
-CardboxForm::connectToDatabase()
-{
-    if (!dbDirty)
-        return;
-
-    delete quizDatabase;
-    QString lexicon = lexiconWidget->getCurrentLexicon();
-    QString quizType = quizTypeCombo->currentText();
-    quizDatabase = new QuizDatabase(lexicon, quizType);
-    Q_CHECK_PTR(quizDatabase);
 }
