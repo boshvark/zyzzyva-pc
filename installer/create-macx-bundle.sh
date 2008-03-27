@@ -47,8 +47,8 @@ cp -r bin/Zyzzyva.app/Contents/* $OUTDIR/Zyzzyva.app/Contents
 # Change link location for libzyzzyva in executable
 echo "Changing link location for libzyzzyva in Zyzzyva executable..."
 install_name_tool -change \
-    libzyzzyva.1.dylib \
-    @executable_path/../Frameworks/libzyzzyva.1.dylib \
+    libzyzzyva.2.dylib \
+    @executable_path/../Frameworks/libzyzzyva.2.dylib \
     $OUTDIR/Zyzzyva.app/Contents/MacOS/Zyzzyva
 
 # Copy zyzzyva.tap unless it's already there
@@ -66,7 +66,7 @@ fi
 
 # Copy Zyzzyva libs to Frameworks directory
 echo "Copying libzyzzyva into bundle..."
-cp bin/libzyzzyva.1.dylib $OUTDIR/Zyzzyva.app/Contents/Frameworks
+cp bin/libzyzzyva.2.dylib $OUTDIR/Zyzzyva.app/Contents/Frameworks
 
 # Copy Qt libs to Frameworks directory unless they're already there
 if [ "$COPYQT" = "yes" ]; then
@@ -140,7 +140,7 @@ for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistant ; do
     install_name_tool -change \
         $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
         @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
-        $OUTDIR/Zyzzyva.app/Contents/Frameworks/libzyzzyva.1.dylib
+        $OUTDIR/Zyzzyva.app/Contents/Frameworks/libzyzzyva.2.dylib
 
     # Change link locations for framework in executable
     echo "Changing link location for $i.framework in Zyzzyva executable..."
