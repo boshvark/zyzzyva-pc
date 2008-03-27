@@ -5,7 +5,6 @@
 </head>
 <body>
   <h1>Searching for Words</h1>
-
   <p>Choose <tt>File-&gt;Search</tt> from the main menu to create a new Search
   tab.  A Search tab can be used to find all acceptable words that match
   certain conditions within a lexicon.  The lexicon and conditions are
@@ -15,16 +14,12 @@
   sign.  Remove a condition from the list by clicking the button with a minus
   sign next to the condition to be removed.  When the search conditions are
   correct, click the <i>Search</i> button to perform a search.</p>
-
   <a name="search-conditions">
   <h2>Search Conditions</h2>
-
   <p>The available search conditions are described below.  Any number of each
   type of condition can be specified in a single search.</p>
-
   <a name="anagram-match">
   <h3>Anagram Match</h3>
-
   <p>The <i>Anagram Match</i> condition means that the letters in the search
   pattern can be matched in any order.  All the letters must be matched
   exactly the number of times they appear in the match pattern.  Special
@@ -35,7 +30,6 @@
   The <tt>[</tt> and <tt>]</tt> characters can also be used to specify a set
   of letters that can be matched.  Here are some examples of <i>Anagram
   Match</i> conditions:</p>
-
   <table width="100%">
   <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
   <tr><td><tt>ATE</tt></td><td><tt>ATE, EAT, ETA, TAE, TEA</tt></td></tr>
@@ -49,19 +43,15 @@
   ZOO</tt></td></tr>
   <tr><td><tt>*JBX</tt></td><td><tt>JAMBEAUX</tt></td></tr>
   </table>
-
   <p>Note that with an <i>Anagram Match</i> condition, using more than one
   <tt>*</tt> character has the same effect as using just one.</p>
-
   <a name="pattern-match">
   <h3>Pattern Match</h3>
-
   <p>The <i>Pattern Match</i> condition means that the search pattern must be
   matched exactly, in the same order the letters are specified.  The same
   special wildcard characters can be used as described in the <a
   href="#anagram-match">Anagram Match</a> section.  Here are some examples of
   <i>Pattern Match</i> conditions:</p>
-
   <table width="100%">
   <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
   <tr><td><tt>ATE</tt></td><td><tt>ATE</tt></td></tr>
@@ -77,16 +67,13 @@
   <tr><td><tt>?W*M?S</tt></td><td><tt>SWAMIS, SWAMPS, TWASOMES, TWOSOMES,
   TWELVEMOS</tt></td></tr>
   </table>
-
   <a name="subanagram-match">
   <h3>Subanagram Match</h3>
-
   <p>The <i>Subanagram Match</i> condition means that the letters in the
   search pattern can be matched in any order, and not all letters must be used
   in each matching word.  The same special wildcard characters can be used as
   described in the <a href="#anagram-match">Anagram Match</a> section.  Here
   are some examples of <i>Subanagram Match</i> conditions:</p>
-
   <table width="100%">
   <tr><td><b>Pattern</b></td><td><b>Matches</b></td></tr>
   <tr><td><tt>ATE</tt></td><td><tt>AE, AT, ET, TA, ATE, EAT, ETA, TAE,
@@ -95,13 +82,10 @@
   LAX, LEX, LOX, LUX</tt></td></tr>
   <tr><td><tt>LX[AU]</tt></td><td><tt>AL, AX, LA, XU, LAX, LUX</tt></td></tr>
   </table>
-
   <p>Note that with an <i>Subanagram Match</i> condition, using a <tt>*</tt>
   character will cause the pattern to match every acceptable word.</p>
-
   <a name="word-length">
   <h3>Length</h3>
-
   <p>A minimum and maximum word length can be specified for the results of a
   search.  For example, if the minimum length is 4 and the maximum length is
   6, then the search will only return results that are between four and six
@@ -109,30 +93,24 @@
   <i>Length</i> condition and set the <i>Min</i> and <i>Max</i> values
   appropriately.  An exact length can also be specified by making the
   <i>Min</i> and <i>Max</i> values equal to each other.</p>
-
   <a name="in-lexicon">
   <h3>In Lexicon</h3>
-
   <p>The <i>In Lexicon</i> condition specifies an additional lexicon that each
   word must belong to.  Only words in the specified lexicon will appear in the
   search results.  If the <i>Not</i> checkbox is activated, only words
   <i>not</i> in the additional lexicon will appear in the search results.</p>
-
   <p>The <i>In Lexicon</i> condition is a convenient way to find differences
   between two lexicons.  For example, to find all the 2-letter words that were
   added to the OWL2 lexicon, and do not appear in the OWL lexicon, do a search
   within the OWL2 lexicon with a <i>Length</i> condition of Min 3, Max 3, and
   a negated <i>In Lexicon</i> condition of OWL.  In order for this search to
   work correctly, both the OWL2 and OWL lexicons must be loaded.</p>
-
   <a name="in-word-list">
   <h3>In Word List</h3>
-
   <p>The <i>In Word List</i> condition specifies a list that each word must
   belong to.  Only words in the word list will appear in the search results.
   If the <i>Not</i> checkbox is activated, only words <i>not</i> in the word
   list will appear in the search results.</p>
-
   <p>To create a word list, click the <i>Edit List</i> button.  A window will
   appear, allowing a word list to be read from a file.  To read a word list
   from a file, click the <i>Open File</i> button and select the file
@@ -140,40 +118,31 @@
   line.  Words from more files can be included by clicking the <i>Open
   File</i> button multiple times.  The word list can be cleared by clicking
   the <i>Clear</i> button.</p>
-
   <p>When the word list is complete, click the <i>OK</i> button.  The search
   area will display the number of words in the list.</p>
-
   <a name="belongs-to-group">
   <h3>Belongs to Group</h3>
-
   <p>The <i>Belongs to Group</i> condition specifies special sets that each
   word must belong to.  Currently there are a few sets provided:</p>
-
   <p><b>Hook words.</b> The <i>Hook Words</i> set consists of all words that
   can form another valid word by removing the first or last letter.  For
   example, <tt>SHILL</tt> is a hook word, because the word <tt>HILL</tt> can
   be formed by removing its first letter.</p>
-
   <p><b>Front hooks.</b> The <i>Front Hooks</i> set consists of all words that
   can form another valid word by removing the first letter.  For example,
   <tt>AGAZE</tt> is a front hook, because the word <tt>GAZE</tt> can be formed
   by removing its first letter.</p>
-
   <p><b>Back hooks.</b> The <i>Back Hooks</i> set consists of all words that
   can form another valid word by removing the last letter.  For example,
   <tt>VIGA</tt> is a back hook, because the word <tt>VIG</tt> can be formed by
   removing its last letter.</p>
-
   <p><b>High Fives.</b> The <i>High Fives</i> set consists of 5-letter
   words beginning or ending with F, H, K, V, W, or Y.  High Fives also do not
   contain J, Q, X, or Z.</p>
-
   <p><b>Type I Sevens.</b> The <i>Type I Sevens</i> set consists of 7-letter
   words containing a 6-letter bingo stem in the top 100 stems.  For example,
   <tt>AIRIEST</tt> is a Type I Seven because it contains the bingo stem
   <tt>SATIRE</tt>, which is in the top 100 stems.</p>
-
   <p><b>Type II Sevens.</b> The <i>Type II Sevens</i> set consists of 7-letter
   words consisting entirely of the letters in
   <tt>AAADEEEEGIIILNNOORRSSTTU</tt>, but not belonging to the <i>Type I
@@ -183,7 +152,6 @@
   letter.  For example, <tt>ADAGIAL</tt> is a Type II Seven because its
   letters are entirely within the set of letters described above, but it is
   not a Type I Seven.</p>
-
   <p><b>Type III Sevens.</b> The <i>Type III Sevens</i> set consists of
   7-letter words that have at least a certain probability, but do not belong
   to either the <i>Type I Sevens</i> or <i>Type II Sevens</i> set.  For a word
@@ -191,12 +159,10 @@
   probability of the word <tt>HUNTERS</tt>.  For example, <tt>ABALONE</tt> is
   a Type III Seven, because its probability is greater than <tt>HUNTERS</tt>,
   but it is not a Type I Seven nor a Type II Seven.</p>
-
   <p><b>Type I Eights.</b> The <i>Type I Eights</i> set consists of 8-letter
   words containing a 6-letter bingo stem in the top 100 stems.  For example,
   <tt>SEXTARII</tt> is a Type I Eight because it contains the bingo stem
   <tt>SATIRE</tt>, which is in the top 100 stems.</p>
-
   <p><b>Type II Eights.</b> The <i>Type II Eights</i> set consists of 8-letter
   words consisting entirely of the letters in
   <tt>AAADEEEEGIIILNNOORRSSTTU</tt>, but not belonging to the <i>Type I
@@ -206,7 +172,6 @@
   letter.  For example, <tt>ADENOSES</tt> is a Type II Eight because its
   letters are entirely within the set of letters described above, but it is
   not a Type I Eight.</p>
-
   <p><b>Type III Eights.</b> The <i>Type III Eights</i> set consists of
   7-letter words that have at least a certain probability, but do not belong
   to either the <i>Type I Eights</i> or <i>Type II Eights</i> set.  For a word
@@ -214,34 +179,27 @@
   probability of the word <tt>NOTIFIED</tt>.  For example, <tt>ABOIDEAU</tt>
   is a Type III Eight, because its probability is greater than
   <tt>NOTIFIED</tt>, but it is not a Type I Eight nor a Type II Eight.</p>
-
   <p><b>Eights From Seven-Letter Stems.</b> The <i>Eights From Seven-Letter
   Stems</i> set consists of 8-letter words containing a 7-letter bingo stem in
   the top 100 stems.  For example, <tt>AZOTISED</tt> is an Eight From
   Seven-Letter Stems because it contains the bingo stem <tt>TOADIES</tt>,
   which is in the top 100 stems.</p>
-
   <a name="num-vowels">
   <h3>Number of Vowels</h3>
-
   <p>A minimum and maximum number of vowels (A, E, I, O, U) can be specified
   for the results of a search.  For example, if the minimum number of is 1 and
   the maximum is 2, then the search will only return words that have one or
   two vowels.</p>
-
   <p>To specify minimum or maximum number of vowels, choose the <i>Number of
   Vowels</i> condition and set the <i>Min</i> and <i>Max</i> values
   appropriately.  An exact number of vowels can also be specified by making
   the <i>Min</i> and <i>Max</i> values equal to each other.</p>
-
   <a name="includes-letters">
   <h3>Includes Letters</h3>
-
   <p>The <i>Includes Letters</i> condition specifies letters that must be
   included in each word in the search results.  This is most useful if you
   want to specify a <i>Pattern Match</i> condition with wildcard characters,
   and want the wildcards to match certain letters in an unspecified order.</p>
-
   <p>For example, to find all 7- and 8-letter words beginning with
   <tt>OVER</tt> and containing the letters <tt>A</tt>, <tt>L</tt>, and
   <tt>T</tt> in any order, do the following.  Specify a <i>Pattern Match</i>
@@ -249,11 +207,9 @@
   <i>Maximum Length</i> condition of 8, and a <i>Includes Letters</i>
   condition of <tt>ALT</tt>.  This search will find the words
   <tt>OVERLATE</tt>, <tt>OVERSALT</tt>, and <tt>OVERTALK</tt>.</p>
-
   <p>If a letter appears multiple times in a <i>Includes Letters</i>
   condition, the letter must appear at least that many times in each word in
   the search results.</p>
-
   <p>If the <i>Not</i> checkbox is activated, then the <i>Includes Letters</i>
   condition specifies letters that must not be included in the search results.
   This is most useful for generating special word lists, such as the list of
@@ -261,10 +217,8 @@
   specify a <i>Includes Letters</i> condition of <tt>Q</tt> and a negated
   <i>Includes Letters</i> condition of <tt>U</tt>.  This search will find all
   the words containing Q but not U.</p>
-
   <a name="probability-order">
   <h3>Probability Order</h3>
-
   <p>A <i>Probability Order</i> search condition can be used to find words
   having a certain probability order relative to other words of the same
   length.  For example, to find the 1000 most probable 7-letter words, create
@@ -275,7 +229,6 @@
   <i>Includes Letters</i> condition of Z, and a <i>Probability Order</i>
   condition of Min 1, Max 1000.  In OWL2, there are two such words: NOTARIZE
   and TRIAZOLE.</p>
-
   <p>If the <i>Lax</i> checkbox is activated, the search will also find all
   words that have equal probability as the minimum or maximum of the range.
   For example, in OWL2, a search for <tt>Length: Min 7, Max 7</tt>,
@@ -285,45 +238,36 @@
   with probability order 8-10.  The <i>Lax</i> checkbox allows them all to be
   found although their unique probability orders are not strictly between 7
   and 8.</p>
-
   <a name="limit-by-probability-order">
   <h3>Limit by Probability Order</h3>
-
   <p>A <i>Limit by Probability Order</i> search condition can be used to limit
   the search results to a certain range of words in order of probability.  For
   example, to find the 50 most probable 7-letter words containing V, create a
   search with a <i>Length</i> condition of Min 7, Max 7, an <i>Includes
   Letters</i> condition of V, and a <i>Limit by Probability Order</i>
   condition of Min 1, Max 50.</p>
-
   <p>The <i>Limit by Probability Order</i> condition is applied last, after
   all other search conditions.  So for example, in the search mentioned above,
   Zyzzyva first finds all 7-letter words containing V.  Then it finds the
   words ranked 1-50 out of that list.</p>
-
   <a name="num-unique-letters">
   <h3>Number of Unique Letters</h3>
-
   <p>A minimum and maximum number of unique letters can be specified
   for the results of a search.  For example, if the minimum number of is 3 and
   the maximum is 5, then the search will only return words that have between
   three and five unique letters.</p>
-
   <p>To specify minimum or maximum number of unique letters, choose the
   <i>Number of Unique Letters</i> condition and set the <i>Min</i> and
   <i>Max</i> values appropriately.  An exact number of unique letters can also
   be specified by making the <i>Min</i> and <i>Max</i> values equal to each
   other.</p>
-
   <a name="point-value">
   <h3>Point Value</h3>
-
   <p>A minimum and maximum point value can be specified for the results of a
   search.  For example, if the minimum number of is 8 and the maximum is 10,
   then the search will only return words that have a total point value between
   8 and 10.  The point value of a word is determined by adding the individual
   point values of its letters.  The value of each letter is the following:</p>
-
   <ul>
   <li>A = 1</li>
   <li>B = 3</li>
@@ -352,75 +296,60 @@
   <li>Y = 4</li>
   <li>Z = 10</li>
   </ul>
-
   <p>The point value of each letter is considered even if a word must normally
   be formed using a blank.  For example, the point value of ZYZZYVA is 43 (10
   + 4 + 10 + 10 + 4 + 4 + 1), not 23 (10 + 4 + 0 + 0 + 4 + 4 + 1).</p>
-
   <p>To specify minimum or maximum point value, choose the <i>Point Value</i>
   condition and set the <i>Min</i> and <i>Max</i> values appropriately.  An
   exact point value can also be specified by making the <i>Min</i> and
   <i>Max</i> values equal to each other.</p>
-
   <a name="prefixes-suffixes">
   <h3>Prefixes and Suffixes</h3>
-
   <p>There are two conditions for specifying that search results must take or
   not take certain prefixes or suffixes.</p>
-
   <p>The <i>Takes Prefix</i> condition specifies that every search result must
   also form a valid word when the specified prefix is added.  For example, if
   a <i>Takes Prefix</i> condition of <tt>PRE</tt> is specified in conjunction
   with a <i>Pattern Match</i> condition of <tt>VAL*</tt>, the word VALENCE
   will be found because PREVALENCE is also valid.  However, the word VALID
   will not be found because PREVALID* is not a valid word.</p>
-
   <p>If the <i>Not</i> checkbox is activated, the meaning of the <i>Takes
   Prefix</i> condition is exactly reversed.  In the previous example, the word
   VALID would appear in the search results because it does <i>not</i> take
   <tt>PRE</tt> as a prefix, and VALENCE would not appear, because it
   <i>does</i> take <tt>PRE</tt> as a prefix.</p>
-
   <p>The <i>Takes Suffix</i> condition specifies that every search result must
   also form a valid word when the specified suffix is added.  For example, if
   a <i>Takes Suffix</i> condition of <tt>S</tt> is specified in conjunction
   with a <i>Pattern Match</i> condition of <tt>*ING</tt>, the word MOLDING
   will be found because MOLDINGS is also valid.  However, the word KICKING
   will not be found because KICKINGS* is not a valid word.</p>
-
   <p>If the <i>Not</i> checkbox is activated, the meaning of the <i>Takes
   Suffix</i> condition is exactly reversed.  In the previous example, the word
   KICKING would appear in the search results because it does <i>not</i> take
   <tt>S</tt> as a suffix, and MOLDING would not appear, because it <i>does</i>
   take <tt>S</tt> as a suffix.</p>
-
   <a name="consists-of">
   <h3>Consists of</h3>
-
   <p>The <i>Consists of</i> condition specifies letters that must occur with a
   certain frequency.  This is useful for generating special word lists, such
   as the list of words containing at least 70% vowels.  To find such words,
   specify a <i>Consists of</i> condition, putting <tt>70</tt> in the
   <i>Min</i> numeric area, <tt>100</tt> in the <i>Max</i> numeric area, and
   <tt>AEIOU</tt> in the input box.</p>
-
   <a name="num-anagrams">
   <h3>Number of Anagrams</h3>
-
   <p>A minimum and maximum number of anagrams can be specified for the results
   of a search.  For example, if the minimum length is 2 and the maximum is 4,
   then the search will only return words that have between two and four
   anagrams.  A word is considered to be an anagram of itself, so every valid
   word has at least one anagram.</p>
-
   <p>To specify minimum or maximum number of anagrams, choose the <i>Number of
   Anagrams</i> condition and set the <i>Min</i> and <i>Max</i> values
   appropriately.  An exact length can also be specified by making the
   <i>Min</i> and <i>Max</i> values equal to each other.</p>
-
   <a name="load-save-search">
   <h2>Loading and Saving Searches</h2>
-
   <p>It can be inconvenient to create complicated searches from scratch each
   time, especially if the same search is used often.  For this reason, Zyzzyva
   allows you to save searches and load them again later.  Anywhere that you
@@ -428,27 +357,22 @@
   there is a <i>Save Search</i> button.  After creating the desired search
   conditions, click the <i>Save Search</i> button to save them.  A window will
   appear to allow you to save the search to a file.</p>
-
   <p>Later, if you want to repeat the same search you saved, you can click the
   <i>Load Search</i> button.  A window will appear to allow you to select the
   saved search file.  After choosing the file, the saved search conditions
   will appear in the search specification area just as if they had been
   entered from scratch.</p>
-
   <p>When saving a search, only the search specification is saved.  The words
   found by the search are not saved.  This allows for flexibility in
   searching.  For example, if you save a search that finds 3-letter words,
   that search will correctly find all 3-letter words no matter what lexicon
   Zyzzyva is using.</p>
-
   <hr>
   <table border="0" width="100%"><tr>
   <td align="left"><a href="quickstart.html">&lt;&lt; Previous</a></td>
   <td align="center"><a href="toc.html">Contents</a></td>
   <td align="right"><a href="quiz.html">Next &gt;&gt;</a></td>
   </tr></table>
-
   <p>Copyright &copy; 2005, 2006, 2007, 2008 Michael W Thelen.</p>
 </body>
 </html>
-
