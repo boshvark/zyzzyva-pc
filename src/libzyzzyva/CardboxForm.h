@@ -31,10 +31,9 @@
 #include <QLineEdit>
 #include <QSqlQueryModel>
 #include <QTimer>
-#include <QTreeView>
+#include <QTreeWidget>
 
 class LexiconSelectWidget;
-class QuizDatabase;
 class WordEngine;
 
 class CardboxForm : public ActionForm
@@ -48,27 +47,23 @@ class CardboxForm : public ActionForm
 
     public slots:
     void refreshClicked();
-    void quizSpecChanged();
     void questionDataClicked();
 
     private:
-    void connectToDatabase();
-
-    private:
     WordEngine*     wordEngine;
-    QuizDatabase*   quizDatabase;
+    //QuizDatabase*   quizDatabase;
     LexiconSelectWidget* lexiconWidget;
     QComboBox*      quizTypeCombo;
-    QSqlQueryModel* cardboxCountModel;
-    QSqlQueryModel* cardboxDaysModel;
+    //QSqlQueryModel* cardboxCountModel;
+    //QSqlQueryModel* cardboxDaysModel;
     //QSqlTableModel* cardboxContentsModel;
-    QTreeView*      cardboxCountView;
-    QTreeView*      cardboxDaysView;
+    //QTreeView*      cardboxCountView;
+    //QTreeView*      cardboxDaysView;
     //QTreeView*      cardboxContentsView;
+    QTreeWidget*    cardboxCountTree;
+    QTreeWidget*    cardboxDaysTree;
     QLineEdit*      questionLine;
     QLabel*         questionDataLabel;
-
-    bool dbDirty;
 
     //QTimer refreshTimer;
 };

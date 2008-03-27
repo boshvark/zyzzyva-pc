@@ -593,6 +593,77 @@ QuizDatabase::getQuestionData(const QString& question)
 }
 
 //---------------------------------------------------------------------------
+//  getCardboxCounts
+//
+//! Return a map of cardboxes to the number of questions in each cardbox.
+//
+//! @return the cardbox count map
+//---------------------------------------------------------------------------
+QMap<int, int>
+QuizDatabase::getCardboxCounts()
+{
+    QMap<int, int> cardboxCounts;
+
+    QSqlQuery query (*db);
+    query.prepare("SELECT cardbox, count(*) FROM questions "
+        "WHERE cardbox NOT NULL GROUP BY cardbox");
+    query.exec();
+
+    while (query.next()) {
+        QVariant variant = query.value(0);
+        if (variant.isNull())
+            continue;
+        int cardbox = variant.toInt();
+
+        variant = query.value(1);
+        if (variant.isNull())
+            continue;
+        int count = variant.toInt();
+
+        cardboxCounts[cardbox] = count;
+    }
+
+    return cardboxCounts;
+}
+
+//---------------------------------------------------------------------------
+//  getScheduleDayCounts
+//
+//! Retrieve a pointer to the database connection.
+//
+//! @return the database connection pointer
+//---------------------------------------------------------------------------
+QMap<int, int>
+QuizDatabase::getScheduleDayCounts()
+{
+    QMap<int, int> dayCounts;
+
+    unsigned int now = QDateTime::currentDateTime().toTime_t();
+    QString queryStr =
+        "SELECT round((next_scheduled - 43200.0 - %1) / 86400) AS days, "
+        "count(*) FROM questions WHERE cardbox NOT NULL GROUP BY days";
+    QSqlQuery query (*db);
+    query.prepare(queryStr.arg(now));
+    query.exec();
+
+    while (query.next()) {
+        QVariant variant = query.value(0);
+        if (variant.isNull())
+            continue;
+        int days = variant.toInt();
+
+        variant = query.value(1);
+        if (variant.isNull())
+            continue;
+        int count = variant.toInt();
+
+        dayCounts[days] = count;
+    }
+
+    return dayCounts;
+}
+
+//---------------------------------------------------------------------------
 //  getDatabase
 //
 //! Retrieve a pointer to the database connection.
