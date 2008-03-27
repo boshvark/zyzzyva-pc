@@ -31,7 +31,7 @@ set PLATFORM=windows
 set OUTDIR=%INSTDIR%\%PLATFORM%
 
 qmake
-make
+CALL make
 
 mkdir %OUTDIR%
 
