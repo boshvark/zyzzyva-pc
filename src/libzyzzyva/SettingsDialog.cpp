@@ -55,7 +55,7 @@ const QString JUDGE_PREFS_ITEM = "Word Judge";
 const QString FONT_PREFS_ITEM = "Fonts";
 const QString WORD_LIST_PREFS_ITEM = "Word Tables";
 
-const QString LEXICON_SEP = "<br>";
+const QString LEXICON_SEP = ", ";
 
 const int FONT_MAIN_BUTTON = 1;
 const int FONT_WORD_LISTS_BUTTON = 2;
