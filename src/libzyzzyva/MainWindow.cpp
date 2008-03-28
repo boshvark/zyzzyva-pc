@@ -429,6 +429,7 @@ MainWindow::tryAutoImport()
             lexicons = dialog->getImportLexicons();
             MainSettings::setAutoImportLexicons(lexicons);
             MainSettings::setDefaultLexicon(dialog->getDefaultLexicon());
+            writeSettings();
         }
 
         delete dialog;
