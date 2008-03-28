@@ -1,12 +1,12 @@
 <license>
-    <issueDate>2006-05-24</issueDate>
+    <issueDate>2008-03-28</issueDate>
     <licenseSchemaVersion>1.2</licenseSchemaVersion>
     <licenseType>standard</licenseType>
-    <majorVersion>3</majorVersion>
-    <minorVersion>7</minorVersion>
+    <majorVersion>5</majorVersion>
+    <minorVersion>4</minorVersion>
     <organization>Zyzzyva - Open Source License</organization>
-    <patchVersion>0</patchVersion>
+    <patchVersion>4</patchVersion>
     <product>BitRock InstallBuilder Multiplatform Enterprise</product>
     <project>Zyzzyva</project>
-    <signature>6f8419fa3d0dd94023fbd63e797b5e76</signature>
+    <signature>fd78e207f5f99dfa31130a13dda5d711</signature>
 </license>
