@@ -349,9 +349,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     setWindowTitle(APPLICATION_TITLE);
     setWindowIcon(QIcon(":/zyzzyva-32x32"));
 
-    tryAutoImport();
-    tryConnectToDatabases();
-
     if (!instance)
         instance = this;
 

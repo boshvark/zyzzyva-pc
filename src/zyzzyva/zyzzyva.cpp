@@ -46,6 +46,9 @@ int main(int argc, char** argv)
 
     MainWindow* window = new MainWindow(0, splash);
 
+    window->tryAutoImport();
+    window->tryConnectToDatabases();
+
     window->show();
     splash->finish(window);
     delete splash;
