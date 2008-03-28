@@ -1247,6 +1247,7 @@ MainWindow::tryConnectToDatabase(const QString& lexicon)
     if (!ok)
         return DbConnectionError;
 
+    setSplashMessage(QString());
     return DbNoError;
 }
 
