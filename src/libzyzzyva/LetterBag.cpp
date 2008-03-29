@@ -208,7 +208,7 @@ LetterBag::setLetterValue(const QChar& letter, int value)
 //! @param distribution the letter distribution
 //---------------------------------------------------------------------------
 void
-LetterBag::resetContents (const QString& distribution)
+LetterBag::resetContents(const QString& distribution)
 {
     QString dist (distribution);
     if (dist.isEmpty())
@@ -243,13 +243,16 @@ LetterBag::resetContents (const QString& distribution)
                 subList.append(1.0);
             else if (i == 0)
                 subList.append(0.0);
-            else
-                subList.append(subChooseCombos[i-1][j-1] +
-                               subChooseCombos[i-1][j]);
+            else {
+                // XXX: For some reason this crashes on Linux when referencing
+                // the first value as subChooseCombos[i-1][j-1], so value() is
+                // used instead.  Weeeeird.
+                subList.append(subChooseCombos.value(i-1).value(j-1) +
+                               subChooseCombos.value(i-1).value(j));
+            }
         }
         subChooseCombos.append(subList);
     }
-
 }
 
 //---------------------------------------------------------------------------
