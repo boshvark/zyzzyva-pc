@@ -88,7 +88,7 @@ const QString DEFAULT_LEXICON_STYLES = QString(
     "%1 and not %2: symbol %\n"
     "%3 and not %4: symbol !\n"
     "%5 and not %6: symbol #\n"
-    "%7 and not %8: symbol ^\n"
+    "%7 and not %8: symbol +\n"
     "%9 and not %10: symbol %")
     .arg(Defs::LEXICON_OWL2).arg(Defs::LEXICON_OWL)
     .arg(Defs::LEXICON_OWL2).arg(Defs::LEXICON_OSPD4)
