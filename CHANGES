@@ -1,3 +1,12 @@
+Version 2.0.1
+Released 2008-03-28, from /branches/2.0.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.1
+
+User-visible changes:
+ * Fix a problem with lost lexicon preferences and database creation
+ * Fix a startup crash on Linux
+
+
 Version 2.0.0
 Released 2008-03-27, from /branches/2.0.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.0
@@ -15,6 +24,7 @@ User-visible changes:
  * Updated ODS lexicon thanks to Herve Bohbot
  * Nice-looking Zyzzyva application icon
  * Various bug fixes
+
 
 Version 1.0.6
 Released 2007-11-20, from /branches/1.0.x
