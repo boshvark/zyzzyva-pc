@@ -764,7 +764,9 @@ WordEngine::alphagrams(const QStringList& strList) const
         alphaSet.insert(Auxil::getAlphagram(str));
     }
 
-    return alphaSet.toList();
+    QStringList alphaList = alphaSet.toList();
+    qSort(alphaList);
+    return alphaList;
 }
 
 //---------------------------------------------------------------------------
