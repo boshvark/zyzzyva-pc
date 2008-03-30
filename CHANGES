@@ -1,3 +1,13 @@
+Version 2.0.2
+Released 2008-03-30, from /branches/2.0.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.2
+
+User-visible changes:
+ * Fix Alphabetical and Random ordering of quiz questions
+ * Fix adjudication of hooks with lexicon symbols during a quiz
+ * Fix lexicon settings when starting a quiz from a word list
+
+
 Version 2.0.1
 Released 2008-03-28, from /branches/2.0.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.1
