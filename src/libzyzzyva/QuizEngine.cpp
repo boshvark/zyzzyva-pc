@@ -315,7 +315,9 @@ QuizEngine::respond(const QString& response)
 
         QString lexicon = quizSpec.getLexicon();
         QString frontAnswers = wordEngine->getFrontHookLetters(lexicon, word);
+        frontAnswers.replace(QRegExp("[^A-Za-z]+"), QString());
         QString backAnswers = wordEngine->getBackHookLetters(lexicon, word);
+        backAnswers.replace(QRegExp("[^A-Za-z]+"), QString());
 
         if ((frontHooks.toLower() != frontAnswers) ||
             (backHooks.toLower() != backAnswers))
