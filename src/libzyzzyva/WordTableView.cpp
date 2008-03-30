@@ -217,6 +217,7 @@ WordTableView::createQuizRequested()
         QString message = "Cannot create quiz:\nNo words in the list.";
         message = Auxil::dialogWordWrap(message);
         QMessageBox::warning(this, caption, message);
+        return;
     }
 
     QuizSpec quizSpec;
@@ -234,6 +235,11 @@ WordTableView::createQuizRequested()
     searchCondition.type = SearchCondition::InWordList;
     searchCondition.stringValue = searchString;
     searchSpec.conditions.push_back(searchCondition);
+    WordTableModel* wordModel = static_cast<WordTableModel*>(model());
+    QString lexicon = wordModel->getLexicon();
+    if (lexicon.isEmpty())
+        lexicon = MainSettings::getDefaultLexicon();
+    quizSpec.setLexicon(lexicon);
     quizSpec.setSearchSpec(searchSpec);
     MainWindow::getInstance()->newQuizFormInteractive(quizSpec);
 }
