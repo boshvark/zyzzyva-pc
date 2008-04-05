@@ -913,14 +913,20 @@ QuizForm::checkResponseClicked()
             QString response = word;
             QString lexicon = quizSpec.getLexicon();
 
+            if (MainSettings::getQuizRequireLexiconSymbols()) {
+                response += wordEngine->getLexiconSymbols(lexicon, word);
+            }
+
             if (quizType == QuizSpec::QuizAnagramsWithHooks) {
                 QString frontHooks =
                     wordEngine->getFrontHookLetters(lexicon, word).toUpper();
-                frontHooks.replace(QRegExp("[^A-Z]+"), QString());
                 QString backHooks =
                     wordEngine->getBackHookLetters(lexicon, word).toUpper();
-                backHooks.replace(QRegExp("[^A-Z]+"), QString());
-                response = frontHooks + ":" + word + ":" + backHooks;
+                if (!MainSettings::getQuizRequireLexiconSymbols()) {
+                    frontHooks.replace(QRegExp("[^A-Z]+"), QString());
+                    backHooks.replace(QRegExp("[^A-Z]+"), QString());
+                }
+                response = frontHooks + ":" + response + ":" + backHooks;
             }
 
             quizEngine->respond(response);
