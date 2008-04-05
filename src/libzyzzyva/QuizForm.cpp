@@ -488,6 +488,7 @@ QuizForm::responseEntered()
     if (status == QuizEngine::Correct) {
         if (response.contains(":"))
             response = response.section(":", 1, 1);
+        response.replace(QRegExp("[^A-Z]+"), QString());
 
         // FIXME: Probably not the right way to get alphabetical sorting
         // instead of alphagram sorting
@@ -505,7 +506,6 @@ QuizForm::responseEntered()
         inputLine->clear();
     }
     else if (status == QuizEngine::Incorrect) {
-        displayResponse += "*";
         statusStr = "<font color=\"red\">Incorrect</font>";
         analyzeDialog->addIncorrect(response);
         selectInputArea();
@@ -1818,7 +1818,6 @@ QuizForm::responseMatchesQuestion(const QString& response) const
             if (wordRegex.indexIn(response) < 0)
                 return false;
             QString word = wordRegex.cap(0);
-            qDebug("Word: |%s|", word.toUtf8().constData());
             return ((word.length() == question.length()) &&
                 (Auxil::getAlphagram(word) ==
                 Auxil::getAlphagram(question)));
@@ -1831,7 +1830,6 @@ QuizForm::responseMatchesQuestion(const QString& response) const
             if (wordRegex.indexIn(wordSection) < 0)
                 return false;
             QString word = wordRegex.cap(0);
-            qDebug("Word: |%s|", word.toUtf8().constData());
             return ((word.length() == question.length()) &&
                 (Auxil::getAlphagram(word) ==
                  Auxil::getAlphagram(question)));
@@ -1841,7 +1839,6 @@ QuizForm::responseMatchesQuestion(const QString& response) const
             if (wordRegex.indexIn(response) < 0)
                 return false;
             QString word = wordRegex.cap(0);
-            qDebug("Word: |%s|", word.toUtf8().constData());
             return ((word.length() == (question.length() + 1)) &&
                     ((question == word.right(question.length())) ||
                     (question == word.left(question.length()))));
