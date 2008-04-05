@@ -24,8 +24,9 @@
 //---------------------------------------------------------------------------
 
 #include "QuizEngine.h"
-#include "QuizDatabase.h"
 #include "LetterBag.h"
+#include "MainSettings.h"
+#include "QuizDatabase.h"
 #include "WordEngine.h"
 #include "Auxil.h"
 #include <cstdlib>
@@ -301,7 +302,9 @@ QuizEngine::ResponseStatus
 QuizEngine::respond(const QString& response)
 {
     QString word (response);
+    bool ok = true;
 
+    // Check hooks (including lexicon symbols) for Anagrms With Hooks quiz
     if (quizSpec.getType() == QuizSpec::QuizAnagramsWithHooks) {
         QStringList sections = response.split(":");
         if (sections.size() != 3) {
@@ -309,25 +312,49 @@ QuizEngine::respond(const QString& response)
             return Incorrect;
         }
 
-        QString frontHooks = Auxil::getAlphagram(sections.at(0));
+        QString frontHooks = sections.at(0);
         word = sections.at(1);
-        QString backHooks = Auxil::getAlphagram(sections.at(2));
+        QString baseWord = word;
+        baseWord.replace(QRegExp("[^A-Za-z]+"), QString());
+        QString backHooks = sections.at(2);
 
         QString lexicon = quizSpec.getLexicon();
-        QString frontAnswers = wordEngine->getFrontHookLetters(lexicon, word);
-        frontAnswers.replace(QRegExp("[^A-Za-z]+"), QString());
-        QString backAnswers = wordEngine->getBackHookLetters(lexicon, word);
-        backAnswers.replace(QRegExp("[^A-Za-z]+"), QString());
+        QString frontAnswers =
+            wordEngine->getFrontHookLetters(lexicon, baseWord).toUpper();
+        QString backAnswers =
+            wordEngine->getBackHookLetters(lexicon, baseWord).toUpper();
 
-        if ((frontHooks.toLower() != frontAnswers) ||
-            (backHooks.toLower() != backAnswers))
-        {
-            addQuestionIncorrect(response);
-            return Incorrect;
+        if (MainSettings::getQuizRequireLexiconSymbols()) {
+            QMap<QChar, QString> frontAnsMap = parseHookSymbols(frontAnswers);
+            QMap<QChar, QString> backAnsMap = parseHookSymbols(backAnswers);
+            QMap<QChar, QString> frontMap = parseHookSymbols(frontHooks);
+            QMap<QChar, QString> backMap = parseHookSymbols(backHooks);
+            ok = ((frontMap == frontAnsMap) && (backMap == backAnsMap));
+        }
+        else {
+            frontHooks = Auxil::getAlphagram(frontHooks);
+            backHooks = Auxil::getAlphagram(backHooks);
+            frontAnswers.replace(QRegExp("[^A-Za-z]+"), QString());
+            backAnswers.replace(QRegExp("[^A-Za-z]+"), QString());
+            ok = ((frontHooks == frontAnswers) && (backHooks == backAnswers));
         }
     }
 
-    if (!correctResponses.contains(word)) {
+    // Check lexicon symbols
+    if (ok && MainSettings::getQuizRequireLexiconSymbols()) {
+        QRegExp re ("(?:([A-Za-z]+)([^A-Za-z]*))");
+        QString symbols;
+        if (re.indexIn(word) >= 0) {
+            word = re.cap(1);
+            symbols = Auxil::getAlphagram(re.cap(2));
+        }
+        QString symbolAnswers = Auxil::getAlphagram(
+            wordEngine->getLexiconSymbols(quizSpec.getLexicon(), word));
+        ok = (symbols == symbolAnswers);
+    }
+
+    // Check the word itself
+    if (!ok || !correctResponses.contains(word)) {
         addQuestionIncorrect(response);
         return Incorrect;
     }
@@ -563,4 +590,28 @@ QuizEngine::addQuestionIncorrect(const QString& response)
     QuizProgress progress = quizSpec.getProgress();
     progress.addIncorrect(response);
     quizSpec.setProgress(progress);
+}
+
+//---------------------------------------------------------------------------
+//  parseHookSymbols
+//
+//! Parse a string to create a map of hook letters to lexicon symbols.  The
+//! individual symbol characters are placed in sorted order.
+//
+//! @param str the string to parse
+//! @return a map from hook characters to lexicon symbols
+//---------------------------------------------------------------------------
+QMap<QChar, QString>
+QuizEngine::parseHookSymbols(const QString& str)
+{
+    QRegExp re ("(?:([A-Za-z])([^A-Za-z]*))");
+    QMap<QChar, QString> hookSymbols;
+    for (int index = 0; ((index = re.indexIn(str, index)) >= 0);
+         index += re.cap(0).length())
+    {
+        QChar letter = re.cap(1).at(0);
+        QString symbols = Auxil::getAlphagram(re.cap(2));
+        hookSymbols.insert(letter, symbols);
+    }
+    return hookSymbols;
 }
