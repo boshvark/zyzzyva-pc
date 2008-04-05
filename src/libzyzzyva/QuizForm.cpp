@@ -1812,25 +1812,40 @@ QuizForm::responseMatchesQuestion(const QString& response) const
 {
     QString question = quizEngine->getQuestion();
     QuizSpec spec = quizEngine->getQuizSpec();
+    QRegExp wordRegex ("[A-Z]+");
     switch (spec.getType()) {
-        case QuizSpec::QuizAnagrams:
-        return ((response.length() == question.length()) &&
-            (Auxil::getAlphagram(response) ==
-             Auxil::getAlphagram(question)));
+        case QuizSpec::QuizAnagrams: {
+            if (wordRegex.indexIn(response) < 0)
+                return false;
+            QString word = wordRegex.cap(0);
+            qDebug("Word: |%s|", word.toUtf8().constData());
+            return ((word.length() == question.length()) &&
+                (Auxil::getAlphagram(word) ==
+                Auxil::getAlphagram(question)));
+        }
 
         case QuizSpec::QuizAnagramsWithHooks: {
             if (response.count(QChar(':')) != 2)
                 return false;
-            QString word = response.section(":", 1, 1);
+            QString wordSection = response.section(":", 1, 1);
+            if (wordRegex.indexIn(wordSection) < 0)
+                return false;
+            QString word = wordRegex.cap(0);
+            qDebug("Word: |%s|", word.toUtf8().constData());
             return ((word.length() == question.length()) &&
                 (Auxil::getAlphagram(word) ==
                  Auxil::getAlphagram(question)));
         }
 
-        case QuizSpec::QuizHooks:
-        return ((response.length() == (question.length() + 1)) &&
-                ((question == response.right(question.length())) ||
-                 (question == response.left(question.length()))));
+        case QuizSpec::QuizHooks: {
+            if (wordRegex.indexIn(response) < 0)
+                return false;
+            QString word = wordRegex.cap(0);
+            qDebug("Word: |%s|", word.toUtf8().constData());
+            return ((word.length() == (question.length() + 1)) &&
+                    ((question == word.right(question.length())) ||
+                    (question == word.left(question.length()))));
+        }
 
         default: break;
     }
