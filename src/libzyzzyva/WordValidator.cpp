@@ -3,7 +3,7 @@
 //
 // A validator for ensuring words are well-formed.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -23,6 +23,8 @@
 //---------------------------------------------------------------------------
 
 #include "WordValidator.h"
+#include "LexiconStyle.h"
+#include "MainSettings.h"
 
 //-----------------------------------------------------------------------------
 //  validate
@@ -46,6 +48,12 @@ WordValidator::validate(QString& input, int& pos) const
         re += "\\[\\]^";
     if (options & AllowHooks)
         re += ":";
+    if (options & AllowLexiconSymbols) {
+        foreach (QChar c, lexiconSymbolChars) {
+            re += '\\';
+            re += c;
+        }
+    }
     re += "]+";
     if (options & AllowHooks) {
         replaceRegExp(QRegExp(" "), ":", input, pos);
@@ -54,6 +62,37 @@ WordValidator::validate(QString& input, int& pos) const
     }
     replaceRegExp(QRegExp(re), QString(), input, pos);
     return Acceptable;
+}
+
+//-----------------------------------------------------------------------------
+//  setLexicon
+//
+//! Set the lexicon to be used for allowing lexicon symbol characters.  Get a
+//! list of characters that are allowable from the lexicon symbol settings.
+//
+//! @param lex the lexicon
+//-----------------------------------------------------------------------------
+void
+WordValidator::setLexicon(const QString& lex)
+{
+    lexicon = lex;
+    lexiconSymbolChars.clear();
+
+    bool useSymbols = MainSettings::getWordListUseLexiconStyles();
+    if (!useSymbols)
+        return;
+
+    QList<LexiconStyle> styles = MainSettings::getWordListLexiconStyles();
+    QListIterator<LexiconStyle> it (styles);
+    while (it.hasNext()) {
+        const LexiconStyle& style = it.next();
+        if (style.lexicon != lexicon)
+            continue;
+
+        for (int i = 0; i < style.symbol.length(); ++i) {
+            lexiconSymbolChars.insert(style.symbol.at(i));
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------

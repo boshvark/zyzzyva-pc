@@ -619,10 +619,14 @@ QuizForm::newQuiz(const QuizSpec& spec)
 
     flashcardCbox->setChecked(MainSettings::getQuizUseFlashcardMode());
 
+    int validatorOptions = WordValidator::None;
     if (spec.getType() == QuizSpec::QuizAnagramsWithHooks)
-        inputValidator->setOptions(WordValidator::AllowHooks);
-    else
-        inputValidator->setOptions(WordValidator::None);
+        validatorOptions |= WordValidator::AllowHooks;
+    if (MainSettings::getQuizRequireLexiconSymbols())
+        validatorOptions |= WordValidator::AllowLexiconSymbols;
+
+    inputValidator->setOptions(validatorOptions);
+    inputValidator->setLexicon(spec.getLexicon());
 
     setQuizNameFromFilename(spec.getFilename());
 

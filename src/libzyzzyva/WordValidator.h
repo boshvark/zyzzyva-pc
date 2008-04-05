@@ -3,7 +3,7 @@
 //
 // A validator for ensuring words are well-formed.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -25,7 +25,9 @@
 #ifndef ZYZZYVA_WORD_VALIDATOR_H
 #define ZYZZYVA_WORD_VALIDATOR_H
 
+#include <QChar>
 #include <QRegExp>
+#include <QSet>
 #include <QValidator>
 
 class WordValidator : public QValidator
@@ -37,21 +39,26 @@ class WordValidator : public QValidator
 
     QValidator::State validate(QString& input, int& pos) const;
 
-    int  getOptions() const { return options; }
+    int getOptions() const { return options; }
     void setOptions(int o) { options = o; }
+    QString getLexicon() const { return lexicon; }
+    void setLexicon(const QString& lex);
 
     enum Options {
         None = 0,
         AllowQuestionMarks = 1,
         AllowAsterisks = 2,
         AllowCharacterClasses = 4,
-        AllowHooks = 8
+        AllowHooks = 8,
+        AllowLexiconSymbols = 16
     };
 
     private:
     void replaceRegExp(const QRegExp& re, const QString& str,
                        QString& input, int& pos) const;
 
+    QString lexicon;
+    QSet<QChar> lexiconSymbolChars;
     int options;
 };
 
