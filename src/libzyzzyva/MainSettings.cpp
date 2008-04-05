@@ -66,6 +66,8 @@ const QString SETTINGS_QUIZ_BACKGROUND_COLOR = "quiz_background_color";
 const QString SETTINGS_QUIZ_USE_FLASHCARD_MODE = "quiz_use_flashcard_mode";
 const QString SETTINGS_QUIZ_SHOW_NUM_RESPONSES = "quiz_show_num_responses";
 const QString SETTINGS_QUIZ_SHOW_QUESTION_STATS = "quiz_show_question_stat";
+const QString SETTINGS_QUIZ_REQUIRE_LEXICON_SYMBOLS
+    = "quiz_require_lexicon_symbols";
 const QString SETTINGS_QUIZ_AUTO_CHECK = "quiz_auto_check";
 const QString SETTINGS_QUIZ_AUTO_ADVANCE = "quiz_auto_advance";
 const QString SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT
@@ -191,6 +193,8 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_QUIZ_SHOW_NUM_RESPONSES, true).toBool();
     instance->quizShowQuestionStats
         = settings.value(SETTINGS_QUIZ_SHOW_QUESTION_STATS, true).toBool();
+    instance->quizRequireLexiconSymbols
+        = settings.value(SETTINGS_QUIZ_REQUIRE_LEXICON_SYMBOLS, false).toBool();
     instance->quizAutoCheck
         = settings.value(SETTINGS_QUIZ_AUTO_CHECK, true).toBool();
     instance->quizAutoAdvance
@@ -302,6 +306,8 @@ MainSettings::writeSettings()
                       instance->quizShowNumResponses);
     settings.setValue(SETTINGS_QUIZ_SHOW_QUESTION_STATS,
                       instance->quizShowQuestionStats);
+    settings.setValue(SETTINGS_QUIZ_REQUIRE_LEXICON_SYMBOLS,
+                      instance->quizRequireLexiconSymbols);
     settings.setValue(SETTINGS_QUIZ_AUTO_CHECK, instance->quizAutoCheck);
     settings.setValue(SETTINGS_QUIZ_AUTO_ADVANCE,
                       instance->quizAutoAdvance);

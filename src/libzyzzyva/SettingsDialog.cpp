@@ -321,6 +321,11 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(quizShowQuestionStatsCbox);
     quizBehaviorVlay->addWidget(quizShowQuestionStatsCbox);
 
+    quizRequireLexiconSymbolsCbox =
+        new QCheckBox("Require lexicon symbols for correct response");
+    Q_CHECK_PTR(quizRequireLexiconSymbolsCbox);
+    quizBehaviorVlay->addWidget(quizRequireLexiconSymbolsCbox);
+
     quizAutoCheckCbox =
         new QCheckBox("End question after all correct responses");
     Q_CHECK_PTR(quizAutoCheckCbox);
@@ -794,6 +799,8 @@ SettingsDialog::readSettings()
         MainSettings::getQuizShowNumResponses());
     quizShowQuestionStatsCbox->setChecked(
         MainSettings::getQuizShowQuestionStats());
+    quizRequireLexiconSymbolsCbox->setChecked(
+        MainSettings::getQuizRequireLexiconSymbols());
     bool autoCheck = MainSettings::getQuizAutoCheck();
     quizAutoCheckCbox->setChecked(autoCheck);
     quizAutoAdvanceCbox->setChecked(MainSettings::getQuizAutoAdvance());
@@ -897,6 +904,8 @@ SettingsDialog::writeSettings()
         quizShowNumResponsesCbox->isChecked());
     MainSettings::setQuizShowQuestionStats(
         quizShowQuestionStatsCbox->isChecked());
+    MainSettings::setQuizRequireLexiconSymbols(
+        quizRequireLexiconSymbolsCbox->isChecked());
     MainSettings::setQuizAutoCheck(quizAutoCheckCbox->isChecked());
     MainSettings::setQuizAutoAdvance(quizAutoAdvanceCbox->isChecked());
     MainSettings::setQuizAutoEndAfterIncorrect(
