@@ -910,10 +910,13 @@ QuizForm::checkResponseClicked()
             QString lexicon = quizSpec.getLexicon();
 
             if (quizType == QuizSpec::QuizAnagramsWithHooks) {
-                response =
-                    wordEngine->getFrontHookLetters(lexicon, word).toUpper()
-                    + ":" + word + ":"
-                    + wordEngine->getBackHookLetters(lexicon, word).toUpper();
+                QString frontHooks =
+                    wordEngine->getFrontHookLetters(lexicon, word).toUpper();
+                frontHooks.replace(QRegExp("[^A-Z]+"), QString());
+                QString backHooks =
+                    wordEngine->getBackHookLetters(lexicon, word).toUpper();
+                backHooks.replace(QRegExp("[^A-Z]+"), QString());
+                response = frontHooks + ":" + word + ":" + backHooks;
             }
 
             quizEngine->respond(response);
