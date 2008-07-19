@@ -40,9 +40,9 @@ int main(int argc, char** argv)
     QCoreApplication::setOrganizationDomain(SETTINGS_DOMAIN_NAME);
     QCoreApplication::setApplicationName(SETTINGS_APPLICATION_NAME);
 
-#if defined Z_OSX
-    qApp->setLibraryPath(qApp->applicationDirPath() + "/../PlugIns");
-#endif
+//#if defined Z_OSX
+//    qApp->setLibraryPath(qApp->applicationDirPath() + "/../PlugIns");
+//#endif
 
     QPixmap pixmap (":/zyzzyva-splash");
     QSplashScreen* splash = new QSplashScreen(pixmap);
