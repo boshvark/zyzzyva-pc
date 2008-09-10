@@ -24,7 +24,12 @@
 
 CONFIG -= debug
 CONFIG -= release
-contains(BUILD, debug) {
+contains(BUILD, gprof):unix {
+    CONFIG += debug
+    QMAKE_CXXFLAGS += -pg
+    QMAKE_LFLAGS += -pg
+}
+else:contains(BUILD, debug) {
     CONFIG += debug
 }
 else {
