@@ -1,5 +1,4 @@
 //---------------------------------------------------------------------------
-//
 // SettingsDialog.cpp
 //
 // The settings dialog for the word study application.
@@ -352,6 +351,25 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
         new QCheckBox("Cycle answers after ending a question");
     Q_CHECK_PTR(quizCycleAnswersCbox);
     quizBehaviorVlay->addWidget(quizCycleAnswersCbox);
+
+    QHBoxLayout* timeoutDisableInputHlay = new QHBoxLayout;
+    Q_CHECK_PTR(timeoutDisableInputHlay);
+    timeoutDisableInputHlay->setMargin(0);
+    quizBehaviorVlay->addLayout(timeoutDisableInputHlay);
+
+    quizTimeoutDisableInputCbox =
+        new QCheckBox("After timer expires, disable input for:");
+    Q_CHECK_PTR(quizTimeoutDisableInputCbox);
+    connect(quizTimeoutDisableInputCbox, SIGNAL(toggled(bool)),
+            SLOT(timeoutDisableInputCboxToggled(bool)));
+    timeoutDisableInputHlay->addWidget(quizTimeoutDisableInputCbox);
+
+    quizTimeoutDisableInputSbox = new QSpinBox;
+    Q_CHECK_PTR(quizTimeoutDisableInputSbox);
+    quizTimeoutDisableInputSbox->setMinimum(1);
+    quizTimeoutDisableInputSbox->setMaximum(10000);
+    quizTimeoutDisableInputSbox->setSuffix(" milliseconds");
+    timeoutDisableInputHlay->addWidget(quizTimeoutDisableInputSbox);
 
     quizPrefVlay->addStretch(2);
 
@@ -809,6 +827,10 @@ SettingsDialog::readSettings()
     quizMarkMissedAfterIncorrectCbox->setChecked(
         MainSettings::getQuizMarkMissedAfterIncorrect());
     quizCycleAnswersCbox->setChecked(MainSettings::getQuizCycleAnswers());
+    quizTimeoutDisableInputCbox->setChecked(
+        MainSettings::getQuizTimeoutDisableInput());
+    quizTimeoutDisableInputSbox->setValue(
+        MainSettings::getQuizTimeoutDisableInputMillisecs());
     autoCheckCboxToggled(autoCheck);
 
     judgeSaveLogCbox->setChecked(MainSettings::getJudgeSaveLog());
@@ -913,6 +935,10 @@ SettingsDialog::writeSettings()
     MainSettings::setQuizMarkMissedAfterIncorrect(
         quizMarkMissedAfterIncorrectCbox->isChecked());
     MainSettings::setQuizCycleAnswers(quizCycleAnswersCbox->isChecked());
+    MainSettings::setQuizTimeoutDisableInput(
+        quizTimeoutDisableInputCbox->isChecked());
+    MainSettings::setQuizTimeoutDisableInputMillisecs(
+        quizTimeoutDisableInputSbox->value());
 
     QList<int> cardboxSchedules;
     foreach (QSpinBox* sbox, cardboxScheduleSboxList)
@@ -1166,6 +1192,20 @@ SettingsDialog::chooseQuizBackgroundColorButtonClicked()
         quizBackgroundColorLine->setPalette(palette);
         quizBackgroundColor = color;
     }
+}
+
+//---------------------------------------------------------------------------
+//  timeoutDisableInputCboxToggled
+//
+//! Slot called when the Disable Input When Timer Expires check box is
+//! toggled.  Enable or disable the duration spin box.
+//
+//! @param on true if the check box is on, false if it is off
+//---------------------------------------------------------------------------
+void
+SettingsDialog::timeoutDisableInputCboxToggled(bool on)
+{
+    quizTimeoutDisableInputSbox->setEnabled(on);
 }
 
 //---------------------------------------------------------------------------

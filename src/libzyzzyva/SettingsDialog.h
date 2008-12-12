@@ -61,6 +61,7 @@ class SettingsDialog : public QDialog
     void judgeSaveLogCboxToggled(bool on);
     void chooseFontButtonClicked(int button);
     void chooseQuizBackgroundColorButtonClicked();
+    void timeoutDisableInputCboxToggled(bool on);
     void lexiconStyleCboxToggled(bool on);
     void chooseLexiconStyleClicked();
 
@@ -107,6 +108,8 @@ class SettingsDialog : public QDialog
     QCheckBox*   quizAutoEndAfterIncorrectCbox;
     QCheckBox*   quizMarkMissedAfterIncorrectCbox;
     QCheckBox*   quizCycleAnswersCbox;
+    QCheckBox*   quizTimeoutDisableInputCbox;
+    QSpinBox*    quizTimeoutDisableInputSbox;
     QList<QSpinBox*> cardboxScheduleSboxList;
     QList<QSpinBox*> cardboxWindowSboxList;
     QCheckBox*   judgeSaveLogCbox;

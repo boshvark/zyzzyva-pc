@@ -75,6 +75,9 @@ const QString SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT
 const QString SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT
     = "quiz_mark_missed_after_incorrect";
 const QString SETTINGS_QUIZ_CYCLE_ANSWERS = "quiz_cycle_answers";
+const QString SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT = "quiz_timeout_disable_input";
+const QString SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS
+    = "quiz_timeout_disable_input_msecs";
 const QString SETTINGS_QUIZ_RECORD_STATS = "quiz_record_stats";
 const QString SETTINGS_CARDBOX_SCHEDULES = "cardbox_schedules";
 const QString SETTINGS_CARDBOX_WINDOWS = "cardbox_windows";
@@ -84,6 +87,7 @@ const QString DEFAULT_DEFAULT_LEXICON = Defs::LEXICON_OWL2;
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb(0, 0, 127);
+const int     DEFAULT_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS = 750;
 const QString DEFAULT_CARDBOX_SCHEDULES = "1 4 7 12 20 30 60 90 150 270 480";
 const QString DEFAULT_CARDBOX_WINDOWS = "0 1 2 3 5 7 10 15 20 30 50";
 const QString DEFAULT_LEXICON_STYLES = QString(
@@ -207,6 +211,12 @@ MainSettings::readSettings()
                          true).toBool();
     instance->quizCycleAnswers
         = settings.value(SETTINGS_QUIZ_CYCLE_ANSWERS, true).toBool();
+    instance->quizTimeoutDisableInput
+        = settings.value(SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT, true).toBool();
+    instance->quizTimeoutDisableInputMillisecs
+        = settings.value(SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS,
+                         DEFAULT_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS).toInt();
+
     instance->quizRecordStats
         = settings.value(SETTINGS_QUIZ_RECORD_STATS, true).toBool();
 
@@ -317,6 +327,10 @@ MainSettings::writeSettings()
                       instance->quizMarkMissedAfterIncorrect);
     settings.setValue(SETTINGS_QUIZ_CYCLE_ANSWERS,
                       instance->quizCycleAnswers);
+    settings.setValue(SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT,
+                      instance->quizTimeoutDisableInput);
+    settings.setValue(SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS,
+                      instance->quizTimeoutDisableInputMillisecs);
     settings.setValue(SETTINGS_QUIZ_RECORD_STATS,
                       instance->quizRecordStats);
 
