@@ -31,6 +31,7 @@
 #include "WordTableModel.h"
 #include "WordTableView.h"
 #include "ZPushButton.h"
+#include <QApplication>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -205,11 +206,13 @@ AnalyzeQuizDialog::addMissed(const QString& word, bool update)
 {
     // FIXME: Probably not the right way to get alphabetical sorting
     // instead of alphagram sorting
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
     MainSettings::setWordListGroupByAnagrams(false);
     missedModel->addWord(
         WordTableModel::WordItem(word, WordTableModel::WordMissed), false);
     MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
+    QApplication::restoreOverrideCursor();
 
     if (update)
         updateStats();
@@ -229,6 +232,7 @@ AnalyzeQuizDialog::addMissed(const QStringList& words, bool update)
     if (words.empty())
         return;
 
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QList<WordTableModel::WordItem> wordItems;
     foreach (QString word, words) {
         wordItems.append(WordTableModel::WordItem(word,
@@ -241,6 +245,7 @@ AnalyzeQuizDialog::addMissed(const QStringList& words, bool update)
     MainSettings::setWordListGroupByAnagrams(false);
     missedModel->addWords(wordItems);
     MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
+    QApplication::restoreOverrideCursor();
 
     if (update)
         updateStats();
@@ -275,11 +280,13 @@ AnalyzeQuizDialog::addIncorrect(const QString& word, bool update)
 {
     // FIXME: Probably not the right way to get alphabetical sorting
     // instead of alphagram sorting
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
     MainSettings::setWordListGroupByAnagrams(false);
     incorrectModel->addWord(
         WordTableModel::WordItem(word, WordTableModel::WordIncorrect), false);
     MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
+    QApplication::restoreOverrideCursor();
 
     if (update)
         updateStats();
@@ -299,6 +306,7 @@ AnalyzeQuizDialog::addIncorrect(const QStringList& words, bool update)
     if (words.empty())
         return;
 
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QList<WordTableModel::WordItem> wordItems;
     foreach (QString word, words) {
         wordItems.append(
@@ -310,6 +318,7 @@ AnalyzeQuizDialog::addIncorrect(const QStringList& words, bool update)
     MainSettings::setWordListGroupByAnagrams(false);
     incorrectModel->addWords(wordItems);
     MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
+    QApplication::restoreOverrideCursor();
 
     if (update)
         updateStats();
