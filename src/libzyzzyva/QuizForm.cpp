@@ -509,13 +509,14 @@ QuizForm::responseEntered()
         responseView->scrollTo(responseModel->sibling(
             responseModel->getLastAddedIndex(), 0, QModelIndex()));
         statusStr = "<font color=\"blue\">Correct</font>";
-        analyzeDialog->updateStats();
+        if (analyzeDialog->isVisible())
+            analyzeDialog->updateStats();
         inputLine->clear();
     }
     else if (status == QuizEngine::Incorrect) {
         displayResponse += "*";
         statusStr = "<font color=\"red\">Incorrect</font>";
-        analyzeDialog->addIncorrect(response);
+        addIncorrect(response);
         selectInputArea();
     }
     else if (status == QuizEngine::Duplicate) {
@@ -842,7 +843,8 @@ QuizForm::markCorrect()
     checkResponseClicked();
     checkBringsJudgment = old;
     quizEngine->markQuestionAsCorrect();
-    analyzeDialog->updateStats();
+    if (analyzeDialog->isVisible())
+        analyzeDialog->updateStats();
 }
 
 //---------------------------------------------------------------------------
@@ -863,6 +865,40 @@ QuizForm::moveToCardbox(int cardbox)
 }
 
 //---------------------------------------------------------------------------
+//  addIncorrect
+//
+//! Add an incorrect response to the cache, or update the Analyze Quiz dialog
+//! if it is visible.
+//
+//! @param word the incorrect word
+//---------------------------------------------------------------------------
+void
+QuizForm::addIncorrect(const QString& word)
+{
+    if (analyzeDialog->isVisible())
+        analyzeDialog->addIncorrect(word);
+    else
+        analyzeIncorrectCache.insert(word);
+}
+
+//---------------------------------------------------------------------------
+//  addMissed
+//
+//! Add a list of missed responses to the cache, or update the Analyze Quiz
+//! dialog if it is visible.
+//
+//! @param words the missed words
+//---------------------------------------------------------------------------
+void
+QuizForm::addMissed(const QStringList& words)
+{
+    if (analyzeDialog->isVisible())
+        analyzeDialog->addMissed(words);
+    else
+        analyzeMissedCache += words.toSet();
+}
+
+//---------------------------------------------------------------------------
 //  nextQuestionClicked
 //
 //! Called when the New Question button is clicked.
@@ -877,7 +913,8 @@ QuizForm::nextQuestionClicked()
         QMessageBox::warning(this, caption, message);
     }
     startQuestion();
-    analyzeDialog->updateStats();
+    if (analyzeDialog->isVisible())
+        analyzeDialog->updateStats();
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
         setUnsavedChanges(true);
 }
@@ -948,7 +985,8 @@ QuizForm::checkResponseClicked()
     inputLine->setEnabled(false);
     checkResponseButton->setEnabled(false);
     quizEngine->completeQuestion();
-    analyzeDialog->updateStats();
+    if (analyzeDialog->isVisible())
+        analyzeDialog->updateStats();
 
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
         setUnsavedChanges(true);
@@ -982,7 +1020,7 @@ QuizForm::checkResponseClicked()
         responseModel->addWords(wordItems);
         MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
-        analyzeDialog->addMissed(unanswered);
+        addMissed(unanswered);
         questionCorrect = false;
 
         markMissedButton->setText(MARK_CORRECT_BUTTON);
@@ -1062,6 +1100,17 @@ QuizForm::pauseClicked()
 void
 QuizForm::analyzeClicked()
 {
+    if (analyzeDialog->isVisible())
+        return;
+
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    analyzeDialog->addMissed(analyzeMissedCache.toList());
+    analyzeDialog->addIncorrect(analyzeIncorrectCache.toList());
+    analyzeDialog->updateStats();
+    analyzeMissedCache.clear();
+    analyzeIncorrectCache.clear();
+    QApplication::restoreOverrideCursor();
+
     analyzeDialog->show();
     selectInputArea();
 }
