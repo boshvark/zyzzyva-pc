@@ -89,6 +89,7 @@ class QuizForm : public ActionForm
     void stopDisplayingCorrectAnswers();
     void displayNextCorrectAnswer();
     void selectInputArea();
+    void enableAndSelectInputArea();
     bool promptToSaveChanges();
 
     protected:
@@ -146,6 +147,7 @@ class QuizForm : public ActionForm
     DefinitionLabel* correctStatusLabel;
     DefinitionLabel* cardboxStatusLabel;
     DefinitionLabel* questionStatsLabel;
+    QWidget*      inputWidget;
     QLabel*       letterOrderLabel;
     QCheckBox*    flashcardCbox;
     ZPushButton*  nextQuestionButton;

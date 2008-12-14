@@ -248,6 +248,14 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(questionStatsLabel);
     questionStatsHlay->addWidget(questionStatsLabel);
 
+    inputWidget = new QWidget;
+    Q_CHECK_PTR(inputWidget);
+    mainVlay->addWidget(inputWidget);
+
+    QVBoxLayout* inputVlay = new QVBoxLayout(inputWidget);
+    Q_CHECK_PTR(inputVlay);
+    inputVlay->setMargin(0);
+
     // Input line
     inputLine = new WordLineEdit;
     Q_CHECK_PTR(inputLine);
@@ -256,13 +264,13 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     inputLine->setValidator(inputValidator);
     inputLine->setEnabled(false);
     connect(inputLine, SIGNAL(returnPressed()), SLOT(responseEntered()));
-    mainVlay->addWidget(inputLine);
+    inputVlay->addWidget(inputLine);
 
     // Button layout
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing(SPACING);
     Q_CHECK_PTR(buttonHlay);
-    mainVlay->addLayout(buttonHlay);
+    inputVlay->addLayout(buttonHlay);
 
     buttonHlay->addStretch(1);
 
@@ -1564,6 +1572,19 @@ QuizForm::selectInputArea()
 }
 
 //---------------------------------------------------------------------------
+//  enableAndSelectInputArea
+//
+//! Enable the input area and buttons, and give focus to an input widget.
+//---------------------------------------------------------------------------
+void
+QuizForm::enableAndSelectInputArea()
+{
+    qDebug("Enabling and selecting input area");
+    inputWidget->setEnabled(true);
+    selectInputArea();
+}
+
+//---------------------------------------------------------------------------
 //  promptToSaveChanges
 //
 //! Prompt the user to save any unsaved changes in this quiz.
@@ -1928,5 +1949,12 @@ QuizForm::timerEvent(QTimerEvent* event)
         checkBringsJudgment = true;
         checkResponseClicked();
         checkBringsJudgment = old;
+
+        if (MainSettings::getQuizTimeoutDisableInput()) {
+            int msecs = MainSettings::getQuizTimeoutDisableInputMillisecs();
+            qDebug("Disabling input for %d msecs...", msecs);
+            inputWidget->setEnabled(false);
+            QTimer::singleShot(msecs, this, SLOT(enableAndSelectInputArea()));
+        }
     }
 }

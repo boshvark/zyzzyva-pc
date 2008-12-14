@@ -105,6 +105,14 @@ class MainSettings
         return instance->quizCycleAnswers; }
     static void setQuizCycleAnswers(bool b) {
         instance->quizCycleAnswers = b; }
+    static bool getQuizTimeoutDisableInput() {
+        return instance->quizTimeoutDisableInput; }
+    static void setQuizTimeoutDisableInput(bool b) {
+        instance->quizTimeoutDisableInput = b; }
+    static int getQuizTimeoutDisableInputMillisecs() {
+        return instance->quizTimeoutDisableInputMillisecs; }
+    static void setQuizTimeoutDisableInputMillisecs(int i) {
+        instance->quizTimeoutDisableInputMillisecs = i; }
     static bool getQuizRecordStats() {
         return instance->quizRecordStats; }
     static void setQuizRecordStats(bool b) {
@@ -215,6 +223,8 @@ class MainSettings
     bool quizAutoEndAfterIncorrect;
     bool quizMarkMissedAfterIncorrect;
     bool quizCycleAnswers;
+    bool quizTimeoutDisableInput;
+    int quizTimeoutDisableInputMillisecs;
     bool quizRecordStats;
     QList<int> cardboxScheduleList;
     QList<int> cardboxWindowList;
