@@ -59,7 +59,8 @@ class WordTableView : public QTreeView
     private:
     // XXX: Hmm, these methods probably don't belong in WordTableView
     bool exportFile(const QString& filename, WordListFormat format,
-                    const QList<WordAttribute>& attributes, QString* err)
+                    const QList<WordAttribute>& attributes, QString* err,
+                    bool append = false)
         const;
     QStringList getExportStrings(QModelIndex& index,
                                  const QList<WordAttribute>& attributes) const;
