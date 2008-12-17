@@ -52,10 +52,16 @@ install_name_tool -change \
     @executable_path/../Frameworks/libzyzzyva.2.dylib \
     $APPDIR/Contents/MacOS/Zyzzyva
 
-# Copy zyzzyva.tap unless it's already there
+# Copy zyzzyva.top unless it's already there
 if [ ! -e $APPDIR/Contents/MacOS/zyzzyva.top ]; then
     echo "Copying zyzzyva.top into bundle..."
     cp zyzzyva.top $APPDIR/Contents/MacOS
+fi
+
+# Copy qt.conf unless it's already there
+if [ ! -e $APPDIR/Contents/Resources/qt.conf ]; then
+    echo "Copying qt.conf into bundle..."
+    cp conf/macosx/qt.conf $APPDIR/Contents/Resources
 fi
 
 # Copy data directory into bundle unless it's already there
