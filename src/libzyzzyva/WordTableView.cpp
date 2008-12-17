@@ -43,6 +43,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QMenu>
+#include <QPushButton>
 #include <QSignalMapper>
 #include <QTextStream>
 #include <QToolTip>
@@ -166,32 +167,47 @@ WordTableView::exportRequested()
         return;
 
     QString filename = QFileDialog::getSaveFileName(this, "Save Word List",
-        Auxil::getUserWordsDir() + "/saved", "Text Files (*.txt)");
+        Auxil::getUserWordsDir() + "/saved", "Text Files (*.txt)", 0,
+        QFileDialog::DontConfirmOverwrite);
 
     if (filename.isEmpty())
         return;
 
-    if (!filename.endsWith(".txt", Qt::CaseInsensitive)) {
+    if (!filename.endsWith(".txt", Qt::CaseInsensitive))
         filename += ".txt";
-        if (QFile::exists(filename)) {
-            QFileInfo fileInfo (filename);
-            QString caption = "File Exists";
-            QString message = "An item named \"" + fileInfo.fileName() +
-                "\" already exists in this location.  Do you want to replace "
-                "it with the one you are saving?";
-            message = Auxil::dialogWordWrap(message);
-            int code = QMessageBox::warning(this, caption, message,
-                                            QMessageBox::Ok |
-                                            QMessageBox::Cancel,
-                                            QMessageBox::Cancel);
-            if (code != QMessageBox::Ok)
-                return;
-        }
+
+    bool append = false;
+    if (QFile::exists(filename)) {
+        QFileInfo fileInfo (filename);
+        QString caption = "File Exists";
+        QString message = "An item named \"" + fileInfo.fileName() +
+            "\" already exists in this location.  Do you want to replace "
+            "it with the one you are saving, or append words to the "
+            "existing file?";
+        message = Auxil::dialogWordWrap(message);
+
+        QMessageBox messageBox(QMessageBox::Warning, caption, message,
+                               QMessageBox::NoButton, this);
+        //QPushButton* replaceButton =
+            messageBox.addButton("Replace", QMessageBox::AcceptRole);
+        QPushButton* appendButton =
+            messageBox.addButton("Append", QMessageBox::AcceptRole);
+        QPushButton* cancelButton =
+            messageBox.addButton("Cancel", QMessageBox::RejectRole);
+        messageBox.setIcon(QMessageBox::Warning);
+        messageBox.setDefaultButton(cancelButton);
+
+        int code = messageBox.exec();
+        if (code != QMessageBox::Accepted)
+            return;
+
+        if (messageBox.clickedButton() == appendButton)
+            append = true;
     }
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     QString error;
-    bool ok = exportFile(filename, format, attributes, &error);
+    bool ok = exportFile(filename, format, attributes, &error, append);
     QApplication::restoreOverrideCursor();
     if (!ok) {
         QString caption = "Error Saving Word List";
@@ -370,7 +386,7 @@ WordTableView::removeFromCardboxRequested()
 bool
 WordTableView::exportFile(const QString& filename, WordListFormat format,
                           const QList<WordAttribute>& attributes,
-                          QString* err) const
+                          QString* err, bool append) const
 {
     if (model()->rowCount() == 0) {
         if (err)
@@ -379,7 +395,11 @@ WordTableView::exportFile(const QString& filename, WordListFormat format,
     }
 
     QFile file (filename);
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    QIODevice::OpenMode mode = QIODevice::WriteOnly | QIODevice::Text;
+    if (append)
+        mode |= QIODevice::Append;
+
+    if (!file.open(mode)) {
         if (err)
             *err = file.errorString();
         return false;
