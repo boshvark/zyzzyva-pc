@@ -58,9 +58,9 @@ if [ ! -e $OUTDIR/Zyzzyva.app/Contents/MacOS/zyzzyva.top ]; then
 fi
 
 # Copy qt.conf unless it's already there
-if [ ! -e $APPDIR/Contents/Resources/qt.conf ]; then
+if [ ! -e $OUTDIR/Zyzzyva.app/Contents/Resources/qt.conf ]; then
     echo "Copying qt.conf into bundle..."
-    cp conf/macosx/qt.conf $APPDIR/Contents/Resources
+    cp conf/macosx/qt.conf $OUTDIR/Zyzzyva.app/Contents/Resources
 fi
 
 # Copy data directory into bundle unless it's already there
