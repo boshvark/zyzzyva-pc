@@ -1456,7 +1456,7 @@ QuizForm::setCorrectStatus(int correct, int total)
 void
 QuizForm::setQuestionStatus(const QuizDatabase::QuestionData& data)
 {
-    if (!data.valid)
+    if (!data.valid || !quizEngine->getQuestionComplete())
         return;
 
     if (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod) {
