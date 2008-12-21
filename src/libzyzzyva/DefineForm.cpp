@@ -146,6 +146,18 @@ DefineForm::getStatusString() const
 }
 
 //---------------------------------------------------------------------------
+//  selectInputArea
+//
+//! Give focus to the input area and select its contents.
+//---------------------------------------------------------------------------
+void
+DefineForm::selectInputArea()
+{
+    wordLine->setFocus();
+    wordLine->setSelection(0, wordLine->text().length());
+}
+
+//---------------------------------------------------------------------------
 //  wordChanged
 //
 //! Called when the contents of the input line change.  Enables or disables
@@ -288,16 +300,4 @@ DefineForm::defineWord()
     resultBox->setTitle(word);
     resultBox->show();
     selectInputArea();
-}
-
-//---------------------------------------------------------------------------
-//  selectInputArea
-//
-//! Give focus to the input area and select its contents.
-//---------------------------------------------------------------------------
-void
-DefineForm::selectInputArea()
-{
-    wordLine->setFocus();
-    wordLine->setSelection(0, wordLine->text().length());
 }

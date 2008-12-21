@@ -740,6 +740,27 @@ QuizForm::saveRequested()
 }
 
 //---------------------------------------------------------------------------
+//  selectInputArea
+//
+//! Give focus to a text input area if possible.  Otherwise give focus to
+//! Check Answers button, or the Next button.
+//---------------------------------------------------------------------------
+void
+QuizForm::selectInputArea()
+{
+    if (inputLine->isVisible() && inputLine->isEnabled()) {
+        inputLine->setFocus();
+        inputLine->setSelection(0, inputLine->text().length());
+    }
+    else if (checkResponseButton->isEnabled()) {
+        checkResponseButton->setFocus();
+    }
+    else {
+        nextQuestionButton->setFocus();
+    }
+}
+
+//---------------------------------------------------------------------------
 //  letterOrderClicked
 //
 //! Called when the Reorder button is clicked.
@@ -1618,27 +1639,6 @@ QuizForm::displayNextCorrectAnswer()
         Qt::EditRole).toString();
 
     setQuestionLabel(answer, "foo");
-}
-
-//---------------------------------------------------------------------------
-//  selectInputArea
-//
-//! Give focus to a text input area if possible.  Otherwise give focus to
-//! Check Answers button, or the Next button.
-//---------------------------------------------------------------------------
-void
-QuizForm::selectInputArea()
-{
-    if (inputLine->isVisible() && inputLine->isEnabled()) {
-        inputLine->setFocus();
-        inputLine->setSelection(0, inputLine->text().length());
-    }
-    else if (checkResponseButton->isEnabled()) {
-        checkResponseButton->setFocus();
-    }
-    else {
-        nextQuestionButton->setFocus();
-    }
 }
 
 //---------------------------------------------------------------------------

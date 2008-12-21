@@ -3,7 +3,7 @@
 //
 // A base class for main action forms.
 //
-// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -56,6 +56,7 @@ class ActionForm : public QFrame
 
     public slots:
     virtual void saveRequested() { }
+    virtual void selectInputArea() { }
 
     signals:
     void titleChanged(const QString& title);

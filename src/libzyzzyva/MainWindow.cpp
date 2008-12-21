@@ -1044,14 +1044,7 @@ MainWindow::currentTabChanged(int)
     bool saveEnabled = false;
     if (w) {
         ActionForm* form = static_cast<ActionForm*>(w);
-        ActionForm::ActionFormType type = form->getType();
-        if (type == ActionForm::DefineFormType) {
-            DefineForm* defineForm = static_cast<DefineForm*>(form);
-            defineForm->selectInputArea();
-        }
-
-        // FIXME: select input area for all kinds of tabs!?
-
+        form->selectInputArea();
         status = form->getStatusString();
         saveEnabled = form->isSaveEnabled();
     }

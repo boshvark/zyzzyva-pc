@@ -42,10 +42,13 @@ class DefineForm : public ActionForm
     QString getTitle() const;
     QString getStatusString() const;
 
+    // Reimplemented virtual methods
+    public slots:
+    void selectInputArea();
+
     public slots:
     void wordChanged(const QString& word);
     void defineWord();
-    void selectInputArea();
 
     private:
     WordEngine*    engine;
