@@ -609,6 +609,18 @@ QuizForm::newQuiz(const QuizSpec& spec)
     else
         cardboxStatusLabel->hide();
 
+    // Restore incorrect and missed words from quiz progress
+    analyzeDialog->newQuiz(spec);
+    QuizProgress progress = spec.getProgress();
+    analyzeMissedCache = progress.getMissed().keys().toSet();
+    analyzeIncorrectCache = progress.getIncorrect().keys().toSet();
+    if (analyzeDialog->isVisible()) {
+        analyzeDialog->addMissed(analyzeMissedCache.toList());
+        analyzeDialog->addIncorrect(analyzeIncorrectCache.toList());
+        analyzeMissedCache.clear();
+        analyzeIncorrectCache.clear();
+    }
+
     // Connect to dotabase before starting the first question
     QString lexicon = spec.getLexicon();
     QString quizType = Auxil::quizTypeToString(spec.getType());
@@ -617,7 +629,6 @@ QuizForm::newQuiz(const QuizSpec& spec)
     quizTypeLabel->setText(lexicon + " - " + quizType);
     responseModel->setLexicon(lexicon);
     startQuestion();
-    analyzeDialog->newQuiz(spec);
 
     // If the question is complete, don't record stats when restoring it
     if (quizEngine->getQuestionComplete()) {

@@ -181,6 +181,7 @@ class QuizForm : public ActionForm
     int currentDisplayAnswer;
 
     AnalyzeQuizDialog* analyzeDialog;
+    // XXX: Change to QMap<QString, int> for counts
     QSet<QString> analyzeMissedCache;
     QSet<QString> analyzeIncorrectCache;
 
