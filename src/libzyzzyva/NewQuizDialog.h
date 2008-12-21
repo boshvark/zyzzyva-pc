@@ -31,6 +31,7 @@
 #include <QComboBox>
 #include <QDialog>
 #include <QGroupBox>
+#include <QLabel>
 #include <QLineEdit>
 #include <QRadioButton>
 #include <QStackedWidget>
@@ -72,6 +73,7 @@ class NewQuizDialog : public QDialog
     QComboBox*      typeCombo;
     QComboBox*      methodCombo;
     QCheckBox*      progressCbox;
+    QLabel*         progressLabel;
     QComboBox*      questionOrderCombo;
     QStackedWidget* sourceStack;
     QWidget*        buildWidget;
