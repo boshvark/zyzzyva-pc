@@ -34,7 +34,6 @@
 #include <QFileDialog>
 #include <QGroupBox>
 #include <QHBoxLayout>
-#include <QLabel>
 #include <QMessageBox>
 #include <QTextStream>
 #include <QVBoxLayout>
@@ -192,10 +191,21 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
     connect(searchSpecForm, SIGNAL(returnPressed()), SLOT(accept()));
     specHlay->addWidget(searchSpecForm);
 
+    QHBoxLayout* progressHlay = new QHBoxLayout;
+    Q_CHECK_PTR(progressHlay);
+    mainVlay->addLayout(progressHlay);
+
     progressCbox = new QCheckBox("Restore &progress");
     Q_CHECK_PTR(progressCbox);
     progressCbox->setEnabled(false);
-    mainVlay->addWidget(progressCbox);
+    progressHlay->addWidget(progressCbox);
+
+    progressLabel = new QLabel;
+    Q_CHECK_PTR(progressLabel);
+    progressLabel->setEnabled(false);
+    progressHlay->addWidget(progressLabel);
+
+    progressHlay->addStretch(1);
 
     QHBoxLayout* timerHlay = new QHBoxLayout;
     Q_CHECK_PTR(timerHlay);
@@ -393,6 +403,9 @@ NewQuizDialog::setQuizSpec(const QuizSpec& spec)
     {
         progressCbox->setEnabled(true);
         progressCbox->setChecked(true);
+        int questionNum = spec.getProgress().getQuestion();
+        progressLabel->setEnabled(true);
+        progressLabel->setText(QString("(Question %1)").arg(questionNum));
     }
     quizSpec = spec;
 
@@ -607,6 +620,8 @@ NewQuizDialog::disableProgress()
 {
     progressCbox->setChecked(false);
     progressCbox->setEnabled(false);
+    progressLabel->setEnabled(false);
+    progressLabel->setText(QString());
 }
 
 //---------------------------------------------------------------------------
@@ -635,8 +650,7 @@ NewQuizDialog::updateForm()
         Auxil::stringToQuizMethod(methodCombo->currentText());
 
     if (method == QuizSpec::CardboxQuizMethod) {
-        progressCbox->setEnabled(false);
-        progressCbox->setChecked(false);
+        disableProgress();
         questionOrderCombo->setEnabled(true);
         questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
             Auxil::quizQuestionOrderToString(QuizSpec::ScheduleOrder)));
