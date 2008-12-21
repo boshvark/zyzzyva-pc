@@ -47,8 +47,12 @@ class SearchForm : public ActionForm
     QString getStatusString() const;
     bool isSaveEnabled() const;
 
+    // Reimplemented virtual methods
     public slots:
     void saveRequested();
+    void selectInputArea();
+
+    public slots:
     void search();
     void updateResultTotal(int num);
     void specChanged();

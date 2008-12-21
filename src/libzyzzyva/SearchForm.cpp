@@ -106,7 +106,7 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     resultView->setModel(resultModel);
 
     specChanged();
-    QTimer::singleShot(0, specForm, SLOT(selectInputArea()));
+    QTimer::singleShot(0, this, SLOT(selectInputArea()));
 }
 
 //---------------------------------------------------------------------------
@@ -170,6 +170,17 @@ void
 SearchForm::saveRequested()
 {
     resultView->exportRequested();
+}
+
+//---------------------------------------------------------------------------
+//  selectInputArea
+//
+//! Give focus to the input area and select its contents.
+//---------------------------------------------------------------------------
+void
+SearchForm::selectInputArea()
+{
+    specForm->selectInputArea();
 }
 
 //---------------------------------------------------------------------------
@@ -279,7 +290,7 @@ SearchForm::search()
         lineEdit->setSelection(0, lineEdit->text().length());
     }
     else {
-        specForm->selectInputArea();
+        selectInputArea();
     }
 
     searchButton->setEnabled(true);

@@ -67,6 +67,7 @@ class QuizForm : public ActionForm
     // Reimplemented virtual methods
     public slots:
     void saveRequested();
+    void selectInputArea();
 
     public slots:
     bool newQuiz(const QuizSpec& spec);
@@ -88,7 +89,6 @@ class QuizForm : public ActionForm
     void startDisplayingCorrectAnswers();
     void stopDisplayingCorrectAnswers();
     void displayNextCorrectAnswer();
-    void selectInputArea();
     void enableAndSelectInputArea();
     bool promptToSaveChanges();
 
