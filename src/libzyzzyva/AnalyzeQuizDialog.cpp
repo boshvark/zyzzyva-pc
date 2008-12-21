@@ -148,24 +148,6 @@ AnalyzeQuizDialog::newQuiz(const QuizSpec& spec)
     incorrectModel->setLexicon(spec.getLexicon());
     clearMissed();
     clearIncorrect();
-
-    // Restore incorrect and missed words from quiz progress
-    QuizProgress progress = spec.getProgress();
-    QMap<QString, int> missed = progress.getMissed();
-    QMap<QString, int>::iterator it;
-
-    QStringList missedList;
-    for (it = missed.begin(); it != missed.end(); ++it)
-        missedList.append(it.key());
-    addMissed(missedList, false);
-
-    QMap<QString, int> incorrect = progress.getIncorrect();
-    QStringList incorrectList;
-    for (it = incorrect.begin(); it != incorrect.end(); ++it)
-        incorrectList.append(it.key());
-    addIncorrect(incorrectList, false);
-
-    updateStats();
 }
 
 //---------------------------------------------------------------------------
