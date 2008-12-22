@@ -74,6 +74,8 @@ const QString SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT
     = "quiz_auto_end_after_incorrect";
 const QString SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT
     = "quiz_mark_missed_after_incorrect";
+const QString SETTINGS_QUIZ_MARK_MISSED_AFTER_TIMER_EXPIRES
+    = "quiz_mark_missed_after_timer_expires";
 const QString SETTINGS_QUIZ_CYCLE_ANSWERS = "quiz_cycle_answers";
 const QString SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT = "quiz_timeout_disable_input";
 const QString SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS
@@ -209,6 +211,9 @@ MainSettings::readSettings()
     instance->quizMarkMissedAfterIncorrect
         = settings.value(SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT,
                          true).toBool();
+    instance->quizMarkMissedAfterTimerExpires
+        = settings.value(SETTINGS_QUIZ_MARK_MISSED_AFTER_TIMER_EXPIRES,
+                         false).toBool();
     instance->quizCycleAnswers
         = settings.value(SETTINGS_QUIZ_CYCLE_ANSWERS, true).toBool();
     instance->quizTimeoutDisableInput
@@ -325,6 +330,8 @@ MainSettings::writeSettings()
                       instance->quizAutoEndAfterIncorrect);
     settings.setValue(SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT,
                       instance->quizMarkMissedAfterIncorrect);
+    settings.setValue(SETTINGS_QUIZ_MARK_MISSED_AFTER_TIMER_EXPIRES,
+                      instance->quizMarkMissedAfterTimerExpires);
     settings.setValue(SETTINGS_QUIZ_CYCLE_ANSWERS,
                       instance->quizCycleAnswers);
     settings.setValue(SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT,

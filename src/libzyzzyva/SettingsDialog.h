@@ -107,6 +107,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   quizAutoAdvanceCbox;
     QCheckBox*   quizAutoEndAfterIncorrectCbox;
     QCheckBox*   quizMarkMissedAfterIncorrectCbox;
+    QCheckBox*   quizMarkMissedAfterTimerCbox;
     QCheckBox*   quizCycleAnswersCbox;
     QCheckBox*   quizTimeoutDisableInputCbox;
     QSpinBox*    quizTimeoutDisableInputSbox;
