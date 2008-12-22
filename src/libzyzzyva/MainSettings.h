@@ -101,6 +101,10 @@ class MainSettings
         return instance->quizMarkMissedAfterIncorrect; }
     static void setQuizMarkMissedAfterIncorrect(bool b) {
         instance->quizMarkMissedAfterIncorrect = b; }
+    static bool getQuizMarkMissedAfterTimerExpires() {
+        return instance->quizMarkMissedAfterTimerExpires; }
+    static void setQuizMarkMissedAfterTimerExpires(bool b) {
+        instance->quizMarkMissedAfterTimerExpires = b; }
     static bool getQuizCycleAnswers() {
         return instance->quizCycleAnswers; }
     static void setQuizCycleAnswers(bool b) {
@@ -222,6 +226,7 @@ class MainSettings
     bool quizAutoAdvance;
     bool quizAutoEndAfterIncorrect;
     bool quizMarkMissedAfterIncorrect;
+    bool quizMarkMissedAfterTimerExpires;
     bool quizCycleAnswers;
     bool quizTimeoutDisableInput;
     int quizTimeoutDisableInputMillisecs;

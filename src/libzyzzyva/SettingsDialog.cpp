@@ -342,6 +342,11 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(quizMarkMissedAfterIncorrectCbox);
     quizBehaviorVlay->addWidget(quizMarkMissedAfterIncorrectCbox);
 
+    quizMarkMissedAfterTimerCbox =
+        new QCheckBox("Mark question as missed after timer expires");
+    Q_CHECK_PTR(quizMarkMissedAfterTimerCbox);
+    quizBehaviorVlay->addWidget(quizMarkMissedAfterTimerCbox);
+
     quizCycleAnswersCbox =
         new QCheckBox("Cycle answers after ending a question");
     Q_CHECK_PTR(quizCycleAnswersCbox);
@@ -819,6 +824,8 @@ SettingsDialog::readSettings()
         MainSettings::getQuizAutoEndAfterIncorrect());
     quizMarkMissedAfterIncorrectCbox->setChecked(
         MainSettings::getQuizMarkMissedAfterIncorrect());
+    quizMarkMissedAfterTimerCbox->setChecked(
+        MainSettings::getQuizMarkMissedAfterTimerExpires());
     quizCycleAnswersCbox->setChecked(MainSettings::getQuizCycleAnswers());
     quizTimeoutDisableInputCbox->setChecked(
         MainSettings::getQuizTimeoutDisableInput());
@@ -925,6 +932,8 @@ SettingsDialog::writeSettings()
         quizAutoEndAfterIncorrectCbox->isChecked());
     MainSettings::setQuizMarkMissedAfterIncorrect(
         quizMarkMissedAfterIncorrectCbox->isChecked());
+    MainSettings::setQuizMarkMissedAfterTimerExpires(
+        quizMarkMissedAfterTimerCbox->isChecked());
     MainSettings::setQuizCycleAnswers(quizCycleAnswersCbox->isChecked());
     MainSettings::setQuizTimeoutDisableInput(
         quizTimeoutDisableInputCbox->isChecked());

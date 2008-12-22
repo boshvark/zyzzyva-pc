@@ -2005,10 +2005,16 @@ QuizForm::timerEvent(QTimerEvent* event)
     --timerRemaining;
     setTimerDisplay(timerRemaining);
     if (timerRemaining == 0) {
-        bool old = checkBringsJudgment;
-        checkBringsJudgment = true;
-        checkResponseClicked();
-        checkBringsJudgment = old;
+
+        if (MainSettings::getQuizMarkMissedAfterTimerExpires()) {
+            markMissed();
+        }
+        else {
+            bool old = checkBringsJudgment;
+            checkBringsJudgment = true;
+            checkResponseClicked();
+            checkBringsJudgment = old;
+        }
 
         if (MainSettings::getQuizTimeoutDisableInput()) {
             int msecs = MainSettings::getQuizTimeoutDisableInputMillisecs();
