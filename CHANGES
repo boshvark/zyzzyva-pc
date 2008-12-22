@@ -1,3 +1,16 @@
+Version 2.0.3
+Released 2008-12-21, from /branches/2.0.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.3
+
+User-visible changes:
+ * Disallow input immediately after quiz timer expires
+ * Eliminate noticeable slowdown after every quiz question
+ * Allow appending of words to existing saved word file
+ * Restore focus to input area when switching between tabs
+ * Fix some word definitions
+ * Various minor bug fixes
+
+
 Version 2.0.2
 Released 2008-03-30, from /branches/2.0.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.2
