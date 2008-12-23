@@ -3,7 +3,7 @@
 //
 // A drawing surface for quiz questions.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -275,7 +275,7 @@ QuizCanvas::dragEnterEvent(QDragEnterEvent* event)
 void
 QuizCanvas::dropEvent(QDropEvent* event)
 {
-    if (event->mimeData()->hasFormat(QUIZ_TILE_MIME_TYPE)) {
+    if (dragDropEnabled && event->mimeData()->hasFormat(QUIZ_TILE_MIME_TYPE)) {
         QByteArray itemData = event->mimeData()->data(QUIZ_TILE_MIME_TYPE);
         QDataStream dataStream(&itemData, QIODevice::ReadOnly);
 
@@ -334,10 +334,10 @@ QuizCanvas::mousePressEvent(QMouseEvent* event)
     dataStream << pixmap << QPoint(event->pos())
                << QPoint(event->pos() - child->pos());
 
-    QMimeData *mimeData = new QMimeData;
+    QMimeData* mimeData = new QMimeData;
     mimeData->setData(QUIZ_TILE_MIME_TYPE, itemData);
 
-    QDrag *drag = new QDrag(this);
+    QDrag* drag = new QDrag(this);
     drag->setMimeData(mimeData);
     drag->setPixmap(pixmap);
     drag->setHotSpot(event->pos() - child->pos());
