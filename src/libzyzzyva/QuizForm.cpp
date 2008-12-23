@@ -1583,7 +1583,6 @@ QuizForm::displayNextCorrectAnswer()
 void
 QuizForm::enableAndSelectInputArea()
 {
-    qDebug("Enabling and selecting input area");
     inputWidget->setEnabled(true);
     selectInputArea();
 }
@@ -1962,7 +1961,6 @@ QuizForm::timerEvent(QTimerEvent* event)
 
         if (MainSettings::getQuizTimeoutDisableInput()) {
             int msecs = MainSettings::getQuizTimeoutDisableInputMillisecs();
-            qDebug("Disabling input for %d msecs...", msecs);
             inputWidget->setEnabled(false);
             QTimer::singleShot(msecs, this, SLOT(enableAndSelectInputArea()));
         }
