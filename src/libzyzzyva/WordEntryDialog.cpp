@@ -94,6 +94,7 @@ WordEntryDialog::WordEntryDialog(QWidget* parent, Qt::WFlags f)
     buttonHlay->addWidget(cancelButton);
 
     setWindowTitle(DIALOG_CAPTION);
+    wordLine->setFocus();
 }
 
 //---------------------------------------------------------------------------
