@@ -51,7 +51,8 @@ class QuizEngine
     bool nextQuestion();
     void completeQuestion();
 
-    ResponseStatus respond(const QString& response);
+    ResponseStatus respond(const QString& response,
+                           bool lexiconSymbols = false);
     void markQuestionAsCorrect();
     void markQuestionAsMissed();
     QString getQuestion() const;

@@ -296,10 +296,11 @@ QuizEngine::completeQuestion()
 //! Enter a user response to the current quiz.
 //
 //! @param response the user response
+//! @param lexiconSymbols whether to require lexicon symbols
 //! @return the status of the response
 //---------------------------------------------------------------------------
 QuizEngine::ResponseStatus
-QuizEngine::respond(const QString& response)
+QuizEngine::respond(const QString& response, bool lexiconSymbols)
 {
     QString word (response);
     bool ok = true;
@@ -324,7 +325,7 @@ QuizEngine::respond(const QString& response)
         QString backAnswers =
             wordEngine->getBackHookLetters(lexicon, baseWord).toUpper();
 
-        if (MainSettings::getQuizRequireLexiconSymbols()) {
+        if (lexiconSymbols) {
             QMap<QChar, QString> frontAnsMap = parseHookSymbols(frontAnswers);
             QMap<QChar, QString> backAnsMap = parseHookSymbols(backAnswers);
             QMap<QChar, QString> frontMap = parseHookSymbols(frontHooks);
@@ -341,7 +342,7 @@ QuizEngine::respond(const QString& response)
     }
 
     // Check lexicon symbols
-    if (ok && MainSettings::getQuizRequireLexiconSymbols()) {
+    if (ok && lexiconSymbols) {
         QRegExp re ("(?:([A-Za-z]+)([^A-Za-z]*))");
         QString symbols;
         if (re.indexIn(word) >= 0) {

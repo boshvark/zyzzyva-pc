@@ -81,6 +81,7 @@ class QuizForm : public ActionForm
     void analyzeClicked();
     void cardboxMoveClicked();
     void flashcardStateChanged(int state);
+    void lexiconSymbolStateChanged(int state);
     void setTileTheme(const QString& theme);
     void setBackgroundColor(const QColor& color);
     void updateStatusString();
@@ -126,6 +127,7 @@ class QuizForm : public ActionForm
     void disconnectDatabase();
     void recordQuestionStats(bool correct);
     bool customLetterOrderAllowed(QuizSpec::QuizType quizType) const;
+    void updateValidatorOptions();
 
     void timerEvent(QTimerEvent* event);
 
@@ -150,6 +152,7 @@ class QuizForm : public ActionForm
     QWidget*      inputWidget;
     QLabel*       letterOrderLabel;
     QCheckBox*    flashcardCbox;
+    QCheckBox*    lexiconSymbolCbox;
     ZPushButton*  nextQuestionButton;
     ZPushButton*  checkResponseButton;
     ZPushButton*  markMissedButton;
