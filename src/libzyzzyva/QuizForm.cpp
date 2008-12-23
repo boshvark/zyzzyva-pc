@@ -509,14 +509,13 @@ QuizForm::responseEntered()
         responseView->scrollTo(responseModel->sibling(
             responseModel->getLastAddedIndex(), 0, QModelIndex()));
         statusStr = "<font color=\"blue\">Correct</font>";
-        if (analyzeDialog->isVisible())
-            analyzeDialog->updateStats();
+        analyzeDialog->updateStats();
         inputLine->clear();
     }
     else if (status == QuizEngine::Incorrect) {
         displayResponse += "*";
         statusStr = "<font color=\"red\">Incorrect</font>";
-        addIncorrect(response);
+        analyzeDialog->addIncorrect(response);
         selectInputArea();
     }
     else if (status == QuizEngine::Duplicate) {
@@ -611,15 +610,6 @@ QuizForm::newQuiz(const QuizSpec& spec)
 
     // Restore incorrect and missed words from quiz progress
     analyzeDialog->newQuiz(spec);
-    QuizProgress progress = spec.getProgress();
-    analyzeMissedCache = progress.getMissed().keys().toSet();
-    analyzeIncorrectCache = progress.getIncorrect().keys().toSet();
-    if (analyzeDialog->isVisible()) {
-        analyzeDialog->addMissed(analyzeMissedCache.toList());
-        analyzeDialog->addIncorrect(analyzeIncorrectCache.toList());
-        analyzeMissedCache.clear();
-        analyzeIncorrectCache.clear();
-    }
 
     // Connect to dotabase before starting the first question
     QString lexicon = spec.getLexicon();
@@ -863,9 +853,8 @@ QuizForm::markCorrect()
     }
 
     QStringList incorrect = quizEngine->getQuestionIncorrectResponses();
-    QStringListIterator jt (incorrect);
-    while (jt.hasNext()) {
-        analyzeDialog->removeIncorrect(jt.next());
+    foreach (QString response, incorrect) {
+        analyzeDialog->removeIncorrect(response);
     }
 
     bool old = checkBringsJudgment;
@@ -875,8 +864,7 @@ QuizForm::markCorrect()
     checkResponseClicked();
     checkBringsJudgment = old;
     quizEngine->markQuestionAsCorrect();
-    if (analyzeDialog->isVisible())
-        analyzeDialog->updateStats();
+    analyzeDialog->updateStats();
 }
 
 //---------------------------------------------------------------------------
@@ -897,40 +885,6 @@ QuizForm::moveToCardbox(int cardbox)
 }
 
 //---------------------------------------------------------------------------
-//  addIncorrect
-//
-//! Add an incorrect response to the cache, or update the Analyze Quiz dialog
-//! if it is visible.
-//
-//! @param word the incorrect word
-//---------------------------------------------------------------------------
-void
-QuizForm::addIncorrect(const QString& word)
-{
-    if (analyzeDialog->isVisible())
-        analyzeDialog->addIncorrect(word);
-    else
-        analyzeIncorrectCache.insert(word);
-}
-
-//---------------------------------------------------------------------------
-//  addMissed
-//
-//! Add a list of missed responses to the cache, or update the Analyze Quiz
-//! dialog if it is visible.
-//
-//! @param words the missed words
-//---------------------------------------------------------------------------
-void
-QuizForm::addMissed(const QStringList& words)
-{
-    if (analyzeDialog->isVisible())
-        analyzeDialog->addMissed(words);
-    else
-        analyzeMissedCache += words.toSet();
-}
-
-//---------------------------------------------------------------------------
 //  nextQuestionClicked
 //
 //! Called when the New Question button is clicked.
@@ -945,8 +899,7 @@ QuizForm::nextQuestionClicked()
         QMessageBox::warning(this, caption, message);
     }
     startQuestion();
-    if (analyzeDialog->isVisible())
-        analyzeDialog->updateStats();
+    analyzeDialog->updateStats();
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
         setUnsavedChanges(true);
 }
@@ -1017,8 +970,7 @@ QuizForm::checkResponseClicked()
     inputLine->setEnabled(false);
     checkResponseButton->setEnabled(false);
     quizEngine->completeQuestion();
-    if (analyzeDialog->isVisible())
-        analyzeDialog->updateStats();
+    analyzeDialog->updateStats();
 
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
         setUnsavedChanges(true);
@@ -1052,7 +1004,7 @@ QuizForm::checkResponseClicked()
         responseModel->addWords(wordItems);
         MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
 
-        addMissed(unanswered);
+        analyzeDialog->addMissed(unanswered);
         questionCorrect = false;
 
         markMissedButton->setText(MARK_CORRECT_BUTTON);
@@ -1134,14 +1086,6 @@ QuizForm::analyzeClicked()
 {
     if (analyzeDialog->isVisible())
         return;
-
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    analyzeDialog->addMissed(analyzeMissedCache.toList());
-    analyzeDialog->addIncorrect(analyzeIncorrectCache.toList());
-    analyzeDialog->updateStats();
-    analyzeMissedCache.clear();
-    analyzeIncorrectCache.clear();
-    QApplication::restoreOverrideCursor();
 
     analyzeDialog->show();
     selectInputArea();

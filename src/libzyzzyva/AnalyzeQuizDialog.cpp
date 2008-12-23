@@ -148,6 +148,11 @@ AnalyzeQuizDialog::newQuiz(const QuizSpec& spec)
     incorrectModel->setLexicon(spec.getLexicon());
     clearMissed();
     clearIncorrect();
+
+    // XXX: use counts, not just words
+    QuizProgress progress = spec.getProgress();
+    addMissed(progress.getMissed().keys(), false);
+    addIncorrect(progress.getIncorrect().keys(), false);
 }
 
 //---------------------------------------------------------------------------
@@ -186,15 +191,10 @@ AnalyzeQuizDialog::updateStats()
 void
 AnalyzeQuizDialog::addMissed(const QString& word, bool update)
 {
-    // FIXME: Probably not the right way to get alphabetical sorting
-    // instead of alphagram sorting
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-    MainSettings::setWordListGroupByAnagrams(false);
-    missedModel->addWord(
-        WordTableModel::WordItem(word, WordTableModel::WordMissed), false);
-    MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
-    QApplication::restoreOverrideCursor();
+    missedCache.insert(word);
+
+    if (isVisible())
+        moveCache();
 
     if (update)
         updateStats();
@@ -214,20 +214,10 @@ AnalyzeQuizDialog::addMissed(const QStringList& words, bool update)
     if (words.empty())
         return;
 
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    QList<WordTableModel::WordItem> wordItems;
-    foreach (QString word, words) {
-        wordItems.append(WordTableModel::WordItem(word,
-                                                  WordTableModel::WordMissed));
-    }
+    missedCache += words.toSet();
 
-    // FIXME: Probably not the right way to get alphabetical sorting
-    // instead of alphagram sorting
-    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-    MainSettings::setWordListGroupByAnagrams(false);
-    missedModel->addWords(wordItems);
-    MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
-    QApplication::restoreOverrideCursor();
+    if (isVisible())
+        moveCache();
 
     if (update)
         updateStats();
@@ -244,7 +234,9 @@ AnalyzeQuizDialog::addMissed(const QStringList& words, bool update)
 void
 AnalyzeQuizDialog::removeMissed(const QString& word, bool update)
 {
-    missedModel->removeWord(word);
+    if (!missedCache.remove(word))
+        missedModel->removeWord(word);
+
     if (update)
         updateStats();
 }
@@ -260,15 +252,10 @@ AnalyzeQuizDialog::removeMissed(const QString& word, bool update)
 void
 AnalyzeQuizDialog::addIncorrect(const QString& word, bool update)
 {
-    // FIXME: Probably not the right way to get alphabetical sorting
-    // instead of alphagram sorting
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-    MainSettings::setWordListGroupByAnagrams(false);
-    incorrectModel->addWord(
-        WordTableModel::WordItem(word, WordTableModel::WordIncorrect), false);
-    MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
-    QApplication::restoreOverrideCursor();
+    incorrectCache.insert(word);
+
+    if (isVisible())
+        moveCache();
 
     if (update)
         updateStats();
@@ -288,19 +275,10 @@ AnalyzeQuizDialog::addIncorrect(const QStringList& words, bool update)
     if (words.empty())
         return;
 
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    QList<WordTableModel::WordItem> wordItems;
-    foreach (QString word, words) {
-        wordItems.append(
-            WordTableModel::WordItem(word, WordTableModel::WordIncorrect));
-    }
-    // FIXME: Probably not the right way to get alphabetical sorting
-    // instead of alphagram sorting
-    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
-    MainSettings::setWordListGroupByAnagrams(false);
-    incorrectModel->addWords(wordItems);
-    MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
-    QApplication::restoreOverrideCursor();
+    incorrectCache += words.toSet();
+
+    if (isVisible())
+        moveCache();
 
     if (update)
         updateStats();
@@ -317,7 +295,9 @@ AnalyzeQuizDialog::addIncorrect(const QStringList& words, bool update)
 void
 AnalyzeQuizDialog::removeIncorrect(const QString& word, bool update)
 {
-    incorrectModel->removeWord(word);
+    if (!incorrectCache.remove(word))
+        incorrectModel->removeWord(word);
+
     if (update)
         updateStats();
 }
@@ -330,6 +310,7 @@ AnalyzeQuizDialog::removeIncorrect(const QString& word, bool update)
 void
 AnalyzeQuizDialog::clearMissed()
 {
+    missedCache.clear();
     missedModel->clear();
 }
 
@@ -341,7 +322,20 @@ AnalyzeQuizDialog::clearMissed()
 void
 AnalyzeQuizDialog::clearIncorrect()
 {
+    incorrectCache.clear();
     incorrectModel->clear();
+}
+
+//---------------------------------------------------------------------------
+//  showEvent
+//
+//! Called when the widget is shown.
+//---------------------------------------------------------------------------
+void
+AnalyzeQuizDialog::showEvent(QShowEvent*)
+{
+    moveCache();
+    updateStats();
 }
 
 //---------------------------------------------------------------------------
@@ -388,4 +382,40 @@ AnalyzeQuizDialog::percentString(int numerator, int denominator) const
     double pct = denominator ? (numerator * 100.0) / denominator : 0;
     return QString::number(numerator) + " / " + QString::number(denominator)
         + " (" + QString::number(pct, 'f', 1) + "%)";
+}
+
+//---------------------------------------------------------------------------
+//  moveCache
+//
+//! Move the words in the incorrect and missed caches to the word lists.
+//---------------------------------------------------------------------------
+void
+AnalyzeQuizDialog::moveCache()
+{
+    // FIXME: Probably not the right way to get alphabetical sorting
+    // instead of alphagram sorting
+    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+    bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
+    MainSettings::setWordListGroupByAnagrams(false);
+
+    // Move missed cache to word list
+    QList<WordTableModel::WordItem> wordItems;
+    foreach (QString word, missedCache) {
+        wordItems.append(
+            WordTableModel::WordItem(word, WordTableModel::WordMissed));
+    }
+    missedModel->addWords(wordItems);
+    missedCache.clear();
+
+    // Move incorrect cache to word list
+    wordItems.clear();
+    foreach (QString word, incorrectCache) {
+        wordItems.append(
+            WordTableModel::WordItem(word, WordTableModel::WordIncorrect));
+    }
+    incorrectModel->addWords(wordItems);
+    incorrectCache.clear();
+
+    MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
+    QApplication::restoreOverrideCursor();
 }

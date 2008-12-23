@@ -107,8 +107,6 @@ class QuizForm : public ActionForm
     void markMissed();
     void markCorrect();
     void moveToCardbox(int cardbox);
-    void addIncorrect(const QString& word);
-    void addMissed(const QStringList& words);
     void clearCanvas();
     void minimizeCanvas();
     void setNumCanvasTiles(int num);
@@ -181,9 +179,6 @@ class QuizForm : public ActionForm
     int currentDisplayAnswer;
 
     AnalyzeQuizDialog* analyzeDialog;
-    // XXX: Change to QMap<QString, int> for counts
-    QSet<QString> analyzeMissedCache;
-    QSet<QString> analyzeIncorrectCache;
 
     enum {
         QuestionNotMarked = 0,
