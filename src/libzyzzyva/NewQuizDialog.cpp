@@ -334,6 +334,8 @@ NewQuizDialog::getQuizSpec()
     {
         quizSpec.setProgress(QuizProgress());
         quizSpec.setFilename(QString());
+        quizSpec.setRandomSeed(0);
+        quizSpec.setRandomSeed2(0);
     }
 
     return quizSpec;
