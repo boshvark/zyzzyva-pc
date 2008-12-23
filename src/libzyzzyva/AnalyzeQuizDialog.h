@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -27,6 +27,8 @@
 
 #include <QDialog>
 #include <QLabel>
+#include <QSet>
+#include <QShowEvent>
 #include "MatchType.h"
 
 class QuizEngine;
@@ -57,10 +59,14 @@ class AnalyzeQuizDialog : public QDialog
     void clearMissed();
     void clearIncorrect();
 
+    protected slots:
+    virtual void showEvent(QShowEvent* event);
+
     private:
     void setRecall(int correct, int total);
     void setPrecision(int correct, int total);
     QString percentString(int numerator, int denominator) const;
+    void moveCache();
 
     private:
     QuizEngine* quizEngine;
@@ -75,6 +81,9 @@ class AnalyzeQuizDialog : public QDialog
     WordTableView*  incorrectView;
     WordTableModel* incorrectModel;
     ZPushButton*  closeButton;
+
+    QSet<QString> missedCache;
+    QSet<QString> incorrectCache;
 };
 
 #endif // ZYZZYVA_ANALYZE_QUIZ_DIALOG_H
