@@ -82,7 +82,7 @@ DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     wordLine->setValidator(new WordValidator(wordLine));
     connect(wordLine, SIGNAL(textChanged(const QString&)),
             SLOT(wordChanged(const QString&)));
-    connect(wordLine, SIGNAL(returnPressed()), SLOT(defineWord()));
+    connect(wordLine, SIGNAL(returnPressed()), SLOT(displayDefinition()));
     lookupHlay->addWidget(wordLine);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
@@ -90,11 +90,21 @@ DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(buttonHlay);
     mainVlay->addLayout(buttonHlay);
 
+    buttonHlay->addStretch(1);
+
     defineButton = new ZPushButton("&Define");
     Q_CHECK_PTR(defineButton);
     defineButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(defineButton, SIGNAL(clicked()), SLOT(defineWord()));
+    connect(defineButton, SIGNAL(clicked()), SLOT(displayDefinition()));
     buttonHlay->addWidget(defineButton);
+
+    infoButton = new ZPushButton("Get All &Info");
+    Q_CHECK_PTR(infoButton);
+    infoButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(infoButton, SIGNAL(clicked()), SLOT(displayAllInfo()));
+    buttonHlay->addWidget(infoButton);
+
+    buttonHlay->addStretch(1);
 
     resultBox = new DefinitionBox;
     Q_CHECK_PTR(resultBox);
@@ -103,6 +113,7 @@ DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     mainVlay->addStretch(0);
 
     defineButton->setEnabled(false);
+    infoButton->setEnabled(false);
     resultBox->hide();
 }
 
@@ -167,16 +178,42 @@ void
 DefineForm::wordChanged(const QString& word)
 {
     defineButton->setEnabled(!word.isEmpty());
+    infoButton->setEnabled(!word.isEmpty());
 }
 
 //---------------------------------------------------------------------------
-//  defineWord
+//  displayDefinition
+//
+//! Display only the word definition, without any other information.
+//---------------------------------------------------------------------------
+void
+DefineForm::displayDefinition()
+{
+    displayInfo(false);
+}
+
+//---------------------------------------------------------------------------
+//  displayAllInfo
+//
+//! Display all information about a word.
+//---------------------------------------------------------------------------
+void
+DefineForm::displayAllInfo()
+{
+    displayInfo(true);
+}
+
+//---------------------------------------------------------------------------
+//  displayInfo
 //
 //! Look up and display the acceptability and definition of the word currently
 //! in the word edit area.
+//
+//! @param allInfo whether to display all information in addition to the
+//! definition
 //---------------------------------------------------------------------------
 void
-DefineForm::defineWord()
+DefineForm::displayInfo(bool allInfo)
 {
     QString word = wordLine->text();
     if (word.isEmpty())
@@ -196,101 +233,107 @@ DefineForm::defineWord()
     // Get definition
     QString definition;
     if (acceptable) {
+        resultStr += "<br>";
+        if (allInfo)
+            resultStr += "<b>Definition:</b> ";
         definition = engine->getDefinition(lexicon, word);
         if (definition.isEmpty())
             definition = EMPTY_DEFINITION;
-        resultStr += "<br><b>Definition:</b> " + definition;
+        resultStr += definition;
     }
 
-    SearchSpec spec;
-    SearchCondition condition;
+    if (allInfo) {
+        SearchSpec spec;
+        SearchCondition condition;
 
-    // Get anagrams
-    condition.type = SearchCondition::AnagramMatch;
-    condition.stringValue = word;
-    spec.conditions.append(condition);
-    QStringList anagrams = engine->search(lexicon, spec, true);
-    anagrams.removeAll(word);
-    if (showSymbols) {
-        QMutableListIterator<QString> it (anagrams);
-        while (it.hasNext()) {
-            QString& anagram = it.next();
-            anagram.append(engine->getLexiconSymbols(lexicon, anagram));
+        // Get anagrams
+        condition.type = SearchCondition::AnagramMatch;
+        condition.stringValue = word;
+        spec.conditions.append(condition);
+        QStringList anagrams = engine->search(lexicon, spec, true);
+        anagrams.removeAll(word);
+        if (showSymbols) {
+            QMutableListIterator<QString> it (anagrams);
+            while (it.hasNext()) {
+                QString& anagram = it.next();
+                anagram.append(engine->getLexiconSymbols(lexicon, anagram));
+            }
         }
-    }
-    QString anagramsStr = anagrams.isEmpty() ? NONE_STR :
-        QString("(%1): ").arg(anagrams.count()) + anagrams.join(", ");
-    resultStr += "<br><b>Anagrams:</b> " + anagramsStr;
+        QString anagramsStr = anagrams.isEmpty() ? NONE_STR :
+            QString("(%1): ").arg(anagrams.count()) + anagrams.join(", ");
+        resultStr += "<br><b>Anagrams:</b> " + anagramsStr;
 
-    // Get front hooks
-    QString fHooks = engine->getFrontHookLetters(lexicon, word).toUpper();
-    if (!showSymbols)
-        fHooks.replace(QRegExp("[^A-Z]+"), QString());
-    QString fHookStr = fHooks.isEmpty() ? NONE_STR :
-        QString("(%1): ").arg(fHooks.count(QRegExp("[A-Z]"))) + fHooks;
-    resultStr += "<br><b>Front Hooks:</b> " + fHookStr;
+        // Get front hooks
+        QString fHooks = engine->getFrontHookLetters(lexicon, word).toUpper();
+        if (!showSymbols)
+            fHooks.replace(QRegExp("[^A-Z]+"), QString());
+        QString fHookStr = fHooks.isEmpty() ? NONE_STR :
+            QString("(%1): ").arg(fHooks.count(QRegExp("[A-Z]"))) + fHooks;
+        resultStr += "<br><b>Front Hooks:</b> " + fHookStr;
 
-    // Get back hooks
-    QString bHooks = engine->getBackHookLetters(lexicon, word).toUpper();
-    if (!showSymbols)
-        bHooks.replace(QRegExp("[^A-Z]+"), QString());
-    QString bHookStr = bHooks.isEmpty() ? NONE_STR :
-        QString("(%1): ").arg(bHooks.count(QRegExp("[A-Z]"))) + bHooks;
-    resultStr += "<br><b>Back Hooks:</b> " + bHookStr;
+        // Get back hooks
+        QString bHooks = engine->getBackHookLetters(lexicon, word).toUpper();
+        if (!showSymbols)
+            bHooks.replace(QRegExp("[^A-Z]+"), QString());
+        QString bHookStr = bHooks.isEmpty() ? NONE_STR :
+            QString("(%1): ").arg(bHooks.count(QRegExp("[A-Z]"))) + bHooks;
+        resultStr += "<br><b>Back Hooks:</b> " + bHookStr;
 
-    // Get front extensions
-    spec.conditions.clear();
-    condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = "*?" + word;
-    spec.conditions.append(condition);
-    QStringList fExts = engine->search(lexicon, spec, true);
-    if (showSymbols) {
-        QMutableListIterator<QString> it (fExts);
-        while (it.hasNext()) {
-            QString& fExt = it.next();
-            fExt.append(engine->getLexiconSymbols(lexicon, fExt));
+        // Get front extensions
+        spec.conditions.clear();
+        condition.type = SearchCondition::PatternMatch;
+        condition.stringValue = "*?" + word;
+        spec.conditions.append(condition);
+        QStringList fExts = engine->search(lexicon, spec, true);
+        if (showSymbols) {
+            QMutableListIterator<QString> it (fExts);
+            while (it.hasNext()) {
+                QString& fExt = it.next();
+                fExt.append(engine->getLexiconSymbols(lexicon, fExt));
+            }
         }
-    }
-    QString fExtStr = fExts.isEmpty() ? NONE_STR :
-        QString("(%1): ").arg(fExts.count()) +
-        fExts.replaceInStrings(QRegExp(word + "([^A-Z]*)$"), "-\\1").join(", ");
-    resultStr += "<br><b>Front Extensions:</b> " + fExtStr;
+        QString fExtStr = fExts.isEmpty() ? NONE_STR :
+            QString("(%1): ").arg(fExts.count()) +
+            fExts.replaceInStrings(
+                QRegExp(word + "([^A-Z]*)$"), "-\\1").join(", ");
+        resultStr += "<br><b>Front Extensions:</b> " + fExtStr;
 
-    // Get back extensions
-    spec.conditions.clear();
-    condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = word + "?*";
-    spec.conditions.append(condition);
-    QStringList bExts = engine->search(lexicon, spec, true);
-    if (showSymbols) {
-        QMutableListIterator<QString> it (bExts);
-        while (it.hasNext()) {
-            QString& bExt = it.next();
-            bExt.append(engine->getLexiconSymbols(lexicon, bExt));
+        // Get back extensions
+        spec.conditions.clear();
+        condition.type = SearchCondition::PatternMatch;
+        condition.stringValue = word + "?*";
+        spec.conditions.append(condition);
+        QStringList bExts = engine->search(lexicon, spec, true);
+        if (showSymbols) {
+            QMutableListIterator<QString> it (bExts);
+            while (it.hasNext()) {
+                QString& bExt = it.next();
+                bExt.append(engine->getLexiconSymbols(lexicon, bExt));
+            }
         }
-    }
-    QString bExtStr = bExts.isEmpty() ? NONE_STR :
-        QString("(%1): ").arg(bExts.count()) +
-        bExts.replaceInStrings(QRegExp("^" + word), "-").join(", ");
-    resultStr += "<br><b>Back Extensions:</b> " + bExtStr;
+        QString bExtStr = bExts.isEmpty() ? NONE_STR :
+            QString("(%1): ").arg(bExts.count()) +
+            bExts.replaceInStrings(QRegExp("^" + word), "-").join(", ");
+        resultStr += "<br><b>Back Extensions:</b> " + bExtStr;
 
-    // Get double extensions
-    spec.conditions.clear();
-    condition.type = SearchCondition::PatternMatch;
-    condition.stringValue = "*?" + word + "?*";
-    spec.conditions.append(condition);
-    QStringList dExts = engine->search(lexicon, spec, true);
-    if (showSymbols) {
-        QMutableListIterator<QString> it (dExts);
-        while (it.hasNext()) {
-            QString& dExt = it.next();
-            dExt.append(engine->getLexiconSymbols(lexicon, dExt));
+        // Get double extensions
+        spec.conditions.clear();
+        condition.type = SearchCondition::PatternMatch;
+        condition.stringValue = "*?" + word + "?*";
+        spec.conditions.append(condition);
+        QStringList dExts = engine->search(lexicon, spec, true);
+        if (showSymbols) {
+            QMutableListIterator<QString> it (dExts);
+            while (it.hasNext()) {
+                QString& dExt = it.next();
+                dExt.append(engine->getLexiconSymbols(lexicon, dExt));
+            }
         }
+        QString dExtStr = dExts.isEmpty() ? NONE_STR :
+            QString("(%1): ").arg(dExts.count()) +
+            dExts.replaceInStrings(QRegExp(word), "-").join(", ");
+        resultStr += "<br><b>Double Extensions:</b> " + dExtStr;
     }
-    QString dExtStr = dExts.isEmpty() ? NONE_STR :
-        QString("(%1): ").arg(dExts.count()) +
-        dExts.replaceInStrings(QRegExp(word), "-").join(", ");
-    resultStr += "<br><b>Double Extensions:</b> " + dExtStr;
 
     resultBox->setText(resultStr);
 
