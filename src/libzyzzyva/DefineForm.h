@@ -48,13 +48,18 @@ class DefineForm : public ActionForm
 
     public slots:
     void wordChanged(const QString& word);
-    void defineWord();
+    void displayDefinition();
+    void displayAllInfo();
+
+    private:
+    void displayInfo(bool allInfo = false);
 
     private:
     WordEngine*    engine;
     LexiconSelectWidget* lexiconWidget;
     WordLineEdit*  wordLine;
     ZPushButton*   defineButton;
+    ZPushButton*   infoButton;
     DefinitionBox* resultBox;
 };
 
