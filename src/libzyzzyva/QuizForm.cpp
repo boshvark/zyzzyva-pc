@@ -625,6 +625,7 @@ QuizForm::newQuiz(const QuizSpec& spec)
 
     quizTypeLabel->setText(lexicon + " - " + quizType);
     responseModel->setLexicon(lexicon);
+    inputLine->clear();
     startQuestion();
 
     // If the question is complete, don't record stats when restoring it
