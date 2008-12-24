@@ -3,7 +3,7 @@
 //
 // The dialog for editing a list of words.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,7 +34,7 @@
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Edit Word List";
-const QString LIST_HEADER_PREFIX = "Word List : ";
+const QString LIST_HEADER_PREFIX = "Word List: ";
 
 using namespace Defs;
 
@@ -120,9 +120,10 @@ WordListDialog::setWords(const QString& string)
 {
     wordList->clear();
     QStringList words = string.split(QChar(' '), QString::SkipEmptyParts);
-    QStringListIterator it (words);
-    while (it.hasNext())
-        new QListWidgetItem(it.next(), wordList);
+    foreach (QString word, words) {
+        new QListWidgetItem(word, wordList);
+    }
+    updateLabel();
 }
 
 //---------------------------------------------------------------------------
