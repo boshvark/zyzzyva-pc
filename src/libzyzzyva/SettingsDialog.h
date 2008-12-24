@@ -102,6 +102,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   quizUseFlashcardModeCbox;
     QCheckBox*   quizShowNumResponsesCbox;
     QCheckBox*   quizShowQuestionStatsCbox;
+    QCheckBox*   quizRequireLexiconSymbolsCbox;
     QCheckBox*   quizAutoCheckCbox;
     QCheckBox*   quizAutoAdvanceCbox;
     QCheckBox*   quizAutoEndAfterIncorrectCbox;

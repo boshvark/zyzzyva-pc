@@ -301,40 +301,46 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     connect(markMissedButton, SIGNAL(clicked()), SLOT(markMissedClicked()));
     buttonGlay->addWidget(markMissedButton, 0, 2, Qt::AlignHCenter);
 
-    pauseButton = new ZPushButton(PAUSE_BUTTON);
-    Q_CHECK_PTR(pauseButton);
-    pauseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(pauseButton, SIGNAL(clicked()), SLOT(pauseClicked()));
-    pauseButton->setEnabled(false);
-    buttonGlay->addWidget(pauseButton, 0, 3, Qt::AlignHCenter);
-
-    flashcardCbox = new QCheckBox("Flashcard M&ode");
-    Q_CHECK_PTR(flashcardCbox);
-    connect(flashcardCbox, SIGNAL(stateChanged(int)),
-            SLOT(flashcardStateChanged(int)));
-    buttonGlay->addWidget(flashcardCbox, 1, 0, Qt::AlignHCenter);
-
     newQuizButton = new ZPushButton("New &Quiz...");
     Q_CHECK_PTR(newQuizButton);
     newQuizButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(newQuizButton, SIGNAL(clicked()), SLOT(newQuizClicked()));
-    buttonGlay->addWidget(newQuizButton, 1, 1, Qt::AlignHCenter);
+    buttonGlay->addWidget(newQuizButton, 1, 0, Qt::AlignHCenter);
 
     saveQuizButton = new ZPushButton("&Save Quiz");
     Q_CHECK_PTR(saveQuizButton);
     saveQuizButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(saveQuizButton, SIGNAL(clicked()), SLOT(saveRequested()));
-    buttonGlay->addWidget(saveQuizButton, 1, 2, Qt::AlignHCenter);
+    buttonGlay->addWidget(saveQuizButton, 1, 1, Qt::AlignHCenter);
+
+    pauseButton = new ZPushButton(PAUSE_BUTTON);
+    Q_CHECK_PTR(pauseButton);
+    pauseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(pauseButton, SIGNAL(clicked()), SLOT(pauseClicked()));
+    pauseButton->setEnabled(false);
+    buttonGlay->addWidget(pauseButton, 1, 2, Qt::AlignHCenter);
+
+    flashcardCbox = new QCheckBox("Flashcard M&ode");
+    Q_CHECK_PTR(flashcardCbox);
+    connect(flashcardCbox, SIGNAL(stateChanged(int)),
+            SLOT(flashcardStateChanged(int)));
+    buttonGlay->addWidget(flashcardCbox, 2, 0, Qt::AlignHCenter);
+
+    lexiconSymbolCbox = new QCheckBox("Require le&xicon symbols");
+    Q_CHECK_PTR(lexiconSymbolCbox);
+    connect(lexiconSymbolCbox, SIGNAL(stateChanged(int)),
+            SLOT(lexiconSymbolStateChanged(int)));
+    buttonGlay->addWidget(lexiconSymbolCbox, 2, 1, Qt::AlignHCenter);
 
     analyzeButton = new ZPushButton("Analy&ze Quiz...");
     Q_CHECK_PTR(analyzeButton);
     analyzeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(analyzeButton, SIGNAL(clicked()), SLOT(analyzeClicked()));
-    buttonGlay->addWidget(analyzeButton, 1, 3, Qt::AlignHCenter);
+    buttonGlay->addWidget(analyzeButton, 2, 2, Qt::AlignHCenter);
 
     letterOrderWidget = new QWidget;
     Q_CHECK_PTR(letterOrderWidget);
-    buttonGlay->addWidget(letterOrderWidget, 2, 0, 1, 2, Qt::AlignCenter);
+    buttonGlay->addWidget(letterOrderWidget, 3, 0, 1, 2, Qt::AlignCenter);
 
     QHBoxLayout* letterOrderHlay = new QHBoxLayout(letterOrderWidget);
     Q_CHECK_PTR(letterOrderHlay);
@@ -363,7 +369,7 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
 
     cardboxMoveWidget = new QWidget;
     Q_CHECK_PTR(cardboxMoveWidget);
-    buttonGlay->addWidget(cardboxMoveWidget, 2, 2, 1, 2, Qt::AlignCenter);
+    buttonGlay->addWidget(cardboxMoveWidget, 3, 2, Qt::AlignCenter);
 
     QHBoxLayout* cardboxMoveHlay = new QHBoxLayout(cardboxMoveWidget);
     Q_CHECK_PTR(cardboxMoveHlay);
@@ -486,7 +492,8 @@ QuizForm::responseEntered()
         return;
     }
 
-    QuizEngine::ResponseStatus status = quizEngine->respond(response);
+    QuizEngine::ResponseStatus status = quizEngine->respond(response,
+        (lexiconSymbolCbox->checkState() == Qt::Checked));
     QString displayResponse = response;
     QString statusStr;
 
@@ -496,6 +503,7 @@ QuizForm::responseEntered()
     if (status == QuizEngine::Correct) {
         if (response.contains(":"))
             response = response.section(":", 1, 1);
+        response.replace(QRegExp("[^A-Z]+"), QString());
 
         // FIXME: Probably not the right way to get alphabetical sorting
         // instead of alphagram sorting
@@ -513,7 +521,6 @@ QuizForm::responseEntered()
         inputLine->clear();
     }
     else if (status == QuizEngine::Incorrect) {
-        displayResponse += "*";
         statusStr = "<font color=\"red\">Incorrect</font>";
         analyzeDialog->addIncorrect(response);
         selectInputArea();
@@ -629,11 +636,12 @@ QuizForm::newQuiz(const QuizSpec& spec)
     }
 
     flashcardCbox->setChecked(MainSettings::getQuizUseFlashcardMode());
+    lexiconSymbolCbox->setCheckState(
+        MainSettings::getQuizRequireLexiconSymbols()
+        ? Qt::Checked : Qt::Unchecked);
 
-    if (spec.getType() == QuizSpec::QuizAnagramsWithHooks)
-        inputValidator->setOptions(WordValidator::AllowHooks);
-    else
-        inputValidator->setOptions(WordValidator::None);
+    updateValidatorOptions();
+    inputValidator->setLexicon(spec.getLexicon());
 
     setQuizNameFromFilename(spec.getFilename());
 
@@ -939,18 +947,26 @@ QuizForm::checkResponseClicked()
             QString word = it.next();
             QString response = word;
             QString lexicon = quizSpec.getLexicon();
+            bool lexiconSymbols =
+                (lexiconSymbolCbox->checkState() == Qt::Checked);
+
+            if (lexiconSymbols) {
+                response += wordEngine->getLexiconSymbols(lexicon, word);
+            }
 
             if (quizType == QuizSpec::QuizAnagramsWithHooks) {
                 QString frontHooks =
                     wordEngine->getFrontHookLetters(lexicon, word).toUpper();
-                frontHooks.replace(QRegExp("[^A-Z]+"), QString());
                 QString backHooks =
                     wordEngine->getBackHookLetters(lexicon, word).toUpper();
-                backHooks.replace(QRegExp("[^A-Z]+"), QString());
-                response = frontHooks + ":" + word + ":" + backHooks;
+                if (!lexiconSymbols) {
+                    frontHooks.replace(QRegExp("[^A-Z]+"), QString());
+                    backHooks.replace(QRegExp("[^A-Z]+"), QString());
+                }
+                response = frontHooks + ":" + response + ":" + backHooks;
             }
 
-            quizEngine->respond(response);
+            quizEngine->respond(response, lexiconSymbols);
 
             // FIXME: Probably not the right way to get alphabetical sorting
             // instead of alphagram sorting
@@ -1133,6 +1149,19 @@ QuizForm::flashcardStateChanged(int state)
         correctStatusLabel->show();
         inputLine->setFocus();
     }
+}
+
+//---------------------------------------------------------------------------
+//  lexiconSymbolStateChanged
+//
+//! Called when the state of the Require Lexicon Symbols checkbox changes.
+//
+//! @param state the new checkbox state
+//---------------------------------------------------------------------------
+void
+QuizForm::lexiconSymbolStateChanged(int)
+{
+    updateValidatorOptions();
 }
 
 //---------------------------------------------------------------------------
@@ -1656,6 +1685,7 @@ QuizForm::keyPressEvent(QKeyEvent* event)
             case Qt::Key_S: saveQuizButton->animateClick(); return;
             case Qt::Key_Z: analyzeButton->animateClick(); return;
             case Qt::Key_O: flashcardCbox->toggle(); return;
+            case Qt::Key_X: lexiconSymbolCbox->toggle(); return;
             default: break;
         }
     }
@@ -1836,25 +1866,37 @@ QuizForm::responseMatchesQuestion(const QString& response) const
 {
     QString question = quizEngine->getQuestion();
     QuizSpec spec = quizEngine->getQuizSpec();
+    QRegExp wordRegex ("[A-Z]+");
     switch (spec.getType()) {
-        case QuizSpec::QuizAnagrams:
-        return ((response.length() == question.length()) &&
-            (Auxil::getAlphagram(response) ==
-             Auxil::getAlphagram(question)));
+        case QuizSpec::QuizAnagrams: {
+            if (wordRegex.indexIn(response) < 0)
+                return false;
+            QString word = wordRegex.cap(0);
+            return ((word.length() == question.length()) &&
+                (Auxil::getAlphagram(word) ==
+                Auxil::getAlphagram(question)));
+        }
 
         case QuizSpec::QuizAnagramsWithHooks: {
             if (response.count(QChar(':')) != 2)
                 return false;
-            QString word = response.section(":", 1, 1);
+            QString wordSection = response.section(":", 1, 1);
+            if (wordRegex.indexIn(wordSection) < 0)
+                return false;
+            QString word = wordRegex.cap(0);
             return ((word.length() == question.length()) &&
                 (Auxil::getAlphagram(word) ==
                  Auxil::getAlphagram(question)));
         }
 
-        case QuizSpec::QuizHooks:
-        return ((response.length() == (question.length() + 1)) &&
-                ((question == response.right(question.length())) ||
-                 (question == response.left(question.length()))));
+        case QuizSpec::QuizHooks: {
+            if (wordRegex.indexIn(response) < 0)
+                return false;
+            QString word = wordRegex.cap(0);
+            return ((word.length() == (question.length() + 1)) &&
+                    ((question == word.right(question.length())) ||
+                    (question == word.left(question.length()))));
+        }
 
         default: break;
     }
@@ -1930,6 +1972,27 @@ QuizForm::customLetterOrderAllowed(QuizSpec::QuizType quizType) const
     return ((quizType != QuizSpec::QuizPatterns) &&
             (quizType != QuizSpec::QuizHooks) &&
             (quizType != QuizSpec::QuizWordListRecall));
+}
+
+//---------------------------------------------------------------------------
+//  updateValidatorOptions
+//
+//! Update the validator options
+//! quiz type.
+//---------------------------------------------------------------------------
+void
+QuizForm::updateValidatorOptions()
+{
+    QuizSpec quizSpec = quizEngine->getQuizSpec();
+
+    int validatorOptions = WordValidator::None;
+    if (quizSpec.getType() == QuizSpec::QuizAnagramsWithHooks)
+        validatorOptions |= WordValidator::AllowHooks;
+
+    if (lexiconSymbolCbox->checkState() == Qt::Checked)
+        validatorOptions |= WordValidator::AllowLexiconSymbols;
+
+    inputValidator->setOptions(validatorOptions);
 }
 
 //---------------------------------------------------------------------------

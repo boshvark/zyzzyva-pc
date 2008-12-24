@@ -4,7 +4,7 @@
 // The engine for generating quizzes and keeping track of the user's
 // performance on each quiz.
 //
-// Copyright 2004, 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -51,7 +51,8 @@ class QuizEngine
     bool nextQuestion();
     void completeQuestion();
 
-    ResponseStatus respond(const QString& response);
+    ResponseStatus respond(const QString& response,
+                           bool lexiconSymbols = false);
     void markQuestionAsCorrect();
     void markQuestionAsMissed();
     QString getQuestion() const;
@@ -82,6 +83,7 @@ class QuizEngine
     void prepareQuestion();
     void addQuestionCorrect(const QString& response);
     void addQuestionIncorrect(const QString& response);
+    QMap<QChar, QString> parseHookSymbols(const QString& str);
 
     private:
     WordEngine*   wordEngine;

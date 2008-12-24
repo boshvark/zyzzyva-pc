@@ -89,6 +89,10 @@ class MainSettings
         return instance->quizShowQuestionStats; }
     static void setQuizShowQuestionStats(bool b) {
         instance->quizShowQuestionStats = b; }
+    static bool getQuizRequireLexiconSymbols() {
+        return instance->quizRequireLexiconSymbols; }
+    static void setQuizRequireLexiconSymbols(bool b) {
+        instance->quizRequireLexiconSymbols = b; }
     static bool getQuizAutoCheck() { return instance->quizAutoCheck; }
     static void setQuizAutoCheck(bool b) { instance->quizAutoCheck = b; }
     static bool getQuizAutoAdvance() { return instance->quizAutoAdvance; }
@@ -222,6 +226,7 @@ class MainSettings
     bool quizUseFlashcardMode;
     bool quizShowNumResponses;
     bool quizShowQuestionStats;
+    bool quizRequireLexiconSymbols;
     bool quizAutoCheck;
     bool quizAutoAdvance;
     bool quizAutoEndAfterIncorrect;
