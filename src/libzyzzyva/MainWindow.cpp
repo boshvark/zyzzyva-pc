@@ -179,7 +179,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     // Quit
     QAction* quitAction = new QAction("&Quit", this);
     Q_CHECK_PTR(quitAction);
-    connect(quitAction, SIGNAL(triggered()), qApp, SLOT(quit()));
+    connect(quitAction, SIGNAL(triggered()), SLOT(close()));
     fileMenu->addAction(quitAction);
 
     // Edit Menu
