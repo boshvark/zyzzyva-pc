@@ -1,3 +1,16 @@
+Version 2.0.4
+Released 2008-12-24, from /branches/2.0.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.4
+
+User-visible changes:
+ * Allow quizzes to require lexicon symbols for correct responses
+ * Display only definitions by default on the Definition form
+ * Fix a bug introduced in 2.0.3: Remove missed words when marking as correct
+ * Do not create an extra tile if dragging when timer expires
+ * Do not restore quiz question order if Restore Progress is not checked
+ * Various minor bug fixes
+
+
 Version 2.0.3
 Released 2008-12-21, from /branches/2.0.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.3
