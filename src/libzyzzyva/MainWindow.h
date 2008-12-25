@@ -68,6 +68,7 @@ class MainWindow : public QMainWindow
     void newIntroForm();
     void newCardboxForm();
     void doSaveAction();
+    void doSaveAsAction();
     void doJudgeAction();
     void editSettings();
     void viewDefinition();
@@ -138,6 +139,7 @@ class MainWindow : public QMainWindow
     QLabel*      messageLabel;
 
     QAction*     saveAction;
+    QAction*     saveAsAction;
 
     SettingsDialog* settingsDialog;
     AboutDialog*    aboutDialog;

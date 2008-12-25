@@ -115,6 +115,15 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     connect(saveAction, SIGNAL(triggered()), SLOT(doSaveAction()));
     fileMenu->addAction(saveAction);
 
+    // Save As
+    saveAsAction = new QAction("Save &As...", this);
+    Q_CHECK_PTR(saveAsAction);
+    saveAsAction->setIcon(QIcon(":/save-as-icon"));
+    saveAsAction->setEnabled(false);
+    saveAsAction->setShortcut(QString("Ctrl+Shift+S"));
+    connect(saveAsAction, SIGNAL(triggered()), SLOT(doSaveAsAction()));
+    fileMenu->addAction(saveAsAction);
+
     fileMenu->addSeparator();
 
     // New Introduction
@@ -311,6 +320,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     Q_CHECK_PTR(toolbar);
     toolbar->setIconSize(QSize(22, 22));
     toolbar->addAction(saveAction);
+    toolbar->addAction(saveAsAction);
     toolbar->addSeparator();
     toolbar->addAction(newQuizAction);
     toolbar->addAction(newSearchAction);
@@ -674,7 +684,24 @@ MainWindow::doSaveAction()
 
     // Prompt to save changes if this is a Quiz tab
     ActionForm* form = static_cast<ActionForm*>(w);
-    form->saveRequested();
+    form->saveRequested(false);
+}
+
+//---------------------------------------------------------------------------
+//  doSaveAsAction
+//
+//! Open a save dialog for the current tab.
+//---------------------------------------------------------------------------
+void
+MainWindow::doSaveAsAction()
+{
+    QWidget* w = tabStack->currentWidget();
+    if (!w)
+        return;
+
+    // Prompt to save changes if this is a Quiz tab
+    ActionForm* form = static_cast<ActionForm*>(w);
+    form->saveRequested(true);
 }
 
 //---------------------------------------------------------------------------
@@ -1042,14 +1069,17 @@ MainWindow::currentTabChanged(int)
     QWidget* w = tabStack->currentWidget();
     QString status;
     bool saveEnabled = false;
+    bool saveCapable = false;
     if (w) {
         ActionForm* form = static_cast<ActionForm*>(w);
         form->selectInputArea();
         status = form->getStatusString();
         saveEnabled = form->isSaveEnabled();
+        saveCapable = form->isSaveCapable();
     }
     messageLabel->setText(status);
     saveAction->setEnabled(saveEnabled);
+    saveAsAction->setEnabled(saveCapable);
 }
 
 //---------------------------------------------------------------------------

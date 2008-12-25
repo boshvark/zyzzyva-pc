@@ -165,9 +165,11 @@ SearchForm::isSaveEnabled() const
 //  saveRequested
 //
 //! Called when a save action is requested.
+//
+//! @param saveAs true if the user should be prompted for a filename
 //---------------------------------------------------------------------------
 void
-SearchForm::saveRequested()
+SearchForm::saveRequested(bool)
 {
     resultView->exportRequested();
 }
