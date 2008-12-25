@@ -52,10 +52,11 @@ class ActionForm : public QFrame
     virtual QIcon getIcon() const { return QIcon(); }
     virtual QString getTitle() const { return QString(); }
     virtual QString getStatusString() const { return QString(); }
+    virtual bool isSaveCapable() const { return false; }
     virtual bool isSaveEnabled() const { return false; }
 
     public slots:
-    virtual void saveRequested() { }
+    virtual void saveRequested(bool saveAs) { Q_UNUSED(saveAs); }
     virtual void selectInputArea() { }
 
     signals:

@@ -655,9 +655,11 @@ QuizForm::newQuiz(const QuizSpec& spec)
 //  saveRequested
 //
 //! Called when the New Quiz button is clicked.
+//
+//! @param saveAs true if the user should be prompted for a filename
 //---------------------------------------------------------------------------
 void
-QuizForm::saveRequested()
+QuizForm::saveRequested(bool saveAs)
 {
     pauseTimer();
 
@@ -674,7 +676,7 @@ QuizForm::saveRequested()
     QString filename = quizEngine->getQuizSpec().getFilename();
     bool filenameEdited = false;
 
-    if (filename.isEmpty()) {
+    if (filename.isEmpty() || saveAs) {
         filename = QFileDialog::getSaveFileName(this, "Save Quiz", startDir,
                                                "Zyzzyva Quiz Files (*.zzq)");
 

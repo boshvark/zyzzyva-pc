@@ -45,11 +45,12 @@ class SearchForm : public ActionForm
     QIcon getIcon() const;
     QString getTitle() const;
     QString getStatusString() const;
+    bool isSaveCapable() const { return true; }
     bool isSaveEnabled() const;
 
     // Reimplemented virtual methods
     public slots:
-    void saveRequested();
+    void saveRequested(bool saveAs = false);
     void selectInputArea();
 
     public slots:
