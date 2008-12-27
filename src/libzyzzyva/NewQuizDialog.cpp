@@ -400,12 +400,11 @@ NewQuizDialog::setQuizSpec(const QuizSpec& spec)
             default: break;
         }
     }
-    if ((spec.getMethod() == QuizSpec::StandardQuizMethod) &&
-        !spec.getProgress().isEmpty())
-    {
+    if (spec.getMethod() == QuizSpec::StandardQuizMethod) {
         progressCbox->setEnabled(true);
         progressCbox->setChecked(true);
-        int questionNum = spec.getProgress().getQuestion();
+        QuizProgress progress = spec.getProgress();
+        int questionNum = progress.isEmpty() ? 1 : progress.getQuestion() + 1;
         progressLabel->setEnabled(true);
         progressLabel->setText(QString("(Question %1)").arg(questionNum));
     }
