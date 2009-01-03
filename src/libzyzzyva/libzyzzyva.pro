@@ -137,6 +137,7 @@ HEADERS = \
     NewQuizDialog.h \
     QuizCanvas.h \
     QuizForm.h \
+    QuizProgress.h \
     QuizQuestionLabel.h \
     QuizQuestion.h \
     SearchForm.h \
