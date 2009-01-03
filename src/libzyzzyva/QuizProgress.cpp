@@ -3,7 +3,7 @@
 //
 // A class to represent quiz progress.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -181,7 +181,7 @@ QuizProgress::asDomElement() const
     topElement.setAttribute(XML_QUESTION_ATTR, question);
     topElement.setAttribute(XML_CORRECT_ATTR, correct);
     topElement.setAttribute(XML_QUESTION_COMPLETE_ATTR,
-        (questionComplete ? QString ("true") : QString ("false")));
+        (questionComplete ? QString("true") : QString("false")));
 
     if (!questionCorrectWords.isEmpty()) {
         QDomElement questionCorrectElement = doc.createElement(
