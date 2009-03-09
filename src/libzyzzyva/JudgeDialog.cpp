@@ -463,9 +463,10 @@ void
 JudgeDialog::displayInput()
 {
     inputInstLabel->setText(getInstructionMessage());
-    clearInput();
+    inputArea->clear();
     inputArea->setFocus();
     widgetStack->setCurrentWidget(inputWidget);
+    inputTimer->start(CLEAR_INPUT_DELAY);
 }
 
 //---------------------------------------------------------------------------
