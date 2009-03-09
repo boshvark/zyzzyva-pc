@@ -58,9 +58,7 @@ const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 const int CLEAR_EXIT_DELAY = 5000;
 const int MAX_JUDGE_WORDS = 8;
 
-// FIXME: ESC on the input screen should clear input
-// FIXME: ESC on the count screen should show exit instructions
-// FIXME: Count screen should show lexicon, etc.
+// FIXME: Disallow judging except for the correct number of words.
 
 const QString COUNT_INSTRUCTION_MESSAGE = "CHALLENGER:\n"
     "How many words would you like to challenge?";
@@ -310,13 +308,12 @@ JudgeDialog::currentChanged(int)
     countTimer->stop();
     inputTimer->stop();
     resultTimer->stop();
-    exitTimer->stop();
 }
 
 //---------------------------------------------------------------------------
 //  clearResults
 //
-//! Clear the input area and the result area.
+//! Clear the result area.
 //---------------------------------------------------------------------------
 void
 JudgeDialog::clearResults()
@@ -333,8 +330,6 @@ JudgeDialog::clearResults()
 void
 JudgeDialog::judgeWord()
 {
-    inputTimer->stop();
-
     bool acceptable = true;
 
     QString text = inputArea->toPlainText().simplified();
@@ -467,12 +462,10 @@ JudgeDialog::displayCount()
 void
 JudgeDialog::displayInput()
 {
-    countTimer->stop();
     inputInstLabel->setText(getInstructionMessage());
-    inputArea->clear();
+    clearInput();
     inputArea->setFocus();
     widgetStack->setCurrentWidget(inputWidget);
-    inputTimer->start(CLEAR_INPUT_DELAY);
 }
 
 //---------------------------------------------------------------------------
@@ -483,8 +476,8 @@ JudgeDialog::displayInput()
 void
 JudgeDialog::displayExit()
 {
-    inputInstLabel->setText(getInstructionMessage() +
-        "\nTo exit, hold SHIFT and press the ESC key.");
+    countInstLabel->setText(COUNT_INSTRUCTION_MESSAGE +
+        "\n\nTo exit, hold SHIFT and press the ESC key.");
     exitTimer->start(CLEAR_EXIT_DELAY);
 }
 
@@ -496,8 +489,8 @@ JudgeDialog::displayExit()
 void
 JudgeDialog::clearInput()
 {
-    inputTimer->stop();
     inputArea->clear();
+    inputTimer->start(CLEAR_INPUT_DELAY);
 }
 
 //---------------------------------------------------------------------------
@@ -508,7 +501,8 @@ JudgeDialog::clearInput()
 void
 JudgeDialog::clearExit()
 {
-    inputInstLabel->setText(getInstructionMessage());
+    exitTimer->stop();
+    countInstLabel->setText(COUNT_INSTRUCTION_MESSAGE);
 }
 
 //---------------------------------------------------------------------------
@@ -557,8 +551,15 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
         Qt::KeyboardModifiers modifiers = event->modifiers();
         if (modifiers & Qt::ShiftModifier)
             accept();
-        else if (!cleared)
+        else if ((currentWidget == countWidget) && !cleared)
             displayExit();
+        else if (currentWidget == inputWidget) {
+            QString text = inputArea->toPlainText().simplified();
+            if (text.isEmpty())
+                displayCount();
+            else
+                clearInput();
+        }
     }
     else
         event->ignore();
