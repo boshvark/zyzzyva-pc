@@ -137,7 +137,6 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     Q_CHECK_PTR(countInstLabel);
     countInstLabel->setFont(instructionFont);
     countInstLabel->setAlignment(Qt::AlignHCenter);
-    //countInstLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     countInstLabel->setWordWrap(true);
     countVlay->addWidget(countInstLabel);
 
@@ -145,7 +144,6 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     Q_CHECK_PTR(countLabel);
     countLabel->setFont(countFont);
     countLabel->setAlignment(Qt::AlignHCenter);
-    //countLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     countVlay->addWidget(countLabel);
 
     countVlay->addStretch(1);
@@ -604,6 +602,7 @@ JudgeDialog::createTitleWidget()
                                       "Version " + ZYZZYVA_VERSION);
     Q_CHECK_PTR(programLabel);
     programLabel->setFont(titleFont);
+    programLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     titleHlay->addWidget(programLabel);
 
     titleHlay->addStretch(1);
@@ -612,6 +611,7 @@ JudgeDialog::createTitleWidget()
     QLabel* pixmapLabel = new QLabel;
     Q_CHECK_PTR(pixmapLabel);
     pixmapLabel->setPixmap(pixmap);
+    pixmapLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     titleHlay->addWidget(pixmapLabel);
 
     titleHlay->addStretch(1);
@@ -623,7 +623,7 @@ JudgeDialog::createTitleWidget()
     QLabel* lexiconLabel = new QLabel("Lexicon: " + lexicon + "\n" + dateStr);
     Q_CHECK_PTR(lexiconLabel);
     lexiconLabel->setFont(titleFont);
-    lexiconLabel->setAlignment(Qt::AlignRight);
+    lexiconLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     titleHlay->addWidget(lexiconLabel);
 
     return widget;
