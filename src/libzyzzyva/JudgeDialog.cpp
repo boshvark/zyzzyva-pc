@@ -58,8 +58,6 @@ const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 const int CLEAR_EXIT_DELAY = 5000;
 const int MAX_JUDGE_WORDS = 8;
 
-// FIXME: Disallow judging except for the correct number of words.
-
 const QString COUNT_INSTRUCTION_MESSAGE = "CHALLENGER:\n"
     "How many words would you like to challenge?";
 
