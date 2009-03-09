@@ -632,8 +632,7 @@ JudgeDialog::createTitleWidget()
     programLabel->setFont(titleFont);
     programLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     titleHlay->addWidget(programLabel);
-
-    titleHlay->addStretch(1);
+    titleHlay->setStretchFactor(programLabel, 1);
 
     QPixmap pixmap (":/zyzzyva-128x128");
     QLabel* pixmapLabel = new QLabel;
@@ -641,8 +640,6 @@ JudgeDialog::createTitleWidget()
     pixmapLabel->setPixmap(pixmap);
     pixmapLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     titleHlay->addWidget(pixmapLabel);
-
-    titleHlay->addStretch(1);
 
     QDate date = Auxil::lexiconToDate(lexicon);
     QString dateStr;
@@ -653,6 +650,7 @@ JudgeDialog::createTitleWidget()
     lexiconLabel->setFont(titleFont);
     lexiconLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     titleHlay->addWidget(lexiconLabel);
+    titleHlay->setStretchFactor(lexiconLabel, 1);
 
     return widget;
 }
