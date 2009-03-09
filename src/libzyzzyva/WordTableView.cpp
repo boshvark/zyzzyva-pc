@@ -188,7 +188,7 @@ WordTableView::exportRequested()
 
         QMessageBox messageBox(QMessageBox::Warning, caption, message,
                                QMessageBox::NoButton, this);
-        //QPushButton* replaceButton =
+        QPushButton* replaceButton =
             messageBox.addButton("Replace", QMessageBox::AcceptRole);
         QPushButton* appendButton =
             messageBox.addButton("Append", QMessageBox::AcceptRole);
@@ -198,7 +198,12 @@ WordTableView::exportRequested()
         messageBox.setDefaultButton(cancelButton);
 
         int code = messageBox.exec();
-        if (code != QMessageBox::Accepted)
+
+        // XXX: For some reason, clicking the Replace button doesn't result in
+        // dialog acceptance despite adding it with AcceptRole above, so test
+        // directly for replace button clicked
+        if ((code != QMessageBox::Accepted) &&
+            (messageBox.clickedButton() != replaceButton))
             return;
 
         if (messageBox.clickedButton() == appendButton)
