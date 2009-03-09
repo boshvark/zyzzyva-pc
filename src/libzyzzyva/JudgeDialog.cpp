@@ -4,7 +4,7 @@
 // A full-screen dialog for Word Judge functionality, in which the user can
 // very easily judge the validity of one or more words.
 //
-// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,10 +42,13 @@
 const int FORM_FONT_PIXEL_SIZE = 55;
 const int TITLE_FONT_PIXEL_SIZE = 40;
 const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
+const int COUNT_FONT_PIXEL_SIZE = 200;
 const int EXIT_FONT_PIXEL_SIZE = 30;
+const int COUNT_MARGIN = 30;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 30;
 const int RESULT_SPACING = 100;
+const int CLEAR_COUNT_DELAY = 750;
 const int CLEAR_INPUT_DELAY = 15000;
 const int CLEAR_RESULTS_DELAY = 10000;
 const int CLEAR_RESULTS_MIN_DELAY = 500;
@@ -55,10 +58,13 @@ const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 const int CLEAR_EXIT_DELAY = 5000;
 const int MAX_JUDGE_WORDS = 8;
 
-const QString INSTRUCTION_MESSAGE = "1. CHALLENGER: Enter words, "
-                                    "separated by SPACE or ENTER.\n"
-                                    "2. OPPONENT: Press TAB to judge the play.\n"
-                                    "3. Press any key to clear the results.";
+const QString COUNT_INSTRUCTION_MESSAGE = "CHALLENGER:\n"
+    "How many words would you like to challenge?";
+
+const QString INSTRUCTION_MESSAGE =
+    "1. CHALLENGER: Enter %1 word%2.\n"
+    "2. OPPONENT: Press TAB to judge the play.\n"
+    "3. Press any key to clear the results.";
 
 using namespace Defs;
 
@@ -74,16 +80,33 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
                          Qt::WFlags f)
-    : QDialog(parent, f), engine(e), lexicon(lex), clearResultsHold(0)
+    : QDialog(parent, f), engine(e), lexicon(lex), count(0), clearResultsHold(0)
 {
+    countTimer = new QTimer(this);
+    Q_CHECK_PTR(countTimer);
+    connect(countTimer, SIGNAL(timeout()), SLOT(displayInput()));
+
+    inputTimer = new QTimer(this);
+    Q_CHECK_PTR(inputTimer);
+    connect(inputTimer, SIGNAL(timeout()), SLOT(displayCount()));
+
+    resultTimer = new QTimer(this);
+    Q_CHECK_PTR(resultTimer);
+    connect(resultTimer, SIGNAL(timeout()), SLOT(clearResults()));
+
+    exitTimer = new QTimer(this);
+    Q_CHECK_PTR(exitTimer);
+    connect(exitTimer, SIGNAL(timeout()), SLOT(clearExit()));
+
     QFont formFont = qApp->font();
     formFont.setPixelSize(FORM_FONT_PIXEL_SIZE);
 
-    QFont titleFont = qApp->font();
-    titleFont.setPixelSize(TITLE_FONT_PIXEL_SIZE);
-
     QFont instructionFont = qApp->font();
     instructionFont.setPixelSize(INSTRUCTION_FONT_PIXEL_SIZE);
+
+    QFont countFont = qApp->font();
+    countFont.setPixelSize(COUNT_FONT_PIXEL_SIZE);
+    countFont.setBold(true);
 
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(0);
@@ -92,23 +115,57 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
 
     widgetStack = new QStackedWidget;
     Q_CHECK_PTR(widgetStack);
+    connect(widgetStack, SIGNAL(currentChanged(int)),
+            SLOT(currentChanged(int)));
     mainVlay->addWidget(widgetStack);
 
+    // Count screen
+    countWidget = new QWidget;
+    Q_CHECK_PTR(countWidget);
+    widgetStack->addWidget(countWidget);
+
+    QVBoxLayout* countVlay = new QVBoxLayout(countWidget);
+    Q_CHECK_PTR(countVlay);
+    countVlay->setMargin(COUNT_MARGIN);
+    countVlay->setSpacing(20);
+
+    countVlay->addStretch(1);
+
+    countInstLabel = new QLabel(COUNT_INSTRUCTION_MESSAGE);
+    Q_CHECK_PTR(countInstLabel);
+    countInstLabel->setFont(instructionFont);
+    countInstLabel->setAlignment(Qt::AlignHCenter);
+    countInstLabel->setWordWrap(true);
+    countVlay->addWidget(countInstLabel);
+
+    countLabel = new QLabel;
+    Q_CHECK_PTR(countLabel);
+    countLabel->setFont(countFont);
+    countLabel->setAlignment(Qt::AlignHCenter);
+    countVlay->addWidget(countLabel);
+
+    countVlay->addStretch(1);
+
+    QWidget* countTitleWidget = createTitleWidget();
+    Q_CHECK_PTR(countTitleWidget);
+    countVlay->addWidget(countTitleWidget);
+
+    // Input screen
     inputWidget = new QWidget;
     Q_CHECK_PTR(inputWidget);
     widgetStack->addWidget(inputWidget);
 
     QVBoxLayout* inputVlay = new QVBoxLayout(inputWidget);
+    Q_CHECK_PTR(inputVlay);
     inputVlay->setMargin(INPUT_MARGIN);
     inputVlay->setSpacing(20);
-    Q_CHECK_PTR(inputVlay);
 
-    instLabel = new QLabel(INSTRUCTION_MESSAGE);
-    Q_CHECK_PTR(instLabel);
-    instLabel->setFont(instructionFont);
-    instLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    instLabel->setWordWrap(true);
-    inputVlay->addWidget(instLabel);
+    inputInstLabel = new QLabel;
+    Q_CHECK_PTR(inputInstLabel);
+    inputInstLabel->setFont(instructionFont);
+    inputInstLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    inputInstLabel->setWordWrap(true);
+    inputVlay->addWidget(inputInstLabel);
 
     inputArea = new WordTextEdit;
     Q_CHECK_PTR(inputArea);
@@ -118,6 +175,7 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     connect(inputArea, SIGNAL(textChanged()), SLOT(textChanged()));
     inputVlay->addWidget(inputArea);
 
+    // Results screen
     resultWidget = new QFrame;
     Q_CHECK_PTR(resultWidget);
     resultWidget->setSizePolicy(QSizePolicy::Expanding,
@@ -147,39 +205,9 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
 
     resultVlay->addStretch(1);
 
-    QHBoxLayout* titleHlay = new QHBoxLayout;
-    Q_CHECK_PTR(titleHlay);
-    inputVlay->addLayout(titleHlay);
-
-    QLabel* programLabel = new QLabel("Zyzzyva Word Judge\n"
-                                      "Version " + ZYZZYVA_VERSION);
-    Q_CHECK_PTR(programLabel);
-    programLabel->setFont(titleFont);
-    titleHlay->addWidget(programLabel);
-
-    titleHlay->addStretch(1);
-
-    QDate date = Auxil::lexiconToDate(lexicon);
-    QString dateStr;
-    if (date.isValid())
-        dateStr = date.toString("MMMM d, yyyy");
-    QLabel* lexiconLabel = new QLabel("Lexicon: " + lexicon + "\n" + dateStr);
-    Q_CHECK_PTR(lexiconLabel);
-    lexiconLabel->setFont(titleFont);
-    lexiconLabel->setAlignment(Qt::AlignRight);
-    titleHlay->addWidget(lexiconLabel);
-
-    inputTimer = new QTimer(this);
-    Q_CHECK_PTR(inputTimer);
-    connect(inputTimer, SIGNAL(timeout()), SLOT(clearInput()));
-
-    resultTimer = new QTimer(this);
-    Q_CHECK_PTR(resultTimer);
-    connect(resultTimer, SIGNAL(timeout()), SLOT(clearResults()));
-
-    exitTimer = new QTimer(this);
-    Q_CHECK_PTR(exitTimer);
-    connect(exitTimer, SIGNAL(timeout()), SLOT(clearExit()));
+    QWidget* inputTitleWidget = createTitleWidget();
+    Q_CHECK_PTR(inputTitleWidget);
+    inputVlay->addWidget(inputTitleWidget);
 
     clearResults();
     showFullScreen();
@@ -204,15 +232,17 @@ JudgeDialog::textChanged()
     int wordLength = 0;
     int numWords = 0;
     bool afterSpace = false;
-    bool doJudge = false;
-    for (int i = 0; i < text.length(); ++i) {
+    int tabIndex = -1;
+    bool tabDeletedBeforeCursor = false;
+    int maxWords = (count > MAX_JUDGE_WORDS ? MAX_JUDGE_WORDS : count);
+    for (int i = 0; lookIndex < text.length(); ++i) {
         QChar c = text.at(lookIndex);
 
         if (c.isLetter()) {
             if (wordLength == 0)
                 ++numWords;
 
-            if (numWords <= MAX_JUDGE_WORDS) {
+            if (numWords <= maxWords) {
                 afterSpace = false;
                 ++wordLength;
                 if (wordLength > MAX_WORD_LEN) {
@@ -224,13 +254,14 @@ JudgeDialog::textChanged()
                 }
             }
 
-            // Disallow more than MAX_JUDGE_WORDS by whiting them out
+            // Disallow more than max words by whiting them out
             else {
                 text.replace(lookIndex, 1, "\n");
             }
             ++lookIndex;
         }
-        else if ((lookIndex > 0) && c.isSpace() && (c != '\t') && !afterSpace) {
+        else if ((lookIndex > 0) && c.isSpace() && (c != '\t') && !afterSpace)
+        {
             text.replace(lookIndex, 1, "\n");
             afterSpace = true;
             ++lookIndex;
@@ -238,13 +269,38 @@ JudgeDialog::textChanged()
         }
         else {
             if (c == '\t')
-                doJudge = true;
+                tabIndex = lookIndex;
+            else
+                wordLength = 0;
+
             text.remove(lookIndex, 1);
-            if (i < origCursorPosition)
+            if (i < origCursorPosition) {
+                if (c == '\t')
+                    tabDeletedBeforeCursor = true;
                 ++deletedBeforeCursor;
-            wordLength = 0;
+            }
         }
     }
+
+    // Treat the tab character as word separator if fewer than N words are
+    // present
+    if ((numWords < maxWords) && (tabIndex > 0)) {
+        if (tabIndex >= text.length()) {
+            text.append("\n");
+            if (tabDeletedBeforeCursor)
+                --deletedBeforeCursor;
+        }
+        else if ((tabIndex > 0) && (text.at(tabIndex - 1).isLetter()) &&
+            text.at(tabIndex).isLetter())
+        {
+            text.insert(tabIndex, "\n");
+            ++numWords;
+            if (tabDeletedBeforeCursor)
+                --deletedBeforeCursor;
+        }
+        tabIndex = -1;
+    }
+
     text.replace(QRegExp("\\n+"), "\n");
 
     inputArea->setPlainText(text);
@@ -255,6 +311,7 @@ JudgeDialog::textChanged()
     inputArea->setTextCursor(cursor);
     inputArea->blockSignals(false);
 
+    bool doJudge = (tabIndex >= 0) && (numWords == count);
     if (!text.isEmpty()) {
         if (doJudge)
             judgeWord();
@@ -264,18 +321,29 @@ JudgeDialog::textChanged()
 }
 
 //---------------------------------------------------------------------------
+//  currentChanged
+//
+//! Called when the current widget is changed.
+//
+//! @param index the index of the current widget
+//---------------------------------------------------------------------------
+void
+JudgeDialog::currentChanged(int)
+{
+    countTimer->stop();
+    inputTimer->stop();
+    resultTimer->stop();
+}
+
+//---------------------------------------------------------------------------
 //  clearResults
 //
-//! Clear the input area and the result area.
+//! Clear the result area.
 //---------------------------------------------------------------------------
 void
 JudgeDialog::clearResults()
 {
-    resultTimer->stop();
-    exitTimer->stop();
-    clearExit();
-    inputArea->clear();
-    widgetStack->setCurrentWidget(inputWidget);
+    displayCount();
 }
 
 //---------------------------------------------------------------------------
@@ -399,6 +467,34 @@ JudgeDialog::clearResultsReleaseHold()
 }
 
 //---------------------------------------------------------------------------
+//  displayCount
+//
+//! Display the word count screen.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::displayCount()
+{
+    count = 0;
+    countLabel->clear();
+    widgetStack->setCurrentWidget(countWidget);
+}
+
+//---------------------------------------------------------------------------
+//  displayInput
+//
+//! Display the input area.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::displayInput()
+{
+    inputInstLabel->setText(getInstructionMessage());
+    inputArea->clear();
+    inputArea->setFocus();
+    widgetStack->setCurrentWidget(inputWidget);
+    inputTimer->start(CLEAR_INPUT_DELAY);
+}
+
+//---------------------------------------------------------------------------
 //  displayExit
 //
 //! Display instructions for exiting full screen mode.
@@ -406,8 +502,8 @@ JudgeDialog::clearResultsReleaseHold()
 void
 JudgeDialog::displayExit()
 {
-    instLabel->setText(INSTRUCTION_MESSAGE + "\nTo exit, hold SHIFT and "
-                       "press the ESC key.");
+    countInstLabel->setText(COUNT_INSTRUCTION_MESSAGE +
+        "\n\nTo exit, hold SHIFT and press the ESC key.");
     exitTimer->start(CLEAR_EXIT_DELAY);
 }
 
@@ -419,8 +515,8 @@ JudgeDialog::displayExit()
 void
 JudgeDialog::clearInput()
 {
-    inputTimer->stop();
     inputArea->clear();
+    inputTimer->start(CLEAR_INPUT_DELAY);
 }
 
 //---------------------------------------------------------------------------
@@ -431,7 +527,8 @@ JudgeDialog::clearInput()
 void
 JudgeDialog::clearExit()
 {
-    instLabel->setText(INSTRUCTION_MESSAGE);
+    exitTimer->stop();
+    countInstLabel->setText(COUNT_INSTRUCTION_MESSAGE);
 }
 
 //---------------------------------------------------------------------------
@@ -447,20 +544,115 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
     if (!event)
         return;
 
+    QWidget* currentWidget = widgetStack->currentWidget();
+
     bool cleared = false;
-    if ((widgetStack->currentWidget() == resultWidget) && !clearResultsHold) {
+    if ((currentWidget == resultWidget) && !clearResultsHold) {
         clearResults();
         cleared = true;
     }
 
-    if (event->key() == Qt::Key_Escape) {
+    else if (currentWidget == countWidget) {
+        if (!countTimer->isActive()) {
+            switch (event->key()) {
+                case Qt::Key_1: count = 1; break;
+                case Qt::Key_2: count = 2; break;
+                case Qt::Key_3: count = 3; break;
+                case Qt::Key_4: count = 4; break;
+                case Qt::Key_5: count = 5; break;
+                case Qt::Key_6: count = 6; break;
+                case Qt::Key_7: count = 7; break;
+                case Qt::Key_8: count = 8; break;
+                default: break;
+            }
 
+            if (count) {
+                clearExit();
+                countLabel->setText(QString::number(count));
+                countTimer->start(CLEAR_COUNT_DELAY);
+            }
+        }
+    }
+
+    if (event->key() == Qt::Key_Escape) {
         Qt::KeyboardModifiers modifiers = event->modifiers();
         if (modifiers & Qt::ShiftModifier)
             accept();
-        else if (!cleared)
+        else if ((currentWidget == countWidget) && !cleared)
             displayExit();
+        else if (currentWidget == inputWidget) {
+            QString text = inputArea->toPlainText().simplified();
+            if (text.isEmpty())
+                displayCount();
+            else
+                clearInput();
+        }
     }
     else
         event->ignore();
+}
+
+//---------------------------------------------------------------------------
+//  getInstructionMessage
+//
+//! Get an instruction message, properly parameterized for the number of words
+//! to be judged.
+//
+//! @return the message
+//---------------------------------------------------------------------------
+QString
+JudgeDialog::getInstructionMessage()
+{
+    return INSTRUCTION_MESSAGE.arg(count).arg(
+        count == 1 ? QString() : QString("s, separated by SPACE or ENTER"));
+}
+
+//---------------------------------------------------------------------------
+//  createTitleWidget
+//
+//! Create a title widget containing version and lexicon information, etc.
+//
+//! @return the newly created widget
+//---------------------------------------------------------------------------
+QWidget*
+JudgeDialog::createTitleWidget()
+{
+    QFont titleFont = qApp->font();
+    titleFont.setPixelSize(TITLE_FONT_PIXEL_SIZE);
+
+    QWidget* widget = new QWidget;
+    Q_CHECK_PTR(widget);
+
+    QHBoxLayout* titleHlay = new QHBoxLayout(widget);
+    Q_CHECK_PTR(titleHlay);
+
+    QLabel* programLabel = new QLabel("Zyzzyva Word Judge\n"
+                                      "Version " + ZYZZYVA_VERSION);
+    Q_CHECK_PTR(programLabel);
+    programLabel->setFont(titleFont);
+    programLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    titleHlay->addWidget(programLabel);
+
+    titleHlay->addStretch(1);
+
+    QPixmap pixmap (":/zyzzyva-128x128");
+    QLabel* pixmapLabel = new QLabel;
+    Q_CHECK_PTR(pixmapLabel);
+    pixmapLabel->setPixmap(pixmap);
+    pixmapLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    titleHlay->addWidget(pixmapLabel);
+
+    titleHlay->addStretch(1);
+
+    QDate date = Auxil::lexiconToDate(lexicon);
+    QString dateStr;
+    if (date.isValid())
+        dateStr = date.toString("MMMM d, yyyy");
+    QLabel* lexiconLabel = new QLabel("Lexicon: " + lexicon + "\n" + dateStr);
+    Q_CHECK_PTR(lexiconLabel);
+    lexiconLabel->setFont(titleFont);
+    lexiconLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+    titleHlay->addWidget(lexiconLabel);
+
+    return widget;
 }
