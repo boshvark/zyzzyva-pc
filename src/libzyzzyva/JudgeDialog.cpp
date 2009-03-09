@@ -542,6 +542,7 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
             }
 
             if (count) {
+                clearExit();
                 countLabel->setText(QString::number(count));
                 countTimer->start(CLEAR_COUNT_DELAY);
             }
