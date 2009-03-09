@@ -4,7 +4,7 @@
 // The engine for generating quizzes and keeping track of the user's
 // performance on each quiz.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -316,7 +316,7 @@ QuizEngine::respond(const QString& response, bool lexiconSymbols)
         QString frontHooks = sections.at(0);
         word = sections.at(1);
         QString baseWord = word;
-        baseWord.replace(QRegExp("[^A-Za-z]+"), QString());
+        baseWord.replace(QRegExp("[\\W\\d]+"), QString());
         QString backHooks = sections.at(2);
 
         QString lexicon = quizSpec.getLexicon();
@@ -335,15 +335,15 @@ QuizEngine::respond(const QString& response, bool lexiconSymbols)
         else {
             frontHooks = Auxil::getAlphagram(frontHooks);
             backHooks = Auxil::getAlphagram(backHooks);
-            frontAnswers.replace(QRegExp("[^A-Za-z]+"), QString());
-            backAnswers.replace(QRegExp("[^A-Za-z]+"), QString());
+            frontAnswers.replace(QRegExp("[\\W\\d]+"), QString());
+            backAnswers.replace(QRegExp("[\\W\\d]+"), QString());
             ok = ((frontHooks == frontAnswers) && (backHooks == backAnswers));
         }
     }
 
     // Check lexicon symbols
     if (ok && lexiconSymbols) {
-        QRegExp re ("(?:([A-Za-z]+)([^A-Za-z]*))");
+        QRegExp re ("(?:([^\\W\\d]+)([\\W\\d]*))");
         QString symbols;
         if (re.indexIn(word) >= 0) {
             word = re.cap(1);
@@ -605,7 +605,7 @@ QuizEngine::addQuestionIncorrect(const QString& response)
 QMap<QChar, QString>
 QuizEngine::parseHookSymbols(const QString& str)
 {
-    QRegExp re ("(?:([A-Za-z])([^A-Za-z]*))");
+    QRegExp re ("(?:([^\\W\\d])([\\W\\d]*))");
     QMap<QChar, QString> hookSymbols;
     for (int index = 0; ((index = re.indexIn(str, index)) >= 0);
          index += re.cap(0).length())

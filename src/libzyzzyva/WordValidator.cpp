@@ -3,7 +3,7 @@
 //
 // A validator for ensuring words are well-formed.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -39,7 +39,7 @@ QValidator::State
 WordValidator::validate(QString& input, int& pos) const
 {
     input = input.toUpper();
-    QString re = "[^A-Z";
+    QString re = "[^\\w";
     if (options & AllowQuestionMarks)
         re += "?";
     if (options & AllowAsterisks)
@@ -60,6 +60,7 @@ WordValidator::validate(QString& input, int& pos) const
         replaceRegExp(QRegExp(":+"), ":", input, pos);
         replaceRegExp(QRegExp("^([^:]*:[^:]+:[^:]*):.*"), "\\1", input, pos);
     }
+    replaceRegExp(QRegExp("\\d+"), QString(), input, pos);
     replaceRegExp(QRegExp(re), QString(), input, pos);
     return Acceptable;
 }

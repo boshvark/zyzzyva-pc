@@ -3,7 +3,7 @@
 //
 // A form for quizzing the user.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -503,7 +503,7 @@ QuizForm::responseEntered()
     if (status == QuizEngine::Correct) {
         if (response.contains(":"))
             response = response.section(":", 1, 1);
-        response.replace(QRegExp("[^A-Z]+"), QString());
+        response.replace(QRegExp("[\\W\\d]+"), QString());
 
         // FIXME: Probably not the right way to get alphabetical sorting
         // instead of alphagram sorting
@@ -962,8 +962,8 @@ QuizForm::checkResponseClicked()
                 QString backHooks =
                     wordEngine->getBackHookLetters(lexicon, word).toUpper();
                 if (!lexiconSymbols) {
-                    frontHooks.replace(QRegExp("[^A-Z]+"), QString());
-                    backHooks.replace(QRegExp("[^A-Z]+"), QString());
+                    frontHooks.replace(QRegExp("[\\W\\d]+"), QString());
+                    backHooks.replace(QRegExp("[\\W\\d]+"), QString());
                 }
                 response = frontHooks + ":" + response + ":" + backHooks;
             }
@@ -1868,7 +1868,7 @@ QuizForm::responseMatchesQuestion(const QString& response) const
 {
     QString question = quizEngine->getQuestion();
     QuizSpec spec = quizEngine->getQuizSpec();
-    QRegExp wordRegex ("[A-Z]+");
+    QRegExp wordRegex ("[^\\W\\d]+");
     switch (spec.getType()) {
         case QuizSpec::QuizAnagrams: {
             if (wordRegex.indexIn(response) < 0)
