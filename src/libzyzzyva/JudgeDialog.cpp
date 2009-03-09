@@ -44,7 +44,7 @@ const int TITLE_FONT_PIXEL_SIZE = 40;
 const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
 const int COUNT_FONT_PIXEL_SIZE = 200;
 const int EXIT_FONT_PIXEL_SIZE = 30;
-const int COUNT_MARGIN = 50;
+const int COUNT_MARGIN = 30;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 30;
 const int RESULT_SPACING = 100;
@@ -58,15 +58,15 @@ const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 const int CLEAR_EXIT_DELAY = 5000;
 const int MAX_JUDGE_WORDS = 8;
 
-// FIXME: ESC on the count screen should show exit instructions!
+// FIXME: ESC on the input screen should clear input
+// FIXME: ESC on the count screen should show exit instructions
 // FIXME: Count screen should show lexicon, etc.
-// FIXME: Change focus to input area when input screen is shown
 
 const QString COUNT_INSTRUCTION_MESSAGE = "CHALLENGER:\n"
     "How many words would you like to challenge?";
 
 const QString INSTRUCTION_MESSAGE =
-    "1. CHALLENGER: Enter %1 word%2, separated by SPACE or ENTER.\n"
+    "1. CHALLENGER: Enter %1 word%2.\n"
     "2. OPPONENT: Press TAB to judge the play.\n"
     "3. Press any key to clear the results.";
 
@@ -92,8 +92,7 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
 
     inputTimer = new QTimer(this);
     Q_CHECK_PTR(inputTimer);
-    // FIXME: this should go back to count screen, but ESC should clear input
-    connect(inputTimer, SIGNAL(timeout()), SLOT(clearInput()));
+    connect(inputTimer, SIGNAL(timeout()), SLOT(displayCount()));
 
     resultTimer = new QTimer(this);
     Q_CHECK_PTR(resultTimer);
@@ -105,9 +104,6 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
 
     QFont formFont = qApp->font();
     formFont.setPixelSize(FORM_FONT_PIXEL_SIZE);
-
-    QFont titleFont = qApp->font();
-    titleFont.setPixelSize(TITLE_FONT_PIXEL_SIZE);
 
     QFont instructionFont = qApp->font();
     instructionFont.setPixelSize(INSTRUCTION_FONT_PIXEL_SIZE);
@@ -127,6 +123,7 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
             SLOT(currentChanged(int)));
     mainVlay->addWidget(widgetStack);
 
+    // Count screen
     countWidget = new QWidget;
     Q_CHECK_PTR(countWidget);
     widgetStack->addWidget(countWidget);
@@ -155,6 +152,11 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
 
     countVlay->addStretch(1);
 
+    QWidget* countTitleWidget = createTitleWidget();
+    Q_CHECK_PTR(countTitleWidget);
+    countVlay->addWidget(countTitleWidget);
+
+    // Input screen
     inputWidget = new QWidget;
     Q_CHECK_PTR(inputWidget);
     widgetStack->addWidget(inputWidget);
@@ -179,6 +181,7 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     connect(inputArea, SIGNAL(textChanged()), SLOT(textChanged()));
     inputVlay->addWidget(inputArea);
 
+    // Results screen
     resultWidget = new QFrame;
     Q_CHECK_PTR(resultWidget);
     resultWidget->setSizePolicy(QSizePolicy::Expanding,
@@ -208,27 +211,9 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
 
     resultVlay->addStretch(1);
 
-    QHBoxLayout* titleHlay = new QHBoxLayout;
-    Q_CHECK_PTR(titleHlay);
-    inputVlay->addLayout(titleHlay);
-
-    QLabel* programLabel = new QLabel("Zyzzyva Word Judge\n"
-                                      "Version " + ZYZZYVA_VERSION);
-    Q_CHECK_PTR(programLabel);
-    programLabel->setFont(titleFont);
-    titleHlay->addWidget(programLabel);
-
-    titleHlay->addStretch(1);
-
-    QDate date = Auxil::lexiconToDate(lexicon);
-    QString dateStr;
-    if (date.isValid())
-        dateStr = date.toString("MMMM d, yyyy");
-    QLabel* lexiconLabel = new QLabel("Lexicon: " + lexicon + "\n" + dateStr);
-    Q_CHECK_PTR(lexiconLabel);
-    lexiconLabel->setFont(titleFont);
-    lexiconLabel->setAlignment(Qt::AlignRight);
-    titleHlay->addWidget(lexiconLabel);
+    QWidget* inputTitleWidget = createTitleWidget();
+    Q_CHECK_PTR(inputTitleWidget);
+    inputVlay->addWidget(inputTitleWidget);
 
     clearResults();
     showFullScreen();
@@ -320,7 +305,7 @@ JudgeDialog::textChanged()
 //! @param index the index of the current widget
 //---------------------------------------------------------------------------
 void
-JudgeDialog::currentChanged(int index)
+JudgeDialog::currentChanged(int)
 {
     countTimer->stop();
     inputTimer->stop();
@@ -591,5 +576,45 @@ QString
 JudgeDialog::getInstructionMessage()
 {
     return INSTRUCTION_MESSAGE.arg(count).arg(
-        count == 1 ? QString() : QString("s"));
+        count == 1 ? QString() : QString("s, separated by SPACE or ENTER"));
+}
+
+//---------------------------------------------------------------------------
+//  createTitleWidget
+//
+//! Create a title widget containing version and lexicon information, etc.
+//
+//! @return the newly created widget
+//---------------------------------------------------------------------------
+QWidget*
+JudgeDialog::createTitleWidget()
+{
+    QFont titleFont = qApp->font();
+    titleFont.setPixelSize(TITLE_FONT_PIXEL_SIZE);
+
+    QWidget* widget = new QWidget;
+    Q_CHECK_PTR(widget);
+
+    QHBoxLayout* titleHlay = new QHBoxLayout(widget);
+    Q_CHECK_PTR(titleHlay);
+
+    QLabel* programLabel = new QLabel("Zyzzyva Word Judge\n"
+                                      "Version " + ZYZZYVA_VERSION);
+    Q_CHECK_PTR(programLabel);
+    programLabel->setFont(titleFont);
+    titleHlay->addWidget(programLabel);
+
+    titleHlay->addStretch(1);
+
+    QDate date = Auxil::lexiconToDate(lexicon);
+    QString dateStr;
+    if (date.isValid())
+        dateStr = date.toString("MMMM d, yyyy");
+    QLabel* lexiconLabel = new QLabel("Lexicon: " + lexicon + "\n" + dateStr);
+    Q_CHECK_PTR(lexiconLabel);
+    lexiconLabel->setFont(titleFont);
+    lexiconLabel->setAlignment(Qt::AlignRight);
+    titleHlay->addWidget(lexiconLabel);
+
+    return widget;
 }

@@ -60,6 +60,7 @@ class JudgeDialog : public QDialog
 
     private:
     QString getInstructionMessage();
+    QWidget* createTitleWidget();
 
     private:
     WordEngine*     engine;
