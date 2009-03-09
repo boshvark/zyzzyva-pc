@@ -514,13 +514,13 @@ WordTableView::getExportStrings(QModelIndex& index, const
             if (!exportSymbols) {
                 QString ihChar = (MainSettings::getWordListShowHookParents() ?
                                   QString(".") : QString());
-                QRegExp regex(QString("([^\\W\\d]+%1).*").arg(ihChar));
+                QRegExp regex(QString("([^\\W_\\d]+%1).*").arg(ihChar));
                 str.replace(regex, "\\1");
             }
             else if (!exportInnerHooks &&
                      MainSettings::getWordListShowHookParents())
             {
-                str.replace(QRegExp(".([^\\W\\d]+)."), "\\1");
+                str.replace(QRegExp(".([^\\W_\\d]+)."), "\\1");
             }
         }
         else if (!exportSymbols &&
@@ -528,7 +528,7 @@ WordTableView::getExportStrings(QModelIndex& index, const
                   (column == WordTableModel::BACK_HOOK_COLUMN)))
         {
             str = model()->data(index, Qt::DisplayRole).toString();
-            str.replace(QRegExp("[\\W\\d]+"), QString());
+            str.replace(QRegExp("[\\W_\\d]+"), QString());
         }
         else {
             str = model()->data(index, Qt::EditRole).toString();
@@ -658,7 +658,7 @@ WordTableView::hookToolTipText(const QString& word, const QString& hooks,
 
     QString text;
     int offset = 0;
-    QRegExp regex("([^\\W\\d])([\\W\\d]*)?");
+    QRegExp regex("([^\\W_\\d])([\\W_\\d]*)?");
     while ((offset = regex.indexIn(hooks, offset)) >= 0) {
         QString hook = regex.cap(1);
         QString symbols = regex.cap(2);

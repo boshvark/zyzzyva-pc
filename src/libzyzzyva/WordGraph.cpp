@@ -321,7 +321,7 @@ WordGraph::search(const SearchSpec& spec) const
             if (wildcard)
                 unmatched = unmatched.replace('*', QString());
 
-            QRegExp re ("\\[[^\\]]*\\][^\\W\\d]");
+            QRegExp re ("\\[[^\\]]*\\][^\\W_\\d]");
             int pos = 0;
             while ((pos = re.indexIn(unmatched, pos)) >= 0) {
                 unmatched = unmatched.left(re.pos()) +
@@ -933,7 +933,7 @@ WordGraph::searchOld(const SearchSpec& spec) const
             if (wildcard)
                 unmatched = unmatched.replace('*', QString());
 
-            QRegExp re ("\\[[^\\]]*\\][^\\W\\d]");
+            QRegExp re ("\\[[^\\]]*\\][^\\W_\\d]");
             int pos = 0;
             while ((pos = re.indexIn(unmatched, pos)) >= 0) {
                 unmatched = unmatched.left(re.pos()) +

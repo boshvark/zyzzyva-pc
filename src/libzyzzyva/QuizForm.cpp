@@ -503,7 +503,7 @@ QuizForm::responseEntered()
     if (status == QuizEngine::Correct) {
         if (response.contains(":"))
             response = response.section(":", 1, 1);
-        response.replace(QRegExp("[\\W\\d]+"), QString());
+        response.replace(QRegExp("[\\W_\\d]+"), QString());
 
         // FIXME: Probably not the right way to get alphabetical sorting
         // instead of alphagram sorting
@@ -962,8 +962,8 @@ QuizForm::checkResponseClicked()
                 QString backHooks =
                     wordEngine->getBackHookLetters(lexicon, word).toUpper();
                 if (!lexiconSymbols) {
-                    frontHooks.replace(QRegExp("[\\W\\d]+"), QString());
-                    backHooks.replace(QRegExp("[\\W\\d]+"), QString());
+                    frontHooks.replace(QRegExp("[\\W_\\d]+"), QString());
+                    backHooks.replace(QRegExp("[\\W_\\d]+"), QString());
                 }
                 response = frontHooks + ":" + response + ":" + backHooks;
             }
@@ -1868,7 +1868,7 @@ QuizForm::responseMatchesQuestion(const QString& response) const
 {
     QString question = quizEngine->getQuestion();
     QuizSpec spec = quizEngine->getQuizSpec();
-    QRegExp wordRegex ("[^\\W\\d]+");
+    QRegExp wordRegex ("[^\\W_\\d]+");
     switch (spec.getType()) {
         case QuizSpec::QuizAnagrams: {
             if (wordRegex.indexIn(response) < 0)

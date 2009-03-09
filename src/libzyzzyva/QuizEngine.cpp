@@ -316,7 +316,7 @@ QuizEngine::respond(const QString& response, bool lexiconSymbols)
         QString frontHooks = sections.at(0);
         word = sections.at(1);
         QString baseWord = word;
-        baseWord.replace(QRegExp("[\\W\\d]+"), QString());
+        baseWord.replace(QRegExp("[\\W_\\d]+"), QString());
         QString backHooks = sections.at(2);
 
         QString lexicon = quizSpec.getLexicon();
@@ -335,15 +335,15 @@ QuizEngine::respond(const QString& response, bool lexiconSymbols)
         else {
             frontHooks = Auxil::getAlphagram(frontHooks);
             backHooks = Auxil::getAlphagram(backHooks);
-            frontAnswers.replace(QRegExp("[\\W\\d]+"), QString());
-            backAnswers.replace(QRegExp("[\\W\\d]+"), QString());
+            frontAnswers.replace(QRegExp("[\\W_\\d]+"), QString());
+            backAnswers.replace(QRegExp("[\\W_\\d]+"), QString());
             ok = ((frontHooks == frontAnswers) && (backHooks == backAnswers));
         }
     }
 
     // Check lexicon symbols
     if (ok && lexiconSymbols) {
-        QRegExp re ("(?:([^\\W\\d]+)([\\W\\d]*))");
+        QRegExp re ("(?:([^\\W_\\d]+)([\\W_\\d]*))");
         QString symbols;
         if (re.indexIn(word) >= 0) {
             word = re.cap(1);
@@ -605,7 +605,7 @@ QuizEngine::addQuestionIncorrect(const QString& response)
 QMap<QChar, QString>
 QuizEngine::parseHookSymbols(const QString& str)
 {
-    QRegExp re ("(?:([^\\W\\d])([\\W\\d]*))");
+    QRegExp re ("(?:([^\\W_\\d])([\\W_\\d]*))");
     QMap<QChar, QString> hookSymbols;
     for (int index = 0; ((index = re.indexIn(str, index)) >= 0);
          index += re.cap(0).length())
