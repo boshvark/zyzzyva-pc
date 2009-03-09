@@ -232,9 +232,10 @@ JudgeDialog::textChanged()
     int wordLength = 0;
     int numWords = 0;
     bool afterSpace = false;
-    bool seenTab = false;
+    int tabIndex = -1;
+    bool tabDeletedBeforeCursor = false;
     int maxWords = (count > MAX_JUDGE_WORDS ? MAX_JUDGE_WORDS : count);
-    for (int i = 0; i < text.length(); ++i) {
+    for (int i = 0; lookIndex < text.length(); ++i) {
         QChar c = text.at(lookIndex);
 
         if (c.isLetter()) {
@@ -259,23 +260,47 @@ JudgeDialog::textChanged()
             }
             ++lookIndex;
         }
-        else if ((lookIndex > 0) &&
-                 ((c == '\t') || (c.isSpace() && !afterSpace)))
+        else if ((lookIndex > 0) && c.isSpace() && (c != '\t') && !afterSpace)
         {
-            if (c == '\t')
-                seenTab = true;
             text.replace(lookIndex, 1, "\n");
             afterSpace = true;
             ++lookIndex;
             wordLength = 0;
         }
         else {
+            if (c == '\t')
+                tabIndex = lookIndex;
+            else
+                wordLength = 0;
+
             text.remove(lookIndex, 1);
-            if (i < origCursorPosition)
+            if (i < origCursorPosition) {
+                if (c == '\t')
+                    tabDeletedBeforeCursor = true;
                 ++deletedBeforeCursor;
-            wordLength = 0;
+            }
         }
     }
+
+    // Treat the tab character as word separator if fewer than N words are
+    // present
+    if ((numWords < maxWords) && (tabIndex > 0)) {
+        if (tabIndex >= text.length()) {
+            text.append("\n");
+            if (tabDeletedBeforeCursor)
+                --deletedBeforeCursor;
+        }
+        else if ((tabIndex > 0) && (text.at(tabIndex - 1).isLetter()) &&
+            text.at(tabIndex).isLetter())
+        {
+            text.insert(tabIndex, "\n");
+            ++numWords;
+            if (tabDeletedBeforeCursor)
+                --deletedBeforeCursor;
+        }
+        tabIndex = -1;
+    }
+
     text.replace(QRegExp("\\n+"), "\n");
 
     inputArea->setPlainText(text);
@@ -286,7 +311,7 @@ JudgeDialog::textChanged()
     inputArea->setTextCursor(cursor);
     inputArea->blockSignals(false);
 
-    bool doJudge = seenTab && (numWords == count);
+    bool doJudge = (tabIndex >= 0) && (numWords == count);
     if (!text.isEmpty()) {
         if (doJudge)
             judgeWord();
