@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -76,6 +76,8 @@ namespace Auxil {
     QString lexiconToOrigin(const QString& lexicon);
     QDate lexiconToDate(const QString& lexicon);
     QString getUpdatedLexiconName(const QString& oldLexiconName);
+    bool localeAwareLessThanQString(const QString& a, const QString& b);
+    bool localeAwareLessThanQChar(const QChar& a, const QChar& b);
 }
 
 #endif // ZYZZYVA_AUXIL_H

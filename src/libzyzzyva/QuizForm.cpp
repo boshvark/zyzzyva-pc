@@ -73,7 +73,7 @@ const int TITLE_FONT_PIXEL_SIZE = 20;
 bool
 alphabeticalCmp(const QChar& a, const QChar& b)
 {
-    return (a < b);
+    return Auxil::localeAwareLessThanQChar(a, b);
 }
 
 //---------------------------------------------------------------------------

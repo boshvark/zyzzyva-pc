@@ -3,7 +3,7 @@
 //
 // A model for representing word lists.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -79,9 +79,10 @@ lessThan(const WordTableModel::WordItem& a,
     if (MainSettings::getWordListGroupByAnagrams()) {
         QString aa = Auxil::getAlphagram(a.getWord().toUpper());
         QString ab = Auxil::getAlphagram(b.getWord().toUpper());
-        if (aa < ab)
+        int compare = QString::localeAwareCompare(aa, ab);
+        if (compare < 0)
             return true;
-        else if (ab < aa)
+        else if (compare > 0)
             return false;
     }
 
@@ -94,7 +95,8 @@ lessThan(const WordTableModel::WordItem& a,
         }
     }
 
-    return (a.getWord().toUpper() < b.getWord().toUpper());
+    return (QString::localeAwareCompare(a.getWord().toUpper(),
+                                        b.getWord().toUpper()) < 0);
 }
 
 //---------------------------------------------------------------------------

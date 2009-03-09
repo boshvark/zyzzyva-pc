@@ -3,7 +3,7 @@
 //
 // A dialog for displaying variations of a word, such as hooks, anagrams, etc.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -29,6 +29,7 @@
 #include "WordEngine.h"
 #include "WordTableView.h"
 #include "ZPushButton.h"
+#include "Auxil.h"
 #include <QApplication>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -384,7 +385,8 @@ WordVariationDialog::getWordItems(const QList<SearchSpec>& searchSpecs) const
         }
         QString wildcard;
         if (!wildcardChars.isEmpty()) {
-            qSort(wildcardChars);
+            qSort(wildcardChars.begin(), wildcardChars.end(),
+                  Auxil::localeAwareLessThanQChar);
             foreach (QChar c, wildcardChars)
                 wildcard.append(c.toUpper());
         }
