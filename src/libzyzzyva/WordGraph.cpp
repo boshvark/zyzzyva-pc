@@ -31,17 +31,17 @@
 #include <map>
 #include <stack>
 
-const long TERMINAL_NODE = 0;
-const long ROOT_NODE = 1;
+const int32_t TERMINAL_NODE = 0;
+const int32_t ROOT_NODE = 1;
 
-const long V_END_OF_WORD = 23;
-const long M_END_OF_WORD = (1L << V_END_OF_WORD);
-const long V_END_OF_NODE = 22;
-const long M_END_OF_NODE = (1L << V_END_OF_NODE);
+const int32_t V_END_OF_WORD = 23;
+const int32_t M_END_OF_WORD = (1L << V_END_OF_WORD);
+const int32_t V_END_OF_NODE = 22;
+const int32_t M_END_OF_NODE = (1L << V_END_OF_NODE);
 
-const long V_LETTER       = 24;
-const long M_LETTER       = 0xFF;
-const long M_NODE_POINTER = 0x1FFFFFL;
+const int32_t V_LETTER       = 24;
+const int32_t M_LETTER       = 0xFF;
+const int32_t M_NODE_POINTER = 0x1FFFFFL;
 
 using namespace std;
 using namespace Defs;
@@ -109,26 +109,26 @@ WordGraph::importDawgFile(const QString& filename, bool reverse, QString*
         return false;
     }
 
-    long numEdges;
-    long* p = &numEdges;
+    int32_t numEdges;
+    int32_t* p = &numEdges;
     char* cp = (char*) p;
-    file.read(cp, 1 * sizeof(long));
+    file.read(cp, 1 * sizeof(int32_t));
     if (bigEndian)
         convertEndian(p, 1);
 
     if (reverse) {
-        rdawg = new long[numEdges + 1];
+        rdawg = new int32_t[numEdges + 1];
         rdawg[0] = 0;
         p = &rdawg[1];
         cp = (char*) p;
-        file.read(cp, numEdges * sizeof(long));
+        file.read(cp, numEdges * sizeof(int32_t));
     }
     else {
-        dawg = new long[numEdges + 1];
+        dawg = new int32_t[numEdges + 1];
         dawg[0] = 0;
         p = &dawg[1];
         cp = (char*) p;
-        file.read(cp, numEdges * sizeof(long));
+        file.read(cp, numEdges * sizeof(int32_t));
     }
 
     if (expectedChecksum && errString) {
@@ -181,7 +181,7 @@ WordGraph::containsWord(const QString& w) const
     if (!dawg)
         return containsWordOld(w);
 
-    long node = ROOT_NODE;
+    int32_t node = ROOT_NODE;
     bool eow = false;
 
     for (int i = 0; i < w.length(); ++i) {
@@ -189,8 +189,8 @@ WordGraph::containsWord(const QString& w) const
             return false;
 
         QChar letter = w.at(i);
-        for (long* edge = &dawg[node]; ; ++edge) {
-            long lc = *edge;
+        for (int32_t* edge = &dawg[node]; ; ++edge) {
+            int32_t lc = *edge;
             lc = lc >> V_LETTER;
             lc = lc & M_LETTER;
             char c = (char) lc;
@@ -332,7 +332,7 @@ WordGraph::search(const SearchSpec& spec) const
             }
         }
 
-        long node = ROOT_NODE;
+        int32_t node = ROOT_NODE;
 
         // Traverse the tree looking for matches
         while (node) {
@@ -361,11 +361,11 @@ WordGraph::search(const SearchSpec& spec) const
                     }
                 }
 
-                long* edge = reversePattern ? &rdawg[node] : &dawg[node];
+                int32_t* edge = reversePattern ? &rdawg[node] : &dawg[node];
 
                 // Traverse next nodes, looking for matches
                 for (; ; ++edge, ++node) {
-                    long longLetter = *edge;
+                    int32_t longLetter = *edge;
                     longLetter = longLetter >> V_LETTER;
                     longLetter = longLetter & M_LETTER;
 
@@ -402,7 +402,7 @@ WordGraph::search(const SearchSpec& spec) const
                                 continue;
                         }
 
-                        long child = *edge & M_NODE_POINTER;
+                        int32_t child = *edge & M_NODE_POINTER;
 
                         // If this node matches, push its child on the stack
                         // to be traversed later
@@ -473,7 +473,7 @@ WordGraph::search(const SearchSpec& spec) const
 
                                 else if (c == ']') {
                                     if (found ^ negated) {
-                                        long child = *edge & M_NODE_POINTER;
+                                        int32_t child = *edge & M_NODE_POINTER;
 
                                         if (matchEnd < 0) {
                                             matchStart = groupStart;
@@ -530,7 +530,7 @@ WordGraph::search(const SearchSpec& spec) const
                                                   matchEnd - matchStart + 1,
                                                   QString());
 
-                            long child = *edge & M_NODE_POINTER;
+                            int32_t child = *edge & M_NODE_POINTER;
                             if (child &&
                                 (wildcard || !unmatched.isEmpty()))
                             {
@@ -685,8 +685,8 @@ WordGraph::matchesSpec(QString word, const SearchSpec& spec) const
 //! @param count the number of 32-bit words to convert
 //! @return the number of words converted
 //---------------------------------------------------------------------------
-long
-WordGraph::convertEndian(long* data, long count)
+int32_t
+WordGraph::convertEndian(int32_t* data, int32_t count)
 {
     for (int i = 0; i < count; ++i) {
         char* p = (char*) data;
@@ -1198,10 +1198,10 @@ WordGraph::searchOld(const SearchSpec& spec) const
 //! @return the number of words
 //---------------------------------------------------------------------------
 int
-WordGraph::getNumWords(long node) const
+WordGraph::getNumWords(int32_t node) const
 {
     int count = 0;
-    for (long* edge = &dawg[node]; ; ++edge) {
+    for (int32_t* edge = &dawg[node]; ; ++edge) {
         if ((*edge & M_END_OF_WORD) != 0)
             ++count;
         node = *edge & M_NODE_POINTER;
