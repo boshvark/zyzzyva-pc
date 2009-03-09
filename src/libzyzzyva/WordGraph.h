@@ -3,7 +3,7 @@
 //
 // A Directed Acyclic Word Graph class.
 //
-// Copyright 2004, 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2007, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -58,9 +58,9 @@ class WordGraph
 
     class TraversalState {
       public:
-        TraversalState(long n, const QString& w, const QString& u)
+        TraversalState(int32_t n, const QString& w, const QString& u)
             : node(n), word(w), unmatched(u) { }
-        long node;
+        int32_t node;
         QString word;
         QString unmatched;
     };
@@ -77,15 +77,15 @@ class WordGraph
     private:
     bool matchesSpec(QString word, const SearchSpec& spec) const;
     QString reverseString(const QString& s) const;
-    long convertEndian(long* data, long count);
+    int32_t convertEndian(int32_t* data, int32_t count);
 
     void addWordOld(const QString& w, bool reverse);
     bool containsWordOld(const QString& w) const;
     QStringList searchOld(const SearchSpec& spec) const;
-    int getNumWords(long node) const;
+    int getNumWords(int32_t node) const;
 
-    long* dawg;
-    long* rdawg;
+    int32_t* dawg;
+    int32_t* rdawg;
 
     bool bigEndian;
 
