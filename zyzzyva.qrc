@@ -2,6 +2,7 @@
 <RCC version="1.0">
 <qresource>
     <file alias="zyzzyva-32x32">images/zyzzyva-32x32.bmp</file>
+    <file alias="zyzzyva-128x128">images/zyzzyva-128x128.png</file>
     <file alias="zyzzyva-splash">images/zyzzyva-splash.png</file>
     <file alias="search-icon">images/search-icon-medium.png</file>
     <file alias="judge-icon">images/judge-icon-medium.png</file>

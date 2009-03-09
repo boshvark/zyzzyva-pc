@@ -607,6 +607,14 @@ JudgeDialog::createTitleWidget()
 
     titleHlay->addStretch(1);
 
+    QPixmap pixmap (":/zyzzyva-128x128");
+    QLabel* pixmapLabel = new QLabel;
+    Q_CHECK_PTR(pixmapLabel);
+    pixmapLabel->setPixmap(pixmap);
+    titleHlay->addWidget(pixmapLabel);
+
+    titleHlay->addStretch(1);
+
     QDate date = Auxil::lexiconToDate(lexicon);
     QString dateStr;
     if (date.isValid())
