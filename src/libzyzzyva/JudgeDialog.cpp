@@ -234,7 +234,8 @@ JudgeDialog::textChanged()
     int wordLength = 0;
     int numWords = 0;
     bool afterSpace = false;
-    bool doJudge = false;
+    bool seenTab = false;
+    int maxWords = (count > MAX_JUDGE_WORDS ? MAX_JUDGE_WORDS : count);
     for (int i = 0; i < text.length(); ++i) {
         QChar c = text.at(lookIndex);
 
@@ -242,7 +243,7 @@ JudgeDialog::textChanged()
             if (wordLength == 0)
                 ++numWords;
 
-            if (numWords <= MAX_JUDGE_WORDS) {
+            if (numWords <= maxWords) {
                 afterSpace = false;
                 ++wordLength;
                 if (wordLength > MAX_WORD_LEN) {
@@ -254,21 +255,23 @@ JudgeDialog::textChanged()
                 }
             }
 
-            // Disallow more than MAX_JUDGE_WORDS by whiting them out
+            // Disallow more than max words by whiting them out
             else {
                 text.replace(lookIndex, 1, "\n");
             }
             ++lookIndex;
         }
-        else if ((lookIndex > 0) && c.isSpace() && (c != '\t') && !afterSpace) {
+        else if ((lookIndex > 0) &&
+                 ((c == '\t') || (c.isSpace() && !afterSpace)))
+        {
+            if (c == '\t')
+                seenTab = true;
             text.replace(lookIndex, 1, "\n");
             afterSpace = true;
             ++lookIndex;
             wordLength = 0;
         }
         else {
-            if (c == '\t')
-                doJudge = true;
             text.remove(lookIndex, 1);
             if (i < origCursorPosition)
                 ++deletedBeforeCursor;
@@ -285,6 +288,7 @@ JudgeDialog::textChanged()
     inputArea->setTextCursor(cursor);
     inputArea->blockSignals(false);
 
+    bool doJudge = seenTab && (numWords == count);
     if (!text.isEmpty()) {
         if (doJudge)
             judgeWord();
