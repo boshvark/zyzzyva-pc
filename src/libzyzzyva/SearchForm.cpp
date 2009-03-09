@@ -3,7 +3,7 @@
 //
 // A form for searching for words, patterns, anagrams, etc.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -30,6 +30,7 @@
 #include "WordTableModel.h"
 #include "WordTableView.h"
 #include "ZPushButton.h"
+#include "Auxil.h"
 #include "Defs.h"
 #include <QApplication>
 #include <QLabel>
@@ -249,7 +250,8 @@ SearchForm::search()
                         wildcardChars.append(c);
                 }
                 if (!wildcardChars.isEmpty()) {
-                    qSort(wildcardChars);
+                    qSort(wildcardChars.begin(), wildcardChars.end(),
+                          Auxil::localeAwareLessThanQChar);
                     foreach (QChar c, wildcardChars)
                         wildcard.append(c.toUpper());
                 }

@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -125,6 +125,36 @@ const QString WORD_LIST_FORMAT_ONE_PER_LINE = "One Word Per Line";
 const QString WORD_LIST_FORMAT_QUESTION_ANSWER = "Anagram Question/Answer";
 
 using namespace Defs;
+
+//---------------------------------------------------------------------------
+//  localeAwareLessThanQString
+//
+//! A comparison function that compares QString objects in a locale-aware way.
+//
+//! @param a the first string to compare
+//! @param b the second string to compare
+//! @return true if a is less than b
+//---------------------------------------------------------------------------
+bool
+Auxil::localeAwareLessThanQString(const QString& a, const QString& b)
+{
+    return (QString::localeAwareCompare(a, b) < 0);
+}
+
+//---------------------------------------------------------------------------
+//  localeAwareLessThanQChar
+//
+//! A comparison function that compares QChar objects in a locale-aware way.
+//
+//! @param a the first char to compare
+//! @param b the second char to compare
+//! @return true if a is less than b
+//---------------------------------------------------------------------------
+bool
+Auxil::localeAwareLessThanQChar(const QChar& a, const QChar& b)
+{
+    return (QString::localeAwareCompare(a, b) < 0);
+}
 
 //---------------------------------------------------------------------------
 //  copyDir
@@ -460,22 +490,36 @@ QString
 Auxil::getAlphagram(const QString& word)
 {
     int wordLength = word.length();
-    char chars[wordLength + 1];
-    int charsPlaced = 0;
-
-    for (int i = 0; i < wordLength; ++i) {
-        char c = word.at(i).toAscii();
-        int j = 0;
-        while ((j < charsPlaced) && (c >= chars[j]))
-            ++j;
-        for (int k = charsPlaced; k > j; --k)
-            chars[k] = chars[k - 1];
-        chars[j] = c;
-        ++charsPlaced;
+    // Get characters
+    QString alphagram;
+    QList<QChar> chars;
+    for (int i = 0; i < word.length(); ++i) {
+        chars.append(word[i]);
     }
-    chars[charsPlaced] = 0;
+    qSort(chars.begin(), chars.end(), localeAwareLessThanQChar);
+    foreach (QChar c, chars)
+        alphagram.append(c);
 
-    return QString(chars);
+    //qDebug("Alphagram: |%s|", alphagram.toUtf8().constData());
+    return alphagram;
+
+    // Old, fast alphagram code - get back to this if possible
+    //char chars[wordLength + 1];
+    //int charsPlaced = 0;
+
+    //for (int i = 0; i < wordLength; ++i) {
+    //    char c = word.at(i).toAscii();
+    //    int j = 0;
+    //    while ((j < charsPlaced) && (c >= chars[j]))
+    //        ++j;
+    //    for (int k = charsPlaced; k > j; --k)
+    //        chars[k] = chars[k - 1];
+    //    chars[j] = c;
+    //    ++charsPlaced;
+    //}
+    //chars[charsPlaced] = 0;
+
+    //return QString(chars);
 }
 
 //---------------------------------------------------------------------------

@@ -25,6 +25,7 @@
 #include "LexiconStyleWidget.h"
 #include "LexiconStyle.h"
 #include "MainSettings.h"
+#include "Auxil.h"
 #include "Defs.h"
 #include <QHBoxLayout>
 #include <QLabel>
@@ -67,7 +68,8 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
     validLexicons.append(LEXICON_OWL);
     validLexicons.append(LEXICON_OWL2);
     validLexicons.append(LEXICON_VOLOST);
-    qSort(validLexicons);
+    qSort(validLexicons.begin(), validLexicons.end(),
+          Auxil::localeAwareLessThanQString);
 
     QString defaultLexicon = MainSettings::getDefaultLexicon();
     int defaultIndex = validLexicons.indexOf(defaultLexicon);

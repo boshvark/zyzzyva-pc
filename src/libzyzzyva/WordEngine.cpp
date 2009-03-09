@@ -3,7 +3,7 @@
 //
 // A class to handle the loading and searching of words.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -765,7 +765,8 @@ WordEngine::alphagrams(const QStringList& strList) const
     }
 
     QStringList alphaList = alphaSet.toList();
-    qSort(alphaList);
+    qSort(alphaList.begin(), alphaList.end(),
+          Auxil::localeAwareLessThanQString);
     return alphaList;
 }
 
@@ -966,7 +967,8 @@ WordEngine::getFrontHookLetters(const QString& lexicon, const QString& word)
         foreach (QString str, words) {
             letters.append(str.at(0).toLower());
         }
-        qSort(letters);
+        qSort(letters.begin(), letters.end(),
+              Auxil::localeAwareLessThanQChar);
 
         QListIterator<QChar> it (letters);
         while (it.hasNext())
@@ -1009,7 +1011,8 @@ WordEngine::getBackHookLetters(const QString& lexicon, const QString& word) cons
         foreach (QString str, words) {
             letters.append(str.at(str.length() - 1).toLower());
         }
-        qSort(letters);
+        qSort(letters.begin(), letters.end(),
+              Auxil::localeAwareLessThanQChar);
 
         QListIterator<QChar> it (letters);
         while (it.hasNext())
