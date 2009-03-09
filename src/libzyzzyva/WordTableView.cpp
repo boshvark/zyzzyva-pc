@@ -3,7 +3,7 @@
 //
 // A class derived from QTableView, used to display word lists.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -514,13 +514,13 @@ WordTableView::getExportStrings(QModelIndex& index, const
             if (!exportSymbols) {
                 QString ihChar = (MainSettings::getWordListShowHookParents() ?
                                   QString(".") : QString());
-                QRegExp regex(QString("([A-Z]+%1).*").arg(ihChar));
+                QRegExp regex(QString("([^\\W\\d]+%1).*").arg(ihChar));
                 str.replace(regex, "\\1");
             }
             else if (!exportInnerHooks &&
                      MainSettings::getWordListShowHookParents())
             {
-                str.replace(QRegExp(".([A-Z]+)."), "\\1");
+                str.replace(QRegExp(".([^\\W\\d]+)."), "\\1");
             }
         }
         else if (!exportSymbols &&
@@ -528,7 +528,7 @@ WordTableView::getExportStrings(QModelIndex& index, const
                   (column == WordTableModel::BACK_HOOK_COLUMN)))
         {
             str = model()->data(index, Qt::DisplayRole).toString();
-            str.replace(QRegExp("[^A-Za-z]+"), QString());
+            str.replace(QRegExp("[\\W\\d]+"), QString());
         }
         else {
             str = model()->data(index, Qt::EditRole).toString();
@@ -658,7 +658,7 @@ WordTableView::hookToolTipText(const QString& word, const QString& hooks,
 
     QString text;
     int offset = 0;
-    QRegExp regex("([A-Za-z])([^A-Za-z]*)?");
+    QRegExp regex("([^\\W\\d])([\\W\\d]*)?");
     while ((offset = regex.indexIn(hooks, offset)) >= 0) {
         QString hook = regex.cap(1);
         QString symbols = regex.cap(2);

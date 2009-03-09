@@ -3,7 +3,7 @@
 //
 // A Directed Acyclic Word Graph class.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -321,7 +321,7 @@ WordGraph::search(const SearchSpec& spec) const
             if (wildcard)
                 unmatched = unmatched.replace('*', QString());
 
-            QRegExp re ("\\[[^\\]]*\\][A-Z]");
+            QRegExp re ("\\[[^\\]]*\\][^\\W\\d]");
             int pos = 0;
             while ((pos = re.indexIn(unmatched, pos)) >= 0) {
                 unmatched = unmatched.left(re.pos()) +
@@ -933,7 +933,7 @@ WordGraph::searchOld(const SearchSpec& spec) const
             if (wildcard)
                 unmatched = unmatched.replace('*', QString());
 
-            QRegExp re ("\\[[^\\]]*\\][A-Z]");
+            QRegExp re ("\\[[^\\]]*\\][^\\W\\d]");
             int pos = 0;
             while ((pos = re.indexIn(unmatched, pos)) >= 0) {
                 unmatched = unmatched.left(re.pos()) +

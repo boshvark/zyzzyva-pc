@@ -3,7 +3,7 @@
 //
 // A widget for specifying a lexicon style.
 //
-// Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -102,7 +102,7 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(symbolLine);
     symbolLine->setMaxLength(MAX_SYMBOL_LENGTH);
     symbolLine->setValidator(
-        new QRegExpValidator(QRegExp("^[^A-Za-z\\s]+$"), this));
+        new QRegExpValidator(QRegExp("^[^\\w\\s]+$"), this));
     mainHlay->addWidget(symbolLine);
 
     QPushButton* deleteButton = new QPushButton;
