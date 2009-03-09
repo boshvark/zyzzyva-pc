@@ -4,7 +4,7 @@
 // A full-screen dialog for Word Judge functionality, in which the user can
 // very easily judge the validity of one or more words.
 //
-// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -42,10 +42,13 @@
 const int FORM_FONT_PIXEL_SIZE = 55;
 const int TITLE_FONT_PIXEL_SIZE = 40;
 const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
+const int COUNT_FONT_PIXEL_SIZE = 200;
 const int EXIT_FONT_PIXEL_SIZE = 30;
+const int COUNT_MARGIN = 50;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 30;
 const int RESULT_SPACING = 100;
+const int CLEAR_COUNT_DELAY = 1000;
 const int CLEAR_INPUT_DELAY = 15000;
 const int CLEAR_RESULTS_DELAY = 10000;
 const int CLEAR_RESULTS_MIN_DELAY = 500;
@@ -55,10 +58,17 @@ const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 const int CLEAR_EXIT_DELAY = 5000;
 const int MAX_JUDGE_WORDS = 8;
 
-const QString INSTRUCTION_MESSAGE = "1. CHALLENGER: Enter words, "
-                                    "separated by SPACE or ENTER.\n"
-                                    "2. OPPONENT: Press TAB to judge the play.\n"
-                                    "3. Press any key to clear the results.";
+// FIXME: ESC on the count screen should show exit instructions!
+// FIXME: Count screen should show lexicon, etc.
+// FIXME: Change focus to input area when input screen is shown
+
+const QString COUNT_INSTRUCTION_MESSAGE = "CHALLENGER:\n"
+    "How many words would you like to challenge?";
+
+const QString INSTRUCTION_MESSAGE =
+    "1. CHALLENGER: Enter %1 word%2, separated by SPACE or ENTER.\n"
+    "2. OPPONENT: Press TAB to judge the play.\n"
+    "3. Press any key to clear the results.";
 
 using namespace Defs;
 
@@ -74,8 +84,25 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
                          Qt::WFlags f)
-    : QDialog(parent, f), engine(e), lexicon(lex), clearResultsHold(0)
+    : QDialog(parent, f), engine(e), lexicon(lex), count(0), clearResultsHold(0)
 {
+    countTimer = new QTimer(this);
+    Q_CHECK_PTR(countTimer);
+    connect(countTimer, SIGNAL(timeout()), SLOT(displayInput()));
+
+    inputTimer = new QTimer(this);
+    Q_CHECK_PTR(inputTimer);
+    // FIXME: this should go back to count screen, but ESC should clear input
+    connect(inputTimer, SIGNAL(timeout()), SLOT(clearInput()));
+
+    resultTimer = new QTimer(this);
+    Q_CHECK_PTR(resultTimer);
+    connect(resultTimer, SIGNAL(timeout()), SLOT(clearResults()));
+
+    exitTimer = new QTimer(this);
+    Q_CHECK_PTR(exitTimer);
+    connect(exitTimer, SIGNAL(timeout()), SLOT(clearExit()));
+
     QFont formFont = qApp->font();
     formFont.setPixelSize(FORM_FONT_PIXEL_SIZE);
 
@@ -85,6 +112,10 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     QFont instructionFont = qApp->font();
     instructionFont.setPixelSize(INSTRUCTION_FONT_PIXEL_SIZE);
 
+    QFont countFont = qApp->font();
+    countFont.setPixelSize(COUNT_FONT_PIXEL_SIZE);
+    countFont.setBold(true);
+
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(0);
     mainVlay->setSpacing(SPACING);
@@ -92,23 +123,53 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
 
     widgetStack = new QStackedWidget;
     Q_CHECK_PTR(widgetStack);
+    connect(widgetStack, SIGNAL(currentChanged(int)),
+            SLOT(currentChanged(int)));
     mainVlay->addWidget(widgetStack);
+
+    countWidget = new QWidget;
+    Q_CHECK_PTR(countWidget);
+    widgetStack->addWidget(countWidget);
+
+    QVBoxLayout* countVlay = new QVBoxLayout(countWidget);
+    Q_CHECK_PTR(countVlay);
+    countVlay->setMargin(COUNT_MARGIN);
+    countVlay->setSpacing(20);
+
+    countVlay->addStretch(1);
+
+    countInstLabel = new QLabel(COUNT_INSTRUCTION_MESSAGE);
+    Q_CHECK_PTR(countInstLabel);
+    countInstLabel->setFont(instructionFont);
+    countInstLabel->setAlignment(Qt::AlignHCenter);
+    //countInstLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    countInstLabel->setWordWrap(true);
+    countVlay->addWidget(countInstLabel);
+
+    countLabel = new QLabel;
+    Q_CHECK_PTR(countLabel);
+    countLabel->setFont(countFont);
+    countLabel->setAlignment(Qt::AlignHCenter);
+    //countLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    countVlay->addWidget(countLabel);
+
+    countVlay->addStretch(1);
 
     inputWidget = new QWidget;
     Q_CHECK_PTR(inputWidget);
     widgetStack->addWidget(inputWidget);
 
     QVBoxLayout* inputVlay = new QVBoxLayout(inputWidget);
+    Q_CHECK_PTR(inputVlay);
     inputVlay->setMargin(INPUT_MARGIN);
     inputVlay->setSpacing(20);
-    Q_CHECK_PTR(inputVlay);
 
-    instLabel = new QLabel(INSTRUCTION_MESSAGE);
-    Q_CHECK_PTR(instLabel);
-    instLabel->setFont(instructionFont);
-    instLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    instLabel->setWordWrap(true);
-    inputVlay->addWidget(instLabel);
+    inputInstLabel = new QLabel;
+    Q_CHECK_PTR(inputInstLabel);
+    inputInstLabel->setFont(instructionFont);
+    inputInstLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    inputInstLabel->setWordWrap(true);
+    inputVlay->addWidget(inputInstLabel);
 
     inputArea = new WordTextEdit;
     Q_CHECK_PTR(inputArea);
@@ -168,18 +229,6 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     lexiconLabel->setFont(titleFont);
     lexiconLabel->setAlignment(Qt::AlignRight);
     titleHlay->addWidget(lexiconLabel);
-
-    inputTimer = new QTimer(this);
-    Q_CHECK_PTR(inputTimer);
-    connect(inputTimer, SIGNAL(timeout()), SLOT(clearInput()));
-
-    resultTimer = new QTimer(this);
-    Q_CHECK_PTR(resultTimer);
-    connect(resultTimer, SIGNAL(timeout()), SLOT(clearResults()));
-
-    exitTimer = new QTimer(this);
-    Q_CHECK_PTR(exitTimer);
-    connect(exitTimer, SIGNAL(timeout()), SLOT(clearExit()));
 
     clearResults();
     showFullScreen();
@@ -264,6 +313,22 @@ JudgeDialog::textChanged()
 }
 
 //---------------------------------------------------------------------------
+//  currentChanged
+//
+//! Called when the current widget is changed.
+//
+//! @param index the index of the current widget
+//---------------------------------------------------------------------------
+void
+JudgeDialog::currentChanged(int index)
+{
+    countTimer->stop();
+    inputTimer->stop();
+    resultTimer->stop();
+    exitTimer->stop();
+}
+
+//---------------------------------------------------------------------------
 //  clearResults
 //
 //! Clear the input area and the result area.
@@ -271,11 +336,7 @@ JudgeDialog::textChanged()
 void
 JudgeDialog::clearResults()
 {
-    resultTimer->stop();
-    exitTimer->stop();
-    clearExit();
-    inputArea->clear();
-    widgetStack->setCurrentWidget(inputWidget);
+    displayCount();
 }
 
 //---------------------------------------------------------------------------
@@ -287,6 +348,8 @@ JudgeDialog::clearResults()
 void
 JudgeDialog::judgeWord()
 {
+    inputTimer->stop();
+
     bool acceptable = true;
 
     QString text = inputArea->toPlainText().simplified();
@@ -399,6 +462,35 @@ JudgeDialog::clearResultsReleaseHold()
 }
 
 //---------------------------------------------------------------------------
+//  displayCount
+//
+//! Display the word count screen.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::displayCount()
+{
+    count = 0;
+    countLabel->clear();
+    widgetStack->setCurrentWidget(countWidget);
+}
+
+//---------------------------------------------------------------------------
+//  displayInput
+//
+//! Display the input area.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::displayInput()
+{
+    countTimer->stop();
+    inputInstLabel->setText(getInstructionMessage());
+    inputArea->clear();
+    inputArea->setFocus();
+    widgetStack->setCurrentWidget(inputWidget);
+    inputTimer->start(CLEAR_INPUT_DELAY);
+}
+
+//---------------------------------------------------------------------------
 //  displayExit
 //
 //! Display instructions for exiting full screen mode.
@@ -406,8 +498,8 @@ JudgeDialog::clearResultsReleaseHold()
 void
 JudgeDialog::displayExit()
 {
-    instLabel->setText(INSTRUCTION_MESSAGE + "\nTo exit, hold SHIFT and "
-                       "press the ESC key.");
+    inputInstLabel->setText(getInstructionMessage() +
+        "\nTo exit, hold SHIFT and press the ESC key.");
     exitTimer->start(CLEAR_EXIT_DELAY);
 }
 
@@ -431,7 +523,7 @@ JudgeDialog::clearInput()
 void
 JudgeDialog::clearExit()
 {
-    instLabel->setText(INSTRUCTION_MESSAGE);
+    inputInstLabel->setText(getInstructionMessage());
 }
 
 //---------------------------------------------------------------------------
@@ -447,14 +539,36 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
     if (!event)
         return;
 
+    QWidget* currentWidget = widgetStack->currentWidget();
+
     bool cleared = false;
-    if ((widgetStack->currentWidget() == resultWidget) && !clearResultsHold) {
+    if ((currentWidget == resultWidget) && !clearResultsHold) {
         clearResults();
         cleared = true;
     }
 
-    if (event->key() == Qt::Key_Escape) {
+    else if (currentWidget == countWidget) {
+        if (!countTimer->isActive()) {
+            switch (event->key()) {
+                case Qt::Key_1: count = 1; break;
+                case Qt::Key_2: count = 2; break;
+                case Qt::Key_3: count = 3; break;
+                case Qt::Key_4: count = 4; break;
+                case Qt::Key_5: count = 5; break;
+                case Qt::Key_6: count = 6; break;
+                case Qt::Key_7: count = 7; break;
+                case Qt::Key_8: count = 8; break;
+                default: break;
+            }
 
+            if (count) {
+                countLabel->setText(QString::number(count));
+                countTimer->start(CLEAR_COUNT_DELAY);
+            }
+        }
+    }
+
+    if (event->key() == Qt::Key_Escape) {
         Qt::KeyboardModifiers modifiers = event->modifiers();
         if (modifiers & Qt::ShiftModifier)
             accept();
@@ -463,4 +577,19 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
     }
     else
         event->ignore();
+}
+
+//---------------------------------------------------------------------------
+//  getInstructionMessage
+//
+//! Get an instruction message, properly parameterized for the number of words
+//! to be judged.
+//
+//! @return the message
+//---------------------------------------------------------------------------
+QString
+JudgeDialog::getInstructionMessage()
+{
+    return INSTRUCTION_MESSAGE.arg(count).arg(
+        count == 1 ? QString() : QString("s"));
 }
