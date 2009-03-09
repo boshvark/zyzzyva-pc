@@ -266,17 +266,17 @@ DefineForm::displayInfo(bool allInfo)
         // Get front hooks
         QString fHooks = engine->getFrontHookLetters(lexicon, word).toUpper();
         if (!showSymbols)
-            fHooks.replace(QRegExp("[\\W\\d]+"), QString());
+            fHooks.replace(QRegExp("[\\W_\\d]+"), QString());
         QString fHookStr = fHooks.isEmpty() ? NONE_STR :
-            QString("(%1): ").arg(fHooks.count(QRegExp("[^\\W\\d]"))) + fHooks;
+            QString("(%1): ").arg(fHooks.count(QRegExp("[^\\W_\\d]"))) + fHooks;
         resultStr += "<br><b>Front Hooks:</b> " + fHookStr;
 
         // Get back hooks
         QString bHooks = engine->getBackHookLetters(lexicon, word).toUpper();
         if (!showSymbols)
-            bHooks.replace(QRegExp("[\\W\\d]+"), QString());
+            bHooks.replace(QRegExp("[\\W_\\d]+"), QString());
         QString bHookStr = bHooks.isEmpty() ? NONE_STR :
-            QString("(%1): ").arg(bHooks.count(QRegExp("[^\\W\\d]"))) + bHooks;
+            QString("(%1): ").arg(bHooks.count(QRegExp("[^\\W_\\d]"))) + bHooks;
         resultStr += "<br><b>Back Hooks:</b> " + bHookStr;
 
         // Get front extensions
@@ -295,7 +295,7 @@ DefineForm::displayInfo(bool allInfo)
         QString fExtStr = fExts.isEmpty() ? NONE_STR :
             QString("(%1): ").arg(fExts.count()) +
             fExts.replaceInStrings(
-                QRegExp(word + "([\\W\\d]*)$"), "-\\1").join(", ");
+                QRegExp(word + "([\\W_\\d]*)$"), "-\\1").join(", ");
         resultStr += "<br><b>Front Extensions:</b> " + fExtStr;
 
         // Get back extensions
