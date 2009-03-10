@@ -1,3 +1,14 @@
+Version 2.0.5
+Released 2009-03-09, from /branches/2.0.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.5
+
+User-visible changes:
+ * Word Judge now prompts for number of challenged words
+ * Allow input, sorting, etc. for some characters other than A-Z.
+ * Fix reading of DAWG files so they are loadable on 64-bit machines.
+ * Fix some word definitions
+
+
 Version 2.0.4
 Released 2008-12-26, from /branches/2.0.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.4
