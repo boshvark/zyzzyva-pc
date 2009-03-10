@@ -473,8 +473,17 @@ Auxil::wordWrap(const QString& str, int wrapLength)
 bool
 Auxil::isVowel(QChar c)
 {
-    return ((c == 'A') || (c == 'E') || (c == 'I') ||
-            (c == 'O') || (c == 'U'));
+    // XXX: This really should be done in a more rigorous way
+    switch (c.unicode()) {
+        case 'A': case 'E': case 'I': case 'O': case 'U':
+        case 192: case 193: case 194: case 195: case 196: case 197: case 198:
+        case 200: case 201: case 202: case 203: case 204: case 205: case 206:
+        case 207: case 210: case 211: case 212: case 213: case 214: case 216:
+        case 217: case 218: case 219: case 220: case 221:
+        return true;
+
+        default: return false;
+    }
 }
 
 
