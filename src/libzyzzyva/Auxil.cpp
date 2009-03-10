@@ -499,6 +499,9 @@ QString
 Auxil::getAlphagram(const QString& word)
 {
     int wordLength = word.length();
+    if (wordLength <= 1)
+        return word;
+
     // Get characters
     QString alphagram;
     QList<QChar> chars;
