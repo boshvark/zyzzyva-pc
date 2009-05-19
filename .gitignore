@@ -1,0 +1,41 @@
+
+# /
+/bin
+/lib
+/debug
+/release
+/object_script.*
+/Makefile*
+/zyzzyva
+/zyzzyva.exe
+/zyzzyva.tds
+
+# /data/quiz/saved/
+/data/quiz/saved/*
+
+# /data/search/saved/
+/data/search/saved/*
+
+# /data/words/saved/
+/data/words/saved/*
+
+# /installer/
+/installer/linux
+/installer/macosx
+/installer/windows
+
+# /src/
+/src/Makefile*
+
+# /src/libzyzzyva/
+/src/libzyzzyva/build
+/src/libzyzzyva/Makefile*
+
+# /src/tests/
+/src/tests/build
+/src/tests/Makefile*
+
+# /src/zyzzyva/
+/src/zyzzyva/build
+/src/zyzzyva/qrc_zyzzyva.cpp
+/src/zyzzyva/Makefile*
