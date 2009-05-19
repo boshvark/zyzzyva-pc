@@ -3,7 +3,7 @@
 //
 // A class for creating a database in the background.
 //
-// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -529,11 +529,11 @@ CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase& db, int& stepNum)
         QString word = it.key();
         QString definition = it.value();
 
-        QStringList defs = definition.split(" / ");
+        QStringList defs = definition.split(WordEngine::DEF_ORIG_SEP);
         QString newDefinition;
         foreach (QString def, defs) {
             if (!newDefinition.isEmpty())
-                newDefinition += "\n";
+                newDefinition += WordEngine::DEF_DISPLAY_SEP;
             newDefinition += replaceDefinitionLinks(def, MAX_DEFINITION_LINKS);
         }
 
@@ -683,7 +683,7 @@ CreateDatabaseThread::getSubDefinition(const QString& word, const QString&
 
     QString definition = definitions[word];
     QRegExp posRegex (QString("\\[(\\w+)"));
-    QStringList defs = definition.split(" / ");
+    QStringList defs = definition.split(WordEngine::DEF_ORIG_SEP);
     foreach (QString def, defs) {
         if ((posRegex.indexIn(def, 0) > 0) &&
             (posRegex.cap(1) == pos))

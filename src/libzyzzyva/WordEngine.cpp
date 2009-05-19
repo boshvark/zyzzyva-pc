@@ -35,6 +35,12 @@
 
 using namespace Defs;
 
+// XXX: Kind of stupid that these are the same - DEF_DISPLAY_SEP should
+// ideally be a newline, but performance between Qt 4.3.2 and Qt 4.3.3 took a
+// major hit when row heights are not uniform
+const QString WordEngine::DEF_ORIG_SEP = " / ";
+const QString WordEngine::DEF_DISPLAY_SEP = " / ";
+
 //---------------------------------------------------------------------------
 //  clearCache
 //
@@ -898,11 +904,11 @@ WordEngine::getDefinition(const QString& lexicon, const QString& word,
     WordInfo info = getWordInfo(lexicon, word);
     if (info.isValid()) {
         if (replaceLinks) {
-            QStringList defs = info.definition.split(" / ");
+            QStringList defs = info.definition.split(DEF_ORIG_SEP);
             definition = QString();
             foreach (QString def, defs) {
                 if (!definition.isEmpty())
-                    definition += "\n";
+                    definition += DEF_DISPLAY_SEP;
                 definition += def;
             }
             return definition;
@@ -923,9 +929,9 @@ WordEngine::getDefinition(const QString& lexicon, const QString& word,
             it.next();
             if (!definition.isEmpty()) {
                 if (replaceLinks)
-                    definition += "\n";
+                    definition += DEF_DISPLAY_SEP;
                 else
-                    definition += " / ";
+                    definition += DEF_ORIG_SEP;
             }
             definition += it.value();
         }
@@ -1713,7 +1719,7 @@ WordEngine::addDefinition(const QString& lexicon, const QString& word,
 
     QRegExp posRegex (QString("\\[(\\w+)"));
     QMultiMap<QString, QString> defMap;
-    QStringList defs = definition.split(" / ");
+    QStringList defs = definition.split(DEF_ORIG_SEP);
     foreach (QString def, defs) {
         QString pos;
         if (posRegex.indexIn(def, 0) >= 0) {

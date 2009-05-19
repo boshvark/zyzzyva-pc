@@ -67,6 +67,9 @@ WordTableView::WordTableView(WordEngine* e, QWidget* parent)
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::SingleSelection);
     setRootIsDecorated(false);
+    // XXX: Don't really like doing this, but performance took a major hit
+    // between Qt 4.3.2 and Qt 4.3.3 when not setting uniformRowHeights
+    setUniformRowHeights(true);
 
     // FIXME: Once Trolltech fixes the assert in QHeaderView, continue with
     // statements like these
