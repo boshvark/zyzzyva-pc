@@ -4,7 +4,7 @@
 #
 # Create a Linux directory for the installer to use.
 #
-# Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -25,7 +25,7 @@
 
 set -e
 
-QTVER=4.3.2
+QTVER=4.5.1
 QTDIR=/usr/local/Trolltech/Qt-$QTVER
 INSTDIR=installer
 PLATFORM=linux
