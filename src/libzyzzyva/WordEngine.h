@@ -33,6 +33,7 @@
 #include <QString>
 #include <QStringList>
 #include <QSqlDatabase>
+#include <stdint.h>
 
 class WordEngine : public QObject
 {
