@@ -3,7 +3,8 @@
 //
 // A class to handle the loading and searching of words.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009
+// Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -32,6 +33,7 @@
 #include <QString>
 #include <QStringList>
 #include <QSqlDatabase>
+#include <stdint.h>
 
 class WordEngine : public QObject
 {
