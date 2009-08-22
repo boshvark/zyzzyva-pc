@@ -412,6 +412,7 @@ CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
             updateQuery.bindValue(2, maxProbOrder);
             updateQuery.bindValue(3, equalWord);
             updateQuery.exec();
+            ++probOrder;
         }
     }
 
