@@ -58,9 +58,9 @@ class WordGraph
 
     class TraversalState {
       public:
-        TraversalState(int32_t n, const QString& w, const QString& u)
+        TraversalState(qint32 n, const QString& w, const QString& u)
             : node(n), word(w), unmatched(u) { }
-        int32_t node;
+        qint32 node;
         QString word;
         QString unmatched;
     };
@@ -77,15 +77,15 @@ class WordGraph
     private:
     bool matchesSpec(QString word, const SearchSpec& spec) const;
     QString reverseString(const QString& s) const;
-    int32_t convertEndian(int32_t* data, int32_t count);
+    qint32 convertEndian(qint32* data, qint32 count);
 
     void addWordOld(const QString& w, bool reverse);
     bool containsWordOld(const QString& w) const;
     QStringList searchOld(const SearchSpec& spec) const;
-    int getNumWords(int32_t node) const;
+    int getNumWords(qint32 node) const;
 
-    int32_t* dawg;
-    int32_t* rdawg;
+    qint32* dawg;
+    qint32* rdawg;
 
     bool bigEndian;
 
