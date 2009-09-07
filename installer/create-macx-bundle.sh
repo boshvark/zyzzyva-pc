@@ -25,7 +25,7 @@
 
 set -e
 
-QTDIR=/usr/local/Trolltech/Qt-4.5.1
+QTDIR=/usr/local/Trolltech/Qt-4.5.2
 QTVER=4
 OUTDIR=$(pwd)/installer/macosx
 APPDIR=$OUTDIR/Zyzzyva.app
@@ -118,7 +118,7 @@ if [ "$COPYQT" = "yes" ]; then
     mkdir -p $APPDIR/Contents/PlugIns
 
     # Copy plugins into bundle and update references
-    for i in imageformats/libqgif.dylib ; do
+    for i in imageformats/libqgif.dylib sqldrivers/libqsqlite.dylib ; do
 
         # Copy plugin into bundle
         echo "Copying $i into bundle..."
@@ -132,6 +132,13 @@ if [ "$COPYQT" = "yes" ]; then
         install_name_tool -change \
             $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
             @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
+            $APPDIR/Contents/PlugIns/$i
+
+        #  Change reference to QtSql in plugin
+        echo "Changing link location for QtSql.framework in $i plugin..."
+        install_name_tool -change \
+            $QTDIR/lib/QtSql.framework/Versions/$QTVER/QtSql \
+            @executable_path/../Frameworks/QtSql.framework/Versions/$QTVER/QtSql \
             $APPDIR/Contents/PlugIns/$i
 
         #  Change reference to QtGui in plugin
