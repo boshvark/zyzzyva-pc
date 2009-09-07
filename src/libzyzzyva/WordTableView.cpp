@@ -52,6 +52,7 @@ using namespace std;
 
 const int WordTableModel::ITEM_XPADDING = 5;
 const int WordTableModel::ITEM_YPADDING = 0;
+const int TWO_COLUMN_ANAGRAM_PADDING = 3;
 
 //---------------------------------------------------------------------------
 //  WordTableView
@@ -425,8 +426,9 @@ WordTableView::exportFile(const QString& filename, WordListFormat format,
         }
     }
 
-    else if (format == WordListAnagramQuestionAnswer) {
-
+    else if ((format == WordListAnagramQuestionAnswer) ||
+             (format == WordListAnagramTwoColumn))
+    {
         // Build map of alphagrams to indexes
         QMap<QString, QList<int> > alphaIndexes;
         QModelIndex index = model()->index(0, WordTableModel::WORD_COLUMN);
@@ -437,21 +439,82 @@ WordTableView::exportFile(const QString& filename, WordListFormat format,
             alphaIndexes[alphagram].append(i);
         }
 
+        bool twoColumns = (format == WordListAnagramTwoColumn);
+
+        // Iterate over the list, finding out the maximum column width
+        // of each of the attribute fields. (Trading a bit of time for space,
+        // we call getExportStrings twice per list, rather than store the
+        // entire list of lists of strings)
+
+        // Call getExportStrings to test the returned number of columns
+        // (fields != attributes.length() since some attributes like inner-hooks
+        // don't add a field)
+        index = model()->index(0, WordTableModel::WORD_COLUMN);
+        index = index.sibling(0, WordTableModel::WORD_COLUMN);
+        int fields = getExportStrings(index, attributes).length();
+        QVector<int> columnWidths(fields, 0);
+        int anagramWidth = 0;
+
+        if (twoColumns) {
+            QMapIterator<QString, QList<int> > it (alphaIndexes);
+            while (it.hasNext()) {
+                it.next();
+                anagramWidth = max(anagramWidth, it.key().length());
+                QListIterator<int> jt (it.value());
+                while (jt.hasNext()) {
+                    int row = jt.next();
+                    index = index.sibling(row, WordTableModel::WORD_COLUMN);
+                    QStringList strings = getExportStrings(index, attributes);
+                    for (int i = 0; i < fields; ++i) {
+                        columnWidths[i] = max(columnWidths[i], strings[i].length());
+                    }
+                }
+            }
+
+            for (int i = 0; i < fields; ++i) {
+                ++columnWidths[i];
+            }
+
+            // pad the anagram column a bit more to set it off
+            anagramWidth += TWO_COLUMN_ANAGRAM_PADDING;
+        }
+
+        QString anagramPadding = QString(anagramWidth, ' ');
         QMapIterator<QString, QList<int> > it (alphaIndexes);
         while (it.hasNext()) {
             it.next();
-            stream << "Q: " << it.key();
-            endl(stream);
+            if (twoColumns) {
+                stream << it.key().leftJustified(anagramWidth, ' ');
+            }
+            else {
+                stream << "Q: " << it.key();
+                endl(stream);
+            }
 
+            bool firstAnagram = true;
             QListIterator<int> jt (it.value());
             while (jt.hasNext()) {
                 int row = jt.next();
                 index = index.sibling(row, WordTableModel::WORD_COLUMN);
                 QStringList strings = getExportStrings(index, attributes);
-                stream << "A: " << strings.join(" ");
+                if (twoColumns) {
+                    if (!firstAnagram) {
+                        stream << anagramPadding;
+                    }
+                    firstAnagram = false;
+                    for (int i = 0; i < strings.length(); ++i) {
+                        stream << strings[i].leftJustified(columnWidths[i], ' ');
+                    }
+                }
+                else {
+                    stream << "A: " << strings.join(" ");
+                }
                 endl(stream);
             }
-            endl(stream);
+
+            if (!twoColumns) {
+                endl(stream);
+            }
         }
     }
 
