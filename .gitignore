@@ -9,6 +9,7 @@
 /zyzzyva
 /zyzzyva.exe
 /zyzzyva.tds
+.DS_Store
 
 # /data/quiz/saved/
 /data/quiz/saved/*
