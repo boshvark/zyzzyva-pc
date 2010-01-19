@@ -4,7 +4,7 @@
 #
 # Create a Linux directory for the installer to use.
 #
-# Copyright 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2006, 2007, 2008, 2009, 2010 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -25,7 +25,7 @@
 
 set -e
 
-QTVER=4.5.1
+QTVER=4.5.2
 QTDIR=/usr/local/Trolltech/Qt-$QTVER
 INSTDIR=installer
 PLATFORM=linux
@@ -38,7 +38,7 @@ mkdir -p $OUTDIR/bin
 
 cp /usr/lib/libstdc++.so.6 $OUTDIR/bin
 cp /lib/libgcc_s.so.1 $OUTDIR/bin
-cp -d $QTDIR/lib/libQt{Core,Gui,Network,Sql,Xml}.so* $OUTDIR/bin
+cp -d $QTDIR/lib/libQt{AssistantClient,Core,Gui,Network,Sql,Xml}.so* $OUTDIR/bin
 rm $OUTDIR/bin/*.debug
 cp -d $QTDIR/bin/assistant $OUTDIR/bin
 cp -d bin/libzyzzyva.so* $OUTDIR/bin
