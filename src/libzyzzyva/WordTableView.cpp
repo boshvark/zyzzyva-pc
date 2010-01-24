@@ -3,7 +3,7 @@
 //
 // A class derived from QTableView, used to display word lists.
 //
-// Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -451,7 +451,7 @@ WordTableView::exportFile(const QString& filename, WordListFormat format,
         // don't add a field)
         index = model()->index(0, WordTableModel::WORD_COLUMN);
         index = index.sibling(0, WordTableModel::WORD_COLUMN);
-        int fields = getExportStrings(index, attributes).length();
+        int fields = getExportStrings(index, attributes).count();
         QVector<int> columnWidths(fields, 0);
         int anagramWidth = 0;
 
@@ -502,7 +502,7 @@ WordTableView::exportFile(const QString& filename, WordListFormat format,
                         stream << anagramPadding;
                     }
                     firstAnagram = false;
-                    for (int i = 0; i < strings.length(); ++i) {
+                    for (int i = 0; i < strings.count(); ++i) {
                         stream << strings[i].leftJustified(columnWidths[i], ' ');
                     }
                 }
