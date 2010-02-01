@@ -3,7 +3,7 @@
 //
 // A class to represent a quiz specification.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2007, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -75,7 +75,7 @@ class QuizSpec
     public:
     QuizSpec() : type(QuizAnagrams), method(StandardQuizMethod),
                  sourceType(SearchSource), questionOrder(RandomOrder),
-                 randomSeed(0), randomSeed2(0),
+                 probNumBlanks(0), randomSeed(0), randomSeed2(0),
                  randomAlgorithm(Rand::MarsagliaMwc),
                  responseMinLength(0), responseMaxLength(0) { }
     ~QuizSpec() { }
@@ -94,6 +94,7 @@ class QuizSpec
     void setTimerSpec(const QuizTimerSpec& s) { timerSpec = s; }
     void setProgress(const QuizProgress& p) { progress = p; }
     void setQuestionOrder(QuestionOrder o) { questionOrder = o; }
+    void setProbabilityNumBlanks(int i) { probNumBlanks = i; }
     void setRandomSeed(unsigned int i) { randomSeed = i; }
     void setRandomSeed2(unsigned int i) { randomSeed2 = i; }
     void setRandomAlgorithm(int i) { randomAlgorithm = i; }
@@ -112,6 +113,7 @@ class QuizSpec
     QuizTimerSpec getTimerSpec() const { return timerSpec; }
     QuizProgress getProgress() const { return progress; }
     QuestionOrder getQuestionOrder() const { return questionOrder; }
+    int getProbabilityNumBlanks() const { return probNumBlanks; }
     unsigned int getRandomSeed() const { return randomSeed; }
     unsigned int getRandomSeed2() const { return randomSeed2; }
     int getRandomAlgorithm() const { return randomAlgorithm; }
@@ -128,6 +130,7 @@ class QuizSpec
     QuizTimerSpec timerSpec;
     QuizProgress progress;
     QuestionOrder questionOrder;
+    int probNumBlanks;
     unsigned int randomSeed;
     unsigned int randomSeed2;
     int randomAlgorithm;

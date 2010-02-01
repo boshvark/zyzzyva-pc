@@ -3,7 +3,7 @@
 //
 // A class to represent a quiz specification.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,6 +34,7 @@ const QString XML_TOP_ELEMENT = "zyzzyva-quiz";
 const QString XML_TOP_TYPE_ATTR = "type";
 const QString XML_TOP_METHOD_ATTR = "method";
 const QString XML_TOP_QUESTION_ORDER_ATTR = "question-order";
+const QString XML_TOP_PROB_NUM_BLANKS_ATTR = "probability-num-blanks";
 const QString XML_TOP_LEXICON_ATTR = "lexicon";
 const QString XML_QUESTION_SOURCE_ELEMENT = "question-source";
 const QString XML_QUESTION_SOURCE_TYPE_ATTR = "type";
@@ -105,6 +106,9 @@ QuizSpec::asDomElement() const
                             Auxil::quizMethodToString(method));
     topElement.setAttribute(XML_TOP_QUESTION_ORDER_ATTR,
                             Auxil::quizQuestionOrderToString(questionOrder));
+    if (questionOrder == ProbabilityOrder)
+        topElement.setAttribute(XML_TOP_PROB_NUM_BLANKS_ATTR, probNumBlanks);
+
     topElement.setAttribute(XML_TOP_LEXICON_ATTR, lexicon);
 
     QDomElement sourceElement = doc.createElement(XML_QUESTION_SOURCE_ELEMENT);
@@ -187,6 +191,19 @@ QuizSpec::fromDomElement(const QDomElement& element, QString*)
         if (order == QuizSpec::UnknownOrder)
             return false;
         tmpSpec.setQuestionOrder(order);
+
+        if (order == ProbabilityOrder) {
+            // Default to 2 blanks for backward compatibility
+            int numBlanks = Defs::MAX_BLANKS;
+            if (element.hasAttribute(XML_TOP_PROB_NUM_BLANKS_ATTR)) {
+                bool ok = false;
+                numBlanks = element.attribute(
+                    XML_TOP_PROB_NUM_BLANKS_ATTR).toInt(&ok);
+                if (!ok)
+                    return false;
+            }
+            tmpSpec.setProbabilityNumBlanks(numBlanks);
+        }
     }
 
     if (element.hasAttribute(XML_TOP_LEXICON_ATTR))

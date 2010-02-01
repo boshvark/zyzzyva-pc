@@ -3,7 +3,7 @@
 //
 // A form for searching for words, patterns, anagrams, etc.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -220,9 +220,11 @@ SearchForm::search()
         // alphagrams if one of them is present
         bool hasAnagramCondition = false;
         bool hasProbabilityCondition = false;
+        int probNumBlanks = MainSettings::getProbabilityNumBlanks();
         QListIterator<SearchCondition> it (spec.conditions);
         while (it.hasNext()) {
-            SearchCondition::SearchType type = it.next().type;
+            const SearchCondition& condition = it.next();
+            SearchCondition::SearchType type = condition.type;
             if ((type == SearchCondition::AnagramMatch) ||
                 (type == SearchCondition::SubanagramMatch) ||
                 (type == SearchCondition::NumAnagrams))
@@ -233,6 +235,10 @@ SearchForm::search()
             if ((type == SearchCondition::ProbabilityOrder) ||
                 (type == SearchCondition::LimitByProbabilityOrder))
             {
+                // Set number of blanks based on the first probability search
+                // condition
+                if (!hasProbabilityCondition)
+                    probNumBlanks = condition.intValue;
                 hasProbabilityCondition = true;
             }
         }
@@ -266,7 +272,8 @@ SearchForm::search()
             WordTableModel::WordItem wordItem
                 (word, WordTableModel::WordNormal, wildcard);
 
-            int probOrder = wordEngine->getProbabilityOrder(lexicon, wordUpper);
+            int probOrder = wordEngine->getProbabilityOrder(lexicon, wordUpper,
+                                                            probNumBlanks);
             wordItem.setProbabilityOrder(probOrder);
 
             wordItems.append(wordItem);
@@ -279,6 +286,7 @@ SearchForm::search()
             MainSettings::setWordListGroupByAnagrams(false);
         if (hasProbabilityCondition)
             MainSettings::setWordListSortByProbabilityOrder(true);
+        resultModel->setProbabilityNumBlanks(probNumBlanks);
         resultModel->addWords(wordItems);
         MainSettings::setWordListSortByProbabilityOrder(false);
         if (!hasAnagramCondition)

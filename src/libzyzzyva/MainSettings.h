@@ -3,7 +3,7 @@
 //
 // The main settings for the word study application.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -125,6 +125,10 @@ class MainSettings
         return instance->quizRecordStats; }
     static void setQuizRecordStats(bool b) {
         instance->quizRecordStats = b; }
+    static int getProbabilityNumBlanks() {
+        return instance->probabilityNumBlanks; }
+    static void setProbabilityNumBlanks(int i) {
+        instance->probabilityNumBlanks = i; }
     static QList<int> getCardboxScheduleList() {
         return instance->cardboxScheduleList; }
     static void setCardboxScheduleList(const QList<int>& slist) {
@@ -236,6 +240,7 @@ class MainSettings
     bool quizTimeoutDisableInput;
     int quizTimeoutDisableInputMillisecs;
     bool quizRecordStats;
+    int probabilityNumBlanks;
     QList<int> cardboxScheduleList;
     QList<int> cardboxWindowList;
     QString mainFont;

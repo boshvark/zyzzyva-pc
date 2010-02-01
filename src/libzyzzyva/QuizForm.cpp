@@ -3,7 +3,7 @@
 //
 // A form for quizzing the user.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -618,7 +618,7 @@ QuizForm::newQuiz(const QuizSpec& spec)
     // Restore incorrect and missed words from quiz progress
     analyzeDialog->newQuiz(spec);
 
-    // Connect to dotabase before starting the first question
+    // Connect to database before starting the first question
     QString lexicon = spec.getLexicon();
     QString quizType = Auxil::quizTypeToString(spec.getType());
     connectToDatabase(lexicon, quizType);
@@ -644,6 +644,24 @@ QuizForm::newQuiz(const QuizSpec& spec)
     inputValidator->setLexicon(spec.getLexicon());
 
     setQuizNameFromFilename(spec.getFilename());
+
+    // Update number of blanks in response list probability
+    int probNumBlanks = MainSettings::getProbabilityNumBlanks();
+    if (spec.getQuestionOrder() == QuizSpec::ProbabilityOrder) {
+        probNumBlanks = spec.getProbabilityNumBlanks();
+    }
+    else {
+        SearchSpec searchSpec = spec.getSearchSpec();
+        foreach (const SearchCondition& condition, searchSpec.conditions) {
+            if ((condition.type == SearchCondition::ProbabilityOrder) ||
+                (condition.type == SearchCondition::LimitByProbabilityOrder))
+            {
+                probNumBlanks = condition.intValue;
+                break;
+            }
+        }
+    }
+    responseModel->setProbabilityNumBlanks(probNumBlanks);
 
     QTimer::singleShot(0, this, SLOT(selectInputArea()));
 

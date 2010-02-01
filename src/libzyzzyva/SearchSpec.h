@@ -3,7 +3,7 @@
 //
 // A class to represent a word search specification.
 //
-// Copyright 2004, 2005, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -38,6 +38,7 @@ class SearchSpec
     ~SearchSpec() { }
 
     QString asString() const;
+    QString asXml() const;
     QDomElement asDomElement() const;
     bool fromDomElement(const QDomElement& element);
     void optimize(const QString& lexicon);

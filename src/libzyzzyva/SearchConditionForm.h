@@ -3,7 +3,7 @@
 //
 // A form for specifying a search condition.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -28,6 +28,7 @@
 #include "SearchCondition.h"
 #include <QCheckBox>
 #include <QComboBox>
+#include <QLabel>
 #include <QPushButton>
 #include <QSpinBox>
 #include <QStackedWidget>
@@ -74,6 +75,8 @@ class SearchConditionForm : public QWidget
     QSpinBox*       paramMinSbox;
     QSpinBox*       paramMaxSbox;
     QCheckBox*      paramProbCbox;
+    QLabel*         paramBlanksLabel;
+    QSpinBox*       paramBlanksSbox;
     QWidget*        paramCboxWidget;
     QComboBox*      paramCbox;
     QWidget*        paramConsistWidget;

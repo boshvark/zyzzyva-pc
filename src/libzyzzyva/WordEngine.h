@@ -3,8 +3,7 @@
 //
 // A class to handle the loading and searching of words.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008, 2009
-// Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -39,20 +38,26 @@ class WordEngine : public QObject
 {
     Q_OBJECT
     public:
+    class ProbabilityOrder {
+        public:
+        ProbabilityOrder() : probabilityOrder(0), minProbabilityOrder(0),
+            maxProbabilityOrder(0) { }
+        public:
+        int probabilityOrder;
+        int minProbabilityOrder;
+        int maxProbabilityOrder;
+    };
+
     class WordInfo {
         public:
-        WordInfo() : probabilityOrder(0), minProbabilityOrder(0),
-            maxProbabilityOrder(0), numVowels(0), numUniqueLetters(0),
-            numAnagrams(0), pointValue(0) { }
+        WordInfo() : numVowels(0), numUniqueLetters(0), numAnagrams(0),
+            pointValue(0) { }
         ~WordInfo() { }
 
         bool isValid() const { return !word.isEmpty(); }
 
         public:
         QString word;
-        int probabilityOrder;
-        int minProbabilityOrder;
-        int maxProbabilityOrder;
         int numVowels;
         int numUniqueLetters;
         int numAnagrams;
@@ -63,6 +68,7 @@ class WordEngine : public QObject
         bool isBackHook;
         QString lexiconSymbols;
         QString definition;
+        QMap<int, ProbabilityOrder> blankProbability;
     };
 
     class LexiconData {
@@ -114,12 +120,12 @@ class WordEngine : public QObject
         const;
     QString getBackHookLetters(const QString& lexicon, const QString& word)
         const;
-    int getProbabilityOrder(const QString& lexicon, const QString& word)
-        const;
-    int getMinProbabilityOrder(const QString& lexicon, const QString& word)
-        const;
-    int getMaxProbabilityOrder(const QString& lexicon, const QString& word)
-        const;
+    int getProbabilityOrder(const QString& lexicon, const QString& word,
+                            int numBlanks) const;
+    int getMinProbabilityOrder(const QString& lexicon, const QString& word,
+                               int numBlanks) const;
+    int getMaxProbabilityOrder(const QString& lexicon, const QString& word,
+                               int numBlanks) const;
     // XXX: Lexicon parameter doesn't really make sense here, but it is
     // retained to use word info caching
     int getNumVowels(const QString& lexicon, const QString& word) const;

@@ -4,7 +4,7 @@
 // The engine for generating quizzes and keeping track of the user's
 // performance on each quiz.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -168,8 +168,10 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                 LetterBag letterBag;
                 QList<QPair<QString, double> > questionPairs;
 
+                int probNumBlanks = quizSpec.getProbabilityNumBlanks();
                 foreach (QString question, quizQuestions) {
-                    double combos = letterBag.getNumCombinations(question);
+                    double combos =
+                        letterBag.getNumCombinations(question, probNumBlanks);
                     questionPairs.append(qMakePair(question, combos));
                 }
 
@@ -177,9 +179,9 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                       probabilityCmp);
 
                 quizQuestions.clear();
-                QListIterator<QPair<QString, double> > it (questionPairs);
-                while (it.hasNext()) {
-                    const QPair<QString, double>& questionPair = it.next();
+                QListIterator<QPair<QString, double> > jt (questionPairs);
+                while (jt.hasNext()) {
+                    const QPair<QString, double>& questionPair = jt.next();
                     quizQuestions.append(questionPair.first);
                 }
             }

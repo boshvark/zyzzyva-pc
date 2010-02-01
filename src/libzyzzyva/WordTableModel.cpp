@@ -3,7 +3,7 @@
 //
 // A model for representing word lists.
 //
-// Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -32,7 +32,7 @@ using namespace std;
 
 const QChar WordTableModel::PARENT_HOOK_CHAR = '-';
 const QString WILDCARD_MATCH_HEADER = "?";
-const QString PROBABILITY_ORDER_HEADER = "P";
+const QString PROBABILITY_ORDER_HEADER = "P-%1";
 const QString FRONT_HOOK_HEADER = "<";
 const QString WORD_HEADER = "Word";
 const QString BACK_HOOK_HEADER = ">";
@@ -108,8 +108,10 @@ lessThan(const WordTableModel::WordItem& a,
 //! @param parent the parent object
 //---------------------------------------------------------------------------
 WordTableModel::WordTableModel(WordEngine* e, QObject* parent)
-    : QAbstractTableModel(parent), wordEngine(e), lastAddedIndex(-1)
+    : QAbstractTableModel(parent), wordEngine(e), probNumBlanks(0),
+      lastAddedIndex(-1)
 {
+    probNumBlanks = MainSettings::getProbabilityNumBlanks();
 }
 
 //---------------------------------------------------------------------------
@@ -368,8 +370,8 @@ WordTableModel::data(const QModelIndex& index, int role) const
                     }
 
                     if (!wordItem.probabilityOrderIsValid()) {
-                        int p = wordEngine->getProbabilityOrder(lexicon,
-                                                                wordUpper);
+                        int p = wordEngine->getProbabilityOrder(
+                            lexicon, wordUpper, probNumBlanks);
                         if (p)
                             wordItem.setProbabilityOrder(p);
                     }
@@ -476,7 +478,7 @@ WordTableModel::headerData(int section, Qt::Orientation orientation, int
 
             case PROBABILITY_ORDER_COLUMN:
             return MainSettings::getWordListShowProbabilityOrder() ?
-                PROBABILITY_ORDER_HEADER : QString();
+                PROBABILITY_ORDER_HEADER.arg(probNumBlanks) : QString();
 
             case FRONT_HOOK_COLUMN:
             return MainSettings::getWordListShowHooks() ?
