@@ -238,7 +238,7 @@ LetterBag::resetContents(const QString& distribution)
     totalLetters = 0;
     letterFrequencies.clear();
 
-    foreach (QString str, strList) {
+    foreach (const QString& str, strList) {
         QChar letter = str.section(":", 0, 0)[0];
         int frequency = str.section(":", 1, 1).toInt();
         letterFrequencies.insert(letter, frequency);

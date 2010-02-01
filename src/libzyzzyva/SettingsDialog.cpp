@@ -1387,7 +1387,7 @@ QList<LexiconStyle>
 SettingsDialog::getLexiconStyles() const
 {
     QList<LexiconStyle> styles;
-    foreach (QString str, lexiconStyleLabel->text().split(QChar('\n'))) {
+    foreach (const QString& str, lexiconStyleLabel->text().split(QChar('\n'))) {
         LexiconStyle style = Auxil::stringToLexiconStyle(str);
         if (!style.isValid())
             continue;

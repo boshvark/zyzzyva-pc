@@ -245,7 +245,7 @@ SearchForm::search()
 
         // Create a list of WordItem objects from the words
         QList<WordTableModel::WordItem> wordItems;
-        foreach (QString word, wordList) {
+        foreach (const QString& word, wordList) {
             QString wildcard;
             if (hasAnagramCondition) {
                 // Get wildcard characters
@@ -258,19 +258,20 @@ SearchForm::search()
                 if (!wildcardChars.isEmpty()) {
                     qSort(wildcardChars.begin(), wildcardChars.end(),
                           Auxil::localeAwareLessThanQChar);
-                    foreach (QChar c, wildcardChars)
+                    foreach (const QChar& c, wildcardChars)
                         wildcard.append(c.toUpper());
                 }
             }
 
+            QString displayWord = word;
             QString wordUpper = word.toUpper();
 
             // Convert to all caps if necessary
             if (!MainSettings::getWordListLowerCaseWildcards())
-                word = wordUpper;
+                displayWord = wordUpper;
 
             WordTableModel::WordItem wordItem
-                (word, WordTableModel::WordNormal, wildcard);
+                (displayWord, WordTableModel::WordNormal, wildcard);
 
             int probOrder = wordEngine->getProbabilityOrder(lexicon, wordUpper,
                                                             probNumBlanks);

@@ -3,7 +3,7 @@
 //
 // The main Zyzzyva program.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -67,7 +67,7 @@ int main(int argc, char** argv)
 
     // Handle file open requests
     QStringList files = app.getFileOpenRequests();
-    foreach (QString file, files) {
+    foreach (const QString& file, files) {
         window->fileOpenRequested(file);
     }
     app.clearFileOpenRequests();

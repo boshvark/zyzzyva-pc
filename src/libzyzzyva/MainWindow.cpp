@@ -3,7 +3,7 @@
 //
 // The main window for the word study application.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -403,7 +403,7 @@ MainWindow::fileOpenRequested(const QString& filename)
 void
 MainWindow::processArguments(const QStringList& args)
 {
-    foreach (QString arg, args)
+    foreach (const QString& arg, args)
         fileOpenRequested(arg);
 }
 
@@ -815,7 +815,7 @@ MainWindow::editSettings()
     // Add DB errors for database whose symbols need to be updated
     if (!symbolLexicons.isEmpty()) {
         processNeeded = true;
-        foreach (QString lexicon, symbolLexicons) {
+        foreach (const QString& lexicon, symbolLexicons) {
             dbErrors.insert(lexicon, DbSymbolsOutOfDate);
         }
     }
@@ -1312,7 +1312,7 @@ MainWindow::rebuildDatabases(const QStringList& lexicons)
 {
     QStringList successes;
     QStringList failures;
-    foreach (QString lexicon, lexicons) {
+    foreach (const QString& lexicon, lexicons) {
         bool ok = rebuildDatabase(lexicon);
         // FIXME: do something if DB creation fails!
         if (!ok) {
