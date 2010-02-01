@@ -4,7 +4,7 @@
 #
 # Create a bundle for Mac OS X.
 #
-# Copyright 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2008, 2009, 2010 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -25,7 +25,7 @@
 
 set -e
 
-QTDIR=/usr/local/Trolltech/Qt-4.5.2
+QTDIR=/usr/local/Trolltech/Qt-4.6.1
 QTVER=4
 OUTDIR=$(pwd)/installer/macosx
 APPDIR=$OUTDIR/Zyzzyva.app
@@ -118,7 +118,8 @@ if [ "$COPYQT" = "yes" ]; then
     mkdir -p $APPDIR/Contents/PlugIns
 
     # Copy plugins into bundle and update references
-    for i in imageformats/libqgif.dylib sqldrivers/libqsqlite.dylib ; do
+    #for i in imageformats/libqgif.dylib sqldrivers/libqsqlite.dylib ; do
+    for i in imageformats/libqgif.dylib ; do
 
         # Copy plugin into bundle
         echo "Copying $i into bundle..."
@@ -150,26 +151,16 @@ if [ "$COPYQT" = "yes" ]; then
 
     done
 
-    # Change reference to QtGui in Assistant client
-    echo "Changing link location for QtGui.framework in QtAssistant.framework..."
-    install_name_tool -change \
-        $QTDIR/lib/QtGui.framework/Versions/$QTVER/QtGui \
-        @executable_path/../Frameworks/QtGui.framework/Versions/$QTVER/QtGui \
-        $APPDIR/Contents/Frameworks/QtAssistant.framework/Versions/$QTVER/QtAssistant
+    # Change reference to frameworks in Assistant client
+    for i in QtCore QtGui QtNetwork QtAssistant ; do
 
-    # Change reference to QtNetwork in Assistant client
-    echo "Changing link location for QtNetwork.framework in QtAssistant.framework..."
-    install_name_tool -change \
-        $QTDIR/lib/QtNetwork.framework/Versions/$QTVER/QtNetwork \
-        @executable_path/../Frameworks/QtNetwork.framework/Versions/$QTVER/QtNetwork \
-        $APPDIR/Contents/Frameworks/QtAssistant.framework/Versions/$QTVER/QtAssistant
+        echo "Changing link location for $i.framework in QtAssistant.framework..."
+        install_name_tool -change \
+            $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
+            @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
+            $APPDIR/Contents/Frameworks/QtAssistant.framework/Versions/$QTVER/QtAssistant
 
-    # Change reference to QtCore in Assistant client
-    echo "Changing link location for QtCore.framework in QtAssistant.framework..."
-    install_name_tool -change \
-        $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
-        @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
-        $APPDIR/Contents/Frameworks/QtAssistant.framework/Versions/$QTVER/QtAssistant
+    done
 
 fi
 
