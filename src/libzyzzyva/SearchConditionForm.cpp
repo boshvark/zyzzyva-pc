@@ -3,7 +3,7 @@
 //
 // A form for specifying a search condition.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -32,7 +32,6 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include <QHBoxLayout>
-#include <QLabel>
 
 const int MAX_MAX_INT_VALUE = 999999;
 
@@ -129,6 +128,7 @@ SearchConditionForm::SearchConditionForm(QWidget* parent, Qt::WFlags f)
     // Frame containing just spin boxes
     paramSboxWidget = new QWidget;
     Q_CHECK_PTR(paramSboxWidget);
+
     QHBoxLayout* paramSboxHlay = new QHBoxLayout(paramSboxWidget);
     Q_CHECK_PTR(paramSboxHlay);
     paramSboxHlay->setMargin(0);
@@ -154,10 +154,36 @@ SearchConditionForm::SearchConditionForm(QWidget* parent, Qt::WFlags f)
     connect(paramMaxSbox, SIGNAL(valueChanged(int)), SIGNAL(contentsChanged()));
     paramSboxHlay->addWidget(paramMaxSbox, 1);
 
+    paramBlanksLabel = new QLabel("Blanks:");
+    Q_CHECK_PTR(paramBlanksLabel);
+    paramSboxHlay->addWidget(paramBlanksLabel);
+
+    paramBlanksSbox = new QSpinBox;
+    Q_CHECK_PTR(paramBlanksSbox);
+    paramBlanksSbox->setMinimum(0);
+    paramBlanksSbox->setMaximum(Defs::MAX_BLANKS);
+    connect(paramBlanksSbox, SIGNAL(valueChanged(int)),
+            SIGNAL(contentsChanged()));
+    paramSboxHlay->addWidget(paramBlanksSbox);
+
     paramProbCbox = new QCheckBox("Lax");
     Q_CHECK_PTR(paramProbCbox);
     paramProbCbox->setCheckState(Qt::Checked);
     paramSboxHlay->addWidget(paramProbCbox);
+
+    // FIXME: with Qt 4.6.1 (but not Qt 4.3.2), this causes a crash when
+    // loading the following search. Try to reduce to a minimal example. Also
+    // try with other versions of Qt.
+    //<!DOCTYPE zyzzyva-search SYSTEM 'http://pietdepsi.com/dtd/zyzzyva-search.dtd'>
+    //<zyzzyva-search version="1" >
+    // <conditions>
+    //  <and>
+    //   <condition type="Length" min="7" max="7" />
+    //   <condition int="0" bool="false" type="Probability Order" min="1" max="100" />
+    //   <condition int="2" bool="false" type="Probability Order" min="1" max="100" />
+    //  </and>
+    // </conditions>
+    //</zyzzyva-search>
 
     paramStack->addWidget(paramSboxWidget);
 
@@ -279,7 +305,6 @@ SearchConditionForm::getSearchCondition() const
 
         case SearchCondition::Length:
         case SearchCondition::NumAnagrams:
-        case SearchCondition::Probability:
         case SearchCondition::NumVowels:
         case SearchCondition::NumUniqueLetters:
         case SearchCondition::PointValue:
@@ -287,10 +312,17 @@ SearchConditionForm::getSearchCondition() const
         condition.maxValue = paramMaxSbox->value();
         break;
 
+        case SearchCondition::Probability:
+        condition.minValue = paramMinSbox->value();
+        condition.maxValue = paramMaxSbox->value();
+        condition.intValue = paramBlanksSbox->value();;
+        break;
+
         case SearchCondition::ProbabilityOrder:
         case SearchCondition::LimitByProbabilityOrder:
         condition.minValue = paramMinSbox->value();
         condition.maxValue = paramMaxSbox->value();
+        condition.intValue = paramBlanksSbox->value();;
         condition.boolValue = (paramProbCbox->checkState() == Qt::Checked);
         break;
 
@@ -348,7 +380,6 @@ SearchConditionForm::setSearchCondition(const SearchCondition& condition)
 
         case SearchCondition::Length:
         case SearchCondition::NumAnagrams:
-        case SearchCondition::Probability:
         case SearchCondition::NumVowels:
         case SearchCondition::NumUniqueLetters:
         case SearchCondition::PointValue:
@@ -356,10 +387,17 @@ SearchConditionForm::setSearchCondition(const SearchCondition& condition)
         paramMaxSbox->setValue(condition.maxValue);
         break;
 
+        case SearchCondition::Probability:
+        paramMinSbox->setValue(condition.minValue);
+        paramMaxSbox->setValue(condition.maxValue);
+        paramBlanksSbox->setValue(condition.intValue);
+        break;
+
         case SearchCondition::ProbabilityOrder:
         case SearchCondition::LimitByProbabilityOrder:
         paramMinSbox->setValue(condition.minValue);
         paramMaxSbox->setValue(condition.maxValue);
+        paramBlanksSbox->setValue(condition.intValue);
         paramProbCbox->setCheckState(condition.boolValue ? Qt::Checked
                                                          : Qt::Unchecked);
         break;
@@ -420,11 +458,17 @@ SearchConditionForm::isValid() const
                (paramMinSbox->value() <= paramMaxSbox->value());
 
         case SearchCondition::NumAnagrams:
+        return ((paramMinSbox->value() > 0) ||
+                (paramMaxSbox->value() < MAX_MAX_INT_VALUE)) &&
+               (paramMinSbox->value() <= paramMaxSbox->value());
+
         case SearchCondition::ProbabilityOrder:
         case SearchCondition::LimitByProbabilityOrder:
         return ((paramMinSbox->value() > 0) ||
                 (paramMaxSbox->value() < MAX_MAX_INT_VALUE)) &&
-               (paramMinSbox->value() <= paramMaxSbox->value());
+               (paramMinSbox->value() <= paramMaxSbox->value()) &&
+               (paramBlanksSbox->value() >= 0) &&
+               (paramBlanksSbox->value() <= Defs::MAX_BLANKS);
 
         case SearchCondition::ConsistOf:
         return (paramConsistMinSbox->value() <= paramConsistMaxSbox->value())
@@ -479,6 +523,8 @@ SearchConditionForm::typeChanged(const QString& string)
         paramMinSbox->setValue(0);
         paramMaxSbox->setMaximum(MAX_WORD_LEN);
         paramMaxSbox->setValue(MAX_WORD_LEN);
+        paramBlanksLabel->hide();
+        paramBlanksSbox->hide();
         paramProbCbox->hide();
         paramStack->setCurrentWidget(paramSboxWidget);
         break;
@@ -490,6 +536,8 @@ SearchConditionForm::typeChanged(const QString& string)
         paramMinSbox->setValue(0);
         paramMaxSbox->setMaximum(10 * MAX_WORD_LEN);
         paramMaxSbox->setValue(10 * MAX_WORD_LEN);
+        paramBlanksLabel->hide();
+        paramBlanksSbox->hide();
         paramProbCbox->hide();
         paramStack->setCurrentWidget(paramSboxWidget);
         break;
@@ -504,11 +552,20 @@ SearchConditionForm::typeChanged(const QString& string)
         paramMaxSbox->setMaximum(MAX_MAX_INT_VALUE);
         paramMaxSbox->setValue(MAX_MAX_INT_VALUE);
         paramProbCbox->setCheckState(Qt::Checked);
+        paramBlanksSbox->setValue(MainSettings::getProbabilityNumBlanks());
         if ((type == SearchCondition::ProbabilityOrder) ||
             (type == SearchCondition::LimitByProbabilityOrder))
+        {
+            paramBlanksLabel->show();
+            paramBlanksSbox->show();
             paramProbCbox->show();
+        }
         else
+        {
+            paramBlanksLabel->hide();
+            paramBlanksSbox->hide();
             paramProbCbox->hide();
+        }
         paramStack->setCurrentWidget(paramSboxWidget);
         break;
 

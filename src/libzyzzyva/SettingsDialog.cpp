@@ -3,7 +3,7 @@
 //
 // The settings dialog for the word study application.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -49,6 +49,7 @@ const QString JUDGE_LOG_CHOOSER_TITLE = "Choose a Log Directory";
 
 const QString GENERAL_PREFS_ITEM = "General";
 const QString QUIZ_PREFS_ITEM = "Quiz";
+const QString PROBABILITY_PREFS_ITEM = "Probability";
 const QString CARDBOX_PREFS_ITEM = "Cardbox";
 const QString JUDGE_PREFS_ITEM = "Word Judge";
 const QString FONT_PREFS_ITEM = "Fonts";
@@ -377,6 +378,49 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     timeoutDisableInputHlay->addWidget(quizTimeoutDisableInputSbox);
 
     quizPrefVlay->addStretch(2);
+
+    // Search Prefs
+    probabilityPrefWidget = new QWidget;
+    Q_CHECK_PTR(probabilityPrefWidget);
+    navStack->addWidget(probabilityPrefWidget);
+
+    QVBoxLayout* probabilityPrefVlay = new QVBoxLayout(probabilityPrefWidget);
+    Q_CHECK_PTR(probabilityPrefVlay);
+    probabilityPrefVlay->setMargin(0);
+
+    QLabel* probabilityPrefLabel = new QLabel(PROBABILITY_PREFS_ITEM);
+    Q_CHECK_PTR(probabilityPrefLabel);
+    probabilityPrefLabel->setFrameShape(QFrame::StyledPanel);
+    probabilityPrefVlay->addWidget(probabilityPrefLabel);
+
+    QGroupBox* probabilityGbox = new QGroupBox("Probability");
+    Q_CHECK_PTR(probabilityGbox);
+    probabilityPrefVlay->addWidget(probabilityGbox);
+    probabilityPrefVlay->setStretchFactor(probabilityGbox, 1);
+
+    QVBoxLayout* probabilityVlay = new QVBoxLayout(probabilityGbox);
+    Q_CHECK_PTR(probabilityVlay);
+    probabilityVlay->setMargin(MARGIN);
+    probabilityVlay->setSpacing(SPACING);
+
+    QHBoxLayout* probBlanksHlay = new QHBoxLayout;
+    Q_CHECK_PTR(probBlanksHlay);
+    probBlanksHlay->setMargin(0);
+    probabilityVlay->addLayout(probBlanksHlay);
+
+    QLabel* probBlanksLabel = new QLabel;
+    Q_CHECK_PTR(probBlanksLabel);
+    probBlanksLabel->setText("Default number of blanks when "
+                                   "calculating probability:");
+    probBlanksHlay->addWidget(probBlanksLabel);
+
+    probBlanksSbox = new QSpinBox;
+    Q_CHECK_PTR(probBlanksSbox);
+    probBlanksSbox->setMinimum(0);
+    probBlanksSbox->setMaximum(Defs::MAX_BLANKS);
+    probBlanksHlay->addWidget(probBlanksSbox);
+
+    probabilityPrefVlay->addStretch(2);
 
     // Cardbox Prefs
     cardboxPrefWidget = new QWidget;
@@ -738,6 +782,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     // Add nav list items
     new QListWidgetItem(GENERAL_PREFS_ITEM, navList);
     new QListWidgetItem(QUIZ_PREFS_ITEM, navList);
+    new QListWidgetItem(PROBABILITY_PREFS_ITEM, navList);
     new QListWidgetItem(CARDBOX_PREFS_ITEM, navList);
     new QListWidgetItem(JUDGE_PREFS_ITEM, navList);
     new QListWidgetItem(FONT_PREFS_ITEM, navList);
@@ -839,6 +884,9 @@ SettingsDialog::readSettings()
     quizTimeoutDisableInputSbox->setValue(
         MainSettings::getQuizTimeoutDisableInputMillisecs());
     autoCheckCboxToggled(autoCheck);
+
+    probBlanksSbox->setValue(
+        MainSettings::getProbabilityNumBlanks());
 
     judgeSaveLogCbox->setChecked(MainSettings::getJudgeSaveLog());
 
@@ -949,6 +997,8 @@ SettingsDialog::writeSettings()
     MainSettings::setQuizTimeoutDisableInputMillisecs(
         quizTimeoutDisableInputSbox->value());
 
+    MainSettings::setProbabilityNumBlanks(probBlanksSbox->value());
+
     QList<int> cardboxSchedules;
     foreach (QSpinBox* sbox, cardboxScheduleSboxList)
         cardboxSchedules.append(sbox->value());
@@ -993,6 +1043,8 @@ SettingsDialog::navTextChanged(const QString& text)
         navStack->setCurrentWidget(generalPrefWidget);
     else if (text == QUIZ_PREFS_ITEM)
         navStack->setCurrentWidget(quizPrefWidget);
+    else if (text == PROBABILITY_PREFS_ITEM)
+        navStack->setCurrentWidget(probabilityPrefWidget);
     else if (text == CARDBOX_PREFS_ITEM)
         navStack->setCurrentWidget(cardboxPrefWidget);
     else if (text == JUDGE_PREFS_ITEM)

@@ -3,7 +3,7 @@
 //
 // A class to handle the loading and searching of words.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -309,8 +309,12 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
     if (!lexiconData.contains(lexicon) || !lexiconData[lexicon]->db)
         return QStringList();
 
+    // If only probability order and length conditions, and In Word List,
+    // we can get away with only querying the probability table
+
     // Build SQL query string
-    QString queryStr = "SELECT word FROM words WHERE";
+    QSet<QString> tables;
+    QString whereStr;
     bool foundCondition = false;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
@@ -319,36 +323,41 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             continue;
 
         if (foundCondition)
-            queryStr += " AND";
+            whereStr += " AND";
         foundCondition = true;
 
         switch (condition.type) {
             case SearchCondition::PatternMatch: {
+                tables.insert("words");
                 // XXX: eventually, account for negated condition
                 QString str =
                     condition.stringValue.replace("?", "_").replace("*", "%");
-                queryStr += " word LIKE '" + str + "'";
+                whereStr += " words.word LIKE '" + str + "'";
             }
             break;
 
             case SearchCondition::ProbabilityOrder: {
+                tables.insert("probability");
+                whereStr += " probability.num_blanks=" +
+                    QString::number(condition.intValue);
+
                 // Lax boundaries
                 if (condition.boolValue) {
-                    queryStr += " max_probability_order>=" +
+                    whereStr += " AND probability.max_probability_order>=" +
                         QString::number(condition.minValue) +
-                        " AND min_probability_order<=" +
+                        " AND probability.min_probability_order<=" +
                         QString::number(condition.maxValue);
                 }
                 // Strict boundaries
                 else {
-                    queryStr += " probability_order";
+                    whereStr += " AND probability.probability_order";
                     if (condition.minValue == condition.maxValue) {
-                        queryStr += "=" + QString::number(condition.minValue);
+                        whereStr += "=" + QString::number(condition.minValue);
                     }
                     else {
-                        queryStr += ">=" +
+                        whereStr += ">=" +
                             QString::number(condition.minValue) +
-                            " AND probability_order<=" +
+                            " AND probability.probability_order<=" +
                             QString::number(condition.maxValue);
                     }
                 }
@@ -360,24 +369,25 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             case SearchCondition::NumUniqueLetters:
             case SearchCondition::PointValue:
             case SearchCondition::NumAnagrams: {
+                tables.insert("words");
                 QString column;
                 if (condition.type == SearchCondition::Length)
-                    column = "length";
+                    column = "words.length";
                 if (condition.type == SearchCondition::NumVowels)
-                    column = "num_vowels";
+                    column = "words.num_vowels";
                 if (condition.type == SearchCondition::NumUniqueLetters)
-                    column = "num_unique_letters";
+                    column = "words.num_unique_letters";
                 if (condition.type == SearchCondition::PointValue)
-                    column = "point_value";
+                    column = "words.point_value";
                 if (condition.type == SearchCondition::NumAnagrams)
-                    column = "num_anagrams";
+                    column = "words.num_anagrams";
 
-                queryStr += " " + column;
+                whereStr += " " + column;
                 if (condition.minValue == condition.maxValue) {
-                    queryStr += "=" + QString::number(condition.minValue);
+                    whereStr += "=" + QString::number(condition.minValue);
                 }
                 else {
-                    queryStr += ">=" + QString::number(condition.minValue) +
+                    whereStr += ">=" + QString::number(condition.minValue) +
                         " AND " + column + "<=" +
                         QString::number(condition.maxValue);
                 }
@@ -396,38 +406,45 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
                     it.next();
                     QChar c = it.key();
                     if (i)
-                        queryStr += " AND";
-                    queryStr += " word";
+                        whereStr += " AND";
+                    whereStr += " word";
                     if (condition.negated)
-                        queryStr += " NOT";
-                    queryStr += " LIKE '%";
+                        whereStr += " NOT";
+                    whereStr += " LIKE '%";
                     int count = condition.negated ? 1 : it.value();
                     for (int j = 0; j < count; ++j) {
-                        queryStr += QString(c) + "%";
+                        whereStr += QString(c) + "%";
                     }
-                    queryStr += "'";
+                    whereStr += "'";
                 }
             }
             break;
 
             case SearchCondition::BelongToGroup: {
+                tables.insert("words");
                 SearchSet searchSet =
                     Auxil::stringToSearchSet(condition.stringValue);
                 int target = condition.negated ? 0 : 1;
                 switch (searchSet) {
                     case SetFrontHooks:
-                    queryStr += " is_front_hook=" + QString::number(target);
+                    whereStr += " words.is_front_hook=" +
+                        QString::number(target);
                     break;
 
                     case SetBackHooks:
-                    queryStr += " is_back_hook=" + QString::number(target);
+                    whereStr += " words.is_back_hook=" +
+                        QString::number(target);
                     break;
 
                     case SetHookWords:
-                    if (condition.negated)
-                        queryStr += " (is_front_hook=0 AND is_back_hook=0)";
-                    else
-                        queryStr += " (is_front_hook=1 OR is_back_hook=1)";
+                    if (condition.negated) {
+                        whereStr += " (words.is_front_hook=0 AND "
+                            "words.is_back_hook=0)";
+                    }
+                    else {
+                        whereStr += " (words.is_front_hook=1 OR "
+                            "words.is_back_hook=1)";
+                    }
                     break;
 
                     default:
@@ -437,21 +454,22 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             break;
 
             case SearchCondition::InWordList: {
-                queryStr += " word";
+                tables.insert("words");
+                whereStr += " words.word";
                 if (condition.negated)
-                    queryStr += " NOT";
-                queryStr += " IN (";
+                    whereStr += " NOT";
+                whereStr += " IN (";
                 QStringList words = condition.stringValue.split(QChar(' '));
                 QStringListIterator it (words);
                 bool firstWord = true;
                 while (it.hasNext()) {
                     QString word = it.next();
                     if (!firstWord)
-                        queryStr += ",";
+                        whereStr += ",";
                     firstWord = false;
-                    queryStr += "'" + word + "'";
+                    whereStr += "'" + word + "'";
                 }
-                queryStr += ")";
+                whereStr += ")";
             }
             break;
 
@@ -464,7 +482,8 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
     // Make sure results are in the provided word list
     QMap<QString, QString> upperToLower;
     if (wordList) {
-        queryStr += " AND word IN (";
+        tables.insert("words");
+        whereStr += " AND words.word IN (";
         QStringListIterator it (*wordList);
         bool firstWord = true;
         while (it.hasNext()) {
@@ -472,12 +491,29 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             QString wordUpper = word.toUpper();
             upperToLower[wordUpper] = word;
             if (!firstWord)
-                queryStr += ",";
+                whereStr += ",";
             firstWord = false;
-            queryStr += "'" + wordUpper + "'";
+            whereStr += "'" + wordUpper + "'";
         }
-        queryStr += ")";
+        whereStr += ")";
     }
+
+    QStringList tablesList = tables.toList();
+    QString tableStr = " " + tablesList.join(", ");
+    QString selectColStr = "word";
+    if (tables.contains("words")) {
+        selectColStr = " words.word";
+        if (tables.contains("probability"))
+            whereStr = " words.word = probability.word AND" + whereStr;
+    }
+    else if (tables.contains("probability")) {
+        selectColStr = " probability.word";
+    }
+
+    QString queryStr = "SELECT" + selectColStr + " FROM" + tableStr +
+        " WHERE" + whereStr;
+
+    //qDebug("Query str: |%s|", queryStr.toUtf8().constData());
 
     // Query the database
     QStringList resultList;
@@ -526,11 +562,13 @@ WordEngine::applyPostConditions(const QString& lexicon,
     int probLimitRangeMax = 999999;
     int probLimitRangeMinLax = 0;
     int probLimitRangeMaxLax = 999999;
+    int probNumBlanks = 0;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
         SearchCondition condition = cit.next();
         if (condition.type == SearchCondition::LimitByProbabilityOrder) {
             probLimitRangeCondition = true;
+            probNumBlanks = condition.intValue;
             if (condition.boolValue) {
                 if (condition.minValue > probLimitRangeMinLax)
                     probLimitRangeMinLax = condition.minValue;
@@ -590,7 +628,7 @@ WordEngine::applyPostConditions(const QString& lexicon,
             QString radix;
             QString wordUpper = word.toUpper();
             radix.sprintf("%09.0f",
-                1e9 - 1 - bag.getNumCombinations(wordUpper));
+                1e9 - 1 - bag.getNumCombinations(wordUpper, probNumBlanks));
             // Legacy probability order limits are sorted alphabetically, not
             // by alphagram
             if (!legacyProbCondition)
@@ -807,8 +845,8 @@ WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
     if (!db || !db->isOpen())
         return info;
 
-    QString qstr = "SELECT probability_order, min_probability_order, "
-        "max_probability_order, num_vowels, num_unique_letters, num_anagrams, "
+    // Get all info except probability order
+    QString qstr = "SELECT num_vowels, num_unique_letters, num_anagrams, "
         "point_value, front_hooks, back_hooks, is_front_hook, is_back_hook, "
         "lexicon_symbols, definition FROM words WHERE word=?";
     QSqlQuery query (*db);
@@ -816,23 +854,44 @@ WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
     query.bindValue(0, word);
     query.exec();
 
+    bool firstValid = false;
     if (query.next()) {
         info.word = word;
-        info.probabilityOrder    = query.value(0).toInt();
-        info.minProbabilityOrder = query.value(1).toInt();
-        info.maxProbabilityOrder = query.value(2).toInt();
-        info.numVowels           = query.value(3).toInt();
-        info.numUniqueLetters    = query.value(4).toInt();
-        info.numAnagrams         = query.value(5).toInt();
-        info.pointValue          = query.value(6).toInt();
-        info.frontHooks          = query.value(7).toString();
-        info.backHooks           = query.value(8).toString();
-        info.isFrontHook         = query.value(9).toBool();
-        info.isBackHook          = query.value(10).toBool();
-        info.lexiconSymbols      = query.value(11).toString();
-        info.definition          = query.value(12).toString();
-        lexiconData[lexicon]->wordCache[word] = info;
+        info.numVowels           = query.value(0).toInt();
+        info.numUniqueLetters    = query.value(1).toInt();
+        info.numAnagrams         = query.value(2).toInt();
+        info.pointValue          = query.value(3).toInt();
+        info.frontHooks          = query.value(4).toString();
+        info.backHooks           = query.value(5).toString();
+        info.isFrontHook         = query.value(6).toBool();
+        info.isBackHook          = query.value(7).toBool();
+        info.lexiconSymbols      = query.value(8).toString();
+        info.definition          = query.value(9).toString();
+        firstValid = true;
     }
+
+    // Get probability order info
+    qstr = "SELECT num_blanks, probability_order, min_probability_order, "
+        "max_probability_order FROM probability WHERE word=?";
+    query.prepare(qstr);
+    query.bindValue(0, word);
+    query.exec();
+
+    bool valid = false;
+    while (query.next()) {
+        ProbabilityOrder probOrder;
+        int numBlanks = query.value(0).toInt();
+        probOrder.probabilityOrder    = query.value(1).toInt();
+        probOrder.minProbabilityOrder = query.value(2).toInt();
+        probOrder.maxProbabilityOrder = query.value(3).toInt();
+        info.blankProbability[numBlanks] = probOrder;
+
+        if (firstValid)
+            valid = true;
+    }
+
+    if (valid)
+        lexiconData[lexicon]->wordCache[word] = info;
 
     return info;
 }
@@ -899,9 +958,32 @@ WordEngine::getDefinition(const QString& lexicon, const QString& word,
     if (!lexiconData.contains(lexicon))
         return QString();
 
-    QString definition;
-
     WordInfo info = getWordInfo(lexicon, word);
+    //qDebug("WordEngine::getDefinition: lexicon: |%s|, word: |%s|",
+    //       lexicon.toUtf8().constData(), word.toUtf8().constData());
+    //qDebug("info.isValid: %d, info.word: |%s|, "
+    //       "info.numVowels: %d, info.numUniqueLetters: %d, "
+    //       "info.numAnagrams: %d, info.pointValue: %d, "
+    //       "info.frontHooks: |%s|, info.backHooks: |%s|, "
+    //       "info.isFrontHook: %d, info.isBackHook: %d, "
+    //       "info.lexiconSymbols: |%s|, info.definition: |%s|",
+    //       info.isValid(), info.word.toUtf8().constData(),
+    //       info.numVowels, info.numUniqueLetters, info.numAnagrams,
+    //       info.pointValue, info.frontHooks.toUtf8().constData(),
+    //       info.backHooks.toUtf8().constData(), info.isFrontHook,
+    //       info.isBackHook, info.lexiconSymbols.toUtf8().constData(),
+    //       info.definition.toUtf8().constData());
+    //QMapIterator<int, ProbabilityOrder> it (info.blankProbability);
+    //while (it.hasNext()) {
+    //    it.next();
+    //    int numBlanks = it.key();
+    //    const ProbabilityOrder& probOrder = it.value();
+    //    qDebug("numBlanks: %d, prob order: %d, min prob order: %d, "
+    //           "max prob order: %d", numBlanks, probOrder.probabilityOrder,
+    //           probOrder.minProbabilityOrder, probOrder.maxProbabilityOrder);
+    //}
+
+    QString definition;
     if (info.isValid()) {
         if (replaceLinks) {
             QStringList defs = info.definition.split(DEF_ORIG_SEP);
@@ -1046,41 +1128,63 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
     if (!db || !db->isOpen())
         return;
 
-    QString qstr = "SELECT word, probability_order, min_probability_order, "
-        "max_probability_order, num_vowels, num_unique_letters, num_anagrams, "
-        "point_value, front_hooks, back_hooks, is_front_hook, is_back_hook, "
-        "lexicon_symbols, definition FROM words WHERE word IN (";
+    QString qstr = "SELECT words.word, words.num_vowels, "
+        "words.num_unique_letters, words.num_anagrams, words.point_value, "
+        "words.front_hooks, words.back_hooks, words.is_front_hook, "
+        "words.is_back_hook, words.lexicon_symbols, words.definition, "
+        "probability.num_blanks, probability.probability_order, "
+        "probability.min_probability_order, "
+        "probability.max_probability_order "
+        "FROM words, probability WHERE words.word IN (";
 
     QStringListIterator it (words);
     for (int i = 0; it.hasNext(); ++i) {
         if (i)
             qstr += ", ";
-        qstr += "'" + it.next() + "'";
+        qstr += "'" + it.next().toUpper() + "'";
     }
     qstr += ")";
+    qstr += " AND words.word = probability.word";
 
     QSqlQuery query (*db);
     query.prepare(qstr);
     query.exec();
 
+    QString lastWord;
+    WordInfo info;
+
     while (query.next()) {
-        WordInfo info;
-        info.word                = query.value(0).toString();
-        info.probabilityOrder    = query.value(1).toInt();
-        info.minProbabilityOrder = query.value(2).toInt();
-        info.maxProbabilityOrder = query.value(3).toInt();
-        info.numVowels           = query.value(4).toInt();
-        info.numUniqueLetters    = query.value(5).toInt();
-        info.numAnagrams         = query.value(6).toInt();
-        info.pointValue          = query.value(7).toInt();
-        info.frontHooks          = query.value(8).toString();
-        info.backHooks           = query.value(9).toString();
-        info.isFrontHook         = query.value(10).toBool();
-        info.isBackHook          = query.value(11).toBool();
-        info.lexiconSymbols      = query.value(12).toString();
-        info.definition          = query.value(13).toString();
-        lexiconData[lexicon]->wordCache[info.word] = info;
+        QString word = query.value(0).toString();
+        if (word != lastWord) {
+            if (!info.word.isEmpty())
+                lexiconData[lexicon]->wordCache[lastWord] = info;
+
+            info = WordInfo();
+            info.word                 = word;
+            info.numVowels            = query.value(1).toInt();
+            info.numUniqueLetters     = query.value(2).toInt();
+            info.numAnagrams          = query.value(3).toInt();
+            info.pointValue           = query.value(4).toInt();
+            info.frontHooks           = query.value(5).toString();
+            info.backHooks            = query.value(6).toString();
+            info.isFrontHook          = query.value(7).toBool();
+            info.isBackHook           = query.value(8).toBool();
+            info.lexiconSymbols       = query.value(9).toString();
+            info.definition           = query.value(10).toString();
+        }
+
+        ProbabilityOrder probOrder;
+        int numBlanks = query.value(11).toInt();
+        probOrder.probabilityOrder    = query.value(12).toInt();
+        probOrder.minProbabilityOrder = query.value(13).toInt();
+        probOrder.maxProbabilityOrder = query.value(14).toInt();
+        info.blankProbability[numBlanks] = probOrder;
+
+        lastWord = word;
     }
+
+    if (!info.word.isEmpty())
+        lexiconData[lexicon]->wordCache[lastWord] = info;
 }
 
 //---------------------------------------------------------------------------
@@ -1170,10 +1274,13 @@ WordEngine::isSetMember(const QString& lexicon, const QString& word,
     static LetterBag letterBag("A:9 B:2 C:2 D:4 E:12 F:2 G:3 H:2 I:9 J:1 "
                                "K:1 L:4 M:2 N:6 O:8 P:2 Q:1 R:6 S:4 T:6 "
                                "U:4 V:2 W:2 X:1 Y:2 Z:1 _:2");
+
+    // ### For backward compatibility, set membership is calculated using
+    // probability calculated with two blanks - should make this customizable
     static double typeThreeSevenCombos
-        = letterBag.getNumCombinations("HUNTERS");
+        = letterBag.getNumCombinations("HUNTERS", 2);
     static double typeThreeEightCombos
-        = letterBag.getNumCombinations("NOTIFIED");
+        = letterBag.getNumCombinations("NOTIFIED", 2);
 
     switch (ss) {
         case SetHookWords:
@@ -1287,7 +1394,10 @@ WordEngine::isSetMember(const QString& lexicon, const QString& word,
             if (word.length() != 7)
                 return false;
 
-            double combos = letterBag.getNumCombinations(word);
+            // ### For backward compatibility, set membership is calculated
+            // using probability calculated with two blanks - should make this
+            // customizable
+            double combos = letterBag.getNumCombinations(word, 2);
             return ((combos >= typeThreeSevenCombos) &&
                     !isSetMember(lexicon, word, SetTypeOneSevens) &&
                     !isSetMember(lexicon, word, SetTypeTwoSevens));
@@ -1297,7 +1407,10 @@ WordEngine::isSetMember(const QString& lexicon, const QString& word,
             if (word.length() != 8)
                 return false;
 
-            double combos = letterBag.getNumCombinations(word);
+            // ### For backward compatibility, set membership is calculated
+            // using probability calculated with two blanks - should make this
+            // customizable
+            double combos = letterBag.getNumCombinations(word, 2);
             return ((combos >= typeThreeEightCombos) &&
                     !isSetMember(lexicon, word, SetTypeOneEights) &&
                     !isSetMember(lexicon, word, SetTypeTwoEights));
@@ -1361,17 +1474,19 @@ WordEngine::getNumAnagrams(const QString& lexicon, const QString& word) const
 //
 //! @param lexicon the name of the lexicon
 //! @param word the word
+//! @param numBlanks the number of blanks
 //! @return the probability order
 //---------------------------------------------------------------------------
 int
-WordEngine::getProbabilityOrder(const QString& lexicon, const QString& word)
-    const
+WordEngine::getProbabilityOrder(const QString& lexicon, const QString& word,
+                                int numBlanks) const
 {
     if (!lexiconData.contains(lexicon))
         return 0;
 
     WordInfo info = getWordInfo(lexicon, word);
-    return info.isValid() ? info.probabilityOrder : 0;
+    return info.isValid() ?
+        info.blankProbability.value(numBlanks).probabilityOrder : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1381,17 +1496,19 @@ WordEngine::getProbabilityOrder(const QString& lexicon, const QString& word)
 //
 //! @param lexicon the name of the lexicon
 //! @param word the word
+//! @param numBlanks the number of blanks
 //! @return the probability order
 //---------------------------------------------------------------------------
 int
 WordEngine::getMinProbabilityOrder(const QString& lexicon, const QString&
-                                   word) const
+                                   word, int numBlanks) const
 {
     if (!lexiconData.contains(lexicon))
         return 0;
 
     WordInfo info = getWordInfo(lexicon, word);
-    return info.isValid() ? info.minProbabilityOrder : 0;
+    return info.isValid() ?
+        info.blankProbability.value(numBlanks).minProbabilityOrder : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1401,17 +1518,19 @@ WordEngine::getMinProbabilityOrder(const QString& lexicon, const QString&
 //
 //! @param lexicon the name of the lexicon
 //! @param word the word
+//! @param numBlanks the number of blanks
 //! @return the probability order
 //---------------------------------------------------------------------------
 int
 WordEngine::getMaxProbabilityOrder(const QString& lexicon, const QString&
-                                   word) const
+                                   word, int numBlanks) const
 {
     if (!lexiconData.contains(lexicon))
         return 0;
 
     WordInfo info = getWordInfo(lexicon, word);
-    return info.isValid() ? info.maxProbabilityOrder : 0;
+    return info.isValid() ?
+        info.blankProbability.value(numBlanks).maxProbabilityOrder : 0;
 }
 
 //---------------------------------------------------------------------------

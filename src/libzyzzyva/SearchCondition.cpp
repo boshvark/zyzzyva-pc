@@ -3,7 +3,7 @@
 //
 // A class to represent a word search condition.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -34,6 +34,7 @@ const QString XML_STRING_ATTR = "string";
 const QString XML_MIN_ATTR = "min";
 const QString XML_MAX_ATTR = "max";
 const QString XML_BOOL_ATTR = "bool";
+const QString XML_INT_ATTR = "int";
 const QString XML_NEGATED_ATTR = "negated";
 const QString XML_OLD_NUMBER_ATTR = "number";
 const QString XML_OLD_PERCENT_ATTR = "percent";
@@ -82,14 +83,20 @@ SearchCondition::asString() const
         case LimitByProbabilityOrder:
         str += "Min " + QString::number(minValue) + ", Max "
             + QString::number(maxValue);
+        if ((type == ProbabilityOrder) || (type == LimitByProbabilityOrder)) {
+            str += " (" + QString::number(intValue) + " blank" +
+                (intValue == 1 ? QString() : QString("s")) + ")";
+        }
         if (boolValue)
             str += " (Lax)";
         break;
 
         case Probability:
         // XXX: Multiply by the correct factor here!
-        str += "Min " + QString::number(minValue * 1) + ", Max "
-            + QString::number(maxValue * 1);
+        str += "Min " + QString::number(minValue * 1) + ", Max " +
+            QString::number(maxValue * 1) +
+            " (" + QString::number(intValue) + " blank" +
+            (intValue == 1 ? QString() : QString("s")) + ")";
         break;
 
         case ConsistOf:
@@ -148,6 +155,7 @@ SearchCondition::asDomElement() const
         topElement.setAttribute(XML_MIN_ATTR, minValue);
         topElement.setAttribute(XML_MAX_ATTR, maxValue);
         if ((type == ProbabilityOrder) || (type == LimitByProbabilityOrder)) {
+            topElement.setAttribute(XML_INT_ATTR, intValue);
             topElement.setAttribute(XML_BOOL_ATTR,
                 (boolValue ? QString("true") : QString("false")));
         }
@@ -155,8 +163,9 @@ SearchCondition::asDomElement() const
 
         case Probability:
         // XXX: Multiply by the correct factor here!
-        topElement.setAttribute(XML_MIN_ATTR,(minValue * 1));
-        topElement.setAttribute(XML_MAX_ATTR,(maxValue * 1));
+        topElement.setAttribute(XML_MIN_ATTR, (minValue * 1));
+        topElement.setAttribute(XML_MAX_ATTR, (maxValue * 1));
+        topElement.setAttribute(XML_INT_ATTR, intValue);
         break;
 
         case ConsistOf:
@@ -248,6 +257,17 @@ SearchCondition::fromDomElement(const QDomElement& element)
             tmpCondition.boolValue =
                 (element.attribute(XML_BOOL_ATTR) == "true");
         }
+        if (element.hasAttribute(XML_INT_ATTR)) {
+            tmpCondition.intValue =
+                element.attribute(XML_INT_ATTR).toInt(&ok);
+            if (!ok)
+                return false;
+        }
+        else {
+            // Default to 2 blanks if unspecified, for backward compatibility
+            tmpCondition.intValue = 2;
+        }
+
         // fall through
 
         case Length:
@@ -284,6 +304,16 @@ SearchCondition::fromDomElement(const QDomElement& element)
             return false;
         // XXX: Divide by the correct factor here!
         tmpCondition.maxValue /= 1;
+        if (element.hasAttribute(XML_INT_ATTR)) {
+            tmpCondition.intValue =
+                element.attribute(XML_INT_ATTR).toInt(&ok);
+            if (!ok)
+                return false;
+        }
+        else {
+            // Default to 2 blanks if unspecified, for backward compatibility
+            tmpCondition.intValue = 2;
+        }
         break;
 
         case ConsistOf: {

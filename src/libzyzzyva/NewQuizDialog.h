@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -59,6 +59,7 @@ class NewQuizDialog : public QDialog
     void useSearchButtonToggled(bool on);
     void searchContentsChanged();
     void questionOrderActivated(const QString& text);
+    void probNumBlanksValueChanged(int num);
     void loadQuiz();
     void saveQuiz();
 
@@ -75,6 +76,8 @@ class NewQuizDialog : public QDialog
     QCheckBox*      progressCbox;
     QLabel*         progressLabel;
     QComboBox*      questionOrderCombo;
+    QLabel*         probNumBlanksLabel;
+    QSpinBox*       probNumBlanksSbox;
     QStackedWidget* sourceStack;
     QWidget*        buildWidget;
     QSpinBox*       responseMinSbox;

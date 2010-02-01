@@ -3,7 +3,7 @@
 //
 // A model for representing word lists.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -120,6 +120,8 @@ class WordTableModel : public QAbstractTableModel
     QString getLexicon() const { return lexicon; }
     void setLexicon(const QString& lex) { lexicon = lex; }
     int getLastAddedIndex() const { return lastAddedIndex; }
+    void setProbabilityNumBlanks(int numBlanks) { probNumBlanks = numBlanks; }
+    int getProbabilityNumBlanks() const { return probNumBlanks; }
     void clearLastAddedIndex();
 
     signals:
@@ -133,6 +135,7 @@ class WordTableModel : public QAbstractTableModel
     WordEngine* wordEngine;
     QString lexicon;
     mutable QList<WordItem> wordList;
+    int probNumBlanks;
     int lastAddedIndex;
 
     public:

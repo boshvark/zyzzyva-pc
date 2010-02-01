@@ -3,7 +3,7 @@
 //
 // A form for specifying a search specification.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2007, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -183,10 +183,20 @@ SearchSpecForm::setSearchSpec(const SearchSpec& spec)
 bool
 SearchSpecForm::isValid() const
 {
-    QListIterator<SearchConditionForm*> it (conditionForms);
-    while (it.hasNext()) {
-        if (!(it.next()->isValid()))
+    // ### For now, disallow searches that have multiple probability
+    // conditions with different numbers of blanks
+    int numBlanks = -1;
+    foreach (SearchConditionForm* form, conditionForms) {
+        if (!form->isValid())
             return false;
+        SearchCondition condition = form->getSearchCondition();
+        if ((condition.type == SearchCondition::ProbabilityOrder) ||
+            (condition.type == SearchCondition::LimitByProbabilityOrder))
+        {
+            if (numBlanks >= 0 && (numBlanks != condition.intValue))
+                return false;
+            numBlanks = condition.intValue;
+        }
     }
     return true;
 }

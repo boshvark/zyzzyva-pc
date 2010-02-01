@@ -3,7 +3,7 @@
 //
 // A class for holding instances of letters.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -37,8 +37,8 @@ class LetterBag
     LetterBag(const QString& distribution = QString());
     ~LetterBag() { }
 
-    double getProbability(const QString& word) const;
-    double getNumCombinations(const QString& word) const;
+    double getProbability(const QString& word, int numBlanks) const;
+    double getNumCombinations(const QString& word, int numBlanks) const;
 
     int getLetterValue(const QChar& letter) const;
     void setLetterValue(const QChar& letter, int value);
