@@ -169,7 +169,7 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                 QList<QPair<QString, double> > questionPairs;
 
                 int probNumBlanks = quizSpec.getProbabilityNumBlanks();
-                foreach (QString question, quizQuestions) {
+                foreach (const QString& question, quizQuestions) {
                     double combos =
                         letterBag.getNumCombinations(question, probNumBlanks);
                     questionPairs.append(qMakePair(question, combos));

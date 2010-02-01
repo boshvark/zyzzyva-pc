@@ -367,7 +367,7 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
 
         // Update number of anagrams
         query.prepare("UPDATE words SET num_anagrams=? WHERE word=?");
-        foreach (QString word, words) {
+        foreach (const QString& word, words) {
             QString alphagram = Auxil::getAlphagram(word);
             query.bindValue(0, numAnagramsMap[alphagram]);
             query.bindValue(1, word);
@@ -614,7 +614,7 @@ CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase& db, int& stepNum)
 
         QStringList defs = definition.split(WordEngine::DEF_ORIG_SEP);
         QString newDefinition;
-        foreach (QString def, defs) {
+        foreach (const QString& def, defs) {
             if (!newDefinition.isEmpty())
                 newDefinition += WordEngine::DEF_DISPLAY_SEP;
             newDefinition += replaceDefinitionLinks(def, MAX_DEFINITION_LINKS);
@@ -767,7 +767,7 @@ CreateDatabaseThread::getSubDefinition(const QString& word, const QString&
     QString definition = definitions[word];
     QRegExp posRegex (QString("\\[(\\w+)"));
     QStringList defs = definition.split(WordEngine::DEF_ORIG_SEP);
-    foreach (QString def, defs) {
+    foreach (const QString& def, defs) {
         if ((posRegex.indexIn(def, 0) > 0) &&
             (posRegex.cap(1) == pos))
         {

@@ -882,7 +882,7 @@ QuizForm::markCorrect()
     }
 
     QStringList incorrect = quizEngine->getQuestionIncorrectResponses();
-    foreach (QString response, incorrect) {
+    foreach (const QString& response, incorrect) {
         analyzeDialog->removeIncorrect(response);
     }
 

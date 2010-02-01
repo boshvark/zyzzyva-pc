@@ -3,7 +3,7 @@
 //
 // A class to represent a quiz question.
 //
-// Copyright 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2009, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -69,7 +69,7 @@ QuizQuestion::asDomElement() const
     if (!responses.isEmpty()) {
         QDomElement responsesElement = doc.createElement(XML_RESPONSES_ELEMENT);
         topElement.appendChild(responsesElement);
-        foreach (QString response, responses) {
+        foreach (const QString& response, responses) {
             QDomElement elem = doc.createElement(XML_RESPONSE_ELEMENT);
             elem.setAttribute(XML_RESPONSE_WORD_ATTR, response);
             responsesElement.appendChild(elem);

@@ -234,14 +234,14 @@ MainSettings::readSettings()
     QString schedStr = settings.value(SETTINGS_CARDBOX_SCHEDULES,
                                       DEFAULT_CARDBOX_SCHEDULES).toString();
     instance->cardboxScheduleList.clear();
-    foreach (QString str, schedStr.split(QChar(' '))) {
+    foreach (const QString& str, schedStr.split(QChar(' '))) {
         instance->cardboxScheduleList.append(str.toInt());
     }
 
     QString windowStr = settings.value(SETTINGS_CARDBOX_WINDOWS,
                                        DEFAULT_CARDBOX_WINDOWS).toString();
     instance->cardboxWindowList.clear();
-    foreach (QString str, windowStr.split(QChar(' '))) {
+    foreach (const QString& str, windowStr.split(QChar(' '))) {
         instance->cardboxWindowList.append(str.toInt());
     }
 
@@ -278,7 +278,7 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_LEXICON_STYLES,
                          DEFAULT_LEXICON_STYLES).toString();
     instance->wordListLexiconStyles.clear();
-    foreach (QString str, lexiconStyleStr.split(QChar('\n'))) {
+    foreach (const QString& str, lexiconStyleStr.split(QChar('\n'))) {
         LexiconStyle style = Auxil::stringToLexiconStyle(str);
         if (!style.isValid())
             continue;

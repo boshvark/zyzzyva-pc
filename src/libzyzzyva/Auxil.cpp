@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -510,7 +510,7 @@ Auxil::getAlphagram(const QString& word)
         chars.append(word[i]);
     }
     qSort(chars.begin(), chars.end(), localeAwareLessThanQChar);
-    foreach (QChar c, chars)
+    foreach (const QChar& c, chars)
         alphagram.append(c);
 
     //qDebug("Alphagram: |%s|", alphagram.toUtf8().constData());
