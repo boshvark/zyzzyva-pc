@@ -72,7 +72,7 @@ CreateDatabaseThread::runPrivate()
         // Total number of progress steps is number of words times the number
         // of lines that increment stepNum in all the code that is called
         // below.
-        int stepNumIncs = 8;
+        int stepNumIncs = 7;
         int numWords = wordEngine->getNumWords(lexiconName);
         int baseProgress = numWords * stepNumIncs / 99;
         numSteps = numWords * stepNumIncs + baseProgress + 1;
@@ -82,7 +82,7 @@ CreateDatabaseThread::runPrivate()
 
         createTables(db);
         createIndexes(db);
-        // insertWords increments stepNum 3 times
+        // insertWords increments stepNum 2 times
         insertWords(db, stepNum);
         // updateProbabilityOrder increments stepNum 3 times for each word
         // because of 0, 1, 2 blanks
@@ -108,6 +108,12 @@ CreateDatabaseThread::createTables(QSqlDatabase& db)
     QSqlQuery query (db);
 
     query.exec("CREATE TABLE words (word varchar(16), length integer, "
+        "combinations0 integer, probability_order0 integer, "
+        "min_probability_order0 integer, max_probability_order0 integer, "
+        "combinations1 integer, probability_order1 integer, "
+        "min_probability_order1 integer, max_probability_order1 integer, "
+        "combinations2 integer, probability_order2 integer, "
+        "min_probability_order2 integer, max_probability_order2 integer, "
         "alphagram varchar(16), num_anagrams integer, "
         "num_unique_letters integer, num_vowels integer, "
         "point_value integer, front_hooks varchar(32), "
@@ -115,10 +121,10 @@ CreateDatabaseThread::createTables(QSqlDatabase& db)
         "is_back_hook integer, lexicon_symbols varchar(16), "
         "definition varchar(256))");
 
-    query.exec("CREATE TABLE probability (word varchar(16), "
-        "length integer, num_blanks integer, "
-        "combinations integer, probability_order integer, "
-        "min_probability_order integer, max_probability_order integer)");
+    //query.exec("CREATE TABLE probability (word varchar(16), "
+        //"length integer, num_blanks integer, "
+        //"combinations integer, probability_order integer, "
+        //"min_probability_order integer, max_probability_order integer)");
 
     query.exec("CREATE TABLE db_version (version integer)");
     query.exec("INSERT into db_version (version) VALUES (" +
@@ -148,8 +154,6 @@ CreateDatabaseThread::createIndexes(QSqlDatabase& db)
 {
     QSqlQuery query (db);
 
-    // FIXME: more indexes on words table would help?
-
     // Indexes on words table
     query.exec("CREATE UNIQUE INDEX word_index on words (word)");
     if (cancelled)
@@ -159,31 +163,33 @@ CreateDatabaseThread::createIndexes(QSqlDatabase& db)
     if (cancelled)
         return;
 
-    // Indexes on probability table
-    query.exec("CREATE INDEX prob_word_blanks_index on probability "
-               "(word, num_blanks)");
+    query.exec("CREATE UNIQUE INDEX prob0_index on words "
+               "(length, probability_order0)");
     if (cancelled)
         return;
 
-    query.exec("CREATE INDEX prob_word_index on probability (word)");
+    query.exec("CREATE INDEX prob0_min_max_index on words "
+               "(length, min_probability_order0, max_probability_order0)");
     if (cancelled)
         return;
 
-    query.exec("CREATE INDEX prob_length_index on probability (length)");
+    query.exec("CREATE UNIQUE INDEX prob1_index on words "
+               "(length, probability_order1)");
     if (cancelled)
         return;
 
-    query.exec("CREATE INDEX prob_blanks_index on probability (num_blanks)");
+    query.exec("CREATE INDEX prob1_min_max_index on words "
+               "(length, min_probability_order1, max_probability_order1)");
     if (cancelled)
         return;
 
-    query.exec("CREATE INDEX prob_order on probability "
-               "(num_blanks, probability_order)");
+    query.exec("CREATE UNIQUE INDEX prob2_index on words "
+               "(length, probability_order2)");
     if (cancelled)
         return;
 
-    query.exec("CREATE INDEX prob_min_max_order on probability "
-               "(num_blanks, min_probability_order, max_probability_order)");
+    query.exec("CREATE INDEX prob2_min_max_index on words "
+               "(length, min_probability_order2, max_probability_order2)");
     if (cancelled)
         return;
 }
@@ -235,13 +241,17 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
                                                         searchSpec);
 
         query.prepare("INSERT INTO words (word, length, "
+                      "combinations0, combinations1, combinations2, "
                       "alphagram, num_unique_letters, num_vowels, "
                       "point_value, front_hooks, back_hooks, "
                       "is_front_hook, is_back_hook, lexicon_symbols) "
-                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
-        // Insert words with length, hooks
+        // Insert words with length, combinations, hooks
         foreach (const QString& word, words) {
+            double combinations0 = letterBag.getNumCombinations(word, 0);
+            double combinations1 = letterBag.getNumCombinations(word, 1);
+            double combinations2 = letterBag.getNumCombinations(word, 2);
             int numUniqueLetters = Auxil::getNumUniqueLetters(word);
             int numVowels = Auxil::getNumVowels(word);
 
@@ -318,42 +328,22 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
                 }
             }
 
-            query.bindValue(0, word);
-            query.bindValue(1, length);
-            query.bindValue(2, alphagram);
-            query.bindValue(3, numUniqueLetters);
-            query.bindValue(4, numVowels);
-            query.bindValue(5, pointValue);
-            query.bindValue(6, front.toLower());
-            query.bindValue(7, back.toLower());
-            query.bindValue(8, isFrontHook);
-            query.bindValue(9, isBackHook);
-            query.bindValue(10, symbolStr);
+            int bindNum = 0;
+            query.bindValue(bindNum++, word);
+            query.bindValue(bindNum++, length);
+            query.bindValue(bindNum++, combinations0);
+            query.bindValue(bindNum++, combinations1);
+            query.bindValue(bindNum++, combinations2);
+            query.bindValue(bindNum++, alphagram);
+            query.bindValue(bindNum++, numUniqueLetters);
+            query.bindValue(bindNum++, numVowels);
+            query.bindValue(bindNum++, pointValue);
+            query.bindValue(bindNum++, front.toLower());
+            query.bindValue(bindNum++, back.toLower());
+            query.bindValue(bindNum++, isFrontHook);
+            query.bindValue(bindNum++, isBackHook);
+            query.bindValue(bindNum++, symbolStr);
             query.exec();
-
-            if ((stepNum % PROGRESS_STEP) == 0) {
-                if (cancelled) {
-                    transactionQuery.exec("END TRANSACTION");
-                    return;
-                }
-                emit progress(stepNum);
-            }
-            ++stepNum;
-        }
-
-        // Insert words into probability table with combinations
-        query.prepare("INSERT INTO probability (word, length, num_blanks, "
-                      "combinations) VALUES (?, ?, ?, ?)");
-        foreach (const QString& word, words) {
-            for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
-                double combinations =
-                    letterBag.getNumCombinations(word, numBlanks);
-                query.bindValue(0, word);
-                query.bindValue(1, length);
-                query.bindValue(2, numBlanks);
-                query.bindValue(3, combinations);
-                query.exec();
-            }
 
             if ((stepNum % PROGRESS_STEP) == 0) {
                 if (cancelled) {
@@ -400,103 +390,77 @@ CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
 {
     QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
 
-    QSqlQuery selectQuery(db);
-    selectQuery.prepare("SELECT word, num_blanks, combinations "
-        "FROM probability WHERE length=? ORDER BY num_blanks ASC, "
-        "combinations DESC");
+    for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
+        QSqlQuery updateQuery (db);
+        updateQuery.prepare(QString("UPDATE words SET probability_order%1=?, "
+            "min_probability_order%1=?, max_probability_order%1=? "
+            "WHERE word=?").arg(numBlanks));
 
-    QSqlQuery updateQuery (db);
-    updateQuery.prepare("UPDATE probability SET probability_order=?, "
-        "min_probability_order=?, max_probability_order=? "
-        "WHERE word=? and num_blanks=?");
+        for (int length = 1; length <= MAX_WORD_LEN; ++length) {
+            QSqlQuery selectQuery (db);
+            selectQuery.prepare(QString("SELECT word, combinations%1 FROM words "
+                "WHERE length=? ORDER BY combinations%1 DESC").arg(numBlanks));
 
-    for (int length = 1; length <= MAX_WORD_LEN; ++length) {
-        selectQuery.bindValue(0, length);
-        selectQuery.exec();
+            selectQuery.bindValue(0, length);
+            selectQuery.exec();
 
-        QMap<QString, QString> equalWordMap;
-        int probOrder = 1;
-        int minProbOrder = 1;
-        double prevCombinations = 0;
-        int prevNumBlanks = -1;
+            QMap<QString, QString> equalWordMap;
+            int probOrder = 1;
+            int minProbOrder = 1;
+            double prevCombinations = 0;
 
-        while (selectQuery.next()) {
-            QString word = selectQuery.value(0).toString();
-            int numBlanks = selectQuery.value(1).toInt();
-            double combinations = selectQuery.value(2).toDouble();
+            while (selectQuery.next()) {
+                QString word = selectQuery.value(0).toString();
+                double combinations = selectQuery.value(1).toDouble();
 
-            // Entering new num blanks range, clear everything out
-            if (numBlanks != prevNumBlanks) {
-                int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
-                QMapIterator<QString, QString> it (equalWordMap);
-                while (it.hasNext()) {
-                    it.next();
-                    QString equalWord = it.value();
-                    updateQuery.bindValue(0, probOrder);
-                    updateQuery.bindValue(1, minProbOrder);
-                    updateQuery.bindValue(2, maxProbOrder);
-                    updateQuery.bindValue(3, equalWord);
-                    updateQuery.bindValue(4, prevNumBlanks);
-                    updateQuery.exec();
-                    ++probOrder;
-                }
+                // Update probability ranges
+                if ((combinations != prevCombinations) && !equalWordMap.empty()) {
+                    int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
+                    QMapIterator<QString, QString> jt (equalWordMap);
+                    while (jt.hasNext()) {
+                        jt.next();
+                        QString equalWord = jt.value();
+                        updateQuery.bindValue(0, probOrder);
+                        updateQuery.bindValue(1, minProbOrder);
+                        updateQuery.bindValue(2, maxProbOrder);
+                        updateQuery.bindValue(3, equalWord);
+                        updateQuery.exec();
 
-                equalWordMap.clear();
-                probOrder = 1;
-                minProbOrder = 1;
-                prevCombinations = 0;
-            }
-
-            // Update probability ranges
-            if ((combinations != prevCombinations) && !equalWordMap.empty()) {
-                int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
-                QMapIterator<QString, QString> it (equalWordMap);
-                while (it.hasNext()) {
-                    it.next();
-                    QString equalWord = it.value();
-
-                    // Update probability order and range of this word
-                    updateQuery.bindValue(0, probOrder);
-                    updateQuery.bindValue(1, minProbOrder);
-                    updateQuery.bindValue(2, maxProbOrder);
-                    updateQuery.bindValue(3, equalWord);
-                    updateQuery.bindValue(4, numBlanks);
-                    updateQuery.exec();
-
-                    if ((stepNum % PROGRESS_STEP) == 0) {
-                        if (cancelled) {
-                            transactionQuery.exec("END TRANSACTION");
-                            return;
+                        if ((stepNum % PROGRESS_STEP) == 0) {
+                            if (cancelled) {
+                                transactionQuery.exec("END TRANSACTION");
+                                return;
+                            }
+                            emit progress(stepNum);
                         }
-                        emit progress(stepNum);
-                    }
 
-                    ++probOrder;
-                    ++stepNum;
+                        ++probOrder;
+                        ++stepNum;
+                    }
+                    minProbOrder = probOrder;
+                    equalWordMap.clear();
                 }
-                minProbOrder = probOrder;
-                equalWordMap.clear();
+
+                // Sort words by alphagram
+                QString radix = Auxil::getAlphagram(word) + word;
+                equalWordMap.insert(radix, word);
+
+                prevCombinations = combinations;
             }
 
-            // Sort words by alphagram
-            QString radix = Auxil::getAlphagram(word) + word;
-            equalWordMap.insert(radix, word);
-
-            prevCombinations = combinations;
-            prevNumBlanks = numBlanks;
-        }
-
-        int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
-        QMapIterator<QString, QString> it (equalWordMap);
-        while (it.hasNext()) {
-            it.next();
-            QString equalWord = it.value();
-            updateQuery.bindValue(0, probOrder);
-            updateQuery.bindValue(1, minProbOrder);
-            updateQuery.bindValue(2, maxProbOrder);
-            updateQuery.bindValue(3, equalWord);
-            updateQuery.bindValue(4, prevNumBlanks);
-            updateQuery.exec();
+            int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
+            QMapIterator<QString, QString> jt (equalWordMap);
+            while (jt.hasNext()) {
+                jt.next();
+                QString equalWord = jt.value();
+                updateQuery.bindValue(0, probOrder);
+                updateQuery.bindValue(1, minProbOrder);
+                updateQuery.bindValue(2, maxProbOrder);
+                updateQuery.bindValue(3, equalWord);
+                updateQuery.exec();
+                ++probOrder;
+                ++stepNum;
+            }
         }
     }
 

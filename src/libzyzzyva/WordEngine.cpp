@@ -303,9 +303,6 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
     if (!lexiconData.contains(lexicon) || !lexiconData[lexicon]->db)
         return QStringList();
 
-    // If only probability order and length conditions, and In Word List,
-    // we can get away with only querying the probability table
-
     // Build SQL query string
     QSet<QString> tables;
     QString whereStr;
@@ -331,27 +328,30 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             break;
 
             case SearchCondition::ProbabilityOrder: {
-                tables.insert("probability");
-                whereStr += " probability.num_blanks=" +
-                    QString::number(condition.intValue);
+                tables.insert("words");
 
                 // Lax boundaries
                 if (condition.boolValue) {
-                    whereStr += " AND probability.max_probability_order>=" +
+                    whereStr +=
+                        QString(" words.max_probability_order%1>=").arg(
+                            condition.intValue) +
                         QString::number(condition.minValue) +
-                        " AND probability.min_probability_order<=" +
+                        QString(" AND words.min_probability_order%1<=").arg(
+                            condition.intValue) +
                         QString::number(condition.maxValue);
                 }
                 // Strict boundaries
                 else {
-                    whereStr += " AND probability.probability_order";
+                    whereStr += QString(" words.probability_order%1").arg(
+                        condition.intValue);
                     if (condition.minValue == condition.maxValue) {
                         whereStr += "=" + QString::number(condition.minValue);
                     }
                     else {
                         whereStr += ">=" +
                             QString::number(condition.minValue) +
-                            " AND probability.probability_order<=" +
+                            QString(" AND words.probability_order%1<=").arg(
+                                condition.intValue) +
                             QString::number(condition.maxValue);
                     }
                 }
@@ -389,6 +389,7 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             break;
 
             case SearchCondition::IncludeLetters: {
+                tables.insert("words");
                 QString str = condition.stringValue;
                 QMap<QChar, int> letters;
                 for (int i = 0; i < str.length(); ++i) {
@@ -470,7 +471,6 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             default:
             break;
         }
-
     }
 
     // Make sure results are in the provided word list
@@ -497,11 +497,6 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
     QString selectColStr = "word";
     if (tables.contains("words")) {
         selectColStr = " words.word";
-        if (tables.contains("probability"))
-            whereStr = " words.word = probability.word AND" + whereStr;
-    }
-    else if (tables.contains("probability")) {
-        selectColStr = " probability.word";
     }
 
     QString queryStr = "SELECT" + selectColStr + " FROM" + tableStr +
@@ -842,50 +837,40 @@ WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
     // Get all info except probability order
     QString qstr = "SELECT num_vowels, num_unique_letters, num_anagrams, "
         "point_value, front_hooks, back_hooks, is_front_hook, is_back_hook, "
-        "lexicon_symbols, definition FROM words WHERE word=?";
+        "lexicon_symbols, definition, "
+        "probability_order0, min_probability_order0, max_probability_order0, "
+        "probability_order1, min_probability_order1, max_probability_order1, "
+        "probability_order2, min_probability_order2, max_probability_order2 "
+        "FROM words WHERE word=?";
     QSqlQuery query (*db);
     query.prepare(qstr);
     query.bindValue(0, word);
     query.exec();
 
-    bool firstValid = false;
     if (query.next()) {
+        int placeNum = 0;
         info.word = word;
-        info.numVowels           = query.value(0).toInt();
-        info.numUniqueLetters    = query.value(1).toInt();
-        info.numAnagrams         = query.value(2).toInt();
-        info.pointValue          = query.value(3).toInt();
-        info.frontHooks          = query.value(4).toString();
-        info.backHooks           = query.value(5).toString();
-        info.isFrontHook         = query.value(6).toBool();
-        info.isBackHook          = query.value(7).toBool();
-        info.lexiconSymbols      = query.value(8).toString();
-        info.definition          = query.value(9).toString();
-        firstValid = true;
-    }
+        info.numVowels           = query.value(placeNum++).toInt();
+        info.numUniqueLetters    = query.value(placeNum++).toInt();
+        info.numAnagrams         = query.value(placeNum++).toInt();
+        info.pointValue          = query.value(placeNum++).toInt();
+        info.frontHooks          = query.value(placeNum++).toString();
+        info.backHooks           = query.value(placeNum++).toString();
+        info.isFrontHook         = query.value(placeNum++).toBool();
+        info.isBackHook          = query.value(placeNum++).toBool();
+        info.lexiconSymbols      = query.value(placeNum++).toString();
+        info.definition          = query.value(placeNum++).toString();
 
-    // Get probability order info
-    qstr = "SELECT num_blanks, probability_order, min_probability_order, "
-        "max_probability_order FROM probability WHERE word=?";
-    query.prepare(qstr);
-    query.bindValue(0, word);
-    query.exec();
+        for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
+            ProbabilityOrder probOrder;
+            probOrder.probabilityOrder    = query.value(placeNum++).toInt();
+            probOrder.minProbabilityOrder = query.value(placeNum++).toInt();
+            probOrder.maxProbabilityOrder = query.value(placeNum++).toInt();
+            info.blankProbability[numBlanks] = probOrder;
+        }
 
-    bool valid = false;
-    while (query.next()) {
-        ProbabilityOrder probOrder;
-        int numBlanks = query.value(0).toInt();
-        probOrder.probabilityOrder    = query.value(1).toInt();
-        probOrder.minProbabilityOrder = query.value(2).toInt();
-        probOrder.maxProbabilityOrder = query.value(3).toInt();
-        info.blankProbability[numBlanks] = probOrder;
-
-        if (firstValid)
-            valid = true;
-    }
-
-    if (valid)
         lexiconData[lexicon]->wordCache[word] = info;
+    }
 
     return info;
 }
@@ -1122,14 +1107,14 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
     if (!db || !db->isOpen())
         return;
 
-    QString qstr = "SELECT words.word, words.num_vowels, "
-        "words.num_unique_letters, words.num_anagrams, words.point_value, "
-        "words.front_hooks, words.back_hooks, words.is_front_hook, "
-        "words.is_back_hook, words.lexicon_symbols, words.definition, "
-        "probability.num_blanks, probability.probability_order, "
-        "probability.min_probability_order, "
-        "probability.max_probability_order "
-        "FROM words, probability WHERE words.word IN (";
+    QString qstr = "SELECT word, num_vowels, "
+        "num_unique_letters, num_anagrams, point_value, "
+        "front_hooks, back_hooks, is_front_hook, "
+        "is_back_hook, lexicon_symbols, definition, "
+        "probability_order0, min_probability_order0, max_probability_order0, "
+        "probability_order1, min_probability_order1, max_probability_order1, "
+        "probability_order2, min_probability_order2, max_probability_order2 "
+        "FROM words WHERE words.word IN (";
 
     QStringListIterator it (words);
     for (int i = 0; it.hasNext(); ++i) {
@@ -1138,47 +1123,36 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
         qstr += "'" + it.next().toUpper() + "'";
     }
     qstr += ")";
-    qstr += " AND words.word = probability.word";
 
     QSqlQuery query (*db);
     query.prepare(qstr);
     query.exec();
 
-    QString lastWord;
-    WordInfo info;
-
     while (query.next()) {
-        QString word = query.value(0).toString();
-        if (word != lastWord) {
-            if (!info.word.isEmpty())
-                lexiconData[lexicon]->wordCache[lastWord] = info;
+        int placeNum = 0;
+        WordInfo info;
+        info.word                 = query.value(placeNum++).toString();
+        info.numVowels            = query.value(placeNum++).toInt();
+        info.numUniqueLetters     = query.value(placeNum++).toInt();
+        info.numAnagrams          = query.value(placeNum++).toInt();
+        info.pointValue           = query.value(placeNum++).toInt();
+        info.frontHooks           = query.value(placeNum++).toString();
+        info.backHooks            = query.value(placeNum++).toString();
+        info.isFrontHook          = query.value(placeNum++).toBool();
+        info.isBackHook           = query.value(placeNum++).toBool();
+        info.lexiconSymbols       = query.value(placeNum++).toString();
+        info.definition           = query.value(placeNum++).toString();
 
-            info = WordInfo();
-            info.word                 = word;
-            info.numVowels            = query.value(1).toInt();
-            info.numUniqueLetters     = query.value(2).toInt();
-            info.numAnagrams          = query.value(3).toInt();
-            info.pointValue           = query.value(4).toInt();
-            info.frontHooks           = query.value(5).toString();
-            info.backHooks            = query.value(6).toString();
-            info.isFrontHook          = query.value(7).toBool();
-            info.isBackHook           = query.value(8).toBool();
-            info.lexiconSymbols       = query.value(9).toString();
-            info.definition           = query.value(10).toString();
+        for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
+            ProbabilityOrder probOrder;
+            probOrder.probabilityOrder    = query.value(placeNum++).toInt();
+            probOrder.minProbabilityOrder = query.value(placeNum++).toInt();
+            probOrder.maxProbabilityOrder = query.value(placeNum++).toInt();
+            info.blankProbability[numBlanks] = probOrder;
         }
 
-        ProbabilityOrder probOrder;
-        int numBlanks = query.value(11).toInt();
-        probOrder.probabilityOrder    = query.value(12).toInt();
-        probOrder.minProbabilityOrder = query.value(13).toInt();
-        probOrder.maxProbabilityOrder = query.value(14).toInt();
-        info.blankProbability[numBlanks] = probOrder;
-
-        lastWord = word;
+        lexiconData[lexicon]->wordCache[info.word] = info;
     }
-
-    if (!info.word.isEmpty())
-        lexiconData[lexicon]->wordCache[lastWord] = info;
 }
 
 //---------------------------------------------------------------------------
