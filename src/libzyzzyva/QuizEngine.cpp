@@ -109,19 +109,23 @@ QuizEngine::newQuiz(const QuizSpec& spec)
         // Anagram Quiz: The search spec is used to select the list of words.
         // Their alphagrams are used as quiz questions, and their anagrams are
         // used as quiz answers.
-        QuizSpec::QuizType type = spec.getType();
-        if ((type == QuizSpec::QuizAnagrams) ||
-            (type == QuizSpec::QuizAnagramsWithHooks))
+        QStringList questionWords;
+        QuizSpec::QuizType quizType = spec.getType();
+        if ((quizType == QuizSpec::QuizAnagrams) ||
+            (quizType == QuizSpec::QuizAnagramsWithHooks))
         {
-            questions = wordEngine->search(lexicon, spec.getSearchSpec(), true);
-            questions = wordEngine->alphagrams(questions);
+            questionWords =
+                wordEngine->search(lexicon, spec.getSearchSpec(), true);
+            questions = wordEngine->alphagrams(questionWords);
         }
 
-        else if (type == QuizSpec::QuizHooks) {
-            questions = wordEngine->search(lexicon, spec.getSearchSpec(), true);
+        else if (quizType == QuizSpec::QuizHooks) {
+            questionWords =
+                wordEngine->search(lexicon, spec.getSearchSpec(), true);
+            questions = questionWords;
         }
 
-        else if (type == QuizSpec::QuizWordListRecall) {
+        else if (quizType == QuizSpec::QuizWordListRecall) {
             questions << spec.getSearchSpec().asString();
         }
 
@@ -183,6 +187,40 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                 while (jt.hasNext()) {
                     const QPair<QString, double>& questionPair = jt.next();
                     quizQuestions.append(questionPair.first);
+                }
+            }
+            break;
+
+            case QuizSpec::PlayabilityOrder: {
+                wordEngine->addToCache(lexicon, questionWords);
+
+                // Order alphagram quiz questions by the best playability
+                // order of any of their anagrams
+                QMap<QString, int> bestPlayOrder;
+                QMap<int, QString> orderQuestions;
+                foreach (const QString& word, questionWords) {
+                    QString question = word;
+                    int bestOrder = 0;
+                    if ((quizType == QuizSpec::QuizAnagrams) ||
+                        (quizType == QuizSpec::QuizAnagramsWithHooks))
+                    {
+                        question = Auxil::getAlphagram(word);
+                        bestOrder = bestPlayOrder.value(question);
+                    }
+
+                    int order = wordEngine->getPlayabilityOrder(lexicon, word);
+                    if (!bestOrder || (order < bestOrder)) {
+                        orderQuestions.remove(bestOrder);
+                        bestPlayOrder[question] = order;
+                        orderQuestions[order] = question;
+                    }
+                }
+
+                quizQuestions.clear();
+                QMapIterator<int, QString> it (orderQuestions);
+                while (it.hasNext()) {
+                    it.next();
+                    quizQuestions.append(it.value());
                 }
             }
             break;

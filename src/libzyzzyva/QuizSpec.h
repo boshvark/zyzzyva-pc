@@ -68,6 +68,7 @@ class QuizSpec
         RandomOrder,
         AlphabeticalOrder,
         ProbabilityOrder,
+        PlayabilityOrder,
         ScheduleOrder,
         ScheduleZeroFirstOrder,
     };

@@ -145,6 +145,8 @@ class WordEngine : public QObject
     bool getIsBackHook(const QString& lexicon, const QString& word) const;
     QString getLexiconSymbols(const QString& lexicon, const QString& word) const;
 
+    void addToCache(const QString& lexicon, const QStringList& words) const;
+
     private:
     enum ConditionPhase {
         UnknownPhase = 0,
@@ -155,7 +157,6 @@ class WordEngine : public QObject
 
     private:
     void clearCache(const QString& lexicon) const;
-    void addToCache(const QString& lexicon, const QStringList& words) const;
     bool matchesPostConditions(const QString& lexicon, const QString& word,
                                const QList<SearchCondition>& conditions) const;
     bool isSetMember(const QString& lexicon, const QString& word,

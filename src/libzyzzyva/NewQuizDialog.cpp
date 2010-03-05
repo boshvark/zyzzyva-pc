@@ -761,6 +761,8 @@ NewQuizDialog::fillQuestionOrderCombo(const QString& method)
             Auxil::quizQuestionOrderToString(QuizSpec::AlphabeticalOrder));
         questionOrderCombo->addItem(
             Auxil::quizQuestionOrderToString(QuizSpec::ProbabilityOrder));
+        questionOrderCombo->addItem(
+            Auxil::quizQuestionOrderToString(QuizSpec::PlayabilityOrder));
         break;
 
         case QuizSpec::CardboxQuizMethod:
