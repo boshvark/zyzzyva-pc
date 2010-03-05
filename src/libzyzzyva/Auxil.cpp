@@ -67,6 +67,9 @@ const QString SEARCH_TYPE_PROBABILITY = "Probability";
 const QString SEARCH_TYPE_PROBABILITY_ORDER = "Probability Order";
 const QString SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER =
               "Limit by Probability Order";
+const QString SEARCH_TYPE_PLAYABILITY_ORDER = "Playability Order";
+const QString SEARCH_TYPE_LIMIT_BY_PLAYABILITY_ORDER =
+              "Limit by Playability Order";
 
 // Obsolete search condition strings
 const QString SEARCH_TYPE_OLD_EXACT_LENGTH = "Exact Length";
@@ -750,6 +753,10 @@ Auxil::stringToSearchType(const QString& string)
         return SearchCondition::ProbabilityOrder;
     else if (string == SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER)
         return SearchCondition::LimitByProbabilityOrder;
+    else if (string == SEARCH_TYPE_PLAYABILITY_ORDER)
+        return SearchCondition::PlayabilityOrder;
+    else if (string == SEARCH_TYPE_LIMIT_BY_PLAYABILITY_ORDER)
+        return SearchCondition::LimitByPlayabilityOrder;
 
     // Obsolete search condition strings
     else if (string == SEARCH_TYPE_OLD_EXACT_LENGTH)
@@ -849,6 +856,12 @@ Auxil::searchTypeToString(SearchCondition::SearchType type)
 
         case SearchCondition::LimitByProbabilityOrder:
         return SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER;
+
+        case SearchCondition::PlayabilityOrder:
+        return SEARCH_TYPE_PLAYABILITY_ORDER;
+
+        case SearchCondition::LimitByPlayabilityOrder:
+        return SEARCH_TYPE_LIMIT_BY_PLAYABILITY_ORDER;
 
         default: return QString();
     }

@@ -51,6 +51,8 @@ class SearchCondition
         Probability,
         ProbabilityOrder,
         LimitByProbabilityOrder,
+        PlayabilityOrder,
+        LimitByPlayabilityOrder,
 
         // Obsolete search condition types
         OldExactLength,

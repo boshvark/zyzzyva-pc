@@ -91,6 +91,8 @@ SearchConditionForm::SearchConditionForm(QWidget* parent, Qt::WFlags f)
           << Auxil::searchTypeToString(SearchCondition::IncludeLetters)
           << Auxil::searchTypeToString(SearchCondition::ProbabilityOrder)
           << Auxil::searchTypeToString(SearchCondition::LimitByProbabilityOrder)
+          << Auxil::searchTypeToString(SearchCondition::PlayabilityOrder)
+          << Auxil::searchTypeToString(SearchCondition::LimitByPlayabilityOrder)
           << Auxil::searchTypeToString(SearchCondition::NumUniqueLetters)
           << Auxil::searchTypeToString(SearchCondition::PointValue)
           << Auxil::searchTypeToString(SearchCondition::Prefix)
@@ -320,9 +322,14 @@ SearchConditionForm::getSearchCondition() const
 
         case SearchCondition::ProbabilityOrder:
         case SearchCondition::LimitByProbabilityOrder:
+        condition.intValue = paramBlanksSbox->value();;
+
+        // fall through
+
+        case SearchCondition::PlayabilityOrder:
+        case SearchCondition::LimitByPlayabilityOrder:
         condition.minValue = paramMinSbox->value();
         condition.maxValue = paramMaxSbox->value();
-        condition.intValue = paramBlanksSbox->value();;
         condition.boolValue = (paramProbCbox->checkState() == Qt::Checked);
         break;
 
@@ -395,9 +402,14 @@ SearchConditionForm::setSearchCondition(const SearchCondition& condition)
 
         case SearchCondition::ProbabilityOrder:
         case SearchCondition::LimitByProbabilityOrder:
+        paramBlanksSbox->setValue(condition.intValue);
+
+        // fall through
+
+        case SearchCondition::PlayabilityOrder:
+        case SearchCondition::LimitByPlayabilityOrder:
         paramMinSbox->setValue(condition.minValue);
         paramMaxSbox->setValue(condition.maxValue);
-        paramBlanksSbox->setValue(condition.intValue);
         paramProbCbox->setCheckState(condition.boolValue ? Qt::Checked
                                                          : Qt::Unchecked);
         break;
@@ -458,6 +470,8 @@ SearchConditionForm::isValid() const
                (paramMinSbox->value() <= paramMaxSbox->value());
 
         case SearchCondition::NumAnagrams:
+        case SearchCondition::PlayabilityOrder:
+        case SearchCondition::LimitByPlayabilityOrder:
         return ((paramMinSbox->value() > 0) ||
                 (paramMaxSbox->value() < MAX_MAX_INT_VALUE)) &&
                (paramMinSbox->value() <= paramMaxSbox->value());
@@ -545,6 +559,8 @@ SearchConditionForm::typeChanged(const QString& string)
         case SearchCondition::NumAnagrams:
         case SearchCondition::ProbabilityOrder:
         case SearchCondition::LimitByProbabilityOrder:
+        case SearchCondition::PlayabilityOrder:
+        case SearchCondition::LimitByPlayabilityOrder:
         negationCbox->setCheckState(Qt::Unchecked);
         negationCbox->setEnabled(false);
         paramMinSbox->setMaximum(MAX_MAX_INT_VALUE);
@@ -553,19 +569,30 @@ SearchConditionForm::typeChanged(const QString& string)
         paramMaxSbox->setValue(MAX_MAX_INT_VALUE);
         paramProbCbox->setCheckState(Qt::Checked);
         paramBlanksSbox->setValue(MainSettings::getProbabilityNumBlanks());
+
         if ((type == SearchCondition::ProbabilityOrder) ||
             (type == SearchCondition::LimitByProbabilityOrder))
         {
             paramBlanksLabel->show();
             paramBlanksSbox->show();
-            paramProbCbox->show();
         }
         else
         {
             paramBlanksLabel->hide();
             paramBlanksSbox->hide();
+        }
+
+        if ((type == SearchCondition::ProbabilityOrder) ||
+            (type == SearchCondition::LimitByProbabilityOrder) ||
+            (type == SearchCondition::PlayabilityOrder) ||
+            (type == SearchCondition::LimitByPlayabilityOrder))
+        {
+            paramProbCbox->show();
+        }
+        else {
             paramProbCbox->hide();
         }
+
         paramStack->setCurrentWidget(paramSboxWidget);
         break;
 

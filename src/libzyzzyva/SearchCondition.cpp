@@ -81,6 +81,8 @@ SearchCondition::asString() const
         case PointValue:
         case ProbabilityOrder:
         case LimitByProbabilityOrder:
+        case PlayabilityOrder:
+        case LimitByPlayabilityOrder:
         str += "Min " + QString::number(minValue) + ", Max "
             + QString::number(maxValue);
         if ((type == ProbabilityOrder) || (type == LimitByProbabilityOrder)) {
@@ -145,20 +147,26 @@ SearchCondition::asDomElement() const
         topElement.setAttribute(XML_NEGATED_ATTR, negated);
         break;
 
+        case ProbabilityOrder:
+        case LimitByProbabilityOrder:
+        topElement.setAttribute(XML_INT_ATTR, intValue);
+
+        // fall through
+
+        case PlayabilityOrder:
+        case LimitByPlayabilityOrder:
+        topElement.setAttribute(XML_BOOL_ATTR,
+            (boolValue ? QString("true") : QString("false")));
+
+        // fall through
+
         case Length:
         case NumAnagrams:
         case NumVowels:
         case NumUniqueLetters:
         case PointValue:
-        case ProbabilityOrder:
-        case LimitByProbabilityOrder:
         topElement.setAttribute(XML_MIN_ATTR, minValue);
         topElement.setAttribute(XML_MAX_ATTR, maxValue);
-        if ((type == ProbabilityOrder) || (type == LimitByProbabilityOrder)) {
-            topElement.setAttribute(XML_INT_ATTR, intValue);
-            topElement.setAttribute(XML_BOOL_ATTR,
-                (boolValue ? QString("true") : QString("false")));
-        }
         break;
 
         case Probability:
@@ -253,10 +261,6 @@ SearchCondition::fromDomElement(const QDomElement& element)
 
         case ProbabilityOrder:
         case LimitByProbabilityOrder:
-        if (element.hasAttribute(XML_BOOL_ATTR)) {
-            tmpCondition.boolValue =
-                (element.attribute(XML_BOOL_ATTR) == "true");
-        }
         if (element.hasAttribute(XML_INT_ATTR)) {
             tmpCondition.intValue =
                 element.attribute(XML_INT_ATTR).toInt(&ok);
@@ -266,6 +270,15 @@ SearchCondition::fromDomElement(const QDomElement& element)
         else {
             // Default to 2 blanks if unspecified, for backward compatibility
             tmpCondition.intValue = 2;
+        }
+
+        // fall through
+
+        case PlayabilityOrder:
+        case LimitByPlayabilityOrder:
+        if (element.hasAttribute(XML_BOOL_ATTR)) {
+            tmpCondition.boolValue =
+                (element.attribute(XML_BOOL_ATTR) == "true");
         }
 
         // fall through

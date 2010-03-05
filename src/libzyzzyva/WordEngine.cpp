@@ -333,31 +333,35 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             }
             break;
 
-            case SearchCondition::ProbabilityOrder: {
+            case SearchCondition::ProbabilityOrder:
+            case SearchCondition::PlayabilityOrder: {
                 tables.insert("words");
+                QString col;
+                if (condition.type == SearchCondition::ProbabilityOrder) {
+                    col = QString("probability_order%1").arg(
+                        condition.intValue);
+                }
+                else if (condition.type == SearchCondition::PlayabilityOrder) {
+                    col = "playability_order";
+                }
 
                 // Lax boundaries
                 if (condition.boolValue) {
-                    whereStr +=
-                        QString(" words.max_probability_order%1>=").arg(
-                            condition.intValue) +
+                    whereStr += QString(" words.max_%1>=").arg(col) +
                         QString::number(condition.minValue) +
-                        QString(" AND words.min_probability_order%1<=").arg(
-                            condition.intValue) +
+                        QString(" AND words.min_%1<=").arg(col) +
                         QString::number(condition.maxValue);
                 }
                 // Strict boundaries
                 else {
-                    whereStr += QString(" words.probability_order%1").arg(
-                        condition.intValue);
+                    whereStr += QString(" words.%1").arg(col);
                     if (condition.minValue == condition.maxValue) {
                         whereStr += "=" + QString::number(condition.minValue);
                     }
                     else {
                         whereStr += ">=" +
                             QString::number(condition.minValue) +
-                            QString(" AND words.probability_order%1<=").arg(
-                                condition.intValue) +
+                            QString(" AND words.%1<=").arg(col) +
                             QString::number(condition.maxValue);
                     }
                 }
@@ -549,32 +553,52 @@ WordEngine::applyPostConditions(const QString& lexicon,
         else
             wit = returnList.erase(wit);
     }
+    if (returnList.isEmpty())
+        return returnList;
 
-    // Handle Limit by Probability Order conditions
+    // Handle Limit by Probability/Playability Order conditions. Only allow
+    // Limit By Probability or Limit By Playability conditions, not both! If
+    // both are present, only the type that occurs first will be considered.
     bool probLimitRangeCondition = false;
+    bool playLimitRangeCondition = false;
     bool legacyProbCondition = false;
-    int probLimitRangeMin = 0;
-    int probLimitRangeMax = 999999;
-    int probLimitRangeMinLax = 0;
-    int probLimitRangeMaxLax = 999999;
+    int limitRangeMin = 0;
+    int limitRangeMax = 999999;
+    int limitRangeMinLax = 0;
+    int limitRangeMaxLax = 999999;
     int probNumBlanks = 0;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
         SearchCondition condition = cit.next();
-        if (condition.type == SearchCondition::LimitByProbabilityOrder) {
-            probLimitRangeCondition = true;
-            probNumBlanks = condition.intValue;
+        if ((condition.type == SearchCondition::LimitByProbabilityOrder) ||
+            (condition.type == SearchCondition::LimitByPlayabilityOrder))
+        {
+            // Ignore Limit By Probability if we've already seen Limit By
+            // Playability, and vice versa
+            if (condition.type == SearchCondition::LimitByProbabilityOrder) {
+                if (playLimitRangeCondition)
+                    continue;
+                probLimitRangeCondition = true;
+                probNumBlanks = condition.intValue;
+            }
+            else if (condition.type == SearchCondition::LimitByPlayabilityOrder)
+            {
+                if (probLimitRangeCondition)
+                    continue;
+                playLimitRangeCondition = true;
+            }
+
             if (condition.boolValue) {
-                if (condition.minValue > probLimitRangeMinLax)
-                    probLimitRangeMinLax = condition.minValue;
-                if (condition.maxValue < probLimitRangeMaxLax)
-                    probLimitRangeMaxLax = condition.maxValue;
+                if (condition.minValue > limitRangeMinLax)
+                    limitRangeMinLax = condition.minValue;
+                if (condition.maxValue < limitRangeMaxLax)
+                    limitRangeMaxLax = condition.maxValue;
             }
             else {
-                if (condition.minValue > probLimitRangeMin)
-                    probLimitRangeMin = condition.minValue;
-                if (condition.maxValue < probLimitRangeMax)
-                    probLimitRangeMax = condition.maxValue;
+                if (condition.minValue > limitRangeMin)
+                    limitRangeMin = condition.minValue;
+                if (condition.maxValue < limitRangeMax)
+                    limitRangeMax = condition.maxValue;
             }
             if (condition.legacy)
                 legacyProbCondition = true;
@@ -582,75 +606,112 @@ WordEngine::applyPostConditions(const QString& lexicon,
     }
 
     // Keep only words in the probability order range
-    if (probLimitRangeCondition) {
-        if ((probLimitRangeMin > returnList.size()) ||
-            (probLimitRangeMinLax > returnList.size()))
+    if (probLimitRangeCondition || playLimitRangeCondition) {
+        if ((limitRangeMin > returnList.size()) ||
+            (limitRangeMinLax > returnList.size()))
         {
             returnList.clear();
             return returnList;
         }
 
         // Convert from 1-based to 0-based offset
-        --probLimitRangeMin;
-        --probLimitRangeMax;
-        --probLimitRangeMinLax;
-        --probLimitRangeMaxLax;
+        --limitRangeMin;
+        --limitRangeMax;
+        --limitRangeMinLax;
+        --limitRangeMaxLax;
 
-        if (probLimitRangeMin < 0)
-            probLimitRangeMin = 0;
-        if (probLimitRangeMinLax < 0)
-            probLimitRangeMinLax = 0;
-        if (probLimitRangeMax > returnList.size() - 1)
-            probLimitRangeMax = returnList.size() - 1;
-        if (probLimitRangeMaxLax > returnList.size() - 1)
-            probLimitRangeMaxLax = returnList.size() - 1;
+        if (limitRangeMin < 0)
+            limitRangeMin = 0;
+        if (limitRangeMinLax < 0)
+            limitRangeMinLax = 0;
+        if (limitRangeMax > returnList.size() - 1)
+            limitRangeMax = returnList.size() - 1;
+        if (limitRangeMaxLax > returnList.size() - 1)
+            limitRangeMaxLax = returnList.size() - 1;
 
         // Use the higher of the min values as working min
-        int min = ((probLimitRangeMin > probLimitRangeMinLax)
-                   ? probLimitRangeMin : probLimitRangeMinLax);
+        int min = ((limitRangeMin > limitRangeMinLax)
+                   ? limitRangeMin : limitRangeMinLax);
 
         // Use the lower of the max values as working max
-        int max = ((probLimitRangeMax < probLimitRangeMaxLax)
-                   ? probLimitRangeMax : probLimitRangeMaxLax);
+        int max = ((limitRangeMax < limitRangeMaxLax)
+                   ? limitRangeMax : limitRangeMaxLax);
+
+        QMap<QString, QString> valueMap;
 
         // Sort the words according to probability order
-        LetterBag bag;
-        QMap<QString, QString> probMap;
-
-        foreach (const QString& word, returnList) {
-            // FIXME: change this radix for new probability sorting - leave
-            // alone for old probability sorting
-            QString radix;
-            QString wordUpper = word.toUpper();
-            radix.sprintf("%09.0f",
-                1e9 - 1 - bag.getNumCombinations(wordUpper, probNumBlanks));
-            // Legacy probability order limits are sorted alphabetically, not
-            // by alphagram
-            if (!legacyProbCondition)
-                radix += Auxil::getAlphagram(wordUpper);
-            radix += wordUpper;
-            probMap.insert(radix, word);
+        if (probLimitRangeCondition) {
+            LetterBag bag;
+            foreach (const QString& word, returnList) {
+                // FIXME: change this radix for new probability sorting -
+                // leave alone for old probability sorting
+                QString radix;
+                QString wordUpper = word.toUpper();
+                radix.sprintf("%09.0f",
+                    1e9 - 1 - bag.getNumCombinations(wordUpper, probNumBlanks));
+                // Legacy probability order limits are sorted alphabetically,
+                // not by alphagram
+                if (!legacyProbCondition)
+                    radix += Auxil::getAlphagram(wordUpper);
+                radix += wordUpper;
+                valueMap.insert(radix, word);
+            }
         }
 
-        QStringList keys = probMap.keys();
+        // Sort the words according to playability order
+        else if (playLimitRangeCondition) {
+            LexiconData* lexData = lexiconData.value(lexicon);
+            if (!lexData)
+                return returnList;
+
+            QSqlDatabase* db = lexData->db;
+            if (!db || !db->isOpen())
+                return returnList;
+
+            QString qstr = "SELECT word, playability FROM words "
+                "WHERE word IN (";
+            QStringListIterator it (returnList);
+            for (int i = 0; it.hasNext(); ++i) {
+                if (i)
+                    qstr += ", ";
+                qstr += "'" + it.next().toUpper() + "'";
+            }
+            qstr += ")";
+
+            QSqlQuery query (*db);
+            query.prepare(qstr);
+            query.exec();
+
+            while (query.next()) {
+                QString word = query.value(0).toString();
+                int playability = query.value(1).toInt();
+                QString radix;
+                radix.sprintf("%09.0f", 1e9 - 1 - playability);
+                radix += Auxil::getAlphagram(word);
+                radix += word;
+                valueMap.insert(radix, word);
+            }
+        }
+
+        QStringList keys = valueMap.keys();
 
         QString minRadix = keys[min];
-        QString minCombinations = minRadix.left(9);
-        while ((min > 0) && (min > probLimitRangeMin)) {
-            if (minCombinations != keys[min - 1].left(9))
+        QString minValue = minRadix.left(9);
+        while ((min > 0) && (min > limitRangeMin)) {
+            if (minValue != keys[min - 1].left(9))
                 break;
             --min;
         }
 
         QString maxRadix = keys[max];
-        QString maxCombinations = maxRadix.left(9);
-        while ((max < keys.size() - 1) && (max < probLimitRangeMax)) {
-            if (maxCombinations != keys[max + 1].left(9))
+        QString maxValue = maxRadix.left(9);
+        while ((max < keys.size() - 1) && (max < limitRangeMax)) {
+            if (maxValue != keys[max + 1].left(9))
                 break;
             ++max;
         }
 
-        returnList = probMap.values().mid(min, max - min + 1);
+        returnList = valueMap.values().mid(min, max - min + 1);
     }
 
     return returnList;
@@ -1886,6 +1947,7 @@ WordEngine::getConditionPhase(const SearchCondition& condition) const
         case SearchCondition::NumVowels:
         case SearchCondition::IncludeLetters:
         case SearchCondition::ProbabilityOrder:
+        case SearchCondition::PlayabilityOrder:
         case SearchCondition::NumUniqueLetters:
         case SearchCondition::PointValue:
         case SearchCondition::NumAnagrams:
@@ -1895,6 +1957,7 @@ WordEngine::getConditionPhase(const SearchCondition& condition) const
         case SearchCondition::Suffix:
         case SearchCondition::InLexicon:
         case SearchCondition::LimitByProbabilityOrder:
+        case SearchCondition::LimitByPlayabilityOrder:
         return PostConditionPhase;
 
         case SearchCondition::PatternMatch:
