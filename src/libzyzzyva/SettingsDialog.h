@@ -126,6 +126,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   lengthSortCbox;
     QCheckBox*   anagramGroupCbox;
     QCheckBox*   showProbabilityOrderCbox;
+    QCheckBox*   showPlayabilityOrderCbox;
     QCheckBox*   showHookParentsCbox;
     QCheckBox*   showHooksCbox;
     QCheckBox*   showDefinitionCbox;

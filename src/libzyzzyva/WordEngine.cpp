@@ -835,56 +835,8 @@ WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
     }
     //qDebug("Cache MISS: |%s|", word.toUtf8().data());
 
-    WordInfo info;
-    QSqlDatabase* db = lexiconData[lexicon]->db;
-    if (!db || !db->isOpen())
-        return info;
-
-    QString qstr = "SELECT num_vowels, num_unique_letters, num_anagrams, "
-        "point_value, front_hooks, back_hooks, is_front_hook, is_back_hook, "
-        "lexicon_symbols, definition, "
-        "playability_order, min_playability_order, max_playability_order, "
-        "probability_order0, min_probability_order0, max_probability_order0, "
-        "probability_order1, min_probability_order1, max_probability_order1, "
-        "probability_order2, min_probability_order2, max_probability_order2 "
-        "FROM words WHERE word=?";
-    QSqlQuery query (*db);
-    query.prepare(qstr);
-    query.bindValue(0, word);
-    query.exec();
-
-    if (query.next()) {
-        int placeNum = 0;
-        info.word = word;
-        info.numVowels           = query.value(placeNum++).toInt();
-        info.numUniqueLetters    = query.value(placeNum++).toInt();
-        info.numAnagrams         = query.value(placeNum++).toInt();
-        info.pointValue          = query.value(placeNum++).toInt();
-        info.frontHooks          = query.value(placeNum++).toString();
-        info.backHooks           = query.value(placeNum++).toString();
-        info.isFrontHook         = query.value(placeNum++).toBool();
-        info.isBackHook          = query.value(placeNum++).toBool();
-        info.lexiconSymbols      = query.value(placeNum++).toString();
-        info.definition          = query.value(placeNum++).toString();
-
-        ProbabilityOrder playOrder;
-        playOrder.probabilityOrder = query.value(placeNum++).toInt();
-        playOrder.minProbabilityOrder = query.value(placeNum++).toInt();
-        playOrder.maxProbabilityOrder = query.value(placeNum++).toInt();
-        info.playability = playOrder;
-
-        for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
-            ProbabilityOrder probOrder;
-            probOrder.probabilityOrder    = query.value(placeNum++).toInt();
-            probOrder.minProbabilityOrder = query.value(placeNum++).toInt();
-            probOrder.maxProbabilityOrder = query.value(placeNum++).toInt();
-            info.blankProbability[numBlanks] = probOrder;
-        }
-
-        lexiconData[lexicon]->wordCache[word] = info;
-    }
-
-    return info;
+    addToCache(lexicon, QStringList(word));
+    return lexiconData[lexicon]->wordCache.value(word);
 }
 
 //---------------------------------------------------------------------------
@@ -1115,7 +1067,8 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
     if (words.isEmpty() || !lexiconData.contains(lexicon))
         return;
 
-    QSqlDatabase* db = lexiconData[lexicon]->db;
+    LexiconData* lexData = lexiconData[lexicon];
+    QSqlDatabase* db = lexData->db;
     if (!db || !db->isOpen())
         return;
 
@@ -1123,18 +1076,34 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
         "num_unique_letters, num_anagrams, point_value, "
         "front_hooks, back_hooks, is_front_hook, "
         "is_back_hook, lexicon_symbols, definition, "
+        "playability_order, min_playability_order, max_playability_order, "
         "probability_order0, min_probability_order0, max_probability_order0, "
         "probability_order1, min_probability_order1, max_probability_order1, "
         "probability_order2, min_probability_order2, max_probability_order2 "
-        "FROM words WHERE words.word IN (";
+        "FROM words WHERE words.word";
 
-    QStringListIterator it (words);
-    for (int i = 0; it.hasNext(); ++i) {
-        if (i)
-            qstr += ", ";
-        qstr += "'" + it.next().toUpper() + "'";
+    // Throw out words that are already in the cache
+    QStringList needWords;
+    foreach (const QString& word, words) {
+        if (lexData->wordCache.contains(word))
+            continue;
+        needWords.append(word);
     }
-    qstr += ")";
+
+    // Construct the where clause from the word list
+    if (needWords.count() == 1) {
+        qstr += "='" + needWords.first() + "'";
+    }
+    else {
+        qstr += " IN (";
+        QStringListIterator it (needWords);
+        for (int i = 0; it.hasNext(); ++i) {
+            if (i)
+                qstr += ", ";
+            qstr += "'" + it.next().toUpper() + "'";
+        }
+        qstr += ")";
+    }
 
     QSqlQuery query (*db);
     query.prepare(qstr);
@@ -1154,6 +1123,12 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
         info.isBackHook           = query.value(placeNum++).toBool();
         info.lexiconSymbols       = query.value(placeNum++).toString();
         info.definition           = query.value(placeNum++).toString();
+
+        ProbabilityOrder playOrder;
+        playOrder.probabilityOrder = query.value(placeNum++).toInt();
+        playOrder.minProbabilityOrder = query.value(placeNum++).toInt();
+        playOrder.maxProbabilityOrder = query.value(placeNum++).toInt();
+        info.playability = playOrder;
 
         for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
             ProbabilityOrder probOrder;

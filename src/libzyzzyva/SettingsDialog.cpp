@@ -699,6 +699,10 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(showProbabilityOrderCbox);
     wordListDisplayVlay->addWidget(showProbabilityOrderCbox);
 
+    showPlayabilityOrderCbox = new QCheckBox("Show playability order");
+    Q_CHECK_PTR(showPlayabilityOrderCbox);
+    wordListDisplayVlay->addWidget(showPlayabilityOrderCbox);
+
     showHooksCbox = new QCheckBox("Show hooks");
     Q_CHECK_PTR(showHooksCbox);
     wordListDisplayVlay->addWidget(showHooksCbox);
@@ -938,6 +942,8 @@ SettingsDialog::readSettings()
     anagramGroupCbox->setChecked(MainSettings::getWordListGroupByAnagrams());
     showProbabilityOrderCbox->setChecked(
         MainSettings::getWordListShowProbabilityOrder());
+    showPlayabilityOrderCbox->setChecked(
+        MainSettings::getWordListShowPlayabilityOrder());
     showHooksCbox->setChecked(MainSettings::getWordListShowHooks());
     showHookParentsCbox->setChecked(MainSettings::getWordListShowHookParents());
     showDefinitionCbox->setChecked(MainSettings::getWordListShowDefinitions());
@@ -1019,6 +1025,8 @@ SettingsDialog::writeSettings()
     MainSettings::setWordListGroupByAnagrams(anagramGroupCbox->isChecked());
     MainSettings::setWordListShowProbabilityOrder(
         showProbabilityOrderCbox->isChecked());
+    MainSettings::setWordListShowPlayabilityOrder(
+        showPlayabilityOrderCbox->isChecked());
     MainSettings::setWordListShowHooks(showHooksCbox->isChecked());
     MainSettings::setWordListShowHookParents(showHookParentsCbox->isChecked());
     MainSettings::setWordListShowDefinitions(showDefinitionCbox->isChecked());
