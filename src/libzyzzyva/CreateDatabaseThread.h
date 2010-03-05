@@ -62,6 +62,7 @@ class CreateDatabaseThread : public QThread
     void createIndexes(QSqlDatabase& db);
     void insertVersion(QSqlDatabase& db);
     void insertWords(QSqlDatabase& db, int& stepNum);
+    void updatePlayabilityOrder(QSqlDatabase& db, int& stepNum);
     void updateProbabilityOrder(QSqlDatabase& db, int& stepNum);
     void updateDefinitions(QSqlDatabase& db, int& stepNum);
     void updateDefinitionLinks(QSqlDatabase& db, int& stepNum);

@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -49,6 +49,8 @@ namespace Auxil {
     QString getUserWordsDir();
     QString getUserDir();
     QString getUserConfigDir();
+    QString getLexiconPrefix(const QString& lexicon);
+    QString getDatabaseFilename(const QString& lexicon);
     QString dialogWordWrap(const QString& str);
     QString wordWrap(const QString& str, int wrapLength);
     bool isVowel(QChar c);

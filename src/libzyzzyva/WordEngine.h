@@ -68,6 +68,7 @@ class WordEngine : public QObject
         bool isBackHook;
         QString lexiconSymbols;
         QString definition;
+        ProbabilityOrder playability;
         QMap<int, ProbabilityOrder> blankProbability;
     };
 

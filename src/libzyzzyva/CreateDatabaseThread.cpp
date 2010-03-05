@@ -72,7 +72,7 @@ CreateDatabaseThread::runPrivate()
         // Total number of progress steps is number of words times the number
         // of lines that increment stepNum in all the code that is called
         // below.
-        int stepNumIncs = 7;
+        int stepNumIncs = 8;
         int numWords = wordEngine->getNumWords(lexiconName);
         int baseProgress = numWords * stepNumIncs / 99;
         numSteps = numWords * stepNumIncs + baseProgress + 1;
@@ -84,6 +84,8 @@ CreateDatabaseThread::runPrivate()
         createIndexes(db);
         // insertWords increments stepNum 2 times
         insertWords(db, stepNum);
+        // updatePlayabilityOrder increments stepNum once for each word
+        updatePlayabilityOrder(db, stepNum);
         // updateProbabilityOrder increments stepNum 3 times for each word
         // because of 0, 1, 2 blanks
         updateProbabilityOrder(db, stepNum);
@@ -114,17 +116,14 @@ CreateDatabaseThread::createTables(QSqlDatabase& db)
         "min_probability_order1 integer, max_probability_order1 integer, "
         "combinations2 integer, probability_order2 integer, "
         "min_probability_order2 integer, max_probability_order2 integer, "
+        "playability_value integer, playability_order integer, "
+        "min_playability integer, max_playability integer, "
         "alphagram varchar(16), num_anagrams integer, "
         "num_unique_letters integer, num_vowels integer, "
         "point_value integer, front_hooks varchar(32), "
         "back_hooks varchar(32), is_front_hook integer, "
         "is_back_hook integer, lexicon_symbols varchar(16), "
         "definition varchar(256))");
-
-    //query.exec("CREATE TABLE probability (word varchar(16), "
-        //"length integer, num_blanks integer, "
-        //"combinations integer, probability_order integer, "
-        //"min_probability_order integer, max_probability_order integer)");
 
     query.exec("CREATE TABLE db_version (version integer)");
     query.exec("INSERT into db_version (version) VALUES (" +
@@ -375,6 +374,103 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
     }
 
     transactionQuery.exec("END TRANSACTION");
+}
+
+//---------------------------------------------------------------------------
+//  updatePlayabilityOrder
+//
+//! Update playability order of words in the database.
+//
+//! @param db the database
+//! @param stepNum the current step number
+//---------------------------------------------------------------------------
+void
+CreateDatabaseThread::updatePlayabilityOrder(QSqlDatabase& db, int& stepNum)
+{
+
+    //Auxil::getWordsDir()
+    //    definitionFilename = Auxil::getWordsDir() +
+    //        Auxil::getLexiconPrefix(lexicon) + ".txt";
+
+
+
+    //QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
+
+    //for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
+    //    QSqlQuery updateQuery (db);
+    //    updateQuery.prepare(QString("UPDATE words SET probability_order%1=?, "
+    //        "min_probability_order%1=?, max_probability_order%1=? "
+    //        "WHERE word=?").arg(numBlanks));
+
+    //    for (int length = 1; length <= MAX_WORD_LEN; ++length) {
+    //        QSqlQuery selectQuery (db);
+    //        selectQuery.prepare(QString("SELECT word, combinations%1 FROM words "
+    //            "WHERE length=? ORDER BY combinations%1 DESC").arg(numBlanks));
+
+    //        selectQuery.bindValue(0, length);
+    //        selectQuery.exec();
+
+    //        QMap<QString, QString> equalWordMap;
+    //        int probOrder = 1;
+    //        int minProbOrder = 1;
+    //        double prevCombinations = 0;
+
+    //        while (selectQuery.next()) {
+    //            QString word = selectQuery.value(0).toString();
+    //            double combinations = selectQuery.value(1).toDouble();
+
+    //            // Update probability ranges
+    //            if ((combinations != prevCombinations) && !equalWordMap.empty()) {
+    //                int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
+    //                QMapIterator<QString, QString> jt (equalWordMap);
+    //                while (jt.hasNext()) {
+    //                    jt.next();
+    //                    QString equalWord = jt.value();
+    //                    updateQuery.bindValue(0, probOrder);
+    //                    updateQuery.bindValue(1, minProbOrder);
+    //                    updateQuery.bindValue(2, maxProbOrder);
+    //                    updateQuery.bindValue(3, equalWord);
+    //                    updateQuery.exec();
+
+    //                    if ((stepNum % PROGRESS_STEP) == 0) {
+    //                        if (cancelled) {
+    //                            transactionQuery.exec("END TRANSACTION");
+    //                            return;
+    //                        }
+    //                        emit progress(stepNum);
+    //                    }
+
+    //                    ++probOrder;
+    //                    ++stepNum;
+    //                }
+    //                minProbOrder = probOrder;
+    //                equalWordMap.clear();
+    //            }
+
+    //            // Sort words by alphagram
+    //            QString radix = Auxil::getAlphagram(word) + word;
+    //            equalWordMap.insert(radix, word);
+
+    //            prevCombinations = combinations;
+    //        }
+
+    //        int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
+    //        QMapIterator<QString, QString> jt (equalWordMap);
+    //        while (jt.hasNext()) {
+    //            jt.next();
+    //            QString equalWord = jt.value();
+    //            updateQuery.bindValue(0, probOrder);
+    //            updateQuery.bindValue(1, minProbOrder);
+    //            updateQuery.bindValue(2, maxProbOrder);
+    //            updateQuery.bindValue(3, equalWord);
+    //            updateQuery.exec();
+    //            ++probOrder;
+    //            ++stepNum;
+    //        }
+    //    }
+    //}
+
+    //transactionQuery.exec("END TRANSACTION");
 }
 
 //---------------------------------------------------------------------------
