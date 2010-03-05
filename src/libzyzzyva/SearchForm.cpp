@@ -220,6 +220,7 @@ SearchForm::search()
         // alphagrams if one of them is present
         bool hasAnagramCondition = false;
         bool hasProbabilityCondition = false;
+        bool hasPlayabilityCondition = false;
         int probNumBlanks = MainSettings::getProbabilityNumBlanks();
         QListIterator<SearchCondition> it (spec.conditions);
         while (it.hasNext()) {
@@ -232,7 +233,7 @@ SearchForm::search()
                 hasAnagramCondition = true;
             }
 
-            if ((type == SearchCondition::ProbabilityOrder) ||
+            else if ((type == SearchCondition::ProbabilityOrder) ||
                 (type == SearchCondition::LimitByProbabilityOrder))
             {
                 // Set number of blanks based on the first probability search
@@ -240,6 +241,12 @@ SearchForm::search()
                 if (!hasProbabilityCondition)
                     probNumBlanks = condition.intValue;
                 hasProbabilityCondition = true;
+            }
+
+            else if ((type == SearchCondition::PlayabilityOrder) ||
+                (type == SearchCondition::LimitByPlayabilityOrder))
+            {
+                hasPlayabilityCondition = true;
             }
         }
 
@@ -273,9 +280,17 @@ SearchForm::search()
             WordTableModel::WordItem wordItem
                 (displayWord, WordTableModel::WordNormal, wildcard);
 
-            int probOrder = wordEngine->getProbabilityOrder(lexicon, wordUpper,
-                                                            probNumBlanks);
-            wordItem.setProbabilityOrder(probOrder);
+            // Set probability/playability order for correct sorting
+            if (hasProbabilityCondition) {
+                int probOrder = wordEngine->getProbabilityOrder(
+                    lexicon, wordUpper, probNumBlanks);
+                wordItem.setProbabilityOrder(probOrder);
+            }
+            else if (hasPlayabilityCondition) {
+                int playOrder = wordEngine->getPlayabilityOrder(
+                    lexicon, wordUpper);
+                wordItem.setPlayabilityOrder(playOrder);
+            }
 
             wordItems.append(wordItem);
         }
@@ -287,8 +302,11 @@ SearchForm::search()
             MainSettings::setWordListGroupByAnagrams(false);
         if (hasProbabilityCondition)
             MainSettings::setWordListSortByProbabilityOrder(true);
+        else if (hasPlayabilityCondition)
+            MainSettings::setWordListSortByPlayabilityOrder(true);
         resultModel->setProbabilityNumBlanks(probNumBlanks);
         resultModel->addWords(wordItems);
+        MainSettings::setWordListSortByPlayabilityOrder(false);
         MainSettings::setWordListSortByProbabilityOrder(false);
         if (!hasAnagramCondition)
             MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
