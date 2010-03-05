@@ -128,6 +128,7 @@ const QString WORD_ATTR_DOUBLE_EXTENSIONS = "Double Extensions";
 
 const QString WORD_LIST_FORMAT_ONE_PER_LINE = "One Word Per Line";
 const QString WORD_LIST_FORMAT_QUESTION_ANSWER = "Anagram Question/Answer";
+const QString WORD_LIST_FORMAT_TWO_COLUMN = "Anagram Two Column";
 
 using namespace Defs;
 
@@ -1208,6 +1209,9 @@ Auxil::wordListFormatToString(WordListFormat format)
         case WordListAnagramQuestionAnswer:
         return WORD_LIST_FORMAT_QUESTION_ANSWER;
 
+        case WordListAnagramTwoColumn:
+        return WORD_LIST_FORMAT_TWO_COLUMN;
+
         default: return QString();
     }
 }
@@ -1227,6 +1231,8 @@ Auxil::stringToWordListFormat(const QString& s)
         return WordListOnePerLine;
     else if (s == WORD_LIST_FORMAT_QUESTION_ANSWER)
         return WordListAnagramQuestionAnswer;
+    else if (s == WORD_LIST_FORMAT_TWO_COLUMN)
+        return WordListAnagramTwoColumn;
     else
         return WordListInvalid;
 }

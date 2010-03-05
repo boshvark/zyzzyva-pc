@@ -3,7 +3,7 @@
 //
 // The dialog for saving a list of words.
 //
-// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -65,6 +65,8 @@ WordListSaveDialog::WordListSaveDialog(QWidget* parent, Qt::WFlags f)
     formatCombo->addItem(Auxil::wordListFormatToString(WordListOnePerLine));
     formatCombo->addItem(
         Auxil::wordListFormatToString(WordListAnagramQuestionAnswer));
+    formatCombo->addItem(
+        Auxil::wordListFormatToString(WordListAnagramTwoColumn));
     formatHlay->addWidget(formatCombo);
 
     QHBoxLayout* listHlay = new QHBoxLayout;
