@@ -3,7 +3,7 @@
 //
 // The dialog for saving a list of words.
 //
-// Copyright 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
