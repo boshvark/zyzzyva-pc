@@ -284,8 +284,9 @@ SearchSpecForm::removeConditionForm(int index)
     }
 
     SearchConditionForm* form = conditionForms.value(index);
-    delete form;
+    conditionVlay->removeWidget(form);
     conditionForms.removeAt(index);
+    form->deleteLater();
 
     if (conditionForms.size() == 1) {
         conditionForms.first()->setDeleteEnabled(false);
