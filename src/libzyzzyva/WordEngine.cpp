@@ -32,6 +32,7 @@
 #include <QSqlError>
 #include <QSqlQuery>
 #include <QVariant>
+#include <QVector>
 
 using namespace Defs;
 
@@ -40,6 +41,8 @@ using namespace Defs;
 // major hit when row heights are not uniform
 const QString WordEngine::DEF_ORIG_SEP = " / ";
 const QString WordEngine::DEF_DISPLAY_SEP = " / ";
+
+const int LIMIT_RANGE_MAX = 999999;
 
 //---------------------------------------------------------------------------
 //  clearCache
@@ -559,159 +562,173 @@ WordEngine::applyPostConditions(const QString& lexicon,
     // Handle Limit by Probability/Playability Order conditions. Only allow
     // Limit By Probability or Limit By Playability conditions, not both! If
     // both are present, only the type that occurs first will be considered.
-    bool probLimitRangeCondition = false;
-    bool playLimitRangeCondition = false;
     bool legacyProbCondition = false;
-    int limitRangeMin = 0;
-    int limitRangeMax = 999999;
-    int limitRangeMinLax = 0;
-    int limitRangeMaxLax = 999999;
     int probNumBlanks = 0;
+    const int MIN_INDEX = 0;
+    const int MAX_INDEX = 1;
+    const int MIN_LAX_INDEX = 2;
+    const int MAX_LAX_INDEX = 3;
+    QMap<SearchCondition::SearchType, QVector<int> > limits;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
         SearchCondition condition = cit.next();
         if ((condition.type == SearchCondition::LimitByProbabilityOrder) ||
             (condition.type == SearchCondition::LimitByPlayabilityOrder))
         {
-            // Ignore Limit By Probability if we've already seen Limit By
-            // Playability, and vice versa
-            if (condition.type == SearchCondition::LimitByProbabilityOrder) {
-                if (playLimitRangeCondition)
-                    continue;
-                probLimitRangeCondition = true;
-                probNumBlanks = condition.intValue;
+            // Initialize limits
+            if (!limits.contains(condition.type)) {
+                limits[condition.type] = (QVector<int>() << 0 <<
+                    LIMIT_RANGE_MAX << 0 << LIMIT_RANGE_MAX);
             }
-            else if (condition.type == SearchCondition::LimitByPlayabilityOrder)
-            {
-                if (probLimitRangeCondition)
-                    continue;
-                playLimitRangeCondition = true;
+
+            if (condition.type == SearchCondition::LimitByProbabilityOrder) {
+                probNumBlanks = condition.intValue;
+                if (condition.legacy)
+                    legacyProbCondition = true;
             }
 
             if (condition.boolValue) {
-                if (condition.minValue > limitRangeMinLax)
-                    limitRangeMinLax = condition.minValue;
-                if (condition.maxValue < limitRangeMaxLax)
-                    limitRangeMaxLax = condition.maxValue;
+                if (condition.minValue > limits[condition.type][MIN_LAX_INDEX])
+                    limits[condition.type][MIN_LAX_INDEX] = condition.minValue;
+                if (condition.maxValue < limits[condition.type][MAX_LAX_INDEX])
+                    limits[condition.type][MAX_LAX_INDEX] = condition.maxValue;
             }
             else {
-                if (condition.minValue > limitRangeMin)
-                    limitRangeMin = condition.minValue;
-                if (condition.maxValue < limitRangeMax)
-                    limitRangeMax = condition.maxValue;
+                if (condition.minValue > limits[condition.type][MIN_INDEX])
+                    limits[condition.type][MIN_INDEX] = condition.minValue;
+                if (condition.maxValue < limits[condition.type][MAX_INDEX])
+                    limits[condition.type][MAX_INDEX] = condition.maxValue;
             }
-            if (condition.legacy)
-                legacyProbCondition = true;
         }
     }
 
-    // Keep only words in the probability order range
-    if (probLimitRangeCondition || playLimitRangeCondition) {
-        if ((limitRangeMin > returnList.size()) ||
-            (limitRangeMinLax > returnList.size()))
-        {
-            returnList.clear();
-            return returnList;
-        }
+    // Keep only words in the limit ranges
+    if (!limits.isEmpty()) {
+        QSet<QString> returnSet = returnList.toSet();
+        QMap<QString, QString> probValueMap;
+        QMap<QString, QString> playValueMap;
 
-        // Convert from 1-based to 0-based offset
-        --limitRangeMin;
-        --limitRangeMax;
-        --limitRangeMinLax;
-        --limitRangeMaxLax;
+        QMapIterator<SearchCondition::SearchType, QVector<int> > it (limits);
+        while (it.hasNext()) {
+            it.next();
+            SearchCondition::SearchType searchType = it.key();
+            const QVector<int> limitValues = it.value();
+            bool probCondition =
+                (searchType == SearchCondition::LimitByProbabilityOrder);
 
-        if (limitRangeMin < 0)
-            limitRangeMin = 0;
-        if (limitRangeMinLax < 0)
-            limitRangeMinLax = 0;
-        if (limitRangeMax > returnList.size() - 1)
-            limitRangeMax = returnList.size() - 1;
-        if (limitRangeMaxLax > returnList.size() - 1)
-            limitRangeMaxLax = returnList.size() - 1;
-
-        // Use the higher of the min values as working min
-        int min = ((limitRangeMin > limitRangeMinLax)
-                   ? limitRangeMin : limitRangeMinLax);
-
-        // Use the lower of the max values as working max
-        int max = ((limitRangeMax < limitRangeMaxLax)
-                   ? limitRangeMax : limitRangeMaxLax);
-
-        QMap<QString, QString> valueMap;
-
-        // Sort the words according to probability order
-        if (probLimitRangeCondition) {
-            LetterBag bag;
-            foreach (const QString& word, returnList) {
-                // FIXME: change this radix for new probability sorting -
-                // leave alone for old probability sorting
-                QString radix;
-                QString wordUpper = word.toUpper();
-                radix.sprintf("%09.0f",
-                    1e9 - 1 - bag.getNumCombinations(wordUpper, probNumBlanks));
-                // Legacy probability order limits are sorted alphabetically,
-                // not by alphagram
-                if (!legacyProbCondition)
-                    radix += Auxil::getAlphagram(wordUpper);
-                radix += wordUpper;
-                valueMap.insert(radix, word);
+            if ((limitValues[MIN_INDEX] > limitValues[MAX_INDEX]) ||
+                (limitValues[MIN_INDEX] > returnList.size()) ||
+                (limitValues[MIN_LAX_INDEX] > returnList.size()))
+            {
+                return QStringList();
             }
-        }
 
-        // Sort the words according to playability order
-        else if (playLimitRangeCondition) {
-            LexiconData* lexData = lexiconData.value(lexicon);
-            if (!lexData)
-                return returnList;
+            // Convert from 1-based to 0-based offset
+            int limitMin = limitValues[MIN_INDEX] - 1;
+            int limitMax = limitValues[MAX_INDEX] - 1;
+            int limitMinLax = limitValues[MIN_LAX_INDEX] - 1;
+            int limitMaxLax = limitValues[MAX_LAX_INDEX] - 1;
 
-            QSqlDatabase* db = lexData->db;
-            if (!db || !db->isOpen())
-                return returnList;
+            // Snap limits to endpoints
+            if (limitMin < 0)
+                limitMin = 0;
+            if (limitMinLax < 0)
+                limitMinLax = 0;
+            if (limitMax > returnList.size() - 1)
+                limitMax = returnList.size() - 1;
+            if (limitMaxLax > returnList.size() - 1)
+                limitMaxLax = returnList.size() - 1;
 
-            QString qstr = "SELECT word, playability FROM words "
-                "WHERE word IN (";
-            QStringListIterator it (returnList);
-            for (int i = 0; it.hasNext(); ++i) {
-                if (i)
-                    qstr += ", ";
-                qstr += "'" + it.next().toUpper() + "'";
+            // Use the higher of the min values as working min
+            int min = (limitMin > limitMinLax) ? limitMin : limitMinLax;
+
+            // Use the lower of the max values as working max
+            int max = (limitMax < limitMaxLax) ? limitMax : limitMaxLax;
+
+            // Sort the words according to probability order
+            if (probCondition && probValueMap.isEmpty()) {
+                LetterBag bag;
+                foreach (const QString& word, returnList) {
+                    // FIXME: change this radix for new probability sorting -
+                    // leave alone for old probability sorting
+                    QString radix;
+                    QString wordUpper = word.toUpper();
+                    radix.sprintf("%09.0f", 1e9 - 1 -
+                        bag.getNumCombinations(wordUpper, probNumBlanks));
+                    // Legacy probability order limits are sorted
+                    // alphabetically, not by alphagram
+                    if (!legacyProbCondition)
+                        radix += Auxil::getAlphagram(wordUpper);
+                    radix += wordUpper;
+                    probValueMap.insert(radix, word);
+                }
             }
-            qstr += ")";
 
-            QSqlQuery query (*db);
-            query.prepare(qstr);
-            query.exec();
+            // Sort the words according to playability order
+            else if (playValueMap.isEmpty()) {
+                LexiconData* lexData = lexiconData.value(lexicon);
+                if (!lexData)
+                    return returnList;
 
-            while (query.next()) {
-                QString word = query.value(0).toString();
-                int playability = query.value(1).toInt();
-                QString radix;
-                radix.sprintf("%09.0f", 1e9 - 1 - playability);
-                radix += Auxil::getAlphagram(word);
-                radix += word;
-                valueMap.insert(radix, word);
+                QSqlDatabase* db = lexData->db;
+                if (!db || !db->isOpen())
+                    return returnList;
+
+                QString qstr = "SELECT word, playability FROM words "
+                    "WHERE word IN (";
+                QStringListIterator it (returnList);
+                for (int i = 0; it.hasNext(); ++i) {
+                    if (i)
+                        qstr += ", ";
+                    qstr += "'" + it.next().toUpper() + "'";
+                }
+                qstr += ")";
+
+                QSqlQuery query (*db);
+                query.prepare(qstr);
+                query.exec();
+
+                while (query.next()) {
+                    QString word = query.value(0).toString();
+                    int playability = query.value(1).toInt();
+                    QString radix;
+                    radix.sprintf("%09.0f", 1e9 - 1 - playability);
+                    radix += Auxil::getAlphagram(word);
+                    radix += word;
+                    playValueMap.insert(radix, word);
+                }
             }
+
+            QMap<QString, QString>& valueMap = probCondition ?
+                probValueMap : playValueMap;
+            QStringList keys = valueMap.keys();
+
+            // Allow Lax matches only up to hard Min limit
+            QString minRadix = keys[min];
+            QString minValue = minRadix.left(9);
+            while ((min > 0) && (min > limitMin)) {
+                if (minValue != keys[min - 1].left(9))
+                    break;
+                --min;
+            }
+
+            // Allow Lax matches only up to hard Max limit
+            QString maxRadix = keys[max];
+            QString maxValue = maxRadix.left(9);
+            while ((max < keys.size() - 1) && (max < limitMax)) {
+                if (maxValue != keys[max + 1].left(9))
+                    break;
+                ++max;
+            }
+
+            if (min > max)
+                return QStringList();
+
+            // Only keep candidates that matched constraints
+            returnSet &= (valueMap.values().mid(min, max - min + 1)).toSet();
         }
 
-        QStringList keys = valueMap.keys();
-
-        QString minRadix = keys[min];
-        QString minValue = minRadix.left(9);
-        while ((min > 0) && (min > limitRangeMin)) {
-            if (minValue != keys[min - 1].left(9))
-                break;
-            --min;
-        }
-
-        QString maxRadix = keys[max];
-        QString maxValue = maxRadix.left(9);
-        while ((max < keys.size() - 1) && (max < limitRangeMax)) {
-            if (maxValue != keys[max + 1].left(9))
-                break;
-            ++max;
-        }
-
-        returnList = valueMap.values().mid(min, max - min + 1);
+        returnList = returnSet.toList();
     }
 
     return returnList;
