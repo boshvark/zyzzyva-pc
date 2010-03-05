@@ -500,6 +500,10 @@ WordTableView::getExportStrings(QModelIndex& index, const
             column = WordTableModel::PROBABILITY_ORDER_COLUMN;
             break;
 
+            case WordAttrPlayabilityOrder:
+            column = WordTableModel::PLAYABILITY_ORDER_COLUMN;
+            break;
+
             default: break;
         }
 

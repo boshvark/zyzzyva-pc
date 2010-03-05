@@ -266,6 +266,8 @@ WordListSaveDialog::initializeLists()
         Auxil::wordAttributeToString(WordAttrLexiconSymbols));
     unselectedAttrList->addItem(
         Auxil::wordAttributeToString(WordAttrProbabilityOrder));
+    unselectedAttrList->addItem(
+        Auxil::wordAttributeToString(WordAttrPlayabilityOrder));
 
     selectedAttrList->addItem(Auxil::wordAttributeToString(WordAttrWord));
 }
