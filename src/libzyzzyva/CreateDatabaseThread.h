@@ -71,6 +71,8 @@ class CreateDatabaseThread : public QThread
     QString replaceDefinitionLinks(const QString& definition, int maxDepth,
                                    bool useFollow = false) const;
     QString getSubDefinition(const QString& word, const QString& pos) const;
+    int importPlayability(const QString& filename, QMap<QString, int>&
+                          playabilityMap) const;
 
     WordEngine* wordEngine;
     QString lexiconName;

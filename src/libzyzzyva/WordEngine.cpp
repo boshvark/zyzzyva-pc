@@ -230,7 +230,7 @@ WordEngine::importDawgFile(const QString& lexicon, const QString& filename,
 //! to contain stems of equal length.  All stems of different length than the
 //! first stem will be discarded.
 //
-////@param lexicon the name of the lexicon
+//! @param lexicon the name of the lexicon
 //! @param filename the name of the file to import
 //! @param errString returns the error string in case of error
 //! @return the number of stems imported
@@ -834,10 +834,10 @@ WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
     if (!db || !db->isOpen())
         return info;
 
-    // Get all info except probability order
     QString qstr = "SELECT num_vowels, num_unique_letters, num_anagrams, "
         "point_value, front_hooks, back_hooks, is_front_hook, is_back_hook, "
         "lexicon_symbols, definition, "
+        "playability_order, min_playability_order, max_playability_order, "
         "probability_order0, min_probability_order0, max_probability_order0, "
         "probability_order1, min_probability_order1, max_probability_order1, "
         "probability_order2, min_probability_order2, max_probability_order2 "
@@ -860,6 +860,12 @@ WordEngine::getWordInfo(const QString& lexicon, const QString& word) const
         info.isBackHook          = query.value(placeNum++).toBool();
         info.lexiconSymbols      = query.value(placeNum++).toString();
         info.definition          = query.value(placeNum++).toString();
+
+        ProbabilityOrder playOrder;
+        playOrder.probabilityOrder = query.value(placeNum++).toInt();
+        playOrder.minProbabilityOrder = query.value(placeNum++).toInt();
+        playOrder.maxProbabilityOrder = query.value(placeNum++).toInt();
+        info.playability = playOrder;
 
         for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
             ProbabilityOrder probOrder;
@@ -1428,11 +1434,70 @@ WordEngine::getNumAnagrams(const QString& lexicon, const QString& word) const
     if (info.isValid()) {
         return info.numAnagrams;
     }
-
     else {
         QString alpha = Auxil::getAlphagram(word);
         return lexiconData[lexicon]->numAnagramsMap.value(alpha);
     }
+}
+
+//---------------------------------------------------------------------------
+//  getPlayabilityOrder
+//
+//! Get the playability order for a word.
+//
+//! @param lexicon the name of the lexicon
+//! @param word the word
+//! @return the playability order
+//---------------------------------------------------------------------------
+int
+WordEngine::getPlayabilityOrder(const QString& lexicon, const QString& word)
+    const
+{
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
+    return info.isValid() ? info.playability.probabilityOrder : 0;
+}
+
+//---------------------------------------------------------------------------
+//  getMinPlayabilityOrder
+//
+//! Get the minimum playability order for a word.
+//
+//! @param lexicon the name of the lexicon
+//! @param word the word
+//! @return the playability order
+//---------------------------------------------------------------------------
+int
+WordEngine::getMinPlayabilityOrder(const QString& lexicon, const QString&
+                                   word) const
+{
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
+    return info.isValid() ? info.playability.minProbabilityOrder : 0;
+}
+
+//---------------------------------------------------------------------------
+//  getMaxPlayabilityOrder
+//
+//! Get the maximum playability order for a word.
+//
+//! @param lexicon the name of the lexicon
+//! @param word the word
+//! @return the playability order
+//---------------------------------------------------------------------------
+int
+WordEngine::getMaxPlayabilityOrder(const QString& lexicon, const QString&
+                                   word) const
+{
+    if (!lexiconData.contains(lexicon))
+        return 0;
+
+    WordInfo info = getWordInfo(lexicon, word);
+    return info.isValid() ? info.playability.maxProbabilityOrder : 0;
 }
 
 //---------------------------------------------------------------------------
