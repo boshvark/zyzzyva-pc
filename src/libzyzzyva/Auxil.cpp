@@ -117,6 +117,7 @@ const QString WORD_ATTR_BACK_HOOKS = "Back Hooks";
 const QString WORD_ATTR_INNER_HOOKS = "Inner Hooks";
 const QString WORD_ATTR_LEXICON_SYMBOLS = "Lexicon Symbols";
 const QString WORD_ATTR_PROBABILITY_ORDER = "Probability Order";
+const QString WORD_ATTR_PLAYABILITY_ORDER = "Playability Order";
 const QString WORD_ATTR_FRONT_EXTENSIONS = "Front Extensions";
 const QString WORD_ATTR_BACK_EXTENSIONS = "Back Extensions";
 const QString WORD_ATTR_DOUBLE_EXTENSIONS = "Double Extensions";
@@ -1118,6 +1119,9 @@ Auxil::wordAttributeToString(WordAttribute attr)
         case WordAttrProbabilityOrder:
         return WORD_ATTR_PROBABILITY_ORDER;
 
+        case WordAttrPlayabilityOrder:
+        return WORD_ATTR_PLAYABILITY_ORDER;
+
         case WordAttrFrontExtensions:
         return WORD_ATTR_FRONT_EXTENSIONS;
 
@@ -1156,6 +1160,8 @@ Auxil::stringToWordAttribute(const QString& s)
         return WordAttrLexiconSymbols;
     else if (s == WORD_ATTR_PROBABILITY_ORDER)
         return WordAttrProbabilityOrder;
+    else if (s == WORD_ATTR_PLAYABILITY_ORDER)
+        return WordAttrPlayabilityOrder;
     else if (s == WORD_ATTR_FRONT_EXTENSIONS)
         return WordAttrFrontExtensions;
     else if (s == WORD_ATTR_BACK_EXTENSIONS)
