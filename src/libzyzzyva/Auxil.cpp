@@ -411,6 +411,56 @@ Auxil::getUserConfigDir()
 }
 
 //---------------------------------------------------------------------------
+//  getLexiconPrefix
+//
+//! Return the path associated with a lexicon name.
+//
+//! @param lexicon the lexicon name
+//! @return the path where the lexicon data is found
+//---------------------------------------------------------------------------
+QString
+Auxil::getLexiconPrefix(const QString& lexicon)
+{
+    static QMap<QString, QString> pmap;
+    if (pmap.isEmpty()) {
+        pmap[LEXICON_OWL] = "/north-american/owl-lwl";
+        pmap[LEXICON_OWL2] = "/north-american/owl2-lwl";
+        pmap[LEXICON_OSPD4] = "/north-american/ospd4-lwl";
+        pmap[LEXICON_VOLOST] = "/antarctic/volost";
+        pmap[LEXICON_OSWI] = "/british/oswi";
+        pmap[LEXICON_CSW] = "/british/csw";
+        pmap[LEXICON_ODS4] = "/french/ods4";
+        pmap[LEXICON_ODS5] = "/french/ods5";
+    }
+    return pmap.value(lexicon);
+}
+
+//---------------------------------------------------------------------------
+//  getDatabaseFilename
+//
+//! Return the database filename that should be used for a lexicon.  Also
+//! create the db directory if it doesn't already exist.  FIXME: That should
+//! be done somewhere else!
+//
+//! @param lexicon the lexicon name
+//! @return the database filename, or empty string if error
+//---------------------------------------------------------------------------
+QString
+Auxil::getDatabaseFilename(const QString& lexicon)
+{
+    if (lexicon != LEXICON_CUSTOM) {
+        QString lexiconPrefix = getLexiconPrefix(lexicon);
+        if (lexiconPrefix.isEmpty())
+            return QString();
+    }
+
+    QString dbPath = getUserDir() + "/lexicons";
+    QDir dir;
+    dir.mkpath(dbPath);
+    return (dbPath + "/" + lexicon + ".db");
+}
+
+//---------------------------------------------------------------------------
 //  dialogWordWrap
 //
 //! Wrap a string so it is appropriate for display in a dialog.
