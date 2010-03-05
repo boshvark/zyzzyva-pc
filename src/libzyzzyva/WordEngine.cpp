@@ -559,9 +559,7 @@ WordEngine::applyPostConditions(const QString& lexicon,
     if (returnList.isEmpty())
         return returnList;
 
-    // Handle Limit by Probability/Playability Order conditions. Only allow
-    // Limit By Probability or Limit By Playability conditions, not both! If
-    // both are present, only the type that occurs first will be considered.
+    // Handle Limit by Probability/Playability Order conditions
     bool legacyProbCondition = false;
     int probNumBlanks = 0;
     const int MIN_INDEX = 0;
