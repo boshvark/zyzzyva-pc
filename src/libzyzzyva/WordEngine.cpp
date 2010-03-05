@@ -1185,17 +1185,17 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
         info.lexiconSymbols       = query.value(placeNum++).toString();
         info.definition           = query.value(placeNum++).toString();
 
-        ProbabilityOrder playOrder;
-        playOrder.probabilityOrder = query.value(placeNum++).toInt();
-        playOrder.minProbabilityOrder = query.value(placeNum++).toInt();
-        playOrder.maxProbabilityOrder = query.value(placeNum++).toInt();
+        ValueOrder playOrder;
+        playOrder.valueOrder    = query.value(placeNum++).toInt();
+        playOrder.minValueOrder = query.value(placeNum++).toInt();
+        playOrder.maxValueOrder = query.value(placeNum++).toInt();
         info.playability = playOrder;
 
         for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
-            ProbabilityOrder probOrder;
-            probOrder.probabilityOrder    = query.value(placeNum++).toInt();
-            probOrder.minProbabilityOrder = query.value(placeNum++).toInt();
-            probOrder.maxProbabilityOrder = query.value(placeNum++).toInt();
+            ValueOrder probOrder;
+            probOrder.valueOrder    = query.value(placeNum++).toInt();
+            probOrder.minValueOrder = query.value(placeNum++).toInt();
+            probOrder.maxValueOrder = query.value(placeNum++).toInt();
             info.blankProbability[numBlanks] = probOrder;
         }
 
@@ -1499,7 +1499,7 @@ WordEngine::getPlayabilityOrder(const QString& lexicon, const QString& word)
         return 0;
 
     WordInfo info = getWordInfo(lexicon, word);
-    return info.isValid() ? info.playability.probabilityOrder : 0;
+    return info.isValid() ? info.playability.valueOrder : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1519,7 +1519,7 @@ WordEngine::getMinPlayabilityOrder(const QString& lexicon, const QString&
         return 0;
 
     WordInfo info = getWordInfo(lexicon, word);
-    return info.isValid() ? info.playability.minProbabilityOrder : 0;
+    return info.isValid() ? info.playability.minValueOrder : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1539,7 +1539,7 @@ WordEngine::getMaxPlayabilityOrder(const QString& lexicon, const QString&
         return 0;
 
     WordInfo info = getWordInfo(lexicon, word);
-    return info.isValid() ? info.playability.maxProbabilityOrder : 0;
+    return info.isValid() ? info.playability.maxValueOrder : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1561,7 +1561,7 @@ WordEngine::getProbabilityOrder(const QString& lexicon, const QString& word,
 
     WordInfo info = getWordInfo(lexicon, word);
     return info.isValid() ?
-        info.blankProbability.value(numBlanks).probabilityOrder : 0;
+        info.blankProbability.value(numBlanks).valueOrder : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1583,7 +1583,7 @@ WordEngine::getMinProbabilityOrder(const QString& lexicon, const QString&
 
     WordInfo info = getWordInfo(lexicon, word);
     return info.isValid() ?
-        info.blankProbability.value(numBlanks).minProbabilityOrder : 0;
+        info.blankProbability.value(numBlanks).minValueOrder : 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1605,7 +1605,7 @@ WordEngine::getMaxProbabilityOrder(const QString& lexicon, const QString&
 
     WordInfo info = getWordInfo(lexicon, word);
     return info.isValid() ?
-        info.blankProbability.value(numBlanks).maxProbabilityOrder : 0;
+        info.blankProbability.value(numBlanks).maxValueOrder : 0;
 }
 
 //---------------------------------------------------------------------------

@@ -41,14 +41,13 @@ class WordEngine : public QObject
     static const QString DEF_ORIG_SEP;
     static const QString DEF_DISPLAY_SEP;
 
-    class ProbabilityOrder {
+    class ValueOrder {
         public:
-        ProbabilityOrder() : probabilityOrder(0), minProbabilityOrder(0),
-            maxProbabilityOrder(0) { }
+        ValueOrder() : valueOrder(0), minValueOrder(0), maxValueOrder(0) { }
         public:
-        int probabilityOrder;
-        int minProbabilityOrder;
-        int maxProbabilityOrder;
+        int valueOrder;
+        int minValueOrder;
+        int maxValueOrder;
     };
 
     class WordInfo {
@@ -71,8 +70,8 @@ class WordEngine : public QObject
         bool isBackHook;
         QString lexiconSymbols;
         QString definition;
-        ProbabilityOrder playability;
-        QMap<int, ProbabilityOrder> blankProbability;
+        ValueOrder playability;
+        QMap<int, ValueOrder> blankProbability;
     };
 
     class LexiconData {
