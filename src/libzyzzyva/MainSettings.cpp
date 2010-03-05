@@ -53,6 +53,8 @@ const QString SETTINGS_SORT_BY_LENGTH = "wordlist_sort_by_length";
 const QString SETTINGS_GROUP_BY_ALPHAGRAMS = "wordlist_group_by_alphagrams";
 const QString SETTINGS_SHOW_PROBABILITY_ORDER
     = "wordlist_show_probability_order";
+const QString SETTINGS_SHOW_PLAYABILITY_ORDER
+    = "wordlist_show_playability_order";
 const QString SETTINGS_SHOW_HOOKS = "wordlist_show_hooks";
 const QString SETTINGS_SHOW_HOOK_PARENTS = "wordlist_show_hook_parents";
 const QString SETTINGS_SHOW_DEFINITIONS = "wordlist_show_definitions";
@@ -262,6 +264,8 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_GROUP_BY_ALPHAGRAMS, true).toBool();
     instance->wordListShowProbabilityOrder
         = settings.value(SETTINGS_SHOW_PROBABILITY_ORDER, true).toBool();
+    instance->wordListShowPlayabilityOrder
+        = settings.value(SETTINGS_SHOW_PLAYABILITY_ORDER, false).toBool();
     instance->wordListShowHooks
         = settings.value(SETTINGS_SHOW_HOOKS, true).toBool();
     instance->wordListShowHookParents
@@ -378,6 +382,8 @@ MainSettings::writeSettings()
                       instance->wordListGroupByAnagrams);
     settings.setValue(SETTINGS_SHOW_PROBABILITY_ORDER,
                       instance->wordListShowProbabilityOrder);
+    settings.setValue(SETTINGS_SHOW_PLAYABILITY_ORDER,
+                      instance->wordListShowPlayabilityOrder);
     settings.setValue(SETTINGS_SHOW_HOOKS, instance->wordListShowHooks);
     settings.setValue(SETTINGS_SHOW_HOOK_PARENTS,
                       instance->wordListShowHookParents);

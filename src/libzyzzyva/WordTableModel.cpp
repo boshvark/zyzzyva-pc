@@ -32,14 +32,14 @@ using namespace std;
 
 const QChar WordTableModel::PARENT_HOOK_CHAR = '-';
 const QString WILDCARD_MATCH_HEADER = "?";
-const QString PROBABILITY_ORDER_HEADER = "P-%1";
+const QString PROBABILITY_ORDER_HEADER = "Prob-%1";
+const QString PLAYABILITY_ORDER_HEADER = "Play";
 const QString FRONT_HOOK_HEADER = "<";
 const QString WORD_HEADER = "Word";
 const QString BACK_HOOK_HEADER = ">";
 const QString DEFINITION_HEADER = "Definition";
 const int ITEM_MARGIN = 5;
 const int DEFAULT_COLUMN_WIDTH = 100;
-const int NUM_COLUMNS = 6;
 
 const QColor VALID_NORMAL_WORD_FOREGROUND = Qt::black;
 const QColor VALID_NORMAL_WORD_BACKGROUND = Qt::white;
@@ -91,6 +91,15 @@ lessThan(const WordTableModel::WordItem& a,
             return true;
         }
         else if (b.getProbabilityOrder() < a.getProbabilityOrder()) {
+            return false;
+        }
+    }
+
+    if (MainSettings::getWordListSortByPlayabilityOrder()) {
+        if (a.getPlayabilityOrder() < b.getPlayabilityOrder()) {
+            return true;
+        }
+        else if (b.getPlayabilityOrder() < a.getPlayabilityOrder()) {
             return false;
         }
     }
@@ -343,6 +352,7 @@ WordTableModel::data(const QModelIndex& index, int role) const
             switch (index.column()) {
                 case WordTableModel::FRONT_HOOK_COLUMN:
                 case WordTableModel::PROBABILITY_ORDER_COLUMN:
+                case WordTableModel::PLAYABILITY_ORDER_COLUMN:
                 flags |= Qt::AlignRight;
                 break;
 
@@ -378,6 +388,22 @@ WordTableModel::data(const QModelIndex& index, int role) const
 
                     int probOrder = wordItem.getProbabilityOrder();
                     return (probOrder ? QString::number(probOrder) : QString());
+                }
+
+                case PLAYABILITY_ORDER_COLUMN: {
+                    if (!MainSettings::getWordListShowPlayabilityOrder()) {
+                        return QString();
+                    }
+
+                    if (!wordItem.playabilityOrderIsValid()) {
+                        int p = wordEngine->getPlayabilityOrder(
+                            lexicon, wordUpper);
+                        if (p)
+                            wordItem.setPlayabilityOrder(p);
+                    }
+
+                    int playOrder = wordItem.getPlayabilityOrder();
+                    return (playOrder ? QString::number(playOrder) : QString());
                 }
 
                 case FRONT_HOOK_COLUMN:
@@ -479,6 +505,10 @@ WordTableModel::headerData(int section, Qt::Orientation orientation, int
             case PROBABILITY_ORDER_COLUMN:
             return MainSettings::getWordListShowProbabilityOrder() ?
                 PROBABILITY_ORDER_HEADER.arg(probNumBlanks) : QString();
+
+            case PLAYABILITY_ORDER_COLUMN:
+            return MainSettings::getWordListShowPlayabilityOrder() ?
+                PLAYABILITY_ORDER_HEADER : QString();
 
             case FRONT_HOOK_COLUMN:
             return MainSettings::getWordListShowHooks() ?
@@ -595,6 +625,9 @@ WordTableModel::setData(const QModelIndex& index, const QVariant& value, int
         else if (index.column() == PROBABILITY_ORDER_COLUMN) {
             wordList[index.row()].setProbabilityOrder(value.toInt());
         }
+        else if (index.column() == PLAYABILITY_ORDER_COLUMN) {
+            wordList[index.row()].setPlayabilityOrder(value.toInt());
+        }
         else {
             return false;
         }
@@ -665,6 +698,10 @@ WordTableModel::addWordPrivate(const WordItem& word, int row)
     if (word.probabilityOrderIsValid()) {
         setData(index(row, PROBABILITY_ORDER_COLUMN),
                 word.getProbabilityOrder(), Qt::EditRole);
+    }
+    if (word.playabilityOrderIsValid()) {
+        setData(index(row, PLAYABILITY_ORDER_COLUMN),
+                word.getPlayabilityOrder(), Qt::EditRole);
     }
 }
 
@@ -763,10 +800,12 @@ WordTableModel::WordItem::init()
     hooksValid = false;
     parentHooksValid = false;
     probabilityOrderValid = false;
+    playabilityOrderValid = false;
     lexiconSymbolsValid = false;
     frontParentHook = false;
     backParentHook = false;
     probabilityOrder = 0;
+    playabilityOrder = 0;
 }
 
 //---------------------------------------------------------------------------
@@ -781,6 +820,20 @@ WordTableModel::WordItem::setProbabilityOrder(int p)
 {
     probabilityOrder = p;
     probabilityOrderValid = true;
+}
+
+//---------------------------------------------------------------------------
+//  setPlayabilityOrder
+//
+//! Set playability order of a word item.
+//
+//! @param p the playability order
+//---------------------------------------------------------------------------
+void
+WordTableModel::WordItem::setPlayabilityOrder(int p)
+{
+    playabilityOrder = p;
+    playabilityOrderValid = true;
 }
 
 //---------------------------------------------------------------------------

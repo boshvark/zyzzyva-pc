@@ -159,6 +159,10 @@ class MainSettings
         return instance->wordListSortByProbabilityOrder; }
     static void setWordListSortByProbabilityOrder(bool b) {
         instance->wordListSortByProbabilityOrder = b; }
+    static bool getWordListSortByPlayabilityOrder() {
+        return instance->wordListSortByPlayabilityOrder; }
+    static void setWordListSortByPlayabilityOrder(bool b) {
+        instance->wordListSortByPlayabilityOrder = b; }
     static bool getWordListGroupByAnagrams() {
         return instance->wordListGroupByAnagrams; }
     static void setWordListGroupByAnagrams(bool b) {
@@ -167,6 +171,10 @@ class MainSettings
         return instance->wordListShowProbabilityOrder; }
     static void setWordListShowProbabilityOrder(bool b) {
         instance->wordListShowProbabilityOrder = b; }
+    static bool getWordListShowPlayabilityOrder() {
+        return instance->wordListShowPlayabilityOrder; }
+    static void setWordListShowPlayabilityOrder(bool b) {
+        instance->wordListShowPlayabilityOrder = b; }
     static bool getWordListShowHooks() {
         return instance->wordListShowHooks; }
     static void setWordListShowHooks(bool b) {
@@ -202,6 +210,7 @@ class MainSettings
     MainSettings() : useAutoImport(false), useTileTheme(false),
                      wordListSortByLength(false),
                      wordListSortByProbabilityOrder(false),
+                     wordListSortByPlayabilityOrder(false),
                      wordListShowHooks(false),
                      wordListShowHookParents(false),
                      wordListShowDefinitions(false),
@@ -250,8 +259,10 @@ class MainSettings
     QString definitionFont;
     bool wordListSortByLength;
     bool wordListSortByProbabilityOrder;
+    bool wordListSortByPlayabilityOrder;
     bool wordListGroupByAnagrams;
     bool wordListShowProbabilityOrder;
+    bool wordListShowPlayabilityOrder;
     bool wordListShowHooks;
     bool wordListShowHookParents;
     bool wordListShowDefinitions;
