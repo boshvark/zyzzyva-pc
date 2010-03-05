@@ -84,10 +84,8 @@ CreateDatabaseThread::runPrivate()
         createIndexes(db);
         // insertWords increments stepNum 2 times
         insertWords(db, stepNum);
-        // updatePlayabilityOrder increments stepNum once for each word
-        updatePlayabilityOrder(db, stepNum);
-        // updateProbabilityOrder increments stepNum 3 times for each word
-        // because of 0, 1, 2 blanks
+        // updateProbabilityOrder increments stepNum 4 times for each word
+        // because of 0, 1, 2 blanks and playability
         updateProbabilityOrder(db, stepNum);
         updateDefinitions(db, stepNum);
         updateDefinitionLinks(db, stepNum);
@@ -110,14 +108,14 @@ CreateDatabaseThread::createTables(QSqlDatabase& db)
     QSqlQuery query (db);
 
     query.exec("CREATE TABLE words (word varchar(16), length integer, "
+        "playability integer, playability_order integer, "
+        "min_playability_order integer, max_playability_order integer, "
         "combinations0 integer, probability_order0 integer, "
         "min_probability_order0 integer, max_probability_order0 integer, "
         "combinations1 integer, probability_order1 integer, "
         "min_probability_order1 integer, max_probability_order1 integer, "
         "combinations2 integer, probability_order2 integer, "
         "min_probability_order2 integer, max_probability_order2 integer, "
-        "playability_value integer, playability_order integer, "
-        "min_playability integer, max_playability integer, "
         "alphagram varchar(16), num_anagrams integer, "
         "num_unique_letters integer, num_vowels integer, "
         "point_value integer, front_hooks varchar(32), "
@@ -159,6 +157,16 @@ CreateDatabaseThread::createIndexes(QSqlDatabase& db)
         return;
 
     query.exec("CREATE INDEX word_length_index on words (length)");
+    if (cancelled)
+        return;
+
+    query.exec("CREATE UNIQUE INDEX play_index on words "
+               "(length, playability_order)");
+    if (cancelled)
+        return;
+
+    query.exec("CREATE INDEX play_min_max_index on words "
+               "(length, min_playability_order, max_playability_order)");
     if (cancelled)
         return;
 
@@ -226,6 +234,11 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
         }
     }
 
+    QMap<QString, int> playabilityMap;
+    QString playabilityFile = Auxil::getWordsDir() +
+        Auxil::getLexiconPrefix(lexiconName) + "-playability.txt";
+    importPlayability(playabilityFile, playabilityMap);
+
     QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
     QSqlQuery query (db);
 
@@ -239,15 +252,16 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
         QStringList words = wordEngine->wordGraphSearch(lexiconName,
                                                         searchSpec);
 
-        query.prepare("INSERT INTO words (word, length, "
+        query.prepare("INSERT INTO words (word, length, playability, "
                       "combinations0, combinations1, combinations2, "
                       "alphagram, num_unique_letters, num_vowels, "
                       "point_value, front_hooks, back_hooks, "
                       "is_front_hook, is_back_hook, lexicon_symbols) "
-                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         // Insert words with length, combinations, hooks
         foreach (const QString& word, words) {
+            int playability = playabilityMap.value(word);
             double combinations0 = letterBag.getNumCombinations(word, 0);
             double combinations1 = letterBag.getNumCombinations(word, 1);
             double combinations2 = letterBag.getNumCombinations(word, 2);
@@ -330,6 +344,7 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
             int bindNum = 0;
             query.bindValue(bindNum++, word);
             query.bindValue(bindNum++, length);
+            query.bindValue(bindNum++, playability);
             query.bindValue(bindNum++, combinations0);
             query.bindValue(bindNum++, combinations1);
             query.bindValue(bindNum++, combinations2);
@@ -377,106 +392,9 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
 }
 
 //---------------------------------------------------------------------------
-//  updatePlayabilityOrder
-//
-//! Update playability order of words in the database.
-//
-//! @param db the database
-//! @param stepNum the current step number
-//---------------------------------------------------------------------------
-void
-CreateDatabaseThread::updatePlayabilityOrder(QSqlDatabase& db, int& stepNum)
-{
-
-    //Auxil::getWordsDir()
-    //    definitionFilename = Auxil::getWordsDir() +
-    //        Auxil::getLexiconPrefix(lexicon) + ".txt";
-
-
-
-    //QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
-
-    //for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
-    //    QSqlQuery updateQuery (db);
-    //    updateQuery.prepare(QString("UPDATE words SET probability_order%1=?, "
-    //        "min_probability_order%1=?, max_probability_order%1=? "
-    //        "WHERE word=?").arg(numBlanks));
-
-    //    for (int length = 1; length <= MAX_WORD_LEN; ++length) {
-    //        QSqlQuery selectQuery (db);
-    //        selectQuery.prepare(QString("SELECT word, combinations%1 FROM words "
-    //            "WHERE length=? ORDER BY combinations%1 DESC").arg(numBlanks));
-
-    //        selectQuery.bindValue(0, length);
-    //        selectQuery.exec();
-
-    //        QMap<QString, QString> equalWordMap;
-    //        int probOrder = 1;
-    //        int minProbOrder = 1;
-    //        double prevCombinations = 0;
-
-    //        while (selectQuery.next()) {
-    //            QString word = selectQuery.value(0).toString();
-    //            double combinations = selectQuery.value(1).toDouble();
-
-    //            // Update probability ranges
-    //            if ((combinations != prevCombinations) && !equalWordMap.empty()) {
-    //                int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
-    //                QMapIterator<QString, QString> jt (equalWordMap);
-    //                while (jt.hasNext()) {
-    //                    jt.next();
-    //                    QString equalWord = jt.value();
-    //                    updateQuery.bindValue(0, probOrder);
-    //                    updateQuery.bindValue(1, minProbOrder);
-    //                    updateQuery.bindValue(2, maxProbOrder);
-    //                    updateQuery.bindValue(3, equalWord);
-    //                    updateQuery.exec();
-
-    //                    if ((stepNum % PROGRESS_STEP) == 0) {
-    //                        if (cancelled) {
-    //                            transactionQuery.exec("END TRANSACTION");
-    //                            return;
-    //                        }
-    //                        emit progress(stepNum);
-    //                    }
-
-    //                    ++probOrder;
-    //                    ++stepNum;
-    //                }
-    //                minProbOrder = probOrder;
-    //                equalWordMap.clear();
-    //            }
-
-    //            // Sort words by alphagram
-    //            QString radix = Auxil::getAlphagram(word) + word;
-    //            equalWordMap.insert(radix, word);
-
-    //            prevCombinations = combinations;
-    //        }
-
-    //        int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
-    //        QMapIterator<QString, QString> jt (equalWordMap);
-    //        while (jt.hasNext()) {
-    //            jt.next();
-    //            QString equalWord = jt.value();
-    //            updateQuery.bindValue(0, probOrder);
-    //            updateQuery.bindValue(1, minProbOrder);
-    //            updateQuery.bindValue(2, maxProbOrder);
-    //            updateQuery.bindValue(3, equalWord);
-    //            updateQuery.exec();
-    //            ++probOrder;
-    //            ++stepNum;
-    //        }
-    //    }
-    //}
-
-    //transactionQuery.exec("END TRANSACTION");
-}
-
-//---------------------------------------------------------------------------
 //  updateProbabilityOrder
 //
-//! Update probability order of words in the database.
+//! Update probability and playability order of words in the database.
 //
 //! @param db the database
 //! @param stepNum the current step number
@@ -486,39 +404,45 @@ CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
 {
     QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
 
-    for (int numBlanks = 0; numBlanks <= 2; ++numBlanks) {
+    for (int numBlanks = -1; numBlanks <= 2; ++numBlanks) {
+        QString valueCol = (numBlanks < 0 ? "playability"
+            : QString("combinations%1").arg(numBlanks));
+        QString orderCol = (numBlanks < 0 ? "playability_order"
+            : QString("probability_order%1").arg(numBlanks));
+        QString minOrderCol = "min_" + orderCol;
+        QString maxOrderCol = "max_" + orderCol;
+
         QSqlQuery updateQuery (db);
-        updateQuery.prepare(QString("UPDATE words SET probability_order%1=?, "
-            "min_probability_order%1=?, max_probability_order%1=? "
-            "WHERE word=?").arg(numBlanks));
+        updateQuery.prepare(QString("UPDATE words SET %1=?, %2=?, %3=? "
+            "WHERE word=?").arg(orderCol).arg(minOrderCol).arg(maxOrderCol));
 
         for (int length = 1; length <= MAX_WORD_LEN; ++length) {
             QSqlQuery selectQuery (db);
-            selectQuery.prepare(QString("SELECT word, combinations%1 FROM words "
-                "WHERE length=? ORDER BY combinations%1 DESC").arg(numBlanks));
+            selectQuery.prepare(QString("SELECT word, %1 FROM words "
+                "WHERE length=? ORDER BY %1 DESC").arg(valueCol));
 
             selectQuery.bindValue(0, length);
             selectQuery.exec();
 
             QMap<QString, QString> equalWordMap;
-            int probOrder = 1;
-            int minProbOrder = 1;
-            double prevCombinations = 0;
+            int order = 1;
+            int minOrder = 1;
+            double prevValue = 0;
 
             while (selectQuery.next()) {
                 QString word = selectQuery.value(0).toString();
-                double combinations = selectQuery.value(1).toDouble();
+                double value = selectQuery.value(1).toDouble();
 
                 // Update probability ranges
-                if ((combinations != prevCombinations) && !equalWordMap.empty()) {
-                    int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
+                if ((value != prevValue) && !equalWordMap.empty()) {
+                    int maxOrder = minOrder + equalWordMap.size() - 1;
                     QMapIterator<QString, QString> jt (equalWordMap);
                     while (jt.hasNext()) {
                         jt.next();
                         QString equalWord = jt.value();
-                        updateQuery.bindValue(0, probOrder);
-                        updateQuery.bindValue(1, minProbOrder);
-                        updateQuery.bindValue(2, maxProbOrder);
+                        updateQuery.bindValue(0, order);
+                        updateQuery.bindValue(1, minOrder);
+                        updateQuery.bindValue(2, maxOrder);
                         updateQuery.bindValue(3, equalWord);
                         updateQuery.exec();
 
@@ -530,10 +454,10 @@ CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
                             emit progress(stepNum);
                         }
 
-                        ++probOrder;
+                        ++order;
                         ++stepNum;
                     }
-                    minProbOrder = probOrder;
+                    minOrder = order;
                     equalWordMap.clear();
                 }
 
@@ -541,20 +465,20 @@ CreateDatabaseThread::updateProbabilityOrder(QSqlDatabase& db, int& stepNum)
                 QString radix = Auxil::getAlphagram(word) + word;
                 equalWordMap.insert(radix, word);
 
-                prevCombinations = combinations;
+                prevValue = value;
             }
 
-            int maxProbOrder = minProbOrder + equalWordMap.size() - 1;
+            int maxOrder = minOrder + equalWordMap.size() - 1;
             QMapIterator<QString, QString> jt (equalWordMap);
             while (jt.hasNext()) {
                 jt.next();
                 QString equalWord = jt.value();
-                updateQuery.bindValue(0, probOrder);
-                updateQuery.bindValue(1, minProbOrder);
-                updateQuery.bindValue(2, maxProbOrder);
+                updateQuery.bindValue(0, order);
+                updateQuery.bindValue(1, minOrder);
+                updateQuery.bindValue(2, maxOrder);
                 updateQuery.bindValue(3, equalWord);
                 updateQuery.exec();
-                ++probOrder;
+                ++order;
                 ++stepNum;
             }
         }
@@ -837,4 +761,51 @@ CreateDatabaseThread::getSubDefinition(const QString& word, const QString&
     }
 
     return QString();
+}
+
+//---------------------------------------------------------------------------
+//  importPlayability
+//
+//! Import playability values for a lexicon from a file.  The file is assumed
+//! to be in plain text format, containing one playability value and word per
+//! line.
+//
+//! @param lexicon the name of the lexicon
+//! @param filename the name of the file to import
+//! @param errString returns the error string in case of error
+//! @return the number of playability values imported
+//---------------------------------------------------------------------------
+int
+CreateDatabaseThread::importPlayability(const QString& filename,
+    QMap<QString, int>& playabilityMap) const
+{
+    playabilityMap.clear();
+
+    QFile file (filename);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return 0;
+
+    QStringList words;
+    QSet<QString> alphagrams;
+    int imported = 0;
+    char* buffer = new char[MAX_INPUT_LINE_LEN];
+    while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
+        QString line (buffer);
+        line = line.simplified();
+        if (line.isEmpty() || (line.at(0) == '#'))
+            continue;
+        bool ok = false;
+        int playability = line.section(' ', 0, 0).toInt(&ok);
+        if (!ok)
+            continue;
+        QString word = line.section(' ', 1, 1);
+        if (word.isEmpty())
+            continue;
+
+        playabilityMap[word] = playability;
+        ++imported;
+    }
+    delete[] buffer;
+
+    return imported;
 }

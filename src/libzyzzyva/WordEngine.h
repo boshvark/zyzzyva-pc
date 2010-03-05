@@ -85,6 +85,7 @@ class WordEngine : public QObject
         QMap<QString, QMultiMap<QString, QString> > definitions;
         QMap<int, QStringList> stems;
         QMap<QString, int> numAnagramsMap;
+        QMap<QString, int> playabilityMap;
         QMap<int, QSet<QString> > stemAlphagrams;
         mutable QMap<QString, WordInfo> wordCache;
         WordGraph* graph;
@@ -123,6 +124,12 @@ class WordEngine : public QObject
     QString getFrontHookLetters(const QString& lexicon, const QString& word)
         const;
     QString getBackHookLetters(const QString& lexicon, const QString& word)
+        const;
+    int getPlayabilityOrder(const QString& lexicon, const QString& word)
+        const;
+    int getMinPlayabilityOrder(const QString& lexicon, const QString& word)
+        const;
+    int getMaxPlayabilityOrder(const QString& lexicon, const QString& word)
         const;
     int getProbabilityOrder(const QString& lexicon, const QString& word,
                             int numBlanks) const;

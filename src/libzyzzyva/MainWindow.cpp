@@ -1836,10 +1836,8 @@ MainWindow::importLexicon(const QString& lexicon)
 {
     QString importFile;
     QString reverseImportFile;
-    QString definitionFile;
-    QString numWordsFile;
-    QString numAnagramsFile;
     QString checksumFile;
+    QString playabilityFile;
     bool ok = true;
     bool dawg = true;
     if (lexicon == LEXICON_CUSTOM) {
@@ -1871,6 +1869,7 @@ MainWindow::importLexicon(const QString& lexicon)
             importFile =        prefix + ".dwg";
             reverseImportFile = prefix + "-r.dwg";
             checksumFile =      prefix + "-checksums.txt";
+            playabilityFile =   prefix + "-playability.txt";
         }
     }
 
@@ -1928,7 +1927,6 @@ MainWindow::importLexicon(const QString& lexicon)
 int
 MainWindow::importText(const QString& lexicon, const QString& file)
 {
-    QString err;
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     int imported = wordEngine->importTextFile(lexicon, file, true);
     QApplication::restoreOverrideCursor();
@@ -1941,6 +1939,7 @@ MainWindow::importText(const QString& lexicon, const QString& file)
 //! Import stems.  XXX: Right now this is hard-coded to load certain North
 //! American stems.  Should be more flexible.
 //
+//! @param lexicon the lexicon name
 //! @return the number of imported stems
 //---------------------------------------------------------------------------
 int
