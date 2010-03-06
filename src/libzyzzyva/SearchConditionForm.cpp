@@ -514,18 +514,21 @@ SearchConditionForm::typeChanged(const QString& string)
         case SearchCondition::PatternMatch:
         case SearchCondition::AnagramMatch:
         case SearchCondition::SubanagramMatch:
-        negationCbox->setCheckState(Qt::Unchecked);
-        negationCbox->setEnabled(false);
-        paramLine->setValidator(patternValidator);
-        paramStack->setCurrentWidget(paramLineWidget);
-        break;
-
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
-        case SearchCondition::IncludeLetters:
-        negationCbox->setEnabled(true);
-        paramLine->setValidator(letterValidator);
-        paramStack->setCurrentWidget(paramLineWidget);
+        case SearchCondition::IncludeLetters: {
+            QValidator* validator = ((type == SearchCondition::Prefix) ||
+                (type == SearchCondition::Suffix) ||
+                (type == SearchCondition::IncludeLetters) ?
+                letterValidator : patternValidator);
+            negationCbox->setEnabled(true);
+            paramLine->setValidator(validator);
+            int pos = 0;
+            QString text = paramLine->text();
+            validator->validate(text, pos);
+            paramLine->setText(text);
+            paramStack->setCurrentWidget(paramLineWidget);
+        }
         break;
 
         case SearchCondition::Length:
