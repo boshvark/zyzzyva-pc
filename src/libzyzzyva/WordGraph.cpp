@@ -3,7 +3,7 @@
 //
 // A Directed Acyclic Word Graph class.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -227,7 +227,8 @@ WordGraph::search(const SearchSpec& spec) const
     if (!dawg)
         return searchOld(spec);
 
-    QList<SearchCondition> matchConditions;
+    QList<SearchCondition> posMatchConditions;
+    QList<SearchCondition> negMatchConditions;
     int maxLength = MAX_WORD_LEN;
     QString excludeLetters;
     int numWildcardConditions = 0;
@@ -240,7 +241,10 @@ WordGraph::search(const SearchSpec& spec) const
             case SearchCondition::PatternMatch:
             case SearchCondition::AnagramMatch:
             case SearchCondition::SubanagramMatch:
-            matchConditions.append(condition);
+            if (condition.negated)
+                negMatchConditions.append(condition);
+            else
+                posMatchConditions.append(condition);
             if (condition.stringValue.contains("?") ||
                 condition.stringValue.contains("["))
                 ++numWildcardConditions;
@@ -269,11 +273,11 @@ WordGraph::search(const SearchSpec& spec) const
 
     // If no match condition was specified, search for all words matching the
     // other conditions
-    if (matchConditions.empty()) {
+    if (posMatchConditions.empty()) {
         SearchCondition condition;
         condition.type = SearchCondition::PatternMatch;
         condition.stringValue = "*";
-        matchConditions.append(condition);
+        posMatchConditions.append(condition);
     }
 
     map<QString, QString> finalWordSet;
@@ -281,11 +285,14 @@ WordGraph::search(const SearchSpec& spec) const
     int conditionNum = 0;
 
     // Search for each condition separately, and take the conjunction or
-    // disjunction of the result sets
-    QListIterator<SearchCondition> mit (matchConditions);
+    // disjunction of the result sets. Search for positive conditions first,
+    // followed by negative conditions.
+    QListIterator<SearchCondition> mit (posMatchConditions +
+                                        negMatchConditions);
     while (mit.hasNext()) {
         const SearchCondition& condition = mit.next();
         QString unmatched = condition.stringValue;
+        bool negated = condition.negated;
 
         // Use set to eliminate duplicates since patterns with wildcards may
         // match the same word in more than one way
@@ -577,15 +584,23 @@ WordGraph::search(const SearchSpec& spec) const
             for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
                 map<QString, QString>::iterator found =
                     finalWordSet.find(sit->first);
-                if (found != finalWordSet.end())
-                    conjunctionSet.insert(*found);
+                if (found != finalWordSet.end()) {
+                    if (negated)
+                        finalWordSet.erase(found);
+                    else
+                        conjunctionSet.insert(*found);
+                }
             }
-            if (conjunctionSet.empty())
-                return wordList;
-            finalWordSet = conjunctionSet;
+            if (!negated) {
+                if (conjunctionSet.empty())
+                    return wordList;
+                finalWordSet = conjunctionSet;
+            }
         }
 
         else {
+            // FIXME: disjunction is broken for negated conditions! Fix this
+            // when disjunction is enabled in the UI.
             for (sit = wordSet.begin(); sit != wordSet.end(); ++sit) {
                 finalWordSet.insert(*sit);
             }
