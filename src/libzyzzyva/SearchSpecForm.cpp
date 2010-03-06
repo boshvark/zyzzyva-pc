@@ -183,20 +183,9 @@ SearchSpecForm::setSearchSpec(const SearchSpec& spec)
 bool
 SearchSpecForm::isValid() const
 {
-    // ### For now, disallow searches that have multiple probability
-    // conditions with different numbers of blanks
-    int numBlanks = -1;
     foreach (SearchConditionForm* form, conditionForms) {
         if (!form->isValid())
             return false;
-        SearchCondition condition = form->getSearchCondition();
-        if ((condition.type == SearchCondition::ProbabilityOrder) ||
-            (condition.type == SearchCondition::LimitByProbabilityOrder))
-        {
-            if (numBlanks >= 0 && (numBlanks != condition.intValue))
-                return false;
-            numBlanks = condition.intValue;
-        }
     }
     return true;
 }

@@ -561,41 +561,44 @@ WordEngine::applyPostConditions(const QString& lexicon,
 
     // Handle Limit by Probability/Playability Order conditions
     bool legacyProbCondition = false;
-    int probNumBlanks = 0;
     const int MIN_INDEX = 0;
     const int MAX_INDEX = 1;
     const int MIN_LAX_INDEX = 2;
     const int MAX_LAX_INDEX = 3;
-    QMap<SearchCondition::SearchType, QVector<int> > limits;
+    QMap<QPair<SearchCondition::SearchType, int>, QVector<int> > limits;
     QListIterator<SearchCondition> cit (optimizedSpec.conditions);
     while (cit.hasNext()) {
         SearchCondition condition = cit.next();
         if ((condition.type == SearchCondition::LimitByProbabilityOrder) ||
             (condition.type == SearchCondition::LimitByPlayabilityOrder))
         {
-            // Initialize limits
-            if (!limits.contains(condition.type)) {
-                limits[condition.type] = (QVector<int>() << 0 <<
-                    LIMIT_RANGE_MAX << 0 << LIMIT_RANGE_MAX);
-            }
-
+            int probNumBlanks = 0;
             if (condition.type == SearchCondition::LimitByProbabilityOrder) {
                 probNumBlanks = condition.intValue;
                 if (condition.legacy)
                     legacyProbCondition = true;
             }
 
+            QPair<SearchCondition::SearchType, int> typePair =
+                qMakePair(condition.type, probNumBlanks);
+
+            // Initialize limits
+            if (!limits.contains(typePair)) {
+                limits[typePair] = (QVector<int>() << 0 <<
+                    LIMIT_RANGE_MAX << 0 << LIMIT_RANGE_MAX);
+            }
+
             if (condition.boolValue) {
-                if (condition.minValue > limits[condition.type][MIN_LAX_INDEX])
-                    limits[condition.type][MIN_LAX_INDEX] = condition.minValue;
-                if (condition.maxValue < limits[condition.type][MAX_LAX_INDEX])
-                    limits[condition.type][MAX_LAX_INDEX] = condition.maxValue;
+                if (condition.minValue > limits[typePair][MIN_LAX_INDEX])
+                    limits[typePair][MIN_LAX_INDEX] = condition.minValue;
+                if (condition.maxValue < limits[typePair][MAX_LAX_INDEX])
+                    limits[typePair][MAX_LAX_INDEX] = condition.maxValue;
             }
             else {
-                if (condition.minValue > limits[condition.type][MIN_INDEX])
-                    limits[condition.type][MIN_INDEX] = condition.minValue;
-                if (condition.maxValue < limits[condition.type][MAX_INDEX])
-                    limits[condition.type][MAX_INDEX] = condition.maxValue;
+                if (condition.minValue > limits[typePair][MIN_INDEX])
+                    limits[typePair][MIN_INDEX] = condition.minValue;
+                if (condition.maxValue < limits[typePair][MAX_INDEX])
+                    limits[typePair][MAX_INDEX] = condition.maxValue;
             }
         }
     }
@@ -603,13 +606,15 @@ WordEngine::applyPostConditions(const QString& lexicon,
     // Keep only words in the limit ranges
     if (!limits.isEmpty()) {
         QSet<QString> returnSet = returnList.toSet();
-        QMap<QString, QString> probValueMap;
+        QMap<int, QMap<QString, QString> > probValueMap;
         QMap<QString, QString> playValueMap;
 
-        QMapIterator<SearchCondition::SearchType, QVector<int> > it (limits);
+        QMapIterator<QPair<SearchCondition::SearchType, int>, QVector<int> >
+            it (limits);
         while (it.hasNext()) {
             it.next();
-            SearchCondition::SearchType searchType = it.key();
+            SearchCondition::SearchType searchType = it.key().first;
+            int probNumBlanks = it.key().second;
             const QVector<int> limitValues = it.value();
             bool probCondition =
                 (searchType == SearchCondition::LimitByProbabilityOrder);
@@ -644,21 +649,24 @@ WordEngine::applyPostConditions(const QString& lexicon,
             int max = (limitMax < limitMaxLax) ? limitMax : limitMaxLax;
 
             // Sort the words according to probability order
-            if (probCondition && probValueMap.isEmpty()) {
-                LetterBag bag;
-                foreach (const QString& word, returnList) {
-                    // FIXME: change this radix for new probability sorting -
-                    // leave alone for old probability sorting
-                    QString radix;
-                    QString wordUpper = word.toUpper();
-                    radix.sprintf("%09.0f", 1e9 - 1 -
-                        bag.getNumCombinations(wordUpper, probNumBlanks));
-                    // Legacy probability order limits are sorted
-                    // alphabetically, not by alphagram
-                    if (!legacyProbCondition)
-                        radix += Auxil::getAlphagram(wordUpper);
-                    radix += wordUpper;
-                    probValueMap.insert(radix, word);
+            if (probCondition) {
+                QMap<QString, QString>& valueMap = probValueMap[probNumBlanks];
+                if (valueMap.isEmpty()) {
+                    LetterBag bag;
+                    foreach (const QString& word, returnList) {
+                        // FIXME: change this radix for new probability
+                        // sorting - leave alone for old probability sorting
+                        QString radix;
+                        QString wordUpper = word.toUpper();
+                        radix.sprintf("%09.0f", 1e9 - 1 -
+                            bag.getNumCombinations(wordUpper, probNumBlanks));
+                        // Legacy probability order limits are sorted
+                        // alphabetically, not by alphagram
+                        if (!legacyProbCondition)
+                            radix += Auxil::getAlphagram(wordUpper);
+                        radix += wordUpper;
+                        valueMap.insert(radix, word);
+                    }
                 }
             }
 
@@ -672,13 +680,16 @@ WordEngine::applyPostConditions(const QString& lexicon,
                 if (!db || !db->isOpen())
                     return returnList;
 
+                QMap<QString, QString> origCase;
                 QString qstr = "SELECT word, playability FROM words "
                     "WHERE word IN (";
                 QStringListIterator it (returnList);
                 for (int i = 0; it.hasNext(); ++i) {
+                    const QString& word = it.next();
+                    origCase[word.toUpper()] = word;
                     if (i)
                         qstr += ", ";
-                    qstr += "'" + it.next().toUpper() + "'";
+                    qstr += "'" + word.toUpper() + "'";
                 }
                 qstr += ")";
 
@@ -687,18 +698,19 @@ WordEngine::applyPostConditions(const QString& lexicon,
                 query.exec();
 
                 while (query.next()) {
-                    QString word = query.value(0).toString();
+                    QString word = origCase[query.value(0).toString()];
                     int playability = query.value(1).toInt();
                     QString radix;
+                    QString wordUpper = word.toUpper();
                     radix.sprintf("%09.0f", 1e9 - 1 - playability);
-                    radix += Auxil::getAlphagram(word);
-                    radix += word;
+                    radix += Auxil::getAlphagram(wordUpper);
+                    radix += wordUpper;
                     playValueMap.insert(radix, word);
                 }
             }
 
             QMap<QString, QString>& valueMap = probCondition ?
-                probValueMap : playValueMap;
+                probValueMap[probNumBlanks] : playValueMap;
             QStringList keys = valueMap.keys();
 
             // Allow Lax matches only up to hard Min limit
