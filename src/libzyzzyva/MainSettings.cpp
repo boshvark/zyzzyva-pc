@@ -180,7 +180,7 @@ MainSettings::readSettings()
     instance->displayWelcome
         = settings.value(SETTINGS_DISPLAY_WELCOME, true).toBool();
 
-    QString defaultUserDir = Auxil::getHomeDir() + "/.zyzzyva";
+    QString defaultUserDir = Auxil::getHomeDir() + "/Zyzzyva";
     instance->userDataDir = QDir::cleanPath(
         settings.value(SETTINGS_USER_DATA_DIR, defaultUserDir).toString());
 
