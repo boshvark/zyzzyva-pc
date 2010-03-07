@@ -67,7 +67,7 @@
                             <comment>Uninstall</comment>
                             <exec>${installdir}/${uninstallerName}</exec>
                             <icon></icon>
-                            <name>Uninstall ${product_fullname}</name>
+                            <name>Uninstall ${product_fullname} ${product_version}</name>
                             <path>${installdir}</path>
                             <platforms>all</platforms>
                             <windowsExec>${installdir}/${uninstallerName}.exe</windowsExec>
@@ -195,8 +195,8 @@
             <postInstallationActionList/>
             <startMenuShortcutList>
                 <startMenuShortcut>
-                    <comment>Uninstall ${product_fullname}</comment>
-                    <name>Uninstall ${product_fullname}</name>
+                    <comment>Uninstall ${product_fullname} ${product_version}</comment>
+                    <name>Uninstall ${product_fullname} ${product_version}</name>
                     <windowsExec>${installdir}/uninstall.exe</windowsExec>
                     <windowsExecArgs></windowsExecArgs>
                     <windowsIcon></windowsIcon>
