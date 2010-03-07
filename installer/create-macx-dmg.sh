@@ -37,7 +37,7 @@ echo "Creating disk image..."
 rm -rf $DMGFILE
 hdiutil create -srcfolder $APPDIR -volname Zyzzyva-$ZVER $DMGFILE > /dev/null
 hdiutil attach $DMGFILE > /dev/null
-DEVS=$(hdiutil attach Zyzzyva-$ZVER.dmg | cut -f 1)
+DEVS=$(hdiutil attach $DMGFILE | cut -f 1)
 DEV=$(echo $DEVS | cut -f 1 -d ' ')
 hdiutil detach $DEV > /dev/null
 hdiutil internet-enable -yes $DMGFILE > /dev/null
