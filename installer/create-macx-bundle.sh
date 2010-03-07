@@ -4,7 +4,7 @@
 #
 # Create a bundle for Mac OS X.
 #
-# Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -25,7 +25,7 @@
 
 set -e
 
-QTDIR=/usr/local/Trolltech/Qt-4.6.2
+QTDIR=/usr/local/Trolltech/Qt-4.3.2
 QTVER=4
 OUTDIR=$(pwd)/installer/macosx
 
