@@ -3,7 +3,7 @@
 //
 // A class to represent a word search specification.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -53,29 +53,6 @@ SearchSpec::asString() const
         str += it.next().asString();
     }
     return str;
-}
-
-//---------------------------------------------------------------------------
-//  asXml
-//
-//! Return an XML string representing the search spec.
-//
-//! @return the XML string representation
-//---------------------------------------------------------------------------
-QString
-SearchSpec::asXml() const
-{
-    QDomImplementation implementation;
-    QDomDocument document(implementation.createDocumentType(
-                          "zyzzyva-search", QString(),
-                          "http://pietdepsi.com/dtd/zyzzyva-search.dtd"));
-
-    document.appendChild(asDomElement());
-
-    //// XXX: There should be a programmatic way to write the <?xml?> header
-    //// based on the QDomImplementation, shouldn't there?
-    return QString("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n") +
-        document.toString();
 }
 
 //---------------------------------------------------------------------------

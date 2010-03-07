@@ -3,7 +3,7 @@
 //
 // The main settings for the word study application.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -125,10 +125,6 @@ class MainSettings
         return instance->quizRecordStats; }
     static void setQuizRecordStats(bool b) {
         instance->quizRecordStats = b; }
-    static int getProbabilityNumBlanks() {
-        return instance->probabilityNumBlanks; }
-    static void setProbabilityNumBlanks(int i) {
-        instance->probabilityNumBlanks = i; }
     static QList<int> getCardboxScheduleList() {
         return instance->cardboxScheduleList; }
     static void setCardboxScheduleList(const QList<int>& slist) {
@@ -159,10 +155,6 @@ class MainSettings
         return instance->wordListSortByProbabilityOrder; }
     static void setWordListSortByProbabilityOrder(bool b) {
         instance->wordListSortByProbabilityOrder = b; }
-    static bool getWordListSortByPlayabilityOrder() {
-        return instance->wordListSortByPlayabilityOrder; }
-    static void setWordListSortByPlayabilityOrder(bool b) {
-        instance->wordListSortByPlayabilityOrder = b; }
     static bool getWordListGroupByAnagrams() {
         return instance->wordListGroupByAnagrams; }
     static void setWordListGroupByAnagrams(bool b) {
@@ -171,10 +163,6 @@ class MainSettings
         return instance->wordListShowProbabilityOrder; }
     static void setWordListShowProbabilityOrder(bool b) {
         instance->wordListShowProbabilityOrder = b; }
-    static bool getWordListShowPlayabilityOrder() {
-        return instance->wordListShowPlayabilityOrder; }
-    static void setWordListShowPlayabilityOrder(bool b) {
-        instance->wordListShowPlayabilityOrder = b; }
     static bool getWordListShowHooks() {
         return instance->wordListShowHooks; }
     static void setWordListShowHooks(bool b) {
@@ -210,7 +198,6 @@ class MainSettings
     MainSettings() : useAutoImport(false), useTileTheme(false),
                      wordListSortByLength(false),
                      wordListSortByProbabilityOrder(false),
-                     wordListSortByPlayabilityOrder(false),
                      wordListShowHooks(false),
                      wordListShowHookParents(false),
                      wordListShowDefinitions(false),
@@ -249,7 +236,6 @@ class MainSettings
     bool quizTimeoutDisableInput;
     int quizTimeoutDisableInputMillisecs;
     bool quizRecordStats;
-    int probabilityNumBlanks;
     QList<int> cardboxScheduleList;
     QList<int> cardboxWindowList;
     QString mainFont;
@@ -259,10 +245,8 @@ class MainSettings
     QString definitionFont;
     bool wordListSortByLength;
     bool wordListSortByProbabilityOrder;
-    bool wordListSortByPlayabilityOrder;
     bool wordListGroupByAnagrams;
     bool wordListShowProbabilityOrder;
-    bool wordListShowPlayabilityOrder;
     bool wordListShowHooks;
     bool wordListShowHookParents;
     bool wordListShowDefinitions;

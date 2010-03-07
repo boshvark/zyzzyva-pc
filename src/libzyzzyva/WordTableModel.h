@@ -3,7 +3,7 @@
 //
 // A model for representing word lists.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -58,13 +58,11 @@ class WordTableModel : public QAbstractTableModel
         bool getFrontParentHook() const { return frontParentHook; }
         bool getBackParentHook() const { return backParentHook; }
         int getProbabilityOrder() const { return probabilityOrder; }
-        int getPlayabilityOrder() const { return playabilityOrder; }
         QString getLexiconSymbols() const { return lexiconSymbols; }
         void setWord(const QString& w) { word = w; }
         void setType(WordType t) { type = t; }
         void setWildcard(const QString& w) { wildcard = w; }
         void setProbabilityOrder(int p);
-        void setPlayabilityOrder(int p);
         void setLexiconSymbols(const QString& s);
 
         void setHooks(const QString& front, const QString& back);
@@ -72,7 +70,6 @@ class WordTableModel : public QAbstractTableModel
         bool hooksAreValid() const { return hooksValid; }
         bool parentHooksAreValid() const { return parentHooksValid; }
         bool probabilityOrderIsValid() const { return probabilityOrderValid; }
-        bool playabilityOrderIsValid() const { return playabilityOrderValid; }
         bool lexiconSymbolsAreValid() const { return lexiconSymbolsValid; }
 
         bool operator==(const WordItem& other) const {
@@ -86,12 +83,10 @@ class WordTableModel : public QAbstractTableModel
         bool hooksValid;
         bool parentHooksValid;
         bool probabilityOrderValid;
-        bool playabilityOrderValid;
         bool lexiconSymbolsValid;
         QString word;
         WordType type;
         int probabilityOrder;
-        int playabilityOrder;
         QString wildcard;
         QString frontHooks;
         QString backHooks;
@@ -125,8 +120,6 @@ class WordTableModel : public QAbstractTableModel
     QString getLexicon() const { return lexicon; }
     void setLexicon(const QString& lex) { lexicon = lex; }
     int getLastAddedIndex() const { return lastAddedIndex; }
-    void setProbabilityNumBlanks(int numBlanks) { probNumBlanks = numBlanks; }
-    int getProbabilityNumBlanks() const { return probNumBlanks; }
     void clearLastAddedIndex();
 
     signals:
@@ -140,19 +133,16 @@ class WordTableModel : public QAbstractTableModel
     WordEngine* wordEngine;
     QString lexicon;
     mutable QList<WordItem> wordList;
-    int probNumBlanks;
     int lastAddedIndex;
 
     public:
     enum {
         WILDCARD_MATCH_COLUMN = 0,
         PROBABILITY_ORDER_COLUMN = 1,
-        PLAYABILITY_ORDER_COLUMN = 2,
-        FRONT_HOOK_COLUMN = 3,
-        WORD_COLUMN = 4,
-        BACK_HOOK_COLUMN = 5,
-        DEFINITION_COLUMN = 6,
-        NUM_COLUMNS = 7
+        FRONT_HOOK_COLUMN = 2,
+        WORD_COLUMN = 3,
+        BACK_HOOK_COLUMN = 4,
+        DEFINITION_COLUMN = 5
     };
 
     static const QChar PARENT_HOOK_CHAR;

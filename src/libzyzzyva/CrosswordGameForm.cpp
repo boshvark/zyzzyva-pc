@@ -3,7 +3,7 @@
 //
 // A form for playing a crossword game.
 //
-// Copyright 2006-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -829,7 +829,7 @@ CrosswordGameForm::processObserve(const QString& string)
     else if (action == "CHALLENGE") {
         QStringList judgments = args.simplified().split(" ");
         bool acceptable = true;
-        foreach (const QString& judgment, judgments) {
+        foreach (QString judgment, judgments) {
             if (judgment == "Yes")
                 continue;
             acceptable = false;

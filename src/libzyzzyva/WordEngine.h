@@ -3,7 +3,8 @@
 //
 // A class to handle the loading and searching of words.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009
+// Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -38,25 +39,20 @@ class WordEngine : public QObject
 {
     Q_OBJECT
     public:
-    class ValueOrder {
-        public:
-        ValueOrder() : valueOrder(0), minValueOrder(0), maxValueOrder(0) { }
-        public:
-        int valueOrder;
-        int minValueOrder;
-        int maxValueOrder;
-    };
-
     class WordInfo {
         public:
-        WordInfo() : numVowels(0), numUniqueLetters(0), numAnagrams(0),
-            pointValue(0) { }
+        WordInfo() : probabilityOrder(0), minProbabilityOrder(0),
+            maxProbabilityOrder(0), numVowels(0), numUniqueLetters(0),
+            numAnagrams(0), pointValue(0) { }
         ~WordInfo() { }
 
         bool isValid() const { return !word.isEmpty(); }
 
         public:
         QString word;
+        int probabilityOrder;
+        int minProbabilityOrder;
+        int maxProbabilityOrder;
         int numVowels;
         int numUniqueLetters;
         int numAnagrams;
@@ -67,8 +63,6 @@ class WordEngine : public QObject
         bool isBackHook;
         QString lexiconSymbols;
         QString definition;
-        ValueOrder playability;
-        QMap<int, ValueOrder> blankProbability;
     };
 
     class LexiconData {
@@ -81,7 +75,6 @@ class WordEngine : public QObject
         QMap<QString, QMultiMap<QString, QString> > definitions;
         QMap<int, QStringList> stems;
         QMap<QString, int> numAnagramsMap;
-        QMap<QString, int> playabilityMap;
         QMap<int, QSet<QString> > stemAlphagrams;
         mutable QMap<QString, WordInfo> wordCache;
         WordGraph* graph;
@@ -121,18 +114,12 @@ class WordEngine : public QObject
         const;
     QString getBackHookLetters(const QString& lexicon, const QString& word)
         const;
-    int getPlayabilityOrder(const QString& lexicon, const QString& word)
+    int getProbabilityOrder(const QString& lexicon, const QString& word)
         const;
-    int getMinPlayabilityOrder(const QString& lexicon, const QString& word)
+    int getMinProbabilityOrder(const QString& lexicon, const QString& word)
         const;
-    int getMaxPlayabilityOrder(const QString& lexicon, const QString& word)
+    int getMaxProbabilityOrder(const QString& lexicon, const QString& word)
         const;
-    int getProbabilityOrder(const QString& lexicon, const QString& word,
-                            int numBlanks) const;
-    int getMinProbabilityOrder(const QString& lexicon, const QString& word,
-                               int numBlanks) const;
-    int getMaxProbabilityOrder(const QString& lexicon, const QString& word,
-                               int numBlanks) const;
     // XXX: Lexicon parameter doesn't really make sense here, but it is
     // retained to use word info caching
     int getNumVowels(const QString& lexicon, const QString& word) const;
@@ -141,8 +128,6 @@ class WordEngine : public QObject
     bool getIsFrontHook(const QString& lexicon, const QString& word) const;
     bool getIsBackHook(const QString& lexicon, const QString& word) const;
     QString getLexiconSymbols(const QString& lexicon, const QString& word) const;
-
-    void addToCache(const QString& lexicon, const QStringList& words) const;
 
     private:
     enum ConditionPhase {
@@ -154,6 +139,7 @@ class WordEngine : public QObject
 
     private:
     void clearCache(const QString& lexicon) const;
+    void addToCache(const QString& lexicon, const QStringList& words) const;
     bool matchesPostConditions(const QString& lexicon, const QString& word,
                                const QList<SearchCondition>& conditions) const;
     bool isSetMember(const QString& lexicon, const QString& word,

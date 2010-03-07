@@ -3,7 +3,7 @@
 //
 // Definitions.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -29,13 +29,12 @@
 #include <QString>
 
 namespace Defs {
-    const QString ZYZZYVA_VERSION = "2.0.6";
-    const int CURRENT_DATABASE_VERSION = 4;
+    const QString ZYZZYVA_VERSION = "2.0.5";
+    const int CURRENT_DATABASE_VERSION = 3;
     const QString IMPORT_CHOOSER_TITLE = "Choose a Word List";
     const QString EMPTY_DEFINITION = "(no definition)";
     const int DEFINITION_WRAP_LENGTH = 80;
     const int MAX_WORD_LEN = 15;
-    const int MAX_BLANKS = 2;
     const int MAX_INPUT_LINE_LEN = 640;
     const int SPACING = 4;
     const int MARGIN = 4;

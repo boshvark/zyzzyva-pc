@@ -3,7 +3,7 @@
 //
 // The dialog for editing a list of words.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -120,7 +120,7 @@ WordListDialog::setWords(const QString& string)
 {
     wordList->clear();
     QStringList words = string.split(QChar(' '), QString::SkipEmptyParts);
-    foreach (const QString& word, words) {
+    foreach (QString word, words) {
         new QListWidgetItem(word, wordList);
     }
     updateLabel();

@@ -3,7 +3,7 @@
 //
 // A form for looking up and displaying word definitions.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QApplication>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -220,8 +219,6 @@ DefineForm::displayInfo(bool allInfo)
     if (word.isEmpty())
         return;
 
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-
     QString lexicon = lexiconWidget->getCurrentLexicon();
     bool showSymbols = MainSettings::getWordListUseLexiconStyles();
 
@@ -346,6 +343,4 @@ DefineForm::displayInfo(bool allInfo)
     resultBox->setTitle(word);
     resultBox->show();
     selectInputArea();
-
-    QApplication::restoreOverrideCursor();
 }

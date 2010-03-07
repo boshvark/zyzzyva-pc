@@ -3,7 +3,7 @@
 //
 // The main settings for the word study application.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -53,8 +53,6 @@ const QString SETTINGS_SORT_BY_LENGTH = "wordlist_sort_by_length";
 const QString SETTINGS_GROUP_BY_ALPHAGRAMS = "wordlist_group_by_alphagrams";
 const QString SETTINGS_SHOW_PROBABILITY_ORDER
     = "wordlist_show_probability_order";
-const QString SETTINGS_SHOW_PLAYABILITY_ORDER
-    = "wordlist_show_playability_order";
 const QString SETTINGS_SHOW_HOOKS = "wordlist_show_hooks";
 const QString SETTINGS_SHOW_HOOK_PARENTS = "wordlist_show_hook_parents";
 const QString SETTINGS_SHOW_DEFINITIONS = "wordlist_show_definitions";
@@ -83,7 +81,6 @@ const QString SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT = "quiz_timeout_disable_input"
 const QString SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS
     = "quiz_timeout_disable_input_msecs";
 const QString SETTINGS_QUIZ_RECORD_STATS = "quiz_record_stats";
-const QString SETTINGS_PROBABILITY_NUM_BLANKS = "probability_num_blanks";
 const QString SETTINGS_CARDBOX_SCHEDULES = "cardbox_schedules";
 const QString SETTINGS_CARDBOX_WINDOWS = "cardbox_windows";
 const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
@@ -93,7 +90,6 @@ const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb(0, 0, 127);
 const int     DEFAULT_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS = 750;
-const int     DEFAULT_PROBABILITY_NUM_BLANKS = 2;
 const QString DEFAULT_CARDBOX_SCHEDULES = "1 4 7 12 20 30 60 90 150 270 480";
 const QString DEFAULT_CARDBOX_WINDOWS = "0 1 2 3 5 7 10 15 20 30 50";
 const QString DEFAULT_LEXICON_STYLES = QString(
@@ -226,24 +222,20 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS,
                          DEFAULT_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS).toInt();
 
-    instance->probabilityNumBlanks
-        = settings.value(SETTINGS_PROBABILITY_NUM_BLANKS,
-                         DEFAULT_PROBABILITY_NUM_BLANKS).toInt();
-
     instance->quizRecordStats
         = settings.value(SETTINGS_QUIZ_RECORD_STATS, true).toBool();
 
     QString schedStr = settings.value(SETTINGS_CARDBOX_SCHEDULES,
                                       DEFAULT_CARDBOX_SCHEDULES).toString();
     instance->cardboxScheduleList.clear();
-    foreach (const QString& str, schedStr.split(QChar(' '))) {
+    foreach (QString str, schedStr.split(QChar(' '))) {
         instance->cardboxScheduleList.append(str.toInt());
     }
 
     QString windowStr = settings.value(SETTINGS_CARDBOX_WINDOWS,
                                        DEFAULT_CARDBOX_WINDOWS).toString();
     instance->cardboxWindowList.clear();
-    foreach (const QString& str, windowStr.split(QChar(' '))) {
+    foreach (QString str, windowStr.split(QChar(' '))) {
         instance->cardboxWindowList.append(str.toInt());
     }
 
@@ -264,8 +256,6 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_GROUP_BY_ALPHAGRAMS, true).toBool();
     instance->wordListShowProbabilityOrder
         = settings.value(SETTINGS_SHOW_PROBABILITY_ORDER, true).toBool();
-    instance->wordListShowPlayabilityOrder
-        = settings.value(SETTINGS_SHOW_PLAYABILITY_ORDER, false).toBool();
     instance->wordListShowHooks
         = settings.value(SETTINGS_SHOW_HOOKS, true).toBool();
     instance->wordListShowHookParents
@@ -282,7 +272,7 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_LEXICON_STYLES,
                          DEFAULT_LEXICON_STYLES).toString();
     instance->wordListLexiconStyles.clear();
-    foreach (const QString& str, lexiconStyleStr.split(QChar('\n'))) {
+    foreach (QString str, lexiconStyleStr.split(QChar('\n'))) {
         LexiconStyle style = Auxil::stringToLexiconStyle(str);
         if (!style.isValid())
             continue;
@@ -351,9 +341,6 @@ MainSettings::writeSettings()
     settings.setValue(SETTINGS_QUIZ_RECORD_STATS,
                       instance->quizRecordStats);
 
-    settings.setValue(SETTINGS_PROBABILITY_NUM_BLANKS,
-                      instance->probabilityNumBlanks);
-
     QString schedStr;
     foreach (int sched, instance->cardboxScheduleList) {
         if (!schedStr.isEmpty())
@@ -382,8 +369,6 @@ MainSettings::writeSettings()
                       instance->wordListGroupByAnagrams);
     settings.setValue(SETTINGS_SHOW_PROBABILITY_ORDER,
                       instance->wordListShowProbabilityOrder);
-    settings.setValue(SETTINGS_SHOW_PLAYABILITY_ORDER,
-                      instance->wordListShowPlayabilityOrder);
     settings.setValue(SETTINGS_SHOW_HOOKS, instance->wordListShowHooks);
     settings.setValue(SETTINGS_SHOW_HOOK_PARENTS,
                       instance->wordListShowHookParents);

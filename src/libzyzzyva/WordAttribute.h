@@ -35,7 +35,6 @@ enum WordAttribute
     WordAttrInnerHooks,
     WordAttrLexiconSymbols,
     WordAttrProbabilityOrder,
-    WordAttrPlayabilityOrder,
     WordAttrFrontExtensions,
     WordAttrBackExtensions,
     WordAttrDoubleExtensions

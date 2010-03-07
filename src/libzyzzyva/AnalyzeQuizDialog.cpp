@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -400,7 +400,7 @@ AnalyzeQuizDialog::moveCache()
 
     // Move missed cache to word list
     QList<WordTableModel::WordItem> wordItems;
-    foreach (const QString& word, missedCache) {
+    foreach (QString word, missedCache) {
         wordItems.append(
             WordTableModel::WordItem(word, WordTableModel::WordMissed));
     }
@@ -409,7 +409,7 @@ AnalyzeQuizDialog::moveCache()
 
     // Move incorrect cache to word list
     wordItems.clear();
-    foreach (const QString& word, incorrectCache) {
+    foreach (QString word, incorrectCache) {
         wordItems.append(
             WordTableModel::WordItem(word, WordTableModel::WordIncorrect));
     }

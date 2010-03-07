@@ -3,7 +3,7 @@
 //
 // A class for holding instances of letters.
 //
-// Copyright 2006-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -83,14 +83,12 @@ LetterBag::LetterBag(const QString& distribution)
 //! drawing the number of letters in the word.
 //
 //! @param word the word
-//! @param numBlanks the number of blanks considered to be in the bag - if
-//! greater than 2, then pared back to 2
 //! @return the probability of drawing letters to form the word, times 1e9
 //---------------------------------------------------------------------------
 double
-LetterBag::getProbability(const QString& word, int numBlanks) const
+LetterBag::getProbability(const QString& word) const
 {
-    return (1e9 * getNumCombinations(word, numBlanks)) /
+    return (1e9 * getNumCombinations(word)) /
         fullChooseCombos[word.length()];
 }
 
@@ -101,18 +99,11 @@ LetterBag::getProbability(const QString& word, int numBlanks) const
 //! drawing the number of letters in the word.
 //
 //! @param word the word
-//! @param numBlanks the number of blanks considered to be in the bag - if
-//! greater than 2, then pared back to 2
 //! @return the number of ways of drawing letters to form the word
 //---------------------------------------------------------------------------
 double
-LetterBag::getNumCombinations(const QString& word, int numBlanks) const
+LetterBag::getNumCombinations(const QString& word) const
 {
-    if (numBlanks < 0)
-        numBlanks = 0;
-    else if (numBlanks > 2)
-        numBlanks = 2;
-
     // Build parallel arrays of letters with their counts, and the
     // precalculated combinations based on the letter frequency
     QList<QChar> letters;
@@ -148,9 +139,6 @@ LetterBag::getNumCombinations(const QString& word, int numBlanks) const
     }
     totalCombos += thisCombo;
 
-    if (numBlanks == 0)
-        return totalCombos;
-
     // Calculate the combinations with one blank
     for (int i = 0; i < numLetters; ++i) {
         --counts[i];
@@ -161,9 +149,6 @@ LetterBag::getNumCombinations(const QString& word, int numBlanks) const
         totalCombos += thisCombo;
         ++counts[i];
     }
-
-    if (numBlanks == 1)
-        return totalCombos;
 
     // Calculate the combinations with two blanks
     for (int i = 0; i < numLetters; ++i) {
@@ -182,9 +167,6 @@ LetterBag::getNumCombinations(const QString& word, int numBlanks) const
         }
         ++counts[i];
     }
-
-    //if (numBlanks == 2)
-    //    return totalCombos;
 
     return totalCombos;
 }
@@ -238,7 +220,7 @@ LetterBag::resetContents(const QString& distribution)
     totalLetters = 0;
     letterFrequencies.clear();
 
-    foreach (const QString& str, strList) {
+    foreach (QString str, strList) {
         QChar letter = str.section(":", 0, 0)[0];
         int frequency = str.section(":", 1, 1).toInt();
         letterFrequencies.insert(letter, frequency);

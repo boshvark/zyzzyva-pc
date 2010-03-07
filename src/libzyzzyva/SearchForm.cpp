@@ -3,7 +3,7 @@
 //
 // A form for searching for words, patterns, anagrams, etc.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -220,12 +220,9 @@ SearchForm::search()
         // alphagrams if one of them is present
         bool hasAnagramCondition = false;
         bool hasProbabilityCondition = false;
-        bool hasPlayabilityCondition = false;
-        int probNumBlanks = MainSettings::getProbabilityNumBlanks();
         QListIterator<SearchCondition> it (spec.conditions);
         while (it.hasNext()) {
-            const SearchCondition& condition = it.next();
-            SearchCondition::SearchType type = condition.type;
+            SearchCondition::SearchType type = it.next().type;
             if ((type == SearchCondition::AnagramMatch) ||
                 (type == SearchCondition::SubanagramMatch) ||
                 (type == SearchCondition::NumAnagrams))
@@ -233,26 +230,16 @@ SearchForm::search()
                 hasAnagramCondition = true;
             }
 
-            else if ((type == SearchCondition::ProbabilityOrder) ||
+            if ((type == SearchCondition::ProbabilityOrder) ||
                 (type == SearchCondition::LimitByProbabilityOrder))
             {
-                // Set number of blanks based on the first probability search
-                // condition
-                if (!hasProbabilityCondition)
-                    probNumBlanks = condition.intValue;
                 hasProbabilityCondition = true;
-            }
-
-            else if ((type == SearchCondition::PlayabilityOrder) ||
-                (type == SearchCondition::LimitByPlayabilityOrder))
-            {
-                hasPlayabilityCondition = true;
             }
         }
 
         // Create a list of WordItem objects from the words
         QList<WordTableModel::WordItem> wordItems;
-        foreach (const QString& word, wordList) {
+        foreach (QString word, wordList) {
             QString wildcard;
             if (hasAnagramCondition) {
                 // Get wildcard characters
@@ -265,32 +252,22 @@ SearchForm::search()
                 if (!wildcardChars.isEmpty()) {
                     qSort(wildcardChars.begin(), wildcardChars.end(),
                           Auxil::localeAwareLessThanQChar);
-                    foreach (const QChar& c, wildcardChars)
+                    foreach (QChar c, wildcardChars)
                         wildcard.append(c.toUpper());
                 }
             }
 
-            QString displayWord = word;
             QString wordUpper = word.toUpper();
 
             // Convert to all caps if necessary
             if (!MainSettings::getWordListLowerCaseWildcards())
-                displayWord = wordUpper;
+                word = wordUpper;
 
             WordTableModel::WordItem wordItem
-                (displayWord, WordTableModel::WordNormal, wildcard);
+                (word, WordTableModel::WordNormal, wildcard);
 
-            // Set probability/playability order for correct sorting
-            if (hasProbabilityCondition) {
-                int probOrder = wordEngine->getProbabilityOrder(
-                    lexicon, wordUpper, probNumBlanks);
-                wordItem.setProbabilityOrder(probOrder);
-            }
-            else if (hasPlayabilityCondition) {
-                int playOrder = wordEngine->getPlayabilityOrder(
-                    lexicon, wordUpper);
-                wordItem.setPlayabilityOrder(playOrder);
-            }
+            int probOrder = wordEngine->getProbabilityOrder(lexicon, wordUpper);
+            wordItem.setProbabilityOrder(probOrder);
 
             wordItems.append(wordItem);
         }
@@ -302,11 +279,7 @@ SearchForm::search()
             MainSettings::setWordListGroupByAnagrams(false);
         if (hasProbabilityCondition)
             MainSettings::setWordListSortByProbabilityOrder(true);
-        else if (hasPlayabilityCondition)
-            MainSettings::setWordListSortByPlayabilityOrder(true);
-        resultModel->setProbabilityNumBlanks(probNumBlanks);
         resultModel->addWords(wordItems);
-        MainSettings::setWordListSortByPlayabilityOrder(false);
         MainSettings::setWordListSortByProbabilityOrder(false);
         if (!hasAnagramCondition)
             MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);

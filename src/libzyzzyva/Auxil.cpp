@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -67,9 +67,6 @@ const QString SEARCH_TYPE_PROBABILITY = "Probability";
 const QString SEARCH_TYPE_PROBABILITY_ORDER = "Probability Order";
 const QString SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER =
               "Limit by Probability Order";
-const QString SEARCH_TYPE_PLAYABILITY_ORDER = "Playability Order";
-const QString SEARCH_TYPE_LIMIT_BY_PLAYABILITY_ORDER =
-              "Limit by Playability Order";
 
 // Obsolete search condition strings
 const QString SEARCH_TYPE_OLD_EXACT_LENGTH = "Exact Length";
@@ -110,7 +107,6 @@ const QString QUIZ_ORDER_UNKNOWN = "Unknown";
 const QString QUIZ_ORDER_RANDOM = "Random";
 const QString QUIZ_ORDER_ALPHABETICAL = "Alphabetical";
 const QString QUIZ_ORDER_PROBABILITY = "Probability";
-const QString QUIZ_ORDER_PLAYABILITY = "Playability";
 const QString QUIZ_ORDER_SCHEDULE = "Schedule";
 const QString QUIZ_ORDER_SCHEDULE_ZERO_FIRST = "Schedule (Cardbox 0 First)";
 
@@ -121,14 +117,12 @@ const QString WORD_ATTR_BACK_HOOKS = "Back Hooks";
 const QString WORD_ATTR_INNER_HOOKS = "Inner Hooks";
 const QString WORD_ATTR_LEXICON_SYMBOLS = "Lexicon Symbols";
 const QString WORD_ATTR_PROBABILITY_ORDER = "Probability Order";
-const QString WORD_ATTR_PLAYABILITY_ORDER = "Playability Order";
 const QString WORD_ATTR_FRONT_EXTENSIONS = "Front Extensions";
 const QString WORD_ATTR_BACK_EXTENSIONS = "Back Extensions";
 const QString WORD_ATTR_DOUBLE_EXTENSIONS = "Double Extensions";
 
 const QString WORD_LIST_FORMAT_ONE_PER_LINE = "One Word Per Line";
 const QString WORD_LIST_FORMAT_QUESTION_ANSWER = "Anagram Question/Answer";
-const QString WORD_LIST_FORMAT_TWO_COLUMN = "Anagram Two Column";
 
 using namespace Defs;
 
@@ -416,56 +410,6 @@ Auxil::getUserConfigDir()
 }
 
 //---------------------------------------------------------------------------
-//  getLexiconPrefix
-//
-//! Return the path associated with a lexicon name.
-//
-//! @param lexicon the lexicon name
-//! @return the path where the lexicon data is found
-//---------------------------------------------------------------------------
-QString
-Auxil::getLexiconPrefix(const QString& lexicon)
-{
-    static QMap<QString, QString> pmap;
-    if (pmap.isEmpty()) {
-        pmap[LEXICON_OWL] = "/north-american/owl-lwl";
-        pmap[LEXICON_OWL2] = "/north-american/owl2-lwl";
-        pmap[LEXICON_OSPD4] = "/north-american/ospd4-lwl";
-        pmap[LEXICON_VOLOST] = "/antarctic/volost";
-        pmap[LEXICON_OSWI] = "/british/oswi";
-        pmap[LEXICON_CSW] = "/british/csw";
-        pmap[LEXICON_ODS4] = "/french/ods4";
-        pmap[LEXICON_ODS5] = "/french/ods5";
-    }
-    return pmap.value(lexicon);
-}
-
-//---------------------------------------------------------------------------
-//  getDatabaseFilename
-//
-//! Return the database filename that should be used for a lexicon.  Also
-//! create the db directory if it doesn't already exist.  FIXME: That should
-//! be done somewhere else!
-//
-//! @param lexicon the lexicon name
-//! @return the database filename, or empty string if error
-//---------------------------------------------------------------------------
-QString
-Auxil::getDatabaseFilename(const QString& lexicon)
-{
-    if (lexicon != LEXICON_CUSTOM) {
-        QString lexiconPrefix = getLexiconPrefix(lexicon);
-        if (lexiconPrefix.isEmpty())
-            return QString();
-    }
-
-    QString dbPath = getUserDir() + "/lexicons";
-    QDir dir;
-    dir.mkpath(dbPath);
-    return (dbPath + "/" + lexicon + ".db");
-}
-
-//---------------------------------------------------------------------------
 //  dialogWordWrap
 //
 //! Wrap a string so it is appropriate for display in a dialog.
@@ -565,7 +509,7 @@ Auxil::getAlphagram(const QString& word)
         chars.append(word[i]);
     }
     qSort(chars.begin(), chars.end(), localeAwareLessThanQChar);
-    foreach (const QChar& c, chars)
+    foreach (QChar c, chars)
         alphagram.append(c);
 
     //qDebug("Alphagram: |%s|", alphagram.toUtf8().constData());
@@ -754,10 +698,6 @@ Auxil::stringToSearchType(const QString& string)
         return SearchCondition::ProbabilityOrder;
     else if (string == SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER)
         return SearchCondition::LimitByProbabilityOrder;
-    else if (string == SEARCH_TYPE_PLAYABILITY_ORDER)
-        return SearchCondition::PlayabilityOrder;
-    else if (string == SEARCH_TYPE_LIMIT_BY_PLAYABILITY_ORDER)
-        return SearchCondition::LimitByPlayabilityOrder;
 
     // Obsolete search condition strings
     else if (string == SEARCH_TYPE_OLD_EXACT_LENGTH)
@@ -857,12 +797,6 @@ Auxil::searchTypeToString(SearchCondition::SearchType type)
 
         case SearchCondition::LimitByProbabilityOrder:
         return SEARCH_TYPE_LIMIT_BY_PROBABILITY_ORDER;
-
-        case SearchCondition::PlayabilityOrder:
-        return SEARCH_TYPE_PLAYABILITY_ORDER;
-
-        case SearchCondition::LimitByPlayabilityOrder:
-        return SEARCH_TYPE_LIMIT_BY_PLAYABILITY_ORDER;
 
         default: return QString();
     }
@@ -1065,9 +999,6 @@ Auxil::quizQuestionOrderToString(QuizSpec::QuestionOrder o)
         case QuizSpec::ProbabilityOrder:
         return QUIZ_ORDER_PROBABILITY;
 
-        case QuizSpec::PlayabilityOrder:
-        return QUIZ_ORDER_PLAYABILITY;
-
         case QuizSpec::ScheduleOrder:
         return QUIZ_ORDER_SCHEDULE;
 
@@ -1095,8 +1026,6 @@ Auxil::stringToQuizQuestionOrder(const QString& s)
         return QuizSpec::AlphabeticalOrder;
     else if (s == QUIZ_ORDER_PROBABILITY)
         return QuizSpec::ProbabilityOrder;
-    else if (s == QUIZ_ORDER_PLAYABILITY)
-        return QuizSpec::PlayabilityOrder;
     else if (s == QUIZ_ORDER_SCHEDULE)
         return QuizSpec::ScheduleOrder;
     else if (s == QUIZ_ORDER_SCHEDULE_ZERO_FIRST)
@@ -1138,9 +1067,6 @@ Auxil::wordAttributeToString(WordAttribute attr)
         case WordAttrProbabilityOrder:
         return WORD_ATTR_PROBABILITY_ORDER;
 
-        case WordAttrPlayabilityOrder:
-        return WORD_ATTR_PLAYABILITY_ORDER;
-
         case WordAttrFrontExtensions:
         return WORD_ATTR_FRONT_EXTENSIONS;
 
@@ -1179,8 +1105,6 @@ Auxil::stringToWordAttribute(const QString& s)
         return WordAttrLexiconSymbols;
     else if (s == WORD_ATTR_PROBABILITY_ORDER)
         return WordAttrProbabilityOrder;
-    else if (s == WORD_ATTR_PLAYABILITY_ORDER)
-        return WordAttrPlayabilityOrder;
     else if (s == WORD_ATTR_FRONT_EXTENSIONS)
         return WordAttrFrontExtensions;
     else if (s == WORD_ATTR_BACK_EXTENSIONS)
@@ -1209,9 +1133,6 @@ Auxil::wordListFormatToString(WordListFormat format)
         case WordListAnagramQuestionAnswer:
         return WORD_LIST_FORMAT_QUESTION_ANSWER;
 
-        case WordListAnagramTwoColumn:
-        return WORD_LIST_FORMAT_TWO_COLUMN;
-
         default: return QString();
     }
 }
@@ -1231,8 +1152,6 @@ Auxil::stringToWordListFormat(const QString& s)
         return WordListOnePerLine;
     else if (s == WORD_LIST_FORMAT_QUESTION_ANSWER)
         return WordListAnagramQuestionAnswer;
-    else if (s == WORD_LIST_FORMAT_TWO_COLUMN)
-        return WordListAnagramTwoColumn;
     else
         return WordListInvalid;
 }

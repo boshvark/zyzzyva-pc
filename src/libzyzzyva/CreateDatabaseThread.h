@@ -3,7 +3,7 @@
 //
 // A class for creating a database in the background.
 //
-// Copyright 2006, 2007, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -62,7 +62,6 @@ class CreateDatabaseThread : public QThread
     void createIndexes(QSqlDatabase& db);
     void insertVersion(QSqlDatabase& db);
     void insertWords(QSqlDatabase& db, int& stepNum);
-    void updatePlayabilityOrder(QSqlDatabase& db, int& stepNum);
     void updateProbabilityOrder(QSqlDatabase& db, int& stepNum);
     void updateDefinitions(QSqlDatabase& db, int& stepNum);
     void updateDefinitionLinks(QSqlDatabase& db, int& stepNum);
@@ -71,8 +70,6 @@ class CreateDatabaseThread : public QThread
     QString replaceDefinitionLinks(const QString& definition, int maxDepth,
                                    bool useFollow = false) const;
     QString getSubDefinition(const QString& word, const QString& pos) const;
-    int importPlayability(const QString& filename, QMap<QString, int>&
-                          playabilityMap) const;
 
     WordEngine* wordEngine;
     QString lexiconName;

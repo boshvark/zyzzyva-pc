@@ -4,7 +4,7 @@
 // A full-screen dialog for Word Judge functionality, in which the user can
 // very easily judge the validity of one or more words.
 //
-// Copyright 2006-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -428,7 +428,7 @@ JudgeDialog::judgeWord()
         QFile file (logDirName + "/acceptable.txt");
         file.open(QIODevice::Append | QIODevice::Text);
         QTextStream stream (&file);
-        foreach (const QString& word, acceptableWords) {
+        foreach (QString word, acceptableWords) {
             stream << word;
             endl(stream);
         }
@@ -438,7 +438,7 @@ JudgeDialog::judgeWord()
         QFile file (logDirName + "/unacceptable.txt");
         file.open(QIODevice::Append | QIODevice::Text);
         QTextStream stream (&file);
-        foreach (const QString& word, unacceptableWords) {
+        foreach (QString word, unacceptableWords) {
             stream << word;
             endl(stream);
         }
@@ -449,7 +449,7 @@ JudgeDialog::judgeWord()
     QTextStream stream (&file);
     stream << QDateTime::currentDateTime().toString("[yyyy-MM-dd hh:mm:ss] ")
         << (acceptable ? "acceptable   +++" : "unacceptable ---");
-    foreach (const QString& word, words) {
+    foreach (QString word, words) {
         stream << " " << word;
     }
     endl(stream);

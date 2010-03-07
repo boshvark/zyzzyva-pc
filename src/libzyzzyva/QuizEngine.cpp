@@ -4,7 +4,7 @@
 // The engine for generating quizzes and keeping track of the user's
 // performance on each quiz.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -109,23 +109,19 @@ QuizEngine::newQuiz(const QuizSpec& spec)
         // Anagram Quiz: The search spec is used to select the list of words.
         // Their alphagrams are used as quiz questions, and their anagrams are
         // used as quiz answers.
-        QStringList questionWords;
-        QuizSpec::QuizType quizType = spec.getType();
-        if ((quizType == QuizSpec::QuizAnagrams) ||
-            (quizType == QuizSpec::QuizAnagramsWithHooks))
+        QuizSpec::QuizType type = spec.getType();
+        if ((type == QuizSpec::QuizAnagrams) ||
+            (type == QuizSpec::QuizAnagramsWithHooks))
         {
-            questionWords =
-                wordEngine->search(lexicon, spec.getSearchSpec(), true);
-            questions = wordEngine->alphagrams(questionWords);
+            questions = wordEngine->search(lexicon, spec.getSearchSpec(), true);
+            questions = wordEngine->alphagrams(questions);
         }
 
-        else if (quizType == QuizSpec::QuizHooks) {
-            questionWords =
-                wordEngine->search(lexicon, spec.getSearchSpec(), true);
-            questions = questionWords;
+        else if (type == QuizSpec::QuizHooks) {
+            questions = wordEngine->search(lexicon, spec.getSearchSpec(), true);
         }
 
-        else if (quizType == QuizSpec::QuizWordListRecall) {
+        else if (type == QuizSpec::QuizWordListRecall) {
             questions << spec.getSearchSpec().asString();
         }
 
@@ -172,10 +168,8 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                 LetterBag letterBag;
                 QList<QPair<QString, double> > questionPairs;
 
-                int probNumBlanks = quizSpec.getProbabilityNumBlanks();
-                foreach (const QString& question, quizQuestions) {
-                    double combos =
-                        letterBag.getNumCombinations(question, probNumBlanks);
+                foreach (QString question, quizQuestions) {
+                    double combos = letterBag.getNumCombinations(question);
                     questionPairs.append(qMakePair(question, combos));
                 }
 
@@ -183,44 +177,10 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                       probabilityCmp);
 
                 quizQuestions.clear();
-                QListIterator<QPair<QString, double> > jt (questionPairs);
-                while (jt.hasNext()) {
-                    const QPair<QString, double>& questionPair = jt.next();
-                    quizQuestions.append(questionPair.first);
-                }
-            }
-            break;
-
-            case QuizSpec::PlayabilityOrder: {
-                wordEngine->addToCache(lexicon, questionWords);
-
-                // Order alphagram quiz questions by the best playability
-                // order of any of their anagrams
-                QMap<QString, int> bestPlayOrder;
-                QMap<int, QString> orderQuestions;
-                foreach (const QString& word, questionWords) {
-                    QString question = word;
-                    int bestOrder = 0;
-                    if ((quizType == QuizSpec::QuizAnagrams) ||
-                        (quizType == QuizSpec::QuizAnagramsWithHooks))
-                    {
-                        question = Auxil::getAlphagram(word);
-                        bestOrder = bestPlayOrder.value(question);
-                    }
-
-                    int order = wordEngine->getPlayabilityOrder(lexicon, word);
-                    if (!bestOrder || (order < bestOrder)) {
-                        orderQuestions.remove(bestOrder);
-                        bestPlayOrder[question] = order;
-                        orderQuestions[order] = question;
-                    }
-                }
-
-                quizQuestions.clear();
-                QMapIterator<int, QString> it (orderQuestions);
+                QListIterator<QPair<QString, double> > it (questionPairs);
                 while (it.hasNext()) {
-                    it.next();
-                    quizQuestions.append(it.value());
+                    const QPair<QString, double>& questionPair = it.next();
+                    quizQuestions.append(questionPair.first);
                 }
             }
             break;

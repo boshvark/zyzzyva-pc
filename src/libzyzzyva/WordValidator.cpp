@@ -3,7 +3,7 @@
 //
 // A validator for ensuring words are well-formed.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -49,7 +49,7 @@ WordValidator::validate(QString& input, int& pos) const
     if (options & AllowHooks)
         re += ":";
     if (options & AllowLexiconSymbols) {
-        foreach (const QChar& c, lexiconSymbolChars) {
+        foreach (QChar c, lexiconSymbolChars) {
             re += '\\';
             re += c;
         }

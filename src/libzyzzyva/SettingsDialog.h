@@ -3,7 +3,7 @@
 //
 // The settings dialog for the word study application.
 //
-// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -81,7 +81,6 @@ class SettingsDialog : public QDialog
 
     QWidget*     generalPrefWidget;
     QWidget*     quizPrefWidget;
-    QWidget*     probabilityPrefWidget;
     QWidget*     cardboxPrefWidget;
     QWidget*     judgePrefWidget;
     QWidget*     fontPrefWidget;
@@ -112,7 +111,6 @@ class SettingsDialog : public QDialog
     QCheckBox*   quizCycleAnswersCbox;
     QCheckBox*   quizTimeoutDisableInputCbox;
     QSpinBox*    quizTimeoutDisableInputSbox;
-    QSpinBox*    probBlanksSbox;
     QList<QSpinBox*> cardboxScheduleSboxList;
     QList<QSpinBox*> cardboxWindowSboxList;
     QCheckBox*   judgeSaveLogCbox;
@@ -126,7 +124,6 @@ class SettingsDialog : public QDialog
     QCheckBox*   lengthSortCbox;
     QCheckBox*   anagramGroupCbox;
     QCheckBox*   showProbabilityOrderCbox;
-    QCheckBox*   showPlayabilityOrderCbox;
     QCheckBox*   showHookParentsCbox;
     QCheckBox*   showHooksCbox;
     QCheckBox*   showDefinitionCbox;
