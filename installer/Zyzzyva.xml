@@ -27,7 +27,7 @@
     <saveRelativePaths>0</saveRelativePaths>
     <slideShowLoop>1</slideShowLoop>
     <slideShowTiming>5</slideShowTiming>
-    <startMenuGroupName>${product_fullname}-${product_version}</startMenuGroupName>
+    <startMenuGroupName>${product_fullname} ${product_version}</startMenuGroupName>
     <style>standard</style>
     <summary>Place here a detailed description of your software</summary>
     <uninstallerDirectory>${installdir}</uninstallerDirectory>
