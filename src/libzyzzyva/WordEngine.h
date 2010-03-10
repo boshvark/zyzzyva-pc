@@ -67,8 +67,9 @@ class WordEngine : public QObject
         bool isBackHook;
         QString lexiconSymbols;
         QString definition;
-        ValueOrder playability;
-        QMap<int, ValueOrder> blankProbability;
+        int playability;
+        ValueOrder playabilityOrder;
+        QMap<int, ValueOrder> blankProbabilityOrder;
     };
 
     class LexiconData {
@@ -120,6 +121,8 @@ class WordEngine : public QObject
     QString getFrontHookLetters(const QString& lexicon, const QString& word)
         const;
     QString getBackHookLetters(const QString& lexicon, const QString& word)
+        const;
+    int getPlayabilityValue(const QString& lexicon, const QString& word)
         const;
     int getPlayabilityOrder(const QString& lexicon, const QString& word)
         const;
