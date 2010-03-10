@@ -68,12 +68,12 @@ lessThan(const WordTableModel::WordItem& a,
          const WordTableModel::WordItem& b)
 {
     if (MainSettings::getWordListSortByLength()) {
-        if (a.getWord().length() < b.getWord().length()) {
+        int aLen = a.getWord().length();
+        int bLen = b.getWord().length();
+        if (aLen < bLen)
             return true;
-        }
-        else if (a.getWord().length() > b.getWord().length()) {
+        else if (bLen < aLen)
             return false;
-        }
     }
 
     if (MainSettings::getWordListGroupByAnagrams()) {
@@ -87,21 +87,30 @@ lessThan(const WordTableModel::WordItem& a,
     }
 
     if (MainSettings::getWordListSortByProbabilityOrder()) {
-        if (a.getProbabilityOrder() < b.getProbabilityOrder()) {
+        int aProbOrder = a.getProbabilityOrder();
+        int bProbOrder = b.getProbabilityOrder();
+        if (aProbOrder < bProbOrder)
             return true;
-        }
-        else if (b.getProbabilityOrder() < a.getProbabilityOrder()) {
+        else if (bProbOrder < aProbOrder)
             return false;
-        }
     }
 
     if (MainSettings::getWordListSortByPlayabilityOrder()) {
-        if (a.getPlayabilityOrder() < b.getPlayabilityOrder()) {
+        int aPlayValue = a.getPlayabilityValue();
+        int bPlayValue = b.getPlayabilityValue();
+
+        // High playability values compare as less
+        if (bPlayValue < aPlayValue)
             return true;
-        }
-        else if (b.getPlayabilityOrder() < a.getPlayabilityOrder()) {
+        else if (aPlayValue < bPlayValue)
             return false;
-        }
+
+        int aPlayOrder = a.getPlayabilityOrder();
+        int bPlayOrder = b.getPlayabilityOrder();
+        if (aPlayOrder < bPlayOrder)
+            return true;
+        else if (bPlayOrder < aPlayOrder)
+            return false;
     }
 
     return (QString::localeAwareCompare(a.getWord().toUpper(),
@@ -292,8 +301,20 @@ WordTableModel::data(const QModelIndex& index, int role) const
         : wordItem.getType();
 
     switch (role) {
-        case Qt::UserRole:
+        case WordTypeRole:
         return type;
+
+        case PlayabilityValueRole:
+        if (!wordItem.playabilityOrderIsValid()) {
+            QString wordUpper = wordItem.getWord().toUpper();
+            int pv = wordEngine->getPlayabilityValue(lexicon, wordUpper);
+            if (pv)
+                wordItem.setPlayabilityValue(pv);
+            int po = wordEngine->getPlayabilityOrder(lexicon, wordUpper);
+            if (po)
+                wordItem.setPlayabilityOrder(po);
+        }
+        return wordItem.getPlayabilityValue();
 
         case Qt::ForegroundRole: {
             QColor color;
@@ -396,10 +417,14 @@ WordTableModel::data(const QModelIndex& index, int role) const
                     }
 
                     if (!wordItem.playabilityOrderIsValid()) {
-                        int p = wordEngine->getPlayabilityOrder(
+                        int pv = wordEngine->getPlayabilityValue(
                             lexicon, wordUpper);
-                        if (p)
-                            wordItem.setPlayabilityOrder(p);
+                        if (pv)
+                            wordItem.setPlayabilityValue(pv);
+                        int po = wordEngine->getPlayabilityOrder(
+                            lexicon, wordUpper);
+                        if (po)
+                            wordItem.setPlayabilityOrder(po);
                     }
 
                     int playOrder = wordItem.getPlayabilityOrder();
@@ -634,8 +659,13 @@ WordTableModel::setData(const QModelIndex& index, const QVariant& value, int
         emit dataChanged(index, index);
         return true;
     }
-    else if (index.isValid() && (role == Qt::UserRole)) {
+    else if (index.isValid() && (role == WordTypeRole)) {
         wordList[index.row()].setType(WordType(value.toInt()));
+        emit dataChanged(index, index);
+        return true;
+    }
+    else if (index.isValid() && (role == PlayabilityValueRole)) {
+        wordList[index.row()].setPlayabilityValue(value.toInt());
         emit dataChanged(index, index);
         return true;
     }
@@ -674,7 +704,7 @@ WordTableModel::clearLastAddedIndex()
     if (lastAddedIndex < 0)
         return;
 
-    setData(index(lastAddedIndex, 0), WordNormal, Qt::UserRole);
+    setData(index(lastAddedIndex, 0), WordNormal, WordTypeRole);
     emit dataChanged(index(lastAddedIndex, 0),
                      index(lastAddedIndex, DEFINITION_COLUMN));
     lastAddedIndex = -1;
@@ -692,7 +722,9 @@ void
 WordTableModel::addWordPrivate(const WordItem& word, int row)
 {
     setData(index(row, WORD_COLUMN), word.getWord(), Qt::EditRole);
-    setData(index(row, WORD_COLUMN), word.getType(), Qt::UserRole);
+    setData(index(row, WORD_COLUMN), word.getType(), WordTypeRole);
+    setData(index(row, WORD_COLUMN), word.getPlayabilityValue(),
+            PlayabilityValueRole);
     setData(index(row, WILDCARD_MATCH_COLUMN), word.getWildcard(),
                   Qt::EditRole);
     if (word.probabilityOrderIsValid()) {
@@ -805,6 +837,7 @@ WordTableModel::WordItem::init()
     frontParentHook = false;
     backParentHook = false;
     probabilityOrder = 0;
+    playabilityValue = 0;
     playabilityOrder = 0;
 }
 
@@ -820,6 +853,19 @@ WordTableModel::WordItem::setProbabilityOrder(int p)
 {
     probabilityOrder = p;
     probabilityOrderValid = true;
+}
+
+//---------------------------------------------------------------------------
+//  setPlayabilityValue
+//
+//! Set playability value of a word item.
+//
+//! @param p the playability value
+//---------------------------------------------------------------------------
+void
+WordTableModel::WordItem::setPlayabilityValue(int p)
+{
+    playabilityValue = p;
 }
 
 //---------------------------------------------------------------------------

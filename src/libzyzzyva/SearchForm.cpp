@@ -287,8 +287,11 @@ SearchForm::search()
                 wordItem.setProbabilityOrder(probOrder);
             }
             else if (hasPlayabilityCondition) {
+                int playValue = wordEngine->getPlayabilityValue(
+                    lexicon, wordUpper);
                 int playOrder = wordEngine->getPlayabilityOrder(
                     lexicon, wordUpper);
+                wordItem.setPlayabilityValue(playValue);
                 wordItem.setPlayabilityOrder(playOrder);
             }
 

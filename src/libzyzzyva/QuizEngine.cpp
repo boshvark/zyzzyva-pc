@@ -196,28 +196,28 @@ QuizEngine::newQuiz(const QuizSpec& spec)
 
                 // Order alphagram quiz questions by the best playability
                 // order of any of their anagrams
-                QMap<QString, int> bestPlayOrder;
-                QMap<int, QString> orderQuestions;
+                QMap<QString, int> bestPlayValue;
+                QMap<int, QString> valueQuestions;
                 foreach (const QString& word, questionWords) {
                     QString question = word;
-                    int bestOrder = 0;
+                    int bestValue = 0;
                     if ((quizType == QuizSpec::QuizAnagrams) ||
                         (quizType == QuizSpec::QuizAnagramsWithHooks))
                     {
                         question = Auxil::getAlphagram(word);
-                        bestOrder = bestPlayOrder.value(question);
+                        bestValue = bestPlayValue.value(question);
                     }
 
-                    int order = wordEngine->getPlayabilityOrder(lexicon, word);
-                    if (!bestOrder || (order < bestOrder)) {
-                        orderQuestions.remove(bestOrder);
-                        bestPlayOrder[question] = order;
-                        orderQuestions[order] = question;
+                    int value = wordEngine->getPlayabilityValue(lexicon, word);
+                    if (!bestValue || (value < bestValue)) {
+                        valueQuestions.remove(bestValue);
+                        bestPlayValue[question] = value;
+                        valueQuestions[value] = question;
                     }
                 }
 
                 quizQuestions.clear();
-                QMapIterator<int, QString> it (orderQuestions);
+                QMapIterator<int, QString> it (valueQuestions);
                 while (it.hasNext()) {
                     it.next();
                     quizQuestions.append(it.value());
