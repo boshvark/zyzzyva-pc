@@ -218,40 +218,43 @@ SearchSpec::optimize(const QString& lexicon)
 
                 bool wildcard = (stringValue.contains("[") ||
                                  stringValue.contains("?"));
-                int length = stringValue.length();
-                if (stringValue.contains("[")) {
-                    int subtract = 0;
-                    bool inCharClass = false;
-                    for (int i = 0; i < length; ++i) {
-                        QChar c = stringValue.at(i);
-                        if (c == '[')
-                            inCharClass = true;
-                        else if (c == ']') {
-                            inCharClass = false;
-                            ++subtract;
-                        }
-                        else if (inCharClass)
-                            ++subtract;
-                    }
-                    length -= subtract;
-                }
 
-                if ((condition.type == SearchCondition::PatternMatch) ||
-                    (condition.type == SearchCondition::AnagramMatch))
-                {
-                    if ((length < minLength) || (length > maxLength)) {
-                        conditions.clear();
-                        return;
+                if (!negated) {
+                    int length = stringValue.length();
+                    if (stringValue.contains("[")) {
+                        int subtract = 0;
+                        bool inCharClass = false;
+                        for (int i = 0; i < length; ++i) {
+                            QChar c = stringValue.at(i);
+                            if (c == '[')
+                                inCharClass = true;
+                            else if (c == ']') {
+                                inCharClass = false;
+                                ++subtract;
+                            }
+                            else if (inCharClass)
+                                ++subtract;
+                        }
+                        length -= subtract;
                     }
-                    minLength = maxLength = length;
-                }
-                else {
-                    if (length < minLength) {
-                        conditions.clear();
-                        return;
+
+                    if ((condition.type == SearchCondition::PatternMatch) ||
+                        (condition.type == SearchCondition::AnagramMatch))
+                    {
+                        if ((length < minLength) || (length > maxLength)) {
+                            conditions.clear();
+                            return;
+                        }
+                        minLength = maxLength = length;
                     }
-                    else if (length < maxLength)
-                        maxLength = length;
+                    else {
+                        if (length < minLength) {
+                            conditions.clear();
+                            return;
+                        }
+                        else if (length < maxLength)
+                            maxLength = length;
+                    }
                 }
 
                 if (wildcard)
