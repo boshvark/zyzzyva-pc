@@ -434,6 +434,7 @@ Auxil::getLexiconPrefix(const QString& lexicon)
         pmap[LEXICON_VOLOST] = "/antarctic/volost";
         pmap[LEXICON_OSWI] = "/british/oswi";
         pmap[LEXICON_CSW] = "/british/csw";
+        pmap[LEXICON_CD] = "/british/cd";
         pmap[LEXICON_ODS4] = "/french/ods4";
         pmap[LEXICON_ODS5] = "/french/ods5";
     }
@@ -1299,6 +1300,8 @@ Auxil::lexiconToOrigin(const QString& lexicon)
         return "British";
     if (lexicon == LEXICON_CSW)
         return "British";
+    if (lexicon == LEXICON_CD)
+        return "British (Contest)";
     if (lexicon == LEXICON_ODS4)
         return "French";
     if (lexicon == LEXICON_ODS5)
@@ -1329,6 +1332,9 @@ Auxil::lexiconToDate(const QString& lexicon)
         return QDate(2002, 1, 14);
     if (lexicon == LEXICON_CSW)
         return QDate(2007, 5, 15);
+    // FIXME: fix this
+    if (lexicon == LEXICON_CD)
+        return QDate(2010, 1, 1);
     if (lexicon == LEXICON_ODS4)
         return QDate(2004, 1, 1);
     if (lexicon == LEXICON_ODS5)
@@ -1362,6 +1368,7 @@ Auxil::getUpdatedLexiconName(const QString& oldLexiconName)
              (oldLexiconName == LEXICON_OWL) ||
              (oldLexiconName == LEXICON_OWL2) ||
              (oldLexiconName == LEXICON_CSW) ||
+             (oldLexiconName == LEXICON_CD) ||
              (oldLexiconName == LEXICON_OSPD4) ||
              (oldLexiconName == LEXICON_OSWI) ||
              (oldLexiconName == LEXICON_ODS4) ||

@@ -1861,6 +1861,7 @@ MainWindow::importLexicon(const QString& lexicon)
         prefixMap[LEXICON_VOLOST] = "/antarctic/volost";
         prefixMap[LEXICON_OSWI] = "/british/oswi";
         prefixMap[LEXICON_CSW] = "/british/csw";
+        prefixMap[LEXICON_CD] = "/british/cd";
         prefixMap[LEXICON_ODS4] = "/french/ods4";
         prefixMap[LEXICON_ODS5] = "/french/ods5";
 
