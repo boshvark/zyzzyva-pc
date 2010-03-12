@@ -818,8 +818,8 @@ WordEngine::search(const QString& lexicon, const SearchSpec& spec, bool
 
     // Search the word graph if necessary
     QStringList resultList;
-    if (phaseCounts.contains(WordGraphPhase) ||
-        !phaseCounts.contains(DatabasePhase))
+    if (phaseCounts.value(WordGraphPhase) ||
+        !phaseCounts.value(DatabasePhase))
     {
         resultList = wordGraphSearch(lexicon, optimizedSpec);
         if (resultList.isEmpty())
@@ -827,7 +827,7 @@ WordEngine::search(const QString& lexicon, const SearchSpec& spec, bool
     }
 
     // Search the database if necessary, passing word graph results
-    if (phaseCounts.contains(DatabasePhase)) {
+    if (phaseCounts.value(DatabasePhase)) {
         resultList = databaseSearch(lexicon, optimizedSpec,
             phaseCounts.contains(WordGraphPhase) ? &resultList : 0);
         if (resultList.isEmpty())
@@ -835,7 +835,7 @@ WordEngine::search(const QString& lexicon, const SearchSpec& spec, bool
     }
 
     // Check post conditions if necessary
-    if (phaseCounts.contains(PostConditionPhase)) {
+    if (phaseCounts.value(PostConditionPhase)) {
         resultList = applyPostConditions(lexicon, optimizedSpec, resultList);
     }
 
