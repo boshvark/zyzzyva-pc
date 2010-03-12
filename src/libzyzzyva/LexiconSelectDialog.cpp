@@ -3,7 +3,7 @@
 //
 // A dialog for selecting the lexicons to be loaded and used.
 //
-// Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -90,6 +90,7 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
     validLexicons.append(LEXICON_OWL2);
     validLexicons.append(LEXICON_OSPD4);
     validLexicons.append(LEXICON_CSW);
+    validLexicons.append(LEXICON_CD);
     validLexicons.append(LEXICON_ODS5);
     validLexicons.append(LEXICON_VOLOST);
     validLexicons.append(LEXICON_ODS4);
