@@ -49,6 +49,7 @@ namespace Defs {
     const QString LEXICON_CD = "CD";
     const QString LEXICON_CSW = "CSW";
     const QString LEXICON_CUSTOM = "Custom";
+    const QString LEXICON_FISE2009 = "FISE2009";
     const QString LEXICON_ODS4 = "ODS4";
     const QString LEXICON_ODS5 = "ODS5";
     const QString LEXICON_OSPD4 = "OSPD4+LWL";
