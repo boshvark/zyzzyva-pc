@@ -226,9 +226,10 @@ SearchForm::search()
         while (it.hasNext()) {
             const SearchCondition& condition = it.next();
             SearchCondition::SearchType type = condition.type;
-            if ((type == SearchCondition::AnagramMatch) ||
+            if (!condition.negated &&
+                ((type == SearchCondition::AnagramMatch) ||
                 (type == SearchCondition::SubanagramMatch) ||
-                (type == SearchCondition::NumAnagrams))
+                (type == SearchCondition::NumAnagrams)))
             {
                 hasAnagramCondition = true;
             }
