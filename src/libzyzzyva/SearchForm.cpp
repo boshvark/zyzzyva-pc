@@ -219,6 +219,7 @@ SearchForm::search()
         // Check for Anagram or Subanagram conditions, and only group by
         // alphagrams if one of them is present
         bool hasAnagramCondition = false;
+        bool hasSubanagramCondition = false;
         bool hasProbabilityCondition = false;
         bool hasPlayabilityCondition = false;
         int probNumBlanks = MainSettings::getProbabilityNumBlanks();
@@ -232,6 +233,8 @@ SearchForm::search()
                 (type == SearchCondition::NumAnagrams)))
             {
                 hasAnagramCondition = true;
+                if (type == SearchCondition::SubanagramMatch)
+                    hasSubanagramCondition = true;
             }
 
             else if ((type == SearchCondition::ProbabilityOrder) ||
@@ -304,6 +307,8 @@ SearchForm::search()
         bool origGroupByAnagrams = MainSettings::getWordListGroupByAnagrams();
         if (!hasAnagramCondition)
             MainSettings::setWordListGroupByAnagrams(false);
+        if (hasSubanagramCondition)
+            MainSettings::setWordListSortByReverseLength(true);
         if (hasProbabilityCondition)
             MainSettings::setWordListSortByProbabilityOrder(true);
         else if (hasPlayabilityCondition)
@@ -312,6 +317,8 @@ SearchForm::search()
         resultModel->addWords(wordItems);
         MainSettings::setWordListSortByPlayabilityOrder(false);
         MainSettings::setWordListSortByProbabilityOrder(false);
+        if (hasSubanagramCondition)
+            MainSettings::setWordListSortByReverseLength(false);
         if (!hasAnagramCondition)
             MainSettings::setWordListGroupByAnagrams(origGroupByAnagrams);
     }
