@@ -93,6 +93,7 @@ LexiconSelectDialog::LexiconSelectDialog(QWidget* parent, Qt::WFlags f)
     validLexicons.append(LEXICON_CD);
     validLexicons.append(LEXICON_ODS5);
     validLexicons.append(LEXICON_FISE2009);
+    validLexicons.append(LEXICON_ZINGA_2010);
     validLexicons.append(LEXICON_VOLOST);
     validLexicons.append(LEXICON_ODS4);
     validLexicons.append(LEXICON_OWL);
