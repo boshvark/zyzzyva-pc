@@ -35,8 +35,18 @@
 class MainSettings
 {
     public:
+    static const QString GENERAL_PREFS_GROUP;
+    static const QString QUIZ_PREFS_GROUP;
+    static const QString PROBABILITY_PREFS_GROUP;
+    static const QString CARDBOX_PREFS_GROUP;
+    static const QString JUDGE_PREFS_GROUP;
+    static const QString FONT_PREFS_GROUP;
+    static const QString WORD_LIST_PREFS_GROUP;
+
+    public:
     static void readSettings();
     static void writeSettings();
+    static void restoreDefaults(const QString& group);
 
     static QString getProgramVersion() {
         return instance->programVersion; }
@@ -220,6 +230,10 @@ class MainSettings
     // private and undefined
     MainSettings(const MainSettings&);
     MainSettings& operator=(const MainSettings&);
+
+    void setCardboxScheduleList(const QString& str);
+    void setCardboxWindowList(const QString& str);
+    void setWordListLexiconStyles(const QString& str);
 
     static MainSettings* instance;
 
