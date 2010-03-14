@@ -350,6 +350,8 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     Q_CHECK_PTR(messageLabel);
     statusBar()->addWidget(messageLabel);
 
+    fixTrolltechConfig();
+
     setSplashMessage("Reading settings...");
     readSettings(true);
 
@@ -1762,6 +1764,37 @@ MainWindow::setSplashMessage(const QString& message)
         messageLabel->setText(message);
 
     qApp->processEvents();
+}
+
+//---------------------------------------------------------------------------
+//  fixTrolltechConfig
+//
+//! Fix Trolltech config file to avoid a crash on certain Linux systems.
+//---------------------------------------------------------------------------
+void
+MainWindow::fixTrolltechConfig()
+{
+    QFile file (Auxil::getHomeDir() + "/.config/Trolltech.conf");
+    if (!file.exists() || !file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+
+    QStringList lines;
+    QTextStream inStream (&file);
+    while (!inStream.atEnd()) {
+        QString line = inStream.readLine();
+        if (!line.startsWith("filedialog="))
+            lines.append(line);
+    }
+    file.close();
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+
+    QTextStream outStream (&file);
+    foreach (const QString& line, lines) {
+        outStream << line;
+        endl(outStream);
+    }
 }
 
 //---------------------------------------------------------------------------

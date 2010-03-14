@@ -3,7 +3,7 @@
 //
 // The main window for the word study application.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -106,6 +106,7 @@ class MainWindow : public QMainWindow
 
     private:
     void setSplashMessage(const QString& message);
+    void fixTrolltechConfig();
     void makeUserDirs();
     void renameLexicon(const QString& oldName, const QString& newName);
     bool importLexicon(const QString& lexicon);
