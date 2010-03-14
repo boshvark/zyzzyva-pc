@@ -33,6 +33,14 @@
 
 MainSettings* MainSettings::instance = new MainSettings();
 
+const QString MainSettings::GENERAL_PREFS_GROUP = "General";
+const QString MainSettings::QUIZ_PREFS_GROUP = "Quiz";
+const QString MainSettings::PROBABILITY_PREFS_GROUP = "Probability";
+const QString MainSettings::CARDBOX_PREFS_GROUP = "Cardbox";
+const QString MainSettings::JUDGE_PREFS_GROUP = "Word Judge";
+const QString MainSettings::FONT_PREFS_GROUP = "Fonts";
+const QString MainSettings::WORD_LIST_PREFS_GROUP = "Word Tables";
+
 const QString SETTINGS_MAIN = "Zyzzyva";
 const QString SETTINGS_PROGRAM_VERSION = "program_version";
 const QString SETTINGS_MAIN_WINDOW_POS = "main_window_pos";
@@ -88,14 +96,41 @@ const QString SETTINGS_CARDBOX_SCHEDULES = "cardbox_schedules";
 const QString SETTINGS_CARDBOX_WINDOWS = "cardbox_windows";
 const QString SETTINGS_LETTER_DISTRIBUTION = "letter_distribution";
 const QString SETTINGS_JUDGE_SAVE_LOG = "judge_save_log";
+
+const bool    DEFAULT_AUTO_IMPORT = true;
 const QString DEFAULT_DEFAULT_LEXICON = Defs::LEXICON_OWL2;
+const bool    DEFAULT_DISPLAY_WELCOME = true;
+const QString DEFAULT_USER_DATA_DIR = Auxil::getHomeDir() + "/Zyzzyva";
+const bool    DEFAULT_USE_TILE_THEME = true;
 const QString DEFAULT_TILE_THEME = "tan-with-border";
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb(0, 0, 127);
+const bool    DEFAULT_QUIZ_USE_FLASHCARD_MODE = false;
+const bool    DEFAULT_QUIZ_SHOW_NUM_RESPONSES = true;
+const bool    DEFAULT_QUIZ_SHOW_QUESTION_STATS = true;
+const bool    DEFAULT_QUIZ_REQUIRE_LEXICON_SYMBOLS = false;
+const bool    DEFAULT_QUIZ_AUTO_CHECK = true;
+const bool    DEFAULT_QUIZ_AUTO_ADVANCE = false;
+const bool    DEFAULT_QUIZ_AUTO_END_AFTER_INCORRECT = false;
+const bool    DEFAULT_QUIZ_MARK_MISSED_AFTER_INCORRECT = true;
+const bool    DEFAULT_QUIZ_MARK_MISSED_AFTER_TIMER_EXPIRES = false;
+const bool    DEFAULT_QUIZ_CYCLE_ANSWERS = true;
+const bool    DEFAULT_QUIZ_TIMEOUT_DISABLE_INPUT = true;
 const int     DEFAULT_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS = 750;
+const bool    DEFAULT_QUIZ_RECORD_STATS = true;
 const int     DEFAULT_PROBABILITY_NUM_BLANKS = 2;
 const QString DEFAULT_CARDBOX_SCHEDULES = "1 4 7 12 20 30 60 90 150 270 480";
 const QString DEFAULT_CARDBOX_WINDOWS = "0 1 2 3 5 7 10 15 20 30 50";
+const bool    DEFAULT_JUDGE_SAVE_LOG = true;
+const bool    DEFAULT_SORT_BY_LENGTH = false;
+const bool    DEFAULT_GROUP_BY_ANAGRAMS = true;
+const bool    DEFAULT_SHOW_PROBABILITY_ORDER = true;
+const bool    DEFAULT_SHOW_PLAYABILITY_ORDER = false;
+const bool    DEFAULT_SHOW_HOOKS = true;
+const bool    DEFAULT_SHOW_HOOK_PARENTS = true;
+const bool    DEFAULT_SHOW_DEFINITIONS = true;
+const bool    DEFAULT_LOWER_CASE_WILDCARDS = false;
+const bool    DEFAULT_USE_LEXICON_STYLES = true;
 const QString DEFAULT_LEXICON_STYLES = QString(
     "%1 and not %2: symbol %\n"
     "%3 and not %4: symbol !\n"
@@ -152,7 +187,8 @@ MainSettings::readSettings()
     instance->programVersion
         = settings.value(SETTINGS_PROGRAM_VERSION).toString();
 
-    instance->useAutoImport = settings.value(SETTINGS_IMPORT, true).toBool();
+    instance->useAutoImport =
+        settings.value(SETTINGS_IMPORT, DEFAULT_AUTO_IMPORT).toBool();
 
     // Get default lexicon, either from current setting or old one
     instance->defaultLexicon
@@ -178,14 +214,16 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_IMPORT_FILE).toString();
 
     instance->displayWelcome
-        = settings.value(SETTINGS_DISPLAY_WELCOME, true).toBool();
+        = settings.value(SETTINGS_DISPLAY_WELCOME,
+                         DEFAULT_DISPLAY_WELCOME).toBool();
 
-    QString defaultUserDir = Auxil::getHomeDir() + "/Zyzzyva";
     instance->userDataDir = QDir::cleanPath(
-        settings.value(SETTINGS_USER_DATA_DIR, defaultUserDir).toString());
+        settings.value(SETTINGS_USER_DATA_DIR,
+                       DEFAULT_USER_DATA_DIR).toString());
 
     instance->useTileTheme
-        = settings.value(SETTINGS_USE_TILE_THEME, true).toBool();
+        = settings.value(SETTINGS_USE_TILE_THEME,
+                         DEFAULT_USE_TILE_THEME).toBool();
     instance->tileTheme
         = settings.value(SETTINGS_TILE_THEME, DEFAULT_TILE_THEME).toString();
 
@@ -198,54 +236,61 @@ MainSettings::readSettings()
                        QString::number(DEFAULT_QUIZ_BACKGROUND_COLOR)).toUInt());
 
     instance->quizUseFlashcardMode
-        = settings.value(SETTINGS_QUIZ_USE_FLASHCARD_MODE, false).toBool();
+        = settings.value(SETTINGS_QUIZ_USE_FLASHCARD_MODE,
+                         DEFAULT_QUIZ_USE_FLASHCARD_MODE).toBool();
     instance->quizShowNumResponses
-        = settings.value(SETTINGS_QUIZ_SHOW_NUM_RESPONSES, true).toBool();
+        = settings.value(SETTINGS_QUIZ_SHOW_NUM_RESPONSES,
+                         DEFAULT_QUIZ_SHOW_NUM_RESPONSES).toBool();
     instance->quizShowQuestionStats
-        = settings.value(SETTINGS_QUIZ_SHOW_QUESTION_STATS, true).toBool();
+        = settings.value(SETTINGS_QUIZ_SHOW_QUESTION_STATS,
+                         DEFAULT_QUIZ_SHOW_QUESTION_STATS).toBool();
     instance->quizRequireLexiconSymbols
-        = settings.value(SETTINGS_QUIZ_REQUIRE_LEXICON_SYMBOLS, false).toBool();
+        = settings.value(SETTINGS_QUIZ_REQUIRE_LEXICON_SYMBOLS,
+                         DEFAULT_QUIZ_REQUIRE_LEXICON_SYMBOLS).toBool();
     instance->quizAutoCheck
-        = settings.value(SETTINGS_QUIZ_AUTO_CHECK, true).toBool();
+        = settings.value(SETTINGS_QUIZ_AUTO_CHECK,
+                         DEFAULT_QUIZ_AUTO_CHECK).toBool();
     instance->quizAutoAdvance
-        = settings.value(SETTINGS_QUIZ_AUTO_ADVANCE, false).toBool();
+        = settings.value(SETTINGS_QUIZ_AUTO_ADVANCE,
+                         DEFAULT_QUIZ_AUTO_ADVANCE).toBool();
     instance->quizAutoEndAfterIncorrect
         = settings.value(SETTINGS_QUIZ_AUTO_END_AFTER_INCORRECT,
-                         false).toBool();
+                         DEFAULT_QUIZ_AUTO_END_AFTER_INCORRECT).toBool();
     instance->quizMarkMissedAfterIncorrect
         = settings.value(SETTINGS_QUIZ_MARK_MISSED_AFTER_INCORRECT,
-                         true).toBool();
+                         DEFAULT_QUIZ_MARK_MISSED_AFTER_INCORRECT).toBool();
     instance->quizMarkMissedAfterTimerExpires
         = settings.value(SETTINGS_QUIZ_MARK_MISSED_AFTER_TIMER_EXPIRES,
-                         false).toBool();
+                         DEFAULT_QUIZ_MARK_MISSED_AFTER_TIMER_EXPIRES).toBool();
     instance->quizCycleAnswers
-        = settings.value(SETTINGS_QUIZ_CYCLE_ANSWERS, true).toBool();
+        = settings.value(SETTINGS_QUIZ_CYCLE_ANSWERS,
+                         DEFAULT_QUIZ_CYCLE_ANSWERS).toBool();
     instance->quizTimeoutDisableInput
-        = settings.value(SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT, true).toBool();
+        = settings.value(SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT,
+                         DEFAULT_QUIZ_TIMEOUT_DISABLE_INPUT).toBool();
     instance->quizTimeoutDisableInputMillisecs
         = settings.value(SETTINGS_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS,
                          DEFAULT_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS).toInt();
+
+    instance->quizRecordStats
+        = settings.value(SETTINGS_QUIZ_RECORD_STATS,
+                         DEFAULT_QUIZ_RECORD_STATS).toBool();
 
     instance->probabilityNumBlanks
         = settings.value(SETTINGS_PROBABILITY_NUM_BLANKS,
                          DEFAULT_PROBABILITY_NUM_BLANKS).toInt();
 
-    instance->quizRecordStats
-        = settings.value(SETTINGS_QUIZ_RECORD_STATS, true).toBool();
+    instance->setCardboxScheduleList(
+        settings.value(SETTINGS_CARDBOX_SCHEDULES,
+                       DEFAULT_CARDBOX_SCHEDULES).toString());
 
-    QString schedStr = settings.value(SETTINGS_CARDBOX_SCHEDULES,
-                                      DEFAULT_CARDBOX_SCHEDULES).toString();
-    instance->cardboxScheduleList.clear();
-    foreach (const QString& str, schedStr.split(QChar(' '))) {
-        instance->cardboxScheduleList.append(str.toInt());
-    }
+    instance->setCardboxWindowList(
+        settings.value(SETTINGS_CARDBOX_WINDOWS,
+                       DEFAULT_CARDBOX_WINDOWS).toString());
 
-    QString windowStr = settings.value(SETTINGS_CARDBOX_WINDOWS,
-                                       DEFAULT_CARDBOX_WINDOWS).toString();
-    instance->cardboxWindowList.clear();
-    foreach (const QString& str, windowStr.split(QChar(' '))) {
-        instance->cardboxWindowList.append(str.toInt());
-    }
+    instance->judgeSaveLog
+        = settings.value(SETTINGS_JUDGE_SAVE_LOG,
+                         DEFAULT_JUDGE_SAVE_LOG).toBool();
 
     instance->mainFont
         = settings.value(SETTINGS_FONT_MAIN).toString();
@@ -259,42 +304,39 @@ MainSettings::readSettings()
         = settings.value(SETTINGS_FONT_DEFINITIONS).toString();
 
     instance->wordListSortByLength
-        = settings.value(SETTINGS_SORT_BY_LENGTH, false).toBool();
+        = settings.value(SETTINGS_SORT_BY_LENGTH,
+                         DEFAULT_SORT_BY_LENGTH).toBool();
     instance->wordListGroupByAnagrams
-        = settings.value(SETTINGS_GROUP_BY_ALPHAGRAMS, true).toBool();
+        = settings.value(SETTINGS_GROUP_BY_ALPHAGRAMS,
+                         DEFAULT_GROUP_BY_ANAGRAMS).toBool();
     instance->wordListShowProbabilityOrder
-        = settings.value(SETTINGS_SHOW_PROBABILITY_ORDER, true).toBool();
+        = settings.value(SETTINGS_SHOW_PROBABILITY_ORDER,
+                         DEFAULT_SHOW_PROBABILITY_ORDER).toBool();
     instance->wordListShowPlayabilityOrder
-        = settings.value(SETTINGS_SHOW_PLAYABILITY_ORDER, false).toBool();
+        = settings.value(SETTINGS_SHOW_PLAYABILITY_ORDER,
+                         DEFAULT_SHOW_PLAYABILITY_ORDER).toBool();
     instance->wordListShowHooks
-        = settings.value(SETTINGS_SHOW_HOOKS, true).toBool();
+        = settings.value(SETTINGS_SHOW_HOOKS, DEFAULT_SHOW_HOOKS).toBool();
     instance->wordListShowHookParents
-        = settings.value(SETTINGS_SHOW_HOOK_PARENTS, true).toBool();
+        = settings.value(SETTINGS_SHOW_HOOK_PARENTS,
+                         DEFAULT_SHOW_HOOK_PARENTS).toBool();
     instance->wordListShowDefinitions
-        = settings.value(SETTINGS_SHOW_DEFINITIONS, true).toBool();
+        = settings.value(SETTINGS_SHOW_DEFINITIONS,
+                         DEFAULT_SHOW_DEFINITIONS).toBool();
     instance->wordListLowerCaseWildcards
-        = settings.value(SETTINGS_LOWER_CASE_WILDCARDS, false).toBool();
-
+        = settings.value(SETTINGS_LOWER_CASE_WILDCARDS,
+                         DEFAULT_LOWER_CASE_WILDCARDS).toBool();
     instance->wordListUseLexiconStyles
-        = settings.value(SETTINGS_USE_LEXICON_STYLES, true).toBool();
+        = settings.value(SETTINGS_USE_LEXICON_STYLES,
+                         DEFAULT_USE_LEXICON_STYLES).toBool();
 
-    QString lexiconStyleStr
-        = settings.value(SETTINGS_LEXICON_STYLES,
-                         DEFAULT_LEXICON_STYLES).toString();
-    instance->wordListLexiconStyles.clear();
-    foreach (const QString& str, lexiconStyleStr.split(QChar('\n'))) {
-        LexiconStyle style = Auxil::stringToLexiconStyle(str);
-        if (!style.isValid())
-            continue;
-        instance->wordListLexiconStyles.append(style);
-    }
+    instance->setWordListLexiconStyles(
+        settings.value(SETTINGS_LEXICON_STYLES,
+                       DEFAULT_LEXICON_STYLES).toString());
 
     instance->letterDistribution
         = settings.value(SETTINGS_LETTER_DISTRIBUTION,
                          DEFAULT_LETTER_DISTRIBUTION).toString();
-
-    instance->judgeSaveLog
-        = settings.value(SETTINGS_JUDGE_SAVE_LOG, true).toBool();
 
     settings.endGroup();
 }
@@ -408,4 +450,141 @@ MainSettings::writeSettings()
                       instance->letterDistribution);
     settings.setValue(SETTINGS_JUDGE_SAVE_LOG, instance->judgeSaveLog);
     settings.endGroup();
+}
+
+//---------------------------------------------------------------------------
+//  restoreDefaults
+//
+//! Restore default settings for a settings group.
+//!
+//! @param group the settings group, use empty string to restore defaults for
+//! all groups
+//---------------------------------------------------------------------------
+void
+MainSettings::restoreDefaults(const QString& group)
+{
+    if (group.isEmpty() || (group == GENERAL_PREFS_GROUP)) {
+        instance->useAutoImport = DEFAULT_AUTO_IMPORT;
+        instance->defaultLexicon = DEFAULT_DEFAULT_LEXICON;
+        instance->autoImportLexicons = QStringList(DEFAULT_DEFAULT_LEXICON);
+        instance->autoImportFile = QString();
+        instance->displayWelcome = DEFAULT_DISPLAY_WELCOME;
+        instance->userDataDir = DEFAULT_USER_DATA_DIR;
+    }
+
+    if (group.isEmpty() || (group == QUIZ_PREFS_GROUP)) {
+        instance->useTileTheme = DEFAULT_USE_TILE_THEME;
+        instance->tileTheme = DEFAULT_TILE_THEME;
+        instance->quizLetterOrder = DEFAULT_QUIZ_LETTER_ORDER;
+        instance->quizBackgroundColor.setRgb(DEFAULT_QUIZ_BACKGROUND_COLOR);
+        instance->quizUseFlashcardMode = DEFAULT_QUIZ_USE_FLASHCARD_MODE;
+        instance->quizShowNumResponses = DEFAULT_QUIZ_SHOW_NUM_RESPONSES;
+        instance->quizShowQuestionStats = DEFAULT_QUIZ_SHOW_QUESTION_STATS;
+        instance->quizRequireLexiconSymbols =
+            DEFAULT_QUIZ_REQUIRE_LEXICON_SYMBOLS;
+        instance->quizAutoCheck = DEFAULT_QUIZ_AUTO_CHECK;
+        instance->quizAutoAdvance = DEFAULT_QUIZ_AUTO_ADVANCE;
+        instance->quizAutoEndAfterIncorrect =
+            DEFAULT_QUIZ_AUTO_END_AFTER_INCORRECT;
+        instance->quizMarkMissedAfterIncorrect =
+            DEFAULT_QUIZ_MARK_MISSED_AFTER_INCORRECT;
+        instance->quizMarkMissedAfterTimerExpires =
+            DEFAULT_QUIZ_MARK_MISSED_AFTER_TIMER_EXPIRES;
+        instance->quizCycleAnswers = DEFAULT_QUIZ_CYCLE_ANSWERS;
+        instance->quizTimeoutDisableInput =
+            DEFAULT_QUIZ_TIMEOUT_DISABLE_INPUT;
+        instance->quizTimeoutDisableInputMillisecs =
+            DEFAULT_QUIZ_TIMEOUT_DISABLE_INPUT_MSECS;
+        instance->quizRecordStats = DEFAULT_QUIZ_RECORD_STATS;
+    }
+
+    if (group.isEmpty() || (group == PROBABILITY_PREFS_GROUP)) {
+        instance->probabilityNumBlanks = DEFAULT_PROBABILITY_NUM_BLANKS;
+    }
+
+    if (group.isEmpty() || (group == CARDBOX_PREFS_GROUP)) {
+        instance->setCardboxScheduleList(DEFAULT_CARDBOX_SCHEDULES);
+        instance->setCardboxWindowList(DEFAULT_CARDBOX_WINDOWS);
+    }
+
+    if (group.isEmpty() || (group == JUDGE_PREFS_GROUP)) {
+        instance->judgeSaveLog = DEFAULT_JUDGE_SAVE_LOG;
+    }
+
+    if (group.isEmpty() || (group == FONT_PREFS_GROUP)) {
+        instance->mainFont = QString();
+        instance->wordListFont = QString();
+        instance->quizLabelFont = QString();
+        instance->wordInputFont = QString();
+        instance->definitionFont = QString();
+    }
+
+    if (group.isEmpty() || (group == WORD_LIST_PREFS_GROUP)) {
+        instance->wordListSortByLength = DEFAULT_SORT_BY_LENGTH;
+        instance->wordListGroupByAnagrams = DEFAULT_GROUP_BY_ANAGRAMS;
+        instance->wordListShowProbabilityOrder =
+            DEFAULT_SHOW_PROBABILITY_ORDER;
+        instance->wordListShowPlayabilityOrder =
+            DEFAULT_SHOW_PLAYABILITY_ORDER;
+        instance->wordListShowHooks = DEFAULT_SHOW_HOOKS;
+        instance->wordListShowHookParents = DEFAULT_SHOW_HOOK_PARENTS;
+        instance->wordListShowDefinitions = DEFAULT_SHOW_DEFINITIONS;
+        instance->wordListLowerCaseWildcards = DEFAULT_LOWER_CASE_WILDCARDS;
+        instance->wordListUseLexiconStyles = DEFAULT_USE_LEXICON_STYLES;
+        instance->setWordListLexiconStyles(DEFAULT_LEXICON_STYLES);
+    }
+
+    // ### Not user-visible yet
+    instance->letterDistribution = DEFAULT_LETTER_DISTRIBUTION;
+}
+
+//---------------------------------------------------------------------------
+//  setCardboxScheduleList
+//
+//! Set the cardbox schedule list from a string.
+//!
+//! @param str the string
+//---------------------------------------------------------------------------
+void
+MainSettings::setCardboxScheduleList(const QString& str)
+{
+    cardboxScheduleList.clear();
+    foreach (const QString& str, str.split(QChar(' '))) {
+        cardboxScheduleList.append(str.toInt());
+    }
+}
+
+//---------------------------------------------------------------------------
+//  setCardboxWindowList
+//
+//! Set the cardbox window list from a string.
+//!
+//! @param str the string
+//---------------------------------------------------------------------------
+void
+MainSettings::setCardboxWindowList(const QString& str)
+{
+    cardboxWindowList.clear();
+    foreach (const QString& str, str.split(QChar(' '))) {
+        cardboxWindowList.append(str.toInt());
+    }
+}
+
+//---------------------------------------------------------------------------
+//  setWordListLexiconStyles
+//
+//! Set the word list lexicon styles from a string.
+//!
+//! @param str the string
+//---------------------------------------------------------------------------
+void
+MainSettings::setWordListLexiconStyles(const QString& str)
+{
+    wordListLexiconStyles.clear();
+    foreach (const QString& s, str.split(QChar('\n'))) {
+        LexiconStyle style = Auxil::stringToLexiconStyle(s);
+        if (!style.isValid())
+            continue;
+        wordListLexiconStyles.append(style);
+    }
 }

@@ -47,14 +47,6 @@ const QString DIALOG_CAPTION = "Preferences";
 const QString USER_DATA_DIR_CHOOSER_TITLE = "Choose a Data Directory";
 const QString JUDGE_LOG_CHOOSER_TITLE = "Choose a Log Directory";
 
-const QString GENERAL_PREFS_ITEM = "General";
-const QString QUIZ_PREFS_ITEM = "Quiz";
-const QString PROBABILITY_PREFS_ITEM = "Probability";
-const QString CARDBOX_PREFS_ITEM = "Cardbox";
-const QString JUDGE_PREFS_ITEM = "Word Judge";
-const QString FONT_PREFS_ITEM = "Fonts";
-const QString WORD_LIST_PREFS_ITEM = "Word Tables";
-
 const QString LEXICON_SEP = ", ";
 
 const int FONT_MAIN_BUTTON = 1;
@@ -91,9 +83,29 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
             SLOT(navTextChanged(const QString&)));
     mainHlay->addWidget(navList);
 
+    QVBoxLayout* navStackVlay = new QVBoxLayout;
+    Q_CHECK_PTR(navStackVlay);
+    navStackVlay->setMargin(0);
+    mainHlay->addLayout(navStackVlay);
+
     navStack = new QStackedWidget;
     Q_CHECK_PTR(navStack);
-    mainHlay->addWidget(navStack);
+    navStackVlay->addWidget(navStack);
+
+    navStackVlay->addStretch(1);
+
+    QHBoxLayout* restoreDefaultHlay = new QHBoxLayout;
+    navStackVlay->addLayout(restoreDefaultHlay);
+
+    restoreDefaultHlay->addStretch(1);
+
+    // ### Change this, OK, Cancel, to QDialogButtonBox
+    QPushButton* restoreDefaultsButton = new QPushButton;
+    Q_CHECK_PTR(restoreDefaultsButton);
+    restoreDefaultsButton->setText("&Restore Defaults");
+    connect(restoreDefaultsButton, SIGNAL(clicked()),
+            SLOT(restoreDefaultsClicked()));
+    restoreDefaultHlay->addWidget(restoreDefaultsButton);
 
     // General Prefs
     generalPrefWidget = new QWidget;
@@ -104,7 +116,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(generalPrefVlay);
     generalPrefVlay->setMargin(0);
 
-    QLabel* generalPrefLabel = new QLabel(GENERAL_PREFS_ITEM);
+    QLabel* generalPrefLabel = new QLabel(MainSettings::GENERAL_PREFS_GROUP);
     Q_CHECK_PTR(generalPrefLabel);
     generalPrefLabel->setFrameShape(QFrame::StyledPanel);
     generalPrefVlay->addWidget(generalPrefLabel);
@@ -225,7 +237,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(quizPrefVlay);
     quizPrefVlay->setMargin(0);
 
-    QLabel* quizPrefLabel = new QLabel(QUIZ_PREFS_ITEM);
+    QLabel* quizPrefLabel = new QLabel(MainSettings::QUIZ_PREFS_GROUP);
     Q_CHECK_PTR(quizPrefLabel);
     quizPrefLabel->setFrameShape(QFrame::StyledPanel);
     quizPrefVlay->addWidget(quizPrefLabel);
@@ -388,7 +400,8 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(probabilityPrefVlay);
     probabilityPrefVlay->setMargin(0);
 
-    QLabel* probabilityPrefLabel = new QLabel(PROBABILITY_PREFS_ITEM);
+    QLabel* probabilityPrefLabel =
+        new QLabel(MainSettings::PROBABILITY_PREFS_GROUP);
     Q_CHECK_PTR(probabilityPrefLabel);
     probabilityPrefLabel->setFrameShape(QFrame::StyledPanel);
     probabilityPrefVlay->addWidget(probabilityPrefLabel);
@@ -431,7 +444,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(cardboxPrefVlay);
     cardboxPrefVlay->setMargin(0);
 
-    QLabel* cardboxPrefLabel = new QLabel(CARDBOX_PREFS_ITEM);
+    QLabel* cardboxPrefLabel = new QLabel(MainSettings::CARDBOX_PREFS_GROUP);
     Q_CHECK_PTR(cardboxPrefLabel);
     cardboxPrefLabel->setFrameShape(QFrame::StyledPanel);
     cardboxPrefVlay->addWidget(cardboxPrefLabel);
@@ -503,7 +516,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(judgePrefVlay);
     judgePrefVlay->setMargin(0);
 
-    QLabel* judgePrefLabel = new QLabel(JUDGE_PREFS_ITEM);
+    QLabel* judgePrefLabel = new QLabel(MainSettings::JUDGE_PREFS_GROUP);
     Q_CHECK_PTR(judgePrefLabel);
     judgePrefLabel->setFrameShape(QFrame::StyledPanel);
     judgePrefVlay->addWidget(judgePrefLabel);
@@ -554,7 +567,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(fontPrefVlay);
     fontPrefVlay->setMargin(0);
 
-    QLabel* fontPrefLabel = new QLabel(FONT_PREFS_ITEM);
+    QLabel* fontPrefLabel = new QLabel(MainSettings::FONT_PREFS_GROUP);
     Q_CHECK_PTR(fontPrefLabel);
     fontPrefLabel->setFrameShape(QFrame::StyledPanel);
     fontPrefVlay->addWidget(fontPrefLabel);
@@ -680,7 +693,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(wordListPrefVlay);
     wordListPrefVlay->setMargin(0);
 
-    QLabel* wordListPrefLabel = new QLabel(WORD_LIST_PREFS_ITEM);
+    QLabel* wordListPrefLabel = new QLabel(MainSettings::WORD_LIST_PREFS_GROUP);
     Q_CHECK_PTR(wordListPrefLabel);
     wordListPrefLabel->setFrameShape(QFrame::StyledPanel);
     wordListPrefVlay->addWidget(wordListPrefLabel);
@@ -784,13 +797,13 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     buttonHlay->addWidget(cancelButton);
 
     // Add nav list items
-    new QListWidgetItem(GENERAL_PREFS_ITEM, navList);
-    new QListWidgetItem(QUIZ_PREFS_ITEM, navList);
-    new QListWidgetItem(PROBABILITY_PREFS_ITEM, navList);
-    new QListWidgetItem(CARDBOX_PREFS_ITEM, navList);
-    new QListWidgetItem(JUDGE_PREFS_ITEM, navList);
-    new QListWidgetItem(FONT_PREFS_ITEM, navList);
-    new QListWidgetItem(WORD_LIST_PREFS_ITEM, navList);
+    new QListWidgetItem(MainSettings::GENERAL_PREFS_GROUP, navList);
+    new QListWidgetItem(MainSettings::QUIZ_PREFS_GROUP, navList);
+    new QListWidgetItem(MainSettings::PROBABILITY_PREFS_GROUP, navList);
+    new QListWidgetItem(MainSettings::CARDBOX_PREFS_GROUP, navList);
+    new QListWidgetItem(MainSettings::JUDGE_PREFS_GROUP, navList);
+    new QListWidgetItem(MainSettings::FONT_PREFS_GROUP, navList);
+    new QListWidgetItem(MainSettings::WORD_LIST_PREFS_GROUP, navList);
     navList->setCurrentRow(0);
 
     setWindowTitle(DIALOG_CAPTION);
@@ -819,7 +832,17 @@ void
 SettingsDialog::readSettings()
 {
     MainSettings::readSettings();
+    refreshSettings();
+}
 
+//---------------------------------------------------------------------------
+//  refreshSettings
+//
+//! Refresh settings from the main settings object.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::refreshSettings()
+{
     bool autoImport = MainSettings::getUseAutoImport();
     autoImportCbox->setChecked(autoImport);
 
@@ -1047,20 +1070,32 @@ SettingsDialog::writeSettings()
 void
 SettingsDialog::navTextChanged(const QString& text)
 {
-    if (text == GENERAL_PREFS_ITEM)
+    if (text == MainSettings::GENERAL_PREFS_GROUP)
         navStack->setCurrentWidget(generalPrefWidget);
-    else if (text == QUIZ_PREFS_ITEM)
+    else if (text == MainSettings::QUIZ_PREFS_GROUP)
         navStack->setCurrentWidget(quizPrefWidget);
-    else if (text == PROBABILITY_PREFS_ITEM)
+    else if (text == MainSettings::PROBABILITY_PREFS_GROUP)
         navStack->setCurrentWidget(probabilityPrefWidget);
-    else if (text == CARDBOX_PREFS_ITEM)
+    else if (text == MainSettings::CARDBOX_PREFS_GROUP)
         navStack->setCurrentWidget(cardboxPrefWidget);
-    else if (text == JUDGE_PREFS_ITEM)
+    else if (text == MainSettings::JUDGE_PREFS_GROUP)
         navStack->setCurrentWidget(judgePrefWidget);
-    else if (text == FONT_PREFS_ITEM)
+    else if (text == MainSettings::FONT_PREFS_GROUP)
         navStack->setCurrentWidget(fontPrefWidget);
-    else if (text == WORD_LIST_PREFS_ITEM)
+    else if (text == MainSettings::WORD_LIST_PREFS_GROUP)
         navStack->setCurrentWidget(wordListPrefWidget);
+}
+
+//---------------------------------------------------------------------------
+//  restoreDefaultsClicked
+//
+//! Slot called when the Restore Defaults button is clicked.
+//---------------------------------------------------------------------------
+void
+SettingsDialog::restoreDefaultsClicked()
+{
+    MainSettings::restoreDefaults(navList->selectedItems().first()->text());
+    refreshSettings();
 }
 
 //---------------------------------------------------------------------------

@@ -47,10 +47,12 @@ class SettingsDialog : public QDialog
     ~SettingsDialog();
 
     void readSettings();
+    void refreshSettings();
     void writeSettings();
 
     public slots:
     void navTextChanged(const QString& text);
+    void restoreDefaultsClicked();
     void autoImportCboxToggled(bool on);
     void autoImportLexiconActivated(const QString& text);
     void chooseLexiconsClicked();
