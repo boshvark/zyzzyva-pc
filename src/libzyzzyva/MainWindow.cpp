@@ -1897,6 +1897,7 @@ MainWindow::importLexicon(const QString& lexicon)
         prefixMap[LEXICON_CD] = "/british/cd";
         prefixMap[LEXICON_ODS4] = "/french/ods4";
         prefixMap[LEXICON_ODS5] = "/french/ods5";
+        prefixMap[LEXICON_ZINGA_2010] = "/italian/zinga-2010";
 
         if (prefixMap.contains(lexicon)) {
             QString prefix = Auxil::getWordsDir() + prefixMap.value(lexicon);
