@@ -70,9 +70,10 @@ lessThan(const WordTableModel::WordItem& a,
     if (MainSettings::getWordListSortByLength()) {
         int aLen = a.getWord().length();
         int bLen = b.getWord().length();
-        if (aLen < bLen)
+        bool reverse = MainSettings::getWordListSortByReverseLength();
+        if ((!reverse && (aLen < bLen)) || (reverse && (aLen > bLen)))
             return true;
-        else if (bLen < aLen)
+        else if ((!reverse && (bLen < aLen)) || (reverse && (bLen > aLen)))
             return false;
     }
 
