@@ -703,7 +703,7 @@ WordEngine::applyPostConditions(const QString& lexicon,
                     QString radix;
                     QString wordUpper = word.toUpper();
                     radix.sprintf("%09.0f", 1e9 - 1 - playability);
-                    radix += Auxil::getAlphagram(wordUpper);
+                    radix += Auxil::getAlphagram(wordUpper) + ":";
                     radix += wordUpper;
                     playValueMap.insert(radix, word);
                 }
