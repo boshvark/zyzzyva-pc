@@ -25,7 +25,7 @@
   <a name="data-directory">
   <h3>Data Directory</h3>
   <p>Zyzzyva can be configured to store local data in a location of your
-  choosing.  Normally Zyzzyva stores its data in a directory called ".zyzzyva"
+  choosing.  Normally Zyzzyva stores its data in a directory called "Zyzzyva"
   in your home directory.  However, since Zyzzyva's data directory is
   customizable, you could, for example, tell it to store its data on a USB
   drive, which could then be transported between computers without having to
@@ -115,6 +115,25 @@
   being used, it will appear that the tiles have been rearranged to form the
   correct answer.  If there are multiple correct answers, each one will be
   displayed for five seconds in a cycle.</p>
+  <a name="probability">
+  <h2>Probability Preferences</h2>
+  <a name="probability-blanks">
+  <h3>Number of Blanks</h3>
+  <p>Zyzzyva can calculate probability values using a variable number of
+  blanks: 0, 1, or 2. The <i>Number of Blanks</i> preferences allows you to
+  specify how many blanks you prefer to be used. The calculation using two
+  blanks is more accurate in calculating the actual probability of drawing a
+  particular word from a full bag of letter tiles. However, some people prefer
+  to use zero blanks because it simplifies the estimation of a word's
+  probability value. This can be useful if you have studied many words in
+  probability order and need to determine whether you would have already seen
+  a particular unknown word if it were valid. Usually, the number of blanks
+  does not affect a word's probability value drastically, though there are
+  many exceptions.</p>
+  <p>Zyzzyva's default number of blanks is 2. Regardless of the value of this
+  preference, you can always search for words using a different number of
+  blanks by specifying the number of blanks in a <i>Probability Order</i> or
+  <i>Limit By Probability Order</i> search condition.</p>
   <a name="cardbox">
   <h2>Cardbox Preferences</h2>
   <a name="cardbox-schedule">
@@ -201,10 +220,19 @@
   <h3>Show probability order</h3>
   <p>If the <tt>Show probability order</tt> option is selected, Zyzzyva will
   automatically display probability order for words in all word tables.  A
-  column titled <tt>P</tt> will be displayed to the left of front hooks.  The
+  column titled <tt>Prob-N</tt> will be displayed to the left of front hooks,
+  where N is the number of blanks used to calculate the probability value. The
   number displayed is the word's probability order relative to other words of
   the same length.  For example, if a 7-letter word displays the probability
   order 75, that means that word is the 75th most probable 7-letter word.</p>
+  <a name="show-playability-order">
+  <h3>Show playability order</h3>
+  <p>If the <tt>Show playability order</tt> option is selected, Zyzzyva will
+  automatically display playability order for words in all word tables.  A
+  column titled <tt>Play</tt> will be displayed to the left of front hooks.  The
+  number displayed is the word's playability order relative to other words of
+  the same length.  For example, if a 7-letter word displays the playability
+  order 75, that means that word is the 75th most playable 7-letter word.</p>
   <a name="show-hooks">
   <h3>Show hooks</h3>
   <p>If the <tt>Show hooks</tt> option is selected, Zyzzyva will automatically
