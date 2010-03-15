@@ -67,6 +67,24 @@ bool
 lessThan(const WordTableModel::WordItem& a,
          const WordTableModel::WordItem& b)
 {
+    if (MainSettings::getWordListSortByPlayabilityOrder()) {
+        int aPlayValue = a.getPlayabilityValue();
+        int bPlayValue = b.getPlayabilityValue();
+
+        // High playability values compare as less
+        if (bPlayValue < aPlayValue)
+            return true;
+        else if (aPlayValue < bPlayValue)
+            return false;
+
+        int aPlayOrder = a.getPlayabilityOrder();
+        int bPlayOrder = b.getPlayabilityOrder();
+        if (aPlayOrder < bPlayOrder)
+            return true;
+        else if (bPlayOrder < aPlayOrder)
+            return false;
+    }
+
     if (MainSettings::getWordListSortByLength()) {
         int aLen = a.getWord().length();
         int bLen = b.getWord().length();
@@ -93,24 +111,6 @@ lessThan(const WordTableModel::WordItem& a,
         if (aProbOrder < bProbOrder)
             return true;
         else if (bProbOrder < aProbOrder)
-            return false;
-    }
-
-    if (MainSettings::getWordListSortByPlayabilityOrder()) {
-        int aPlayValue = a.getPlayabilityValue();
-        int bPlayValue = b.getPlayabilityValue();
-
-        // High playability values compare as less
-        if (bPlayValue < aPlayValue)
-            return true;
-        else if (aPlayValue < bPlayValue)
-            return false;
-
-        int aPlayOrder = a.getPlayabilityOrder();
-        int bPlayOrder = b.getPlayabilityOrder();
-        if (aPlayOrder < bPlayOrder)
-            return true;
-        else if (bPlayOrder < aPlayOrder)
             return false;
     }
 
