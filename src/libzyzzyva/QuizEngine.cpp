@@ -197,7 +197,7 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                 // Order alphagram quiz questions by the best playability
                 // order of any of their anagrams
                 QMap<QString, int> bestPlayValue;
-                QMap<int, QString> valueQuestions;
+                QMap<int, QMap<QString, int> > valueQuestions;
                 foreach (const QString& word, questionWords) {
                     QString question = word;
                     int bestValue = 0;
@@ -209,18 +209,29 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                     }
 
                     int value = wordEngine->getPlayabilityValue(lexicon, word);
-                    if (!bestValue || (value < bestValue)) {
-                        valueQuestions.remove(bestValue);
+                    if (!bestValue || (value > bestValue)) {
+                        valueQuestions[bestValue].remove(question);
+                        if (valueQuestions[bestValue].isEmpty())
+                            valueQuestions.remove(bestValue);
+
                         bestPlayValue[question] = value;
-                        valueQuestions[value] = question;
+                        valueQuestions[value].insert(question, 1);
                     }
                 }
 
                 quizQuestions.clear();
-                QMapIterator<int, QString> it (valueQuestions);
-                while (it.hasNext()) {
-                    it.next();
-                    quizQuestions.append(it.value());
+                QMapIterator<int, QMap<QString, int> > it (valueQuestions);
+                it.toBack();
+                while (it.hasPrevious()) {
+                    it.previous();
+                    int value = it.key();
+                    const QMap<QString, int>& wordSet = it.value();
+                    QMapIterator<QString, int> jt (wordSet);
+                    while (jt.hasNext()) {
+                        jt.next();
+                        const QString& word = jt.key();
+                        quizQuestions.append(word);
+                    }
                 }
             }
             break;
