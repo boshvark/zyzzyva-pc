@@ -229,6 +229,8 @@
   <i>Includes Letters</i> condition of Z, and a <i>Probability Order</i>
   condition of Min 1, Max 1000.  In OWL2, there are two such words: NOTARIZE
   and TRIAZOLE.</p>
+  <p>The <i>Blanks</i> selection area specifies the number of blanks used to
+  calculate the probability value. The available options are 0, 1, or 2.</p>
   <p>If the <i>Lax</i> checkbox is activated, the search will also find all
   words that have equal probability as the minimum or maximum of the range.
   For example, in OWL2, a search for <tt>Length: Min 7, Max 7</tt>,
@@ -247,6 +249,41 @@
   Letters</i> condition of V, and a <i>Limit by Probability Order</i>
   condition of Min 1, Max 50.</p>
   <p>The <i>Limit by Probability Order</i> condition is applied last, after
+  all other search conditions.  So for example, in the search mentioned above,
+  Zyzzyva first finds all 7-letter words containing V.  Then it finds the
+  words ranked 1-50 out of that list.</p>
+  <a name="playability-order">
+  <h3>Playability Order</h3>
+  <p>A <i>Playability Order</i> search condition can be used to find words
+  having a certain playability order (as calculated by John O'Laughlin)
+  relative to other words of the same
+  length.  For example, to find the 1000 most playable 7-letter words, create
+  a search with a <i>Length</i> condition of Min 7, Max 7, and a
+  <i>Playability Order</i> condition of Min 1, Max 1000.  To find all 8-letter
+  words containing X that are also among the 1000 most playable 8-letter
+  words, create a search with a <i>Length</i> condition of Min 8, Max 8, an
+  <i>Includes Letters</i> condition of X, and a <i>Playability Order</i>
+  condition of Min 1, Max 1000. In OWL2, there are four such words:
+  ANOREXIA, RETAXING, EXERTION, and EXORDIAL.</p>
+  <p>If the <i>Lax</i> checkbox is activated, the search will also find all
+  words that have equal playability as the minimum or maximum of the range.
+  For example, in OWL2, a search for <tt>Length: Min 7, Max 7</tt>,
+  <tt>Playability Order: Min 4000, Max 4000 (Lax)</tt> will find two words,
+  CORDAGE and ADVECTS. The <i>Lax</i> checkbox allows them both to be
+  found although only the unique playability order of ADVECTS is strictly
+  4000. The word CORDAGE has the same playability value, but its unique
+  playability order is 3999.</p>
+  <a name="limit-by-playability-order">
+  <h3>Limit by Playability Order</h3>
+  <p>A <i>Limit by Playability Order</i> search condition can be used to limit
+  the search results to a certain range of words in order of playability.  For
+  example, to find the 50 most playable 7-letter words containing V, create a
+  search with a <i>Length</i> condition of Min 7, Max 7, an <i>Includes
+  Letters</i> condition of V, and a <i>Limit by Playability Order</i>
+  condition of Min 1, Max 50. To find the 50 most playable words of any length
+  between 2 and 8 containing V, simply change the <i>Length</i> condition to
+  Min 2, Max 8.</p>
+  <p>The <i>Limit by Playability Order</i> condition is applied last, after
   all other search conditions.  So for example, in the search mentioned above,
   Zyzzyva first finds all 7-letter words containing V.  Then it finds the
   words ranked 1-50 out of that list.</p>
