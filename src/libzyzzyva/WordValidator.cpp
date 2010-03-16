@@ -60,7 +60,7 @@ WordValidator::validate(QString& input, int& pos) const
         replaceRegExp(QRegExp(":+"), ":", input, pos);
         replaceRegExp(QRegExp("^([^:]*:[^:]+:[^:]*):.*"), "\\1", input, pos);
     }
-    replaceRegExp(QRegExp("[_\\d]+"), QString(), input, pos);
+    replaceRegExp(QRegExp("_+"), QString(), input, pos);
     replaceRegExp(QRegExp(re), QString(), input, pos);
     return Acceptable;
 }
