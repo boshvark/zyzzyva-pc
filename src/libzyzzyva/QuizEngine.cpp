@@ -224,7 +224,6 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                 it.toBack();
                 while (it.hasPrevious()) {
                     it.previous();
-                    int value = it.key();
                     const QMap<QString, int>& wordSet = it.value();
                     QMapIterator<QString, int> jt (wordSet);
                     while (jt.hasNext()) {
