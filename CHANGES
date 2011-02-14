@@ -1,3 +1,21 @@
+Version 2.1.0
+Released 2010-03-15, from /branches/2.1.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.1.0
+
+User-visible changes:
+ * Search and quiz ordering by Playability (CSW, OWL2, and OSPD4 only)
+ * Specify 0, 1, or 2 blanks when calculating Probability
+ * Negation of Anagram, Pattern, and Subanagram search conditions
+ * Many word definition fixes - and thanks to Michael McKenna for CSW
+   long definitions
+ * Italian and Dutch lexicons - thanks to Hervé Bohbot, Diego de
+   Landro, and Bertrand De Bouvere
+ * BOOBIES is now acceptable in OSPD4 lexicon
+ * Restore Defaults button on Preferences dialog
+ * Subanagram search results are now sorted with longest words first
+ * Various bug fixes
+
+
 Version 2.0.5
 Released 2009-03-09, from /branches/2.0.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.0.5
