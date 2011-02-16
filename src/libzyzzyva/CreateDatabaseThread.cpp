@@ -3,7 +3,7 @@
 //
 // A class for creating a database in the background.
 //
-// Copyright 2006-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -506,9 +506,18 @@ CreateDatabaseThread::updateDefinitions(QSqlDatabase& db, int& stepNum)
     QMap<QString, QString> definitionMap;
     QFile definitionFile (definitionFilename);
     if (definitionFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        char* buffer = new char[MAX_INPUT_LINE_LEN];
+        bool readNewline = true;
+        char* buffer = new char[MAX_INPUT_LINE_LEN * 2 + 1];
         while (definitionFile.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
             QString line (buffer);
+
+            // If first line didn't contain newline, skip subsequent reads
+            // until we see a newline (effectively truncating long lines)
+            bool skip = !readNewline;
+            readNewline = (line.right(1) == QString("\n"));
+            if (skip)
+                continue;
+
             line = line.simplified();
             if (!line.length() || (line.at(0) == '#')) {
                 if ((stepNum % PROGRESS_STEP) == 0) {
@@ -788,9 +797,18 @@ CreateDatabaseThread::importPlayability(const QString& filename,
     QStringList words;
     QSet<QString> alphagrams;
     int imported = 0;
-    char* buffer = new char[MAX_INPUT_LINE_LEN];
+    bool readNewline = true;
+    char* buffer = new char[MAX_INPUT_LINE_LEN * 2 + 1];
     while (file.readLine(buffer, MAX_INPUT_LINE_LEN) > 0) {
         QString line (buffer);
+
+        // If first line didn't contain newline, skip subsequent reads
+        // until we see a newline (effectively truncating long lines)
+        bool skip = !readNewline;
+        readNewline = (line.right(1) == QString("\n"));
+        if (skip)
+            continue;
+
         line = line.simplified();
         if (line.isEmpty() || (line.at(0) == '#'))
             continue;
