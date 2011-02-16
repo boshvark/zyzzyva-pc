@@ -3,7 +3,7 @@
 #
 # Build configuration file for Zyzzyva using qmake.
 #
-# Copyright 2005, 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -63,7 +63,6 @@ SOURCES = \
     DefineForm.cpp \
     DefinitionBox.cpp \
     DefinitionDialog.cpp \
-    HelpDialog.cpp \
     IntroForm.cpp \
     IscConnectionThread.cpp \
     IscConverter.cpp \
@@ -124,7 +123,6 @@ HEADERS = \
     DefinitionDialog.h \
     DefinitionLabel.h \
     DefinitionTextEdit.h \
-    HelpDialog.h \
     IntroForm.h \
     IscConnectionThread.h \
     JudgeDialog.h \

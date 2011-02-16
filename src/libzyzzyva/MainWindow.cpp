@@ -3,7 +3,7 @@
 //
 // The main window for the word study application.
 //
-// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2008, 2010-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -31,7 +31,6 @@
 #include "DatabaseRebuildDialog.h"
 #include "DefinitionDialog.h"
 #include "DefineForm.h"
-#include "HelpDialog.h"
 #include "IntroForm.h"
 #include "JudgeDialog.h"
 #include "JudgeSelectDialog.h"
@@ -91,8 +90,7 @@ using namespace Defs;
 MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     : QMainWindow(parent, f), splashScreen(splash),
       wordEngine(new WordEngine()), settingsDialog(new SettingsDialog(this)),
-      aboutDialog(new AboutDialog(this)),
-      helpDialog(new HelpDialog(QString(), this))
+      aboutDialog(new AboutDialog(this))
 {
     setSplashMessage("Creating interface...");
 
@@ -366,9 +364,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     if (MainSettings::getDisplayWelcome())
         newIntroForm();
-
-    connect(helpDialog, SIGNAL(error(const QString&)),
-            SLOT(helpDialogError(const QString&)));
 
     splashScreen = 0;
     QTimer::singleShot(0, this, SLOT(displayLexiconError()));
@@ -987,7 +982,7 @@ MainWindow::displayAbout()
 void
 MainWindow::displayHelp()
 {
-    helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
+    //helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
 }
 
 //---------------------------------------------------------------------------
@@ -1022,8 +1017,8 @@ MainWindow::displayLexiconError()
 void
 MainWindow::helpDialogError(const QString& message)
 {
-    QString caption = "Help Display Error";
-    QMessageBox::warning(this, caption, Auxil::dialogWordWrap(message));
+    //QString caption = "Help Display Error";
+    //QMessageBox::warning(this, caption, Auxil::dialogWordWrap(message));
 }
 
 //---------------------------------------------------------------------------

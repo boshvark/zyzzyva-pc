@@ -83,7 +83,7 @@ if [ "$COPYQT" = "yes" ]; then
     cp -r $QTDIR/bin/assistant.app $APPDIR/Contents/MacOS
 
     # Copy Qt frameworks into bundle and tell the executable to link to them
-    for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistant ; do
+    for i in QtCore QtGui QtNetwork QtSql QtXml ; do
 
         # Copy Qt framework into bundle
         echo "Copying $i.framework into bundle..."
@@ -151,21 +151,10 @@ if [ "$COPYQT" = "yes" ]; then
 
     done
 
-    # Change reference to frameworks in Assistant client
-    for i in QtCore QtGui QtNetwork QtAssistant ; do
-
-        echo "Changing link location for $i.framework in QtAssistant.framework..."
-        install_name_tool -change \
-            $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
-            @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
-            $APPDIR/Contents/Frameworks/QtAssistant.framework/Versions/$QTVER/QtAssistant
-
-    done
-
 fi
 
 # Update links to Qt frameworks in libzyzzyva and executable
-for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistant ; do
+for i in QtCore QtGui QtNetwork QtSql QtXml ; do
 
     # Change reference to framework in libzyzzyva
     echo "Changing link location for $i.framework in libzyzzyva..."
