@@ -4,7 +4,7 @@
 #
 # Create a bundle for Mac OS X.
 #
-# Copyright 2008, 2009, 2010 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2008-2011 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
@@ -75,6 +75,32 @@ fi
 echo "Copying libzyzzyva into bundle..."
 cp bin/libzyzzyva.2.dylib $APPDIR/Contents/Frameworks
 
+# Copy system libs to Frameworks directory
+echo "Copying system libs into bundle..."
+cp /usr/lib/libstdc++.6.dylib $APPDIR/Contents/Frameworks
+cp /usr/lib/libgcc_s.1.dylib $APPDIR/Contents/Frameworks
+cp /usr/lib/libz.1.dylib $APPDIR/Contents/Frameworks
+
+# Change link location for libstdc++ in libzyzzyva
+echo "Changing link location for libstdc++ in libzyzzyva..."
+install_name_tool -change \
+    /usr/lib/libstdc++.6.dylib \
+    @executable_path/../Frameworks/libstdc++.6.dylib \
+    $APPDIR/Contents/Frameworks/libzyzzyva.2.dylib
+
+# Change id of libstdc++
+echo "Changing id of libstdc++..."
+install_name_tool -id \
+    libstdc++.6.dylib \
+    $APPDIR/Contents/Frameworks/libstdc++.6.dylib
+
+# Change link location for libgcc_s in libzyzzyva
+echo "Changing link location for libgcc_s in libzyzzyva..."
+install_name_tool -change \
+    /usr/lib/libgcc_s.1.dylib \
+    @executable_path/../Frameworks/libgcc_s.1.dylib \
+    $APPDIR/Contents/Frameworks/libzyzzyva.2.dylib
+
 # Copy Qt libs to Frameworks directory unless they're already there
 if [ "$COPYQT" = "yes" ]; then
 
@@ -104,14 +130,33 @@ if [ "$COPYQT" = "yes" ]; then
             -id @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
             $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
 
-        #  Change reference to QtCore in frameworks
+        # Change reference to QtCore in frameworks
         if [ "$i" != "QtCore" ]; then
-            echo "Changing link location for $i.framework in QtGui.framework..."
+            echo "Changing link location for QtCore.framework in $i.framework..."
             install_name_tool -change \
                 $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
                 @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
                 $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
         fi
+
+        # Change reference to system libs in frameworks
+        echo "Changing link location for libstdc++ in $i.framework..."
+        install_name_tool -change \
+            /usr/lib/libstdc++.6.dylib \
+            @executable_path/../Frameworks/libstdc++.6.dylib \
+            $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+
+        echo "Changing link location for libgcc_s in $i.framework..."
+        install_name_tool -change \
+            /usr/lib/libgcc_s.1.dylib \
+            @executable_path/../Frameworks/libgcc_s.1.dylib \
+            $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+
+        echo "Changing link location for libz in $i.framework..."
+        install_name_tool -change \
+            /usr/lib/libz.1.dylib \
+            @executable_path/../Frameworks/libz.1.dylib \
+            $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
 
     done
 
