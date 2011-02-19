@@ -80,6 +80,7 @@ echo "Copying system libs into bundle..."
 cp /usr/lib/libstdc++.6.dylib $APPDIR/Contents/Frameworks
 cp /usr/lib/libgcc_s.1.dylib $APPDIR/Contents/Frameworks
 cp /usr/lib/libz.1.dylib $APPDIR/Contents/Frameworks
+chmod 755 $APPDIR/Contents/Frameworks/*.dylib
 
 # Change link location for libstdc++ in libzyzzyva
 echo "Changing link location for libstdc++ in libzyzzyva..."
