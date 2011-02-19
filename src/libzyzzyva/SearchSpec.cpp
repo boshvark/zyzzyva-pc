@@ -3,7 +3,7 @@
 //
 // A class to represent a word search specification.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2008, 2010-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -197,10 +197,10 @@ SearchSpec::optimize(const QString& lexicon)
     QMap<QString, bool> inLexicons;
     inLexicons[lexicon] = true;
 
-    QListIterator<SearchCondition> it (conditions);
+    QMutableListIterator<SearchCondition> it (conditions);
     while (it.hasNext()) {
 
-        const SearchCondition& condition = it.next();
+        SearchCondition& condition = it.next();
         int minValue = condition.minValue;
         int maxValue = condition.maxValue;
         QString stringValue = condition.stringValue;
@@ -211,6 +211,8 @@ SearchSpec::optimize(const QString& lexicon)
             case SearchCondition::AnagramMatch:
             case SearchCondition::SubanagramMatch: {
 
+                condition.stringValue = stringValue =
+                    Auxil::getCanonicalSearchString(stringValue);
                 if (stringValue.contains("*")) {
                     newConditions.append(condition);
                     break;
@@ -278,6 +280,8 @@ SearchSpec::optimize(const QString& lexicon)
             break;
 
             case SearchCondition::IncludeLetters:
+            condition.stringValue = stringValue =
+                Auxil::getCanonicalSearchString(stringValue);
             if (negated) {
                 if (!mustInclude.isEmpty()) {
                     for (int i = 0; i < int(stringValue.length()); ++i) {

@@ -3,7 +3,7 @@
 //
 // A form for querying and editing the contents of the cardbox system.
 //
-// Copyright 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2007, 2008, 2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -298,7 +298,7 @@ CardboxForm::refreshClicked()
 void
 CardboxForm::questionDataClicked()
 {
-    QString question = questionLine->text();
+    QString question = Auxil::getCanonicalSearchString(questionLine->text());
     if (question.isEmpty())
         return;
 

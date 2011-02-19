@@ -3,7 +3,7 @@
 //
 // A form for specifying a search condition.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2008, 2010-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -800,8 +800,11 @@ SearchConditionForm::matchStringIsValid(const QString& string) const
                     return false;
                 negatedGroup = true;
             }
-            else if ((c == '[') || (c == '*') || (c == '?'))
+            else if ((c == '[') || (c == '*') || (c == '?') ||
+                (c == '.') || (c == '@'))
+            {
                 return false;
+            }
             else
                 groupLetters = true;
         }

@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -546,7 +546,6 @@ Auxil::isVowel(QChar c)
     }
 }
 
-
 //---------------------------------------------------------------------------
 //  getAlphagram
 //
@@ -592,6 +591,24 @@ Auxil::getAlphagram(const QString& word)
     //chars[charsPlaced] = 0;
 
     //return QString(chars);
+}
+
+//---------------------------------------------------------------------------
+//  getCanonicalSearchString
+//
+//! Transform a search string into its canonical version. Replace '.' with '?'
+//! and '@' with '*'.
+//
+//! @param str the search string
+//! @return the canonical search string
+//---------------------------------------------------------------------------
+QString
+Auxil::getCanonicalSearchString(const QString& str)
+{
+    QString canonical (str);
+    canonical.replace(QChar('.'), QChar('?'));
+    canonical.replace(QChar('@'), QChar('*'));
+    return canonical;
 }
 
 //---------------------------------------------------------------------------
