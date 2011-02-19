@@ -3,7 +3,7 @@
 //
 // A class to represent a word search condition.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2008, 2010-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -135,6 +135,7 @@ SearchCondition::asDomElement() const
         case AnagramMatch:
         case SubanagramMatch:
         topElement.setAttribute(XML_STRING_ATTR, stringValue);
+        topElement.setAttribute(XML_NEGATED_ATTR, negated);
         break;
 
         case Prefix:
@@ -220,6 +221,11 @@ SearchCondition::fromDomElement(const QDomElement& element)
         if (!element.hasAttribute(XML_STRING_ATTR))
             return false;
         tmpCondition.stringValue = element.attribute(XML_STRING_ATTR);
+        if (element.hasAttribute(XML_NEGATED_ATTR)) {
+            int n = element.attribute(XML_NEGATED_ATTR).toInt(&ok);
+            if (ok)
+                tmpCondition.negated = n ? true : false;
+        }
         break;
 
         case Prefix:
