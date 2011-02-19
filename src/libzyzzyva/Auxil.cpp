@@ -433,6 +433,7 @@ Auxil::getLexiconPrefix(const QString& lexicon)
         pmap[LEXICON_OWL] = "/north-american/owl-lwl";
         pmap[LEXICON_OWL2] = "/north-american/owl2-lwl";
         pmap[LEXICON_OSPD4] = "/north-american/ospd4-lwl";
+        pmap[LEXICON_WWF] = "/north-american/wwf";
         pmap[LEXICON_VOLOST] = "/antarctic/volost";
         pmap[LEXICON_OSWI] = "/british/oswi";
         pmap[LEXICON_CSW] = "/british/csw";
@@ -1328,6 +1329,8 @@ Auxil::lexiconToOrigin(const QString& lexicon)
         return "North American";
     if (lexicon == LEXICON_OSPD4)
         return "North American (School)";
+    if (lexicon == LEXICON_WWF)
+        return "Words With Friends";
     if (lexicon == LEXICON_OSWI)
         return "British";
     if (lexicon == LEXICON_CSW)
@@ -1366,6 +1369,8 @@ Auxil::lexiconToDate(const QString& lexicon)
         return QDate(2006, 3, 1);
     if (lexicon == LEXICON_OSPD4)
         return QDate(2006, 3, 1);
+    if (lexicon == LEXICON_WWF)
+        return QDate(2011, 2, 1);
     if (lexicon == LEXICON_OSWI)
         return QDate(2002, 1, 14);
     if (lexicon == LEXICON_CSW)
@@ -1410,6 +1415,7 @@ Auxil::getUpdatedLexiconName(const QString& oldLexiconName)
     else if ((oldLexiconName == LEXICON_CUSTOM) ||
              (oldLexiconName == LEXICON_OWL) ||
              (oldLexiconName == LEXICON_OWL2) ||
+             (oldLexiconName == LEXICON_WWF) ||
              (oldLexiconName == LEXICON_CSW) ||
              (oldLexiconName == LEXICON_CD) ||
              (oldLexiconName == LEXICON_OSPD4) ||

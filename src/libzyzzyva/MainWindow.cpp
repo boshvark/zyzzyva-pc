@@ -1886,6 +1886,7 @@ MainWindow::importLexicon(const QString& lexicon)
         prefixMap[LEXICON_OWL] = "/north-american/owl-lwl";
         prefixMap[LEXICON_OWL2] = "/north-american/owl2-lwl";
         prefixMap[LEXICON_OSPD4] = "/north-american/ospd4-lwl";
+        prefixMap[LEXICON_WWF] = "/north-american/wwf";
         prefixMap[LEXICON_VOLOST] = "/antarctic/volost";
         prefixMap[LEXICON_OSWI] = "/british/oswi";
         prefixMap[LEXICON_CSW] = "/british/csw";
