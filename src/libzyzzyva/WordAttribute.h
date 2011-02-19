@@ -3,7 +3,7 @@
 //
 // An enumeration of word attributes.
 //
-// Copyright 2006, 2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2008, 2010-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -38,7 +38,8 @@ enum WordAttribute
     WordAttrPlayabilityOrder,
     WordAttrFrontExtensions,
     WordAttrBackExtensions,
-    WordAttrDoubleExtensions
+    WordAttrDoubleExtensions,
+    WordAttrAlphagram
 };
 
 #endif // ZYZZYVA_WORD_ATTRIBUTE_H
