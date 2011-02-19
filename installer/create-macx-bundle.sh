@@ -163,8 +163,7 @@ if [ "$COPYQT" = "yes" ]; then
     mkdir -p $APPDIR/Contents/PlugIns
 
     # Copy plugins into bundle and update references
-    #for i in imageformats/libqgif.dylib sqldrivers/libqsqlite.dylib ; do
-    for i in imageformats/libqgif.dylib ; do
+    for i in imageformats/libqgif.dylib sqldrivers/libqsqlite.dylib ; do
 
         # Copy plugin into bundle
         echo "Copying $i into bundle..."
