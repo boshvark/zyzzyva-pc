@@ -3,7 +3,7 @@
 //
 // A class derived from QTableView, used to display word lists.
 //
-// Copyright 2005-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -544,6 +544,7 @@ WordTableView::getExportStrings(QModelIndex& index, const
         int column = -1;
         switch (attribute) {
             case WordAttrWord:
+            case WordAttrAlphagram:
             column = WordTableModel::WORD_COLUMN;
             break;
 
@@ -604,6 +605,8 @@ WordTableView::getExportStrings(QModelIndex& index, const
         }
         else {
             str = model()->data(index, Qt::EditRole).toString();
+            if (attribute == WordAttrAlphagram)
+                str = Auxil::getAlphagram(str);
         }
         strings.append(str);
     }

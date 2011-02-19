@@ -125,6 +125,7 @@ const QString WORD_ATTR_PLAYABILITY_ORDER = "Playability Order";
 const QString WORD_ATTR_FRONT_EXTENSIONS = "Front Extensions";
 const QString WORD_ATTR_BACK_EXTENSIONS = "Back Extensions";
 const QString WORD_ATTR_DOUBLE_EXTENSIONS = "Double Extensions";
+const QString WORD_ATTR_ALPHAGRAM = "Alphagram";
 
 const QString WORD_LIST_FORMAT_ONE_PER_LINE = "One Word Per Line";
 const QString WORD_LIST_FORMAT_QUESTION_ANSWER = "Anagram Question/Answer";
@@ -1170,6 +1171,9 @@ Auxil::wordAttributeToString(WordAttribute attr)
         case WordAttrDoubleExtensions:
         return WORD_ATTR_DOUBLE_EXTENSIONS;
 
+        case WordAttrAlphagram:
+        return WORD_ATTR_ALPHAGRAM;
+
         default: return QString();
     }
 }
@@ -1207,6 +1211,8 @@ Auxil::stringToWordAttribute(const QString& s)
         return WordAttrBackExtensions;
     else if (s == WORD_ATTR_DOUBLE_EXTENSIONS)
         return WordAttrDoubleExtensions;
+    else if (s == WORD_ATTR_ALPHAGRAM)
+        return WordAttrAlphagram;
     else
         return WordAttrInvalid;
 }
