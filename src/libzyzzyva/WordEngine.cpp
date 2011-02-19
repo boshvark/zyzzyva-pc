@@ -3,7 +3,7 @@
 //
 // A class to handle the loading and searching of words.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -329,10 +329,12 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
         switch (condition.type) {
             case SearchCondition::PatternMatch: {
                 tables.insert("words");
-                // XXX: eventually, account for negated condition
                 QString str =
                     condition.stringValue.replace("?", "_").replace("*", "%");
-                whereStr += " words.word LIKE '" + str + "'";
+                whereStr += " words.word";
+                if (condition.negated)
+                    whereStr += " NOT";
+                whereStr += " LIKE '" + str + "'";
             }
             break;
 
