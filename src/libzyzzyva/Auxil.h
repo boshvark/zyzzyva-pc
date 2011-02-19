@@ -3,7 +3,7 @@
 //
 // Auxiliary functions.
 //
-// Copyright 2005-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -55,6 +55,7 @@ namespace Auxil {
     QString wordWrap(const QString& str, int wrapLength);
     bool isVowel(QChar c);
     QString getAlphagram(const QString& word);
+    QString getCanonicalSearchString(const QString& str);
     int getNumUniqueLetters(const QString& word);
     int getNumVowels(const QString& word);
     QString searchSetToString(SearchSet set);
