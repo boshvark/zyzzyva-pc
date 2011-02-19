@@ -3,7 +3,7 @@
 //
 // A widget for specifying a lexicon style.
 //
-// Copyright 2008-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -70,6 +70,7 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
     validLexicons.append(LEXICON_OSWI);
     validLexicons.append(LEXICON_OWL);
     validLexicons.append(LEXICON_OWL2);
+    validLexicons.append(LEXICON_WWF);
     validLexicons.append(LEXICON_VOLOST);
     qSort(validLexicons.begin(), validLexicons.end(),
           Auxil::localeAwareLessThanQString);
