@@ -3,7 +3,7 @@
 //
 // An enumeration of word list file formats.
 //
-// Copyright 2006, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2009, 2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -30,7 +30,7 @@ enum WordListFormat
     WordListInvalid = 0,
     WordListOnePerLine,
     WordListAnagramQuestionAnswer,
-    WordListAnagramTwoColumn,
+    WordListAnagramTwoColumn
 };
 
 #endif // ZYZZYVA_WORD_LIST_FORMAT_H
