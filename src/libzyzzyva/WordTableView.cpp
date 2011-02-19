@@ -424,7 +424,8 @@ WordTableView::exportFile(const QString& filename, WordListFormat format,
     }
 
     else if ((format == WordListAnagramQuestionAnswer) ||
-             (format == WordListAnagramTwoColumn))
+             (format == WordListAnagramTwoColumn) ||
+             (format == WordListDistinctAlphagrams))
     {
         // Build map of alphagrams to indexes
         QMap<QString, QList<int> > alphaIndexes;
@@ -482,6 +483,11 @@ WordTableView::exportFile(const QString& filename, WordListFormat format,
             it.next();
             if (twoColumns) {
                 stream << it.key().leftJustified(anagramWidth, ' ');
+            }
+            else if (format == WordListDistinctAlphagrams) {
+                stream << it.key();
+                endl(stream);
+                continue;
             }
             else {
                 stream << "Q: " << it.key();

@@ -30,7 +30,8 @@ enum WordListFormat
     WordListInvalid = 0,
     WordListOnePerLine,
     WordListAnagramQuestionAnswer,
-    WordListAnagramTwoColumn
+    WordListAnagramTwoColumn,
+    WordListDistinctAlphagrams
 };
 
 #endif // ZYZZYVA_WORD_LIST_FORMAT_H

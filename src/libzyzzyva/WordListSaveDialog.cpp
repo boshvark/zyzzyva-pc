@@ -67,6 +67,10 @@ WordListSaveDialog::WordListSaveDialog(QWidget* parent, Qt::WFlags f)
         Auxil::wordListFormatToString(WordListAnagramQuestionAnswer));
     formatCombo->addItem(
         Auxil::wordListFormatToString(WordListAnagramTwoColumn));
+    formatCombo->addItem(
+        Auxil::wordListFormatToString(WordListDistinctAlphagrams));
+    connect(formatCombo, SIGNAL(activated(const QString&)),
+        SLOT(formatActivated(const QString&)));
     formatHlay->addWidget(formatCombo);
 
     QHBoxLayout* listHlay = new QHBoxLayout;
@@ -200,6 +204,25 @@ WordListFormat
 WordListSaveDialog::getWordListFormat() const
 {
     return Auxil::stringToWordListFormat(formatCombo->currentText());
+}
+
+//---------------------------------------------------------------------------
+//  formatActivated
+//
+//! Called when a format is activated in the dropdown.
+//
+//! @param format the activated format
+//---------------------------------------------------------------------------
+void
+WordListSaveDialog::formatActivated(const QString& format)
+{
+    bool enable = (format !=
+        Auxil::wordListFormatToString(WordListDistinctAlphagrams));
+
+    unselectedAttrList->setEnabled(enable);
+    selectedAttrList->setEnabled(enable);
+    selectButton->setEnabled(enable);
+    deselectButton->setEnabled(enable);
 }
 
 //---------------------------------------------------------------------------
