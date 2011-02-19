@@ -92,7 +92,7 @@ install_name_tool -change \
 # Change id of libstdc++
 echo "Changing id of libstdc++..."
 install_name_tool -id \
-    libstdc++.6.dylib \
+    @executable_path/../Frameworks/libstdc++.6.dylib \
     $APPDIR/Contents/Frameworks/libstdc++.6.dylib
 
 # Change link location for libgcc_s in libzyzzyva
@@ -127,8 +127,8 @@ if [ "$COPYQT" = "yes" ]; then
 
         # Set identification names for the private framework
         echo "Setting identification name for $i.framework..."
-        install_name_tool \
-            -id @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
+        install_name_tool -id \
+            @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
             $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
 
         # Change reference to QtCore in frameworks
