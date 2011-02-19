@@ -3,7 +3,7 @@
 //
 // The dialog for saving a list of words.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -44,6 +44,7 @@ class WordListSaveDialog : public QDialog
     WordListFormat getWordListFormat() const;
 
     public slots:
+    void formatActivated(const QString& format);
     void selectClicked();
     void deselectClicked();
     void unselectedSelectionChanged();

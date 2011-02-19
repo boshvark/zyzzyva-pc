@@ -130,6 +130,7 @@ const QString WORD_ATTR_ALPHAGRAM = "Alphagram";
 const QString WORD_LIST_FORMAT_ONE_PER_LINE = "One Word Per Line";
 const QString WORD_LIST_FORMAT_QUESTION_ANSWER = "Anagram Question/Answer";
 const QString WORD_LIST_FORMAT_TWO_COLUMN = "Anagram Two Column";
+const QString WORD_LIST_FORMAT_DISTINCT_ALPHAGRAMS = "Distinct Alphagrams";
 
 using namespace Defs;
 
@@ -1239,6 +1240,9 @@ Auxil::wordListFormatToString(WordListFormat format)
         case WordListAnagramTwoColumn:
         return WORD_LIST_FORMAT_TWO_COLUMN;
 
+        case WordListDistinctAlphagrams:
+        return WORD_LIST_FORMAT_DISTINCT_ALPHAGRAMS;
+
         default: return QString();
     }
 }
@@ -1260,6 +1264,8 @@ Auxil::stringToWordListFormat(const QString& s)
         return WordListAnagramQuestionAnswer;
     else if (s == WORD_LIST_FORMAT_TWO_COLUMN)
         return WordListAnagramTwoColumn;
+    else if (s == WORD_LIST_FORMAT_DISTINCT_ALPHAGRAMS)
+        return WordListDistinctAlphagrams;
     else
         return WordListInvalid;
 }
