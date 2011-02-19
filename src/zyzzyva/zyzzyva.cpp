@@ -3,7 +3,7 @@
 //
 // The main Zyzzyva program.
 //
-// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2008, 2010-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -39,6 +39,10 @@ int main(int argc, char** argv)
     QCoreApplication::setOrganizationName(SETTINGS_ORGANIZATION_NAME);
     QCoreApplication::setOrganizationDomain(SETTINGS_DOMAIN_NAME);
     QCoreApplication::setApplicationName(SETTINGS_APPLICATION_NAME);
+
+#if defined Z_OSX
+    qApp->setLibraryPath(qApp->applicationDirPath() + "/../PlugIns");
+#endif
 
     QPixmap pixmap (":/zyzzyva-splash");
     QSplashScreen* splash = new QSplashScreen(pixmap);
