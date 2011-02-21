@@ -28,7 +28,8 @@ set -e
 QTDIR=/usr/local/Trolltech/Qt-4.3.2
 QTVER=4
 OUTDIR=$(pwd)/installer/macosx
-APPDIR=$OUTDIR/Zyzzyva.app
+ZVER=$(cat $(pwd)/VERSION)
+APPDIR=$OUTDIR/Zyzzyva-$ZVER.app
 
 if [ ! -e $APPDIR/Contents/Frameworks ]; then
     COPYQT="yes"
@@ -59,9 +60,9 @@ if [ ! -e $APPDIR/Contents/MacOS/zyzzyva.top ]; then
 fi
 
 # Copy qt.conf unless it's already there
-if [ ! -e $OUTDIR/Zyzzyva.app/Contents/Resources/qt.conf ]; then
+if [ ! -e $APPDIR/Contents/Resources/qt.conf ]; then
     echo "Copying qt.conf into bundle..."
-    cp conf/macosx/qt.conf $OUTDIR/Zyzzyva.app/Contents/Resources
+    cp conf/macosx/qt.conf $APPDIR/Contents/Resources
 fi
 
 # Copy data directory into bundle unless it's already there
@@ -80,6 +81,7 @@ echo "Copying system libs into bundle..."
 cp /usr/lib/libstdc++.6.dylib $APPDIR/Contents/Frameworks
 cp /usr/lib/libgcc_s.1.dylib $APPDIR/Contents/Frameworks
 cp /usr/lib/libz.1.dylib $APPDIR/Contents/Frameworks
+cp /opt/local/lib/libdbus-1.3.dylib $APPDIR/Contents/Frameworks
 chmod 755 $APPDIR/Contents/Frameworks/*.dylib
 
 # Change link location for libstdc++ in libzyzzyva
@@ -92,8 +94,26 @@ install_name_tool -change \
 # Change id of libstdc++
 echo "Changing id of libstdc++..."
 install_name_tool -id \
-    @executable_path/../Frameworks/libstdc++.6.dylib \
+    libstdc++.6.dylib \
     $APPDIR/Contents/Frameworks/libstdc++.6.dylib
+
+# Change id of libgcc_s
+echo "Changing id of libgcc_s..."
+install_name_tool -id \
+    libgcc_s.1.dylib \
+    $APPDIR/Contents/Frameworks/libgcc_s.1.dylib
+
+# Change id of libdbus
+echo "Changing id of libdbus..."
+install_name_tool -id \
+    libdbus-1.3.dylib \
+    $APPDIR/Contents/Frameworks/libdbus-1.3.dylib
+
+# Change id of libz
+echo "Changing id of libz..."
+install_name_tool -id \
+    libz.1.dylib \
+    $APPDIR/Contents/Frameworks/libz.1.dylib
 
 # Change link location for libgcc_s in libzyzzyva
 echo "Changing link location for libgcc_s in libzyzzyva..."
@@ -107,10 +127,58 @@ if [ "$COPYQT" = "yes" ]; then
 
     # Copy Assistant client into bundle
     echo "Copying Assistant client into bundle..."
-    cp -r $QTDIR/bin/assistant.app $APPDIR/Contents/MacOS
+    ASSISTANT_DIR=$OUTDIR/assistant.app
+    cp -r $QTDIR/bin/assistant.app $OUTDIR
+    mkdir -p $ASSISTANT_DIR/Contents/Frameworks
+
+    # Create soft links to libraries in assistant
+    pushd $ASSISTANT_DIR/Contents/Frameworks
+    for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistant QtDBus ; do
+        ln -s ../../../Zyzzyva-$ZVER.app/Contents/Frameworks/$i.framework .
+    done
+    for i in libstdc++.6.dylib libgcc_s.1.dylib libz.1.dylib \
+        libdbus-1.3.dylib ; do
+        ln -s ../../../Zyzzyva-$ZVER.app/Contents/Frameworks/$i .
+    done
+    popd
+
+    # Change link location for libstdc++ in assistant
+    echo "Changing link location for libstdc++ in assistant..."
+    install_name_tool -change \
+        /usr/lib/libstdc++.6.dylib \
+        @executable_path/../Frameworks/libstdc++.6.dylib \
+        $ASSISTANT_DIR/Contents/MacOS/assistant
+
+    # Change link location for libgcc_s in assistant
+    echo "Changing link location for libgcc_s in assistant..."
+    install_name_tool -change \
+        /usr/lib/libgcc_s.1.dylib \
+        @executable_path/../Frameworks/libgcc_s.1.dylib \
+        $ASSISTANT_DIR/Contents/MacOS/assistant
+
+    # Change link location for libz in assistant
+    echo "Changing link location for libz in assistant..."
+    install_name_tool -change \
+        /usr/lib/libz.1.dylib \
+        @executable_path/../Frameworks/libz.1.dylib \
+        $ASSISTANT_DIR/Contents/MacOS/assistant
+
+    # Change link location for libz in assistant (not a duplicate)
+    echo "Changing link location for libz in assistant..."
+    install_name_tool -change \
+        /opt/local/lib/libz.1.dylib \
+        @executable_path/../Frameworks/libz.1.dylib \
+        $ASSISTANT_DIR/Contents/MacOS/assistant
+
+    # Change link location for libdbus in assistant
+    echo "Changing link location for libdbus in assistant..."
+    install_name_tool -change \
+        /opt/local/lib/libdbus-1.3.dylib \
+        @executable_path/../Frameworks/libdbus-1.3.dylib \
+        $ASSISTANT_DIR/Contents/MacOS/assistant
 
     # Copy Qt frameworks into bundle and tell the executable to link to them
-    for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistant ; do
+    for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistant QtDBus ; do
 
         # Copy Qt framework into bundle
         echo "Copying $i.framework into bundle..."
@@ -140,6 +208,15 @@ if [ "$COPYQT" = "yes" ]; then
                 $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
         fi
 
+        # Change reference to QtCore in frameworks
+        if [ "$i" != "QtXml" ]; then
+            echo "Changing link location for QtXml.framework in $i.framework..."
+            install_name_tool -change \
+                $QTDIR/lib/QtXml.framework/Versions/$QTVER/QtXml \
+                @executable_path/../Frameworks/QtXml.framework/Versions/$QTVER/QtXml \
+                $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+        fi
+
         # Change reference to system libs in frameworks
         echo "Changing link location for libstdc++ in $i.framework..."
         install_name_tool -change \
@@ -158,6 +235,25 @@ if [ "$COPYQT" = "yes" ]; then
             /usr/lib/libz.1.dylib \
             @executable_path/../Frameworks/libz.1.dylib \
             $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+
+        echo "Changing link location for libz in $i.framework..."
+        install_name_tool -change \
+            /opt/local/lib/libz.1.dylib \
+            @executable_path/../Frameworks/libz.1.dylib \
+            $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+
+        echo "Changing link location for libdbus in $i.framework..."
+        install_name_tool -change \
+            /opt/local/lib/libdbus-1.3.dylib \
+            @executable_path/../Frameworks/libdbus-1.3.dylib \
+            $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+
+        # Change link location for framework in assistant
+        echo "Changing link location for $i.framework in assistant..."
+        install_name_tool -change \
+            $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
+            @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
+            $ASSISTANT_DIR/Contents/MacOS/assistant
 
     done
 
@@ -185,6 +281,37 @@ if [ "$COPYQT" = "yes" ]; then
         install_name_tool -change \
             $QTDIR/lib/QtGui.framework/Versions/$QTVER/QtGui \
             @executable_path/../Frameworks/QtGui.framework/Versions/$QTVER/QtGui \
+            $APPDIR/Contents/PlugIns/$i
+
+        # Change reference to system libs in plugin
+        echo "Changing link location for libstdc++ in $i plugin..."
+        install_name_tool -change \
+            /usr/lib/libstdc++.6.dylib \
+            @executable_path/../Frameworks/libstdc++.6.dylib \
+            $APPDIR/Contents/PlugIns/$i
+
+        echo "Changing link location for libgcc_s in $i plugin..."
+        install_name_tool -change \
+            /usr/lib/libgcc_s.1.dylib \
+            @executable_path/../Frameworks/libgcc_s.1.dylib \
+            $APPDIR/Contents/PlugIns/$i
+
+        echo "Changing link location for libz in $i plugin..."
+        install_name_tool -change \
+            /usr/lib/libz.1.dylib \
+            @executable_path/../Frameworks/libz.1.dylib \
+            $APPDIR/Contents/PlugIns/$i
+
+        echo "Changing link location for libz in $i plugin..."
+        install_name_tool -change \
+            /opt/local/lib/libz.1.dylib \
+            @executable_path/../Frameworks/libz.1.dylib \
+            $APPDIR/Contents/PlugIns/$i
+
+        echo "Changing link location for libdbus in $i plugin..."
+        install_name_tool -change \
+            /opt/local/lib/libdbus-1.3.dylib \
+            @executable_path/../Frameworks/libdbus-1.3.dylib \
             $APPDIR/Contents/PlugIns/$i
 
     done
@@ -228,6 +355,47 @@ for i in QtCore QtGui QtNetwork QtSql QtXml QtAssistant ; do
         $QTDIR/lib/$i.framework/Versions/$QTVER/$i \
         @executable_path/../Frameworks/$i.framework/Versions/$QTVER/$i \
         $APPDIR/Contents/MacOS/Zyzzyva
+
+done
+
+# Change reference to system libs in libzyzzyva, executable, and system libs
+for i in $APPDIR/Contents/Frameworks/libzyzzyva.2.dylib \
+    $APPDIR/Contents/MacOS/Zyzzyva \
+    $APPDIR/Contents/Frameworks/libdbus-1.3.dylib \
+    $APPDIR/Contents/Frameworks/libgcc_s.1.dylib \
+    $APPDIR/Contents/Frameworks/libstdc++.6.dylib \
+    $APPDIR/Contents/Frameworks/libz.1.dylib \
+    ; do
+
+   echo "Changing link location for libstdc++ in $i..."
+   install_name_tool -change \
+       /usr/lib/libstdc++.6.dylib \
+       @executable_path/../Frameworks/libstdc++.6.dylib \
+       $i
+
+   echo "Changing link location for libgcc_s in $i..."
+   install_name_tool -change \
+       /usr/lib/libgcc_s.1.dylib \
+       @executable_path/../Frameworks/libgcc_s.1.dylib \
+       $i
+
+   echo "Changing link location for libz in $i..."
+   install_name_tool -change \
+       /usr/lib/libz.1.dylib \
+       @executable_path/../Frameworks/libz.1.dylib \
+       $i
+
+   echo "Changing link location for libz in $i..."
+   install_name_tool -change \
+       /opt/local/lib/libz.1.dylib \
+       @executable_path/../Frameworks/libz.1.dylib \
+       $i
+
+    echo "Changing link location for libdbus in $i plugin..."
+    install_name_tool -change \
+        /opt/local/lib/libdbus-1.3.dylib \
+        @executable_path/../Frameworks/libdbus-1.3.dylib \
+        $i
 
 done
 

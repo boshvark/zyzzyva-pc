@@ -30,12 +30,17 @@ set -e
 ZVER=$(cat $(pwd)/VERSION)
 APPDIR=$OUTDIR/Zyzzyva-$ZVER.app
 DMGFILE=Zyzzyva-$ZVER.dmg
-mv $OUTDIR/Zyzzyva.app $APPDIR
+
+README=$OUTDIR/README.txt
+rm -f $README
+echo "Drag both Zyzzyva-$ZVER and assistant to the same directory" >>$README
+echo "on your hard drive. They need to be next to each other for" >>$README
+echo "the Zyzzyva help system to work." >>$README
 
 # Create disk image
 echo "Creating disk image..."
 rm -rf $DMGFILE
-hdiutil create -srcfolder $APPDIR -volname Zyzzyva-$ZVER $DMGFILE > /dev/null
+hdiutil create -srcfolder $APPDIR -srcfolder $OUTDIR/assistant.app -srcfolder $README -volname Zyzzyva-$ZVER $DMGFILE > /dev/null
 hdiutil attach $DMGFILE > /dev/null
 DEVS=$(hdiutil attach $DMGFILE | cut -f 1)
 DEV=$(echo $DEVS | cut -f 1 -d ' ')
@@ -45,7 +50,5 @@ hdiutil convert $DMGFILE -format UDZO -o Zyzzyva-output.dmg > /dev/null
 # 10.3.9 uses -format ADC
 mv Zyzzyva-output.dmg $DMGFILE
 mv $DMGFILE $OUTDIR
-
-mv $APPDIR $OUTDIR/Zyzzyva.app
 
 echo "Done.  Disk image is called $OUTDIR/$DMGFILE."
