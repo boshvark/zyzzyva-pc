@@ -3,7 +3,7 @@
 //
 // A form for quizzing the user.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -1886,7 +1886,7 @@ QuizForm::responseMatchesQuestion(const QString& response) const
 {
     QString question = quizEngine->getQuestion();
     QuizSpec spec = quizEngine->getQuizSpec();
-    QRegExp wordRegex ("[^\\W_\\d]+");
+    QRegExp wordRegex ("[^\\W_]+");
     switch (spec.getType()) {
         case QuizSpec::QuizAnagrams: {
             if (wordRegex.indexIn(response) < 0)
