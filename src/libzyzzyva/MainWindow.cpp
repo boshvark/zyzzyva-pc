@@ -405,6 +405,27 @@ MainWindow::processArguments(const QStringList& args)
 }
 
 //---------------------------------------------------------------------------
+//  tryUpdateDataDir
+//
+//! Try updating the user data directory if it is currently set to the old
+//! hidden ".zyzzyva" directory.
+//---------------------------------------------------------------------------
+void
+MainWindow::tryUpdateUserDataDir()
+{
+    //QString dataDir = MainSettings::getUserDataDir();
+    ////qDebug("dataDir: |%s|", dataDir.toUtf8().constData());
+    //if (dataDir == Auxil::getHomeDir() + "/.zyzzyva") {
+    //    //qDebug("Hey buddy! Change your data directory!");
+
+    //    // Prompt user to change data directory to the new default
+    //    // (homeDir/Zyzzyva, not homeDir/.zyzzyva)
+
+    //    // Remember their response if they say no to the move!
+    //}
+}
+
+//---------------------------------------------------------------------------
 //  tryAutoImport
 //
 //! Try automatically importing a lexicon, if the user has enabled it in
