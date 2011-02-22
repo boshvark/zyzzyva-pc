@@ -3,7 +3,7 @@
 //
 // A drawing surface for quiz questions.
 //
-// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006, 2007, 2008, 2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -149,18 +149,20 @@ QuizCanvas::setTileTheme(const QString& theme)
 {
     clearTileTheme();
     if (!theme.isEmpty()) {
-        QString tilesDir = Auxil::getTilesDir();
+        QString dirStr = Auxil::getTilesDir() + "/" + theme;
+        QDir dir (dirStr);
+        if (!dir.exists())
+            return;
 
-        QStringList tilesList;
-        for (char c = 'A'; c <= 'Z'; ++c)
-            tilesList << QString(QChar(c));
-        tilesList << "_";
+        QStringList imageFiles = dir.entryList(QStringList() << "*.png");
+        foreach (const QString& file, imageFiles) {
+            QString letter = file.left(file.length() - 4);
+            if (letter.isEmpty())
+                continue;
 
-        QStringList::iterator it;
-        for (it = tilesList.begin(); it != tilesList.end(); ++it) {
-            QImage image (tilesDir + "/" + theme + "/" + *it + ".png");
+            QImage image (dirStr + "/" + file);
             QPixmap pixmap = QPixmap::fromImage(image);
-            tileImages.insert(*it, pixmap);
+            tileImages.insert(letter, pixmap);
 
             if (pixmap.width() > maxTileWidth)
                 maxTileWidth = pixmap.width();
