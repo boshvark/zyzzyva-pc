@@ -128,6 +128,7 @@
       <section ref="preferences.html#save-preferences"
                title="Saving Changes to Preferences" />
     </section>
-
+    <section ref="faq.html" title="Frequently Asked Questions" />
+    <section ref="credits.html" title="Credits" />
   </DCF>
 </assistantconfig>
