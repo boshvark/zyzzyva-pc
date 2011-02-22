@@ -1,3 +1,20 @@
+Version 2.1.1
+Released 2011-02-22, from /branches/2.1.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.1.1
+
+User-visible changes:
+ * New logo created by Jeremy Hildebrand
+ * Use '.' and '@' as alternatives to '?' and '*', respectively
+ * Save alphagrams from a word list
+ * Load quiz tile images other than just A-Z
+ * Fix a bug that corrupted some long word definitions
+ * Fix Help system on OS X (mostly)
+ * Words With Friends lexicon
+ * Many word definition fixes - thanks to Dominick Mancine for additional
+   definitions of long words
+ * Various bug fixes
+
+
 Version 2.1.0
 Released 2010-03-15, from /branches/2.1.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.1.0
