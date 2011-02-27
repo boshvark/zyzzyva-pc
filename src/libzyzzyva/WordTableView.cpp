@@ -612,6 +612,10 @@ WordTableView::getExportStrings(QModelIndex& index, const
             str = model()->data(index, Qt::DisplayRole).toString();
             str.replace(QRegExp("[\\W_\\d]+"), QString());
         }
+        else if (column == WordTableModel::DEFINITION_COLUMN) {
+            str.replace(WordEngine::DEF_DISPLAY_SEP,
+                WordEngine::DEF_ORIG_SEP);
+        }
         else {
             str = model()->data(index, Qt::EditRole).toString();
             if (attribute == WordAttrAlphagram)
