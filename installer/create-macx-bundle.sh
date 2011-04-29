@@ -25,7 +25,7 @@
 
 set -e
 
-QTDIR=/usr/local/Trolltech/Qt-4.7.1
+QTDIR=/usr/local/Trolltech/Qt-4.7.2
 QTVER=4
 OUTDIR=$(pwd)/installer/macosx
 APPDIR=$OUTDIR/Zyzzyva.app
