@@ -107,7 +107,7 @@ CreateDatabaseThread::createTables(QSqlDatabase& db)
 {
     QSqlQuery query (db);
 
-    query.exec("CREATE TABLE words (word varchar(16), length integer, "
+    query.exec("CREATE TABLE words (word text, length integer, "
         "playability integer, playability_order integer, "
         "min_playability_order integer, max_playability_order integer, "
         "combinations0 integer, probability_order0 integer, "
@@ -116,12 +116,12 @@ CreateDatabaseThread::createTables(QSqlDatabase& db)
         "min_probability_order1 integer, max_probability_order1 integer, "
         "combinations2 integer, probability_order2 integer, "
         "min_probability_order2 integer, max_probability_order2 integer, "
-        "alphagram varchar(16), num_anagrams integer, "
+        "alphagram text, num_anagrams integer, "
         "num_unique_letters integer, num_vowels integer, "
-        "point_value integer, front_hooks varchar(32), "
-        "back_hooks varchar(32), is_front_hook integer, "
-        "is_back_hook integer, lexicon_symbols varchar(16), "
-        "definition varchar(256))");
+        "point_value integer, front_hooks text, "
+        "back_hooks text, is_front_hook integer, "
+        "is_back_hook integer, lexicon_symbols text, "
+        "definition text)");
 
     query.exec("CREATE TABLE db_version (version integer)");
     query.exec("INSERT into db_version (version) VALUES (" +
@@ -132,7 +132,7 @@ CreateDatabaseThread::createTables(QSqlDatabase& db)
     query.bindValue(0, Auxil::lexiconToDate(lexiconName));
     query.exec();
 
-    query.exec("CREATE TABLE lexicon_file (file varchar(256))");
+    query.exec("CREATE TABLE lexicon_file (file text)");
     query.prepare("INSERT into lexicon_file (file) VALUES (?)");
     query.bindValue(0, wordEngine->getLexiconFile(lexiconName));
     query.exec();
