@@ -3,7 +3,7 @@
 //
 // A Directed Acyclic Word Graph class.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -358,10 +358,10 @@ WordGraph::search(const SearchSpec& spec) const
                     (!unmatched.isEmpty()))
                 {
                     match = unmatched.at(0);
-                    if (match == "*")
+                    if (match == "*") {
                         states.push(TraversalState(node, word,
                             unmatched.right(unmatched.length() - 1)));
-
+                    }
                     else if (match == "[") {
                         closeIndex = unmatched.indexOf(']', 0);
                         match = unmatched.mid(1, closeIndex);
@@ -371,7 +371,7 @@ WordGraph::search(const SearchSpec& spec) const
                 qint32* edge = reversePattern ? &rdawg[node] : &dawg[node];
 
                 // Traverse next nodes, looking for matches
-                for (; ; ++edge, ++node) {
+                for (; ; ++edge) {
                     qint32 longLetter = *edge;
                     longLetter = longLetter >> V_LETTER;
                     longLetter = longLetter & M_LETTER;
@@ -414,13 +414,16 @@ WordGraph::search(const SearchSpec& spec) const
                         // If this node matches, push its child on the stack
                         // to be traversed later
                         if (child) {
-                            if (match == "*")
+                            if (match == "*") {
                                 states.push(TraversalState(child, word,
                                                            unmatched));
+                            }
 
-                            states.push(TraversalState(child, word,
-                                unmatched.right(unmatched.length() -
-                                                closeIndex - 1)));
+                            if (closeIndex < unmatched.length() - 1) {
+                                states.push(TraversalState(child, word,
+                                    unmatched.right(unmatched.length() -
+                                    closeIndex - 1)));
+                            }
                         }
 
                         // If end of word and end of pattern, put the word in
