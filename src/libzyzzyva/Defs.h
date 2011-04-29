@@ -61,9 +61,11 @@ namespace Defs {
     const QString LEXICON_VOLOST = "Volost";
     const QString LEXICON_ZINGA = "ZINGA";
     const QString LEXICON_OLD_SOWPODS = "SOWPODS";
-    const QString LEXICON_OLD_OWL = "OWL";
-    const QString LEXICON_OLD_OWL2 = "OWL2";
+    const QString LEXICON_OLD_OWL = "OWL+LWL";
+    const QString LEXICON_OLD_OWL2 = "OWL2+LWL";
+    const QString LEXICON_OLD_OSPD4 = "OSPD4+LWL";
     const QString LEXICON_OLD_ODS = "ODS";
+    const QString LEXICON_OLD_CSW = "CSW";
 }
 
 #endif // ZYZZYVA_DEFS_H

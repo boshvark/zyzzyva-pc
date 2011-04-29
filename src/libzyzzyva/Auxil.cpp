@@ -1408,10 +1408,14 @@ Auxil::getUpdatedLexiconName(const QString& oldLexiconName)
         return LEXICON_OWL;
     else if (oldLexiconName == LEXICON_OLD_OWL2)
         return LEXICON_OWL2;
+    else if (oldLexiconName == LEXICON_OLD_OSPD4)
+        return LEXICON_OSPD4;
     else if (oldLexiconName == LEXICON_OLD_SOWPODS)
         return LEXICON_OSWI;
     else if (oldLexiconName == LEXICON_OLD_ODS)
         return LEXICON_ODS4;
+    else if (oldLexiconName == LEXICON_OLD_CSW)
+        return LEXICON_CSW07;
     else if ((oldLexiconName == LEXICON_CUSTOM) ||
              (oldLexiconName == LEXICON_OWL) ||
              (oldLexiconName == LEXICON_OWL2) ||

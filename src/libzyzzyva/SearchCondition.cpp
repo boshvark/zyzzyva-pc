@@ -250,7 +250,7 @@ SearchCondition::fromDomElement(const QDomElement& element)
              Auxil::searchSetToString(SetOldNewInOwl2)))
         {
             tmpCondition.type = InLexicon;
-            tmpCondition.stringValue = "OWL+LWL";
+            tmpCondition.stringValue = Defs::LEXICON_OWL;
             tmpCondition.negated = !tmpCondition.negated;
         }
 
@@ -260,8 +260,14 @@ SearchCondition::fromDomElement(const QDomElement& element)
              Auxil::searchSetToString(SetOldNewInCsw)))
         {
             tmpCondition.type = InLexicon;
-            tmpCondition.stringValue = "OSWI";
+            tmpCondition.stringValue = Defs::LEXICON_OSWI;
             tmpCondition.negated = !tmpCondition.negated;
+        }
+
+        // Translate old lexicon names
+        else if (tmpCondition.type == InLexicon) {
+            tmpCondition.stringValue =
+                Auxil::getUpdatedLexiconName(tmpCondition.stringValue);
         }
         break;
 
