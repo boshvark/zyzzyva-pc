@@ -1904,26 +1904,26 @@ MainWindow::importLexicon(const QString& lexicon)
             return true;
 
         QMap<QString, QString> prefixMap;
-        prefixMap[LEXICON_OWL] = "/north-american/owl-lwl";
-        prefixMap[LEXICON_OWL2] = "/north-american/owl2-lwl";
-        prefixMap[LEXICON_OSPD4] = "/north-american/ospd4-lwl";
-        prefixMap[LEXICON_WWF] = "/north-american/wwf";
-        prefixMap[LEXICON_VOLOST] = "/antarctic/volost";
-        prefixMap[LEXICON_OSWI] = "/british/oswi";
-        prefixMap[LEXICON_CSW] = "/british/csw";
-        prefixMap[LEXICON_CD] = "/british/cd";
-        prefixMap[LEXICON_ODS4] = "/french/ods4";
-        prefixMap[LEXICON_ODS5] = "/french/ods5";
-        prefixMap[LEXICON_FISE2009] = "/spanish/fise2009";
-        prefixMap[LEXICON_SWL] = "/dutch/swl";
-        prefixMap[LEXICON_ZINGA] = "/italian/zinga";
+        prefixMap[LEXICON_OWL] = "/North-American/OWL";
+        prefixMap[LEXICON_OWL2] = "/North-American/OWL2";
+        prefixMap[LEXICON_OSPD4] = "/North-American/OSPD4";
+        prefixMap[LEXICON_WWF] = "/North-American/WWF";
+        prefixMap[LEXICON_VOLOST] = "/Antarctic/Volost";
+        prefixMap[LEXICON_OSWI] = "/British/OSWI";
+        prefixMap[LEXICON_CSW07] = "/British/CSW07";
+        prefixMap[LEXICON_CD] = "/British/CD";
+        prefixMap[LEXICON_ODS4] = "/French/ODS4";
+        prefixMap[LEXICON_ODS5] = "/French/ODS5";
+        prefixMap[LEXICON_FISE2009] = "/Spanish/FISE2009";
+        prefixMap[LEXICON_SWL] = "/Dutch/SWL";
+        prefixMap[LEXICON_ZINGA] = "/Italian/ZINGA";
 
         if (prefixMap.contains(lexicon)) {
             QString prefix = Auxil::getWordsDir() + prefixMap.value(lexicon);
             importFile =        prefix + ".dwg";
-            reverseImportFile = prefix + "-r.dwg";
-            checksumFile =      prefix + "-checksums.txt";
-            playabilityFile =   prefix + "-playability.txt";
+            reverseImportFile = prefix + "-R.dwg";
+            checksumFile =      prefix + "-Checksums.txt";
+            playabilityFile =   prefix + "-Playability.txt";
         }
     }
 
