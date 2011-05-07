@@ -3,7 +3,7 @@
 //
 // A model for representing word lists.
 //
-// Copyright 2005-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -30,7 +30,7 @@
 
 using namespace std;
 
-const QChar WordTableModel::PARENT_HOOK_CHAR = '-';
+const QChar WordTableModel::PARENT_HOOK_CHAR = QChar(0x00b7);
 const QString WILDCARD_MATCH_HEADER = "?";
 const QString PROBABILITY_ORDER_HEADER = "Prob-%1";
 const QString PLAYABILITY_ORDER_HEADER = "Play";
