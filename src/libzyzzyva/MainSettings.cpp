@@ -132,14 +132,20 @@ const bool    DEFAULT_SHOW_DEFINITIONS = true;
 const bool    DEFAULT_LOWER_CASE_WILDCARDS = false;
 const bool    DEFAULT_USE_LEXICON_STYLES = true;
 const QString DEFAULT_LEXICON_STYLES = QString(
-    "%1 and not %2: symbol %\n"
+    "%1 and not %2: symbol +\n"
     "%3 and not %4: symbol !\n"
     "%5 and not %6: symbol #\n"
-    "%7 and not %8: symbol +\n"
-    "%9 and not %10: symbol %")
+    "%7 and not %8: symbol #\n"
+    "%9 and not %10: symbol +\n"
+    "%11 and not %12: symbol !\n"
+    "%13 and not %14: symbol +\n"
+    "%15 and not %16: symbol +")
     .arg(Defs::LEXICON_OWL2).arg(Defs::LEXICON_OWL)
     .arg(Defs::LEXICON_OWL2).arg(Defs::LEXICON_OSPD4)
     .arg(Defs::LEXICON_CSW07).arg(Defs::LEXICON_OWL2)
+    .arg(Defs::LEXICON_CSW12).arg(Defs::LEXICON_OWL2)
+    .arg(Defs::LEXICON_CSW12).arg(Defs::LEXICON_CSW07)
+    .arg(Defs::LEXICON_CSW07).arg(Defs::LEXICON_CSW12)
     .arg(Defs::LEXICON_CSW07).arg(Defs::LEXICON_OSWI)
     .arg(Defs::LEXICON_ODS5).arg(Defs::LEXICON_ODS4);
 const QString DEFAULT_LETTER_DISTRIBUTION = "A:9 B:2 C:2 D:4 E:12 F:2 G:3 "
