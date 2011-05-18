@@ -3,7 +3,7 @@
 //
 // The settings dialog for the word study application.
 //
-// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -69,14 +69,11 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     : QDialog(parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
 
     QHBoxLayout* mainHlay = new QHBoxLayout;
-    Q_CHECK_PTR(mainHlay);
     mainVlay->addLayout(mainHlay);
 
     navList = new QListWidget;
-    Q_CHECK_PTR(navList);
     navList->setMaximumWidth(150);
     navList->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Preferred);
     connect(navList, SIGNAL(currentTextChanged(const QString&)),
@@ -84,12 +81,10 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     mainHlay->addWidget(navList);
 
     QVBoxLayout* navStackVlay = new QVBoxLayout;
-    Q_CHECK_PTR(navStackVlay);
     navStackVlay->setMargin(0);
     mainHlay->addLayout(navStackVlay);
 
     navStack = new QStackedWidget;
-    Q_CHECK_PTR(navStack);
     navStackVlay->addWidget(navStack);
 
     navStackVlay->addStretch(1);
@@ -101,7 +96,6 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     // ### Change this, OK, Cancel, to QDialogButtonBox
     QPushButton* restoreDefaultsButton = new QPushButton;
-    Q_CHECK_PTR(restoreDefaultsButton);
     restoreDefaultsButton->setText("&Restore Defaults");
     connect(restoreDefaultsButton, SIGNAL(clicked()),
             SLOT(restoreDefaultsClicked()));
@@ -109,41 +103,33 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     // General Prefs
     generalPrefWidget = new QWidget;
-    Q_CHECK_PTR(generalPrefWidget);
     navStack->addWidget(generalPrefWidget);
 
     QVBoxLayout* generalPrefVlay = new QVBoxLayout(generalPrefWidget);
-    Q_CHECK_PTR(generalPrefVlay);
     generalPrefVlay->setMargin(0);
 
     QLabel* generalPrefLabel = new QLabel(MainSettings::GENERAL_PREFS_GROUP);
-    Q_CHECK_PTR(generalPrefLabel);
     generalPrefLabel->setFrameShape(QFrame::StyledPanel);
     generalPrefVlay->addWidget(generalPrefLabel);
 
     QGroupBox* autoImportGbox = new QGroupBox("Lexicon");
-    Q_CHECK_PTR(autoImportGbox);
     generalPrefVlay->addWidget(autoImportGbox);
     generalPrefVlay->setStretchFactor(autoImportGbox, 1);
 
     QVBoxLayout* autoImportVlay = new QVBoxLayout(autoImportGbox);
-    Q_CHECK_PTR(autoImportVlay);
     autoImportVlay->setMargin(MARGIN);
     autoImportVlay->setSpacing(SPACING);
 
     QHBoxLayout* autoImportLexiconHlay = new QHBoxLayout;
     autoImportLexiconHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(autoImportLexiconHlay);
     autoImportVlay->addLayout(autoImportLexiconHlay);
 
     autoImportCbox = new QCheckBox("Load lexicons: ");
-    Q_CHECK_PTR(autoImportCbox);
     connect(autoImportCbox, SIGNAL(toggled(bool)),
             SLOT(autoImportCboxToggled(bool)));
     autoImportLexiconHlay->addWidget(autoImportCbox);
 
     autoImportButton = new ZPushButton;
-    Q_CHECK_PTR(autoImportButton);
     autoImportButton->setText("Edit...");
     autoImportButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(autoImportButton, SIGNAL(clicked()),
@@ -151,60 +137,48 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     autoImportLexiconHlay->addWidget(autoImportButton);
 
     autoImportLabel = new QLabel;
-    Q_CHECK_PTR(autoImportLabel);
     autoImportVlay->addWidget(autoImportLabel);
 
     autoImportCustomWidget = new QWidget;
-    Q_CHECK_PTR(autoImportCustomWidget);
     autoImportVlay->addWidget(autoImportCustomWidget);
 
     QHBoxLayout* autoImportCustomHlay = new QHBoxLayout(autoImportCustomWidget);
-    Q_CHECK_PTR(autoImportCustomHlay);
     autoImportCustomHlay->setMargin(0);
     autoImportCustomHlay->setSpacing(SPACING);
 
     QLabel* autoImportCustomLabel = new QLabel("Custom:");
-    Q_CHECK_PTR(autoImportCustomLabel);
     autoImportCustomHlay->addWidget(autoImportCustomLabel);
 
     autoImportCustomLine = new QLineEdit;
-    Q_CHECK_PTR(autoImportCustomLine);
     autoImportCustomLine->setReadOnly(true);
     autoImportCustomHlay->addWidget(autoImportCustomLine);
 
     QGroupBox* userDataDirGbox = new QGroupBox("Data Directory");
-    Q_CHECK_PTR(userDataDirGbox);
     generalPrefVlay->addWidget(userDataDirGbox);
     generalPrefVlay->setStretchFactor(userDataDirGbox, 1);
 
     QVBoxLayout* userDataDirVlay = new QVBoxLayout(userDataDirGbox);
-    Q_CHECK_PTR(userDataDirVlay);
     userDataDirVlay->setMargin(MARGIN);
     userDataDirVlay->setSpacing(SPACING);
 
     QHBoxLayout* userDataDirHlay = new QHBoxLayout;
-    Q_CHECK_PTR(userDataDirHlay);
     userDataDirHlay->setSpacing(SPACING);
     userDataDirVlay->addLayout(userDataDirHlay);
 
     QLabel* userDataDirLabel = new QLabel("Location:");
-    Q_CHECK_PTR(userDataDirLabel);
     userDataDirHlay->addWidget(userDataDirLabel);
 
     userDataDirLine = new QLineEdit;
-    Q_CHECK_PTR(userDataDirLine);
     connect(userDataDirLine, SIGNAL(textChanged(const QString&)),
             SLOT(userDataDirChanged(const QString&)));
     userDataDirHlay->addWidget(userDataDirLine);
 
     ZPushButton* userDataDirBrowseButton = new ZPushButton("Browse...");
-    Q_CHECK_PTR(userDataDirBrowseButton);
     connect(userDataDirBrowseButton, SIGNAL(clicked()),
             SLOT(userDataDirBrowseButtonClicked()));
     userDataDirHlay->addWidget(userDataDirBrowseButton);
 
     userDataDirMoveCbox = new QCheckBox("Move data after saving preferences");
-    Q_CHECK_PTR(userDataDirMoveCbox);
     userDataDirMoveCbox->setEnabled(false);
     userDataDirVlay->addWidget(userDataDirMoveCbox);
 
@@ -213,75 +187,60 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     userDataDirMoveCbox->hide();
 
     QGroupBox* displayWelcomeGbox = new QGroupBox("Welcome");
-    Q_CHECK_PTR(displayWelcomeGbox);
     generalPrefVlay->addWidget(displayWelcomeGbox);
     generalPrefVlay->setStretchFactor(displayWelcomeGbox, 1);
 
     QVBoxLayout* displayWelcomeVlay = new QVBoxLayout(displayWelcomeGbox);
-    Q_CHECK_PTR(displayWelcomeVlay);
     displayWelcomeVlay->setMargin(MARGIN);
     displayWelcomeVlay->setSpacing(SPACING);
 
     displayWelcomeCbox = new QCheckBox("Display Welcome on startup");
-    Q_CHECK_PTR(displayWelcomeCbox);
     displayWelcomeVlay->addWidget(displayWelcomeCbox);
 
     generalPrefVlay->addStretch(2);
 
     // Quiz Prefs
     quizPrefWidget = new QWidget;
-    Q_CHECK_PTR(quizPrefWidget);
     navStack->addWidget(quizPrefWidget);
 
     QVBoxLayout* quizPrefVlay = new QVBoxLayout(quizPrefWidget);
-    Q_CHECK_PTR(quizPrefVlay);
     quizPrefVlay->setMargin(0);
 
     QLabel* quizPrefLabel = new QLabel(MainSettings::QUIZ_PREFS_GROUP);
-    Q_CHECK_PTR(quizPrefLabel);
     quizPrefLabel->setFrameShape(QFrame::StyledPanel);
     quizPrefVlay->addWidget(quizPrefLabel);
 
     QGroupBox* quizQuestionGbox = new QGroupBox("Question Display");
-    Q_CHECK_PTR(quizQuestionGbox);
     quizPrefVlay->addWidget(quizQuestionGbox);
     quizPrefVlay->setStretchFactor(quizQuestionGbox, 1);
 
     QVBoxLayout* quizQuestionVlay = new QVBoxLayout(quizQuestionGbox);
-    Q_CHECK_PTR(quizQuestionVlay);
     quizQuestionVlay->setMargin(MARGIN);
     quizQuestionVlay->setSpacing(SPACING);
 
     themeCbox = new QCheckBox("Use tile images");
-    Q_CHECK_PTR(themeCbox);
     connect(themeCbox, SIGNAL(toggled(bool)), SLOT(themeCboxToggled(bool)));
     quizQuestionVlay->addWidget(themeCbox);
 
     QHBoxLayout* themeHlay = new QHBoxLayout;
     themeHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(themeHlay);
     quizQuestionVlay->addLayout(themeHlay);
 
     themeLabel = new QLabel("Tile Theme:");
-    Q_CHECK_PTR(themeLabel);
     themeLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     themeHlay->addWidget(themeLabel);
 
     themeCombo = new QComboBox;
-    Q_CHECK_PTR(themeCombo);
     themeHlay->addWidget(themeCombo);
 
     QHBoxLayout* letterOrderHlay = new QHBoxLayout;
-    Q_CHECK_PTR(letterOrderHlay);
     quizQuestionVlay->addLayout(letterOrderHlay);
 
     QLabel* letterOrderLabel = new QLabel("Letter Order:");
-    Q_CHECK_PTR(letterOrderLabel);
     letterOrderLabel->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     letterOrderHlay->addWidget(letterOrderLabel);
 
     letterOrderCombo = new QComboBox;
-    Q_CHECK_PTR(letterOrderCombo);
     letterOrderHlay->addWidget(letterOrderCombo);
 
     letterOrderCombo->addItem(Defs::QUIZ_LETTERS_ALPHA);
@@ -291,99 +250,80 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     letterOrderCombo->setCurrentIndex(0);
 
     QHBoxLayout* quizBackgroundColorHlay = new QHBoxLayout;
-    Q_CHECK_PTR(quizBackgroundColorHlay);
     quizQuestionVlay->addLayout(quizBackgroundColorHlay);
 
     QLabel* quizBackgroundColorLabel = new QLabel("Background Color:");
-    Q_CHECK_PTR(quizBackgroundColorLabel);
     quizBackgroundColorHlay->addWidget(quizBackgroundColorLabel);
 
     quizBackgroundColorLine = new QLineEdit;
-    Q_CHECK_PTR(quizBackgroundColorLine);
     quizBackgroundColorLine->setReadOnly(true);
     quizBackgroundColorLine->setEnabled(false);
     quizBackgroundColorHlay->addWidget(quizBackgroundColorLine);
 
     ZPushButton* quizBackgroundColorButton = new ZPushButton("Choose...");
-    Q_CHECK_PTR(quizBackgroundColorButton);
     connect(quizBackgroundColorButton, SIGNAL(clicked()),
             SLOT(chooseQuizBackgroundColorButtonClicked()));
     quizBackgroundColorHlay->addWidget(quizBackgroundColorButton);
 
     QGroupBox* quizBehaviorGbox = new QGroupBox("Quiz Behavior");
-    Q_CHECK_PTR(quizBehaviorGbox);
     quizPrefVlay->addWidget(quizBehaviorGbox);
     quizPrefVlay->setStretchFactor(quizBehaviorGbox, 1);
 
     QVBoxLayout* quizBehaviorVlay = new QVBoxLayout(quizBehaviorGbox);
-    Q_CHECK_PTR(quizBehaviorVlay);
     quizBehaviorVlay->setMargin(MARGIN);
     quizBehaviorVlay->setSpacing(SPACING);
 
     quizUseFlashcardModeCbox = new QCheckBox("Start in Flashcard Mode");
-    Q_CHECK_PTR(quizUseFlashcardModeCbox);
     quizBehaviorVlay->addWidget(quizUseFlashcardModeCbox);
 
     quizShowNumResponsesCbox =
         new QCheckBox("Show number of responses in status bar");
-    Q_CHECK_PTR(quizShowNumResponsesCbox);
     quizBehaviorVlay->addWidget(quizShowNumResponsesCbox);
 
     quizShowQuestionStatsCbox = new QCheckBox("Show question statistics");
-    Q_CHECK_PTR(quizShowQuestionStatsCbox);
     quizBehaviorVlay->addWidget(quizShowQuestionStatsCbox);
 
     quizRequireLexiconSymbolsCbox =
         new QCheckBox("Require lexicon symbols for correct response");
-    Q_CHECK_PTR(quizRequireLexiconSymbolsCbox);
     quizBehaviorVlay->addWidget(quizRequireLexiconSymbolsCbox);
 
     quizAutoCheckCbox =
         new QCheckBox("End question after all correct responses");
-    Q_CHECK_PTR(quizAutoCheckCbox);
     connect(quizAutoCheckCbox, SIGNAL(toggled(bool)),
             SLOT(autoCheckCboxToggled(bool)));
     quizBehaviorVlay->addWidget(quizAutoCheckCbox);
 
     quizAutoAdvanceCbox =
         new QCheckBox("Go to next question after all correct responses");
-    Q_CHECK_PTR(quizAutoAdvanceCbox);
     quizBehaviorVlay->addWidget(quizAutoAdvanceCbox);
 
     quizAutoEndAfterIncorrectCbox =
         new QCheckBox("End question after an incorrect response");
-    Q_CHECK_PTR(quizAutoEndAfterIncorrectCbox);
     quizBehaviorVlay->addWidget(quizAutoEndAfterIncorrectCbox);
 
     quizMarkMissedAfterIncorrectCbox =
         new QCheckBox("Mark question as missed after an incorrect response");
-    Q_CHECK_PTR(quizMarkMissedAfterIncorrectCbox);
     quizBehaviorVlay->addWidget(quizMarkMissedAfterIncorrectCbox);
 
     quizMarkMissedAfterTimerCbox =
         new QCheckBox("Mark question as missed after timer expires");
-    Q_CHECK_PTR(quizMarkMissedAfterTimerCbox);
     quizBehaviorVlay->addWidget(quizMarkMissedAfterTimerCbox);
 
     quizCycleAnswersCbox =
         new QCheckBox("Cycle answers after ending a question");
-    Q_CHECK_PTR(quizCycleAnswersCbox);
     quizBehaviorVlay->addWidget(quizCycleAnswersCbox);
 
     QHBoxLayout* timeoutDisableInputHlay = new QHBoxLayout;
-    Q_CHECK_PTR(timeoutDisableInputHlay);
     timeoutDisableInputHlay->setMargin(0);
     quizBehaviorVlay->addLayout(timeoutDisableInputHlay);
 
     quizTimeoutDisableInputCbox =
         new QCheckBox("After timer expires, disable input for:");
-    Q_CHECK_PTR(quizTimeoutDisableInputCbox);
     connect(quizTimeoutDisableInputCbox, SIGNAL(toggled(bool)),
             SLOT(timeoutDisableInputCboxToggled(bool)));
     timeoutDisableInputHlay->addWidget(quizTimeoutDisableInputCbox);
 
     quizTimeoutDisableInputSbox = new QSpinBox;
-    Q_CHECK_PTR(quizTimeoutDisableInputSbox);
     quizTimeoutDisableInputSbox->setMinimum(1);
     quizTimeoutDisableInputSbox->setMaximum(10000);
     quizTimeoutDisableInputSbox->setSuffix(" milliseconds");
@@ -393,42 +333,34 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     // Search Prefs
     probabilityPrefWidget = new QWidget;
-    Q_CHECK_PTR(probabilityPrefWidget);
     navStack->addWidget(probabilityPrefWidget);
 
     QVBoxLayout* probabilityPrefVlay = new QVBoxLayout(probabilityPrefWidget);
-    Q_CHECK_PTR(probabilityPrefVlay);
     probabilityPrefVlay->setMargin(0);
 
     QLabel* probabilityPrefLabel =
         new QLabel(MainSettings::PROBABILITY_PREFS_GROUP);
-    Q_CHECK_PTR(probabilityPrefLabel);
     probabilityPrefLabel->setFrameShape(QFrame::StyledPanel);
     probabilityPrefVlay->addWidget(probabilityPrefLabel);
 
     QGroupBox* probabilityGbox = new QGroupBox("Probability");
-    Q_CHECK_PTR(probabilityGbox);
     probabilityPrefVlay->addWidget(probabilityGbox);
     probabilityPrefVlay->setStretchFactor(probabilityGbox, 1);
 
     QVBoxLayout* probabilityVlay = new QVBoxLayout(probabilityGbox);
-    Q_CHECK_PTR(probabilityVlay);
     probabilityVlay->setMargin(MARGIN);
     probabilityVlay->setSpacing(SPACING);
 
     QHBoxLayout* probBlanksHlay = new QHBoxLayout;
-    Q_CHECK_PTR(probBlanksHlay);
     probBlanksHlay->setMargin(0);
     probabilityVlay->addLayout(probBlanksHlay);
 
     QLabel* probBlanksLabel = new QLabel;
-    Q_CHECK_PTR(probBlanksLabel);
     probBlanksLabel->setText("Default number of blanks when "
                                    "calculating probability:");
     probBlanksHlay->addWidget(probBlanksLabel);
 
     probBlanksSbox = new QSpinBox;
-    Q_CHECK_PTR(probBlanksSbox);
     probBlanksSbox->setMinimum(0);
     probBlanksSbox->setMaximum(Defs::MAX_BLANKS);
     probBlanksHlay->addWidget(probBlanksSbox);
@@ -437,25 +369,20 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     // Cardbox Prefs
     cardboxPrefWidget = new QWidget;
-    Q_CHECK_PTR(cardboxPrefWidget);
     navStack->addWidget(cardboxPrefWidget);
 
     QVBoxLayout* cardboxPrefVlay = new QVBoxLayout(cardboxPrefWidget);
-    Q_CHECK_PTR(cardboxPrefVlay);
     cardboxPrefVlay->setMargin(0);
 
     QLabel* cardboxPrefLabel = new QLabel(MainSettings::CARDBOX_PREFS_GROUP);
-    Q_CHECK_PTR(cardboxPrefLabel);
     cardboxPrefLabel->setFrameShape(QFrame::StyledPanel);
     cardboxPrefVlay->addWidget(cardboxPrefLabel);
 
     QGroupBox* cardboxScheduleGbox = new QGroupBox("Schedule");
-    Q_CHECK_PTR(cardboxScheduleGbox);
     cardboxPrefVlay->addWidget(cardboxScheduleGbox);
     cardboxPrefVlay->setStretchFactor(cardboxScheduleGbox, 1);
 
     QGridLayout* cardboxScheduleGlay = new QGridLayout(cardboxScheduleGbox);
-    Q_CHECK_PTR(cardboxScheduleGlay);
     cardboxScheduleGlay->setMargin(MARGIN);
     cardboxScheduleGlay->setSpacing(SPACING);
 
@@ -464,7 +391,6 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     int maxCardbox = 15;
 
     QLabel* cardboxScheduleLabel = new QLabel;
-    Q_CHECK_PTR(cardboxScheduleLabel);
     cardboxScheduleLabel->setWordWrap(true);
     cardboxScheduleLabel->setText(
         "Questions in each cardbox are scheduled for the specified number of "
@@ -477,7 +403,6 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
         int row = (i % cardboxesPerCol) + 1;
 
         QLabel* label = new QLabel;
-        Q_CHECK_PTR(label);
         QString numStr = QString::number(i);
         if (i == maxCardbox)
             numStr += "+";
@@ -485,20 +410,17 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
         cardboxScheduleGlay->addWidget(label, row, col);
 
         QSpinBox* scheduleSbox = new QSpinBox;
-        Q_CHECK_PTR(scheduleSbox);
         scheduleSbox->setMinimum(0);
         scheduleSbox->setMaximum(9999);
         cardboxScheduleGlay->addWidget(scheduleSbox, row, col + 1);
         cardboxScheduleSboxList.append(scheduleSbox);
 
         QLabel* plusMinusLabel = new QLabel;
-        Q_CHECK_PTR(plusMinusLabel);
         plusMinusLabel->setTextFormat(Qt::RichText);
         plusMinusLabel->setText("&#177;");
         cardboxScheduleGlay->addWidget(plusMinusLabel, row, col + 2);
 
         QSpinBox* windowSbox = new QSpinBox;
-        Q_CHECK_PTR(windowSbox);
         windowSbox->setMinimum(0);
         windowSbox->setMaximum(9999);
         cardboxScheduleGlay->addWidget(windowSbox, row, col + 3);
@@ -509,94 +431,76 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     // Word Judge Prefs
     judgePrefWidget = new QWidget;
-    Q_CHECK_PTR(judgePrefWidget);
     navStack->addWidget(judgePrefWidget);
 
     QVBoxLayout* judgePrefVlay = new QVBoxLayout(judgePrefWidget);
-    Q_CHECK_PTR(judgePrefVlay);
     judgePrefVlay->setMargin(0);
 
     QLabel* judgePrefLabel = new QLabel(MainSettings::JUDGE_PREFS_GROUP);
-    Q_CHECK_PTR(judgePrefLabel);
     judgePrefLabel->setFrameShape(QFrame::StyledPanel);
     judgePrefVlay->addWidget(judgePrefLabel);
 
     QGroupBox* judgeGbox = new QGroupBox;
-    Q_CHECK_PTR(judgeGbox);
     judgePrefVlay->addWidget(judgeGbox);
     judgePrefVlay->setStretchFactor(judgeGbox, 1);
 
     QVBoxLayout* judgeVlay = new QVBoxLayout(judgeGbox);
-    Q_CHECK_PTR(judgeVlay);
     judgeVlay->setMargin(MARGIN);
     judgeVlay->setSpacing(SPACING);
 
     judgeSaveLogCbox = new QCheckBox("Save judge results to log files");
-    Q_CHECK_PTR(judgeSaveLogCbox);
     connect(judgeSaveLogCbox, SIGNAL(toggled(bool)),
             SLOT(judgeSaveLogCboxToggled(bool)));
     judgeVlay->addWidget(judgeSaveLogCbox);
 
     judgeLogDirWidget = new QWidget;
-    Q_CHECK_PTR(judgeLogDirWidget);
     judgeVlay->addWidget(judgeLogDirWidget);
 
     QHBoxLayout* judgeLogDirHlay = new QHBoxLayout(judgeLogDirWidget);
-    Q_CHECK_PTR(judgeLogDirHlay);
     judgeLogDirHlay->setMargin(0);
     judgeLogDirHlay->setSpacing(SPACING);
 
     judgeLogDirLabel = new QLabel;
-    Q_CHECK_PTR(judgeLogDirLabel);
     judgeLogDirHlay->addWidget(judgeLogDirLabel);
 
     judgePrefVlay->addStretch(2);
 
     // Signal mapper for the Choose Font buttons
     QSignalMapper* signalMapper = new QSignalMapper(this);
-    Q_CHECK_PTR(signalMapper);
     connect(signalMapper, SIGNAL(mapped(int)),
             SLOT(chooseFontButtonClicked(int)));
 
     // Font Prefs
     fontPrefWidget = new QWidget;
-    Q_CHECK_PTR(fontPrefWidget);
     navStack->addWidget(fontPrefWidget);
 
     QVBoxLayout* fontPrefVlay = new QVBoxLayout(fontPrefWidget);
-    Q_CHECK_PTR(fontPrefVlay);
     fontPrefVlay->setMargin(0);
 
     QLabel* fontPrefLabel = new QLabel(MainSettings::FONT_PREFS_GROUP);
-    Q_CHECK_PTR(fontPrefLabel);
     fontPrefLabel->setFrameShape(QFrame::StyledPanel);
     fontPrefVlay->addWidget(fontPrefLabel);
 
     QGroupBox* fontGbox = new QGroupBox;
-    Q_CHECK_PTR(fontGbox);
     fontPrefVlay->addWidget(fontGbox);
     fontPrefVlay->setStretchFactor(fontGbox, 1);
 
     QGridLayout* fontGlay = new QGridLayout(fontGbox);
-    Q_CHECK_PTR(fontGlay);
     fontGlay->setMargin(MARGIN);
     fontGlay->setSpacing(SPACING);
 
     // Main font
     int row = 0;
     QLabel* fontMainLabel = new QLabel("Main:");
-    Q_CHECK_PTR(fontMainLabel);
     fontGlay->addWidget(fontMainLabel, row, 0, Qt::AlignLeft);
 
     fontMainLine = new QLineEdit;
-    Q_CHECK_PTR(fontMainLine);
     fontMainLine->setReadOnly(true);
     fontMainLine->setText(this->font().toString());
     fontMainLine->home(false);
     fontGlay->addWidget(fontMainLine, row, 1);
 
     ZPushButton* chooseFontMainButton = new ZPushButton("Choose...");
-    Q_CHECK_PTR(chooseFontMainButton);
     connect(chooseFontMainButton, SIGNAL(clicked()), signalMapper, SLOT(map()));
     signalMapper->setMapping(chooseFontMainButton, FONT_MAIN_BUTTON);
     fontGlay->addWidget(chooseFontMainButton, row, 2);
@@ -604,18 +508,15 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     // Word list font
     ++row;
     QLabel* fontWordListLabel = new QLabel("Word Tables:");
-    Q_CHECK_PTR(fontWordListLabel);
     fontGlay->addWidget(fontWordListLabel, row, 0, Qt::AlignLeft);
 
     fontWordListLine = new QLineEdit;
-    Q_CHECK_PTR(fontWordListLine);
     fontWordListLine->setReadOnly(true);
     fontWordListLine->setText(this->font().toString());
     fontWordListLine->home(false);
     fontGlay->addWidget(fontWordListLine, row, 1);
 
     ZPushButton* chooseFontWordListButton = new ZPushButton("Choose...");
-    Q_CHECK_PTR(chooseFontWordListButton);
     connect(chooseFontWordListButton, SIGNAL(clicked()), signalMapper,
             SLOT(map()));
     signalMapper->setMapping(chooseFontWordListButton, FONT_WORD_LISTS_BUTTON);
@@ -624,18 +525,15 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     // Quiz label font
     ++row;
     QLabel* fontQuizLabelLabel = new QLabel("Quiz Questions:");
-    Q_CHECK_PTR(fontQuizLabelLabel);
     fontGlay->addWidget(fontQuizLabelLabel, row, 0, Qt::AlignLeft);
 
     fontQuizLabelLine = new QLineEdit;
-    Q_CHECK_PTR(fontQuizLabelLine);
     fontQuizLabelLine->setReadOnly(true);
     fontQuizLabelLine->setText(this->font().toString());
     fontQuizLabelLine->home(false);
     fontGlay->addWidget(fontQuizLabelLine, row, 1);
 
     ZPushButton* chooseFontQuizLabelButton = new ZPushButton("Choose...");
-    Q_CHECK_PTR(chooseFontQuizLabelButton);
     connect(chooseFontQuizLabelButton, SIGNAL(clicked()), signalMapper,
             SLOT(map()));
     signalMapper->setMapping(chooseFontQuizLabelButton, FONT_QUIZ_LABEL_BUTTON);
@@ -644,18 +542,15 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     // Input font
     ++row;
     QLabel* fontInputLabel = new QLabel("Word Input:");
-    Q_CHECK_PTR(fontInputLabel);
     fontGlay->addWidget(fontInputLabel, row, 0, Qt::AlignLeft);
 
     fontWordInputLine = new QLineEdit;
-    Q_CHECK_PTR(fontWordInputLine);
     fontWordInputLine->setReadOnly(true);
     fontWordInputLine->setText(this->font().toString());
     fontWordInputLine->home(false);
     fontGlay->addWidget(fontWordInputLine, row, 1);
 
     ZPushButton* chooseFontInputButton = new ZPushButton("Choose...");
-    Q_CHECK_PTR(chooseFontInputButton);
     connect(chooseFontInputButton, SIGNAL(clicked()), signalMapper,
             SLOT(map()));
     signalMapper->setMapping(chooseFontInputButton, FONT_WORD_INPUT_BUTTON);
@@ -664,18 +559,15 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     // Definition font
     ++row;
     QLabel* fontDefinitionLabel = new QLabel("Definitions:");
-    Q_CHECK_PTR(fontDefinitionLabel);
     fontGlay->addWidget(fontDefinitionLabel, row, 0, Qt::AlignLeft);
 
     fontDefinitionLine = new QLineEdit;
-    Q_CHECK_PTR(fontDefinitionLine);
     fontDefinitionLine->setReadOnly(true);
     fontDefinitionLine->setText(this->font().toString());
     fontDefinitionLine->home(false);
     fontGlay->addWidget(fontDefinitionLine, row, 1);
 
     ZPushButton* chooseFontDefinitionButton = new ZPushButton("Choose...");
-    Q_CHECK_PTR(chooseFontDefinitionButton);
     connect(chooseFontDefinitionButton, SIGNAL(clicked()), signalMapper,
             SLOT(map()));
     signalMapper->setMapping(chooseFontDefinitionButton,
@@ -686,69 +578,54 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     // Word List Prefs
     wordListPrefWidget = new QWidget;
-    Q_CHECK_PTR(wordListPrefWidget);
     navStack->addWidget(wordListPrefWidget);
 
     QVBoxLayout* wordListPrefVlay = new QVBoxLayout(wordListPrefWidget);
-    Q_CHECK_PTR(wordListPrefVlay);
     wordListPrefVlay->setMargin(0);
 
     QLabel* wordListPrefLabel = new QLabel(MainSettings::WORD_LIST_PREFS_GROUP);
-    Q_CHECK_PTR(wordListPrefLabel);
     wordListPrefLabel->setFrameShape(QFrame::StyledPanel);
     wordListPrefVlay->addWidget(wordListPrefLabel);
 
     QGroupBox* wordListDisplayGbox = new QGroupBox("Display Columns");
-    Q_CHECK_PTR(wordListDisplayGbox);
     wordListPrefVlay->addWidget(wordListDisplayGbox);
     wordListPrefVlay->setStretchFactor(wordListDisplayGbox, 1);
 
     QVBoxLayout* wordListDisplayVlay = new QVBoxLayout(wordListDisplayGbox);
-    Q_CHECK_PTR(wordListDisplayVlay);
     wordListDisplayVlay->setMargin(MARGIN);
     wordListDisplayVlay->setSpacing(SPACING);
 
     showProbabilityOrderCbox = new QCheckBox("Show probability order");
-    Q_CHECK_PTR(showProbabilityOrderCbox);
     wordListDisplayVlay->addWidget(showProbabilityOrderCbox);
 
     showPlayabilityOrderCbox = new QCheckBox("Show playability order");
-    Q_CHECK_PTR(showPlayabilityOrderCbox);
     wordListDisplayVlay->addWidget(showPlayabilityOrderCbox);
 
     showHooksCbox = new QCheckBox("Show hooks");
-    Q_CHECK_PTR(showHooksCbox);
     wordListDisplayVlay->addWidget(showHooksCbox);
 
     showHookParentsCbox = new QCheckBox("Show inner hooks");
-    Q_CHECK_PTR(showHookParentsCbox);
     wordListDisplayVlay->addWidget(showHookParentsCbox);
 
     showDefinitionCbox = new QCheckBox("Show definitions");
-    Q_CHECK_PTR(showDefinitionCbox);
     wordListDisplayVlay->addWidget(showDefinitionCbox);
 
     lowerCaseWildcardsCbox =
         new QCheckBox("Use lower-case for wildcard matches");
-    Q_CHECK_PTR(lowerCaseWildcardsCbox);
     wordListDisplayVlay->addWidget(lowerCaseWildcardsCbox);
 
     lexiconStyleCbox = new QCheckBox("Show lexicon symbols");
-    Q_CHECK_PTR(lexiconStyleCbox);
     connect(lexiconStyleCbox, SIGNAL(toggled(bool)),
             SLOT(lexiconStyleCboxToggled(bool)));
     wordListDisplayVlay->addWidget(lexiconStyleCbox);
 
     QHBoxLayout* lexiconStyleHlay = new QHBoxLayout;
-    Q_CHECK_PTR(lexiconStyleHlay);
     wordListDisplayVlay->addLayout(lexiconStyleHlay);
 
     lexiconStyleLabel = new QLabel;
-    Q_CHECK_PTR(lexiconStyleLabel);
     lexiconStyleHlay->addWidget(lexiconStyleLabel);
 
     lexiconStyleButton = new ZPushButton;
-    Q_CHECK_PTR(lexiconStyleButton);
     lexiconStyleButton->setText("Edit...");
     lexiconStyleButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(lexiconStyleButton, SIGNAL(clicked()),
@@ -756,21 +633,17 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     lexiconStyleHlay->addWidget(lexiconStyleButton);
 
     QGroupBox* wordListSortGbox = new QGroupBox("Sorting and Grouping");
-    Q_CHECK_PTR(wordListSortGbox);
     wordListPrefVlay->addWidget(wordListSortGbox);
     wordListPrefVlay->setStretchFactor(wordListSortGbox, 1);
 
     QVBoxLayout* wordListSortVlay = new QVBoxLayout(wordListSortGbox);
-    Q_CHECK_PTR(wordListSortVlay);
     wordListSortVlay->setMargin(MARGIN);
     wordListSortVlay->setSpacing(SPACING);
 
     lengthSortCbox = new QCheckBox("Sort by word length");
-    Q_CHECK_PTR(lengthSortCbox);
     wordListSortVlay->addWidget(lengthSortCbox);
 
     anagramGroupCbox = new QCheckBox("Group by anagrams");
-    Q_CHECK_PTR(anagramGroupCbox);
     wordListSortVlay->addWidget(anagramGroupCbox);
 
     wordListPrefVlay->addStretch(2);
@@ -778,20 +651,17 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     // Button layout
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(buttonHlay);
     mainVlay->addLayout(buttonHlay);
 
     buttonHlay->addStretch(1);
 
     ZPushButton* okButton = new ZPushButton("OK");
-    Q_CHECK_PTR(okButton);
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault(true);
     connect(okButton, SIGNAL(clicked()), SLOT(accept()));
     buttonHlay->addWidget(okButton);
 
     ZPushButton* cancelButton = new ZPushButton("Cancel");
-    Q_CHECK_PTR(cancelButton);
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     buttonHlay->addWidget(cancelButton);
@@ -1147,7 +1017,6 @@ SettingsDialog::chooseLexiconsClicked()
     getImportLexicons(importLexicons, defaultLexicon);
 
     LexiconSelectDialog* dialog = new LexiconSelectDialog(this);
-    Q_CHECK_PTR(dialog);
     dialog->setImportLexicons(importLexicons);
     dialog->setDefaultLexicon(defaultLexicon);
     dialog->setCustomLexiconFile(autoImportCustomLine->text());
@@ -1338,7 +1207,6 @@ SettingsDialog::chooseLexiconStyleClicked()
 {
     QList<LexiconStyle> styles = getLexiconStyles();
     LexiconStyleDialog* dialog = new LexiconStyleDialog(this);
-    Q_CHECK_PTR(dialog);
     dialog->setLexiconStyles(styles);
 
     int code = dialog->exec();

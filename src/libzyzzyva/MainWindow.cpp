@@ -98,17 +98,14 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // File Menu
     QMenu* fileMenu = menuBar()->addMenu("&File");
-    Q_CHECK_PTR(fileMenu);
 
     // Test action (only for testing things out)
     //QAction* testAction = new QAction("&Test", this);
-    //Q_CHECK_PTR(testAction);
     //connect(testAction, SIGNAL(triggered()), SLOT(doTest()));
     //fileMenu->addAction(testAction);
 
     // Save
     saveAction = new QAction("&Save", this);
-    Q_CHECK_PTR(saveAction);
     saveAction->setIcon(QIcon(":/save-icon"));
     saveAction->setEnabled(false);
     saveAction->setShortcut(QString("Ctrl+S"));
@@ -117,7 +114,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // Save As
     saveAsAction = new QAction("Save &As...", this);
-    Q_CHECK_PTR(saveAsAction);
     saveAsAction->setIcon(QIcon(":/save-as-icon"));
     saveAsAction->setEnabled(false);
     saveAsAction->setShortcut(QString("Ctrl+Shift+S"));
@@ -128,35 +124,30 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // New Introduction
     QAction* newIntroAction = new QAction("&Welcome", this);
-    Q_CHECK_PTR(newIntroAction);
     newIntroAction->setIcon(QIcon(":/help-icon"));
     connect(newIntroAction, SIGNAL(triggered()), SLOT(newIntroForm()));
     fileMenu->addAction(newIntroAction);
 
     // New Quiz
     QAction* newQuizAction = new QAction("Qui&z...", this);
-    Q_CHECK_PTR(newQuizAction);
     newQuizAction->setIcon(QIcon(":/quiz-icon"));
     connect(newQuizAction, SIGNAL(triggered()), SLOT(newQuizFormInteractive()));
     fileMenu->addAction(newQuizAction);
 
     // New Search
     QAction* newSearchAction = new QAction("&Search", this);
-    Q_CHECK_PTR(newSearchAction);
     newSearchAction->setIcon(QIcon(":/search-icon"));
     connect(newSearchAction, SIGNAL(triggered()), SLOT(newSearchForm()));
     fileMenu->addAction(newSearchAction);
 
     // New Cardbox
     QAction* newCardboxAction = new QAction("&Cardbox", this);
-    Q_CHECK_PTR(newCardboxAction);
     newCardboxAction->setIcon(QIcon(":/cardbox-icon"));
     connect(newCardboxAction, SIGNAL(triggered()), SLOT(newCardboxForm()));
     fileMenu->addAction(newCardboxAction);
 
     // New Crossword Game
     //QAction* newCrosswordGameAction = new QAction("Crossword &Game", this);
-    //Q_CHECK_PTR(newCrosswordGameAction);
     //newCrosswordGameAction->setIcon(QIcon(":/define-icon"));
     //connect(newCrosswordGameAction, SIGNAL(triggered()),
     //         SLOT(newCrosswordGameForm()));
@@ -164,14 +155,12 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // New Definition
     QAction* newDefinitionAction = new QAction("&Definition", this);
-    Q_CHECK_PTR(newDefinitionAction);
     newDefinitionAction->setIcon(QIcon(":/define-icon"));
     connect(newDefinitionAction, SIGNAL(triggered()), SLOT(newDefineForm()));
     fileMenu->addAction(newDefinitionAction);
 
     // New Word Judge
     QAction* newJudgeAction = new QAction("Word &Judge", this);
-    Q_CHECK_PTR(newJudgeAction);
     newJudgeAction->setIcon(QIcon(":/judge-icon"));
     connect(newJudgeAction, SIGNAL(triggered()), SLOT(doJudgeAction()));
     fileMenu->addAction(newJudgeAction);
@@ -180,52 +169,43 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // Close Table
     QAction* closeTabAction = new QAction("&Close Tab", this);
-    Q_CHECK_PTR(closeTabAction);
     closeTabAction->setShortcut(tr("Ctrl+W"));
     connect(closeTabAction, SIGNAL(triggered()), SLOT(closeCurrentTab()));
     fileMenu->addAction(closeTabAction);
 
     // Quit
     QAction* quitAction = new QAction("&Quit", this);
-    Q_CHECK_PTR(quitAction);
     connect(quitAction, SIGNAL(triggered()), SLOT(close()));
     fileMenu->addAction(quitAction);
 
     // Edit Menu
     QMenu* editMenu = menuBar()->addMenu("&Edit");
-    Q_CHECK_PTR(editMenu);
 
     // Preferences
     QAction* editPrefsAction = new QAction("&Preferences", this);
-    Q_CHECK_PTR(editPrefsAction);
     editPrefsAction->setIcon(QIcon(":/preferences-icon"));
     connect(editPrefsAction, SIGNAL(triggered()), SLOT(editSettings()));
     editMenu->addAction(editPrefsAction);
 
     // Word Menu
     QMenu* wordMenu = menuBar()->addMenu("&Word");
-    Q_CHECK_PTR(wordMenu);
 
     // Word Definition
     QAction* viewDefinitionAction = new QAction("&Definition...", this);
-    Q_CHECK_PTR(viewDefinitionAction);
     connect(viewDefinitionAction, SIGNAL(triggered()),
              SLOT(viewDefinition()));
     wordMenu->addAction(viewDefinitionAction);
 
     QSignalMapper* wordMapper = new QSignalMapper(this);
-    Q_CHECK_PTR(wordMapper);
 
     // Word Anagrams
     QAction* viewAnagramsAction = new QAction("&Anagrams...", this);
-    Q_CHECK_PTR(viewAnagramsAction);
     connect(viewAnagramsAction, SIGNAL(triggered()), wordMapper, SLOT(map()));
     wordMapper->setMapping(viewAnagramsAction, VariationAnagrams);
     wordMenu->addAction(viewAnagramsAction);
 
     // Word Subanagrams
     QAction* viewSubanagramsAction = new QAction("&Subanagrams...", this);
-    Q_CHECK_PTR(viewSubanagramsAction);
     connect(viewSubanagramsAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
     wordMapper->setMapping(viewSubanagramsAction, VariationSubanagrams);
@@ -233,14 +213,12 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // Word Hooks
     QAction* viewHooksAction = new QAction("&Hooks...", this);
-    Q_CHECK_PTR(viewHooksAction);
     connect(viewHooksAction, SIGNAL(triggered()), wordMapper, SLOT(map()));
     wordMapper->setMapping(viewHooksAction, VariationHooks);
     wordMenu->addAction(viewHooksAction);
 
     // Word Extensions
     QAction* viewExtensionsAction = new QAction("&Extensions...", this);
-    Q_CHECK_PTR(viewExtensionsAction);
     connect(viewExtensionsAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
     wordMapper->setMapping(viewExtensionsAction, VariationExtensions);
@@ -248,7 +226,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // Word Anagram Hooks
     QAction* viewAnagramHooksAction = new QAction("Anagram Hoo&ks...", this);
-    Q_CHECK_PTR(viewAnagramHooksAction);
     connect(viewAnagramHooksAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
     wordMapper->setMapping(viewAnagramHooksAction, VariationAnagramHooks);
@@ -256,7 +233,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // Word Blank Anagrams
     QAction* viewBlankAnagramsAction = new QAction("&Blank Anagrams...", this);
-    Q_CHECK_PTR(viewBlankAnagramsAction);
     connect(viewBlankAnagramsAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
     wordMapper->setMapping(viewBlankAnagramsAction, VariationBlankAnagrams);
@@ -264,7 +240,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // Word Blank Matches
     QAction* viewBlankMatchesAction = new QAction("Blank &Matches...", this);
-    Q_CHECK_PTR(viewBlankMatchesAction);
     connect(viewBlankMatchesAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
     wordMapper->setMapping(viewBlankMatchesAction, VariationBlankMatches);
@@ -272,7 +247,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // Word Transpositions
     QAction* viewTranspositionsAction = new QAction("&Transpositions...", this);
-    Q_CHECK_PTR(viewTranspositionsAction);
     connect(viewTranspositionsAction, SIGNAL(triggered()),
             wordMapper, SLOT(map()));
     wordMapper->setMapping(viewTranspositionsAction, VariationTranspositions);
@@ -283,41 +257,34 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     // Tools Menu
     QMenu* toolsMenu = menuBar()->addMenu("&Tools");
-    Q_CHECK_PTR(toolsMenu);
 
     QAction* rebuildDatabaseAction = new QAction("Rebuild &Database...", this);
-    Q_CHECK_PTR(rebuildDatabaseAction);
     connect(rebuildDatabaseAction, SIGNAL(triggered()),
             SLOT(rebuildDatabaseRequested()));
     toolsMenu->addAction(rebuildDatabaseAction);
 
     QAction* rescheduleCardboxAction = new QAction("Reschedule &Cardbox "
                                                    "Contents...", this);
-    Q_CHECK_PTR(rescheduleCardboxAction);
     connect(rescheduleCardboxAction, SIGNAL(triggered()),
             SLOT(rescheduleCardboxRequested()));
     toolsMenu->addAction(rescheduleCardboxAction);
 
     // Help Menu
     QMenu* helpMenu = menuBar()->addMenu("&Help");
-    Q_CHECK_PTR(helpMenu);
 
     // Help
     QAction* helpAction = new QAction("&Help", this);
-    Q_CHECK_PTR(helpAction);
     helpAction->setIcon(QIcon(":/help-icon"));
     connect(helpAction, SIGNAL(triggered()), SLOT(displayHelp()));
     helpMenu->addAction(helpAction);
 
     // About
     QAction* aboutAction = new QAction("&About", this);
-    Q_CHECK_PTR(aboutAction);
     connect(aboutAction, SIGNAL(triggered()), SLOT(displayAbout()));
     helpMenu->addAction(aboutAction);
 
     // Tool Bar
     QToolBar* toolbar = new QToolBar;
-    Q_CHECK_PTR(toolbar);
     toolbar->setIconSize(QSize(22, 22));
     toolbar->addAction(saveAction);
     toolbar->addAction(saveAsAction);
@@ -333,12 +300,10 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     addToolBar(toolbar);
 
     tabStack = new QTabWidget(this);
-    Q_CHECK_PTR(tabStack);
     connect(tabStack, SIGNAL(currentChanged(int)),
              SLOT(currentTabChanged(int)));
 
     closeButton = new QToolButton(tabStack);
-    Q_CHECK_PTR(closeButton);
     closeButton->setIcon(QIcon(":/close-tab-icon"));
     tabStack->setCornerWidget(closeButton);
     closeButton->hide();
@@ -347,7 +312,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     setCentralWidget(tabStack);
 
     messageLabel = new QLabel;
-    Q_CHECK_PTR(messageLabel);
     statusBar()->addWidget(messageLabel, 1);
 
     QFont detailsFont = qApp->font();
@@ -357,7 +321,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     detailsFont.setPointSize(detailsPoints);
 
     detailsLabel = new QLabel;
-    Q_CHECK_PTR(detailsLabel);
     detailsLabel->setFont(detailsFont);
     statusBar()->addWidget(detailsLabel);
 
@@ -457,7 +420,6 @@ MainWindow::tryAutoImport()
     QStringList lexicons = MainSettings::getAutoImportLexicons();
     if (lexicons.isEmpty()) {
         LexiconSelectDialog* dialog = new LexiconSelectDialog;
-        Q_CHECK_PTR(dialog);
 
         QString defaultLexicon = MainSettings::getDefaultLexicon();
         lexicons << defaultLexicon;
@@ -587,7 +549,6 @@ void
 MainWindow::newQuizFormInteractive()
 {
     NewQuizDialog* dialog = new NewQuizDialog(this);
-    Q_CHECK_PTR(dialog);
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
         newQuizForm(dialog->getQuizSpec());
@@ -605,7 +566,6 @@ void
 MainWindow::newQuizFormInteractive(const QuizSpec& quizSpec)
 {
     NewQuizDialog* dialog = new NewQuizDialog(this);
-    Q_CHECK_PTR(dialog);
     dialog->setQuizSpec(quizSpec);
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
@@ -626,7 +586,6 @@ void
 MainWindow::newQuizForm(const QuizSpec& quizSpec)
 {
     QuizForm* form = new QuizForm(wordEngine);
-    Q_CHECK_PTR(form);
     form->setTileTheme(MainSettings::getTileTheme());
     bool ok = form->newQuiz(quizSpec);
     if (!ok) {
@@ -645,7 +604,6 @@ void
 MainWindow::newSearchForm()
 {
     SearchForm* form = new SearchForm(wordEngine);
-    Q_CHECK_PTR(form);
     newTab(form);
 }
 
@@ -658,7 +616,6 @@ void
 MainWindow::newCrosswordGameForm()
 {
     CrosswordGameForm* form = new CrosswordGameForm;
-    Q_CHECK_PTR(form);
     newTab(form);
 }
 
@@ -671,7 +628,6 @@ void
 MainWindow::newDefineForm()
 {
     DefineForm* form = new DefineForm(wordEngine);
-    Q_CHECK_PTR(form);
     newTab(form);
 }
 
@@ -684,7 +640,6 @@ void
 MainWindow::newIntroForm()
 {
     IntroForm* form = new IntroForm;
-    Q_CHECK_PTR(form);
     newTab(form);
 }
 
@@ -697,7 +652,6 @@ void
 MainWindow::newCardboxForm()
 {
     CardboxForm* form = new CardboxForm(wordEngine);
-    Q_CHECK_PTR(form);
     newTab(form);
 }
 
@@ -744,7 +698,6 @@ void
 MainWindow::doJudgeAction()
 {
     JudgeSelectDialog* selectDialog = new JudgeSelectDialog(this);
-    Q_CHECK_PTR(selectDialog);
     int code = selectDialog->exec();
     if (code != QDialog::Accepted) {
         delete selectDialog;
@@ -756,7 +709,6 @@ MainWindow::doJudgeAction()
 
     QApplication::setOverrideCursor(Qt::BlankCursor);
     JudgeDialog* dialog = new JudgeDialog(wordEngine, lexicon, this);
-    Q_CHECK_PTR(dialog);
     dialog->exec();
     delete dialog;
     QApplication::restoreOverrideCursor();
@@ -869,7 +821,6 @@ void
 MainWindow::viewDefinition()
 {
     WordEntryDialog* entryDialog = new WordEntryDialog(this);
-    Q_CHECK_PTR(entryDialog);
     entryDialog->setWindowTitle("Word Definition");
     entryDialog->resize(entryDialog->minimumSizeHint().width() * 2,
                         entryDialog->minimumSizeHint().height());
@@ -882,7 +833,6 @@ MainWindow::viewDefinition()
 
     DefinitionDialog* dialog = new DefinitionDialog(wordEngine, lexicon, word,
                                                     this);
-    Q_CHECK_PTR(dialog);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->show();
 }
@@ -910,7 +860,6 @@ MainWindow::viewVariation(int variation)
     }
 
     WordEntryDialog* entryDialog = new WordEntryDialog(this);
-    Q_CHECK_PTR(entryDialog);
     entryDialog->setWindowTitle(caption);
     entryDialog->resize(entryDialog->minimumSizeHint().width() * 2,
                         entryDialog->minimumSizeHint().height());
@@ -924,7 +873,6 @@ MainWindow::viewVariation(int variation)
     WordVariationType type = static_cast<WordVariationType>(variation);
     WordVariationDialog* dialog = new WordVariationDialog(wordEngine, lexicon,
                                                           word, type, this);
-    Q_CHECK_PTR(dialog);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->show();
 }
@@ -938,7 +886,6 @@ void
 MainWindow::rebuildDatabaseRequested()
 {
     DatabaseRebuildDialog* dialog = new DatabaseRebuildDialog(this);
-    Q_CHECK_PTR(dialog);
 
     int code = dialog->exec();
     if (code == QDialog::Accepted) {
@@ -962,7 +909,6 @@ void
 MainWindow::rescheduleCardboxRequested()
 {
     CardboxRescheduleDialog* dialog = new CardboxRescheduleDialog(this);
-    Q_CHECK_PTR(dialog);
 
     int code = dialog->exec();
     if (code == QDialog::Accepted) {

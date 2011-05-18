@@ -4,7 +4,7 @@
 // A dialog for selecting specialized display styles for words that belong to
 // a particular combination of lexicons.
 //
-// Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -52,33 +52,27 @@ LexiconStyleDialog::LexiconStyleDialog(QWidget* parent, Qt::WFlags f)
     : QDialog(parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
 
     QLabel* instructionLabel = new QLabel;
-    Q_CHECK_PTR(instructionLabel);
     instructionLabel->setWordWrap(true);
     instructionLabel->setText(INSTRUCTION_TEXT);
     mainVlay->addWidget(instructionLabel);
 
     QHBoxLayout* symbolHlay = new QHBoxLayout;
-    Q_CHECK_PTR(symbolHlay);
     symbolHlay->setSpacing(SPACING);
     mainVlay->addLayout(symbolHlay);
     mainVlay->setStretchFactor(symbolHlay, 1);
 
     symbolVlay = new QVBoxLayout;
-    Q_CHECK_PTR(symbolVlay);
     symbolVlay->setSpacing(SPACING);
     symbolHlay->addLayout(symbolVlay);
 
     QHBoxLayout* addButtonHlay = new QHBoxLayout;
-    Q_CHECK_PTR(addButtonHlay);
     mainVlay->addLayout(addButtonHlay);
 
     QPushButton* addButton = new QPushButton;
-    Q_CHECK_PTR(addButton);
     addButton->setText("&Add");
     addButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(addButton, SIGNAL(clicked()), SLOT(addButtonClicked()));
@@ -87,7 +81,6 @@ LexiconStyleDialog::LexiconStyleDialog(QWidget* parent, Qt::WFlags f)
     addButtonHlay->addStretch(1);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
-    Q_CHECK_PTR(buttonBox);
     buttonBox->setOrientation(Qt::Horizontal);
     buttonBox->setStandardButtons(QDialogButtonBox::Ok |
                                   QDialogButtonBox::Cancel);
@@ -96,7 +89,6 @@ LexiconStyleDialog::LexiconStyleDialog(QWidget* parent, Qt::WFlags f)
     mainVlay->addWidget(buttonBox);
 
     deleteMapper = new QSignalMapper(this);
-    Q_CHECK_PTR(deleteMapper);
     connect(deleteMapper, SIGNAL(mapped(int)), SLOT(removeStyleWidget(int)));
 
     setWindowTitle(DIALOG_CAPTION);
@@ -184,7 +176,6 @@ void
 LexiconStyleDialog::insertStyleWidget(int index)
 {
     LexiconStyleWidget* widget = new LexiconStyleWidget;
-    Q_CHECK_PTR(widget);
 
     connect(widget, SIGNAL(deleteClicked()), deleteMapper, SLOT(map()));
     deleteMapper->setMapping(widget, index);

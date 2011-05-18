@@ -140,32 +140,26 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     QHBoxLayout* mainHlay = new QHBoxLayout(this);
     mainHlay->setMargin(MARGIN);
     mainHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainHlay);
 
     QVBoxLayout* mainVlay = new QVBoxLayout;
     mainVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainVlay);
     mainHlay->addLayout(mainVlay);
 
     QHBoxLayout* topHlay = new QHBoxLayout;
     topHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(topHlay);
     mainVlay->addLayout(topHlay);
 
     quizTypeLabel = new QLabel;
-    Q_CHECK_PTR(quizTypeLabel);
     quizTypeLabel->setFont(titleFont);
     quizTypeLabel->setAlignment(Qt::AlignLeft);
     topHlay->addWidget(quizTypeLabel);
 
     timerLabel = new QLabel;
-    Q_CHECK_PTR(timerLabel);
     timerLabel->setFont(titleFont);
     timerLabel->setAlignment(Qt::AlignHCenter);
     topHlay->addWidget(timerLabel);
 
     quizNameLabel = new QLabel;
-    Q_CHECK_PTR(quizNameLabel);
     quizNameLabel->setFont(titleFont);
     quizNameLabel->setAlignment(Qt::AlignRight);
     quizNameLabel->setText("Unnamed Quiz");
@@ -173,42 +167,35 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
 
     QHBoxLayout* quizBoxHlay = new QHBoxLayout;
     quizBoxHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(quizBoxHlay);
     mainVlay->addLayout(quizBoxHlay);
 
     quizBoxHlay->addStretch(1);
 
     questionStack = new QStackedWidget;
-    Q_CHECK_PTR(questionStack);
     questionStack->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     quizBoxHlay->addWidget(questionStack);
 
     // Canvas for tile images - set default background color
     questionCanvas = new QuizCanvas;
-    Q_CHECK_PTR(questionCanvas);
     questionCanvas->setPalette(
         QPalette(MainSettings::getQuizBackgroundColor()));
     questionCanvas->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     questionStack->addWidget(questionCanvas);
 
     questionLabel = new QuizQuestionLabel;
-    Q_CHECK_PTR(questionLabel);
     questionLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     questionStack->addWidget(questionLabel);
 
     quizBoxHlay->addStretch(1);
 
     questionSpecLabel = new QLabel;
-    Q_CHECK_PTR(questionSpecLabel);
     questionSpecLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     questionStack->addWidget(questionSpecLabel);
 
     responseView = new WordTableView(wordEngine);
-    Q_CHECK_PTR(responseView);
     mainVlay->addWidget(responseView);
 
     responseModel = new WordTableModel(wordEngine, this);
-    Q_CHECK_PTR(responseModel);
     connect(responseModel, SIGNAL(wordsChanged()),
             responseView, SLOT(resizeItemsToContents()));
     responseView->setModel(responseModel);
@@ -216,51 +203,40 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     // Correct status
     QHBoxLayout* correctStatusHlay = new QHBoxLayout;
     correctStatusHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(correctStatusHlay);
     mainVlay->addLayout(correctStatusHlay);
 
     responseStatusLabel = new DefinitionLabel;
-    Q_CHECK_PTR(responseStatusLabel);
     correctStatusHlay->addWidget(responseStatusLabel);
 
     correctStatusLabel = new DefinitionLabel;
-    Q_CHECK_PTR(correctStatusLabel);
     correctStatusHlay->addWidget(correctStatusLabel);
 
     // Cardbox status
     QHBoxLayout* cardboxStatusHlay = new QHBoxLayout;
     cardboxStatusHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(cardboxStatusHlay);
     mainVlay->addLayout(cardboxStatusHlay);
 
     cardboxStatusLabel = new DefinitionLabel;
-    Q_CHECK_PTR(cardboxStatusLabel);
     cardboxStatusHlay->addWidget(cardboxStatusLabel);
 
     // Question stats
     QHBoxLayout* questionStatsHlay = new QHBoxLayout;
     questionStatsHlay->setSpacing(SPACING);
     questionStatsHlay->setMargin(0);
-    Q_CHECK_PTR(questionStatsHlay);
     mainVlay->addLayout(questionStatsHlay);
 
     questionStatsLabel = new DefinitionLabel;
-    Q_CHECK_PTR(questionStatsLabel);
     questionStatsHlay->addWidget(questionStatsLabel);
 
     inputWidget = new QWidget;
-    Q_CHECK_PTR(inputWidget);
     mainVlay->addWidget(inputWidget);
 
     QVBoxLayout* inputVlay = new QVBoxLayout(inputWidget);
-    Q_CHECK_PTR(inputVlay);
     inputVlay->setMargin(0);
 
     // Input line
     inputLine = new WordLineEdit;
-    Q_CHECK_PTR(inputLine);
     inputValidator = new WordValidator(inputLine);
-    Q_CHECK_PTR(inputValidator);
     inputLine->setValidator(inputValidator);
     inputLine->setEnabled(false);
     connect(inputLine, SIGNAL(returnPressed()), SLOT(responseEntered()));
@@ -269,26 +245,22 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     // Button layout
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(buttonHlay);
     inputVlay->addLayout(buttonHlay);
 
     buttonHlay->addStretch(1);
 
     QGridLayout* buttonGlay = new QGridLayout;
     buttonGlay->setSpacing(SPACING);
-    Q_CHECK_PTR(buttonGlay);
     buttonHlay->addLayout(buttonGlay);
 
     // Buttons
     nextQuestionButton = new ZPushButton("&Next");
-    Q_CHECK_PTR(nextQuestionButton);
     nextQuestionButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(nextQuestionButton, SIGNAL(clicked()), SLOT(nextQuestionClicked()));
     nextQuestionButton->setEnabled(false);
     buttonGlay->addWidget(nextQuestionButton, 0, 0, Qt::AlignHCenter);
 
     checkResponseButton = new ZPushButton("&Check Answers");
-    Q_CHECK_PTR(checkResponseButton);
     checkResponseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(checkResponseButton, SIGNAL(clicked()),
             SLOT(checkResponseClicked()));
@@ -296,63 +268,52 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     buttonGlay->addWidget(checkResponseButton, 0, 1, Qt::AlignHCenter);
 
     markMissedButton = new ZPushButton(MARK_MISSED_BUTTON);
-    Q_CHECK_PTR(markMissedButton);
     markMissedButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(markMissedButton, SIGNAL(clicked()), SLOT(markMissedClicked()));
     buttonGlay->addWidget(markMissedButton, 0, 2, Qt::AlignHCenter);
 
     newQuizButton = new ZPushButton("New &Quiz...");
-    Q_CHECK_PTR(newQuizButton);
     newQuizButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(newQuizButton, SIGNAL(clicked()), SLOT(newQuizClicked()));
     buttonGlay->addWidget(newQuizButton, 1, 0, Qt::AlignHCenter);
 
     saveQuizButton = new ZPushButton("&Save Quiz");
-    Q_CHECK_PTR(saveQuizButton);
     saveQuizButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(saveQuizButton, SIGNAL(clicked()), SLOT(saveRequested()));
     buttonGlay->addWidget(saveQuizButton, 1, 1, Qt::AlignHCenter);
 
     pauseButton = new ZPushButton(PAUSE_BUTTON);
-    Q_CHECK_PTR(pauseButton);
     pauseButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(pauseButton, SIGNAL(clicked()), SLOT(pauseClicked()));
     pauseButton->setEnabled(false);
     buttonGlay->addWidget(pauseButton, 1, 2, Qt::AlignHCenter);
 
     flashcardCbox = new QCheckBox("Flashcard M&ode");
-    Q_CHECK_PTR(flashcardCbox);
     connect(flashcardCbox, SIGNAL(stateChanged(int)),
             SLOT(flashcardStateChanged(int)));
     buttonGlay->addWidget(flashcardCbox, 2, 0, Qt::AlignHCenter);
 
     lexiconSymbolCbox = new QCheckBox("Require le&xicon symbols");
-    Q_CHECK_PTR(lexiconSymbolCbox);
     connect(lexiconSymbolCbox, SIGNAL(stateChanged(int)),
             SLOT(lexiconSymbolStateChanged(int)));
     buttonGlay->addWidget(lexiconSymbolCbox, 2, 1, Qt::AlignHCenter);
 
     analyzeButton = new ZPushButton("Analy&ze Quiz...");
-    Q_CHECK_PTR(analyzeButton);
     analyzeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(analyzeButton, SIGNAL(clicked()), SLOT(analyzeClicked()));
     buttonGlay->addWidget(analyzeButton, 2, 2, Qt::AlignHCenter);
 
     letterOrderWidget = new QWidget;
-    Q_CHECK_PTR(letterOrderWidget);
     buttonGlay->addWidget(letterOrderWidget, 3, 0, 1, 2, Qt::AlignCenter);
 
     QHBoxLayout* letterOrderHlay = new QHBoxLayout(letterOrderWidget);
-    Q_CHECK_PTR(letterOrderHlay);
     letterOrderHlay->setMargin(0);
     letterOrderHlay->setSpacing(SPACING);
 
     letterOrderLabel = new QLabel("Letter order:");
-    Q_CHECK_PTR(letterOrderLabel);
     letterOrderHlay->addWidget(letterOrderLabel);
 
     letterOrderCombo = new QComboBox;
-    Q_CHECK_PTR(letterOrderCombo);
     letterOrderCombo->addItem(Defs::QUIZ_LETTERS_ALPHA);
     letterOrderCombo->addItem(Defs::QUIZ_LETTERS_RANDOM);
     letterOrderCombo->addItem(Defs::QUIZ_LETTERS_VOWELS_FIRST);
@@ -362,33 +323,27 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     letterOrderHlay->addWidget(letterOrderCombo);
 
     ZPushButton* letterOrderButton = new ZPushButton("&Reorder");
-    Q_CHECK_PTR(letterOrderButton);
     letterOrderButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(letterOrderButton, SIGNAL(clicked()), SLOT(letterOrderClicked()));
     letterOrderHlay->addWidget(letterOrderButton);
 
     cardboxMoveWidget = new QWidget;
-    Q_CHECK_PTR(cardboxMoveWidget);
     buttonGlay->addWidget(cardboxMoveWidget, 3, 2, Qt::AlignCenter);
 
     QHBoxLayout* cardboxMoveHlay = new QHBoxLayout(cardboxMoveWidget);
-    Q_CHECK_PTR(cardboxMoveHlay);
     cardboxMoveHlay->setMargin(0);
     cardboxMoveHlay->setSpacing(SPACING);
 
     QLabel* cardboxMoveLabel = new QLabel;
-    Q_CHECK_PTR(cardboxMoveLabel);
     cardboxMoveLabel->setText("Cardbox:");
     cardboxMoveHlay->addWidget(cardboxMoveLabel);
 
     cardboxMoveSbox = new QSpinBox;
-    Q_CHECK_PTR(cardboxMoveSbox);
     cardboxMoveSbox->setMinimum(1);
     cardboxMoveSbox->setMaximum(15);
     cardboxMoveHlay->addWidget(cardboxMoveSbox);
 
     ZPushButton* cardboxMoveButton = new ZPushButton("Mo&ve");
-    Q_CHECK_PTR(cardboxMoveButton);
     cardboxMoveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cardboxMoveButton, SIGNAL(clicked()), SLOT(cardboxMoveClicked()));
     cardboxMoveHlay->addWidget(cardboxMoveButton);
@@ -396,7 +351,6 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     buttonHlay->addStretch(1);
 
     displayAnswerTimer = new QTimer(this);
-    Q_CHECK_PTR(displayAnswerTimer);
     connect(displayAnswerTimer, SIGNAL(timeout()),
             SLOT(displayNextCorrectAnswer()));
 }
@@ -816,7 +770,6 @@ QuizForm::newQuizClicked()
         return;
 
     NewQuizDialog* dialog = new NewQuizDialog(this);
-    Q_CHECK_PTR(dialog);
     QuizSpec spec = quizEngine->getQuizSpec();
     spec.setProgress(QuizProgress());
     spec.setRandomAlgorithm(Rand::MarsagliaMwc);

@@ -3,7 +3,7 @@
 //
 // A dialog for specifying lexicon databases to be rebuilt.
 //
-// Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -46,12 +46,10 @@ DatabaseRebuildDialog::DatabaseRebuildDialog(QWidget* parent, Qt::WFlags f)
     : QDialog(parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
 
     QLabel* instructionLabel = new QLabel;
-    Q_CHECK_PTR(instructionLabel);
     QString message = "Please choose the lexicon database to rebuild.\n"
         "This may take several minutes.";
     message = Auxil::dialogWordWrap(message);
@@ -59,7 +57,6 @@ DatabaseRebuildDialog::DatabaseRebuildDialog(QWidget* parent, Qt::WFlags f)
     mainVlay->addWidget(instructionLabel);
 
     rebuildAllButton = new QRadioButton;
-    Q_CHECK_PTR(rebuildAllButton);
     rebuildAllButton->setText("Rebuild databases for all lexicons");
     rebuildAllButton->setChecked(true);
     connect(rebuildAllButton, SIGNAL(toggled(bool)),
@@ -67,17 +64,14 @@ DatabaseRebuildDialog::DatabaseRebuildDialog(QWidget* parent, Qt::WFlags f)
     mainVlay->addWidget(rebuildAllButton);
 
     QRadioButton* rebuildSingleButton = new QRadioButton;
-    Q_CHECK_PTR(rebuildSingleButton);
     rebuildSingleButton->setText("Rebuild database for a single lexicon");
     mainVlay->addWidget(rebuildSingleButton);
 
     lexiconWidget = new LexiconSelectWidget;
-    Q_CHECK_PTR(lexiconWidget);
     lexiconWidget->setEnabled(false);
     mainVlay->addWidget(lexiconWidget);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
-    Q_CHECK_PTR(buttonBox);
     buttonBox->setOrientation(Qt::Horizontal);
     buttonBox->setStandardButtons(QDialogButtonBox::Ok |
                                   QDialogButtonBox::Cancel);

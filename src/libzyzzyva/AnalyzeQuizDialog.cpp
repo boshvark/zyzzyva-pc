@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -57,72 +57,58 @@ AnalyzeQuizDialog::AnalyzeQuizDialog(QuizEngine* qe, WordEngine* we, QWidget*
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainVlay);
 
     questionLabel = new QLabel;
-    Q_CHECK_PTR(questionLabel);
     questionLabel->setAlignment(Qt::AlignHCenter);
     mainVlay->addWidget(questionLabel);
 
     QHBoxLayout* recallHlay = new QHBoxLayout;
-    Q_CHECK_PTR(recallHlay);
     recallHlay->setSpacing(SPACING);
     mainVlay->addLayout(recallHlay);
 
     missedLabel = new QLabel;
-    Q_CHECK_PTR(missedLabel);
     recallHlay->addWidget(missedLabel);
 
     recallHlay->addStretch(1);
 
     recallLabel = new QLabel;
-    Q_CHECK_PTR(recallLabel);
     recallHlay->addWidget(recallLabel);
 
     missedView = new WordTableView(wordEngine);
-    Q_CHECK_PTR(missedView);
     mainVlay->addWidget(missedView);
 
     missedModel = new WordTableModel(wordEngine, this);
-    Q_CHECK_PTR(missedModel);
     connect(missedModel, SIGNAL(wordsChanged()),
             missedView, SLOT(resizeItemsToContents()));
     missedView->setModel(missedModel);
 
     QHBoxLayout* precisionHlay = new QHBoxLayout;
-    Q_CHECK_PTR(precisionHlay);
     precisionHlay->setSpacing(SPACING);
     mainVlay->addLayout(precisionHlay);
 
     incorrectLabel = new QLabel;
-    Q_CHECK_PTR(incorrectLabel);
     precisionHlay->addWidget(incorrectLabel);
 
     precisionHlay->addStretch(1);
 
     precisionLabel = new QLabel;
-    Q_CHECK_PTR(precisionLabel);
     precisionHlay->addWidget(precisionLabel);
 
     incorrectView = new WordTableView(wordEngine);
-    Q_CHECK_PTR(incorrectView);
     mainVlay->addWidget(incorrectView);
 
     incorrectModel = new WordTableModel(wordEngine, this);
-    Q_CHECK_PTR(incorrectModel);
     connect(incorrectModel, SIGNAL(wordsChanged()),
             incorrectView, SLOT(resizeItemsToContents()));
     incorrectView->setModel(incorrectModel);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(buttonHlay);
     mainVlay->addLayout(buttonHlay);
 
     buttonHlay->addStretch(1);
 
     closeButton = new ZPushButton("&Close", this);
-    Q_CHECK_PTR(closeButton);
     closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setAutoDefault(true);
     connect(closeButton, SIGNAL(clicked()), SLOT(accept()));

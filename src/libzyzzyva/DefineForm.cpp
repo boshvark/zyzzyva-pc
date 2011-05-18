@@ -54,17 +54,14 @@ DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainVlay);
 
     QHBoxLayout* lexiconHlay = new QHBoxLayout;
-    Q_CHECK_PTR(lexiconHlay);
     lexiconHlay->setSpacing(SPACING);
     mainVlay->addLayout(lexiconHlay);
 
     lexiconHlay->addStretch(1);
 
     lexiconWidget = new LexiconSelectWidget;
-    Q_CHECK_PTR(lexiconWidget);
     connect(lexiconWidget->getComboBox(), SIGNAL(activated(const QString&)),
         SLOT(lexiconActivated(const QString&)));
     lexiconHlay->addWidget(lexiconWidget);
@@ -73,15 +70,12 @@ DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     QHBoxLayout* lookupHlay = new QHBoxLayout;
     lookupHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(lookupHlay);
     mainVlay->addLayout(lookupHlay);
 
     QLabel* label = new QLabel("Word : ");
-    Q_CHECK_PTR(label);
     lookupHlay->addWidget(label);
 
     wordLine = new WordLineEdit;
-    Q_CHECK_PTR(wordLine);
     wordLine->setValidator(new WordValidator(wordLine));
     connect(wordLine, SIGNAL(textChanged(const QString&)),
             SLOT(wordChanged(const QString&)));
@@ -90,19 +84,16 @@ DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(buttonHlay);
     mainVlay->addLayout(buttonHlay);
 
     buttonHlay->addStretch(1);
 
     defineButton = new ZPushButton("&Define");
-    Q_CHECK_PTR(defineButton);
     defineButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(defineButton, SIGNAL(clicked()), SLOT(displayDefinition()));
     buttonHlay->addWidget(defineButton);
 
     infoButton = new ZPushButton("Get All &Info");
-    Q_CHECK_PTR(infoButton);
     infoButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(infoButton, SIGNAL(clicked()), SLOT(displayAllInfo()));
     buttonHlay->addWidget(infoButton);
@@ -110,7 +101,6 @@ DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     buttonHlay->addStretch(1);
 
     resultBox = new DefinitionBox;
-    Q_CHECK_PTR(resultBox);
     mainVlay->addWidget(resultBox, 1);
 
     mainVlay->addStretch(0);

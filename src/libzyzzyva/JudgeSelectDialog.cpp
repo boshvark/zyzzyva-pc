@@ -3,7 +3,7 @@
 //
 // A dialog for selecting a word judge lexicon.
 //
-// Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -46,12 +46,10 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     : QDialog(parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
 
     QLabel* instructionLabel = new QLabel;
-    Q_CHECK_PTR(instructionLabel);
     QString message = "You are now entering the full screen Word Judge mode.\n"
                       "To exit full screen mode, press ESC while holding the "
                       "Shift key.\n\n"
@@ -61,11 +59,9 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     mainVlay->addWidget(instructionLabel);
 
     lexiconWidget = new LexiconSelectWidget;
-    Q_CHECK_PTR(lexiconWidget);
     mainVlay->addWidget(lexiconWidget);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
-    Q_CHECK_PTR(buttonBox);
     buttonBox->setOrientation(Qt::Horizontal);
     buttonBox->setStandardButtons(QDialogButtonBox::Ok |
                                   QDialogButtonBox::Cancel);

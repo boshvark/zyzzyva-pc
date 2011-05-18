@@ -3,7 +3,7 @@
 //
 // A dialog for adding words to the cardbox system.
 //
-// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -47,19 +47,15 @@ CardboxAddDialog::CardboxAddDialog(QWidget* parent, Qt::WFlags f)
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainVlay);
 
     QHBoxLayout* quizTypeHlay = new QHBoxLayout;
-    Q_CHECK_PTR(quizTypeHlay);
     mainVlay->addLayout(quizTypeHlay);
 
     QLabel* quizTypeLabel = new QLabel(this);
-    Q_CHECK_PTR(quizTypeLabel);
     quizTypeLabel->setText("Add words for quiz type:");
     quizTypeHlay->addWidget(quizTypeLabel);
 
     quizTypeCombo = new QComboBox(this);
-    Q_CHECK_PTR(quizTypeCombo);
     quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizAnagrams));
     quizTypeCombo->addItem(
         Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
@@ -67,48 +63,40 @@ CardboxAddDialog::CardboxAddDialog(QWidget* parent, Qt::WFlags f)
     quizTypeHlay->addWidget(quizTypeCombo);
 
     estimateButton = new QRadioButton;
-    Q_CHECK_PTR(estimateButton);
     estimateButton->setText("Estimate cardbox based on past performance");
     estimateButton->setChecked(true);
     mainVlay->addWidget(estimateButton);
 
     QHBoxLayout* specifyHlay = new QHBoxLayout;
-    Q_CHECK_PTR(specifyHlay);
     specifyHlay->setMargin(0);
     specifyHlay->setSpacing(SPACING);
     mainVlay->addLayout(specifyHlay);
 
     specifyButton = new QRadioButton;
-    Q_CHECK_PTR(specifyButton);
     specifyButton->setText("Specify cardbox:");
     connect(specifyButton, SIGNAL(toggled(bool)), SLOT(specifyToggled(bool)));
     specifyHlay->addWidget(specifyButton);
 
     specifySbox = new QSpinBox;
-    Q_CHECK_PTR(specifySbox);
     specifySbox->setMinimum(0);
     specifySbox->setMaximum(15);
     specifySbox->setEnabled(false);
     specifyHlay->addWidget(specifySbox);
 
     questionList = new QListWidget(this);
-    Q_CHECK_PTR(questionList);
     mainVlay->addWidget(questionList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    Q_CHECK_PTR(buttonHlay);
     buttonHlay->setSpacing(SPACING);
     mainVlay->addLayout(buttonHlay);
 
     ZPushButton* okButton = new ZPushButton("&OK");
-    Q_CHECK_PTR(okButton);
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault(true);
     connect(okButton, SIGNAL(clicked()), SLOT(accept()));
     buttonHlay->addWidget(okButton);
 
     ZPushButton* cancelButton = new ZPushButton("Cancel");
-    Q_CHECK_PTR(cancelButton);
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     buttonHlay->addWidget(cancelButton);

@@ -109,7 +109,6 @@ WordTableView::viewDefinition()
     QString lexicon = wordModel->getLexicon();
     DefinitionDialog* dialog = new DefinitionDialog(wordEngine, lexicon, word,
                                                     this);
-    Q_CHECK_PTR(dialog);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->show();
 }
@@ -133,7 +132,6 @@ WordTableView::viewVariation(int variation)
     WordVariationDialog* dialog = new WordVariationDialog(wordEngine, lexicon,
                                                           word, type, this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
-    Q_CHECK_PTR(dialog);
     dialog->show();
 }
 
@@ -156,7 +154,6 @@ WordTableView::exportRequested()
     }
 
     WordListSaveDialog* dialog = new WordListSaveDialog(this);
-    Q_CHECK_PTR(dialog);
     int code = dialog->exec();
     if (code != QDialog::Accepted) {
         delete dialog;
@@ -289,7 +286,6 @@ WordTableView::addToCardboxRequested()
     }
 
     CardboxAddDialog* dialog = new CardboxAddDialog(this);
-    Q_CHECK_PTR(dialog);
 
     QStringList words;
     QModelIndex index = model()->index(0, WordTableModel::WORD_COLUMN);
@@ -346,7 +342,6 @@ WordTableView::removeFromCardboxRequested()
     }
 
     CardboxRemoveDialog* dialog = new CardboxRemoveDialog(this);
-    Q_CHECK_PTR(dialog);
 
     QStringList words;
     QModelIndex index = model()->index(0, WordTableModel::WORD_COLUMN);
@@ -784,32 +779,26 @@ WordTableView::contextMenuEvent(QContextMenuEvent* e)
                         (index.row() >= 0) && (index.column() >= 0));
 
     QMenu* popupMenu = new QMenu;
-    Q_CHECK_PTR(popupMenu);
 
     if (wordOptions) {
         QMenu* wordMenu = new QMenu("Word");
-        Q_CHECK_PTR(wordMenu);
         popupMenu->addMenu(wordMenu);
 
         QSignalMapper* wordMapper = new QSignalMapper(wordMenu);
-        Q_CHECK_PTR(wordMapper);
 
         // Word Definition
         QAction* definitionAction = new QAction("Definition", wordMenu);
-        Q_CHECK_PTR(definitionAction);
         connect(definitionAction, SIGNAL(triggered()), SLOT(viewDefinition()));
         wordMenu->addAction(definitionAction);
 
         // Word Anagrams
         QAction* anagramsAction = new QAction("Anagrams", wordMenu);
-        Q_CHECK_PTR(anagramsAction);
         connect(anagramsAction, SIGNAL(triggered()), wordMapper, SLOT(map()));
         wordMapper->setMapping(anagramsAction, VariationAnagrams);
         wordMenu->addAction(anagramsAction);
 
         // Word Subanagrams
         QAction* subanagramsAction = new QAction("Subanagrams", wordMenu);
-        Q_CHECK_PTR(subanagramsAction);
         connect(subanagramsAction, SIGNAL(triggered()),
                 wordMapper, SLOT(map()));
         wordMapper->setMapping(subanagramsAction, VariationSubanagrams);
@@ -817,21 +806,18 @@ WordTableView::contextMenuEvent(QContextMenuEvent* e)
 
         // Word Hooks
         QAction* hooksAction = new QAction("Hooks", wordMenu);
-        Q_CHECK_PTR(hooksAction);
         connect(hooksAction, SIGNAL(triggered()), wordMapper, SLOT(map()));
         wordMapper->setMapping(hooksAction, VariationHooks);
         wordMenu->addAction(hooksAction);
 
         // Word Extensions
         QAction* extensionsAction = new QAction("Extensions", wordMenu);
-        Q_CHECK_PTR(extensionsAction);
         connect(extensionsAction, SIGNAL(triggered()), wordMapper, SLOT(map()));
         wordMapper->setMapping(extensionsAction, VariationExtensions);
         wordMenu->addAction(extensionsAction);
 
         // Word Anagram Hooks
         QAction* anagramHooksAction = new QAction("Anagram Hooks", wordMenu);
-        Q_CHECK_PTR(anagramHooksAction);
         connect(anagramHooksAction, SIGNAL(triggered()),
                 wordMapper, SLOT(map()));
         wordMapper->setMapping(anagramHooksAction, VariationAnagramHooks);
@@ -839,7 +825,6 @@ WordTableView::contextMenuEvent(QContextMenuEvent* e)
 
         // Word Blank Anagrams
         QAction* blankAnagramsAction = new QAction("Blank Anagrams", wordMenu);
-        Q_CHECK_PTR(blankAnagramsAction);
         connect(blankAnagramsAction, SIGNAL(triggered()),
                 wordMapper, SLOT(map()));
         wordMapper->setMapping(blankAnagramsAction, VariationBlankAnagrams);
@@ -847,7 +832,6 @@ WordTableView::contextMenuEvent(QContextMenuEvent* e)
 
         // Word Blank Matches
         QAction* blankMatchesAction = new QAction("Blank Matches", wordMenu);
-        Q_CHECK_PTR(blankMatchesAction);
         connect(blankMatchesAction, SIGNAL(triggered()),
                 wordMapper, SLOT(map()));
         wordMapper->setMapping(blankMatchesAction, VariationBlankMatches);
@@ -855,7 +839,6 @@ WordTableView::contextMenuEvent(QContextMenuEvent* e)
 
         // Word Transpositions
         QAction* transpositionsAction = new QAction("Transpositions", wordMenu);
-        Q_CHECK_PTR(transpositionsAction);
         connect(transpositionsAction, SIGNAL(triggered()),
                 wordMapper, SLOT(map()));
         wordMapper->setMapping(transpositionsAction, VariationTranspositions);
@@ -866,25 +849,21 @@ WordTableView::contextMenuEvent(QContextMenuEvent* e)
     }
 
     QAction* exportAction = new QAction("Save list...", popupMenu);
-    Q_CHECK_PTR(exportAction);
     connect(exportAction, SIGNAL(triggered()), SLOT(exportRequested()));
     popupMenu->addAction(exportAction);
 
     QAction* createQuizAction = new QAction("Quiz from list...", popupMenu);
-    Q_CHECK_PTR(createQuizAction);
     connect(createQuizAction, SIGNAL(triggered()), SLOT(createQuizRequested()));
     popupMenu->addAction(createQuizAction);
 
     QAction* addToCardboxAction =
         new QAction("Add list to Cardbox...", popupMenu);
-    Q_CHECK_PTR(addToCardboxAction);
     connect(addToCardboxAction, SIGNAL(triggered()),
              SLOT(addToCardboxRequested()));
     popupMenu->addAction(addToCardboxAction);
 
     QAction* removeFromCardboxAction =
         new QAction("Remove list from Cardbox...", popupMenu);
-    Q_CHECK_PTR(removeFromCardboxAction);
     connect(removeFromCardboxAction, SIGNAL(triggered()),
             SLOT(removeFromCardboxRequested()));
     popupMenu->addAction(removeFromCardboxAction);

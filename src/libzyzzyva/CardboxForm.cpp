@@ -50,28 +50,23 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     //cardboxCountModel(0), cardboxDaysModel(0), cardboxContentsModel(0)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
 
     lexiconWidget = new LexiconSelectWidget;
-    Q_CHECK_PTR(lexiconWidget);
     connect(lexiconWidget->getComboBox(), SIGNAL(activated(const QString&)),
         SLOT(lexiconActivated(const QString&)));
     mainVlay->addWidget(lexiconWidget);
 
     QHBoxLayout* quizTypeHlay = new QHBoxLayout;
-    Q_CHECK_PTR(quizTypeHlay);
     quizTypeHlay->setSpacing(SPACING);
     mainVlay->addLayout(quizTypeHlay);
 
     QLabel* quizTypeLabel = new QLabel;
-    Q_CHECK_PTR(quizTypeLabel);
     quizTypeLabel->setText("Quiz Type:");
     quizTypeHlay->addWidget(quizTypeLabel);
 
     quizTypeCombo = new QComboBox;
-    Q_CHECK_PTR(quizTypeCombo);
     quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizAnagrams));
     quizTypeCombo->addItem(
         Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
@@ -79,22 +74,18 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     quizTypeHlay->addWidget(quizTypeCombo);
 
     QFrame* topSepFrame = new QFrame;
-    Q_CHECK_PTR(topSepFrame);
     topSepFrame->setFrameStyle(QFrame::HLine | QFrame::Sunken);
     mainVlay->addWidget(topSepFrame);
 
     QGridLayout* cardboxGlay = new QGridLayout;
-    Q_CHECK_PTR(cardboxGlay);
     cardboxGlay->setSpacing(SPACING);
     mainVlay->addLayout(cardboxGlay);
 
     QLabel* cardboxCountLabel = new QLabel;
-    Q_CHECK_PTR(cardboxCountLabel);
     cardboxCountLabel->setText("Questions in each cardbox:");
     cardboxGlay->addWidget(cardboxCountLabel, 0, 0);
 
     cardboxCountTree = new QTreeWidget;
-    Q_CHECK_PTR(cardboxCountTree);
     QStringList cardboxCountTreeHeaders;
     cardboxCountTreeHeaders.append("Cardbox");
     cardboxCountTreeHeaders.append("Count");
@@ -102,12 +93,10 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     cardboxGlay->addWidget(cardboxCountTree, 1, 0);
 
     QLabel* cardboxDaysLabel = new QLabel;
-    Q_CHECK_PTR(cardboxDaysLabel);
     cardboxDaysLabel->setText("Questions due in days from today:");
     cardboxGlay->addWidget(cardboxDaysLabel, 0, 1);
 
     cardboxDaysTree = new QTreeWidget;
-    Q_CHECK_PTR(cardboxDaysTree);
     QStringList cardboxDaysTreeHeaders;
     cardboxDaysTreeHeaders.append("Days");
     cardboxDaysTreeHeaders.append("Count");
@@ -115,34 +104,28 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     cardboxGlay->addWidget(cardboxDaysTree, 1, 1);
 
     //cardboxContentsView = new QTreeView;
-    //Q_CHECK_PTR(cardboxContentsView);
     //mainVlay->addWidget(cardboxContentsView);
 
     ZPushButton* refreshButton = new ZPushButton;
-    Q_CHECK_PTR(refreshButton);
     refreshButton->setText("&Refresh");
     refreshButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(refreshButton, SIGNAL(clicked()), SLOT(refreshClicked()));
     mainVlay->addWidget(refreshButton);
 
     QFrame* bottomSepFrame = new QFrame;
-    Q_CHECK_PTR(bottomSepFrame);
     bottomSepFrame->setFrameStyle(QFrame::HLine | QFrame::Sunken);
     mainVlay->addWidget(bottomSepFrame);
 
     QHBoxLayout* questionHlay = new QHBoxLayout;
-    Q_CHECK_PTR(questionHlay);
     questionHlay->setMargin(0);
     questionHlay->setSpacing(SPACING);
     mainVlay->addLayout(questionHlay);
 
     QLabel* questionLabel = new QLabel;
-    Q_CHECK_PTR(questionLabel);
     questionLabel->setText("Get data for question:");
     questionHlay->addWidget(questionLabel);
 
     questionLine = new QLineEdit;
-    Q_CHECK_PTR(questionLine);
     WordValidator* validator = new WordValidator(questionLine);
     validator->setOptions(WordValidator::AllowQuestionMarks);
     questionLine->setValidator(validator);
@@ -150,14 +133,12 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     questionHlay->addWidget(questionLine);
 
     QPushButton* questionButton = new QPushButton;
-    Q_CHECK_PTR(questionButton);
     questionButton->setText("Get Info");
     questionButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(questionButton, SIGNAL(clicked()), SLOT(questionDataClicked()));
     questionHlay->addWidget(questionButton);
 
     questionDataLabel = new QLabel;
-    Q_CHECK_PTR(questionDataLabel);
     questionDataLabel->setAlignment(Qt::AlignTop);
     mainVlay->addWidget(questionDataLabel, 1);
 
@@ -281,7 +262,6 @@ CardboxForm::refreshClicked()
     // doesn't let go, thus preventing quiz responses from being counted
     //if (!cardboxContentsModel) {
     //    cardboxContentsModel = new QSqlTableModel(this, *sqlDb);
-    //    Q_CHECK_PTR(cardboxContentsModel);
     //    cardboxContentsView->setModel(cardboxContentsModel);
     //    cardboxContentsView->setSortingEnabled(true);
     //    cardboxContentsModel->setTable("questions");
@@ -295,7 +275,6 @@ CardboxForm::refreshClicked()
     // Attempt using QSqlQueryModel:
     //if (!cardboxContentsModel) {
     //    cardboxContentsModel = new QSqlQueryModel;
-    //    Q_CHECK_PTR(cardboxContentsModel);
     //    cardboxContentsView->setModel(cardboxContentsModel);
     //}
     //queryStr =

@@ -85,19 +85,15 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     : QDialog(parent, f), engine(e), lexicon(lex), count(0), clearResultsHold(0)
 {
     countTimer = new QTimer(this);
-    Q_CHECK_PTR(countTimer);
     connect(countTimer, SIGNAL(timeout()), SLOT(displayInput()));
 
     inputTimer = new QTimer(this);
-    Q_CHECK_PTR(inputTimer);
     connect(inputTimer, SIGNAL(timeout()), SLOT(displayCount()));
 
     resultTimer = new QTimer(this);
-    Q_CHECK_PTR(resultTimer);
     connect(resultTimer, SIGNAL(timeout()), SLOT(clearResults()));
 
     exitTimer = new QTimer(this);
-    Q_CHECK_PTR(exitTimer);
     connect(exitTimer, SIGNAL(timeout()), SLOT(clearExit()));
 
     QFont formFont = qApp->font();
@@ -113,35 +109,29 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(0);
     mainVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainVlay);
 
     widgetStack = new QStackedWidget;
-    Q_CHECK_PTR(widgetStack);
     connect(widgetStack, SIGNAL(currentChanged(int)),
             SLOT(currentChanged(int)));
     mainVlay->addWidget(widgetStack);
 
     // Count screen
     countWidget = new QWidget;
-    Q_CHECK_PTR(countWidget);
     widgetStack->addWidget(countWidget);
 
     QVBoxLayout* countVlay = new QVBoxLayout(countWidget);
-    Q_CHECK_PTR(countVlay);
     countVlay->setMargin(COUNT_MARGIN);
     countVlay->setSpacing(20);
 
     countVlay->addStretch(1);
 
     countInstLabel = new QLabel(COUNT_INSTRUCTION_MESSAGE);
-    Q_CHECK_PTR(countInstLabel);
     countInstLabel->setFont(instructionFont);
     countInstLabel->setAlignment(Qt::AlignHCenter);
     countInstLabel->setWordWrap(true);
     countVlay->addWidget(countInstLabel);
 
     countLabel = new QLabel;
-    Q_CHECK_PTR(countLabel);
     countLabel->setFont(countFont);
     countLabel->setAlignment(Qt::AlignHCenter);
     countVlay->addWidget(countLabel);
@@ -149,28 +139,23 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     countVlay->addStretch(1);
 
     QWidget* countTitleWidget = createTitleWidget();
-    Q_CHECK_PTR(countTitleWidget);
     countVlay->addWidget(countTitleWidget);
 
     // Input screen
     inputWidget = new QWidget;
-    Q_CHECK_PTR(inputWidget);
     widgetStack->addWidget(inputWidget);
 
     QVBoxLayout* inputVlay = new QVBoxLayout(inputWidget);
-    Q_CHECK_PTR(inputVlay);
     inputVlay->setMargin(INPUT_MARGIN);
     inputVlay->setSpacing(20);
 
     inputInstLabel = new QLabel;
-    Q_CHECK_PTR(inputInstLabel);
     inputInstLabel->setFont(instructionFont);
     inputInstLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     inputInstLabel->setWordWrap(true);
     inputVlay->addWidget(inputInstLabel);
 
     inputArea = new WordTextEdit;
-    Q_CHECK_PTR(inputArea);
     inputArea->setContextMenuPolicy(Qt::NoContextMenu);
     inputArea->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     inputArea->setFont(formFont);
@@ -179,7 +164,6 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
 
     // Results screen
     resultWidget = new QFrame;
-    Q_CHECK_PTR(resultWidget);
     resultWidget->setSizePolicy(QSizePolicy::Expanding,
                                 QSizePolicy::Expanding);
     resultWidget->setFrameStyle(QFrame::Box | QFrame::Plain);
@@ -189,17 +173,14 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     QVBoxLayout* resultVlay = new QVBoxLayout(resultWidget);
     resultVlay->setMargin(RESULT_MARGIN);
     resultVlay->setSpacing(RESULT_SPACING);
-    Q_CHECK_PTR(resultVlay);
 
     resultVlay->addStretch(1);
 
     resultPixmapLabel = new QLabel;
-    Q_CHECK_PTR(resultPixmapLabel);
     resultPixmapLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     resultVlay->addWidget(resultPixmapLabel);
 
     resultLabel = new QLabel;
-    Q_CHECK_PTR(resultLabel);
     resultLabel->setFont(formFont);
     resultLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     resultLabel->setWordWrap(true);
@@ -209,14 +190,12 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     lexiconFont.setPixelSize(LEXICON_FONT_PIXEL_SIZE);
 
     resultLexiconLabel = new QLabel;
-    Q_CHECK_PTR(resultLexiconLabel);
     resultLexiconLabel->setFont(lexiconFont);
     resultLexiconLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     resultLexiconLabel->setWordWrap(true);
     resultVlay->addWidget(resultLexiconLabel);
 
     QWidget* inputTitleWidget = createTitleWidget();
-    Q_CHECK_PTR(inputTitleWidget);
     inputVlay->addWidget(inputTitleWidget);
 
     clearResults();
@@ -633,14 +612,11 @@ JudgeDialog::createTitleWidget()
     titleFont.setPixelSize(TITLE_FONT_PIXEL_SIZE);
 
     QWidget* widget = new QWidget;
-    Q_CHECK_PTR(widget);
 
     QHBoxLayout* titleHlay = new QHBoxLayout(widget);
-    Q_CHECK_PTR(titleHlay);
 
     QLabel* programLabel = new QLabel("Zyzzyva Word Judge\n"
                                       "Version " + ZYZZYVA_VERSION);
-    Q_CHECK_PTR(programLabel);
     programLabel->setFont(titleFont);
     programLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     titleHlay->addWidget(programLabel);
@@ -648,7 +624,6 @@ JudgeDialog::createTitleWidget()
 
     QPixmap pixmap (":/zyzzyva-128x128");
     QLabel* pixmapLabel = new QLabel;
-    Q_CHECK_PTR(pixmapLabel);
     pixmapLabel->setPixmap(pixmap);
     pixmapLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     titleHlay->addWidget(pixmapLabel);
@@ -658,7 +633,6 @@ JudgeDialog::createTitleWidget()
     if (date.isValid())
         dateStr = date.toString("MMMM d, yyyy");
     QLabel* lexiconLabel = new QLabel("Lexicon: " + lexicon + "\n" + dateStr);
-    Q_CHECK_PTR(lexiconLabel);
     lexiconLabel->setFont(titleFont);
     lexiconLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
     titleHlay->addWidget(lexiconLabel);

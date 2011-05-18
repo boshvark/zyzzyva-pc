@@ -50,11 +50,9 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
     : QWidget(parent, f)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout(this);
-    Q_CHECK_PTR(mainHlay);
     mainHlay->setSpacing(SPACING);
 
     QLabel* lexiconLabel = new QLabel;
-    Q_CHECK_PTR(lexiconLabel);
     lexiconLabel->setText("Lexicon:");
     mainHlay->addWidget(lexiconLabel);
 
@@ -83,38 +81,32 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
         defaultIndex = validLexicons.indexOf(LEXICON_OWL2);
 
     lexiconCombo = new QComboBox;
-    Q_CHECK_PTR(lexiconCombo);
     lexiconCombo->addItems(validLexicons);
     lexiconCombo->setCurrentIndex(defaultIndex);
     mainHlay->addWidget(lexiconCombo);
 
     conjunctionCombo = new QComboBox;
-    Q_CHECK_PTR(conjunctionCombo);
     conjunctionCombo->addItem(CONJ_AND);
     conjunctionCombo->addItem(CONJ_AND_NOT);
     conjunctionCombo->setCurrentIndex(conjunctionCombo->findText(CONJ_AND_NOT));
     mainHlay->addWidget(conjunctionCombo);
 
     compareLexiconCombo = new QComboBox;
-    Q_CHECK_PTR(compareLexiconCombo);
     compareLexiconCombo->addItems(validLexicons);
     compareLexiconCombo->setCurrentIndex(defaultIndex);
     mainHlay->addWidget(compareLexiconCombo);
 
     QLabel* symbolLabel = new QLabel;
-    Q_CHECK_PTR(symbolLabel);
     symbolLabel->setText("symbol:");
     mainHlay->addWidget(symbolLabel);
 
     symbolLine = new QLineEdit;
-    Q_CHECK_PTR(symbolLine);
     symbolLine->setMaxLength(MAX_SYMBOL_LENGTH);
     symbolLine->setValidator(
         new QRegExpValidator(QRegExp("^[^\\w\\s]+$"), this));
     mainHlay->addWidget(symbolLine);
 
     QPushButton* deleteButton = new QPushButton;
-    Q_CHECK_PTR(deleteButton);
     deleteButton->setIcon(QIcon(":/minus-icon"));
     connect(deleteButton, SIGNAL(clicked()), SIGNAL(deleteClicked()));
     mainHlay->addWidget(deleteButton);

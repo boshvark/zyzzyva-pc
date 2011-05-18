@@ -3,7 +3,7 @@
 //
 // A class for managing an ISC connection in the background.
 //
-// Copyright 2006-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -64,7 +64,6 @@ IscConnectionThread::connectToServer(const QString& creds,
 {
     credentials = creds;
     socket = new QTcpSocket(this);
-    Q_CHECK_PTR(socket);
     connect(socket, SIGNAL(error(QAbstractSocket::SocketError)),
             SIGNAL(socketError(QAbstractSocket::SocketError)));
     connect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),

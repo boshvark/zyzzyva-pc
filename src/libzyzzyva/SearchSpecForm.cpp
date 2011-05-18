@@ -3,7 +3,7 @@
 //
 // A form for specifying a search specification.
 //
-// Copyright 2005-2007, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -52,59 +52,48 @@ SearchSpecForm::SearchSpecForm(QWidget* parent, Qt::WFlags f)
     : QFrame(parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(0);
     mainVlay->setSpacing(SPACING);
 
     //QButtonGroup* radioGroup = new QButtonGroup(this);
-    //Q_CHECK_PTR(radioGroup);
     //radioGroup->hide();
 
     //QFrame* radioFrame = new QFrame;
-    //Q_CHECK_PTR(radioFrame);
     //mainVlay->addWidget(radioFrame);
 
     //QHBoxLayout* radioHlay = new QHBoxLayout(radioFrame, 0, SPACING);
-    //Q_CHECK_PTR(radioHlay);
 
     //conjunctionRadio = new QRadioButton("Match all of the following");
-    //Q_CHECK_PTR(conjunctionRadio);
     //conjunctionRadio->setChecked(true);
     //radioGroup->insert(conjunctionRadio, 1);
     //radioHlay->addWidget(conjunctionRadio);
 
     //QRadioButton* disjunctionRadio =
     //    new QRadioButton("Match any of the following");
-    //Q_CHECK_PTR(disjunctionRadio);
     //radioGroup->insert(disjunctionRadio, 1);
     //radioHlay->addWidget(disjunctionRadio);
 
     QHBoxLayout* conditionHlay = new QHBoxLayout;
     conditionHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(conditionHlay);
     mainVlay->addLayout(conditionHlay);
     mainVlay->setStretchFactor(conditionHlay, 1);
 
     conditionVlay = new QVBoxLayout;
     conditionVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(conditionVlay);
     conditionHlay->addLayout(conditionVlay);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(buttonHlay);
     mainVlay->addLayout(buttonHlay);
 
     buttonHlay->addStretch(1);
 
     loadButton = new ZPushButton("L&oad Search...");
-    Q_CHECK_PTR(loadButton);
     loadButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(loadButton, SIGNAL(clicked()), SLOT(loadSearch()));
     buttonHlay->addWidget(loadButton);
 
     saveButton = new ZPushButton("S&ave Search...");
-    Q_CHECK_PTR(saveButton);
     saveButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(saveButton, SIGNAL(clicked()), SLOT(saveSearch()));
     buttonHlay->addWidget(saveButton);
@@ -113,11 +102,9 @@ SearchSpecForm::SearchSpecForm(QWidget* parent, Qt::WFlags f)
     saveButton->setEnabled(false);
 
     addMapper = new QSignalMapper(this);
-    Q_CHECK_PTR(addMapper);
     connect(addMapper, SIGNAL(mapped(int)), SLOT(insertConditionForm(int)));
 
     deleteMapper = new QSignalMapper(this);
-    Q_CHECK_PTR(deleteMapper);
     connect(deleteMapper, SIGNAL(mapped(int)), SLOT(removeConditionForm(int)));
 
     insertConditionForm(0);
@@ -224,7 +211,6 @@ SearchSpecForm::insertConditionForm(int index)
     }
 
     SearchConditionForm* form = new SearchConditionForm(this);
-    Q_CHECK_PTR(form);
     connect(form, SIGNAL(returnPressed()), SIGNAL(returnPressed()));
     connect(form, SIGNAL(contentsChanged()), SIGNAL(contentsChanged()));
     connect(form, SIGNAL(addClicked()), addMapper, SLOT(map()));

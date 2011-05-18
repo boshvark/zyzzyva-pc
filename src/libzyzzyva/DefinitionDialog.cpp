@@ -3,7 +3,7 @@
 //
 // The dialog for word definitions.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -54,25 +54,21 @@ DefinitionDialog::DefinitionDialog(WordEngine* e, const QString& lexicon,
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainVlay);
 
     bool acceptable = engine->isAcceptable(lexicon, word);
     QString wordAcceptable = acceptable ? word : word + "*";
 
     DefinitionBox* defBox = new DefinitionBox;
-    Q_CHECK_PTR(defBox);
     defBox->setTitle(wordAcceptable);
     mainVlay->addWidget(defBox);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(buttonHlay);
     mainVlay->addLayout(buttonHlay);
 
     buttonHlay->addStretch(1);
 
     ZPushButton* closeButton = new ZPushButton("&Close");
-    Q_CHECK_PTR(closeButton);
     closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setDefault(true);
     connect(closeButton, SIGNAL(clicked()), SLOT(accept()));

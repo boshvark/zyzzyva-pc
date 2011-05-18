@@ -3,7 +3,7 @@
 //
 // A dialog for displaying variations of a word, such as hooks, anagrams, etc.
 //
-// Copyright 2005-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -59,33 +59,27 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& lex,
     int numLists = getNumLists(variation);
 
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
 
     QHBoxLayout* labelHlay = new QHBoxLayout;
-    Q_CHECK_PTR(labelHlay);
     labelHlay->setSpacing(SPACING);
     mainVlay->addLayout(labelHlay);
 
     labelHlay->addStretch(1);
 
     wordLabel = new DefinitionLabel;
-    Q_CHECK_PTR(wordLabel);
     labelHlay->addWidget(wordLabel);
 
     labelHlay->addStretch(1);
 
     topLabel = new QLabel;
-    Q_CHECK_PTR(topLabel);
     mainVlay->addWidget(topLabel);
 
     topView = new WordTableView(wordEngine);
-    Q_CHECK_PTR(topView);
     mainVlay->addWidget(topView);
 
     topModel = new WordTableModel(wordEngine, this);
-    Q_CHECK_PTR(topModel);
     topModel->setLexicon(lexicon);
     connect(topModel, SIGNAL(wordsChanged()),
             topView, SLOT(resizeItemsToContents()));
@@ -94,15 +88,12 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& lex,
     // Only add the middle list if necessary
     if (numLists > 1) {
         middleLabel = new QLabel;
-        Q_CHECK_PTR(middleLabel);
         mainVlay->addWidget(middleLabel);
 
         middleView = new WordTableView(wordEngine);
-        Q_CHECK_PTR(middleView);
         mainVlay->addWidget(middleView);
 
         middleModel = new WordTableModel(wordEngine, this);
-        Q_CHECK_PTR(middleModel);
         middleModel->setLexicon(lexicon);
         connect(middleModel, SIGNAL(wordsChanged()),
                 middleView, SLOT(resizeItemsToContents()));
@@ -112,15 +103,12 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& lex,
     // Only add the bottom list if necessary
     if (numLists > 2) {
         bottomLabel = new QLabel;
-        Q_CHECK_PTR(bottomLabel);
         mainVlay->addWidget(bottomLabel);
 
         bottomView = new WordTableView(wordEngine);
-        Q_CHECK_PTR(bottomView);
         mainVlay->addWidget(bottomView);
 
         bottomModel = new WordTableModel(wordEngine, this);
-        Q_CHECK_PTR(bottomModel);
         bottomModel->setLexicon(lexicon);
         connect(bottomModel, SIGNAL(wordsChanged()),
                 bottomView, SLOT(resizeItemsToContents()));
@@ -128,14 +116,12 @@ WordVariationDialog::WordVariationDialog(WordEngine* we, const QString& lex,
     }
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    Q_CHECK_PTR(buttonHlay);
     buttonHlay->setSpacing(SPACING);
     mainVlay->addLayout(buttonHlay);
 
     buttonHlay->addStretch(1);
 
     closeButton = new ZPushButton("&Close");
-    Q_CHECK_PTR(closeButton);
     closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setAutoDefault(true);
     connect(closeButton, SIGNAL(clicked()), SLOT(accept()));

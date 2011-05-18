@@ -3,7 +3,7 @@
 //
 // A dialog for prompting the user for a quiz.
 //
-// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -58,19 +58,15 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
     : QDialog(parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
 
     lexiconWidget = new LexiconSelectWidget;
-    Q_CHECK_PTR(lexiconWidget);
     mainVlay->addWidget(lexiconWidget);
 
     QGridLayout* quizGlay = new QGridLayout;
-    Q_CHECK_PTR(quizGlay);
     mainVlay->addLayout(quizGlay);
 
     int row = 0;
     QLabel* typeLabel = new QLabel("Quiz Type:");
-    Q_CHECK_PTR(typeLabel);
     quizGlay->addWidget(typeLabel, row, 0);
 
     typeCombo = new QComboBox;
@@ -89,7 +85,6 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
 
     ++row;
     QLabel* methodLabel = new QLabel("Quiz Method:");
-    Q_CHECK_PTR(methodLabel);
     quizGlay->addWidget(methodLabel, row, 0);
 
     methodCombo = new QComboBox;
@@ -105,16 +100,13 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
 
     ++row;
     QLabel* questionOrderLabel = new QLabel("Question Order:");
-    Q_CHECK_PTR(questionOrderLabel);
     quizGlay->addWidget(questionOrderLabel, row, 0);
 
     QHBoxLayout* questionOrderHlay = new QHBoxLayout;
-    Q_CHECK_PTR(questionOrderHlay);
     questionOrderHlay->setMargin(0);
     quizGlay->addLayout(questionOrderHlay, row, 1);
 
     questionOrderCombo = new QComboBox;
-    Q_CHECK_PTR(questionOrderCombo);
     fillQuestionOrderCombo(methodCombo->currentText());
     questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
         Auxil::quizQuestionOrderToString(QuizSpec::RandomOrder)));
@@ -123,12 +115,10 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
     questionOrderHlay->addWidget(questionOrderCombo);
 
     probNumBlanksLabel = new QLabel("Blanks:");;
-    Q_CHECK_PTR(probNumBlanksLabel);
     probNumBlanksLabel->hide();
     questionOrderHlay->addWidget(probNumBlanksLabel);
 
     probNumBlanksSbox = new QSpinBox;
-    Q_CHECK_PTR(probNumBlanksSbox);
     probNumBlanksSbox->setMinimum(0);
     probNumBlanksSbox->setMaximum(Defs::MAX_BLANKS);
     probNumBlanksSbox->setValue(MainSettings::getProbabilityNumBlanks());
@@ -138,119 +128,95 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
     questionOrderHlay->addWidget(probNumBlanksSbox);
 
     sourceStack = new QStackedWidget;
-    Q_CHECK_PTR(sourceStack);
     mainVlay->addWidget(sourceStack);
 
     buildWidget = new QWidget;
-    Q_CHECK_PTR(buildWidget);
     sourceStack->addWidget(buildWidget);
 
     QHBoxLayout* responseHlay = new QHBoxLayout(buildWidget);
-    Q_CHECK_PTR(responseHlay);
     responseHlay->setMargin(0);
 
     QLabel* responseLabel = new QLabel("Response length:");
-    Q_CHECK_PTR(responseLabel);
     responseHlay->addWidget(responseLabel);
 
     QLabel* responseMinLabel = new QLabel("Min:");
-    Q_CHECK_PTR(responseMinLabel);
     responseHlay->addWidget(responseMinLabel);
 
     responseMinSbox = new QSpinBox;
-    Q_CHECK_PTR(responseMinSbox);
     responseMinSbox->setMinimum(0);
     responseMinSbox->setMaximum(MAX_WORD_LEN);
     responseHlay->addWidget(responseMinSbox);
 
     QLabel* responseMaxLabel = new QLabel("Max:");
-    Q_CHECK_PTR(responseMaxLabel);
     responseHlay->addWidget(responseMaxLabel);
 
     responseMaxSbox = new QSpinBox;
-    Q_CHECK_PTR(responseMaxSbox);
     responseMaxSbox->setMinimum(0);
     responseMaxSbox->setMaximum(MAX_WORD_LEN);
     responseHlay->addWidget(responseMaxSbox);
 
     searchWidget = new QWidget;
-    Q_CHECK_PTR(searchWidget);
     sourceStack->addWidget(searchWidget);
 
     QVBoxLayout* searchVlay = new QVBoxLayout(searchWidget);
-    Q_CHECK_PTR(searchVlay);
     searchVlay->setMargin(0);
 
     allCardboxButton = new QRadioButton;
-    Q_CHECK_PTR(allCardboxButton);
     allCardboxButton->setText("Use all available words");
     allCardboxButton->setChecked(true);
     searchVlay->addWidget(allCardboxButton);
 
     useSearchButton = new QRadioButton;
-    Q_CHECK_PTR(useSearchButton);
     useSearchButton->setText("Use only words matching search specification");
     connect(useSearchButton, SIGNAL(toggled(bool)),
             SLOT(useSearchButtonToggled(bool)));
     searchVlay->addWidget(useSearchButton);
 
     searchSpecGbox = new QGroupBox("Search Specification");
-    Q_CHECK_PTR(searchSpecGbox);
     searchVlay->addWidget(searchSpecGbox);
 
     QHBoxLayout* specHlay = new QHBoxLayout(searchSpecGbox);
-    Q_CHECK_PTR(specHlay);
 
     searchSpecForm = new SearchSpecForm;
-    Q_CHECK_PTR(searchSpecForm);
     connect(searchSpecForm, SIGNAL(contentsChanged()),
             SLOT(searchContentsChanged()));
     connect(searchSpecForm, SIGNAL(returnPressed()), SLOT(accept()));
     specHlay->addWidget(searchSpecForm);
 
     QHBoxLayout* progressHlay = new QHBoxLayout;
-    Q_CHECK_PTR(progressHlay);
     mainVlay->addLayout(progressHlay);
 
     progressCbox = new QCheckBox("Restore &progress");
-    Q_CHECK_PTR(progressCbox);
     progressCbox->setEnabled(false);
     progressHlay->addWidget(progressCbox);
 
     progressLabel = new QLabel;
-    Q_CHECK_PTR(progressLabel);
     progressLabel->setEnabled(false);
     progressHlay->addWidget(progressLabel);
 
     progressHlay->addStretch(1);
 
     QHBoxLayout* timerHlay = new QHBoxLayout;
-    Q_CHECK_PTR(timerHlay);
     mainVlay->addLayout(timerHlay);
 
     timerCbox = new QCheckBox("&Timer:");
-    Q_CHECK_PTR(timerCbox);
     connect(timerCbox, SIGNAL(toggled(bool)), SLOT(timerToggled(bool)));
     timerHlay->addWidget(timerCbox);
 
     timerWidget = new QWidget;
-    Q_CHECK_PTR(timerWidget);
     timerWidget->setEnabled(false);
     timerHlay->addWidget(timerWidget);
 
     QHBoxLayout* timerWidgetHlay = new QHBoxLayout(timerWidget);
-    Q_CHECK_PTR(timerWidgetHlay);
     timerWidgetHlay->setMargin(0);
 
     timerSbox = new QSpinBox;
-    Q_CHECK_PTR(timerSbox);
     timerSbox->setMinimum(1);
     timerSbox->setMaximum(9999);
     timerSbox->setValue(10);
     timerWidgetHlay->addWidget(timerSbox);
 
     QLabel* timerLabel = new QLabel("seconds");
-    Q_CHECK_PTR(timerLabel);
     timerWidgetHlay->addWidget(timerLabel);
 
     timerCombo = new QComboBox;
@@ -261,30 +227,25 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
 
     // OK/Cancel buttons
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    Q_CHECK_PTR(buttonHlay);
     mainVlay->addLayout(buttonHlay);
 
     ZPushButton* loadQuizButton = new ZPushButton("&Load Quiz...");
-    Q_CHECK_PTR(loadQuizButton);
     connect(loadQuizButton, SIGNAL(clicked()), SLOT(loadQuiz()));
     buttonHlay->addWidget(loadQuizButton);
 
     saveQuizButton = new ZPushButton("&Save Quiz...");
-    Q_CHECK_PTR(saveQuizButton);
     connect(saveQuizButton, SIGNAL(clicked()), SLOT(saveQuiz()));
     buttonHlay->addWidget(saveQuizButton);
 
     buttonHlay->addStretch(1);
 
     okButton = new ZPushButton("OK");
-    Q_CHECK_PTR(okButton);
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault(true);
     connect(okButton, SIGNAL(clicked()), SLOT(accept()));
     buttonHlay->addWidget(okButton);
 
     ZPushButton* cancelButton = new ZPushButton("Cancel");
-    Q_CHECK_PTR(cancelButton);
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     buttonHlay->addWidget(cancelButton);

@@ -3,7 +3,7 @@
 //
 // The dialog for editing a list of words.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -50,31 +50,25 @@ WordListDialog::WordListDialog(QWidget* parent, Qt::WFlags f)
     : QDialog(parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
 
     numWordsLabel = new QLabel;
-    Q_CHECK_PTR(numWordsLabel);
     mainVlay->addWidget(numWordsLabel);
 
     wordList = new QListWidget(this);
-    Q_CHECK_PTR(wordList);
     mainVlay->addWidget(wordList);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    Q_CHECK_PTR(buttonHlay);
     buttonHlay->setSpacing(SPACING);
     mainVlay->addLayout(buttonHlay);
 
     ZPushButton* openFileButton = new ZPushButton("Open &File...");
-    Q_CHECK_PTR(openFileButton);
     openFileButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(openFileButton, SIGNAL(clicked()), SLOT(openFileClicked()));
     buttonHlay->addWidget(openFileButton);
 
     ZPushButton* clearButton = new ZPushButton("&Clear");
-    Q_CHECK_PTR(clearButton);
     clearButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(clearButton, SIGNAL(clicked()), SLOT(clearClicked()));
     buttonHlay->addWidget(clearButton);
@@ -82,14 +76,12 @@ WordListDialog::WordListDialog(QWidget* parent, Qt::WFlags f)
     buttonHlay->addStretch(1);
 
     ZPushButton* okButton = new ZPushButton("&OK");
-    Q_CHECK_PTR(okButton);
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault(true);
     connect(okButton, SIGNAL(clicked()), SLOT(accept()));
     buttonHlay->addWidget(okButton);
 
     ZPushButton* cancelButton = new ZPushButton("Cancel");
-    Q_CHECK_PTR(cancelButton);
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     buttonHlay->addWidget(cancelButton);

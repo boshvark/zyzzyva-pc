@@ -57,24 +57,20 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     : ActionForm(SearchFormType, parent, f), wordEngine(e)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout(this);
-    Q_CHECK_PTR(mainHlay);
     mainHlay->setMargin(MARGIN);
     mainHlay->setSpacing(SPACING);
 
     QVBoxLayout* specVlay = new QVBoxLayout;
-    Q_CHECK_PTR(specVlay);
     specVlay->setSpacing(SPACING);
     mainHlay->addLayout(specVlay);
 
     QHBoxLayout* lexiconHlay = new QHBoxLayout;
-    Q_CHECK_PTR(lexiconHlay);
     lexiconHlay->setSpacing(SPACING);
     specVlay->addLayout(lexiconHlay);
 
     lexiconHlay->addStretch(1);
 
     lexiconWidget = new LexiconSelectWidget;
-    Q_CHECK_PTR(lexiconWidget);
     connect(lexiconWidget->getComboBox(), SIGNAL(activated(const QString&)),
         SLOT(lexiconActivated(const QString&)));
     lexiconHlay->addWidget(lexiconWidget);
@@ -82,28 +78,23 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     lexiconHlay->addStretch(1);
 
     specForm = new SearchSpecForm;
-    Q_CHECK_PTR(specForm);
     connect(specForm, SIGNAL(returnPressed()), SLOT(search()));
     connect(specForm, SIGNAL(contentsChanged()), SLOT(specChanged()));
     specVlay->addWidget(specForm);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    Q_CHECK_PTR(buttonHlay);
     buttonHlay->setSpacing(SPACING);
     specVlay->addLayout(buttonHlay);
 
     searchButton = new ZPushButton("&Search");
-    Q_CHECK_PTR(searchButton);
     searchButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(searchButton, SIGNAL(clicked()), SLOT(search()));
     buttonHlay->addWidget(searchButton);
 
     resultView = new WordTableView(wordEngine);
-    Q_CHECK_PTR(resultView);
     specVlay->addWidget(resultView, 1);
 
     resultModel = new WordTableModel(wordEngine, this);
-    Q_CHECK_PTR(resultModel);
     connect(resultModel, SIGNAL(wordsChanged()),
             resultView, SLOT(resizeItemsToContents()));
     resultView->setModel(resultModel);

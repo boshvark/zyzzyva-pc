@@ -3,7 +3,7 @@
 //
 // A form for displaying introductory help material.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -39,10 +39,8 @@ IntroForm::IntroForm(QWidget* parent, Qt::WFlags f)
     : ActionForm(IntroFormType, parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
 
     QTextBrowser* browser = new QTextBrowser(this);
-    Q_CHECK_PTR(browser);
     mainVlay->addWidget(browser);
 
     QString mainPage = Auxil::getHelpDir() + "/index.html";

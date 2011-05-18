@@ -3,7 +3,7 @@
 //
 // A simple widget for selecting a lexicon from the available lexicons.
 //
-// Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -44,17 +44,14 @@ LexiconSelectWidget::LexiconSelectWidget(QWidget* parent, Qt::WFlags f)
     : QWidget(parent, f)
 {
     QHBoxLayout* mainHlay = new QHBoxLayout(this);
-    Q_CHECK_PTR(mainHlay);
     mainHlay->setSpacing(SPACING);
     mainHlay->setMargin(0);
 
     QLabel* label = new QLabel;
-    Q_CHECK_PTR(label);
     label->setText(LABEL_TEXT);
     mainHlay->addWidget(label);
 
     lexiconCombo = new QComboBox;
-    Q_CHECK_PTR(lexiconCombo);
     mainHlay->addWidget(lexiconCombo);
 
     updateLexicons();

@@ -3,7 +3,7 @@
 //
 // The about dialog.
 //
-// Copyright 2005, 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -49,14 +49,11 @@ AboutDialog::AboutDialog(QWidget* parent, Qt::WFlags f)
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainVlay);
 
     QTabWidget* tabStack = new QTabWidget(this);
-    Q_CHECK_PTR(tabStack);
     mainVlay->addWidget(tabStack);
 
     QLabel* aboutLabel = new QLabel;
-    Q_CHECK_PTR(aboutLabel);
     aboutLabel->setPalette(QPalette(QColor(255, 255, 255)));
     aboutLabel->setFrameShape(QLabel::StyledPanel);
     aboutLabel->setFrameShadow(QLabel::Sunken);
@@ -68,7 +65,6 @@ AboutDialog::AboutDialog(QWidget* parent, Qt::WFlags f)
     tabStack->addTab(aboutLabel, "Zyzzyva");
 
     QLabel* thanksLabel = new QLabel;
-    Q_CHECK_PTR(thanksLabel);
     thanksLabel->setPalette(QPalette(QColor(255, 255, 255)));
     thanksLabel->setFrameShape(QLabel::StyledPanel);
     thanksLabel->setFrameShadow(QLabel::Sunken);
@@ -81,13 +77,11 @@ AboutDialog::AboutDialog(QWidget* parent, Qt::WFlags f)
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(buttonHlay);
     mainVlay->addLayout(buttonHlay);
 
     buttonHlay->addStretch(1);
 
     ZPushButton* closeButton = new ZPushButton("&Close");
-    Q_CHECK_PTR(closeButton);
     closeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     closeButton->setDefault(true);
     connect(closeButton, SIGNAL(clicked()), SLOT(accept()));

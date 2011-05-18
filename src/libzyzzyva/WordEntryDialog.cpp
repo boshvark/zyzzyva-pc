@@ -3,7 +3,7 @@
 //
 // A dialog for getting a word from the user.
 //
-// Copyright 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -50,45 +50,37 @@ WordEntryDialog::WordEntryDialog(QWidget* parent, Qt::WFlags f)
     wordValidator(new WordValidator(this))
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    Q_CHECK_PTR(mainVlay);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
 
     lexiconWidget = new LexiconSelectWidget;
-    Q_CHECK_PTR(lexiconWidget);
     mainVlay->addWidget(lexiconWidget);
 
     QHBoxLayout* lineHlay = new QHBoxLayout;
-    Q_CHECK_PTR(lineHlay);
     lineHlay->setSpacing(SPACING);
     mainVlay->addLayout(lineHlay);
 
     QLabel* label = new QLabel("Word:");
-    Q_CHECK_PTR(label);
     lineHlay->addWidget(label);
 
     wordLine = new QLineEdit;
-    Q_CHECK_PTR(wordLine);
     wordLine->setValidator(wordValidator);
     lineHlay->addWidget(wordLine);
 
     // OK/Cancel buttons
     QHBoxLayout* buttonHlay = new QHBoxLayout;
-    Q_CHECK_PTR(buttonHlay);
     buttonHlay->setSpacing(SPACING);
     mainVlay->addLayout(buttonHlay);
 
     buttonHlay->addStretch(1);
 
     ZPushButton* okButton = new ZPushButton("OK");
-    Q_CHECK_PTR(okButton);
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault(true);
     connect(okButton, SIGNAL(clicked()), SLOT(accept()));
     buttonHlay->addWidget(okButton);
 
     ZPushButton* cancelButton = new ZPushButton("Cancel");
-    Q_CHECK_PTR(cancelButton);
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     buttonHlay->addWidget(cancelButton);

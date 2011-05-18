@@ -3,7 +3,7 @@
 //
 // A dialog for rescheduling words within the cardbox system.
 //
-// Copyright 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -51,23 +51,18 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
-    Q_CHECK_PTR(mainVlay);
 
     lexiconWidget = new LexiconSelectWidget;
-    Q_CHECK_PTR(lexiconWidget);
     mainVlay->addWidget(lexiconWidget);
 
     QHBoxLayout* quizTypeHlay = new QHBoxLayout;
-    Q_CHECK_PTR(quizTypeHlay);
     mainVlay->addLayout(quizTypeHlay);
 
     QLabel* quizTypeLabel = new QLabel;
-    Q_CHECK_PTR(quizTypeLabel);
     quizTypeLabel->setText("Reschedule words for quiz type:");
     quizTypeHlay->addWidget(quizTypeLabel);
 
     quizTypeCombo = new QComboBox;
-    Q_CHECK_PTR(quizTypeCombo);
     quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizAnagrams));
     quizTypeCombo->addItem(
         Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
@@ -75,14 +70,11 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     quizTypeHlay->addWidget(quizTypeCombo);
 
     QButtonGroup* methodGroup = new QButtonGroup(this);
-    Q_CHECK_PTR(methodGroup);
 
     QHBoxLayout* backlogHlay = new QHBoxLayout;
-    Q_CHECK_PTR(backlogHlay);
     mainVlay->addLayout(backlogHlay);
 
     shiftQuestionsButton = new QRadioButton;
-    Q_CHECK_PTR(shiftQuestionsButton);
     shiftQuestionsButton->setText("Shift words so this many are ready now:");
     connect(shiftQuestionsButton, SIGNAL(toggled(bool)),
             SLOT(shiftQuestionsButtonToggled(bool)));
@@ -90,34 +82,28 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     backlogHlay->addWidget(shiftQuestionsButton);
 
     backlogSbox = new QSpinBox;
-    Q_CHECK_PTR(backlogSbox);
     backlogSbox->setMinimum(1);
     backlogSbox->setMaximum(999999);
     backlogHlay->addWidget(backlogSbox);
 
     rescheduleQuestionsButton = new QRadioButton;
-    Q_CHECK_PTR(rescheduleQuestionsButton);
     rescheduleQuestionsButton->setText("Reschedule words according to "
                                        "their cardbox");
     methodGroup->addButton(rescheduleQuestionsButton);
     mainVlay->addWidget(rescheduleQuestionsButton);
 
     QFrame* hline = new QFrame;
-    Q_CHECK_PTR(hline);
     hline->setFrameShape(QFrame::HLine);
     mainVlay->addWidget(hline);
 
     QButtonGroup* selectGroup = new QButtonGroup(this);
-    Q_CHECK_PTR(selectGroup);
 
     selectAllButton = new QRadioButton;
-    Q_CHECK_PTR(selectAllButton);
     selectAllButton->setText("Reschedule all words");
     selectGroup->addButton(selectAllButton);
     mainVlay->addWidget(selectAllButton);
 
     selectSearchButton = new QRadioButton;
-    Q_CHECK_PTR(selectSearchButton);
     connect(selectSearchButton, SIGNAL(toggled(bool)),
             SLOT(useSearchButtonToggled(bool)));
     selectSearchButton->setText("Reschedule only words matching search "
@@ -126,30 +112,24 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     mainVlay->addWidget(selectSearchButton);
 
     searchSpecGbox = new QGroupBox("Search Specification");
-    Q_CHECK_PTR(searchSpecGbox);
     mainVlay->addWidget(searchSpecGbox);
 
     QHBoxLayout* specHlay = new QHBoxLayout(searchSpecGbox);
-    Q_CHECK_PTR(specHlay);
 
     searchSpecForm = new SearchSpecForm;
-    Q_CHECK_PTR(searchSpecForm);
     specHlay->addWidget(searchSpecForm);
 
     QHBoxLayout* buttonHlay = new QHBoxLayout;
     buttonHlay->setSpacing(SPACING);
-    Q_CHECK_PTR(buttonHlay);
     mainVlay->addLayout(buttonHlay);
 
     ZPushButton* okButton = new ZPushButton("&OK");
-    Q_CHECK_PTR(okButton);
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault(true);
     connect(okButton, SIGNAL(clicked()), SLOT(accept()));
     buttonHlay->addWidget(okButton);
 
     ZPushButton* cancelButton = new ZPushButton("Cancel");
-    Q_CHECK_PTR(cancelButton);
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     buttonHlay->addWidget(cancelButton);
