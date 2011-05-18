@@ -3,7 +3,7 @@
 //
 // The main settings for the word study application.
 //
-// Copyright 2005-2008, 2010-2011 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -137,7 +137,7 @@ const QString DEFAULT_LEXICON_STYLES = QString(
     "%5 and not %6: symbol #\n"
     "%7 and not %8: symbol #\n"
     "%9 and not %10: symbol +\n"
-    "%11 and not %12: symbol !\n"
+    "%11 and not %12: symbol ^\n"
     "%13 and not %14: symbol +\n"
     "%15 and not %16: symbol +")
     .arg(Defs::LEXICON_OWL2).arg(Defs::LEXICON_OWL)

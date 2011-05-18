@@ -328,6 +328,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     setSplashMessage("Reading settings...");
     readSettings(true);
+    updateSettings();
 
     setSplashMessage("Creating data files...");
     makeUserDirs();
@@ -1798,6 +1799,74 @@ MainWindow::fixTrolltechConfig()
     foreach (const QString& line, lines) {
         outStream << line;
         endl(outStream);
+    }
+}
+
+//---------------------------------------------------------------------------
+//  updateSettings
+//
+//! Update settings. In particular, add new default settings.
+//---------------------------------------------------------------------------
+void
+MainWindow::updateSettings()
+{
+    QString prevVersion = MainSettings::getProgramVersion();
+    QString currVersion = Defs::ZYZZYVA_VERSION;
+
+    if (prevVersion == currVersion)
+        return;
+
+    // Add default CSW12 lexicon styles in 2.1.3
+    if (Auxil::lessThanVersion(prevVersion, "2.1.3") &&
+       ((currVersion == "2.1.3") ||
+        Auxil::lessThanVersion("2.1.3", currVersion)))
+    {
+        QList<LexiconStyle> styles = MainSettings::getWordListLexiconStyles();
+        LexiconStyle addStyle;
+        QList<LexiconStyle> addStyles;
+
+        addStyle.lexicon = Defs::LEXICON_CSW12;
+        addStyle.compareLexicon = Defs::LEXICON_OWL2;
+        addStyle.inCompareLexicon = false;
+        addStyle.symbol = "#";
+        addStyles.append(addStyle);
+
+        addStyle.lexicon = Defs::LEXICON_CSW12;
+        addStyle.compareLexicon = Defs::LEXICON_CSW07;
+        addStyle.inCompareLexicon = false;
+        addStyle.symbol = "+";
+        addStyles.append(addStyle);
+
+        addStyle.lexicon = Defs::LEXICON_CSW07;
+        addStyle.compareLexicon = Defs::LEXICON_CSW12;
+        addStyle.inCompareLexicon = false;
+        addStyle.symbol = "^";
+        addStyles.append(addStyle);
+
+        // ### Create addStyleToList(bool overwrite) or something similar
+        // Look for existing matching lexicon styles and skip if present
+        bool added = false;
+        foreach (const LexiconStyle& style, addStyles) {
+            bool found = false;
+            foreach (const LexiconStyle& existStyle, styles) {
+                if ((style.lexicon == existStyle.lexicon) &&
+                    (style.compareLexicon == existStyle.compareLexicon) &&
+                    (style.inCompareLexicon == existStyle.inCompareLexicon))
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                styles.append(style);
+                added = true;
+            }
+        }
+
+        if (added) {
+            MainSettings::setWordListLexiconStyles(styles);
+            settingsDialog->refreshSettings();
+        }
     }
 }
 

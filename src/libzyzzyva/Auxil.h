@@ -80,6 +80,9 @@ namespace Auxil {
     QDate lexiconToDate(const QString& lexicon);
     QString lexiconToDetails(const QString& lexicon);
     QString getUpdatedLexiconName(const QString& oldLexiconName);
+    bool lessThanVersion(const QString& a, const QString& b);
+    bool getVersionComponents(const QString& version, int& major, int& minor,
+        int& revision);
     bool localeAwareLessThanQString(const QString& a, const QString& b);
     bool localeAwareLessThanQChar(const QChar& a, const QChar& b);
 }
