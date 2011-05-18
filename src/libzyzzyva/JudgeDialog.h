@@ -4,7 +4,7 @@
 // A full-screen dialog for Word Judge functionality, in which the user can
 // very easily judge the validity of one or more words.
 //
-// Copyright 2006, 2007, 2008, 2009 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -76,6 +76,7 @@ class JudgeDialog : public QDialog
     QFrame*         resultWidget;
     QLabel*         resultPixmapLabel;
     QLabel*         resultLabel;
+    QLabel*         resultLexiconLabel;
     QTimer*         countTimer;
     QTimer*         inputTimer;
     QTimer*         resultTimer;
