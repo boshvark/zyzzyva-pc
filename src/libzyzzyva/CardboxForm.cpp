@@ -3,7 +3,7 @@
 //
 // A form for querying and editing the contents of the cardbox system.
 //
-// Copyright 2007, 2008, 2011 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2007-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -56,6 +56,8 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     lexiconWidget = new LexiconSelectWidget;
     Q_CHECK_PTR(lexiconWidget);
+    connect(lexiconWidget->getComboBox(), SIGNAL(activated(const QString&)),
+        SLOT(lexiconActivated(const QString&)));
     mainVlay->addWidget(lexiconWidget);
 
     QHBoxLayout* quizTypeHlay = new QHBoxLayout;
@@ -163,6 +165,8 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     //connect(&refreshTimer, SIGNAL(timeout()), SLOT(refreshClicked()));
     //refreshTimer.start(REFRESH_MSECS);
+
+    lexiconActivated(lexiconWidget->getCurrentLexicon());
 }
 
 //---------------------------------------------------------------------------
@@ -202,6 +206,32 @@ QString
 CardboxForm::getStatusString() const
 {
     return QString();
+}
+
+//---------------------------------------------------------------------------
+//  getDetailsString
+//
+//! Returns the current details string.
+//
+//! @return the current details string
+//---------------------------------------------------------------------------
+QString
+CardboxForm::getDetailsString() const
+{
+    return detailsString;
+}
+
+//---------------------------------------------------------------------------
+//  lexiconActivated
+//
+//! Called when the lexicon combo box is activated
+//! @param lexicon the activated lexicon
+//---------------------------------------------------------------------------
+void
+CardboxForm::lexiconActivated(const QString& lexicon)
+{
+    detailsString = Auxil::lexiconToDetails(lexicon);
+    emit detailsChanged(detailsString);
 }
 
 //---------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 //
 // A form for searching for words, patterns, anagrams, etc.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -75,6 +75,8 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     lexiconWidget = new LexiconSelectWidget;
     Q_CHECK_PTR(lexiconWidget);
+    connect(lexiconWidget->getComboBox(), SIGNAL(activated(const QString&)),
+        SLOT(lexiconActivated(const QString&)));
     lexiconHlay->addWidget(lexiconWidget);
 
     lexiconHlay->addStretch(1);
@@ -105,6 +107,8 @@ SearchForm::SearchForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     connect(resultModel, SIGNAL(wordsChanged()),
             resultView, SLOT(resizeItemsToContents()));
     resultView->setModel(resultModel);
+
+    lexiconActivated(lexiconWidget->getCurrentLexicon());
 
     specChanged();
     QTimer::singleShot(0, this, SLOT(selectInputArea()));
@@ -147,6 +151,19 @@ QString
 SearchForm::getStatusString() const
 {
     return statusString;
+}
+
+//---------------------------------------------------------------------------
+//  getDetailsString
+//
+//! Returns the current details string.
+//
+//! @return the current details string
+//---------------------------------------------------------------------------
+QString
+SearchForm::getDetailsString() const
+{
+    return detailsString;
 }
 
 //---------------------------------------------------------------------------
@@ -365,4 +382,17 @@ SearchForm::updateResultTotal(int num)
         wordStr += "s";
     statusString = "Search found " + wordStr;
     emit statusChanged(statusString);
+}
+
+//---------------------------------------------------------------------------
+//  lexiconActivated
+//
+//! Called when the lexicon combo box is activated
+//! @param lexicon the activated lexicon
+//---------------------------------------------------------------------------
+void
+SearchForm::lexiconActivated(const QString& lexicon)
+{
+    detailsString = Auxil::lexiconToDetails(lexicon);
+    emit detailsChanged(detailsString);
 }

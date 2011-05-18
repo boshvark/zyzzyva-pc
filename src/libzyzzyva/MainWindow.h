@@ -3,7 +3,7 @@
 //
 // The main window for the word study application.
 //
-// Copyright 2004-2008, 2010-2011 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -84,6 +84,7 @@ class MainWindow : public QMainWindow
     void currentTabChanged(int index);
     void tabTitleChanged(const QString& title);
     void tabStatusChanged(const QString& status);
+    void tabDetailsChanged(const QString& details);
     void tabSaveEnabledChanged(bool saveEnabled);
 
     void doTest();
@@ -139,6 +140,7 @@ class MainWindow : public QMainWindow
     QTabWidget*  tabStack;
     QToolButton* closeButton;
     QLabel*      messageLabel;
+    QLabel*      detailsLabel;
 
     QAction*     saveAction;
     QAction*     saveAsAction;

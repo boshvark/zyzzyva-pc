@@ -3,7 +3,7 @@
 //
 // A form for quizzing the user.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -62,6 +62,7 @@ class QuizForm : public ActionForm
     QIcon getIcon() const;
     QString getTitle() const;
     QString getStatusString() const;
+    QString getDetailsString() const;
     bool isSaveCapable() const { return true; }
     bool isSaveEnabled() const;
 
@@ -117,6 +118,7 @@ class QuizForm : public ActionForm
     void setCorrectStatus(int correct, int total);
     void setQuestionStatus(const QuizDatabase::QuestionData& data);
     void setStatusString(const QString& status);
+    void setDetailsString(const QString& details);
     void setTimerDisplay(int seconds);
     void setQuizName(const QString& name);
     void setQuizNameFromFilename(const QString& filename);
@@ -170,6 +172,7 @@ class QuizForm : public ActionForm
     int timerRemaining, timerPaused;
     QuizTimerSpec timerSpec;
     QString statusString;
+    QString detailsString;
     QString tileTheme;
     bool checkBringsJudgment;
     bool recordStatsBlocked;

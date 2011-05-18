@@ -456,6 +456,19 @@ QuizForm::getStatusString() const
 }
 
 //---------------------------------------------------------------------------
+//  getDetailsString
+//
+//! Returns the current details string.
+//
+//! @return the current details string
+//---------------------------------------------------------------------------
+QString
+QuizForm::getDetailsString() const
+{
+    return detailsString;
+}
+
+//---------------------------------------------------------------------------
 //  isSaveEnabled
 //
 //! Determine whether the save action should be enabled for this form.
@@ -665,6 +678,7 @@ QuizForm::newQuiz(const QuizSpec& spec)
 
     QTimer::singleShot(0, this, SLOT(selectInputArea()));
 
+    setDetailsString(Auxil::lexiconToDetails(lexicon));
     setUnsavedChanges(spec.getFilename().isEmpty());
     return true;
 }
@@ -1747,6 +1761,20 @@ QuizForm::setStatusString(const QString& status)
         return;
     statusString = status;
     emit statusChanged(status);
+}
+
+//---------------------------------------------------------------------------
+//  setDetailsString
+//
+//! Set the details string.
+//---------------------------------------------------------------------------
+void
+QuizForm::setDetailsString(const QString& details)
+{
+    if (details == detailsString)
+        return;
+    detailsString = details;
+    emit detailsChanged(details);
 }
 
 //---------------------------------------------------------------------------

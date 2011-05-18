@@ -1335,9 +1335,9 @@ Auxil::lexiconToOrigin(const QString& lexicon)
     if (lexicon == LEXICON_OSWI)
         return "British";
     if (lexicon == LEXICON_CSW07)
-        return "British";
+        return "British (WESPA HarperCollins copyright 2007)";
     if (lexicon == LEXICON_CSW12)
-        return "British";
+        return "British (WESPA HarperCollins copyright 2011)";
     if (lexicon == LEXICON_CD)
         return "British (Contest)";
     if (lexicon == LEXICON_ODS4)
@@ -1395,6 +1395,28 @@ Auxil::lexiconToDate(const QString& lexicon)
     if (lexicon == LEXICON_VOLOST)
         return QDate(2007, 4, 1);
     return QDate();
+}
+
+//---------------------------------------------------------------------------
+//  lexiconToDetails
+//
+//! Convert a lexicon name to the details about the lexicon.
+//
+//! @param s the lexicon name
+//! @return the details about the lexicon
+//---------------------------------------------------------------------------
+QString
+Auxil::lexiconToDetails(const QString& lexicon)
+{
+    if (lexicon == LEXICON_CSW07) {
+        return "The WESPA HarperCollins copyright 2007 word list (CSW07) "
+            "is copyright of HarperCollins and used with permission.";
+    }
+    if (lexicon == LEXICON_CSW12) {
+        return "The WESPA HarperCollins copyright 2011 word list (CSW12) "
+            "is copyright of HarperCollins and used with permission.";
+    }
+    return QString();
 }
 
 //---------------------------------------------------------------------------
