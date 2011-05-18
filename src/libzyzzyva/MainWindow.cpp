@@ -1835,8 +1835,10 @@ MainWindow::makeUserDirs()
 
     renameLexicon(LEXICON_OLD_OWL, LEXICON_OWL);
     renameLexicon(LEXICON_OLD_OWL2, LEXICON_OWL2);
+    renameLexicon(LEXICON_OLD_OSPD4, LEXICON_OSPD4);
     renameLexicon(LEXICON_OLD_SOWPODS, LEXICON_OSWI);
     renameLexicon(LEXICON_OLD_ODS, LEXICON_ODS4);
+    renameLexicon(LEXICON_OLD_CSW, LEXICON_CSW07);
 
     dir.mkpath(Auxil::getQuizDir() + "/saved");
     dir.mkpath(Auxil::getSearchDir() + "/saved");
@@ -1869,6 +1871,47 @@ MainWindow::renameLexicon(const QString& oldName, const QString& newName)
     QString newDb = Auxil::getUserDir() + "/lexicons/" + newName + ".db";
     if (QFile::exists(oldDb) && !QFile::exists(newDb)) {
         QFile::rename(oldDb, newDb);
+    }
+
+    // Move lexicon database backups
+    oldDb = Auxil::getUserDir() + "/lexicons/orig-" + oldName + ".db";
+    newDb = Auxil::getUserDir() + "/lexicons/orig-" + newName + ".db";
+    if (QFile::exists(oldDb) && !QFile::exists(newDb)) {
+        QFile::rename(oldDb, newDb);
+    }
+
+    // Change auto import preferences
+    bool changed = false;
+    QStringList autoImportLexicons = MainSettings::getAutoImportLexicons();
+    int numAutoImportLexicons = autoImportLexicons.count();
+    for (int i = 0; i < numAutoImportLexicons; ++i) {
+        QString& lexicon = autoImportLexicons[i];
+        if (lexicon == oldName) {
+            lexicon = newName;
+            changed = true;
+        }
+    }
+    if (changed)
+        MainSettings::setAutoImportLexicons(autoImportLexicons);
+
+    // Change lexicon symbol preferences
+    changed = false;
+    QList<LexiconStyle> lexiconStyles = MainSettings::getWordListLexiconStyles();
+    int numStyles = lexiconStyles.count();
+    for (int i = 0; i < numStyles; ++i) {
+        LexiconStyle& style = lexiconStyles[i];
+        if (style.lexicon == oldName) {
+            style.lexicon = newName;
+            changed = true;
+        }
+        if (style.compareLexicon == oldName) {
+            style.compareLexicon = newName;
+            changed = true;
+        }
+    }
+    if (changed) {
+        MainSettings::setWordListLexiconStyles(lexiconStyles);
+        settingsDialog->refreshSettings();
     }
 }
 
