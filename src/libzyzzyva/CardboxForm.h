@@ -3,7 +3,7 @@
 //
 // A form for querying and editing the contents of the cardbox system.
 //
-// Copyright 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2007-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -44,8 +44,10 @@ class CardboxForm : public ActionForm
     QIcon getIcon() const;
     QString getTitle() const;
     QString getStatusString() const;
+    QString getDetailsString() const;
 
     public slots:
+    void lexiconActivated(const QString& lexicon);
     void refreshClicked();
     void questionDataClicked();
 
@@ -66,6 +68,7 @@ class CardboxForm : public ActionForm
     QLabel*         questionDataLabel;
 
     //QTimer refreshTimer;
+    QString detailsString;
 };
 
 #endif // ZYZZYVA_CARDBOX_FORM_H

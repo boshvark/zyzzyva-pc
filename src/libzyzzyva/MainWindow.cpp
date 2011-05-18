@@ -3,7 +3,7 @@
 //
 // The main window for the word study application.
 //
-// Copyright 2004-2008, 2010-2011 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -76,6 +76,8 @@ const QString SETTINGS_GEOMETRY_X = "/x";
 const QString SETTINGS_GEOMETRY_Y = "/y";
 const QString SETTINGS_GEOMETRY_WIDTH = "/width";
 const QString SETTINGS_GEOMETRY_HEIGHT = "/height";
+
+const int DETAILS_FONT_MIN_POINTS = 6;
 
 using namespace Defs;
 
@@ -346,7 +348,18 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
 
     messageLabel = new QLabel;
     Q_CHECK_PTR(messageLabel);
-    statusBar()->addWidget(messageLabel);
+    statusBar()->addWidget(messageLabel, 1);
+
+    QFont detailsFont = qApp->font();
+    int detailsPoints = detailsFont.pointSize() - 4;
+    if (detailsPoints < DETAILS_FONT_MIN_POINTS)
+        detailsPoints = DETAILS_FONT_MIN_POINTS;
+    detailsFont.setPointSize(detailsPoints);
+
+    detailsLabel = new QLabel;
+    Q_CHECK_PTR(detailsLabel);
+    detailsLabel->setFont(detailsFont);
+    statusBar()->addWidget(detailsLabel);
 
     fixTrolltechConfig();
 
@@ -1071,6 +1084,7 @@ MainWindow::closeCurrentTab()
     delete w;
     if (tabStack->count() == 0) {
         messageLabel->setText(QString());
+        detailsLabel->setText(QString());
         closeButton->hide();
     }
 }
@@ -1086,16 +1100,19 @@ MainWindow::currentTabChanged(int)
 {
     QWidget* w = tabStack->currentWidget();
     QString status;
+    QString details;
     bool saveEnabled = false;
     bool saveCapable = false;
     if (w) {
         ActionForm* form = static_cast<ActionForm*>(w);
         form->selectInputArea();
         status = form->getStatusString();
+        details = form->getDetailsString();
         saveEnabled = form->isSaveEnabled();
         saveCapable = form->isSaveCapable();
     }
     messageLabel->setText(status);
+    detailsLabel->setText(details);
     saveAction->setEnabled(saveEnabled);
     saveAsAction->setEnabled(saveCapable);
 }
@@ -1135,6 +1152,27 @@ MainWindow::tabStatusChanged(const QString& status)
     int index = tabStack->indexOf(form);
     if (index == tabStack->currentIndex()) {
         messageLabel->setText(status);
+        qApp->processEvents();
+    }
+}
+
+//---------------------------------------------------------------------------
+//  tabDetailsChanged
+//
+//! Called when the details string for a tab changes.
+//
+//! @param the new details string
+//---------------------------------------------------------------------------
+void
+MainWindow::tabDetailsChanged(const QString& details)
+{
+    QObject* object = sender();
+    if (!object)
+        return;
+    ActionForm* form = static_cast<ActionForm*>(object);
+    int index = tabStack->indexOf(form);
+    if (index == tabStack->currentIndex()) {
+        detailsLabel->setText(details);
         qApp->processEvents();
     }
 }
@@ -1581,6 +1619,8 @@ MainWindow::readSettings(bool useGeometry)
             quizForm->setBackgroundColor(backgroundColor);
             quizForm->updateQuestionStatus();
             quizForm->updateStatusString();
+            // ### update details string here?
+            //quizForm->updateDetailsString();
             quizForm->setTileTheme(tileTheme);
         }
     }
@@ -1614,6 +1654,8 @@ MainWindow::newTab(ActionForm* form)
             SLOT(tabTitleChanged(const QString&)));
     connect(form, SIGNAL(statusChanged(const QString&)),
             SLOT(tabStatusChanged(const QString&)));
+    connect(form, SIGNAL(detailsChanged(const QString&)),
+            SLOT(tabDetailsChanged(const QString&)));
     connect(form, SIGNAL(saveEnabledChanged(bool)),
             SLOT(tabSaveEnabledChanged(bool)));
 

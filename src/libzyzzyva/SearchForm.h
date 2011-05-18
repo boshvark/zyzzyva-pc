@@ -3,7 +3,7 @@
 //
 // A form for searching for words, patterns, anagrams, etc.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -45,6 +45,7 @@ class SearchForm : public ActionForm
     QIcon getIcon() const;
     QString getTitle() const;
     QString getStatusString() const;
+    QString getDetailsString() const;
     bool isSaveCapable() const { return true; }
     bool isSaveEnabled() const;
 
@@ -56,6 +57,7 @@ class SearchForm : public ActionForm
     public slots:
     void search();
     void updateResultTotal(int num);
+    void lexiconActivated(const QString& lexicon);
     void specChanged();
 
     private:
@@ -66,6 +68,7 @@ class SearchForm : public ActionForm
     WordTableModel* resultModel;
     ZPushButton*    searchButton;
     QString         statusString;
+    QString         detailsString;
 };
 
 #endif // ZYZZYVA_SEARCH_FORM_H

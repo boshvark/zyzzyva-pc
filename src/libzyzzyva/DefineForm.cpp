@@ -3,7 +3,7 @@
 //
 // A form for looking up and displaying word definitions.
 //
-// Copyright 2004-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -65,6 +65,8 @@ DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     lexiconWidget = new LexiconSelectWidget;
     Q_CHECK_PTR(lexiconWidget);
+    connect(lexiconWidget->getComboBox(), SIGNAL(activated(const QString&)),
+        SLOT(lexiconActivated(const QString&)));
     lexiconHlay->addWidget(lexiconWidget);
 
     lexiconHlay->addStretch(1);
@@ -116,6 +118,8 @@ DefineForm::DefineForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     defineButton->setEnabled(false);
     infoButton->setEnabled(false);
     resultBox->hide();
+
+    lexiconActivated(lexiconWidget->getCurrentLexicon());
 }
 
 //---------------------------------------------------------------------------
@@ -158,6 +162,19 @@ DefineForm::getStatusString() const
 }
 
 //---------------------------------------------------------------------------
+//  getDetailsString
+//
+//! Returns the current details string.
+//
+//! @return the current details string
+//---------------------------------------------------------------------------
+QString
+DefineForm::getDetailsString() const
+{
+    return detailsString;
+}
+
+//---------------------------------------------------------------------------
 //  selectInputArea
 //
 //! Give focus to the input area and select its contents.
@@ -167,6 +184,19 @@ DefineForm::selectInputArea()
 {
     wordLine->setFocus();
     wordLine->setSelection(0, wordLine->text().length());
+}
+
+//---------------------------------------------------------------------------
+//  lexiconActivated
+//
+//! Called when the lexicon combo box is activated
+//! @param lexicon the activated lexicon
+//---------------------------------------------------------------------------
+void
+DefineForm::lexiconActivated(const QString& lexicon)
+{
+    detailsString = Auxil::lexiconToDetails(lexicon);
+    emit detailsChanged(detailsString);
 }
 
 //---------------------------------------------------------------------------

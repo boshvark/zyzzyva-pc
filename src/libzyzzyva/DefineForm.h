@@ -3,7 +3,7 @@
 //
 // A form for looking up and displaying word definitions.
 //
-// Copyright 2004, 2005, 2006, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -41,12 +41,14 @@ class DefineForm : public ActionForm
     QIcon getIcon() const;
     QString getTitle() const;
     QString getStatusString() const;
+    QString getDetailsString() const;
 
     // Reimplemented virtual methods
     public slots:
     void selectInputArea();
 
     public slots:
+    void lexiconActivated(const QString& lexicon);
     void wordChanged(const QString& word);
     void displayDefinition();
     void displayAllInfo();
@@ -61,6 +63,8 @@ class DefineForm : public ActionForm
     ZPushButton*   defineButton;
     ZPushButton*   infoButton;
     DefinitionBox* resultBox;
+
+    QString detailsString;
 };
 
 #endif // ZYZZYVA_DEFINE_FORM_H

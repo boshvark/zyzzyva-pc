@@ -78,6 +78,7 @@ namespace Auxil {
     LexiconStyle stringToLexiconStyle(const QString& string);
     QString lexiconToOrigin(const QString& lexicon);
     QDate lexiconToDate(const QString& lexicon);
+    QString lexiconToDetails(const QString& lexicon);
     QString getUpdatedLexiconName(const QString& oldLexiconName);
     bool localeAwareLessThanQString(const QString& a, const QString& b);
     bool localeAwareLessThanQChar(const QChar& a, const QChar& b);

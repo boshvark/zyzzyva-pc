@@ -3,7 +3,7 @@
 //
 // A base class for main action forms.
 //
-// Copyright 2005, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -52,6 +52,7 @@ class ActionForm : public QFrame
     virtual QIcon getIcon() const { return QIcon(); }
     virtual QString getTitle() const { return QString(); }
     virtual QString getStatusString() const { return QString(); }
+    virtual QString getDetailsString() const { return QString(); }
     virtual bool isSaveCapable() const { return false; }
     virtual bool isSaveEnabled() const { return false; }
 
@@ -62,6 +63,7 @@ class ActionForm : public QFrame
     signals:
     void titleChanged(const QString& title);
     void statusChanged(const QString& status);
+    void detailsChanged(const QString& details);
     void saveEnabledChanged(bool saveEnabled);
 
     private:
