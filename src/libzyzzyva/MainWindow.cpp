@@ -1954,6 +1954,7 @@ MainWindow::importLexicon(const QString& lexicon)
         prefixMap[LEXICON_VOLOST] = "/Antarctic/Volost";
         prefixMap[LEXICON_OSWI] = "/British/OSWI";
         prefixMap[LEXICON_CSW07] = "/British/CSW07";
+        prefixMap[LEXICON_CSW12] = "/British/CSW12";
         prefixMap[LEXICON_CD] = "/British/CD";
         prefixMap[LEXICON_ODS4] = "/French/ODS4";
         prefixMap[LEXICON_ODS5] = "/French/ODS5";

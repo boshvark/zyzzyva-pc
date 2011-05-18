@@ -48,6 +48,7 @@ namespace Defs {
     const QString QUIZ_LETTERS_CONSONANTS_FIRST = "Consonants First";
     const QString LEXICON_CD = "CD";
     const QString LEXICON_CSW07 = "CSW07";
+    const QString LEXICON_CSW12 = "CSW12";
     const QString LEXICON_CUSTOM = "Custom";
     const QString LEXICON_ODS4 = "ODS4";
     const QString LEXICON_ODS5 = "ODS5";
