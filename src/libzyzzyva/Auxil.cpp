@@ -1464,3 +1464,74 @@ Auxil::getUpdatedLexiconName(const QString& oldLexiconName)
 
     return QString();
 }
+
+//---------------------------------------------------------------------------
+//  lessThanVersion
+//
+//! Test whether one version string is less than another version string.
+//
+//! @param a the version to test
+//! @param b the version to compare against
+//! @return true if a is less than b, false otherwise
+//---------------------------------------------------------------------------
+bool
+Auxil::lessThanVersion(const QString& a, const QString& b)
+{
+    if (a == b)
+        return false;
+
+    int amaj = 0;
+    int bmaj = 0;
+    int amin = 0;
+    int bmin = 0;
+    int arev = 0;
+    int brev = 0;
+
+    bool aok = getVersionComponents(a, amaj, amin, arev);
+    bool bok = getVersionComponents(b, bmaj, bmin, brev);
+
+    if (!aok)
+        return bok;
+    else if (!bok)
+        return false;
+
+    if (amaj < bmaj)
+        return true;
+    else if (amaj > bmaj)
+        return false;
+
+    if (amin < bmin)
+        return true;
+    else if (amin > bmin)
+        return false;
+
+    return (arev < brev);
+}
+
+//---------------------------------------------------------------------------
+//  getVersionComponents
+//
+//! Get major, minor, and revision components of a version string.
+//
+//! @param version the version string
+//! @param[out] major return the major component
+//! @param[out] minor return the minor component
+//! @param[out] revision return the revision component
+//! @return true if valid version string, false otherwise
+//---------------------------------------------------------------------------
+bool
+Auxil::getVersionComponents(const QString& version, int& major, int& minor,
+    int& revision)
+{
+    static QRegExp re("^(\\d+)\\.(\\d+)\\.(\\d+)$");
+
+    if (!re.exactMatch(version))
+        return false;
+
+    major = re.capturedTexts().at(1).toInt();
+    minor = re.capturedTexts().at(2).toInt();
+    revision = re.capturedTexts().at(3).toInt();
+    qDebug("version components of |%s|: %d, %d, %d",
+        version.toUtf8().constData(), major, minor, revision);
+    return true;
+}

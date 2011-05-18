@@ -108,6 +108,7 @@ class MainWindow : public QMainWindow
     private:
     void setSplashMessage(const QString& message);
     void fixTrolltechConfig();
+    void updateSettings();
     void makeUserDirs();
     void renameLexicon(const QString& oldName, const QString& newName);
     bool importLexicon(const QString& lexicon);
