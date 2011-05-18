@@ -31,7 +31,6 @@
 #include "DatabaseRebuildDialog.h"
 #include "DefinitionDialog.h"
 #include "DefineForm.h"
-#include "HelpDialog.h"
 #include "IntroForm.h"
 #include "JudgeDialog.h"
 #include "JudgeSelectDialog.h"
@@ -91,8 +90,7 @@ using namespace Defs;
 MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     : QMainWindow(parent, f), splashScreen(splash),
       wordEngine(new WordEngine()), settingsDialog(new SettingsDialog(this)),
-      aboutDialog(new AboutDialog(this)),
-      helpDialog(new HelpDialog(QString(), this))
+      aboutDialog(new AboutDialog(this))
 {
     setSplashMessage("Creating interface...");
 
@@ -367,9 +365,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     if (MainSettings::getDisplayWelcome())
         newIntroForm();
 
-    connect(helpDialog, SIGNAL(error(const QString&)),
-            SLOT(helpDialogError(const QString&)));
-
     splashScreen = 0;
     QTimer::singleShot(0, this, SLOT(displayLexiconError()));
 }
@@ -407,6 +402,27 @@ MainWindow::processArguments(const QStringList& args)
 {
     foreach (const QString& arg, args)
         fileOpenRequested(arg);
+}
+
+//---------------------------------------------------------------------------
+//  tryUpdateDataDir
+//
+//! Try updating the user data directory if it is currently set to the old
+//! hidden ".zyzzyva" directory.
+//---------------------------------------------------------------------------
+void
+MainWindow::tryUpdateUserDataDir()
+{
+    //QString dataDir = MainSettings::getUserDataDir();
+    ////qDebug("dataDir: |%s|", dataDir.toUtf8().constData());
+    //if (dataDir == Auxil::getHomeDir() + "/.zyzzyva") {
+    //    //qDebug("Hey buddy! Change your data directory!");
+
+    //    // Prompt user to change data directory to the new default
+    //    // (homeDir/Zyzzyva, not homeDir/.zyzzyva)
+
+    //    // Remember their response if they say no to the move!
+    //}
 }
 
 //---------------------------------------------------------------------------
@@ -987,7 +1003,7 @@ MainWindow::displayAbout()
 void
 MainWindow::displayHelp()
 {
-    helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
+    //helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
 }
 
 //---------------------------------------------------------------------------
@@ -1022,8 +1038,8 @@ MainWindow::displayLexiconError()
 void
 MainWindow::helpDialogError(const QString& message)
 {
-    QString caption = "Help Display Error";
-    QMessageBox::warning(this, caption, Auxil::dialogWordWrap(message));
+    //QString caption = "Help Display Error";
+    //QMessageBox::warning(this, caption, Auxil::dialogWordWrap(message));
 }
 
 //---------------------------------------------------------------------------
@@ -1888,25 +1904,26 @@ MainWindow::importLexicon(const QString& lexicon)
             return true;
 
         QMap<QString, QString> prefixMap;
-        prefixMap[LEXICON_OWL] = "/north-american/owl-lwl";
-        prefixMap[LEXICON_OWL2] = "/north-american/owl2-lwl";
-        prefixMap[LEXICON_OSPD4] = "/north-american/ospd4-lwl";
-        prefixMap[LEXICON_WWF] = "/north-american/wwf";
-        prefixMap[LEXICON_VOLOST] = "/antarctic/volost";
-        prefixMap[LEXICON_OSWI] = "/british/oswi";
-        prefixMap[LEXICON_CSW] = "/british/csw";
-        prefixMap[LEXICON_CD] = "/british/cd";
-        prefixMap[LEXICON_ODS4] = "/french/ods4";
-        prefixMap[LEXICON_ODS5] = "/french/ods5";
-        prefixMap[LEXICON_SWL] = "/dutch/swl";
-        prefixMap[LEXICON_ZINGA] = "/italian/zinga";
+        prefixMap[LEXICON_OWL] = "/North-American/OWL";
+        prefixMap[LEXICON_OWL2] = "/North-American/OWL2";
+        prefixMap[LEXICON_OSPD4] = "/North-American/OSPD4";
+        prefixMap[LEXICON_WWF] = "/North-American/WWF";
+        prefixMap[LEXICON_VOLOST] = "/Antarctic/Volost";
+        prefixMap[LEXICON_OSWI] = "/British/OSWI";
+        prefixMap[LEXICON_CSW07] = "/British/CSW07";
+        prefixMap[LEXICON_CD] = "/British/CD";
+        prefixMap[LEXICON_ODS4] = "/French/ODS4";
+        prefixMap[LEXICON_ODS5] = "/French/ODS5";
+        prefixMap[LEXICON_FISE2009] = "/Spanish/FISE2009";
+        prefixMap[LEXICON_SWL] = "/Dutch/SWL";
+        prefixMap[LEXICON_ZINGA] = "/Italian/ZINGA";
 
         if (prefixMap.contains(lexicon)) {
             QString prefix = Auxil::getWordsDir() + prefixMap.value(lexicon);
             importFile =        prefix + ".dwg";
-            reverseImportFile = prefix + "-r.dwg";
-            checksumFile =      prefix + "-checksums.txt";
-            playabilityFile =   prefix + "-playability.txt";
+            reverseImportFile = prefix + "-R.dwg";
+            checksumFile =      prefix + "-Checksums.txt";
+            playabilityFile =   prefix + "-Playability.txt";
         }
     }
 
