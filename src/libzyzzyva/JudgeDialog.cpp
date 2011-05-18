@@ -4,7 +4,7 @@
 // A full-screen dialog for Word Judge functionality, in which the user can
 // very easily judge the validity of one or more words.
 //
-// Copyright 2006-2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This program is free software; you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@
 #include <QVBoxLayout>
 
 const int FORM_FONT_PIXEL_SIZE = 55;
+const int LEXICON_FONT_PIXEL_SIZE = 40;
 const int TITLE_FONT_PIXEL_SIZE = 40;
 const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
 const int COUNT_FONT_PIXEL_SIZE = 200;
@@ -47,6 +48,7 @@ const int EXIT_FONT_PIXEL_SIZE = 30;
 const int COUNT_MARGIN = 30;
 const int INPUT_MARGIN = 30;
 const int RESULT_BORDER_WIDTH = 30;
+const int RESULT_MARGIN = 50;
 const int RESULT_SPACING = 100;
 const int CLEAR_COUNT_DELAY = 750;
 const int CLEAR_INPUT_DELAY = 15000;
@@ -185,7 +187,7 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     widgetStack->addWidget(resultWidget);
 
     QVBoxLayout* resultVlay = new QVBoxLayout(resultWidget);
-    resultVlay->setMargin(0);
+    resultVlay->setMargin(RESULT_MARGIN);
     resultVlay->setSpacing(RESULT_SPACING);
     Q_CHECK_PTR(resultVlay);
 
@@ -203,7 +205,15 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     resultLabel->setWordWrap(true);
     resultVlay->addWidget(resultLabel);
 
-    resultVlay->addStretch(1);
+    QFont lexiconFont = qApp->font();
+    lexiconFont.setPixelSize(LEXICON_FONT_PIXEL_SIZE);
+
+    resultLexiconLabel = new QLabel;
+    Q_CHECK_PTR(resultLexiconLabel);
+    resultLexiconLabel->setFont(lexiconFont);
+    resultLexiconLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    resultLexiconLabel->setWordWrap(true);
+    resultVlay->addWidget(resultLexiconLabel);
 
     QWidget* inputTitleWidget = createTitleWidget();
     Q_CHECK_PTR(inputTitleWidget);
@@ -403,6 +413,8 @@ JudgeDialog::judgeWord()
     ++clearResultsHold;
 
     resultLabel->setText(resultStr);
+    resultLexiconLabel->setText("<br><br><font color=\"black\">Lexicon: " +
+        lexicon + "</font>");
     if (!resultPixmap.isNull())
         resultPixmapLabel->setPixmap(resultPixmap);
     widgetStack->setCurrentWidget(resultWidget);
