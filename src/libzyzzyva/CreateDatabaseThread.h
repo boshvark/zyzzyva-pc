@@ -3,7 +3,7 @@
 //
 // A class for creating a database in the background.
 //
-// Copyright 2006, 2007, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -71,7 +71,7 @@ class CreateDatabaseThread : public QThread
     QString replaceDefinitionLinks(const QString& definition, int maxDepth,
                                    bool useFollow = false) const;
     QString getSubDefinition(const QString& word, const QString& pos) const;
-    int importPlayability(const QString& filename, QMap<QString, int>&
+    int importPlayability(const QString& filename, QMap<QString, qint64>&
                           playabilityMap) const;
 
     WordEngine* wordEngine;
