@@ -234,15 +234,15 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
         }
     }
 
-    QMap<QString, int> playabilityMap;
+    QMap<QString, qint64> playabilityMap;
     QString playabilityFile = Auxil::getWordsDir() +
-        Auxil::getLexiconPrefix(lexiconName) + "-playability.txt";
+        Auxil::getLexiconPrefix(lexiconName) + "-Playability.txt";
     importPlayability(playabilityFile, playabilityMap);
 
     QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
     QSqlQuery query (db);
 
-    QMap<QString, int> numAnagramsMap;
+    QMap<QString, qint64> numAnagramsMap;
 
     for (int length = 1; length <= MAX_WORD_LEN; ++length) {
         searchSpec.conditions[0].minValue = length;
@@ -261,7 +261,7 @@ CreateDatabaseThread::insertWords(QSqlDatabase& db, int& stepNum)
 
         // Insert words with length, combinations, hooks
         foreach (const QString& word, words) {
-            int playability = playabilityMap.value(word);
+            qint64 playability = playabilityMap.value(word);
             double combinations0 = letterBag.getNumCombinations(word, 0);
             double combinations1 = letterBag.getNumCombinations(word, 1);
             double combinations2 = letterBag.getNumCombinations(word, 2);
@@ -786,7 +786,7 @@ CreateDatabaseThread::getSubDefinition(const QString& word, const QString&
 //---------------------------------------------------------------------------
 int
 CreateDatabaseThread::importPlayability(const QString& filename,
-    QMap<QString, int>& playabilityMap) const
+    QMap<QString, qint64>& playabilityMap) const
 {
     playabilityMap.clear();
 
@@ -813,7 +813,7 @@ CreateDatabaseThread::importPlayability(const QString& filename,
         if (line.isEmpty() || (line.at(0) == '#'))
             continue;
         bool ok = false;
-        int playability = line.section(' ', 0, 0).toInt(&ok);
+        qint64 playability = line.section(' ', 0, 0).toLongLong(&ok);
         if (!ok)
             continue;
         QString word = line.section(' ', 1, 1);
