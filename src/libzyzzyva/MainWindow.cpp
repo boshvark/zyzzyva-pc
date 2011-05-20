@@ -31,6 +31,7 @@
 #include "DatabaseRebuildDialog.h"
 #include "DefinitionDialog.h"
 #include "DefineForm.h"
+#include "HelpDialog.h"
 #include "IntroForm.h"
 #include "JudgeDialog.h"
 #include "JudgeSelectDialog.h"
@@ -92,7 +93,8 @@ using namespace Defs;
 MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     : QMainWindow(parent, f), splashScreen(splash),
       wordEngine(new WordEngine()), settingsDialog(new SettingsDialog(this)),
-      aboutDialog(new AboutDialog(this))
+      aboutDialog(new AboutDialog(this)),
+      helpDialog(new HelpDialog(QString(), this))
 {
     setSplashMessage("Creating interface...");
 
@@ -379,6 +381,9 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     if (MainSettings::getDisplayWelcome())
         newIntroForm();
 
+    connect(helpDialog, SIGNAL(error(const QString&)),
+            SLOT(helpDialogError(const QString&)));
+
     splashScreen = 0;
     QTimer::singleShot(0, this, SLOT(displayLexiconError()));
 }
@@ -416,27 +421,6 @@ MainWindow::processArguments(const QStringList& args)
 {
     foreach (const QString& arg, args)
         fileOpenRequested(arg);
-}
-
-//---------------------------------------------------------------------------
-//  tryUpdateDataDir
-//
-//! Try updating the user data directory if it is currently set to the old
-//! hidden ".zyzzyva" directory.
-//---------------------------------------------------------------------------
-void
-MainWindow::tryUpdateUserDataDir()
-{
-    //QString dataDir = MainSettings::getUserDataDir();
-    ////qDebug("dataDir: |%s|", dataDir.toUtf8().constData());
-    //if (dataDir == Auxil::getHomeDir() + "/.zyzzyva") {
-    //    //qDebug("Hey buddy! Change your data directory!");
-
-    //    // Prompt user to change data directory to the new default
-    //    // (homeDir/Zyzzyva, not homeDir/.zyzzyva)
-
-    //    // Remember their response if they say no to the move!
-    //}
 }
 
 //---------------------------------------------------------------------------
@@ -1017,7 +1001,7 @@ MainWindow::displayAbout()
 void
 MainWindow::displayHelp()
 {
-    //helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
+    helpDialog->showPage(Auxil::getHelpDir() + "/index.html");
 }
 
 //---------------------------------------------------------------------------
@@ -1052,8 +1036,8 @@ MainWindow::displayLexiconError()
 void
 MainWindow::helpDialogError(const QString& message)
 {
-    //QString caption = "Help Display Error";
-    //QMessageBox::warning(this, caption, Auxil::dialogWordWrap(message));
+    QString caption = "Help Display Error";
+    QMessageBox::warning(this, caption, Auxil::dialogWordWrap(message));
 }
 
 //---------------------------------------------------------------------------
