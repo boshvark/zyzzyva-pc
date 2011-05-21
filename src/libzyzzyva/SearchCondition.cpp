@@ -269,6 +269,11 @@ SearchCondition::fromDomElement(const QDomElement& element)
             tmpCondition.stringValue =
                 Auxil::getUpdatedLexiconName(tmpCondition.stringValue);
         }
+
+        // If anything weird went wrong, bail out
+        if (tmpCondition.stringValue.isEmpty())
+            return false;
+
         break;
 
         case ProbabilityOrder:
