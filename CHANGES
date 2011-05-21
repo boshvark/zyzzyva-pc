@@ -1,3 +1,20 @@
+Version 2.1.3
+Released 2011-05-20, from /branches/2.1.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.1.3
+
+User-visible changes:
+ * Add CSW12 lexicon
+ * Add FISE2009 (Spanish) lexicon
+ * Rename several lexicons:
+   - CSW to CSW07
+   - OWL2+LWL to OWL2
+   - OSPD4+LWL to OSPD4
+   - OWL+LWL to OWL
+ * Many word definition fixes, including help from David Sutton and
+   Tapani Lindgren
+ * Change inner hook character from hyphen to center dot
+
+
 Version 2.1.2
 Released 2011-02-27, from /branches/2.1.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.1.2
