@@ -4,6 +4,7 @@ http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.1.4
 
 User-visible changes:
  * Fix a bug when loading saved quizzes with an obsolete lexicon name
+ * Rename judge subdirectories with obsolete lexicon names
 
 
 Version 2.1.3
