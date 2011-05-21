@@ -3,7 +3,7 @@
 //
 // A class to represent a quiz specification.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -206,8 +206,10 @@ QuizSpec::fromDomElement(const QDomElement& element, QString*)
         }
     }
 
-    if (element.hasAttribute(XML_TOP_LEXICON_ATTR))
-        tmpSpec.setLexicon(element.attribute(XML_TOP_LEXICON_ATTR));
+    if (element.hasAttribute(XML_TOP_LEXICON_ATTR)) {
+        tmpSpec.setLexicon(Auxil::getUpdatedLexiconName(
+            element.attribute(XML_TOP_LEXICON_ATTR)));
+    }
 
     QDomElement elem = element.firstChild().toElement();
     if (elem.isNull())
