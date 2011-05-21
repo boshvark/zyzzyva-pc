@@ -1961,6 +1961,13 @@ MainWindow::renameLexicon(const QString& oldName, const QString& newName)
         dir.rename(oldDir, newDir);
     }
 
+    // Move judge records
+    oldDir = Auxil::getUserDir() + "/judge/" + oldName;
+    newDir = Auxil::getUserDir() + "/judge/" + newName;
+    if (dir.exists(oldDir) && !dir.exists(newDir)) {
+        dir.rename(oldDir, newDir);
+    }
+
     // Move lexicon database
     QString oldDb = Auxil::getUserDir() + "/lexicons/" + oldName + ".db";
     QString newDb = Auxil::getUserDir() + "/lexicons/" + newName + ".db";
