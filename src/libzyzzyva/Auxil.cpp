@@ -1531,7 +1531,5 @@ Auxil::getVersionComponents(const QString& version, int& major, int& minor,
     major = re.capturedTexts().at(1).toInt();
     minor = re.capturedTexts().at(2).toInt();
     revision = re.capturedTexts().at(3).toInt();
-    qDebug("version components of |%s|: %d, %d, %d",
-        version.toUtf8().constData(), major, minor, revision);
     return true;
 }
