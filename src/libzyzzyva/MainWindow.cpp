@@ -315,7 +315,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     statusBar()->addWidget(messageLabel, 1);
 
     QFont detailsFont = qApp->font();
-    int detailsPoints = detailsFont.pointSize() - 4;
+    int detailsPoints = detailsFont.pointSize() - 1;
     if (detailsPoints < DETAILS_FONT_MIN_POINTS)
         detailsPoints = DETAILS_FONT_MIN_POINTS;
     detailsFont.setPointSize(detailsPoints);
