@@ -82,6 +82,8 @@ class JudgeDialog : public QDialog
     QTimer*         resultTimer;
     QTimer*         exitTimer;
     int             clearResultsHold;
+
+    int fontMultiplier;
 };
 
 #endif // ZYZZYVA_JUDGE_DIALOG_H

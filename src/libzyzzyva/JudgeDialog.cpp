@@ -30,6 +30,7 @@
 #include "Defs.h"
 #include <QApplication>
 #include <QDate>
+#include <QDesktopWidget>
 #include <QDir>
 #include <QFile>
 #include <QHBoxLayout>
@@ -39,17 +40,22 @@
 #include <QTextStream>
 #include <QVBoxLayout>
 
-const int FORM_FONT_PIXEL_SIZE = 55;
-const int LEXICON_FONT_PIXEL_SIZE = 40;
-const int TITLE_FONT_PIXEL_SIZE = 40;
-const int INSTRUCTION_FONT_PIXEL_SIZE = 40;
-const int COUNT_FONT_PIXEL_SIZE = 200;
-const int EXIT_FONT_PIXEL_SIZE = 30;
-const int COUNT_MARGIN = 30;
-const int INPUT_MARGIN = 30;
-const int RESULT_BORDER_WIDTH = 30;
-const int RESULT_MARGIN = 50;
-const int RESULT_SPACING = 100;
+// How many pixels to display for every 20 pixels of screen height
+const int FONT_PIXEL_DIVIDER = 20;
+const double FORM_FONT_PIXEL_SIZE = 1.5;
+const double LEXICON_FONT_PIXEL_SIZE = 1.0;
+const double TITLE_FONT_PIXEL_SIZE = 1.0;
+const double INSTRUCTION_FONT_PIXEL_SIZE = 1.0;
+const double COUNT_FONT_PIXEL_SIZE = 5.0;
+const double EXIT_FONT_PIXEL_SIZE = 0.75;
+const double COUNT_MARGIN = 0.75;
+const double COUNT_SPACING = 0.5;
+const double INPUT_MARGIN = 0.75;
+const double INPUT_SPACING = 0.5;
+const double RESULT_BORDER_WIDTH = 0.75;
+const double RESULT_MARGIN = 0.75;
+const double RESULT_SPACING = 0.75;
+
 const int CLEAR_COUNT_DELAY = 750;
 const int CLEAR_INPUT_DELAY = 15000;
 const int CLEAR_RESULTS_DELAY = 10000;
@@ -82,7 +88,8 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
                          Qt::WFlags f)
-    : QDialog(parent, f), engine(e), lexicon(lex), count(0), clearResultsHold(0)
+    : QDialog(parent, f), engine(e), lexicon(lex), count(0),
+    clearResultsHold(0), fontMultiplier(0)
 {
     countTimer = new QTimer(this);
     connect(countTimer, SIGNAL(timeout()), SLOT(displayInput()));
@@ -96,14 +103,18 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     exitTimer = new QTimer(this);
     connect(exitTimer, SIGNAL(timeout()), SLOT(clearExit()));
 
+    const int screenWidth = QApplication::desktop()->width();
+    const int screenHeight = QApplication::desktop()->height();
+    fontMultiplier = screenHeight / FONT_PIXEL_DIVIDER;
+
     QFont formFont = qApp->font();
-    formFont.setPixelSize(FORM_FONT_PIXEL_SIZE);
+    formFont.setPixelSize(int(FORM_FONT_PIXEL_SIZE * fontMultiplier));
 
     QFont instructionFont = qApp->font();
-    instructionFont.setPixelSize(INSTRUCTION_FONT_PIXEL_SIZE);
+    instructionFont.setPixelSize(int(INSTRUCTION_FONT_PIXEL_SIZE * fontMultiplier));
 
     QFont countFont = qApp->font();
-    countFont.setPixelSize(COUNT_FONT_PIXEL_SIZE);
+    countFont.setPixelSize(int(COUNT_FONT_PIXEL_SIZE * fontMultiplier));
     countFont.setBold(true);
 
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
@@ -120,8 +131,8 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     widgetStack->addWidget(countWidget);
 
     QVBoxLayout* countVlay = new QVBoxLayout(countWidget);
-    countVlay->setMargin(COUNT_MARGIN);
-    countVlay->setSpacing(20);
+    countVlay->setMargin(int(COUNT_MARGIN * fontMultiplier));
+    countVlay->setSpacing(int(COUNT_SPACING * fontMultiplier));
 
     countVlay->addStretch(1);
 
@@ -146,8 +157,8 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     widgetStack->addWidget(inputWidget);
 
     QVBoxLayout* inputVlay = new QVBoxLayout(inputWidget);
-    inputVlay->setMargin(INPUT_MARGIN);
-    inputVlay->setSpacing(20);
+    inputVlay->setMargin(int(INPUT_MARGIN * fontMultiplier));
+    inputVlay->setSpacing(int(INPUT_SPACING * fontMultiplier));
 
     inputInstLabel = new QLabel;
     inputInstLabel->setFont(instructionFont);
@@ -167,32 +178,36 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     resultWidget->setSizePolicy(QSizePolicy::Expanding,
                                 QSizePolicy::Expanding);
     resultWidget->setFrameStyle(QFrame::Box | QFrame::Plain);
-    resultWidget->setLineWidth(RESULT_BORDER_WIDTH);
+    resultWidget->setLineWidth(int(RESULT_BORDER_WIDTH * fontMultiplier));
     widgetStack->addWidget(resultWidget);
 
     QVBoxLayout* resultVlay = new QVBoxLayout(resultWidget);
-    resultVlay->setMargin(RESULT_MARGIN);
-    resultVlay->setSpacing(RESULT_SPACING);
+    resultVlay->setMargin(int(RESULT_MARGIN * fontMultiplier));
+    resultVlay->setSpacing(int(RESULT_SPACING * fontMultiplier));
 
-    resultVlay->addStretch(1);
+    //resultVlay->addStretch(1);
 
     resultPixmapLabel = new QLabel;
     resultPixmapLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     resultVlay->addWidget(resultPixmapLabel);
+    resultVlay->setStretchFactor(resultPixmapLabel, 1);
 
     resultLabel = new QLabel;
     resultLabel->setFont(formFont);
     resultLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     resultLabel->setWordWrap(true);
+    resultLabel->setSizePolicy(QSizePolicy::Expanding,
+        QSizePolicy::Expanding);
     resultVlay->addWidget(resultLabel);
 
     QFont lexiconFont = qApp->font();
-    lexiconFont.setPixelSize(LEXICON_FONT_PIXEL_SIZE);
+    lexiconFont.setPixelSize(int(LEXICON_FONT_PIXEL_SIZE * fontMultiplier));
 
     resultLexiconLabel = new QLabel;
     resultLexiconLabel->setFont(lexiconFont);
     resultLexiconLabel->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-    resultLexiconLabel->setWordWrap(true);
+    resultLexiconLabel->setSizePolicy(QSizePolicy::Expanding,
+        QSizePolicy::Fixed);
     resultVlay->addWidget(resultLexiconLabel);
 
     QWidget* inputTitleWidget = createTitleWidget();
@@ -388,6 +403,7 @@ JudgeDialog::judgeWord()
     pal.setColor(QPalette::Foreground, resultColor);
     resultWidget->setPalette(pal);
     resultLabel->setPalette(pal);
+    resultLexiconLabel->setPalette(pal);
 
     ++clearResultsHold;
 
@@ -494,7 +510,7 @@ void
 JudgeDialog::displayExit()
 {
     countInstLabel->setText(COUNT_INSTRUCTION_MESSAGE +
-        "\n\nTo exit, hold SHIFT and press the ESC key.");
+        "\n[ To exit, hold SHIFT and press the ESC key. ]");
     exitTimer->start(CLEAR_EXIT_DELAY);
 }
 
@@ -609,7 +625,7 @@ QWidget*
 JudgeDialog::createTitleWidget()
 {
     QFont titleFont = qApp->font();
-    titleFont.setPixelSize(TITLE_FONT_PIXEL_SIZE);
+    titleFont.setPixelSize(int(TITLE_FONT_PIXEL_SIZE * fontMultiplier));
 
     QWidget* widget = new QWidget;
 
