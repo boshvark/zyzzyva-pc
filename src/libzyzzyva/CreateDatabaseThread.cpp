@@ -62,8 +62,11 @@ CreateDatabaseThread::runPrivate()
         QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE",
                                                     DB_CONNECTION_NAME);
         db.setDatabaseName(dbFilename);
-        if (!db.open())
-            return;
+        if (!db.open()) {
+            error = QString("Unable to open database file '%1':\n%2").arg(
+                dbFilename).arg(db.lastError().text());
+            cancel();
+        }
 
         // Start at 1% progress
         emit(steps(100));

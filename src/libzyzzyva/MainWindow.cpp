@@ -1364,8 +1364,6 @@ MainWindow::rebuildDatabase(const QString& lexicon)
 
     QApplication::setOverrideCursor(Qt::WaitCursor);
 
-    // FIXME: return an error if something actually goes wrong!
-
     thread->start();
     dialog->exec();
     thread->quit();
@@ -1373,19 +1371,29 @@ MainWindow::rebuildDatabase(const QString& lexicon)
 
     QApplication::restoreOverrideCursor();
 
-    if (thread->getCancelled()) {
+    bool success = true;
+    if (!thread->getError().isEmpty()) {
+        QMessageBox::information(this, "Unable to Create Database",
+            thread->getError());
+        success = false;
+    }
+
+    else if (thread->getCancelled()) {
         QMessageBox::information(this, "Database Not Created",
-                                 "Database creation cancelled.");
+            "Database creation cancelled.");
+        success = false;
+    }
+
+    if (!success) {
         if (dbFile.exists())
             dbFile.remove();
         if (tmpDbFile.exists())
             tmpDbFile.rename(dbFilename);
-        return false;
     }
 
     delete thread;
     delete dialog;
-    return true;
+    return success;
 }
 
 //---------------------------------------------------------------------------
