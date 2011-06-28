@@ -84,7 +84,7 @@ QuizSpec::asXml() const
 
     //// XXX: There should be a programmatic way to write the <?xml?> header
     //// based on the QDomImplementation, shouldn't there?
-    return QString("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n") +
+    return QString("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n") +
         document.toString();
 }
 
