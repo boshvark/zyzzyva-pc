@@ -3,7 +3,7 @@
 //
 // A form for specifying a search specification.
 //
-// Copyright 2005-2007, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -396,7 +396,7 @@ SearchSpecForm::saveSearch()
     // XXX: There should be a programmatic way to write the <?xml?> header
     // based on the QDomImplementation, shouldn't there?
     QTextStream stream (&file);
-    stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+    stream << "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n"
         << document.toString();
 }
 
