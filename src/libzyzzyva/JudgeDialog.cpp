@@ -107,7 +107,7 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     Q_CHECK_PTR(exitTimer);
     connect(exitTimer, SIGNAL(timeout()), SLOT(clearExit()));
 
-    const int screenWidth = QApplication::desktop()->width();
+    //const int screenWidth = QApplication::desktop()->width();
     const int screenHeight = QApplication::desktop()->height();
     fontMultiplier = screenHeight / FONT_PIXEL_DIVIDER;
 
