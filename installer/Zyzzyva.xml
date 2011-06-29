@@ -118,6 +118,44 @@
                 <folder>
                     <description>Program Files</description>
                     <destination>${installdir}</destination>
+                    <name>programfileslinux64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/zyzzyva.top</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/zyzzyva</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/README</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/LICENSE</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/COPYING</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/CHANGES</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/AUTHORS</origin>
+                        </distributionFile>
+                        <distributionDirectory>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/bin</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/data</origin>
+                        </distributionDirectory>
+                        <distributionDirectory>
+                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/images</origin>
+                        </distributionDirectory>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Program Files</description>
+                    <destination>${installdir}</destination>
                     <name>programfileswindows</name>
                     <platforms>windows</platforms>
                     <distributionFileList>
