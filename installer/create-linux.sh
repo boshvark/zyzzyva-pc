@@ -28,7 +28,13 @@ set -e
 QTVER=4.3.2
 QTDIR=/usr/local/Trolltech/Qt-$QTVER
 INSTDIR=installer
-PLATFORM=linux
+
+if [ "$(uname -m)" = "x86_64" ]; then
+    PLATFORM=linux-x64
+else 
+    PLATFORM=linux
+fi
+
 OUTDIR=$INSTDIR/$PLATFORM
 
 $QTDIR/bin/qmake
