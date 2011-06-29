@@ -3,7 +3,7 @@
 //
 // The settings dialog for the word study application.
 //
-// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -722,7 +722,12 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     showHookParentsCbox = new QCheckBox("Show inner hooks");
     Q_CHECK_PTR(showHookParentsCbox);
+    connect(showHookParentsCbox, SIGNAL(toggled(bool)),
+            SLOT(showHookParentsCboxToggled(bool)));
     wordListDisplayVlay->addWidget(showHookParentsCbox);
+
+    useHookParentHyphensCbox = new QCheckBox("Display inner hooks as hyphens");
+    wordListDisplayVlay->addWidget(useHookParentHyphensCbox);
 
     showDefinitionCbox = new QCheckBox("Show definitions");
     Q_CHECK_PTR(showDefinitionCbox);
@@ -968,10 +973,14 @@ SettingsDialog::refreshSettings()
     showPlayabilityOrderCbox->setChecked(
         MainSettings::getWordListShowPlayabilityOrder());
     showHooksCbox->setChecked(MainSettings::getWordListShowHooks());
-    showHookParentsCbox->setChecked(MainSettings::getWordListShowHookParents());
+    bool showHookParents = MainSettings::getWordListShowHookParents();
+    showHookParentsCbox->setChecked(showHookParents);
+    useHookParentHyphensCbox->setChecked(
+        MainSettings::getWordListUseHookParentHyphens());
     showDefinitionCbox->setChecked(MainSettings::getWordListShowDefinitions());
     lowerCaseWildcardsCbox->setChecked(
         MainSettings::getWordListLowerCaseWildcards());
+    showHookParentsCboxToggled(showHookParents);
 
     bool useLexiconStyles = MainSettings::getWordListUseLexiconStyles();
     lexiconStyleCbox->setChecked(useLexiconStyles);
@@ -1052,6 +1061,8 @@ SettingsDialog::writeSettings()
         showPlayabilityOrderCbox->isChecked());
     MainSettings::setWordListShowHooks(showHooksCbox->isChecked());
     MainSettings::setWordListShowHookParents(showHookParentsCbox->isChecked());
+    MainSettings::setWordListUseHookParentHyphens(
+        useHookParentHyphensCbox->isChecked());
     MainSettings::setWordListShowDefinitions(showDefinitionCbox->isChecked());
     MainSettings::setWordListLowerCaseWildcards(
         lowerCaseWildcardsCbox->isChecked());
@@ -1244,6 +1255,20 @@ void
 SettingsDialog::judgeSaveLogCboxToggled(bool on)
 {
     judgeLogDirWidget->setEnabled(on);
+}
+
+//---------------------------------------------------------------------------
+//  showHookParentsCboxToggled
+//
+//! Slot called when the Show Inner Hooks check box is toggled. Enable or
+//! disable the Show Inner Hooks As Hyphens check box.
+//
+//! @param on true if the check box is on, false if it is off
+//---------------------------------------------------------------------------
+void
+SettingsDialog::showHookParentsCboxToggled(bool on)
+{
+    useHookParentHyphensCbox->setEnabled(on);
 }
 
 //---------------------------------------------------------------------------

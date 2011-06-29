@@ -3,7 +3,7 @@
 //
 // The main settings for the word study application.
 //
-// Copyright 2005-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -197,6 +197,10 @@ class MainSettings
         return instance->wordListShowHookParents; }
     static void setWordListShowHookParents(bool b) {
         instance->wordListShowHookParents = b; }
+    static bool getWordListUseHookParentHyphens() {
+        return instance->wordListUseHookParentHyphens; }
+    static void setWordListUseHookParentHyphens(bool b) {
+        instance->wordListUseHookParentHyphens = b; }
     static bool getWordListShowDefinitions() {
         return instance->wordListShowDefinitions; }
     static void setWordListShowDefinitions(bool b) {
@@ -228,6 +232,7 @@ class MainSettings
                      wordListSortByPlayabilityOrder(false),
                      wordListShowHooks(false),
                      wordListShowHookParents(false),
+                     wordListUseHookParentHyphens(false),
                      wordListShowDefinitions(false),
                      wordListUseLexiconStyles(false), judgeSaveLog(true) { }
     ~MainSettings() { }
@@ -285,6 +290,7 @@ class MainSettings
     bool wordListShowPlayabilityOrder;
     bool wordListShowHooks;
     bool wordListShowHookParents;
+    bool wordListUseHookParentHyphens;
     bool wordListShowDefinitions;
     bool wordListLowerCaseWildcards;
     bool wordListUseLexiconStyles;
