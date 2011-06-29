@@ -42,8 +42,8 @@ make
 
 mkdir -p $OUTDIR/bin
 
-cp /usr/lib/libstdc++.so.6 $OUTDIR/bin
-cp /lib/libgcc_s.so.1 $OUTDIR/bin
+cp $(find /usr/lib -name libstdc++.so.6 | head -n 1) $OUTDIR/bin
+cp $(find /lib -name libgcc_s.so.1 | head -n 1) $OUTDIR/bin
 cp -d $QTDIR/lib/libQt{AssistantClient,Core,Gui,Network,Sql,Xml}.so* $OUTDIR/bin
 rm $OUTDIR/bin/*.debug
 cp -d $QTDIR/bin/assistant $OUTDIR/bin
