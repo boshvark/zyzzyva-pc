@@ -31,6 +31,7 @@
 using namespace std;
 
 const QChar WordTableModel::PARENT_HOOK_CHAR = QChar(0x00b7);
+const QChar PARENT_HOOK_HYPHEN_CHAR = '-';
 const QString WILDCARD_MATCH_HEADER = "?";
 const QString PROBABILITY_ORDER_HEADER = "Prob-%1";
 const QString PLAYABILITY_ORDER_HEADER = "Play";
@@ -466,10 +467,13 @@ WordTableModel::data(const QModelIndex& index, int role) const
                                 wordEngine->getIsFrontHook(lexicon, wordUpper),
                                 wordEngine->getIsBackHook(lexicon, wordUpper));
                         }
-                        str = (wordItem.getFrontParentHook() ? PARENT_HOOK_CHAR
-                                : QChar(' '))
+                        QChar hookChar =
+                            (MainSettings::getWordListUseHookParentHyphens() ?
+                                PARENT_HOOK_HYPHEN_CHAR : PARENT_HOOK_CHAR);
+                        str = (wordItem.getFrontParentHook() ? hookChar
+                               : QChar(' '))
                             + str
-                            + (wordItem.getBackParentHook() ? PARENT_HOOK_CHAR
+                            + (wordItem.getBackParentHook() ? hookChar
                                : QChar(' '));
                     }
                     if (MainSettings::getWordListUseLexiconStyles()) {

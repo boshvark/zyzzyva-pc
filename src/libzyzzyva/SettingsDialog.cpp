@@ -605,7 +605,12 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
     wordListDisplayVlay->addWidget(showHooksCbox);
 
     showHookParentsCbox = new QCheckBox("Show inner hooks");
+    connect(showHookParentsCbox, SIGNAL(toggled(bool)),
+            SLOT(showHookParentsCboxToggled(bool)));
     wordListDisplayVlay->addWidget(showHookParentsCbox);
+
+    useHookParentHyphensCbox = new QCheckBox("Display inner hooks as hyphens");
+    wordListDisplayVlay->addWidget(useHookParentHyphensCbox);
 
     showDefinitionCbox = new QCheckBox("Show definitions");
     wordListDisplayVlay->addWidget(showDefinitionCbox);
@@ -838,10 +843,14 @@ SettingsDialog::refreshSettings()
     showPlayabilityOrderCbox->setChecked(
         MainSettings::getWordListShowPlayabilityOrder());
     showHooksCbox->setChecked(MainSettings::getWordListShowHooks());
-    showHookParentsCbox->setChecked(MainSettings::getWordListShowHookParents());
+    bool showHookParents = MainSettings::getWordListShowHookParents();
+    showHookParentsCbox->setChecked(showHookParents);
+    useHookParentHyphensCbox->setChecked(
+        MainSettings::getWordListUseHookParentHyphens());
     showDefinitionCbox->setChecked(MainSettings::getWordListShowDefinitions());
     lowerCaseWildcardsCbox->setChecked(
         MainSettings::getWordListLowerCaseWildcards());
+    showHookParentsCboxToggled(showHookParents);
 
     bool useLexiconStyles = MainSettings::getWordListUseLexiconStyles();
     lexiconStyleCbox->setChecked(useLexiconStyles);
@@ -922,6 +931,8 @@ SettingsDialog::writeSettings()
         showPlayabilityOrderCbox->isChecked());
     MainSettings::setWordListShowHooks(showHooksCbox->isChecked());
     MainSettings::setWordListShowHookParents(showHookParentsCbox->isChecked());
+    MainSettings::setWordListUseHookParentHyphens(
+        useHookParentHyphensCbox->isChecked());
     MainSettings::setWordListShowDefinitions(showDefinitionCbox->isChecked());
     MainSettings::setWordListLowerCaseWildcards(
         lowerCaseWildcardsCbox->isChecked());
@@ -1113,6 +1124,20 @@ void
 SettingsDialog::judgeSaveLogCboxToggled(bool on)
 {
     judgeLogDirWidget->setEnabled(on);
+}
+
+//---------------------------------------------------------------------------
+//  showHookParentsCboxToggled
+//
+//! Slot called when the Show Inner Hooks check box is toggled. Enable or
+//! disable the Show Inner Hooks As Hyphens check box.
+//
+//! @param on true if the check box is on, false if it is off
+//---------------------------------------------------------------------------
+void
+SettingsDialog::showHookParentsCboxToggled(bool on)
+{
+    useHookParentHyphensCbox->setEnabled(on);
 }
 
 //---------------------------------------------------------------------------

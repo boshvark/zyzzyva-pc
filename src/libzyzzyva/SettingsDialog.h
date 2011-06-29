@@ -3,7 +3,7 @@
 //
 // The settings dialog for the word study application.
 //
-// Copyright 2004-2008, 2010 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -61,6 +61,7 @@ class SettingsDialog : public QDialog
     void themeCboxToggled(bool on);
     void autoCheckCboxToggled(bool on);
     void judgeSaveLogCboxToggled(bool on);
+    void showHookParentsCboxToggled(bool on);
     void chooseFontButtonClicked(int button);
     void chooseQuizBackgroundColorButtonClicked();
     void timeoutDisableInputCboxToggled(bool on);
@@ -130,6 +131,7 @@ class SettingsDialog : public QDialog
     QCheckBox*   showProbabilityOrderCbox;
     QCheckBox*   showPlayabilityOrderCbox;
     QCheckBox*   showHookParentsCbox;
+    QCheckBox*   useHookParentHyphensCbox;
     QCheckBox*   showHooksCbox;
     QCheckBox*   showDefinitionCbox;
     QCheckBox*   lowerCaseWildcardsCbox;
