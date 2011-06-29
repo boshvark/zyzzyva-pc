@@ -43,6 +43,7 @@ class CreateDatabaseThread : public QThread
     ~CreateDatabaseThread() { }
 
     bool getCancelled() { return cancelled; }
+    QString getError() { return error; }
 
     public slots:
     void cancel();
@@ -79,6 +80,7 @@ class CreateDatabaseThread : public QThread
     QString dbFilename;
     QString definitionFilename;
     bool cancelled;
+    QString error;
     QMap<QString, QString> definitions;
 };
 
