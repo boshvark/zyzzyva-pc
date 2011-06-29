@@ -213,7 +213,11 @@ MainSettings::readSettings()
     QMutableListIterator<QString> it (instance->autoImportLexicons);
     while (it.hasNext()) {
         const QString& lexicon = it.next();
-        it.setValue(Auxil::getUpdatedLexiconName(lexicon));
+        QString updatedLexicon = Auxil::getUpdatedLexiconName(lexicon);
+        if (updatedLexicon.isEmpty())
+            it.remove();
+        else
+            it.setValue(updatedLexicon);
     }
 
     instance->autoImportFile
