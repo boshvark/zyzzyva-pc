@@ -238,12 +238,19 @@
         <substitute>
             <files>${installdir}/zyzzyva</files>
             <type>regexp</type>
+            <ruleEvaluationLogic>or</ruleEvaluationLogic>
             <ruleList>
                 <compareText>
                     <logic>equals</logic>
                     <nocase>0</nocase>
                     <text>${platform_name}</text>
                     <value>linux</value>
+                </compareText>
+                <compareText>
+                    <logic>equals</logic>
+                    <nocase>0</nocase>
+                    <text>${platform_name}</text>
+                    <value>linux-x64</value>
                 </compareText>
             </ruleList>
             <substitutionList>
