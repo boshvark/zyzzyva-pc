@@ -3,7 +3,7 @@
 #
 # Common configuration include file for Zyzzyva using qmake.
 #
-# Copyright 2006 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #

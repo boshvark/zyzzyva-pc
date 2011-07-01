@@ -3,7 +3,7 @@
 #
 # Build configuration file for Zyzzyva tests using qmake.
 #
-# Copyright 2006, 2008 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 #
 # This file is part of Zyzzyva.
 #
