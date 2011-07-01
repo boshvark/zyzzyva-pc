@@ -41,6 +41,9 @@ CONFIG = $$unique(CONFIG)
 unix {
     DEFINES += Z_UNIX
 }
+linux-g++|linux-g++-64 {
+    DEFINES += Z_LINUX
+}
 win32 {
     DEFINES += Z_W32
 }
