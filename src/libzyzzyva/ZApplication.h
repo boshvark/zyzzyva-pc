@@ -3,7 +3,7 @@
 //
 // A class derived from QApplication.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -38,13 +38,17 @@ class ZApplication : public QApplication
         : QApplication(argc, argv, GUIenabled) { }
     ZApplication(int& argc, char** argv, Type type)
         : QApplication(argc, argv, type) { }
+
+#if defined(Z_UNIX) and not defined (Z_OSX)
     // Only available on X11
-    //ZApplication(Display* display, Qt::HANDLE visual = 0,
-    //             Qt::HANDLE colormap = 0)
-    //    : QApplication(display, visual, colormap) { }
-    //ZApplication(Display* display, int& argc, char** argv,
-    //             Qt::HANDLE visual = 0, Qt::HANDLE colormap = 0)
-    //    : QApplication(display, argc, argv, visual, colormap) { }
+    ZApplication(Display* display, Qt::HANDLE visual = 0,
+                 Qt::HANDLE colormap = 0)
+        : QApplication(display, visual, colormap) { }
+    ZApplication(Display* display, int& argc, char** argv,
+                 Qt::HANDLE visual = 0, Qt::HANDLE colormap = 0)
+        : QApplication(display, argc, argv, visual, colormap) { }
+#endif
+
     virtual ~ZApplication() { }
 
     virtual bool event(QEvent* e);
