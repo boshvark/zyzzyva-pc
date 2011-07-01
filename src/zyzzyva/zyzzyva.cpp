@@ -3,7 +3,7 @@
 //
 // The main Zyzzyva program.
 //
-// Copyright 2004-2008, 2010-2011 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -70,6 +70,7 @@ int main(int argc, char** argv)
         window->processArguments(args);
     }
 
+#if not defined Z_LINUX
     // Handle file open requests
     QStringList files = app.getFileOpenRequests();
     foreach (const QString& file, files) {
@@ -79,6 +80,7 @@ int main(int argc, char** argv)
 
     QObject::connect(&app, SIGNAL(fileOpenRequested(const QString&)),
                      window, SLOT(fileOpenRequested(const QString&)));
+#endif
 
     return app.exec();
 }
