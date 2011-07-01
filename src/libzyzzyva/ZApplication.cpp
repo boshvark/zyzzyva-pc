@@ -3,7 +3,7 @@
 //
 // A class derived from QApplication.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -26,6 +26,8 @@
 #include <QFileOpenEvent>
 
 #include <QMessageBox>
+
+#if not defined Z_LINUX
 
 //---------------------------------------------------------------------------
 //  keyPressEvent
@@ -54,3 +56,5 @@ ZApplication::event(QEvent* e)
         return QApplication::event(e);
     }
 }
+
+#endif
