@@ -21,7 +21,7 @@
     <defaultInstallationMode></defaultInstallationMode>
     <defaultUnixDirectoryPermissions>755</defaultUnixDirectoryPermissions>
     <defaultUnixFilePermissions>644</defaultUnixFilePermissions>
-    <description>One-line description of your software</description>
+    <description>The Last Word in Word Study</description>
     <outputDirectory>/Users/mthelen/dev/zyzzyva-install</outputDirectory>
     <projectSchemaVersion>1.2</projectSchemaVersion>
     <saveRelativePaths>0</saveRelativePaths>
@@ -29,11 +29,11 @@
     <slideShowTiming>5</slideShowTiming>
     <startMenuGroupName>${product_fullname} ${product_version}</startMenuGroupName>
     <style>standard</style>
-    <summary>Place here a detailed description of your software</summary>
+    <summary>${product_fullname} is a word study program written by Michael Thelen.</summary>
     <uninstallerDirectory>${installdir}</uninstallerDirectory>
     <uninstallerName></uninstallerName>
     <validatorProgram></validatorProgram>
-    <vendor>Name of your company</vendor>
+    <vendor>Boshvark Software, LLC</vendor>
     <componentList>
         <component>
             <name>default</name>

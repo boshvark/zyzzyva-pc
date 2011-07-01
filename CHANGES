@@ -1,3 +1,17 @@
+Version 2.1.5
+Released 2011-07-01, from /branches/2.1.x
+http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.1.5
+
+User-visible changes:
+ * Account for screen size when displaying Word Judge
+ * Add user preference for hyphens to denote inner hooks
+ * Enlarge CSW copyright notice
+ * Fix a bug when loading saved searches and quizzes containing umlauts
+ * Fix a bug that caused blank lexicon names to appear in lexicon list
+ * Fix multiple bugs that caused failures on 64-bit Linux
+ * Word definition fixes
+
+
 Version 2.1.4
 Released 2011-05-21, from /branches/2.1.x
 http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/2.1.4

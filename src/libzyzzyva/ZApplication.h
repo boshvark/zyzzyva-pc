@@ -3,7 +3,7 @@
 //
 // A class derived from QApplication.
 //
-// Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
 //
 // This file is part of Zyzzyva.
 //
@@ -28,6 +28,14 @@
 #include <QApplication>
 #include <QStringList>
 
+// Admitting defeat for now: ZApplication causes a crash on certain Linux
+// machines and I haven't quite figured out why. So I'm disabling the magic
+// file-loading on Linux that ZApplication provides.
+#if defined Z_UNIX and not defined Z_OSX
+#define Z_LINUX
+typedef QApplication ZApplication;
+#else
+
 class ZApplication : public QApplication
 {
     Q_OBJECT
@@ -38,13 +46,17 @@ class ZApplication : public QApplication
         : QApplication(argc, argv, GUIenabled) { }
     ZApplication(int& argc, char** argv, Type type)
         : QApplication(argc, argv, type) { }
+
+#if defined Z_LINUX
     // Only available on X11
-    //ZApplication(Display* display, Qt::HANDLE visual = 0,
-    //             Qt::HANDLE colormap = 0)
-    //    : QApplication(display, visual, colormap) { }
-    //ZApplication(Display* display, int& argc, char** argv,
-    //             Qt::HANDLE visual = 0, Qt::HANDLE colormap = 0)
-    //    : QApplication(display, argc, argv, visual, colormap) { }
+    ZApplication(Display* display, Qt::HANDLE visual = 0,
+                 Qt::HANDLE colormap = 0)
+        : QApplication(display, visual, colormap) { }
+    ZApplication(Display* display, int& argc, char** argv,
+                 Qt::HANDLE visual = 0, Qt::HANDLE colormap = 0)
+        : QApplication(display, argc, argv, visual, colormap) { }
+#endif
+
     virtual ~ZApplication() { }
 
     virtual bool event(QEvent* e);
@@ -58,5 +70,7 @@ class ZApplication : public QApplication
     private:
     QStringList fileOpenRequests;
 };
+
+#endif
 
 #endif // ZYZZYVA_APPLICATION_H
