@@ -31,8 +31,7 @@
 // Admitting defeat for now: ZApplication causes a crash on certain Linux
 // machines and I haven't quite figured out why. So I'm disabling the magic
 // file-loading on Linux that ZApplication provides.
-#if defined Z_UNIX and not defined Z_OSX
-#define Z_LINUX
+#if defined Z_LINUX
 typedef QApplication ZApplication;
 #else
 
