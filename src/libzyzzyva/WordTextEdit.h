@@ -5,7 +5,7 @@
 // does nothing special.  It only exists so objects of this class can be
 // distinguished from other QTextEdit objects when applying font settings.
 //
-// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

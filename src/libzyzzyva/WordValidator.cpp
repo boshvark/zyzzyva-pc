@@ -3,7 +3,7 @@
 //
 // A validator for ensuring words are well-formed.
 //
-// Copyright 2004-2011 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

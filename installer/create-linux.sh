@@ -4,7 +4,7 @@
 #
 # Create a Linux directory for the installer to use.
 #
-# Copyright 2006, 2007, 2008, 2009, 2010 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2006-2012 Boshvark Software, LLC.
 #
 # This file is part of Zyzzyva.
 #

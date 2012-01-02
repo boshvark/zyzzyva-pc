@@ -3,7 +3,7 @@
 //
 // An enumeration of word variation types.
 //
-// Copyright 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

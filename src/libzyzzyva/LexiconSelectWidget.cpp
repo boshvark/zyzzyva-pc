@@ -3,7 +3,7 @@
 //
 // A simple widget for selecting a lexicon from the available lexicons.
 //
-// Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

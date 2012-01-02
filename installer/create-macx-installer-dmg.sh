@@ -4,7 +4,7 @@
 #
 # Create a disk image file for the Mac OS X installer.
 #
-# Copyright 2006, 2007 Michael W Thelen <mthelen@gmail.com>.
+# Copyright 2006-2012 Boshvark Software, LLC.
 #
 # This file is part of Zyzzyva.
 #

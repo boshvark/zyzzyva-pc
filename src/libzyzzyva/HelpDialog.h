@@ -3,7 +3,7 @@
 //
 // A help browser dialog.
 //
-// Copyright 2005, 2007 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

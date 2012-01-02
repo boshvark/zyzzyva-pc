@@ -3,7 +3,7 @@
 //
 // A base class for main action forms.
 //
-// Copyright 2005-2011 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2005-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

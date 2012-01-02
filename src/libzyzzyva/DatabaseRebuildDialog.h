@@ -3,7 +3,7 @@
 //
 // A dialog for specifying lexicon databases to be rebuilt.
 //
-// Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //
