@@ -6,7 +6,7 @@
 // class can be distinguished from other QTextEdit objects when applying font
 // settings.
 //
-// Copyright 2004, 2005, 2007, 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

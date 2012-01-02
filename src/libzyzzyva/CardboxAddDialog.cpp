@@ -3,7 +3,7 @@
 //
 // A dialog for adding words to the cardbox system.
 //
-// Copyright 2006-2011 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2006-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

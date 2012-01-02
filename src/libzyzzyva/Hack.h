@@ -4,7 +4,7 @@
 // A file for temporary hacks.  If any source files actually include this
 // file, something is wrong.
 //
-// Copyright 2008 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

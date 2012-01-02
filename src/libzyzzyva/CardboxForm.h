@@ -3,7 +3,7 @@
 //
 // A form for querying and editing the contents of the cardbox system.
 //
-// Copyright 2007-2011 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2007-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

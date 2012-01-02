@@ -3,7 +3,7 @@
 //
 // A widget for specifying a lexicon style.
 //
-// Copyright 2008-2011 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2008-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //

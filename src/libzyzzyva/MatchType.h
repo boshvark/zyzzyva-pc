@@ -3,7 +3,7 @@
 //
 // An enumeration of match types.
 //
-// Copyright 2004, 2005 Michael W Thelen <mthelen@gmail.com>.
+// Copyright 2004-2012 Boshvark Software, LLC.
 //
 // This file is part of Zyzzyva.
 //
