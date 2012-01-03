@@ -650,16 +650,16 @@ WordEngine::applyPostConditions(const QString& lexicon,
                 if (valueMap.isEmpty()) {
                     LetterBag bag;
                     foreach (const QString& word, returnList) {
-                        // FIXME: change this radix for new probability
-                        // sorting - leave alone for old probability sorting
                         QString radix;
                         QString wordUpper = word.toUpper();
-                        radix.sprintf("%09.0f", 1e9 - 1 -
-                            bag.getNumCombinations(wordUpper, probNumBlanks));
+                        int combinations =
+                            bag.getNumCombinations(wordUpper, probNumBlanks);
+                        radix.sprintf("%018lld", 999999999999999999LL -
+                            combinations);
                         // Legacy probability order limits are sorted
                         // alphabetically, not by alphagram
                         if (!legacyProbCondition)
-                            radix += Auxil::getAlphagram(wordUpper);
+                            radix += Auxil::getAlphagram(wordUpper) + ":";
                         radix += wordUpper;
                         valueMap.insert(radix, word);
                     }
@@ -695,10 +695,10 @@ WordEngine::applyPostConditions(const QString& lexicon,
 
                 while (query.next()) {
                     QString word = origCase[query.value(0).toString()];
-                    int playability = query.value(1).toInt();
+                    qint64 playability = query.value(1).toLongLong();
                     QString radix;
                     QString wordUpper = word.toUpper();
-                    radix.sprintf("%09.0f", 1e9 - 1 - playability);
+                    radix.sprintf("%018lld", 999999999999999999LL - playability);
                     radix += Auxil::getAlphagram(wordUpper) + ":";
                     radix += wordUpper;
                     playValueMap.insert(radix, word);
@@ -711,18 +711,18 @@ WordEngine::applyPostConditions(const QString& lexicon,
 
             // Allow Lax matches only up to hard Min limit
             QString minRadix = keys[min];
-            QString minValue = minRadix.left(9);
+            QString minValue = minRadix.left(18);
             while ((min > 0) && (min > limitMin)) {
-                if (minValue != keys[min - 1].left(9))
+                if (minValue != keys[min - 1].left(18))
                     break;
                 --min;
             }
 
             // Allow Lax matches only up to hard Max limit
             QString maxRadix = keys[max];
-            QString maxValue = maxRadix.left(9);
+            QString maxValue = maxRadix.left(18);
             while ((max < keys.size() - 1) && (max < limitMax)) {
-                if (maxValue != keys[max + 1].left(9))
+                if (maxValue != keys[max + 1].left(18))
                     break;
                 ++max;
             }
@@ -1207,7 +1207,7 @@ WordEngine::addToCache(const QString& lexicon, const QStringList& words) const
         info.isBackHook           = query.value(placeNum++).toBool();
         info.lexiconSymbols       = query.value(placeNum++).toString();
         info.definition           = query.value(placeNum++).toString();
-        info.playability          = query.value(placeNum++).toInt();
+        info.playability          = query.value(placeNum++).toLongLong();
 
         ValueOrder playOrder;
         playOrder.valueOrder    = query.value(placeNum++).toInt();
@@ -1515,7 +1515,7 @@ WordEngine::getNumAnagrams(const QString& lexicon, const QString& word) const
 //! @param word the word
 //! @return the playability value
 //---------------------------------------------------------------------------
-int
+qint64
 WordEngine::getPlayabilityValue(const QString& lexicon, const QString& word)
     const
 {

@@ -67,7 +67,7 @@ class WordEngine : public QObject
         bool isBackHook;
         QString lexiconSymbols;
         QString definition;
-        int playability;
+        qint64 playability;
         ValueOrder playabilityOrder;
         QMap<int, ValueOrder> blankProbabilityOrder;
     };
@@ -82,7 +82,7 @@ class WordEngine : public QObject
         QMap<QString, QMultiMap<QString, QString> > definitions;
         QMap<int, QStringList> stems;
         QMap<QString, int> numAnagramsMap;
-        QMap<QString, int> playabilityMap;
+        QMap<QString, qint64> playabilityMap;
         QMap<int, QSet<QString> > stemAlphagrams;
         mutable QMap<QString, WordInfo> wordCache;
         WordGraph* graph;
@@ -122,7 +122,7 @@ class WordEngine : public QObject
         const;
     QString getBackHookLetters(const QString& lexicon, const QString& word)
         const;
-    int getPlayabilityValue(const QString& lexicon, const QString& word)
+    qint64 getPlayabilityValue(const QString& lexicon, const QString& word)
         const;
     int getPlayabilityOrder(const QString& lexicon, const QString& word)
         const;

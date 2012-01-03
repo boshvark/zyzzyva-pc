@@ -63,14 +63,14 @@ class WordTableModel : public QAbstractTableModel
         bool getFrontParentHook() const { return frontParentHook; }
         bool getBackParentHook() const { return backParentHook; }
         int getProbabilityOrder() const { return probabilityOrder; }
-        int getPlayabilityValue() const { return playabilityValue; }
+        qint64 getPlayabilityValue() const { return playabilityValue; }
         int getPlayabilityOrder() const { return playabilityOrder; }
         QString getLexiconSymbols() const { return lexiconSymbols; }
         void setWord(const QString& w) { word = w; }
         void setType(WordType t) { type = t; }
         void setWildcard(const QString& w) { wildcard = w; }
         void setProbabilityOrder(int p);
-        void setPlayabilityValue(int p);
+        void setPlayabilityValue(qint64 p);
         void setPlayabilityOrder(int p);
         void setLexiconSymbols(const QString& s);
 
@@ -98,7 +98,7 @@ class WordTableModel : public QAbstractTableModel
         QString word;
         WordType type;
         int probabilityOrder;
-        int playabilityValue;
+        qint64 playabilityValue;
         int playabilityOrder;
         QString wildcard;
         QString frontHooks;
