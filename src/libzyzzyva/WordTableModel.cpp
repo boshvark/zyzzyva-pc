@@ -69,8 +69,8 @@ lessThan(const WordTableModel::WordItem& a,
          const WordTableModel::WordItem& b)
 {
     if (MainSettings::getWordListSortByPlayabilityOrder()) {
-        int aPlayValue = a.getPlayabilityValue();
-        int bPlayValue = b.getPlayabilityValue();
+        qint64 aPlayValue = a.getPlayabilityValue();
+        qint64 bPlayValue = b.getPlayabilityValue();
 
         // High playability values compare as less
         if (bPlayValue < aPlayValue)
@@ -309,7 +309,7 @@ WordTableModel::data(const QModelIndex& index, int role) const
         case PlayabilityValueRole:
         if (!wordItem.playabilityOrderIsValid()) {
             QString wordUpper = wordItem.getWord().toUpper();
-            int pv = wordEngine->getPlayabilityValue(lexicon, wordUpper);
+            qint64 pv = wordEngine->getPlayabilityValue(lexicon, wordUpper);
             if (pv)
                 wordItem.setPlayabilityValue(pv);
             int po = wordEngine->getPlayabilityOrder(lexicon, wordUpper);
@@ -419,7 +419,7 @@ WordTableModel::data(const QModelIndex& index, int role) const
                     }
 
                     if (!wordItem.playabilityOrderIsValid()) {
-                        int pv = wordEngine->getPlayabilityValue(
+                        qint64 pv = wordEngine->getPlayabilityValue(
                             lexicon, wordUpper);
                         if (pv)
                             wordItem.setPlayabilityValue(pv);
@@ -670,7 +670,7 @@ WordTableModel::setData(const QModelIndex& index, const QVariant& value, int
         return true;
     }
     else if (index.isValid() && (role == PlayabilityValueRole)) {
-        wordList[index.row()].setPlayabilityValue(value.toInt());
+        wordList[index.row()].setPlayabilityValue(value.toLongLong());
         emit dataChanged(index, index);
         return true;
     }
@@ -868,7 +868,7 @@ WordTableModel::WordItem::setProbabilityOrder(int p)
 //! @param p the playability value
 //---------------------------------------------------------------------------
 void
-WordTableModel::WordItem::setPlayabilityValue(int p)
+WordTableModel::WordItem::setPlayabilityValue(qint64 p)
 {
     playabilityValue = p;
 }
