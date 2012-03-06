@@ -979,6 +979,7 @@ MainWindow::displayLexiconError()
 void
 MainWindow::helpDialogError(const QString& message)
 {
+    Q_UNUSED(message);
     //QString caption = "Help Display Error";
     //QMessageBox::warning(this, caption, Auxil::dialogWordWrap(message));
 }
