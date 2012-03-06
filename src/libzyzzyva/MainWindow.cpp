@@ -27,7 +27,6 @@
 #include "CardboxForm.h"
 #include "CardboxRescheduleDialog.h"
 #include "CreateDatabaseThread.h"
-#include "CrosswordGameForm.h"
 #include "DatabaseRebuildDialog.h"
 #include "DefinitionDialog.h"
 #include "DefineForm.h"
@@ -145,13 +144,6 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     newCardboxAction->setIcon(QIcon(":/cardbox-icon"));
     connect(newCardboxAction, SIGNAL(triggered()), SLOT(newCardboxForm()));
     fileMenu->addAction(newCardboxAction);
-
-    // New Crossword Game
-    //QAction* newCrosswordGameAction = new QAction("Crossword &Game", this);
-    //newCrosswordGameAction->setIcon(QIcon(":/define-icon"));
-    //connect(newCrosswordGameAction, SIGNAL(triggered()),
-    //         SLOT(newCrosswordGameForm()));
-    //fileMenu->addAction(newCrosswordGameAction);
 
     // New Definition
     QAction* newDefinitionAction = new QAction("&Definition", this);
@@ -605,18 +597,6 @@ void
 MainWindow::newSearchForm()
 {
     SearchForm* form = new SearchForm(wordEngine);
-    newTab(form);
-}
-
-//---------------------------------------------------------------------------
-//  newCrosswordGameForm
-//
-//! Create a crossword game form.
-//---------------------------------------------------------------------------
-void
-MainWindow::newCrosswordGameForm()
-{
-    CrosswordGameForm* form = new CrosswordGameForm;
     newTab(form);
 }
 

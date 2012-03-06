@@ -64,7 +64,6 @@ class MainWindow : public QMainWindow
     void newQuizFormInteractive(const QuizSpec& quizSpec);
     void newQuizForm(const QuizSpec& quizSpec);
     void newSearchForm();
-    void newCrosswordGameForm();
     void newDefineForm();
     void newIntroForm();
     void newCardboxForm();
