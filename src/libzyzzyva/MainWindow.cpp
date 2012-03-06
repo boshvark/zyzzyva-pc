@@ -58,6 +58,7 @@
 #include <QStatusBar>
 #include <QSqlDatabase>
 #include <QSqlQuery>
+#include <QTextStream>
 #include <QToolBar>
 
 #include "LetterBag.h"
