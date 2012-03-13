@@ -1451,6 +1451,30 @@ CrosswordGameForm::threadSocketError(QAbstractSocket::SocketError error)
         errorMsg = "Unfinished socket operation.";
         break;
 
+        case QAbstractSocket::SslHandshakeFailedError:
+        errorMsg = "SSL handshake failed.";
+        break;
+
+        case QAbstractSocket::ProxyConnectionRefusedError:
+        errorMsg = "Proxy connection refused.";
+        break;
+
+        case QAbstractSocket::ProxyConnectionClosedError:
+        errorMsg = "Proxy connection closed.";
+        break;
+
+        case QAbstractSocket::ProxyConnectionTimeoutError:
+        errorMsg = "Proxy connection timed out.";
+        break;
+
+        case QAbstractSocket::ProxyNotFoundError:
+        errorMsg = "Proxy not found.";
+        break;
+
+        case QAbstractSocket::ProxyProtocolError:
+        errorMsg = "Proxy protocol error.";
+        break;
+
         case QAbstractSocket::UnknownSocketError:
         errorMsg = "Unknown socket error.";
         break;
