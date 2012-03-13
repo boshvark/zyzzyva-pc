@@ -53,6 +53,12 @@ SOURCES = \
     CardboxRemoveDialog.cpp \
     CardboxRescheduleDialog.cpp \
     CreateDatabaseThread.cpp \
+    CrosswordGameBoard.cpp \
+    CrosswordGameBoardWidget.cpp \
+    CrosswordGameForm.cpp \
+    CrosswordGameGame.cpp \
+    CrosswordGameMove.cpp \
+    CrosswordGameRackWidget.cpp \
     DatabaseRebuildDialog.cpp \
     DefineForm.cpp \
     DefinitionBox.cpp \
@@ -107,6 +113,10 @@ HEADERS = \
     CardboxRemoveDialog.h \
     CardboxRescheduleDialog.h \
     CreateDatabaseThread.h \
+    CrosswordGameBoardWidget.h \
+    CrosswordGameForm.h \
+    CrosswordGameGame.h \
+    CrosswordGameRackWidget.h \
     DatabaseRebuildDialog.h \
     DefineForm.h \
     DefinitionBox.h \
