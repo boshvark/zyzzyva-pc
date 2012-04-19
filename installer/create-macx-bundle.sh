@@ -25,7 +25,7 @@
 
 set -e
 
-QTDIR=/usr/local/Trolltech/Qt-4.8.0
+QTDIR=/usr/local/Trolltech/Qt-4.8.1
 QTVER=4
 OUTDIR=$(pwd)/installer/macosx
 APPDIR=$OUTDIR/Zyzzyva.app
@@ -37,7 +37,7 @@ fi
 echo "Running QMake..."
 $QTDIR/bin/qmake
 echo "Building Zyzzyva..."
-make -s
+make
 
 mkdir -p $APPDIR/Contents/Frameworks
 
