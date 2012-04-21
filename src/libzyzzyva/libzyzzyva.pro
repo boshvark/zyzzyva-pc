@@ -29,10 +29,6 @@ QT += sql xml network
 
 ROOT = ../..
 DESTDIR = $$ROOT/bin
-MOC_DIR = build/moc
-OBJECTS_DIR = build/obj
-INCLUDEPATH += build/moc
-DEPENDPATH += build/moc
 
 include($$ROOT/zyzzyva.pri)
 

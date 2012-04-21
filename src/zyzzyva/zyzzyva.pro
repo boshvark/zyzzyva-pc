@@ -29,10 +29,7 @@ QT += xml
 
 ROOT = ../..
 DESTDIR = $$ROOT/bin
-MOC_DIR = build/moc
-OBJECTS_DIR = build/obj
-INCLUDEPATH += build/moc $$ROOT/src/libzyzzyva
-DEPENDPATH += build/moc
+INCLUDEPATH += $$ROOT/src/libzyzzyva
 
 include($$ROOT/zyzzyva.pri)
 
