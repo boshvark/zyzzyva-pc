@@ -25,25 +25,30 @@
 
 set -e
 
-QTDIR=/usr/local/Trolltech/Qt-4.8.1
+if [ "$QTDIR" = "" ]; then
+    QTDIR=/usr/local/Trolltech/Qt-4.8.1
+fi
+
 QTVER=4
-OUTDIR=$(pwd)/installer/macosx
-APPDIR=$OUTDIR/Zyzzyva.app
+BUILD_DIR=$(pwd)
+APPDIR=$BUILD_DIR/Zyzzyva.app
+SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
+SOURCE_DIR=$SCRIPT_DIR/..
 
 if [ ! -e $APPDIR/Contents/Frameworks ]; then
     COPYQT="yes"
 fi
 
+mkdir -p $APPDIR/Contents/Frameworks
+
 echo "Running QMake..."
-$QTDIR/bin/qmake
+$QTDIR/bin/qmake $SOURCE_DIR
 echo "Building Zyzzyva..."
 make
 
-mkdir -p $APPDIR/Contents/Frameworks
-
 # Copy executable into bundle
 echo "Copying Zyzzyva executable into bundle..."
-cp -r bin/Zyzzyva.app/Contents/* $APPDIR/Contents
+cp -r $BUILD_DIR/bin/Zyzzyva.app/Contents/* $APPDIR/Contents
 
 # Change link location for libzyzzyva in executable
 echo "Changing link location for libzyzzyva in Zyzzyva executable..."
@@ -55,25 +60,25 @@ install_name_tool -change \
 # Copy zyzzyva.top unless it's already there
 if [ ! -e $APPDIR/Contents/MacOS/zyzzyva.top ]; then
     echo "Copying zyzzyva.top into bundle..."
-    cp zyzzyva.top $APPDIR/Contents/MacOS
+    cp $SOURCE_DIR/zyzzyva.top $APPDIR/Contents/MacOS
 fi
 
 # Copy qt.conf unless it's already there
 if [ ! -e $APPDIR/Contents/Resources/qt.conf ]; then
     echo "Copying qt.conf into bundle..."
-    cp conf/macosx/qt.conf $APPDIR/Contents/Resources
+    cp $SOURCE_DIR/conf/macosx/qt.conf $APPDIR/Contents/Resources
 fi
 
 # Copy data directory into bundle unless it's already there
 if [ ! -e $APPDIR/Contents/MacOS/data ]; then
     echo "Copying data directory into bundle..."
-    cp -r data $APPDIR/Contents/MacOS
+    cp -r $SOURCE_DIR/data $APPDIR/Contents/MacOS
     find $OUTDIR -type d -name '.svn' -print0 | xargs -0 rm -rf
 fi
 
 # Copy Zyzzyva libs to Frameworks directory
 echo "Copying libzyzzyva into bundle..."
-cp bin/libzyzzyva.2.dylib $APPDIR/Contents/Frameworks
+cp $BUILD_DIR/bin/libzyzzyva.2.dylib $APPDIR/Contents/Frameworks
 
 # Copy system libs to Frameworks directory
 echo "Copying system libs into bundle..."
@@ -106,8 +111,8 @@ install_name_tool -change \
 if [ "$COPYQT" = "yes" ]; then
 
     # Copy Assistant client into bundle
-    echo "Copying Assistant client into bundle..."
-    cp -r $QTDIR/bin/assistant.app $APPDIR/Contents/MacOS
+    #echo "Copying Assistant client into bundle..."
+    #cp -r $QTDIR/bin/assistant.app $APPDIR/Contents/MacOS
 
     # Copy Qt frameworks into bundle and tell the executable to link to them
     for i in QtCore QtGui QtNetwork QtSql QtXml ; do
@@ -120,7 +125,7 @@ if [ "$COPYQT" = "yes" ]; then
 
         # Delete headers and debug libraries
         echo "Deleting $i.framework headers and debug libraries..."
-        rm $APPDIR/Contents/Frameworks/$i.framework/Headers
+        rm -f $APPDIR/Contents/Frameworks/$i.framework/Headers
         rm -rf $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/Headers
         find $APPDIR/Contents/Frameworks -name arch -or -name '*debug*' \
             -print0 | xargs -0 rm -rf
