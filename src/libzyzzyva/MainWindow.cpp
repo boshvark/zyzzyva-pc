@@ -2013,7 +2013,6 @@ MainWindow::importLexicon(const QString& lexicon)
         prefixMap[LEXICON_ODS4] = "/French/ODS4";
         prefixMap[LEXICON_ODS5] = "/French/ODS5";
         prefixMap[LEXICON_FISE2009] = "/Spanish/FISE2009";
-        prefixMap[LEXICON_SWL] = "/Dutch/SWL";
         prefixMap[LEXICON_ZINGA] = "/Italian/ZINGA";
 
         if (prefixMap.contains(lexicon)) {
