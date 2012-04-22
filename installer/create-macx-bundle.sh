@@ -73,7 +73,6 @@ fi
 if [ ! -e $APPDIR/Contents/MacOS/data ]; then
     echo "Copying data directory into bundle..."
     cp -r $SOURCE_DIR/data $APPDIR/Contents/MacOS
-    find $OUTDIR -type d -name '.svn' -print0 | xargs -0 rm -rf
 fi
 
 # Copy Zyzzyva libs to Frameworks directory
