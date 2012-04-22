@@ -31,7 +31,7 @@ set PLATFORM=windows
 set OUTDIR=%INSTDIR%\%PLATFORM%
 
 qmake
-CALL make
+CALL mingw32-make
 
 mkdir %OUTDIR%
 
