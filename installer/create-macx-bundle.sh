@@ -38,7 +38,7 @@ fi
 echo "Running QMake..."
 $QTDIR/bin/qmake
 echo "Building Zyzzyva..."
-make -s
+make
 
 mkdir -p $APPDIR/Contents/Frameworks
 
