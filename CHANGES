@@ -75,8 +75,7 @@ User-visible changes:
  * Negation of Anagram, Pattern, and Subanagram search conditions
  * Many word definition fixes - and thanks to Michael McKenna for CSW
    long definitions
- * Italian and Dutch lexicons - thanks to Hervé Bohbot, Diego de
-   Landro, and Bertrand De Bouvere
+ * Italian lexicons - thanks to Hervé Bohbot and Diego de Landro
  * BOOBIES is now acceptable in OSPD4 lexicon
  * Restore Defaults button on Preferences dialog
  * Subanagram search results are now sorted with longest words first
