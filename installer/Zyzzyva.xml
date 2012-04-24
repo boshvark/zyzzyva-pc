@@ -3,8 +3,8 @@
     <fullName>Zyzzyva</fullName>
     <version>2.2.0</version>
     <installerFilename>${product_shortname}-${product_version}-${platform_name}-installer.${platform_exec_suffix}</installerFilename>
-    <readmeFile>/Users/mthelen/dev/zyzzyva-install/windows/README.txt</readmeFile>
-    <licenseFile>/Users/mthelen/dev/zyzzyva-install/windows/LICENSE.txt</licenseFile>
+    <readmeFile>~/Boshvark/Zyzzyva/Installer/windows/README.txt</readmeFile>
+    <licenseFile>~/Boshvark/Zyzzyva/Installer/windows/LICENSE.txt</licenseFile>
     <wrapLicenseFileText>1</wrapLicenseFileText>
     <leftImage></leftImage>
     <logoImage></logoImage>
@@ -22,7 +22,7 @@
     <defaultUnixDirectoryPermissions>755</defaultUnixDirectoryPermissions>
     <defaultUnixFilePermissions>644</defaultUnixFilePermissions>
     <description>The Last Word in Word Study</description>
-    <outputDirectory>/Users/mthelen/dev/zyzzyva-install</outputDirectory>
+    <outputDirectory>~/Boshvark/Zyzzyva/Installer</outputDirectory>
     <projectSchemaVersion>1.2</projectSchemaVersion>
     <saveRelativePaths>0</saveRelativePaths>
     <slideShowLoop>1</slideShowLoop>
@@ -84,34 +84,34 @@
                     <platforms>linux</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/zyzzyva.top</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux/zyzzyva.top</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/zyzzyva</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux/zyzzyva</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/README</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux/README</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/LICENSE</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux/LICENSE</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/COPYING</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux/COPYING</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/CHANGES</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux/CHANGES</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/AUTHORS</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux/AUTHORS</origin>
                         </distributionFile>
                         <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/bin</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/data</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux/data</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux/images</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux/images</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -122,34 +122,34 @@
                     <platforms>linux-x64</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/zyzzyva.top</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux-x64/zyzzyva.top</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/zyzzyva</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux-x64/zyzzyva</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/README</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux-x64/README</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/LICENSE</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux-x64/LICENSE</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/COPYING</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux-x64/COPYING</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/CHANGES</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux-x64/CHANGES</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/AUTHORS</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux-x64/AUTHORS</origin>
                         </distributionFile>
                         <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/bin</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux-x64/bin</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/data</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux-x64/data</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/linux-x64/images</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/linux-x64/images</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -160,61 +160,61 @@
                     <platforms>windows</platforms>
                     <distributionFileList>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/CHANGES.txt</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/CHANGES.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/AUTHORS.txt</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/AUTHORS.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/zyzzyva2.dll</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/zyzzyva2.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/zyzzyva.top</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/zyzzyva.top</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/zyzzyva.exe</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/zyzzyva.exe</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/README.txt</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/README.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/QtXml4.dll</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/QtXml4.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/QtSql4.dll</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/QtSql4.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/QtNetwork4.dll</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/QtNetwork4.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/QtGui4.dll</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/QtGui4.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/QtCore4.dll</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/QtCore4.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/QtAssistantClient4.dll</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/QtAssistantClient4.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/mingwm10.dll</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/mingwm10.dll</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/LICENSE.txt</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/LICENSE.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/COPYING.txt</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/COPYING.txt</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/assistant.exe</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/assistant.exe</origin>
                         </distributionFile>
                         <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/data</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/data</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/sqldrivers</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/sqldrivers</origin>
                         </distributionDirectory>
                         <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/windows/images</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/windows/images</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
@@ -225,7 +225,7 @@
                     <platforms>osx</platforms>
                     <distributionFileList>
                         <distributionDirectory>
-                            <origin>/Users/mthelen/dev/zyzzyva-install/macosx/Zyzzyva.app</origin>
+                            <origin>/Boshvark/Zyzzyva/Installer/macosx/Zyzzyva.app</origin>
                         </distributionDirectory>
                     </distributionFileList>
                 </folder>
