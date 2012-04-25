@@ -51,7 +51,7 @@ copy %QTDIR%\plugins\sqldrivers\qsqlite4.dll %OUTDIR%\sqldrivers
 
 rem Copy Zyzzyva images
 mkdir %OUTDIR%\images
-copy images\zyzzyva*.ico %OUTDIR%\images
+copy images\Zyzzyva.ico %OUTDIR%\images
 
 rem Copy Zyzzyva stuff
 copy bin\zyzzyva.exe %OUTDIR%
