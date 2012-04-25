@@ -63,6 +63,7 @@ cp README $OUTDIR/README
 
 mkdir -p $OUTDIR/images
 cp images/Zyzzyva.ico $OUTDIR/images
+cp images/Zyzzyva.png $OUTDIR/images
 
 cp -r data $OUTDIR
 find $OUTDIR/data -type d -name '.svn' -print0 | xargs -0 rm -rf
