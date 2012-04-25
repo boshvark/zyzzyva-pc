@@ -373,7 +373,7 @@ MainWindow::MainWindow(QWidget* parent, QSplashScreen* splash, Qt::WFlags f)
     makeUserDirs();
 
     setWindowTitle(APPLICATION_TITLE);
-    setWindowIcon(QIcon(":/zyzzyva-icon"));
+    setWindowIcon(QIcon(":/zyzzyva-32x32"));
 
     if (!instance)
         instance = this;
