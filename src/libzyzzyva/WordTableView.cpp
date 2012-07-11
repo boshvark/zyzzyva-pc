@@ -158,7 +158,7 @@ WordTableView::headerSectionClicked(int section)
     if (!wordModel)
         return;
 
-    wordModel->sort(section, header()->sortIndicatorOrder());
+    wordModel->reverse();
 }
 
 //---------------------------------------------------------------------------
