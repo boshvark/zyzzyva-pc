@@ -55,6 +55,7 @@ class WordTableView : public QTreeView
     private slots:
     void viewDefinition();
     void viewVariation(int variation);
+    void headerSectionClicked(int section);
 
     private:
     // XXX: Hmm, these methods probably don't belong in WordTableView

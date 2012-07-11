@@ -41,6 +41,7 @@
 #include <QApplication>
 #include <QContextMenuEvent>
 #include <QFileDialog>
+#include <QHeaderView>
 #include <QMessageBox>
 #include <QMenu>
 #include <QPushButton>
@@ -78,6 +79,13 @@ WordTableView::WordTableView(WordEngine* e, QWidget* parent)
     //    setColumnHidden(WordTableModel::FRONT_HOOK_COLUMN, true);
     //    setColumnHidden(WordTableModel::BACK_HOOK_COLUMN, true);
     //}
+
+    header()->setSortIndicatorShown(true);
+    header()->setSortIndicator(WordTableModel::WORD_COLUMN,
+        Qt::AscendingOrder);
+    header()->setClickable(true);
+    connect(header(), SIGNAL(sectionClicked(int)),
+        SLOT(headerSectionClicked(int)));
 }
 
 //---------------------------------------------------------------------------
@@ -133,6 +141,24 @@ WordTableView::viewVariation(int variation)
                                                           word, type, this);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
     dialog->show();
+}
+
+//---------------------------------------------------------------------------
+//  headerSectionClicked
+//
+//! Called when the user clicks a header section. Change the sort order of the
+//! items in the model.
+//
+//! @param section the section index
+//---------------------------------------------------------------------------
+void
+WordTableView::headerSectionClicked(int section)
+{
+    WordTableModel* wordModel = dynamic_cast<WordTableModel*>(model());
+    if (!wordModel)
+        return;
+
+    wordModel->sort(section, header()->sortIndicatorOrder());
 }
 
 //---------------------------------------------------------------------------
