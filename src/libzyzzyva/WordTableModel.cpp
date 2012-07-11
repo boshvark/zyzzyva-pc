@@ -120,6 +120,22 @@ lessThan(const WordTableModel::WordItem& a,
 }
 
 //---------------------------------------------------------------------------
+//  greaterThan
+//
+//! A comparison function that compares by lexical value.
+//
+//! @param a the first word item to compare
+//! @param b the second word item to compare
+//! @return true if a is lexically greater than b
+//---------------------------------------------------------------------------
+bool
+greaterThan(const WordTableModel::WordItem& a,
+            const WordTableModel::WordItem& b)
+{
+    return !lessThan(a, b);
+}
+
+//---------------------------------------------------------------------------
 //  WordTableModel
 //
 //! Constructor.
@@ -681,15 +697,16 @@ WordTableModel::setData(const QModelIndex& index, const QVariant& value, int
 //  sort
 //
 //! Sort the model by column in the given order.  Reimplemented from
-//! QAbstractItemModel.  NOTE: Both parameters are currently ignored.
+//! QAbstractItemModel.  NOTE: Column parameter is currently ignored.
 //
 //! @param column the column to sort by
 //! @param order the sort order
 //---------------------------------------------------------------------------
 void
-WordTableModel::sort(int, Qt::SortOrder)
+WordTableModel::sort(int, Qt::SortOrder order)
 {
-    qSort(wordList.begin(), wordList.end(), lessThan);
+    qSort(wordList.begin(), wordList.end(),
+        (order == Qt::AscendingOrder ? lessThan : greaterThan));
 
     if (MainSettings::getWordListGroupByAnagrams())
         markAlternates();
