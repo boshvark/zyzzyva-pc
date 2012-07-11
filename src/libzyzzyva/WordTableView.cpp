@@ -151,7 +151,7 @@ WordTableView::viewVariation(int variation)
 //! @param section the section index
 //---------------------------------------------------------------------------
 void
-WordTableView::headerSectionClicked(int section)
+WordTableView::headerSectionClicked(int)
 {
     WordTableModel* wordModel = dynamic_cast<WordTableModel*>(model());
     if (!wordModel)
