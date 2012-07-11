@@ -1,0 +1,13 @@
+/Makefile
+/Zyzzyva.app
+/bin/
+/src/Makefile
+/src/libzyzzyva/Makefile
+/src/libzyzzyva/*.o
+/src/libzyzzyva/moc_*
+/src/tests/Makefile
+/src/tests/*.moc
+/src/tests/*.o
+/src/zyzzyva/Makefile
+/src/zyzzyva/qrc_zyzzyva.cpp
+/src/zyzzyva/*.o
