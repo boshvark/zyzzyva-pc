@@ -202,6 +202,11 @@ CreateDatabaseThread::createIndexes(QSqlDatabase& db)
                "(length, min_probability_order2, max_probability_order2)");
     if (cancelled)
         return;
+
+    query.exec("CREATE INDEX definition_index on words "
+               "(definition)");
+    if (cancelled)
+        return;
 }
 
 //---------------------------------------------------------------------------
