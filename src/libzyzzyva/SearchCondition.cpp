@@ -67,6 +67,8 @@ SearchCondition::asString() const
         case IncludeLetters:
         case BelongToGroup:
         case InLexicon:
+        case PartOfSpeech:
+        case Definition:
         str += stringValue;
         break;
 
@@ -144,6 +146,8 @@ SearchCondition::asDomElement() const
         case BelongToGroup:
         case InLexicon:
         case InWordList:
+        case PartOfSpeech:
+        case Definition:
         topElement.setAttribute(XML_STRING_ATTR, stringValue);
         topElement.setAttribute(XML_NEGATED_ATTR, negated);
         break;
@@ -234,6 +238,8 @@ SearchCondition::fromDomElement(const QDomElement& element)
         case BelongToGroup:
         case InLexicon:
         case InWordList:
+        case PartOfSpeech:
+        case Definition:
         if (!element.hasAttribute(XML_STRING_ATTR))
             return false;
 

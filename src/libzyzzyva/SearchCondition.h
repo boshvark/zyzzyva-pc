@@ -53,6 +53,8 @@ class SearchCondition
         LimitByProbabilityOrder,
         PlayabilityOrder,
         LimitByPlayabilityOrder,
+        PartOfSpeech,
+        Definition,
 
         // Obsolete search condition types
         OldExactLength,

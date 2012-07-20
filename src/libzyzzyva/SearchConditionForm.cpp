@@ -97,6 +97,8 @@ SearchConditionForm::SearchConditionForm(QWidget* parent, Qt::WFlags f)
           << Auxil::searchTypeToString(SearchCondition::PointValue)
           << Auxil::searchTypeToString(SearchCondition::Prefix)
           << Auxil::searchTypeToString(SearchCondition::Suffix)
+          << Auxil::searchTypeToString(SearchCondition::PartOfSpeech)
+          << Auxil::searchTypeToString(SearchCondition::Definition)
           << Auxil::searchTypeToString(SearchCondition::ConsistOf)
           << Auxil::searchTypeToString(SearchCondition::NumAnagrams);
 
@@ -302,6 +304,8 @@ SearchConditionForm::getSearchCondition() const
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
         case SearchCondition::IncludeLetters:
+        case SearchCondition::PartOfSpeech:
+        case SearchCondition::Definition:
         condition.stringValue = paramLine->text();
         break;
 
@@ -382,6 +386,8 @@ SearchConditionForm::setSearchCondition(const SearchCondition& condition)
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
         case SearchCondition::IncludeLetters:
+        case SearchCondition::PartOfSpeech:
+        case SearchCondition::Definition:
         paramLine->setText(condition.stringValue);
         break;
 
@@ -455,6 +461,8 @@ SearchConditionForm::isValid() const
 
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
+        case SearchCondition::PartOfSpeech:
+        case SearchCondition::Definition:
         return !paramLine->text().isEmpty();
 
         case SearchCondition::Length:
@@ -516,17 +524,31 @@ SearchConditionForm::typeChanged(const QString& string)
         case SearchCondition::SubanagramMatch:
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
-        case SearchCondition::IncludeLetters: {
-            QValidator* validator = ((type == SearchCondition::Prefix) ||
+        case SearchCondition::IncludeLetters:
+        case SearchCondition::PartOfSpeech:
+        case SearchCondition::Definition:
+        {
+            QValidator* validator = 0;
+            if ((type == SearchCondition::Prefix) ||
                 (type == SearchCondition::Suffix) ||
-                (type == SearchCondition::IncludeLetters) ?
-                letterValidator : patternValidator);
-            negationCbox->setEnabled(true);
+                (type == SearchCondition::IncludeLetters))
+            {
+                validator = letterValidator;
+            }
+            else if ((type == SearchCondition::PatternMatch) ||
+                (type == SearchCondition::AnagramMatch) ||
+                (type == SearchCondition::SubanagramMatch))
+            {
+                validator = patternValidator;
+            }
             paramLine->setValidator(validator);
-            int pos = 0;
-            QString text = paramLine->text();
-            validator->validate(text, pos);
-            paramLine->setText(text);
+            if (validator) {
+                QString text = paramLine->text();
+                int pos = 0;
+                validator->validate(text, pos);
+                paramLine->setText(text);
+            }
+            negationCbox->setEnabled(true);
             paramStack->setCurrentWidget(paramLineWidget);
         }
         break;
