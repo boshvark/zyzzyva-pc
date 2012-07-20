@@ -325,6 +325,7 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
         if (foundCondition)
             whereStr += " AND";
         foundCondition = true;
+        whereStr += " (";
 
         switch (condition.type) {
             case SearchCondition::PatternMatch: {
@@ -335,6 +336,39 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
                 if (condition.negated)
                     whereStr += " NOT";
                 whereStr += " LIKE '" + str + "'";
+            }
+            break;
+
+            case SearchCondition::PartOfSpeech:
+            case SearchCondition::Definition: {
+                tables.insert("words");
+                QString str =
+                    condition.stringValue.replace(QRegExp("\\([^%_\\])"), "\\1");
+                str.replace("'", "''");
+                str.replace(";", "\\;");
+
+                QString notStr;
+                QString conjStr = " OR";
+                if (condition.negated) {
+                    conjStr = " AND";
+                    notStr = " NOT";
+                }
+
+                QString whereSecondStr;
+                if (condition.type == SearchCondition::PartOfSpeech) {
+                    whereSecondStr = conjStr +
+                        " words.definition" + notStr +
+                        " LIKE '\%[" + str + "]\%' ESCAPE '\\'";
+                    str = "[" + str + " ";
+                }
+
+                // ### escape % and _ with backslashes if not already escaped
+
+                // ### replace * with % and ? with _ for more flexible search
+
+                whereStr +=
+                    " words.definition" + notStr +
+                    " LIKE '\%" + str + "\%' ESCAPE '\\'" + whereSecondStr;
             }
             break;
 
@@ -486,6 +520,8 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             default:
             break;
         }
+
+        whereStr += ")";
     }
 
     // Make sure results are in the provided word list
@@ -2001,6 +2037,8 @@ WordEngine::getConditionPhase(const SearchCondition& condition) const
         case SearchCondition::NumUniqueLetters:
         case SearchCondition::PointValue:
         case SearchCondition::NumAnagrams:
+        case SearchCondition::PartOfSpeech:
+        case SearchCondition::Definition:
         return DatabasePhase;
 
         case SearchCondition::Prefix:
