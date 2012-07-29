@@ -36,6 +36,7 @@ class MainSettings
 {
     public:
     static const QString GENERAL_PREFS_GROUP;
+    static const QString SEARCH_PREFS_GROUP;
     static const QString QUIZ_PREFS_GROUP;
     static const QString PROBABILITY_PREFS_GROUP;
     static const QString CARDBOX_PREFS_GROUP;
@@ -80,6 +81,9 @@ class MainSettings
     static QString getTileTheme() { return instance->tileTheme; }
     static void setTileTheme(const QString& str) {
         instance->tileTheme = str; }
+    static bool getSearchSelectInput() { return instance->searchSelectInput; }
+    static void setSearchSelectInput(bool b) {
+        instance->searchSelectInput = b; }
     static QString getQuizLetterOrder() { return instance->quizLetterOrder; }
     static void setQuizLetterOrder(const QString& str) {
         instance->quizLetterOrder = str; }
@@ -258,6 +262,7 @@ class MainSettings
     QString userDataDir;
     bool useTileTheme;
     QString tileTheme;
+    bool searchSelectInput;
     QString quizLetterOrder;
     QColor quizBackgroundColor;
     bool quizUseFlashcardMode;

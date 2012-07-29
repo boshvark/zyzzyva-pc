@@ -83,6 +83,7 @@ class SettingsDialog : public QDialog
     QStackedWidget* navStack;
 
     QWidget*     generalPrefWidget;
+    QWidget*     searchPrefWidget;
     QWidget*     quizPrefWidget;
     QWidget*     probabilityPrefWidget;
     QWidget*     cardboxPrefWidget;
@@ -102,6 +103,7 @@ class SettingsDialog : public QDialog
     QLabel*      themeLabel;
     QComboBox*   themeCombo;
     QComboBox*   letterOrderCombo;
+    QCheckBox*   searchSelectInputCbox;
     QLineEdit*   quizBackgroundColorLine;
     QCheckBox*   quizUseFlashcardModeCbox;
     QCheckBox*   quizShowNumResponsesCbox;

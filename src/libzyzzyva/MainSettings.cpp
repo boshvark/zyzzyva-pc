@@ -34,6 +34,7 @@
 MainSettings* MainSettings::instance = new MainSettings();
 
 const QString MainSettings::GENERAL_PREFS_GROUP = "General";
+const QString MainSettings::SEARCH_PREFS_GROUP = "Search";
 const QString MainSettings::QUIZ_PREFS_GROUP = "Quiz";
 const QString MainSettings::PROBABILITY_PREFS_GROUP = "Probability";
 const QString MainSettings::CARDBOX_PREFS_GROUP = "Cardbox";
@@ -73,6 +74,7 @@ const QString SETTINGS_USE_LEXICON_STYLES = "wordlist_use_lexicon_styles";
 const QString SETTINGS_LEXICON_STYLES = "wordlist_lexicon_styles";
 const QString SETTINGS_USE_TILE_THEME = "use_tile_theme";
 const QString SETTINGS_TILE_THEME = "tile_theme";
+const QString SETTINGS_SEARCH_SELECT_INPUT = "search_select_input";
 const QString SETTINGS_QUIZ_LETTER_ORDER = "quiz_letter_order";
 const QString SETTINGS_QUIZ_BACKGROUND_COLOR = "quiz_background_color";
 const QString SETTINGS_QUIZ_USE_FLASHCARD_MODE = "quiz_use_flashcard_mode";
@@ -105,6 +107,7 @@ const bool    DEFAULT_DISPLAY_WELCOME = true;
 const QString DEFAULT_USER_DATA_DIR = Auxil::getHomeDir() + "/Zyzzyva";
 const bool    DEFAULT_USE_TILE_THEME = true;
 const QString DEFAULT_TILE_THEME = "tan-with-border";
+const bool    DEFAULT_SEARCH_SELECT_INPUT = true;
 const QString DEFAULT_QUIZ_LETTER_ORDER = Defs::QUIZ_LETTERS_ALPHA;
 const QRgb    DEFAULT_QUIZ_BACKGROUND_COLOR = qRgb(0, 0, 127);
 const bool    DEFAULT_QUIZ_USE_FLASHCARD_MODE = false;
@@ -239,6 +242,10 @@ MainSettings::readSettings()
                          DEFAULT_USE_TILE_THEME).toBool();
     instance->tileTheme
         = settings.value(SETTINGS_TILE_THEME, DEFAULT_TILE_THEME).toString();
+
+    instance->searchSelectInput
+        = settings.value(SETTINGS_SEARCH_SELECT_INPUT,
+                         DEFAULT_SEARCH_SELECT_INPUT).toBool();
 
     instance->quizLetterOrder
         = settings.value(SETTINGS_QUIZ_LETTER_ORDER,
@@ -379,6 +386,8 @@ MainSettings::writeSettings()
     settings.setValue(SETTINGS_USER_DATA_DIR, instance->userDataDir);
     settings.setValue(SETTINGS_USE_TILE_THEME, instance->useTileTheme);
     settings.setValue(SETTINGS_TILE_THEME, instance->tileTheme);
+    settings.setValue(SETTINGS_SEARCH_SELECT_INPUT,
+                      instance->searchSelectInput);
     settings.setValue(SETTINGS_QUIZ_LETTER_ORDER,
                       instance->quizLetterOrder);
     settings.setValue(SETTINGS_QUIZ_BACKGROUND_COLOR,
@@ -488,6 +497,10 @@ MainSettings::restoreDefaults(const QString& group)
         instance->autoImportFile = QString();
         instance->displayWelcome = DEFAULT_DISPLAY_WELCOME;
         instance->userDataDir = DEFAULT_USER_DATA_DIR;
+    }
+
+    if (group.isEmpty() || (group == SEARCH_PREFS_GROUP)) {
+        instance->searchSelectInput = DEFAULT_SEARCH_SELECT_INPUT;
     }
 
     if (group.isEmpty() || (group == QUIZ_PREFS_GROUP)) {
