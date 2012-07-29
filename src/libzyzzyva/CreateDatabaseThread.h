@@ -70,7 +70,7 @@ class CreateDatabaseThread : public QThread
 
     void getDefinitions(QSqlDatabase& db, int& stepNum);
     QString replaceDefinitionLinks(const QString& definition, int maxDepth,
-                                   bool useFollow = false) const;
+        QSet<QString>* alreadyReplaced = 0, bool useFollow = false) const;
     QString getSubDefinition(const QString& word, const QString& pos) const;
     int importPlayability(const QString& filename, QMap<QString, qint64>&
                           playabilityMap) const;
