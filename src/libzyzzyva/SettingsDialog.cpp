@@ -199,6 +199,22 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     generalPrefVlay->addStretch(2);
 
+    // Search Prefs
+    searchPrefWidget = new QWidget;
+    navStack->addWidget(searchPrefWidget);
+
+    QVBoxLayout* searchPrefVlay = new QVBoxLayout(searchPrefWidget);
+    searchPrefVlay->setMargin(0);
+
+    QLabel* searchPrefLabel = new QLabel(MainSettings::SEARCH_PREFS_GROUP);
+    searchPrefLabel->setFrameShape(QFrame::StyledPanel);
+    searchPrefVlay->addWidget(searchPrefLabel);
+
+    searchSelectInputCbox = new QCheckBox("Highlight input after search");
+    searchPrefVlay->addWidget(searchSelectInputCbox);
+
+    searchPrefVlay->addStretch(2);
+
     // Quiz Prefs
     quizPrefWidget = new QWidget;
     navStack->addWidget(quizPrefWidget);
@@ -673,6 +689,7 @@ SettingsDialog::SettingsDialog(QWidget* parent, Qt::WFlags f)
 
     // Add nav list items
     new QListWidgetItem(MainSettings::GENERAL_PREFS_GROUP, navList);
+    new QListWidgetItem(MainSettings::SEARCH_PREFS_GROUP, navList);
     new QListWidgetItem(MainSettings::QUIZ_PREFS_GROUP, navList);
     new QListWidgetItem(MainSettings::PROBABILITY_PREFS_GROUP, navList);
     new QListWidgetItem(MainSettings::CARDBOX_PREFS_GROUP, navList);
@@ -748,6 +765,9 @@ SettingsDialog::refreshSettings()
         }
         themeCboxToggled(useTileTheme);
     }
+
+    // Search
+    searchSelectInputCbox->setChecked(MainSettings::getSearchSelectInput());
 
     // Quiz letter order
     int letterOrderIndex =
@@ -881,6 +901,7 @@ SettingsDialog::writeSettings()
     MainSettings::setUserDataDir(userDataDirLine->text());
     MainSettings::setUseTileTheme(themeCbox->isChecked());
     MainSettings::setTileTheme(themeCombo->currentText());
+    MainSettings::setSearchSelectInput(searchSelectInputCbox->isChecked());
     MainSettings::setQuizLetterOrder(letterOrderCombo->currentText());
     MainSettings::setQuizBackgroundColor(quizBackgroundColor);
     MainSettings::setQuizUseFlashcardMode(
@@ -953,6 +974,8 @@ SettingsDialog::navTextChanged(const QString& text)
 {
     if (text == MainSettings::GENERAL_PREFS_GROUP)
         navStack->setCurrentWidget(generalPrefWidget);
+    else if (text == MainSettings::SEARCH_PREFS_GROUP)
+        navStack->setCurrentWidget(searchPrefWidget);
     else if (text == MainSettings::QUIZ_PREFS_GROUP)
         navStack->setCurrentWidget(quizPrefWidget);
     else if (text == MainSettings::PROBABILITY_PREFS_GROUP)
