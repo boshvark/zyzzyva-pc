@@ -730,7 +730,9 @@ SearchConditionForm::selectInputArea()
     QWidget* currentWidget = paramStack->currentWidget();
     if (currentWidget == paramLineWidget) {
         paramLine->setFocus();
-        paramLine->setSelection(0, paramLine->text().length());
+        if (MainSettings::getSearchSelectInput()) {
+            paramLine->setSelection(0, paramLine->text().length());
+        }
     }
     else if (currentWidget == paramSboxWidget) {
         paramMinSbox->setFocus();
@@ -740,7 +742,10 @@ SearchConditionForm::selectInputArea()
     }
     else if (currentWidget == paramConsistWidget) {
         paramConsistLine->setFocus();
-        paramConsistLine->setSelection(0, paramConsistLine->text().length());
+        if (MainSettings::getSearchSelectInput()) {
+            paramConsistLine->setSelection(0,
+                paramConsistLine->text().length());
+        }
     }
 }
 
