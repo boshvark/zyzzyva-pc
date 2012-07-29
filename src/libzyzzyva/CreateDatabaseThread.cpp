@@ -606,6 +606,7 @@ CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase& db, int& stepNum)
 
     QSqlQuery transactionQuery ("BEGIN TRANSACTION", db);
 
+    QSet<QString> alreadyReplaced;
     QMapIterator<QString, QString> it (definitions);
     while (it.hasNext()) {
         it.next();
@@ -617,7 +618,12 @@ CreateDatabaseThread::updateDefinitionLinks(QSqlDatabase& db, int& stepNum)
         foreach (const QString& def, defs) {
             if (!newDefinition.isEmpty())
                 newDefinition += "\n";
-            newDefinition += replaceDefinitionLinks(def, MAX_DEFINITION_LINKS);
+
+            alreadyReplaced.clear();
+            alreadyReplaced.insert(word.toUpper());
+
+            newDefinition += replaceDefinitionLinks(def, MAX_DEFINITION_LINKS,
+                &alreadyReplaced);
         }
 
         if (definition != newDefinition) {
@@ -690,11 +696,17 @@ CreateDatabaseThread::getDefinitions(QSqlDatabase& db, int& stepNum)
 //! @return a string with links replaced
 //---------------------------------------------------------------------------
 QString
-CreateDatabaseThread::replaceDefinitionLinks(const QString& definition, int
-                                             maxDepth, bool useFollow) const
+CreateDatabaseThread::replaceDefinitionLinks(const QString& definition,
+    int maxDepth, QSet<QString>* alreadyReplaced, bool useFollow) const
 {
     QRegExp followRegex (QString("\\{(\\w+)=(\\w+)\\}"));
     QRegExp replaceRegex (QString("\\<(\\w+)=(\\w+)\\>"));
+
+    bool createdSet = false;
+    if (!alreadyReplaced) {
+        alreadyReplaced = new QSet<QString>;
+        createdSet = true;
+    }
 
     // Try to match the follow regex and the replace regex.  If a follow regex
     // is ever matched, then the "follow" replacements should always be used,
@@ -720,13 +732,15 @@ CreateDatabaseThread::replaceDefinitionLinks(const QString& definition, int
     QString replacement;
     QString upper = word.toUpper();
     QString failReplacement = useFollow ? word : upper;
-    if (!maxDepth) {
+    bool cutRecursion = !maxDepth || alreadyReplaced->contains(upper);
+    if (cutRecursion) {
         replacement = failReplacement;
     }
     else {
         QString subdef = getSubDefinition(upper, pos);
         if (subdef.isEmpty()) {
             replacement = failReplacement;
+            cutRecursion = true;
         }
         else if (useFollow) {
             replacement = (matchedRegex == &followRegex) ?
@@ -735,13 +749,19 @@ CreateDatabaseThread::replaceDefinitionLinks(const QString& definition, int
         else {
             replacement = upper + ", " + subdef;
         }
+        alreadyReplaced->insert(upper);
     }
 
     modified.replace(index, matchedRegex->matchedLength(), replacement);
     int lowerMaxDepth = useFollow ? maxDepth - 1 : maxDepth;
-    QString newDefinition = maxDepth
-        ? replaceDefinitionLinks(modified, lowerMaxDepth, useFollow)
-        : modified;
+    QString newDefinition = cutRecursion ? modified
+        : replaceDefinitionLinks(modified, lowerMaxDepth, alreadyReplaced,
+            useFollow);
+
+    if (createdSet) {
+        delete alreadyReplaced;
+    }
+
     return newDefinition;
 }
 
