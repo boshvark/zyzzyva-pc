@@ -336,7 +336,7 @@ SearchForm::search()
 
     QWidget* focusWidget = QApplication::focusWidget();
     QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(focusWidget);
-    if (lineEdit) {
+    if (lineEdit && MainSettings::getSearchSelectInput()) {
         lineEdit->setSelection(0, lineEdit->text().length());
     }
     else {
