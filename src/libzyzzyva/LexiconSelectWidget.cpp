@@ -70,6 +70,20 @@ LexiconSelectWidget::~LexiconSelectWidget()
 }
 
 //---------------------------------------------------------------------------
+//  setFont
+//
+//! Set the font.
+//
+//! @param newFont the new font
+//---------------------------------------------------------------------------
+void
+LexiconSelectWidget::setFont(const QFont& newFont)
+{
+    QWidget::setFont(newFont);
+    lexiconCombo->setFont(font());
+}
+
+//---------------------------------------------------------------------------
 //  setCurrentLexicon
 //
 //! Select a lexicon.
