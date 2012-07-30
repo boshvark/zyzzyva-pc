@@ -26,6 +26,7 @@
 #define ZYZZYVA_JUDGE_SELECT_DIALOG_H
 
 #include <QDialog>
+#include <QLineEdit>
 
 class LexiconSelectWidget;
 
@@ -40,6 +41,8 @@ class JudgeSelectDialog : public QDialog
 
     private:
     LexiconSelectWidget* lexiconWidget;
+    QLineEdit* passwordLine;
+    QLineEdit* confirmPasswordLine;
 };
 
 #endif // ZYZZYVA_JUDGE_SELECT_DIALOG_H
