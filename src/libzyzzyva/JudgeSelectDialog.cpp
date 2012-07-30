@@ -46,8 +46,8 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     : QDialog(parent, f)
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
-    mainVlay->setMargin(MARGIN);
-    mainVlay->setSpacing(SPACING);
+    mainVlay->setMargin(20);
+    mainVlay->setSpacing(20);
 
     QLabel* instructionLabel = new QLabel;
     QString message = "You are now entering the full screen Word Judge mode.\n"
@@ -55,10 +55,15 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
                       "Shift key.\n\n"
                       "Please choose a lexicon for the Word Judge.";
     message = Auxil::dialogWordWrap(message);
+    instructionLabel->setAlignment(Qt::AlignHCenter);
     instructionLabel->setText(message);
     mainVlay->addWidget(instructionLabel);
 
     lexiconWidget = new LexiconSelectWidget;
+    QFont font = lexiconWidget->font();
+    font.setPointSize(font.pointSize() + 20);
+    lexiconWidget->setFont(font);
+    lexiconWidget->resize(lexiconWidget->sizeHint());
     mainVlay->addWidget(lexiconWidget);
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
