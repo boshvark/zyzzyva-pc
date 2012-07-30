@@ -177,6 +177,7 @@ class QuizForm : public ActionForm
     bool checkBringsJudgment;
     bool recordStatsBlocked;
     bool unsavedChanges;
+    bool cardboxQuiz;
     int questionMarkedStatus;
 
     QuizDatabase* db;
