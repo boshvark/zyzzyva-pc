@@ -86,6 +86,7 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     passwordGlay->addWidget(passwordLabel, 0, 0);
 
     passwordLine = new QLineEdit;
+    passwordLine->setEchoMode(QLineEdit::Password);
     connect(passwordLine, SIGNAL(textChanged(const QString&)),
         SLOT(passwordTextChanged()));
     passwordGlay->addWidget(passwordLine, 0, 1);
@@ -95,9 +96,16 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     passwordGlay->addWidget(confirmPasswordLabel, 1, 0);
 
     confirmPasswordLine = new QLineEdit;
+    confirmPasswordLine->setEchoMode(QLineEdit::Password);
     connect(confirmPasswordLine, SIGNAL(textChanged(const QString&)),
         SLOT(passwordTextChanged()));
     passwordGlay->addWidget(confirmPasswordLine, 1, 1);
+
+    passwordShowTypingCbox = new QCheckBox;
+    passwordShowTypingCbox->setText("Show typing");
+    connect(passwordShowTypingCbox, SIGNAL(stateChanged(int)),
+        SLOT(showTypingStateChanged(int)));
+    mainVlay->addWidget(passwordShowTypingCbox, 2, 0);
 
     buttonBox = new QDialogButtonBox;
     buttonBox->setOrientation(Qt::Horizontal);
@@ -157,4 +165,21 @@ JudgeSelectDialog::passwordTextChanged()
 {
     buttonBox->button(QDialogButtonBox::Ok)->setEnabled(
         passwordLine->text() == confirmPasswordLine->text());
+}
+
+//---------------------------------------------------------------------------
+//  showTypingStateChanged
+//
+//! Called when the state of the Show Typing checkbox changes. Change the
+//! display of Password and Confirm Password areas.
+//
+//! @param state the new check state
+//---------------------------------------------------------------------------
+void
+JudgeSelectDialog::showTypingStateChanged(int state)
+{
+    QLineEdit::EchoMode echoMode = (state == Qt::Checked) ?
+        QLineEdit::Normal : QLineEdit::Password;
+    passwordLine->setEchoMode(echoMode);
+    confirmPasswordLine->setEchoMode(echoMode);
 }
