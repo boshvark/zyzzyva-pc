@@ -52,8 +52,7 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     QLabel* instructionLabel = new QLabel;
     QString message = "You are now entering the full screen Word Judge mode.\n"
                       "To exit full screen mode, press ESC while holding the "
-                      "Shift key.\n\n"
-                      "Please choose a lexicon for the Word Judge.";
+                      "Shift key.";
     message = Auxil::dialogWordWrap(message);
     instructionLabel->setAlignment(Qt::AlignHCenter);
     instructionLabel->setText(message);
