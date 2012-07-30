@@ -748,7 +748,7 @@ QuizForm::saveRequested(bool saveAs)
 
     QDomImplementation implementation;
     QDomDocument document (implementation.createDocumentType("zyzzyva-quiz",
-        QString(), "http://pietdepsi.com/dtd/zyzzyva-quiz.dtd"));
+        QString(), "http://boshvark.com/dtd/zyzzyva-quiz.dtd"));
 
     document.appendChild(quizEngine->getQuizSpec().asDomElement());
 

@@ -68,7 +68,7 @@ SearchSpec::asXml() const
     QDomImplementation implementation;
     QDomDocument document(implementation.createDocumentType(
                           "zyzzyva-search", QString(),
-                          "http://pietdepsi.com/dtd/zyzzyva-search.dtd"));
+                          "http://boshvark.com/dtd/zyzzyva-search.dtd"));
 
     document.appendChild(asDomElement());
 

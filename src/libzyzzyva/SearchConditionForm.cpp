@@ -178,7 +178,7 @@ SearchConditionForm::SearchConditionForm(QWidget* parent, Qt::WFlags f)
     // FIXME: with Qt 4.6.1 (but not Qt 4.3.2), this causes a crash when
     // loading the following search. Try to reduce to a minimal example. Also
     // try with other versions of Qt.
-    //<!DOCTYPE zyzzyva-search SYSTEM 'http://pietdepsi.com/dtd/zyzzyva-search.dtd'>
+    //<!DOCTYPE zyzzyva-search SYSTEM 'http://boshvark.com/dtd/zyzzyva-search.dtd'>
     //<zyzzyva-search version="1" >
     // <conditions>
     //  <and>
