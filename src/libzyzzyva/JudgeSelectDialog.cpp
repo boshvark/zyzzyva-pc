@@ -115,6 +115,7 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     mainVlay->addWidget(buttonBox);
 
     setWindowTitle(DIALOG_CAPTION);
+    passwordLine->setFocus();
 }
 
 //---------------------------------------------------------------------------
