@@ -29,6 +29,7 @@
 #include <QDialog>
 #include <QFrame>
 #include <QLabel>
+#include <QLineEdit>
 #include <QStackedWidget>
 #include <QTimer>
 #include <QWidget>
@@ -40,8 +41,8 @@ class JudgeDialog : public QDialog
 {
     Q_OBJECT
     public:
-    JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent = 0,
-                Qt::WFlags f = 0);
+    JudgeDialog(WordEngine* e, const QString& lex, const QString& pass =
+        QString(), QWidget* parent = 0, Qt::WFlags f = 0);
 
     public slots:
     void textChanged();
@@ -50,10 +51,13 @@ class JudgeDialog : public QDialog
     void judgeWord();
     void clearResultsReleaseHold();
     void displayCount();
+    void displayPassword();
+    void displayIncorrectPassword();
     void displayInput();
     void displayExit();
     void clearInput();
     void clearExit();
+    void passwordReturnPressed();
 
     protected slots:
     void keyPressEvent(QKeyEvent* e);
@@ -65,11 +69,15 @@ class JudgeDialog : public QDialog
     private:
     WordEngine*     engine;
     QString         lexicon;
+    QString         password;
     int             count;
     QStackedWidget* widgetStack;
     QWidget*        countWidget;
     QLabel*         countInstLabel;
     QLabel*         countLabel;
+    QWidget*        passwordWidget;
+    QLineEdit*      passwordLine;
+    QLabel*         passwordResultLabel;
     QWidget*        inputWidget;
     QLabel*         inputInstLabel;
     WordTextEdit*   inputArea;

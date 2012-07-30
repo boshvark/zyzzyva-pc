@@ -687,10 +687,11 @@ MainWindow::doJudgeAction()
     }
 
     QString lexicon = selectDialog->getLexicon();
+    QString password = selectDialog->getPassword();
     delete selectDialog;
 
     QApplication::setOverrideCursor(Qt::BlankCursor);
-    JudgeDialog* dialog = new JudgeDialog(wordEngine, lexicon, this);
+    JudgeDialog* dialog = new JudgeDialog(wordEngine, lexicon, password, this);
     dialog->exec();
     delete dialog;
     QApplication::restoreOverrideCursor();
