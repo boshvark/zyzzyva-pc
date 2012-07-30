@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_JUDGE_SELECT_DIALOG_H
 #define ZYZZYVA_JUDGE_SELECT_DIALOG_H
 
+#include <QCheckBox>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QLineEdit>
@@ -43,11 +44,13 @@ class JudgeSelectDialog : public QDialog
 
     public slots:
     void passwordTextChanged();
+    void showTypingStateChanged(int state);
 
     private:
     LexiconSelectWidget* lexiconWidget;
     QLineEdit* passwordLine;
     QLineEdit* confirmPasswordLine;
+    QCheckBox* passwordShowTypingCbox;
     QDialogButtonBox* buttonBox;
 };
 
