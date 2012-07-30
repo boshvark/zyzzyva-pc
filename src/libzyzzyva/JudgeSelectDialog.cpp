@@ -133,6 +133,20 @@ JudgeSelectDialog::getLexicon() const
 }
 
 //---------------------------------------------------------------------------
+//  getPassword
+//
+//! Return the password.
+//
+//! @return the password
+//---------------------------------------------------------------------------
+QString
+JudgeSelectDialog::getPassword() const
+{
+    QString password = passwordLine->text();
+    return (password == confirmPasswordLine->text()) ? password : QString();
+}
+
+//---------------------------------------------------------------------------
 //  passwordTextChanged
 //
 //! Called when the text in either password entry field changes. Verify that
