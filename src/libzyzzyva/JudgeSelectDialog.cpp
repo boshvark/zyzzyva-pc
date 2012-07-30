@@ -66,6 +66,35 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     lexiconWidget->resize(lexiconWidget->sizeHint());
     mainVlay->addWidget(lexiconWidget);
 
+    QLabel* passwordInstructionLabel = new QLabel;
+    QString passwordMessage =
+        "You may also set a password, which will be required to exit "
+        "Word Judge mode.\nIf you leave this section blank, no password "
+        "will be required.";
+    passwordMessage = Auxil::dialogWordWrap(passwordMessage);
+    passwordInstructionLabel->setAlignment(Qt::AlignHCenter);
+    passwordInstructionLabel->setText(passwordMessage);
+    mainVlay->addWidget(passwordInstructionLabel);
+
+    QGridLayout* passwordGlay = new QGridLayout;
+    passwordGlay->setMargin(0);
+    passwordGlay->setSpacing(SPACING);
+    mainVlay->addLayout(passwordGlay);
+
+    QLabel* passwordLabel = new QLabel;
+    passwordLabel->setText("Password:");
+    passwordGlay->addWidget(passwordLabel, 0, 0);
+
+    passwordLine = new QLineEdit;
+    passwordGlay->addWidget(passwordLine, 0, 1);
+
+    QLabel* confirmPasswordLabel = new QLabel;
+    confirmPasswordLabel->setText("Confirm Password:");
+    passwordGlay->addWidget(confirmPasswordLabel, 1, 0);
+
+    confirmPasswordLine = new QLineEdit;
+    passwordGlay->addWidget(confirmPasswordLine, 1, 1);
+
     QDialogButtonBox* buttonBox = new QDialogButtonBox;
     buttonBox->setOrientation(Qt::Horizontal);
     buttonBox->setStandardButtons(QDialogButtonBox::Ok |
