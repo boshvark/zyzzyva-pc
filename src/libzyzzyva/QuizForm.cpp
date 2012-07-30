@@ -129,7 +129,8 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     : ActionForm(QuizFormType, parent, f), wordEngine(we),
     quizEngine(new QuizEngine(wordEngine)), timerId(0), timerPaused(0),
     checkBringsJudgment(true), recordStatsBlocked(false),
-    unsavedChanges(false), questionMarkedStatus(QuestionNotMarked), db(0),
+    unsavedChanges(false), cardboxQuiz(false),
+    questionMarkedStatus(QuestionNotMarked), db(0),
     // FIXME: This dialog should be nonmodal!
     analyzeDialog(new AnalyzeQuizDialog(quizEngine, we, this,
                                         Qt::WindowMinMaxButtonsHint))
@@ -548,6 +549,7 @@ QuizForm::newQuiz(const QuizSpec& spec)
     disconnectDatabase();
 
     timerSpec = spec.getTimerSpec();
+    cardboxQuiz = (spec.getMethod() == QuizSpec::CardboxQuizMethod);
 
     // Enable or disable Alpha and Random buttons depending on Quiz type
     letterOrderWidget->setEnabled(customLetterOrderAllowed(spec.getType()));
@@ -1615,7 +1617,7 @@ QuizForm::enableAndSelectInputArea()
 bool
 QuizForm::promptToSaveChanges()
 {
-    if (!unsavedChanges)
+    if (!unsavedChanges || cardboxQuiz)
         return true;
 
     pauseTimer();
