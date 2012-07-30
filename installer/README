@@ -4,7 +4,7 @@ This is not totally up to date, but this is the basic process.
 - Install Qt 4.3.2.  I usually install it to the default location,
 /usr/local/Trolltech/Qt-4.3.2.
 - Export Zyzzyva x.y.z from
-http://svn.pietdepsi.com/repos/projects/zyzzyva/tags/x.y.z.  Use "svn
+http://svn.boshvark.com/repos/projects/zyzzyva/tags/x.y.z.  Use "svn
 export" instead of "svn checkout", because we don't want .svn
 directories getting in the way.  Or you can just download the Zyzzyva
 x.y.z source code tarball from the Zyzzyva web site.

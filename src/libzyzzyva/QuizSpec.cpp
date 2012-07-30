@@ -78,7 +78,7 @@ QuizSpec::asXml() const
     QDomImplementation implementation;
     QDomDocument document(implementation.createDocumentType(
                           "zyzzyva-quiz", QString(),
-                          "http://pietdepsi.com/dtd/zyzzyva-quiz.dtd"));
+                          "http://boshvark.com/dtd/zyzzyva-quiz.dtd"));
 
     document.appendChild(asDomElement());
 
