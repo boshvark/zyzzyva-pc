@@ -26,8 +26,8 @@
 #include "LexiconSelectWidget.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QDialogButtonBox>
 #include <QLabel>
+#include <QPushButton>
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Entering Full Screen Word Judge";
@@ -86,6 +86,8 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     passwordGlay->addWidget(passwordLabel, 0, 0);
 
     passwordLine = new QLineEdit;
+    connect(passwordLine, SIGNAL(textChanged(const QString&)),
+        SLOT(passwordTextChanged()));
     passwordGlay->addWidget(passwordLine, 0, 1);
 
     QLabel* confirmPasswordLabel = new QLabel;
@@ -93,9 +95,11 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     passwordGlay->addWidget(confirmPasswordLabel, 1, 0);
 
     confirmPasswordLine = new QLineEdit;
+    connect(confirmPasswordLine, SIGNAL(textChanged(const QString&)),
+        SLOT(passwordTextChanged()));
     passwordGlay->addWidget(confirmPasswordLine, 1, 1);
 
-    QDialogButtonBox* buttonBox = new QDialogButtonBox;
+    buttonBox = new QDialogButtonBox;
     buttonBox->setOrientation(Qt::Horizontal);
     buttonBox->setStandardButtons(QDialogButtonBox::Ok |
                                   QDialogButtonBox::Cancel);
@@ -126,4 +130,17 @@ QString
 JudgeSelectDialog::getLexicon() const
 {
     return lexiconWidget->getCurrentLexicon();
+}
+
+//---------------------------------------------------------------------------
+//  passwordTextChanged
+//
+//! Called when the text in either password entry field changes. Verify that
+//! the passwords match and enable the OK button appropriately.
+//---------------------------------------------------------------------------
+void
+JudgeSelectDialog::passwordTextChanged()
+{
+    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(
+        passwordLine->text() == confirmPasswordLine->text());
 }
