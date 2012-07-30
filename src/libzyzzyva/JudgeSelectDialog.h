@@ -26,6 +26,7 @@
 #define ZYZZYVA_JUDGE_SELECT_DIALOG_H
 
 #include <QDialog>
+#include <QDialogButtonBox>
 #include <QLineEdit>
 
 class LexiconSelectWidget;
@@ -39,10 +40,14 @@ class JudgeSelectDialog : public QDialog
 
     QString getLexicon() const;
 
+    public slots:
+    void passwordTextChanged();
+
     private:
     LexiconSelectWidget* lexiconWidget;
     QLineEdit* passwordLine;
     QLineEdit* confirmPasswordLine;
+    QDialogButtonBox* buttonBox;
 };
 
 #endif // ZYZZYVA_JUDGE_SELECT_DIALOG_H
