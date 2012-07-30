@@ -46,8 +46,11 @@ const double FORM_FONT_PIXEL_SIZE = 1.5;
 const double LEXICON_FONT_PIXEL_SIZE = 1.0;
 const double TITLE_FONT_PIXEL_SIZE = 1.0;
 const double INSTRUCTION_FONT_PIXEL_SIZE = 1.0;
+const double PASSWORD_FONT_PIXEL_SIZE = 1.0;
 const double COUNT_FONT_PIXEL_SIZE = 5.0;
 const double EXIT_FONT_PIXEL_SIZE = 0.75;
+const double PASSWORD_MARGIN = 0.75;
+const double PASSWORD_SPACING = 1.5;
 const double COUNT_MARGIN = 0.75;
 const double COUNT_SPACING = 0.5;
 const double INPUT_MARGIN = 0.75;
@@ -57,6 +60,7 @@ const double RESULT_MARGIN = 0.75;
 const double RESULT_SPACING = 0.75;
 
 const int CLEAR_COUNT_DELAY = 750;
+const int CLEAR_PASSWORD_DELAY = 1500;
 const int CLEAR_INPUT_DELAY = 15000;
 const int CLEAR_RESULTS_DELAY = 10000;
 const int CLEAR_RESULTS_MIN_DELAY = 500;
@@ -65,6 +69,8 @@ const int NUM_KEYPRESSES_TO_EXIT = 10;
 const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 const int CLEAR_EXIT_DELAY = 5000;
 const int MAX_JUDGE_WORDS = 8;
+
+const QString INCORRECT_PASSWORD_MESSAGE = "Sorry, incorrect password.";
 
 const QString COUNT_INSTRUCTION_MESSAGE = "CHALLENGER:\n"
     "How many words would you like to challenge?";
@@ -82,13 +88,14 @@ using namespace Defs;
 //! Constructor.
 //
 //! @param e the word engine
-//! @param lexi the lexicon to use
+//! @param lex the lexicon to use
+//! @param pass the password to use
 //! @param parent the parent widget
 //! @param f widget flags
 //---------------------------------------------------------------------------
-JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
-                         Qt::WFlags f)
-    : QDialog(parent, f), engine(e), lexicon(lex), count(0),
+JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex,
+    const QString& pass, QWidget* parent, Qt::WFlags f)
+    : QDialog(parent, f), engine(e), lexicon(lex), password(pass), count(0),
     clearResultsHold(0), fontMultiplier(0)
 {
     countTimer = new QTimer(this);
@@ -162,6 +169,51 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex, QWidget* parent,
     QWidget* countTitleWidget = createTitleWidget();
     Q_CHECK_PTR(countTitleWidget);
     countVlay->addWidget(countTitleWidget);
+
+    // Password screen
+    passwordWidget = new QWidget;
+    widgetStack->addWidget(passwordWidget);
+
+    QVBoxLayout* passwordVlay = new QVBoxLayout(passwordWidget);
+    passwordVlay->setMargin(int(PASSWORD_MARGIN * fontMultiplier));
+    passwordVlay->setSpacing(int(PASSWORD_SPACING * fontMultiplier));
+
+    passwordVlay->addStretch(1);
+
+    QLabel* passwordLabel = new QLabel;
+    passwordLabel->setFont(instructionFont);
+    passwordLabel->setAlignment(Qt::AlignHCenter);
+    passwordLabel->setText("Enter password to exit.");
+    passwordVlay->addWidget(passwordLabel);
+
+    const int screenWidth = QApplication::desktop()->width();
+    QHBoxLayout* passwordLineHlay = new QHBoxLayout;
+    passwordLineHlay->setMargin(0);
+    passwordVlay->addLayout(passwordLineHlay);
+
+    passwordLineHlay->addSpacing(screenWidth / 4);
+
+    QFontMetrics instructionFontMetrics (instructionFont);
+    passwordLine = new QLineEdit;
+    passwordLine->setFont(instructionFont);
+    passwordLine->setEchoMode(QLineEdit::Password);
+    passwordLine->setMinimumSize(0, instructionFontMetrics.height());
+    connect(passwordLine, SIGNAL(returnPressed()),
+        SLOT(passwordReturnPressed()));
+    passwordLineHlay->addWidget(passwordLine);
+
+    passwordLineHlay->addSpacing(screenWidth / 4);
+
+    passwordResultLabel = new QLabel;
+    QFont passwordResultFont = instructionFont;
+    QPalette passwordResultPalette = passwordResultLabel->palette();
+    passwordResultPalette.setColor(QPalette::Foreground, Qt::red);
+    passwordResultLabel->setAlignment(Qt::AlignHCenter);
+    passwordResultLabel->setFont(passwordResultFont);
+    passwordResultLabel->setPalette(passwordResultPalette);
+    passwordVlay->addWidget(passwordResultLabel);
+
+    passwordVlay->addStretch(1);
 
     // Input screen
     inputWidget = new QWidget;
@@ -508,6 +560,34 @@ JudgeDialog::displayCount()
 }
 
 //---------------------------------------------------------------------------
+//  displayPassword
+//
+//! Display the password area.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::displayPassword()
+{
+    passwordLine->setReadOnly(false);
+    passwordLine->clear();
+    passwordLine->setFocus();
+    passwordResultLabel->clear();
+    widgetStack->setCurrentWidget(passwordWidget);
+}
+
+//---------------------------------------------------------------------------
+//  displayIncorrectPassword
+//
+//! Display the incorrect password message.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::displayIncorrectPassword()
+{
+    passwordLine->setReadOnly(true);
+    passwordResultLabel->setText(INCORRECT_PASSWORD_MESSAGE);
+    QTimer::singleShot(CLEAR_PASSWORD_DELAY, this, SLOT(displayCount()));
+}
+
+//---------------------------------------------------------------------------
 //  displayInput
 //
 //! Display the input area.
@@ -560,6 +640,22 @@ JudgeDialog::clearExit()
 }
 
 //---------------------------------------------------------------------------
+//  passwordReturnPressed
+//
+//! Called when Return is pressed in the password input area. Validate the
+//! password and exit if appropriate.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::passwordReturnPressed()
+{
+    QString text = passwordLine->text();
+    if (text == password)
+        accept();
+    else
+        displayIncorrectPassword();
+}
+
+//---------------------------------------------------------------------------
 //  keyPressEvent
 //
 //! Receive key press events for the widget.  Reimplemented from QWidget.
@@ -604,10 +700,18 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
 
     if (event->key() == Qt::Key_Escape) {
         Qt::KeyboardModifiers modifiers = event->modifiers();
-        if (modifiers & Qt::ShiftModifier)
-            accept();
-        else if ((currentWidget == countWidget) && !cleared)
+        if (modifiers & Qt::ShiftModifier) {
+            if (password.isEmpty())
+                accept();
+            else
+                displayPassword();
+        }
+        else if ((currentWidget == countWidget) && !cleared) {
             displayExit();
+        }
+        else if (currentWidget == passwordWidget) {
+            displayCount();
+        }
         else if (currentWidget == inputWidget) {
             QString text = inputArea->toPlainText().simplified();
             if (text.isEmpty())
