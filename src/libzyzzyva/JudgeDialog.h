@@ -57,6 +57,7 @@ class JudgeDialog : public QDialog
     void displayExit();
     void clearInput();
     void clearExit();
+    void passwordTextChanged();
     void passwordReturnPressed();
 
     protected slots:
@@ -86,6 +87,7 @@ class JudgeDialog : public QDialog
     QLabel*         resultLabel;
     QLabel*         resultLexiconLabel;
     QTimer*         countTimer;
+    QTimer*         passwordTimer;
     QTimer*         inputTimer;
     QTimer*         resultTimer;
     QTimer*         exitTimer;
