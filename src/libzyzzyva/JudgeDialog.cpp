@@ -60,7 +60,8 @@ const double RESULT_MARGIN = 0.75;
 const double RESULT_SPACING = 0.75;
 
 const int CLEAR_COUNT_DELAY = 750;
-const int CLEAR_PASSWORD_DELAY = 1500;
+const int CLEAR_PASSWORD_DELAY = 10000;
+const int CLEAR_INCORRECT_PASSWORD_DELAY = 1500;
 const int CLEAR_INPUT_DELAY = 15000;
 const int CLEAR_RESULTS_DELAY = 10000;
 const int CLEAR_RESULTS_MIN_DELAY = 500;
@@ -69,6 +70,9 @@ const int NUM_KEYPRESSES_TO_EXIT = 10;
 const int NUM_KEYPRESSES_TO_DISPLAY = 5;
 const int CLEAR_EXIT_DELAY = 5000;
 const int MAX_JUDGE_WORDS = 8;
+
+const QString PASSWORD_INSTRUCTION_MESSAGE =
+    "Enter password to exit Word Judge.";
 
 const QString INCORRECT_PASSWORD_MESSAGE = "Sorry, incorrect password.";
 
@@ -101,6 +105,9 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex,
     countTimer = new QTimer(this);
     Q_CHECK_PTR(countTimer);
     connect(countTimer, SIGNAL(timeout()), SLOT(displayInput()));
+
+    passwordTimer = new QTimer(this);
+    connect(passwordTimer, SIGNAL(timeout()), SLOT(displayCount()));
 
     inputTimer = new QTimer(this);
     Q_CHECK_PTR(inputTimer);
@@ -183,7 +190,7 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex,
     QLabel* passwordLabel = new QLabel;
     passwordLabel->setFont(instructionFont);
     passwordLabel->setAlignment(Qt::AlignHCenter);
-    passwordLabel->setText("Enter password to exit.");
+    passwordLabel->setText(PASSWORD_INSTRUCTION_MESSAGE);
     passwordVlay->addWidget(passwordLabel);
 
     const int screenWidth = QApplication::desktop()->width();
@@ -198,6 +205,8 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex,
     passwordLine->setFont(instructionFont);
     passwordLine->setEchoMode(QLineEdit::Password);
     passwordLine->setMinimumSize(0, instructionFontMetrics.height());
+    connect(passwordLine, SIGNAL(textChanged(const QString&)),
+        SLOT(passwordTextChanged()));
     connect(passwordLine, SIGNAL(returnPressed()),
         SLOT(passwordReturnPressed()));
     passwordLineHlay->addWidget(passwordLine);
@@ -572,6 +581,7 @@ JudgeDialog::displayPassword()
     passwordLine->setFocus();
     passwordResultLabel->clear();
     widgetStack->setCurrentWidget(passwordWidget);
+    passwordTimer->start(CLEAR_PASSWORD_DELAY);
 }
 
 //---------------------------------------------------------------------------
@@ -584,7 +594,8 @@ JudgeDialog::displayIncorrectPassword()
 {
     passwordLine->setReadOnly(true);
     passwordResultLabel->setText(INCORRECT_PASSWORD_MESSAGE);
-    QTimer::singleShot(CLEAR_PASSWORD_DELAY, this, SLOT(displayCount()));
+    QTimer::singleShot(CLEAR_INCORRECT_PASSWORD_DELAY, this,
+        SLOT(displayCount()));
 }
 
 //---------------------------------------------------------------------------
@@ -640,6 +651,18 @@ JudgeDialog::clearExit()
 }
 
 //---------------------------------------------------------------------------
+//  passwordTextChanged
+//
+//! Called when the text of the password input area is changed. Restart the
+//! password clear timer.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::passwordTextChanged()
+{
+    passwordTimer->start(CLEAR_PASSWORD_DELAY);
+}
+
+//---------------------------------------------------------------------------
 //  passwordReturnPressed
 //
 //! Called when Return is pressed in the password input area. Validate the
@@ -648,6 +671,7 @@ JudgeDialog::clearExit()
 void
 JudgeDialog::passwordReturnPressed()
 {
+    passwordTimer->stop();
     QString text = passwordLine->text();
     if (text == password)
         accept();
@@ -710,6 +734,7 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
             displayExit();
         }
         else if (currentWidget == passwordWidget) {
+            passwordTimer->stop();
             displayCount();
         }
         else if (currentWidget == inputWidget) {
