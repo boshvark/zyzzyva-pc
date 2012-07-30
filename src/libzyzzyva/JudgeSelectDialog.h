@@ -39,6 +39,7 @@ class JudgeSelectDialog : public QDialog
     ~JudgeSelectDialog();
 
     QString getLexicon() const;
+    QString getPassword() const;
 
     public slots:
     void passwordTextChanged();
