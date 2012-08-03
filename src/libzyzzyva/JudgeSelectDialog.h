@@ -44,14 +44,21 @@ class JudgeSelectDialog : public QDialog
     QString getPassword() const;
 
     public slots:
-    void passwordTextChanged();
+    void passwordStateChanged(int state);
     void showTypingStateChanged(int state);
+    void passwordTextChanged();
+
+    private:
+    void setPasswordAreaEnabled(bool enable);
 
     private:
     LexiconSelectWidget* lexiconWidget;
-    QLineEdit* passwordLine;
-    QLineEdit* confirmPasswordLine;
+    QCheckBox* passwordCbox;
     QCheckBox* passwordShowTypingCbox;
+    QLabel* passwordLabel;
+    QLineEdit* passwordLine;
+    QLabel* confirmPasswordLabel;
+    QLineEdit* confirmPasswordLine;
     QLabel* messageLabel;
     QDialogButtonBox* buttonBox;
 };
