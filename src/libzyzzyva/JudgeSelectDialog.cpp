@@ -68,20 +68,36 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
 
     QLabel* passwordInstructionLabel = new QLabel;
     QString passwordMessage =
-        "You may also set a password, which will be required to exit "
-        "Word Judge mode.\nIf you leave this section blank, no password "
-        "will be required.";
+        "Optionally, you may also set a password, which will be\nrequired "
+        "to exit Word Judge mode.";
     passwordMessage = Auxil::dialogWordWrap(passwordMessage);
     passwordInstructionLabel->setAlignment(Qt::AlignHCenter);
     passwordInstructionLabel->setText(passwordMessage);
     mainVlay->addWidget(passwordInstructionLabel);
+
+    QHBoxLayout* optionHlay = new QHBoxLayout;
+    mainVlay->addLayout(optionHlay);
+
+    passwordCbox = new QCheckBox;
+    passwordCbox->setText("Set password");
+    connect(passwordCbox, SIGNAL(stateChanged(int)),
+        SLOT(passwordStateChanged(int)));
+    optionHlay->addWidget(passwordCbox);
+
+    optionHlay->addStretch(1);
+
+    passwordShowTypingCbox = new QCheckBox;
+    passwordShowTypingCbox->setText("Show typing");
+    connect(passwordShowTypingCbox, SIGNAL(stateChanged(int)),
+        SLOT(showTypingStateChanged(int)));
+    optionHlay->addWidget(passwordShowTypingCbox);
 
     QGridLayout* passwordGlay = new QGridLayout;
     passwordGlay->setMargin(0);
     passwordGlay->setSpacing(SPACING);
     mainVlay->addLayout(passwordGlay);
 
-    QLabel* passwordLabel = new QLabel;
+    passwordLabel = new QLabel;
     passwordLabel->setText("Password:");
     passwordGlay->addWidget(passwordLabel, 0, 0);
 
@@ -91,7 +107,7 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
         SLOT(passwordTextChanged()));
     passwordGlay->addWidget(passwordLine, 0, 1);
 
-    QLabel* confirmPasswordLabel = new QLabel;
+    confirmPasswordLabel = new QLabel;
     confirmPasswordLabel->setText("Confirm Password:");
     passwordGlay->addWidget(confirmPasswordLabel, 1, 0);
 
@@ -101,23 +117,12 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
         SLOT(passwordTextChanged()));
     passwordGlay->addWidget(confirmPasswordLine, 1, 1);
 
-    QHBoxLayout* bottomHlay = new QHBoxLayout;
-    mainVlay->addLayout(bottomHlay);
-
-    passwordShowTypingCbox = new QCheckBox;
-    passwordShowTypingCbox->setText("Show typing");
-    connect(passwordShowTypingCbox, SIGNAL(stateChanged(int)),
-        SLOT(showTypingStateChanged(int)));
-    bottomHlay->addWidget(passwordShowTypingCbox, 2, 0);
-
-    bottomHlay->addStretch(1);
-
     messageLabel = new QLabel;
     QPalette messagePalette = messageLabel->palette();
     messagePalette.setColor(QPalette::Foreground, Qt::red);
-    messageLabel->setAlignment(Qt::AlignRight);
+    messageLabel->setAlignment(Qt::AlignHCenter);
     messageLabel->setPalette(messagePalette);
-    bottomHlay->addWidget(messageLabel);
+    mainVlay->addWidget(messageLabel);
 
     buttonBox = new QDialogButtonBox;
     buttonBox->setOrientation(Qt::Horizontal);
@@ -128,7 +133,8 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     mainVlay->addWidget(buttonBox);
 
     setWindowTitle(DIALOG_CAPTION);
-    passwordLine->setFocus();
+
+    setPasswordAreaEnabled(false);
 }
 
 //---------------------------------------------------------------------------
@@ -168,6 +174,37 @@ JudgeSelectDialog::getPassword() const
 }
 
 //---------------------------------------------------------------------------
+//  passwordStateChanged
+//
+//! Called when the state of the Set Password checkbox changes. Enable or
+//! disable the password entry area.
+//
+//! @param state the new check state
+//---------------------------------------------------------------------------
+void
+JudgeSelectDialog::passwordStateChanged(int state)
+{
+    setPasswordAreaEnabled(state == Qt::Checked);
+}
+
+//---------------------------------------------------------------------------
+//  showTypingStateChanged
+//
+//! Called when the state of the Show Typing checkbox changes. Change the
+//! display of Password and Confirm Password areas.
+//
+//! @param state the new check state
+//---------------------------------------------------------------------------
+void
+JudgeSelectDialog::showTypingStateChanged(int state)
+{
+    QLineEdit::EchoMode echoMode = (state == Qt::Checked) ?
+        QLineEdit::Normal : QLineEdit::Password;
+    passwordLine->setEchoMode(echoMode);
+    confirmPasswordLine->setEchoMode(echoMode);
+}
+
+//---------------------------------------------------------------------------
 //  passwordTextChanged
 //
 //! Called when the text in either password entry field changes. Verify that
@@ -188,18 +225,24 @@ JudgeSelectDialog::passwordTextChanged()
 }
 
 //---------------------------------------------------------------------------
-//  showTypingStateChanged
+//  setPasswordAreaEnabled
 //
-//! Called when the state of the Show Typing checkbox changes. Change the
-//! display of Password and Confirm Password areas.
+//! Enable or disable the password area.
 //
-//! @param state the new check state
+//! @param enable whether to enable the password area
 //---------------------------------------------------------------------------
 void
-JudgeSelectDialog::showTypingStateChanged(int state)
+JudgeSelectDialog::setPasswordAreaEnabled(bool enable)
 {
-    QLineEdit::EchoMode echoMode = (state == Qt::Checked) ?
-        QLineEdit::Normal : QLineEdit::Password;
-    passwordLine->setEchoMode(echoMode);
-    confirmPasswordLine->setEchoMode(echoMode);
+    passwordShowTypingCbox->setEnabled(enable);
+    passwordLabel->setEnabled(enable);
+    passwordLine->setEnabled(enable);
+    confirmPasswordLabel->setEnabled(enable);
+    confirmPasswordLine->setEnabled(enable);
+
+    if (!enable) {
+        passwordLine->setText(QString());
+        confirmPasswordLine->setText(QString());
+        passwordTextChanged();
+    }
 }
