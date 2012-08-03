@@ -28,6 +28,7 @@
 #include <QCheckBox>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QLabel>
 #include <QLineEdit>
 
 class LexiconSelectWidget;
@@ -51,6 +52,7 @@ class JudgeSelectDialog : public QDialog
     QLineEdit* passwordLine;
     QLineEdit* confirmPasswordLine;
     QCheckBox* passwordShowTypingCbox;
+    QLabel* messageLabel;
     QDialogButtonBox* buttonBox;
 };
 

@@ -31,6 +31,7 @@
 #include <QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Entering Full Screen Word Judge";
+const QString PASSWORD_MISMATCH_MESSAGE = "Passwords must match.";
 
 using namespace Defs;
 
@@ -101,11 +102,23 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
         SLOT(passwordTextChanged()));
     passwordGlay->addWidget(confirmPasswordLine, 1, 1);
 
+    QHBoxLayout* bottomHlay = new QHBoxLayout;
+    mainVlay->addLayout(bottomHlay);
+
     passwordShowTypingCbox = new QCheckBox;
     passwordShowTypingCbox->setText("Show typing");
     connect(passwordShowTypingCbox, SIGNAL(stateChanged(int)),
         SLOT(showTypingStateChanged(int)));
-    mainVlay->addWidget(passwordShowTypingCbox, 2, 0);
+    bottomHlay->addWidget(passwordShowTypingCbox, 2, 0);
+
+    bottomHlay->addStretch(1);
+
+    messageLabel = new QLabel;
+    QPalette messagePalette = messageLabel->palette();
+    messagePalette.setColor(QPalette::Foreground, Qt::red);
+    messageLabel->setAlignment(Qt::AlignRight);
+    messageLabel->setPalette(messagePalette);
+    bottomHlay->addWidget(messageLabel);
 
     buttonBox = new QDialogButtonBox;
     buttonBox->setOrientation(Qt::Horizontal);
@@ -164,8 +177,15 @@ JudgeSelectDialog::getPassword() const
 void
 JudgeSelectDialog::passwordTextChanged()
 {
-    buttonBox->button(QDialogButtonBox::Ok)->setEnabled(
-        passwordLine->text() == confirmPasswordLine->text());
+    QPushButton* okButton = buttonBox->button(QDialogButtonBox::Ok);
+    if (passwordLine->text() == confirmPasswordLine->text()) {
+        okButton->setEnabled(true);
+        messageLabel->setText(QString());
+    }
+    else {
+        okButton->setEnabled(false);
+        messageLabel->setText(PASSWORD_MISMATCH_MESSAGE);
+    }
 }
 
 //---------------------------------------------------------------------------
