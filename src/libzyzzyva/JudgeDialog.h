@@ -49,6 +49,7 @@ class JudgeDialog : public QDialog
     void currentChanged(int index);
     void clearResults();
     void judgeWord();
+    void clearAltPressed();
     void clearResultsReleaseHold();
     void displayCount();
     void displayPassword();
@@ -58,6 +59,10 @@ class JudgeDialog : public QDialog
     void clearExit();
     void passwordTextChanged();
     void passwordReturnPressed();
+
+    protected:
+    virtual bool eventFilter(QObject* object, QEvent* event);
+    virtual void closeEvent(QCloseEvent* event);
 
     protected slots:
     void keyPressEvent(QKeyEvent* e);
@@ -70,6 +75,7 @@ class JudgeDialog : public QDialog
     WordEngine*     engine;
     QString         lexicon;
     QString         password;
+    bool            altPressed;
     int             count;
     QStackedWidget* widgetStack;
     QWidget*        countWidget;
@@ -86,6 +92,7 @@ class JudgeDialog : public QDialog
     QLabel*         resultPixmapLabel;
     QLabel*         resultLabel;
     QLabel*         resultLexiconLabel;
+    QTimer*         altPressedTimer;
     QTimer*         countTimer;
     QTimer*         passwordTimer;
     QTimer*         incorrectPasswordTimer;
