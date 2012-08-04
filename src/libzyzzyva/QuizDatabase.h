@@ -69,6 +69,7 @@ class QuizDatabase
     QStringList getReadyQuestions(const QStringList& questions, bool zeroFirst);
     QuestionData getQuestionData(const QString& question);
     QMap<int, int> getCardboxCounts();
+    QMap<int, int> getCardboxDueCounts();
     QMap<int, int> getScheduleDayCounts();
 
     const QSqlDatabase* getDatabase() const;

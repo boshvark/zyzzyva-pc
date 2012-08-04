@@ -626,6 +626,46 @@ QuizDatabase::getCardboxCounts()
     return cardboxCounts;
 }
 
+
+//---------------------------------------------------------------------------
+//  getCardboxDueCounts
+//
+//! Return a map of cardboxes to the number of questions due in each cardbox.
+//
+//! @return the cardbox due count map
+//---------------------------------------------------------------------------
+QMap<int, int>
+QuizDatabase::getCardboxDueCounts()
+{
+    QMap<int, int> cardboxDueCounts;
+
+    QSqlQuery query (*db);
+    query.prepare(
+        "SELECT cardbox, count(*) as count FROM questions "
+        "WHERE cardbox NOT NULL AND next_scheduled <= ? "
+        "GROUP by cardbox");
+
+    unsigned int now = QDateTime::currentDateTime().toTime_t();
+    query.bindValue(0, now);
+    query.exec();
+
+    while (query.next()) {
+        QVariant variant = query.value(0);
+        if (variant.isNull())
+            continue;
+        int cardbox = variant.toInt();
+
+        variant = query.value(1);
+        if (variant.isNull())
+            continue;
+        int count = variant.toInt();
+
+        cardboxDueCounts[cardbox] = count;
+    }
+
+    return cardboxDueCounts;
+}
+
 //---------------------------------------------------------------------------
 //  getScheduleDayCounts
 //
