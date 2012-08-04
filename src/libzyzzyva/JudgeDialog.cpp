@@ -626,18 +626,18 @@ JudgeDialog::displayInput()
     inputTimer->start(CLEAR_INPUT_DELAY);
 }
 
-//---------------------------------------------------------------------------
-//  displayExit
-//
-//! Display instructions for exiting full screen mode.
-//---------------------------------------------------------------------------
-void
-JudgeDialog::displayExit()
-{
-    countInstLabel->setText(COUNT_INSTRUCTION_MESSAGE +
-        "\n[ To exit, hold SHIFT and press the ESC key. ]");
-    exitTimer->start(CLEAR_EXIT_DELAY);
-}
+////---------------------------------------------------------------------------
+////  displayExit
+////
+////! Display instructions for exiting full screen mode.
+////---------------------------------------------------------------------------
+//void
+//JudgeDialog::displayExit()
+//{
+//    countInstLabel->setText(COUNT_INSTRUCTION_MESSAGE +
+//        "\n[ To exit, hold SHIFT and press the ESC key. ]");
+//    exitTimer->start(CLEAR_EXIT_DELAY);
+//}
 
 //---------------------------------------------------------------------------
 //  clearInput
@@ -707,10 +707,8 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
 
     QWidget* currentWidget = widgetStack->currentWidget();
 
-    bool cleared = false;
     if ((currentWidget == resultWidget) && !clearResultsHold) {
         clearResults();
-        cleared = true;
     }
 
     else if (currentWidget == countWidget) {
@@ -744,12 +742,14 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
     }
 
     if (event->key() == Qt::Key_Escape) {
-        Qt::KeyboardModifiers modifiers = event->modifiers();
-        if (modifiers & Qt::ShiftModifier) {
+        if (currentWidget == countWidget) {
+        //Qt::KeyboardModifiers modifiers = event->modifiers();
+        //if (modifiers & Qt::ShiftModifier) {
             displayPassword();
-        }
-        else if ((currentWidget == countWidget) && !cleared) {
-            displayExit();
+        //}
+        //else if ((currentWidget == countWidget) && !cleared) {
+        //    displayExit();
+        //}
         }
         else if (currentWidget == passwordWidget) {
             passwordTimer->stop();
