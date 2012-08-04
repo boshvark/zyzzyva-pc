@@ -59,6 +59,7 @@ const double RESULT_BORDER_WIDTH = 0.75;
 const double RESULT_MARGIN = 0.75;
 const double RESULT_SPACING = 0.75;
 
+const int CLEAR_ALT_PRESSED_DELAY = 5000;
 const int CLEAR_COUNT_DELAY = 750;
 const int CLEAR_PASSWORD_DELAY = 10000;
 const int CLEAR_INCORRECT_PASSWORD_DELAY = 1500;
@@ -101,9 +102,12 @@ using namespace Defs;
 //---------------------------------------------------------------------------
 JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex,
     const QString& pass, QWidget* parent, Qt::WFlags f)
-    : QDialog(parent, f), engine(e), lexicon(lex), password(pass), count(0),
-    clearResultsHold(0), fontMultiplier(0)
+    : QDialog(parent, f), engine(e), lexicon(lex), password(pass),
+    altPressed(false), count(0), clearResultsHold(0), fontMultiplier(0)
 {
+    altPressedTimer = new QTimer(this);
+    connect(altPressedTimer, SIGNAL(timeout()), SLOT(clearAltPressed()));
+
     countTimer = new QTimer(this);
     connect(countTimer, SIGNAL(timeout()), SLOT(displayInput()));
 
@@ -278,6 +282,9 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex,
     QWidget* inputTitleWidget = createTitleWidget();
     inputVlay->addWidget(inputTitleWidget);
 
+    // Install event filters to catch Alt press
+    installEventFilter(this);
+
     clearResults();
     showFullScreen();
 }
@@ -413,6 +420,18 @@ void
 JudgeDialog::clearResults()
 {
     displayCount();
+}
+
+//---------------------------------------------------------------------------
+//  clearAltPressed
+//
+//! Clear the Alt Pressed value.
+//---------------------------------------------------------------------------
+void
+JudgeDialog::clearAltPressed()
+{
+    altPressed = false;
+    altPressedTimer->stop();
 }
 
 //---------------------------------------------------------------------------
@@ -660,6 +679,44 @@ JudgeDialog::passwordReturnPressed()
         accept();
     else
         displayIncorrectPassword();
+}
+
+//---------------------------------------------------------------------------
+//  eventFilter
+//
+//! Event filter.
+//
+//! @param object the object
+//! @param event the event
+//---------------------------------------------------------------------------
+bool
+JudgeDialog::eventFilter(QObject* object, QEvent* event)
+{
+    Q_UNUSED(object);
+    if (event->type() == QEvent::ShortcutOverride) {
+        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+        if (keyEvent->modifiers() == Qt::AltModifier) {
+            altPressed = true;
+            altPressedTimer->start(CLEAR_ALT_PRESSED_DELAY);
+            return false;
+        }
+    }
+    return QDialog::event(event);
+}
+
+//---------------------------------------------------------------------------
+//  closeEvent
+//
+//! Called when a Close event is received.
+//
+//! @param event the event
+//---------------------------------------------------------------------------
+void
+JudgeDialog::closeEvent(QCloseEvent* event)
+{
+    if (altPressed) {
+        event->ignore();
+    }
 }
 
 //---------------------------------------------------------------------------
