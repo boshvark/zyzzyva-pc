@@ -150,6 +150,7 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     //refreshTimer.start(REFRESH_MSECS);
 
     lexiconActivated(lexiconWidget->getCurrentLexicon());
+    refreshClicked();
 }
 
 //---------------------------------------------------------------------------
