@@ -90,17 +90,19 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     cardboxCountTreeHeaders.append("Cardbox");
     cardboxCountTreeHeaders.append("Count");
     cardboxCountTree->setHeaderLabels(cardboxCountTreeHeaders);
+    cardboxCountTree->setRootIsDecorated(false);
     cardboxGlay->addWidget(cardboxCountTree, 1, 0);
 
     QLabel* cardboxDaysLabel = new QLabel;
-    cardboxDaysLabel->setText("Questions due in days from today:");
+    cardboxDaysLabel->setText("Questions scheduled:");
     cardboxGlay->addWidget(cardboxDaysLabel, 0, 1);
 
     cardboxDaysTree = new QTreeWidget;
     QStringList cardboxDaysTreeHeaders;
-    cardboxDaysTreeHeaders.append("Days");
+    cardboxDaysTreeHeaders.append("Due");
     cardboxDaysTreeHeaders.append("Count");
     cardboxDaysTree->setHeaderLabels(cardboxDaysTreeHeaders);
+    cardboxDaysTree->setRootIsDecorated(false);
     cardboxGlay->addWidget(cardboxDaysTree, 1, 1);
 
     //cardboxContentsView = new QTreeView;
@@ -249,11 +251,39 @@ CardboxForm::refreshClicked()
     QMapIterator<int, int> jt (dayCounts);
     while (jt.hasNext()) {
         jt.next();
+
+        QColor color;
+        int dueDays = jt.key();
+        QString dueDaysStr;
+        if (dueDays == -1) {
+            dueDaysStr = "Due Now";
+            color = Qt::magenta;
+        }
+        else if (dueDays == 0) {
+            dueDaysStr = "Due Soon";
+            color = Qt::blue;
+        }
+        else if (dueDays < 0) {
+            dueDays = abs(dueDays) - 1;
+            dueDaysStr = QString("Due %1 day%2 ago").arg(dueDays).arg(
+                dueDays == 1 ? QString() : QString("s"));
+            color = Qt::red;
+        }
+        else {
+            dueDaysStr = QString("Due in %1 day%2").arg(dueDays).arg(
+                dueDays == 1 ? QString() : QString("s"));
+            color = Qt::black;
+        }
+
         QStringList strings;
-        strings.append(QString::number(jt.key()));
+        strings.append(dueDaysStr);
         strings.append(QString::number(jt.value()));
-        cardboxDaysTree->addTopLevelItem(new QTreeWidgetItem(strings));
+        QTreeWidgetItem* item = new QTreeWidgetItem(strings);
+        item->setForeground(0, QBrush(color));
+        cardboxDaysTree->addTopLevelItem(item);
     }
+
+    cardboxDaysTree->resizeColumnToContents(0);
 
     // Refresh cardbox contents
 
