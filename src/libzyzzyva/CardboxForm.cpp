@@ -98,6 +98,7 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     QStringList cardboxCountTreeHeaders;
     cardboxCountTreeHeaders.append("Cardbox");
     cardboxCountTreeHeaders.append("Count");
+    cardboxCountTreeHeaders.append("Due");
     cardboxCountTree->setHeaderLabels(cardboxCountTreeHeaders);
     cardboxCountTree->setRootIsDecorated(false);
     cardboxGlay->addWidget(cardboxCountTree, 1, 0);
@@ -256,12 +257,16 @@ CardboxForm::refreshClicked()
 
     cardboxCountTree->clear();
     QMap<int, int> cardboxCounts = db.getCardboxCounts();
+    QMap<int, int> cardboxDueCounts = db.getCardboxDueCounts();
     QMapIterator<int, int> it (cardboxCounts);
     while (it.hasNext()) {
         it.next();
+        int cardbox = it.key();
+
         QStringList strings;
-        strings.append(QString::number(it.key()));
+        strings.append(QString("Cardbox %1").arg(QString::number(cardbox)));
         strings.append(QString::number(it.value()));
+        strings.append(QString::number(cardboxDueCounts.value(cardbox)));
         cardboxCountTree->addTopLevelItem(new QTreeWidgetItem(strings));
     }
 
