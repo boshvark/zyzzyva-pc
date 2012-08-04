@@ -54,7 +54,6 @@ class JudgeDialog : public QDialog
     void displayPassword();
     void displayIncorrectPassword();
     void displayInput();
-    //void displayExit();
     void clearInput();
     void clearExit();
     void passwordTextChanged();
