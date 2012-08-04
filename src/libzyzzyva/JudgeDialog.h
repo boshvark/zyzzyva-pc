@@ -89,6 +89,7 @@ class JudgeDialog : public QDialog
     QLabel*         resultLexiconLabel;
     QTimer*         countTimer;
     QTimer*         passwordTimer;
+    QTimer*         incorrectPasswordTimer;
     QTimer*         inputTimer;
     QTimer*         resultTimer;
     QTimer*         exitTimer;

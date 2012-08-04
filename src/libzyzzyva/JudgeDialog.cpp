@@ -111,6 +111,9 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex,
     passwordTimer = new QTimer(this);
     connect(passwordTimer, SIGNAL(timeout()), SLOT(displayCount()));
 
+    incorrectPasswordTimer = new QTimer(this);
+    connect(incorrectPasswordTimer, SIGNAL(timeout()), SLOT(displayCount()));
+
     inputTimer = new QTimer(this);
     Q_CHECK_PTR(inputTimer);
     connect(inputTimer, SIGNAL(timeout()), SLOT(displayCount()));
@@ -566,6 +569,7 @@ JudgeDialog::displayCount()
 {
     count = 0;
     countLabel->clear();
+    passwordTimer->stop();
     widgetStack->setCurrentWidget(countWidget);
 }
 
@@ -577,6 +581,7 @@ JudgeDialog::displayCount()
 void
 JudgeDialog::displayPassword()
 {
+    incorrectPasswordTimer->stop();
     passwordLine->clear();
     passwordResultLabel->clear();
 
@@ -607,8 +612,7 @@ JudgeDialog::displayIncorrectPassword()
 {
     passwordLine->setReadOnly(true);
     passwordResultLabel->setText(INCORRECT_PASSWORD_MESSAGE);
-    QTimer::singleShot(CLEAR_INCORRECT_PASSWORD_DELAY, this,
-        SLOT(displayCount()));
+    incorrectPasswordTimer->start(CLEAR_INCORRECT_PASSWORD_DELAY);
 }
 
 //---------------------------------------------------------------------------
@@ -743,16 +747,9 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
 
     if (event->key() == Qt::Key_Escape) {
         if (currentWidget == countWidget) {
-        //Qt::KeyboardModifiers modifiers = event->modifiers();
-        //if (modifiers & Qt::ShiftModifier) {
             displayPassword();
-        //}
-        //else if ((currentWidget == countWidget) && !cleared) {
-        //    displayExit();
-        //}
         }
         else if (currentWidget == passwordWidget) {
-            passwordTimer->stop();
             displayCount();
         }
         else if (currentWidget == inputWidget) {
