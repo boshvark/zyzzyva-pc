@@ -73,6 +73,8 @@ const int MAX_JUDGE_WORDS = 8;
 
 const QString PASSWORD_INSTRUCTION_MESSAGE =
     "Enter password to exit Word Judge.";
+const QString NO_PASSWORD_INSTRUCTION_MESSAGE =
+    "Press Enter to exit Word Judge.";
 
 const QString INCORRECT_PASSWORD_MESSAGE = "Sorry, incorrect password.";
 
@@ -187,10 +189,9 @@ JudgeDialog::JudgeDialog(WordEngine* e, const QString& lex,
 
     passwordVlay->addStretch(1);
 
-    QLabel* passwordLabel = new QLabel;
+    passwordLabel = new QLabel;
     passwordLabel->setFont(instructionFont);
     passwordLabel->setAlignment(Qt::AlignHCenter);
-    passwordLabel->setText(PASSWORD_INSTRUCTION_MESSAGE);
     passwordVlay->addWidget(passwordLabel);
 
     const int screenWidth = QApplication::desktop()->width();
@@ -576,10 +577,22 @@ JudgeDialog::displayCount()
 void
 JudgeDialog::displayPassword()
 {
-    passwordLine->setReadOnly(false);
     passwordLine->clear();
-    passwordLine->setFocus();
     passwordResultLabel->clear();
+
+    if (password.isEmpty()) {
+        passwordLabel->setText(NO_PASSWORD_INSTRUCTION_MESSAGE);
+        passwordLine->hide();
+        passwordResultLabel->hide();
+    }
+    else {
+        passwordLabel->setText(PASSWORD_INSTRUCTION_MESSAGE);
+        passwordLine->setReadOnly(false);
+        passwordLine->show();
+        passwordLine->setFocus();
+        passwordResultLabel->show();
+    }
+
     widgetStack->setCurrentWidget(passwordWidget);
     passwordTimer->start(CLEAR_PASSWORD_DELAY);
 }
@@ -673,7 +686,7 @@ JudgeDialog::passwordReturnPressed()
 {
     passwordTimer->stop();
     QString text = passwordLine->text();
-    if (text == password)
+    if (password.isEmpty() || (text == password))
         accept();
     else
         displayIncorrectPassword();
@@ -722,13 +735,18 @@ JudgeDialog::keyPressEvent(QKeyEvent* event)
         }
     }
 
+    else if (currentWidget == passwordWidget) {
+        if (password.isEmpty() && ((event->key() == Qt::Key_Return) ||
+            (event->key() == Qt::Key_Enter)))
+        {
+            accept();
+        }
+    }
+
     if (event->key() == Qt::Key_Escape) {
         Qt::KeyboardModifiers modifiers = event->modifiers();
         if (modifiers & Qt::ShiftModifier) {
-            if (password.isEmpty())
-                accept();
-            else
-                displayPassword();
+            displayPassword();
         }
         else if ((currentWidget == countWidget) && !cleared) {
             displayExit();

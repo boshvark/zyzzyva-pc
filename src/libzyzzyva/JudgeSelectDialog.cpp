@@ -241,7 +241,10 @@ JudgeSelectDialog::setPasswordAreaEnabled(bool enable)
     confirmPasswordLabel->setEnabled(enable);
     confirmPasswordLine->setEnabled(enable);
 
-    if (!enable) {
+    if (enable) {
+        passwordLine->setFocus();
+    }
+    else {
         passwordLine->setText(QString());
         confirmPasswordLine->setText(QString());
         passwordTextChanged();

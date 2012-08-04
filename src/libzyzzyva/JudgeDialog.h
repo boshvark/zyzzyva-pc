@@ -77,6 +77,7 @@ class JudgeDialog : public QDialog
     QLabel*         countInstLabel;
     QLabel*         countLabel;
     QWidget*        passwordWidget;
+    QLabel*         passwordLabel;
     QLineEdit*      passwordLine;
     QLabel*         passwordResultLabel;
     QWidget*        inputWidget;
