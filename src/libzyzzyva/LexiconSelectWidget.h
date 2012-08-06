@@ -26,6 +26,7 @@
 #define ZYZZYVA_LEXICON_SELECT_WIDGET_H
 
 #include <QComboBox>
+#include <QLabel>
 #include <QWidget>
 
 class LexiconSelectWidget : public QWidget
@@ -36,6 +37,7 @@ class LexiconSelectWidget : public QWidget
     ~LexiconSelectWidget();
 
     void setFont(const QFont& font);
+    void setLabelVisible(bool visible);
 
     const QComboBox* getComboBox() const { return lexiconCombo; }
     bool setCurrentLexicon(const QString& lexicon);
@@ -45,6 +47,7 @@ class LexiconSelectWidget : public QWidget
     void updateLexicons();
 
     private:
+    QLabel* lexiconLabel;
     QComboBox* lexiconCombo;
 };
 
