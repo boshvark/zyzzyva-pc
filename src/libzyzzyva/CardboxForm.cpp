@@ -53,25 +53,46 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
     mainVlay->setMargin(MARGIN);
     mainVlay->setSpacing(SPACING);
 
+    QHBoxLayout* controlHlay = new QHBoxLayout;
+    controlHlay->setMargin(0);
+    controlHlay->setSpacing(SPACING);
+    mainVlay->addLayout(controlHlay);
+
+    controlHlay->addStretch(1);
+
+    QGridLayout* controlGlay = new QGridLayout;
+    controlGlay->setMargin(0);
+    controlGlay->setSpacing(SPACING);
+    controlHlay->addLayout(controlGlay);
+
+    QLabel* lexiconLabel = new QLabel;
+    lexiconLabel->setText("Lexicon:");
+    controlGlay->addWidget(lexiconLabel, 0, 0);
+
     lexiconWidget = new LexiconSelectWidget;
+    lexiconWidget->setLabelVisible(false);
     connect(lexiconWidget->getComboBox(), SIGNAL(activated(const QString&)),
         SLOT(lexiconActivated(const QString&)));
-    mainVlay->addWidget(lexiconWidget);
-
-    QHBoxLayout* quizTypeHlay = new QHBoxLayout;
-    quizTypeHlay->setSpacing(SPACING);
-    mainVlay->addLayout(quizTypeHlay);
+    controlGlay->addWidget(lexiconWidget, 0, 1);
 
     QLabel* quizTypeLabel = new QLabel;
     quizTypeLabel->setText("Quiz Type:");
-    quizTypeHlay->addWidget(quizTypeLabel);
+    controlGlay->addWidget(quizTypeLabel, 1, 0);
 
     quizTypeCombo = new QComboBox;
     quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizAnagrams));
     quizTypeCombo->addItem(
         Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
     quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizHooks));
-    quizTypeHlay->addWidget(quizTypeCombo);
+    controlGlay->addWidget(quizTypeCombo, 1, 1);
+
+    ZPushButton* refreshButton = new ZPushButton;
+    refreshButton->setText("&Refresh");
+    refreshButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    connect(refreshButton, SIGNAL(clicked()), SLOT(refreshClicked()));
+    controlGlay->addWidget(refreshButton, 2, 0, 1, 2, Qt::AlignHCenter);
+
+    controlHlay->addStretch(1);
 
     QFrame* topSepFrame = new QFrame;
     topSepFrame->setFrameStyle(QFrame::HLine | QFrame::Sunken);
@@ -108,12 +129,6 @@ CardboxForm::CardboxForm(WordEngine* e, QWidget* parent, Qt::WFlags f)
 
     //cardboxContentsView = new QTreeView;
     //mainVlay->addWidget(cardboxContentsView);
-
-    ZPushButton* refreshButton = new ZPushButton;
-    refreshButton->setText("&Refresh");
-    refreshButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-    connect(refreshButton, SIGNAL(clicked()), SLOT(refreshClicked()));
-    mainVlay->addWidget(refreshButton);
 
     QFrame* bottomSepFrame = new QFrame;
     bottomSepFrame->setFrameStyle(QFrame::HLine | QFrame::Sunken);

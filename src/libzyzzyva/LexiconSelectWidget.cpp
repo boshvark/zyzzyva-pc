@@ -47,9 +47,9 @@ LexiconSelectWidget::LexiconSelectWidget(QWidget* parent, Qt::WFlags f)
     mainHlay->setSpacing(SPACING);
     mainHlay->setMargin(0);
 
-    QLabel* label = new QLabel;
-    label->setText(LABEL_TEXT);
-    mainHlay->addWidget(label);
+    lexiconLabel = new QLabel;
+    lexiconLabel->setText(LABEL_TEXT);
+    mainHlay->addWidget(lexiconLabel);
 
     lexiconCombo = new QComboBox;
     mainHlay->addWidget(lexiconCombo);
@@ -78,6 +78,19 @@ LexiconSelectWidget::setFont(const QFont& newFont)
 {
     QWidget::setFont(newFont);
     lexiconCombo->setFont(font());
+}
+
+//---------------------------------------------------------------------------
+//  setLabelVisible
+//
+//! Set the visibility of the label.
+//
+//! @param visible true if visible, false otherwise
+//---------------------------------------------------------------------------
+void
+LexiconSelectWidget::setLabelVisible(bool visible)
+{
+    lexiconLabel->setVisible(visible);
 }
 
 //---------------------------------------------------------------------------
