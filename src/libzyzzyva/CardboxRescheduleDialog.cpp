@@ -53,18 +53,28 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     mainVlay->setSpacing(SPACING);
     Q_CHECK_PTR(mainVlay);
 
-    lexiconWidget = new LexiconSelectWidget;
-    Q_CHECK_PTR(lexiconWidget);
-    mainVlay->addWidget(lexiconWidget);
+    QHBoxLayout* lexiconHlay = new QHBoxLayout;
+    lexiconHlay->setMargin(0);
+    mainVlay->addLayout(lexiconHlay);
 
-    QHBoxLayout* quizTypeHlay = new QHBoxLayout;
-    Q_CHECK_PTR(quizTypeHlay);
-    mainVlay->addLayout(quizTypeHlay);
+    lexiconHlay->addStretch(1);
+
+    QGridLayout* lexiconGlay = new QGridLayout;
+    lexiconGlay->setMargin(0);
+    lexiconGlay->setSpacing(SPACING);
+    lexiconHlay->addLayout(lexiconGlay);
+
+    QLabel* lexiconLabel = new QLabel;
+    lexiconLabel->setText("Lexicon:");
+    lexiconGlay->addWidget(lexiconLabel, 0, 0);
+
+    lexiconWidget = new LexiconSelectWidget;
+    lexiconWidget->setLabelVisible(false);
+    lexiconGlay->addWidget(lexiconWidget, 0, 1);
 
     QLabel* quizTypeLabel = new QLabel;
-    Q_CHECK_PTR(quizTypeLabel);
-    quizTypeLabel->setText("Reschedule words for quiz type:");
-    quizTypeHlay->addWidget(quizTypeLabel);
+    quizTypeLabel->setText("Quiz Type:");
+    lexiconGlay->addWidget(quizTypeLabel, 1, 0);
 
     quizTypeCombo = new QComboBox;
     Q_CHECK_PTR(quizTypeCombo);
@@ -72,21 +82,27 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     quizTypeCombo->addItem(
         Auxil::quizTypeToString(QuizSpec::QuizAnagramsWithHooks));
     quizTypeCombo->addItem(Auxil::quizTypeToString(QuizSpec::QuizHooks));
-    quizTypeHlay->addWidget(quizTypeCombo);
+    lexiconGlay->addWidget(quizTypeCombo, 1, 1);
 
-    QButtonGroup* methodGroup = new QButtonGroup(this);
-    Q_CHECK_PTR(methodGroup);
+    lexiconHlay->addStretch(1);
+
+    QGroupBox* methodGroup = new QGroupBox;
+    methodGroup->setTitle("Reschedule method");
+    mainVlay->addWidget(methodGroup);
+
+    QVBoxLayout* methodVlay = new QVBoxLayout(methodGroup);
+
+    QButtonGroup* methodButtons = new QButtonGroup(this);
 
     QHBoxLayout* backlogHlay = new QHBoxLayout;
-    Q_CHECK_PTR(backlogHlay);
-    mainVlay->addLayout(backlogHlay);
+    methodVlay->addLayout(backlogHlay);
 
     shiftQuestionsButton = new QRadioButton;
     Q_CHECK_PTR(shiftQuestionsButton);
     shiftQuestionsButton->setText("Shift words so this many are ready now:");
     connect(shiftQuestionsButton, SIGNAL(toggled(bool)),
             SLOT(shiftQuestionsButtonToggled(bool)));
-    methodGroup->addButton(shiftQuestionsButton);
+    methodButtons->addButton(shiftQuestionsButton);
     backlogHlay->addWidget(shiftQuestionsButton);
 
     backlogSbox = new QSpinBox;
@@ -99,22 +115,22 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(rescheduleQuestionsButton);
     rescheduleQuestionsButton->setText("Reschedule words according to "
                                        "their cardbox");
-    methodGroup->addButton(rescheduleQuestionsButton);
-    mainVlay->addWidget(rescheduleQuestionsButton);
+    methodButtons->addButton(rescheduleQuestionsButton);
+    methodVlay->addWidget(rescheduleQuestionsButton);
 
-    QFrame* hline = new QFrame;
-    Q_CHECK_PTR(hline);
-    hline->setFrameShape(QFrame::HLine);
-    mainVlay->addWidget(hline);
+    QGroupBox* selectGroup = new QGroupBox;
+    selectGroup->setTitle("Words to reschedule");
+    mainVlay->addWidget(selectGroup);
 
-    QButtonGroup* selectGroup = new QButtonGroup(this);
-    Q_CHECK_PTR(selectGroup);
+    QVBoxLayout* selectVlay = new QVBoxLayout(selectGroup);
+
+    QButtonGroup* selectButtons = new QButtonGroup(this);
 
     selectAllButton = new QRadioButton;
     Q_CHECK_PTR(selectAllButton);
     selectAllButton->setText("Reschedule all words");
-    selectGroup->addButton(selectAllButton);
-    mainVlay->addWidget(selectAllButton);
+    selectButtons->addButton(selectAllButton);
+    selectVlay->addWidget(selectAllButton);
 
     selectSearchButton = new QRadioButton;
     Q_CHECK_PTR(selectSearchButton);
@@ -122,12 +138,11 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
             SLOT(useSearchButtonToggled(bool)));
     selectSearchButton->setText("Reschedule only words matching search "
                                 "specification");
-    selectGroup->addButton(selectSearchButton);
-    mainVlay->addWidget(selectSearchButton);
+    selectButtons->addButton(selectSearchButton);
+    selectVlay->addWidget(selectSearchButton);
 
     searchSpecGbox = new QGroupBox("Search Specification");
-    Q_CHECK_PTR(searchSpecGbox);
-    mainVlay->addWidget(searchSpecGbox);
+    selectVlay->addWidget(searchSpecGbox);
 
     QHBoxLayout* specHlay = new QHBoxLayout(searchSpecGbox);
     Q_CHECK_PTR(specHlay);
