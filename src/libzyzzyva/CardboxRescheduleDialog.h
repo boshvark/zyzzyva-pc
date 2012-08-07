@@ -26,6 +26,7 @@
 #define ZYZZYVA_CARDBOX_RESCHEDULE_DIALOG_H
 
 #include "SearchSpec.h"
+#include "CardboxRescheduleType.h"
 #include <QDialog>
 #include <QComboBox>
 #include <QGroupBox>
@@ -33,6 +34,7 @@
 #include <QRadioButton>
 #include <QSpinBox>
 
+class CardboxRescheduleDaysSpinBox;
 class LexiconSelectWidget;
 class SearchSpecForm;
 
@@ -46,18 +48,22 @@ class CardboxRescheduleDialog : public QDialog
     public:
     QString getLexicon() const;
     QString getQuizType() const;
-    bool getShiftQuestions() const;
+    CardboxRescheduleType getRescheduleType() const;
     int getBacklogSize() const;
+    int getNumDays() const;
     bool getRescheduleAll() const;
     SearchSpec getSearchSpec() const;
 
     public slots:
+    void shiftDaysButtonToggled(bool checked);
     void shiftQuestionsButtonToggled(bool checked);
     void useSearchButtonToggled(bool checked);
 
     private:
     LexiconSelectWidget* lexiconWidget;
     QComboBox* quizTypeCombo;
+    QRadioButton* shiftDaysButton;
+    CardboxRescheduleDaysSpinBox* daysSbox;
     QRadioButton* shiftQuestionsButton;
     QSpinBox* backlogSbox;
     QRadioButton* rescheduleQuestionsButton;

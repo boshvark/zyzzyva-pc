@@ -23,6 +23,7 @@
 //---------------------------------------------------------------------------
 
 #include "CardboxRescheduleDialog.h"
+#include "CardboxRescheduleDaysSpinBox.h"
 #include "LexiconSelectWidget.h"
 #include "SearchSpecForm.h"
 #include "ZPushButton.h"
@@ -94,6 +95,19 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
 
     QButtonGroup* methodButtons = new QButtonGroup(this);
 
+    QHBoxLayout* daysHlay = new QHBoxLayout;
+    methodVlay->addLayout(daysHlay);
+
+    shiftDaysButton = new QRadioButton;
+    shiftDaysButton->setText("Shift words by this many days:");
+    connect(shiftDaysButton, SIGNAL(toggled(bool)),
+            SLOT(shiftDaysButtonToggled(bool)));
+    methodButtons->addButton(shiftDaysButton);
+    daysHlay->addWidget(shiftDaysButton);
+
+    daysSbox = new CardboxRescheduleDaysSpinBox;
+    daysHlay->addWidget(daysSbox);
+
     QHBoxLayout* backlogHlay = new QHBoxLayout;
     methodVlay->addLayout(backlogHlay);
 
@@ -109,6 +123,7 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     Q_CHECK_PTR(backlogSbox);
     backlogSbox->setMinimum(1);
     backlogSbox->setMaximum(999999);
+    backlogSbox->setEnabled(false);
     backlogHlay->addWidget(backlogSbox);
 
     rescheduleQuestionsButton = new QRadioButton;
@@ -170,7 +185,7 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     buttonHlay->addWidget(cancelButton);
 
     setWindowTitle(DIALOG_CAPTION);
-    shiftQuestionsButton->setChecked(true);
+    shiftDaysButton->setChecked(true);
     selectAllButton->setChecked(true);
     searchSpecGbox->setEnabled(false);
 }
@@ -202,17 +217,23 @@ CardboxRescheduleDialog::getQuizType() const
 }
 
 //---------------------------------------------------------------------------
-//  getShiftQuestions
+//  getRescheduleType
 //
-//! Determine whether questions are to be shifted, as opposed to completely
-//! rescheduled.
+//! Determine whether questions are to be shifted by a number of days.
 //
-//! @return true if questions should be shifted, false otherwise
+//! @return true if questions should be shifted by days, false otherwise
 //---------------------------------------------------------------------------
-bool
-CardboxRescheduleDialog::getShiftQuestions() const
+CardboxRescheduleType
+CardboxRescheduleDialog::getRescheduleType() const
 {
-    return shiftQuestionsButton->isChecked();
+    if (shiftDaysButton->isChecked())
+        return CardboxRescheduleShiftDays;
+    else if (shiftQuestionsButton->isChecked())
+        return CardboxRescheduleShiftBacklog;
+    else if (rescheduleQuestionsButton->isChecked())
+        return CardboxRescheduleByCardbox;
+    else
+        return CardboxRescheduleUnknown;
 }
 
 //---------------------------------------------------------------------------
@@ -226,6 +247,19 @@ int
 CardboxRescheduleDialog::getBacklogSize() const
 {
     return backlogSbox->value();
+}
+
+//---------------------------------------------------------------------------
+//  getNumDays
+//
+//! Determine the number of days to shift.
+//
+//! @return the number of days
+//---------------------------------------------------------------------------
+int
+CardboxRescheduleDialog::getNumDays() const
+{
+    return daysSbox->value();
 }
 
 //---------------------------------------------------------------------------
@@ -252,6 +286,20 @@ SearchSpec
 CardboxRescheduleDialog::getSearchSpec() const
 {
     return searchSpecForm->getSearchSpec();
+}
+
+//---------------------------------------------------------------------------
+//  shiftDaysButtonToggled
+//
+//! Called when the state of the Shift By Days button is toggled. Enable or
+//! disable the days spin box.
+//
+//! @param checked true if the button is checked
+//---------------------------------------------------------------------------
+void
+CardboxRescheduleDialog::shiftDaysButtonToggled(bool checked)
+{
+    daysSbox->setEnabled(checked);
 }
 
 //---------------------------------------------------------------------------

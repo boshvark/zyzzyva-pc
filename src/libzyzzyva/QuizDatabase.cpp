@@ -416,7 +416,7 @@ QuizDatabase::rescheduleCardbox(const QStringList& questions)
 }
 
 //---------------------------------------------------------------------------
-//  shiftCardbox
+//  shiftCardboxByBacklog
 //
 //! Shift questions in the cardbox system so that a certain number are
 //! currently available from the list provided.  If no questions are
@@ -424,9 +424,11 @@ QuizDatabase::rescheduleCardbox(const QStringList& questions)
 //
 //! @param questions the list of questions to shift
 //! @param desiredBacklog the desired backlog size after shifting
+//! @return the number of questions shifted
 //---------------------------------------------------------------------------
 int
-QuizDatabase::shiftCardbox(const QStringList& questions, int desiredBacklog)
+QuizDatabase::shiftCardboxByBacklog(const QStringList& questions,
+    int desiredBacklog)
 {
     QString queryStr = "SELECT question, next_scheduled "
         "FROM questions WHERE cardbox NOT NULL";
@@ -488,6 +490,45 @@ QuizDatabase::shiftCardbox(const QStringList& questions, int desiredBacklog)
     transactionQuery.exec("END TRANSACTION");
 
     return selectedQuestions.size();
+}
+
+//---------------------------------------------------------------------------
+//  shiftCardboxByDays
+//
+//! Shift questions in the cardbox system by a certain number of days. If no
+//! questions are specified, then all questions are shifted.
+//
+//! @param questions the list of questions to shift
+//! @param numDays the number of days to shift the questions
+//! @return the number of questions shifted
+//---------------------------------------------------------------------------
+int
+QuizDatabase::shiftCardboxByDays(const QStringList& questions,
+    int numDays)
+{
+    QString questionClause;
+    if (!questions.isEmpty()) {
+        questionClause = " AND question IN (";
+        bool firstItem = true;
+        foreach (const QString& question, questions) {
+            if (!firstItem)
+                questionClause += ", ";
+            questionClause += "'" + question + "'";
+            firstItem = false;
+        }
+        questionClause += ")";
+    }
+
+    int shiftSeconds = 86400 * numDays;
+
+    QSqlQuery updateQuery (*db);
+    updateQuery.prepare(QString("UPDATE questions set next_scheduled="
+        "next_scheduled+? WHERE cardbox NOT NULL%1").arg(questionClause));
+    updateQuery.bindValue(0, shiftSeconds);
+    if (!updateQuery.exec())
+        return 0;
+
+    return updateQuery.numRowsAffected();
 }
 
 //---------------------------------------------------------------------------

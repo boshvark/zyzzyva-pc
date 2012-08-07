@@ -962,12 +962,17 @@ MainWindow::rescheduleCardboxRequested()
                 return;
         }
 
-        bool shiftBacklog = dialog->getShiftQuestions();
-        int backlogSize = shiftBacklog ?  dialog->getBacklogSize() : 0;
+        CardboxRescheduleType rescheduleType = dialog->getRescheduleType();
+
+        int rescheduleValue = 0;
+        if (rescheduleType == CardboxRescheduleShiftDays)
+            rescheduleValue = dialog->getNumDays();
+        else if (rescheduleValue == CardboxRescheduleShiftBacklog)
+            rescheduleValue = dialog->getBacklogSize();
 
         QApplication::setOverrideCursor(Qt::WaitCursor);
         int numRescheduled = rescheduleCardbox(words, lexicon, quizType,
-                                               shiftBacklog, backlogSize);
+            rescheduleType, rescheduleValue);
         QApplication::restoreOverrideCursor();
 
         QString questionStr = numRescheduled == 1 ? QString("question")
@@ -1442,16 +1447,19 @@ MainWindow::rebuildDatabase(const QString& lexicon)
 //! @param words a list of words to reschedule
 //! @param lexicon the lexicon
 //! @param quizType the quiz type
-//! @return true if successful, false otherwise
+//! @return the number of questions rescheduled
 //---------------------------------------------------------------------------
 int
-MainWindow::rescheduleCardbox(const QStringList& words, const QString&
-                              lexicon, const QString& quizType, bool
-                              shiftQuestions, int backlog) const
+MainWindow::rescheduleCardbox(const QStringList& words,
+    const QString& lexicon, const QString& quizType,
+    CardboxRescheduleType rescheduleType, int rescheduleValue) const
 {
+    if (rescheduleType == CardboxRescheduleUnknown)
+        return 0;
+
     QuizSpec::QuizType type = Auxil::stringToQuizType(quizType);
     if (type == QuizSpec::UnknownQuizType)
-        return false;
+        return 0;
 
     QStringList questions;
     if (!words.isEmpty()) {
@@ -1477,10 +1485,20 @@ MainWindow::rescheduleCardbox(const QStringList& words, const QString&
 
     QuizDatabase db (lexicon, quizType);
     if (!db.isValid())
-        return false;
+        return 0;
 
-    return (shiftQuestions ? db.shiftCardbox(questions, backlog)
-                           : db.rescheduleCardbox(questions));
+    switch (rescheduleType) {
+        case CardboxRescheduleShiftDays:
+        return db.shiftCardboxByDays(questions, rescheduleValue);
+
+        case CardboxRescheduleShiftBacklog:
+        return db.shiftCardboxByBacklog(questions, rescheduleValue);
+
+        case CardboxRescheduleByCardbox:
+        return db.rescheduleCardbox(questions);
+
+        default: return 0;
+    }
 }
 
 //---------------------------------------------------------------------------

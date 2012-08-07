@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_MAIN_WINDOW_H
 #define ZYZZYVA_MAIN_WINDOW_H
 
+#include "CardboxRescheduleType.h"
 #include <QCloseEvent>
 #include <QIcon>
 #include <QLabel>
@@ -99,8 +100,8 @@ class MainWindow : public QMainWindow
     void rebuildDatabases(const QStringList& lexicons);
     bool rebuildDatabase(const QString& lexicon);
     int rescheduleCardbox(const QStringList& words, const QString& lexicon,
-                          const QString& quizType, bool shiftQuestions,
-                          int backlog = 0) const;
+        const QString& quizType, CardboxRescheduleType rescheduleType,
+        int rescheduleValue = 0) const;
 
     protected:
     virtual void closeEvent(QCloseEvent* event);

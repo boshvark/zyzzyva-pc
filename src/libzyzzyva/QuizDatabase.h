@@ -65,7 +65,8 @@ class QuizDatabase
     void removeFromCardbox(const QString& question);
     void setCardbox(const QString& question, int cardbox);
     int rescheduleCardbox(const QStringList& questions);
-    int shiftCardbox(const QStringList& questions, int desiredBacklog);
+    int shiftCardboxByBacklog(const QStringList& questions, int desiredBacklog);
+    int shiftCardboxByDays(const QStringList& questions, int numDays);
     QStringList getReadyQuestions(const QStringList& questions, bool zeroFirst);
     QuestionData getQuestionData(const QString& question);
     QMap<int, int> getCardboxCounts();

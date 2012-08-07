@@ -51,6 +51,7 @@ SOURCES = \
     CardboxAddDialog.cpp \
     CardboxForm.cpp \
     CardboxRemoveDialog.cpp \
+    CardboxRescheduleDaysSpinBox.cpp \
     CardboxRescheduleDialog.cpp \
     CreateDatabaseThread.cpp \
     CrosswordGameBoard.cpp \
@@ -111,6 +112,7 @@ HEADERS = \
     CardboxAddDialog.h \
     CardboxForm.h \
     CardboxRemoveDialog.h \
+    CardboxRescheduleDaysSpinBox.h \
     CardboxRescheduleDialog.h \
     CreateDatabaseThread.h \
     CrosswordGameBoardWidget.h \
