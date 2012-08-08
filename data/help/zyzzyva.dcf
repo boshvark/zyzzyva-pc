@@ -18,24 +18,29 @@
         <section ref="search.html#pattern-match" title="Pattern Match" />
         <section ref="search.html#subanagram-match"
                  title="Subanagram Match" />
-        <section ref="search.html#word-length" title="Word Length" />
+        <section ref="search.html#word-length" title="Length" />
+        <section ref="search.html#in-lexicon" title="In Lexicon" />
+        <section ref="search.html#in-word-list" title="In Word List" />
+        <section ref="search.html#belongs-to-group"
+                 title="Belongs to Group" />
         <section ref="search.html#num-vowels" title="Number of Vowels" />
+        <section ref="search.html#includes-letters"
+                 title="Includes Letters" />
+        <section ref="search.html#probability-order"
+                 title="Probability Order" />
+        <section ref="search.html#limit-by-probability-order"
+                 title="Limit by Probability Order" />
+        <section ref="search.html#playability-order"
+                 title="Playability Order" />
+        <section ref="search.html#limit-by-playability-order"
+                 title="Limit by Playability Order" />
         <section ref="search.html#num-unique-letters"
                  title="Number of Unique Letters" />
         <section ref="search.html#point-value" title="Point Value" />
         <section ref="search.html#prefixes-suffixes"
                  title="Prefixes and Suffixes" />
-        <section ref="search.html#includes-letters"
-                 title="Includes Letters" />
         <section ref="search.html#consists-of" title="Consists of" />
-        <section ref="search.html#belongs-to-group"
-                 title="Belongs to Group" />
-        <section ref="search.html#in-word-list" title="In Word List" />
         <section ref="search.html#num-anagrams" title="Number of Anagrams" />
-        <section ref="search.html#probability-order"
-                 title="Probability Order" />
-        <section ref="search.html#limit-by-probability-order"
-                 title="Limit by Probability Order" />
       </section>
       <section ref="search.html#other-options" title="Other Options" />
       <section ref="search.html#load-save-search"
