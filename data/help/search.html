@@ -388,6 +388,35 @@
   Anagrams</i> condition and set the <i>Min</i> and <i>Max</i> values
   appropriately.  An exact length can also be specified by making the
   <i>Min</i> and <i>Max</i> values equal to each other.</p>
+  <a name="part-of-speech">
+  <h3>Part of Speech</h3>
+  <p>The <i>Part of Speech</i> condition searches for words that have a
+  particular part of speech associated with them. For this search to work, the
+  lexicon database must contain definitions including parts of speech. For
+  example, the definition "<tt>rough, cindery lava [n -S]</tt>" specifies a word with
+  <i>Noun</i> part of speech because it is listed as "n" inside square
+  brackets.</p>
+  <p>There are ten available parts of speech that can be searched. Here is how
+  each part of speech must be listed in the word definitions:</p>
+  <table cellpadding="5px">
+  <tr><td><b>Part of Speech</b></td><td><b>Definition Format</b></td></tr>
+  <tr><td>Adjective</td><td><tt>adj</tt></td></tr>
+  <tr><td>Adverb</td><td><tt>adv</tt></td></tr>
+  <tr><td>Conjunction</td><td><tt>conj</tt></td></tr>
+  <tr><td>Definite Article</td><td><tt>definite_article</tt></td></tr>
+  <tr><td>Indefinite Article</td><td><tt>indefinite_article</tt></td></tr>
+  <tr><td>Interjection</td><td><tt>interj</tt></td></tr>
+  <tr><td>Noun</td><td><tt>n</tt></td></tr>
+  <tr><td>Preposition</td><td><tt>prep</tt></td></tr>
+  <tr><td>Pronoun</td><td><tt>pron</tt></td></tr>
+  <tr><td>Verb</td><td><tt>v</tt></td></tr>
+  </table>
+  <a name="definition">
+  <h3>Definition</h3>
+  <p>The <i>Definition</i> condition searches for words that have definitions
+  matching the search. For this search to work, the lexicon database must
+  contain definitions. Currently no wildcard characters are allowed. Only
+  literal matches can be searched.</p>
   <a name="load-save-search">
   <h2>Loading and Saving Searches</h2>
   <p>It can be inconvenient to create complicated searches from scratch each
