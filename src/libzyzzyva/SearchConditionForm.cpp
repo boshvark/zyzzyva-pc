@@ -33,7 +33,35 @@
 #include "Defs.h"
 #include <QHBoxLayout>
 
+QMap<QString, QString> SearchConditionForm::posToNicePosMap;
+QMap<QString, QString> SearchConditionForm::nicePosToPosMap;
+
 const int MAX_MAX_INT_VALUE = 999999;
+
+const QString POS_ADJECTIVE = "adj";
+const QString POS_ADVERB = "adv";
+const QString POS_CONJUNCTION = "conj";
+const QString POS_DEFINITE_ARTICLE = "definite_article";
+const QString POS_INDEFINITE_ARTICLE = "indefinite_article";
+const QString POS_INTERJECTION = "interj";
+const QString POS_NOUN = "n";
+const QString POS_PREPOSITION = "prep";
+const QString POS_PRONOUN = "pron";
+const QString POS_VERB = "v";
+
+const QString NICE_POS_ADJECTIVE = "Adjective";
+const QString NICE_POS_ADVERB = "Adverb";
+const QString NICE_POS_CONJUNCTION = "Conjunction";
+const QString NICE_POS_DEFINITE_ARTICLE = "Definite Article";
+const QString NICE_POS_INDEFINITE_ARTICLE = "Indefinite Article";
+const QString NICE_POS_INTERJECTION = "Interjection";
+const QString NICE_POS_NOUN = "Noun";
+const QString NICE_POS_PREPOSITION = "Preposition";
+const QString NICE_POS_PRONOUN = "Pronoun";
+const QString NICE_POS_VERB = "Verb";
+
+// Initialize POS maps during static initialization
+bool SearchConditionForm::posInitialized = SearchConditionForm::initializePos();
 
 using namespace Defs;
 
@@ -270,7 +298,6 @@ SearchConditionForm::getSearchCondition() const
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
         case SearchCondition::IncludeLetters:
-        case SearchCondition::PartOfSpeech:
         case SearchCondition::Definition:
         condition.stringValue = paramLine->text();
         break;
@@ -314,6 +341,10 @@ SearchConditionForm::getSearchCondition() const
         condition.stringValue = paramCbox->currentText();
         break;
 
+        case SearchCondition::PartOfSpeech:
+        condition.stringValue = nicePosToPos(paramCbox->currentText());
+        break;
+
         case SearchCondition::InWordList:
         condition.stringValue = paramWordListString;
         break;
@@ -352,7 +383,6 @@ SearchConditionForm::setSearchCondition(const SearchCondition& condition)
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
         case SearchCondition::IncludeLetters:
-        case SearchCondition::PartOfSpeech:
         case SearchCondition::Definition:
         paramLine->setText(condition.stringValue);
         break;
@@ -397,6 +427,11 @@ SearchConditionForm::setSearchCondition(const SearchCondition& condition)
         paramCbox->setCurrentIndex(paramCbox->findText(condition.stringValue));
         break;
 
+        case SearchCondition::PartOfSpeech:
+        paramCbox->setCurrentIndex(paramCbox->findText(
+            posToNicePos(condition.stringValue)));
+        break;
+
         case SearchCondition::InWordList:
         setWordListString(condition.stringValue);
         break;
@@ -427,7 +462,6 @@ SearchConditionForm::isValid() const
 
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
-        case SearchCondition::PartOfSpeech:
         case SearchCondition::Definition:
         return !paramLine->text().isEmpty();
 
@@ -491,7 +525,6 @@ SearchConditionForm::typeChanged(const QString& string)
         case SearchCondition::Prefix:
         case SearchCondition::Suffix:
         case SearchCondition::IncludeLetters:
-        case SearchCondition::PartOfSpeech:
         case SearchCondition::Definition:
         {
             QValidator* validator = 0;
@@ -612,6 +645,15 @@ SearchConditionForm::typeChanged(const QString& string)
         paramCbox->addItem(Auxil::searchSetToString(SetTypeThreeEights));
         paramCbox->addItem(
             Auxil::searchSetToString(SetEightsFromSevenLetterStems));
+        paramStack->setCurrentWidget(paramCboxWidget);
+        break;
+
+        case SearchCondition::PartOfSpeech:
+        negationCbox->setEnabled(true);
+        paramCbox->clear();
+        foreach (const QString& pos, nicePosToPosMap.keys()) {
+            paramCbox->addItem(pos);
+        }
         paramStack->setCurrentWidget(paramCboxWidget);
         break;
 
@@ -810,4 +852,74 @@ SearchConditionForm::matchStringIsValid(const QString& string) const
     }
 
     return !inGroup;
+}
+
+//---------------------------------------------------------------------------
+//  posToNicePos
+//
+//! Translate internal part-of-speech string to user visible part-of-speech
+//! string.
+//
+//! @return the nice string, or empty string if no translation
+//---------------------------------------------------------------------------
+QString
+SearchConditionForm::posToNicePos(const QString& pos) const
+{
+    return posToNicePosMap.value(pos);
+}
+
+//---------------------------------------------------------------------------
+//  nicePosToPos
+//
+//! Translate user visible part-of-speech string to internal part-of-speech
+//! string.
+//
+//! @return the string, or empty string if no translation
+//---------------------------------------------------------------------------
+QString
+SearchConditionForm::nicePosToPos(const QString& pos) const
+{
+    return nicePosToPosMap.value(pos);
+}
+
+//---------------------------------------------------------------------------
+//  initializePos
+//
+//! Initialize the part-of-speech maps.
+//
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+SearchConditionForm::initializePos()
+{
+    if (posInitialized)
+        return true;
+
+    if (posToNicePosMap.isEmpty()) {
+        posToNicePosMap.insert(POS_ADJECTIVE, NICE_POS_ADJECTIVE);
+        posToNicePosMap.insert(POS_ADVERB, NICE_POS_ADVERB);
+        posToNicePosMap.insert(POS_CONJUNCTION, NICE_POS_CONJUNCTION);
+        posToNicePosMap.insert(POS_DEFINITE_ARTICLE, NICE_POS_DEFINITE_ARTICLE);
+        posToNicePosMap.insert(POS_INDEFINITE_ARTICLE, NICE_POS_INDEFINITE_ARTICLE);
+        posToNicePosMap.insert(POS_INTERJECTION, NICE_POS_INTERJECTION);
+        posToNicePosMap.insert(POS_NOUN, NICE_POS_NOUN);
+        posToNicePosMap.insert(POS_PREPOSITION, NICE_POS_PREPOSITION);
+        posToNicePosMap.insert(POS_PRONOUN, NICE_POS_PRONOUN);
+        posToNicePosMap.insert(POS_VERB, NICE_POS_VERB);
+    }
+
+    if (nicePosToPosMap.isEmpty()) {
+        nicePosToPosMap.insert(NICE_POS_ADJECTIVE, POS_ADJECTIVE);
+        nicePosToPosMap.insert(NICE_POS_ADVERB, POS_ADVERB);
+        nicePosToPosMap.insert(NICE_POS_CONJUNCTION, POS_CONJUNCTION);
+        nicePosToPosMap.insert(NICE_POS_DEFINITE_ARTICLE, POS_DEFINITE_ARTICLE);
+        nicePosToPosMap.insert(NICE_POS_INDEFINITE_ARTICLE, POS_INDEFINITE_ARTICLE);
+        nicePosToPosMap.insert(NICE_POS_INTERJECTION, POS_INTERJECTION);
+        nicePosToPosMap.insert(NICE_POS_NOUN, POS_NOUN);
+        nicePosToPosMap.insert(NICE_POS_PREPOSITION, POS_PREPOSITION);
+        nicePosToPosMap.insert(NICE_POS_PRONOUN, POS_PRONOUN);
+        nicePosToPosMap.insert(NICE_POS_VERB, POS_VERB);
+    }
+
+    return true;
 }

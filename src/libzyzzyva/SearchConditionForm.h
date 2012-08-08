@@ -64,6 +64,10 @@ class SearchConditionForm : public QWidget
     private:
     void setWordListString(const QString& string);
     bool matchStringIsValid(const QString& string) const;
+    QString posToNicePos(const QString& pos) const;
+    QString nicePosToPos(const QString& nicePos) const;
+
+    static bool initializePos();
 
     private:
     QCheckBox*      negationCbox;
@@ -90,6 +94,10 @@ class SearchConditionForm : public QWidget
     WordValidator*  patternValidator;
     QPushButton*    addButton;
     QPushButton*    deleteButton;
+
+    static bool posInitialized;
+    static QMap<QString, QString> posToNicePosMap;
+    static QMap<QString, QString> nicePosToPosMap;
 
     bool legacy;
 };
