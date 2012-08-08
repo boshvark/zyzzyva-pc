@@ -967,7 +967,7 @@ MainWindow::rescheduleCardboxRequested()
         int rescheduleValue = 0;
         if (rescheduleType == CardboxRescheduleShiftDays)
             rescheduleValue = dialog->getNumDays();
-        else if (rescheduleValue == CardboxRescheduleShiftBacklog)
+        else if (rescheduleType == CardboxRescheduleShiftBacklog)
             rescheduleValue = dialog->getBacklogSize();
 
         QApplication::setOverrideCursor(Qt::WaitCursor);
