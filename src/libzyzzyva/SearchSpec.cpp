@@ -195,6 +195,7 @@ SearchSpec::optimize(const QString& lexicon)
     int minPointValue = 0;
     int maxPointValue = 10 * MAX_WORD_LEN + 1;
     QMap<QString, bool> inLexicons;
+    QMap<QString, bool> pos;
     inLexicons[lexicon] = true;
 
     QMutableListIterator<SearchCondition> it (conditions);
@@ -358,6 +359,17 @@ SearchSpec::optimize(const QString& lexicon)
                 return;
             }
             inLexicons[stringValue] = negated;
+            newConditions.append(condition);
+            break;
+
+            case SearchCondition::PartOfSpeech:
+            if (pos.contains(stringValue) &&
+                pos[stringValue] != negated)
+            {
+                conditions.clear();
+                return;
+            }
+            pos[stringValue] = negated;
             newConditions.append(condition);
             break;
 
