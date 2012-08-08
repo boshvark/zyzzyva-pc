@@ -37,6 +37,7 @@
 class CardboxRescheduleDaysSpinBox;
 class LexiconSelectWidget;
 class SearchSpecForm;
+class ZPushButton;
 
 class CardboxRescheduleDialog : public QDialog
 {
@@ -56,6 +57,7 @@ class CardboxRescheduleDialog : public QDialog
 
     public slots:
     void shiftDaysButtonToggled(bool checked);
+    void shiftDaysValueChanged(int value);
     void shiftQuestionsButtonToggled(bool checked);
     void useSearchButtonToggled(bool checked);
 
@@ -71,6 +73,7 @@ class CardboxRescheduleDialog : public QDialog
     QRadioButton* selectSearchButton;
     QGroupBox* searchSpecGbox;
     SearchSpecForm* searchSpecForm;
+    ZPushButton* okButton;
 };
 
 #endif // ZYZZYVA_CARDBOX_RESCHEDULE_DIALOG_H

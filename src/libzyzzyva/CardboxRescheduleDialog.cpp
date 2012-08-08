@@ -104,6 +104,8 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     daysHlay->addWidget(shiftDaysButton);
 
     daysSbox = new CardboxRescheduleDaysSpinBox;
+    connect(daysSbox, SIGNAL(valueChanged(int)),
+        SLOT(shiftDaysValueChanged(int)));
     daysHlay->addWidget(daysSbox);
 
     QHBoxLayout* backlogHlay = new QHBoxLayout;
@@ -161,7 +163,9 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     buttonHlay->setSpacing(SPACING);
     mainVlay->addLayout(buttonHlay);
 
-    ZPushButton* okButton = new ZPushButton("&OK");
+    buttonHlay->addStretch(1);
+
+    okButton = new ZPushButton("&OK");
     okButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     okButton->setDefault(true);
     connect(okButton, SIGNAL(clicked()), SLOT(accept()));
@@ -171,6 +175,8 @@ CardboxRescheduleDialog::CardboxRescheduleDialog(QWidget* parent, Qt::WFlags f)
     cancelButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     connect(cancelButton, SIGNAL(clicked()), SLOT(reject()));
     buttonHlay->addWidget(cancelButton);
+
+    buttonHlay->addStretch(1);
 
     setWindowTitle(DIALOG_CAPTION);
     shiftDaysButton->setChecked(true);
@@ -288,6 +294,21 @@ void
 CardboxRescheduleDialog::shiftDaysButtonToggled(bool checked)
 {
     daysSbox->setEnabled(checked);
+    okButton->setEnabled(!checked || (daysSbox->value() != 0));
+}
+
+//---------------------------------------------------------------------------
+//  shiftDaysValueChanged
+//
+//! Called when the value of the Shift By Days spin box is changed.
+//
+//! @param value the new value
+//---------------------------------------------------------------------------
+void
+CardboxRescheduleDialog::shiftDaysValueChanged(int value)
+{
+    if (shiftDaysButton->isChecked())
+        okButton->setEnabled(value != 0);
 }
 
 //---------------------------------------------------------------------------
