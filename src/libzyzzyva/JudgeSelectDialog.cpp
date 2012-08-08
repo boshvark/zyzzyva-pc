@@ -78,7 +78,7 @@ JudgeSelectDialog::JudgeSelectDialog(QWidget* parent, Qt::WFlags f)
     mainVlay->addLayout(optionHlay);
 
     passwordCbox = new QCheckBox;
-    passwordCbox->setText("Set password");
+    passwordCbox->setText("Set &password");
     connect(passwordCbox, SIGNAL(stateChanged(int)),
         SLOT(passwordStateChanged(int)));
     optionHlay->addWidget(passwordCbox);
