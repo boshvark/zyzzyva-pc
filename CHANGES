@@ -1,3 +1,12 @@
+Version 2.2.1
+Released 2012-08-08
+
+User-visible changes:
+ * Fix Shift By Backlog cardbox rescheduling
+ * Help documentation for Part of Speech and Definition search
+ * Other minor fixes
+
+
 Version 2.2.0
 Released 2012-08-06
 
