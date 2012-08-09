@@ -342,8 +342,15 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
             case SearchCondition::PartOfSpeech:
             case SearchCondition::Definition: {
                 tables.insert("words");
-                QString str =
-                    condition.stringValue.replace(QRegExp("\\([^%_\\])"), "\\1");
+
+                // Escape % and _ characters when preceded by an even number
+                // of backslashes
+                QString str = condition.stringValue.replace(
+                    QRegExp("((?:\\\\\\\\)*)([%%_'\\\\])"), "\\1\\\\2");
+
+                // ### replace * with % and ? with _ for more flexible search
+                // tricky to get right
+
                 str.replace("'", "''");
                 str.replace(";", "\\;");
 
@@ -361,10 +368,6 @@ WordEngine::databaseSearch(const QString& lexicon, const SearchSpec&
                         " LIKE '\%[" + str + "]\%' ESCAPE '\\'";
                     str = "[" + str + " ";
                 }
-
-                // ### escape % and _ with backslashes if not already escaped
-
-                // ### replace * with % and ? with _ for more flexible search
 
                 whereStr +=
                     " words.definition" + notStr +
