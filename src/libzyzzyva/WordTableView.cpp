@@ -28,8 +28,8 @@
 #include "DefinitionDialog.h"
 #include "MainSettings.h"
 #include "MainWindow.h"
-#include "QuizDatabase.h"
 #include "QuizSpec.h"
+#include "QuizStatsDatabase.h"
 #include "SearchSpec.h"
 #include "WordEngine.h"
 #include "WordListSaveDialog.h"
@@ -691,7 +691,7 @@ WordTableView::addToCardbox(const QStringList& words, const QString& lexicon,
         questions = words;
     }
 
-    QuizDatabase db (lexicon, quizType);
+    QuizStatsDatabase db (lexicon, quizType);
     if (!db.isValid())
         return false;
 
@@ -739,7 +739,7 @@ WordTableView::removeFromCardbox(const QStringList& words, const QString&
         questions = words;
     }
 
-    QuizDatabase db (lexicon, quizType);
+    QuizStatsDatabase db (lexicon, quizType);
     if (!db.isValid())
         return false;
 

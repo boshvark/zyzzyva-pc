@@ -30,9 +30,9 @@
 #include "NewQuizDialog.h"
 #include "Rand.h"
 #include "QuizCanvas.h"
-#include "QuizDatabase.h"
 #include "QuizEngine.h"
 #include "QuizQuestionLabel.h"
+#include "QuizStatsDatabase.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
 #include "WordLineEdit.h"
@@ -130,7 +130,7 @@ QuizForm::QuizForm(WordEngine* we, QWidget* parent, Qt::WFlags f)
     quizEngine(new QuizEngine(wordEngine)), timerId(0), timerPaused(0),
     checkBringsJudgment(true), recordStatsBlocked(false),
     unsavedChanges(false), cardboxQuiz(false),
-    questionMarkedStatus(QuestionNotMarked), db(0),
+    questionMarkedStatus(QuestionNotMarked), quizStatsDatabase(0),
     // FIXME: This dialog should be nonmodal!
     analyzeDialog(new AnalyzeQuizDialog(quizEngine, we, this,
                                         Qt::WindowMinMaxButtonsHint))
@@ -831,7 +831,7 @@ QuizForm::markMissed()
     bool old = checkBringsJudgment;
     checkBringsJudgment = true;
     questionMarkedStatus = QuestionMarkedMissed;
-    db->undoLastResponse(quizEngine->getQuestion());
+    quizStatsDatabase->undoLastResponse(quizEngine->getQuestion());
     checkResponseClicked();
     checkBringsJudgment = old;
 }
@@ -858,7 +858,7 @@ QuizForm::markCorrect()
     bool old = checkBringsJudgment;
     checkBringsJudgment = false;
     questionMarkedStatus = QuestionMarkedCorrect;
-    db->undoLastResponse(quizEngine->getQuestion());
+    quizStatsDatabase->undoLastResponse(quizEngine->getQuestion());
     checkResponseClicked();
     checkBringsJudgment = old;
     quizEngine->markQuestionAsCorrect();
@@ -878,7 +878,7 @@ QuizForm::moveToCardbox(int cardbox)
     if (quizEngine->getQuestionCorrect() != quizEngine->getQuestionTotal())
         markCorrect();
 
-    db->setCardbox(quizEngine->getQuestion(), cardbox);
+    quizStatsDatabase->setCardbox(quizEngine->getQuestion(), cardbox);
     updateQuestionStatus();
 }
 
@@ -1036,8 +1036,9 @@ QuizForm::checkResponseClicked()
     if (MainSettings::getQuizRecordStats() && !recordStatsBlocked)
         recordQuestionStats(questionCorrect);
 
-    if (db && db->isValid() && (MainSettings::getQuizShowQuestionStats() ||
-       (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod)))
+    if (quizStatsDatabase && quizStatsDatabase->isValid() &&
+        (MainSettings::getQuizShowQuestionStats() ||
+        (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod)))
     {
         updateQuestionStatus();
     }
@@ -1170,7 +1171,7 @@ QuizForm::startQuestion()
     questionMarkedStatus = QuestionNotMarked;
 
     QString question = quizEngine->getQuestion();
-    origQuestionData = db->getQuestionData(question);
+    origQuestionData = quizStatsDatabase->getQuestionData(question);
 
     QSet<QString> correct = quizEngine->getQuestionCorrectResponses();
     if (!correct.isEmpty()) {
@@ -1407,7 +1408,7 @@ QuizForm::setCorrectStatus(int correct, int total)
 //! @param total the total number of correct answers
 //---------------------------------------------------------------------------
 void
-QuizForm::setQuestionStatus(const QuizDatabase::QuestionData& data)
+QuizForm::setQuestionStatus(const QuizStatsDatabase::QuestionData& data)
 {
     if (!data.valid || !quizEngine->getQuestionComplete())
         return;
@@ -1542,7 +1543,8 @@ void
 QuizForm::updateQuestionStatus()
 {
     QString question = quizEngine->getQuestion();
-    QuizDatabase::QuestionData data = db->getQuestionData(question);
+    QuizStatsDatabase::QuestionData data =
+        quizStatsDatabase->getQuestionData(question);
     if (data.valid)
         setQuestionStatus(data);
 }
@@ -1917,13 +1919,13 @@ QuizForm::responseMatchesQuestion(const QString& response) const
 void
 QuizForm::connectToDatabase(const QString& lexicon, const QString& quizType)
 {
-    if (db && db->isValid())
+    if (quizStatsDatabase && quizStatsDatabase->isValid())
         return;
 
-    db = new QuizDatabase(lexicon, quizType);
-    if (!db->isValid()) {
-        delete db;
-        db = 0;
+    quizStatsDatabase = new QuizStatsDatabase(lexicon, quizType);
+    if (!quizStatsDatabase->isValid()) {
+        delete quizStatsDatabase;
+        quizStatsDatabase = 0;
     }
 }
 
@@ -1935,8 +1937,8 @@ QuizForm::connectToDatabase(const QString& lexicon, const QString& quizType)
 void
 QuizForm::disconnectDatabase()
 {
-    delete db;
-    db = 0;
+    delete quizStatsDatabase;
+    quizStatsDatabase = 0;
 }
 
 //---------------------------------------------------------------------------
@@ -1949,7 +1951,7 @@ QuizForm::disconnectDatabase()
 void
 QuizForm::recordQuestionStats(bool correct)
 {
-    if (!db || !db->isValid())
+    if (!quizStatsDatabase || !quizStatsDatabase->isValid())
         return;
 
     if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
@@ -1957,7 +1959,8 @@ QuizForm::recordQuestionStats(bool correct)
 
     QuizSpec::QuizMethod method = quizEngine->getQuizSpec().getMethod();
     bool updateCardbox = (method == QuizSpec::CardboxQuizMethod);
-    db->recordResponse(quizEngine->getQuestion(), correct, updateCardbox);
+    quizStatsDatabase->recordResponse(quizEngine->getQuestion(), correct,
+        updateCardbox);
 }
 
 //---------------------------------------------------------------------------

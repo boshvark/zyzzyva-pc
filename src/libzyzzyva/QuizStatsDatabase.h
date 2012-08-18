@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// QuizDatabase.h
+// QuizStatsDatabase.h
 //
 // A class for working with database of quiz performance statistics.
 //
@@ -31,7 +31,7 @@
 #include <QSqlQueryModel>
 #include <QString>
 
-class QuizDatabase
+class QuizStatsDatabase
 {
     public:
     class QuestionData {
@@ -49,8 +49,8 @@ class QuizDatabase
         int nextScheduled;
     };
 
-    QuizDatabase(const QString& lexicon, const QString& quizType);
-    ~QuizDatabase();
+    QuizStatsDatabase(const QString& lexicon, const QString& quizType);
+    ~QuizStatsDatabase();
 
     bool isValid() const;
     bool updateSchema();

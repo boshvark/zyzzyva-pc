@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// QuizDatabase.cpp
+// QuizStatsDatabase.cpp
 //
 // A class for working with database of quiz performance statistics.
 //
@@ -22,7 +22,7 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#include "QuizDatabase.h"
+#include "QuizStatsDatabase.h"
 #include "MainSettings.h"
 #include "Rand.h"
 #include "Auxil.h"
@@ -44,7 +44,7 @@ const QString SQL_CREATE_QUESTIONS_TABLE_CURRENT =
     "difficulty integer, cardbox integer, next_scheduled integer)";
 
 //---------------------------------------------------------------------------
-//  QuizDatabase
+//  QuizStatsDatabase
 //
 //! Constructor.  Connect to the database specified by a lexicon and quiz
 //! type.
@@ -52,7 +52,8 @@ const QString SQL_CREATE_QUESTIONS_TABLE_CURRENT =
 //! @param lexicon the lexicon name
 //! @param quizType the quiz type
 //---------------------------------------------------------------------------
-QuizDatabase::QuizDatabase(const QString& lexicon, const QString& quizType)
+QuizStatsDatabase::QuizStatsDatabase(const QString& lexicon,
+    const QString& quizType)
     : db(0)
 {
     QString dirName = Auxil::getQuizDir() + "/data/" + lexicon;
@@ -78,11 +79,11 @@ QuizDatabase::QuizDatabase(const QString& lexicon, const QString& quizType)
 }
 
 //---------------------------------------------------------------------------
-//  QuizDatabase
+//  QuizStatsDatabase
 //
 //! Destructor.
 //---------------------------------------------------------------------------
-QuizDatabase::~QuizDatabase()
+QuizStatsDatabase::~QuizStatsDatabase()
 {
     if (db) {
         if (db->isOpen())
@@ -101,7 +102,7 @@ QuizDatabase::~QuizDatabase()
 //! @return true if the database is valid, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizDatabase::isValid() const
+QuizStatsDatabase::isValid() const
 {
     return (db && db->isValid());
 }
@@ -114,7 +115,7 @@ QuizDatabase::isValid() const
 //! @return true if the database is valid, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizDatabase::updateSchema()
+QuizStatsDatabase::updateSchema()
 {
     // Create table if it doesn't already exist
     QSqlQuery query (*db);
@@ -161,7 +162,7 @@ QuizDatabase::updateSchema()
 //! @param updateCardbox whether to update the question in the cardbox system
 //---------------------------------------------------------------------------
 void
-QuizDatabase::recordResponse(const QString& question, bool correct,
+QuizStatsDatabase::recordResponse(const QString& question, bool correct,
                              bool updateCardbox)
 {
     QuestionData data = getQuestionData(question);
@@ -215,7 +216,7 @@ QuizDatabase::recordResponse(const QString& question, bool correct,
 //! Undo the last question response.
 //---------------------------------------------------------------------------
 void
-QuizDatabase::undoLastResponse(const QString& question)
+QuizStatsDatabase::undoLastResponse(const QString& question)
 {
     if (undoQuestion != question)
         return;
@@ -236,8 +237,8 @@ QuizDatabase::undoLastResponse(const QString& question)
 //! false
 //---------------------------------------------------------------------------
 void
-QuizDatabase::addToCardbox(const QStringList& questions, bool estimateCardbox,
-                           int cardbox)
+QuizStatsDatabase::addToCardbox(const QStringList& questions,
+    bool estimateCardbox, int cardbox)
 {
     QSqlQuery query (*db);
     query.exec("BEGIN TRANSACTION");
@@ -261,8 +262,8 @@ QuizDatabase::addToCardbox(const QStringList& questions, bool estimateCardbox,
 //! false
 //---------------------------------------------------------------------------
 void
-QuizDatabase::addToCardbox(const QString& question, bool estimateCardbox,
-                           int cardbox)
+QuizStatsDatabase::addToCardbox(const QString& question, bool estimateCardbox,
+    int cardbox)
 {
     QuestionData data = getQuestionData(question);
 
@@ -301,7 +302,7 @@ QuizDatabase::addToCardbox(const QString& question, bool estimateCardbox,
 //! @param questions the questions to remove from the cardbox system
 //---------------------------------------------------------------------------
 void
-QuizDatabase::removeFromCardbox(const QStringList& questions)
+QuizStatsDatabase::removeFromCardbox(const QStringList& questions)
 {
     QStringList qlist;
     QStringListIterator it (questions);
@@ -325,7 +326,7 @@ QuizDatabase::removeFromCardbox(const QStringList& questions)
 //! @param question the question to remove from the cardbox system
 //---------------------------------------------------------------------------
 void
-QuizDatabase::removeFromCardbox(const QString& question)
+QuizStatsDatabase::removeFromCardbox(const QString& question)
 {
     QStringList qlist;
     qlist.append(question);
@@ -342,7 +343,7 @@ QuizDatabase::removeFromCardbox(const QString& question)
 //! @param cardbox the cardbox to place the question in
 //---------------------------------------------------------------------------
 void
-QuizDatabase::setCardbox(const QString& question, int cardbox)
+QuizStatsDatabase::setCardbox(const QString& question, int cardbox)
 {
     QuestionData data = getQuestionData(question);
     data.valid = true;
@@ -360,7 +361,7 @@ QuizDatabase::setCardbox(const QString& question, int cardbox)
 //! @param questions the list of questions to reschedule
 //---------------------------------------------------------------------------
 int
-QuizDatabase::rescheduleCardbox(const QStringList& questions)
+QuizStatsDatabase::rescheduleCardbox(const QStringList& questions)
 {
     QString queryStr = "SELECT question, cardbox, next_scheduled "
         "FROM questions WHERE cardbox NOT NULL";
@@ -427,7 +428,7 @@ QuizDatabase::rescheduleCardbox(const QStringList& questions)
 //! @return the number of questions shifted
 //---------------------------------------------------------------------------
 int
-QuizDatabase::shiftCardboxByBacklog(const QStringList& questions,
+QuizStatsDatabase::shiftCardboxByBacklog(const QStringList& questions,
     int desiredBacklog)
 {
     QString queryStr = "SELECT question, next_scheduled "
@@ -503,7 +504,7 @@ QuizDatabase::shiftCardboxByBacklog(const QStringList& questions,
 //! @return the number of questions shifted
 //---------------------------------------------------------------------------
 int
-QuizDatabase::shiftCardboxByDays(const QStringList& questions,
+QuizStatsDatabase::shiftCardboxByDays(const QStringList& questions,
     int numDays)
 {
     QString questionClause;
@@ -543,7 +544,8 @@ QuizDatabase::shiftCardboxByDays(const QStringList& questions,
 //! @return the list of ready questions, in scheduled order
 //---------------------------------------------------------------------------
 QStringList
-QuizDatabase::getReadyQuestions(const QStringList& questions, bool zeroFirst)
+QuizStatsDatabase::getReadyQuestions(const QStringList& questions,
+    bool zeroFirst)
 {
     unsigned int now = QDateTime::currentDateTime().toTime_t();
 
@@ -586,8 +588,8 @@ QuizDatabase::getReadyQuestions(const QStringList& questions, bool zeroFirst)
 //! @param question the question
 //! @return the associated data
 //---------------------------------------------------------------------------
-QuizDatabase::QuestionData
-QuizDatabase::getQuestionData(const QString& question)
+QuizStatsDatabase::QuestionData
+QuizStatsDatabase::getQuestionData(const QString& question)
 {
     QuestionData data;
 
@@ -641,7 +643,7 @@ QuizDatabase::getQuestionData(const QString& question)
 //! @return the cardbox count map
 //---------------------------------------------------------------------------
 QMap<int, int>
-QuizDatabase::getCardboxCounts()
+QuizStatsDatabase::getCardboxCounts()
 {
     QMap<int, int> cardboxCounts;
 
@@ -676,7 +678,7 @@ QuizDatabase::getCardboxCounts()
 //! @return the cardbox due count map
 //---------------------------------------------------------------------------
 QMap<int, int>
-QuizDatabase::getCardboxDueCounts()
+QuizStatsDatabase::getCardboxDueCounts()
 {
     QMap<int, int> cardboxDueCounts;
 
@@ -715,7 +717,7 @@ QuizDatabase::getCardboxDueCounts()
 //! @return the database connection pointer
 //---------------------------------------------------------------------------
 QMap<int, int>
-QuizDatabase::getScheduleDayCounts()
+QuizStatsDatabase::getScheduleDayCounts()
 {
     QMap<int, int> dayCounts;
 
@@ -752,7 +754,7 @@ QuizDatabase::getScheduleDayCounts()
 //! @return the database connection pointer
 //---------------------------------------------------------------------------
 const QSqlDatabase*
-QuizDatabase::getDatabase() const
+QuizStatsDatabase::getDatabase() const
 {
     return db;
 }
@@ -767,7 +769,7 @@ QuizDatabase::getDatabase() const
 //! @return the next scheduled appearance of the question
 //---------------------------------------------------------------------------
 int
-QuizDatabase::calculateNextScheduled(int cardbox)
+QuizStatsDatabase::calculateNextScheduled(int cardbox)
 {
     int daySeconds = 60 * 60 * 24;
     int halfDaySeconds = daySeconds / 2;
@@ -824,8 +826,8 @@ QuizDatabase::calculateNextScheduled(int cardbox)
 //! @param updateCardbox whether to update the cardbox information
 //---------------------------------------------------------------------------
 void
-QuizDatabase::setQuestionData(const QString& question, const QuestionData&
-                              data, bool updateCardbox)
+QuizStatsDatabase::setQuestionData(const QString& question,
+    const QuestionData& data, bool updateCardbox)
 {
     QSqlQuery query (*db);
     query.prepare("SELECT question FROM questions WHERE question=?");

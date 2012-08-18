@@ -68,12 +68,12 @@ SOURCES = \
     MainWindow.cpp \
     NewQuizDialog.cpp \
     QuizCanvas.cpp \
-    QuizDatabase.cpp \
     QuizEngine.cpp \
     QuizForm.cpp \
     QuizProgress.cpp \
     QuizQuestion.cpp \
     QuizSpec.cpp \
+    QuizStatsDatabase.cpp \
     QuizTimerSpec.cpp \
     Rand.cpp \
     SearchForm.cpp \

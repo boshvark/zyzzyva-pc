@@ -26,7 +26,7 @@
 #include "QuizEngine.h"
 #include "LetterBag.h"
 #include "MainSettings.h"
-#include "QuizDatabase.h"
+#include "QuizStatsDatabase.h"
 #include "WordEngine.h"
 #include "Auxil.h"
 #include <cstdlib>
@@ -91,7 +91,7 @@ QuizEngine::newQuiz(const QuizSpec& spec)
 
     else if (spec.getQuizSourceType() == QuizSpec::CardboxReadySource) {
         QString quizType = Auxil::quizTypeToString(spec.getType());
-        QuizDatabase* db = new QuizDatabase(lexicon, quizType);
+        QuizStatsDatabase* db = new QuizStatsDatabase(lexicon, quizType);
         if (!db->isValid()) {
             delete db;
             return false;
@@ -239,7 +239,7 @@ QuizEngine::newQuiz(const QuizSpec& spec)
             case QuizSpec::ScheduleZeroFirstOrder: {
                 QString lexicon = spec.getLexicon();
                 QString quizType = Auxil::quizTypeToString(spec.getType());
-                QuizDatabase* db = new QuizDatabase(lexicon, quizType);
+                QuizStatsDatabase* db = new QuizStatsDatabase(lexicon, quizType);
                 if (!db->isValid()) {
                     delete db;
                     return false;

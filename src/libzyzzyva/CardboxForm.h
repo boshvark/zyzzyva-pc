@@ -53,7 +53,7 @@ class CardboxForm : public ActionForm
 
     private:
     WordEngine*     wordEngine;
-    //QuizDatabase*   quizDatabase;
+    //QuizStatsDatabase*   quizDatabase;
     LexiconSelectWidget* lexiconWidget;
     QComboBox*      quizTypeCombo;
     //QSqlQueryModel* cardboxCountModel;

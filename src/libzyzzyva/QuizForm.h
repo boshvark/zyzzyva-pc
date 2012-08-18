@@ -27,7 +27,7 @@
 
 #include "ActionForm.h"
 #include "QuizTimerSpec.h"
-#include "QuizDatabase.h"
+#include "QuizStatsDatabase.h"
 #include "QuizSpec.h"
 #include <QCheckBox>
 #include <QComboBox>
@@ -43,7 +43,7 @@
 class AnalyzeQuizDialog;
 class DefinitionLabel;
 class QuizCanvas;
-class QuizDatabase;
+class QuizStatsDatabase;
 class QuizEngine;
 class QuizQuestionLabel;
 class WordEngine;
@@ -116,7 +116,7 @@ class QuizForm : public ActionForm
     void setQuestionLabel(const QString& question, const QString& order =
                           QString());
     void setCorrectStatus(int correct, int total);
-    void setQuestionStatus(const QuizDatabase::QuestionData& data);
+    void setQuestionStatus(const QuizStatsDatabase::QuestionData& data);
     void setStatusString(const QString& status);
     void setDetailsString(const QString& details);
     void setTimerDisplay(int seconds);
@@ -180,8 +180,8 @@ class QuizForm : public ActionForm
     bool cardboxQuiz;
     int questionMarkedStatus;
 
-    QuizDatabase* db;
-    QuizDatabase::QuestionData origQuestionData;
+    QuizStatsDatabase* quizStatsDatabase;
+    QuizStatsDatabase::QuestionData origQuestionData;
 
     QTimer* displayAnswerTimer;
     int currentDisplayAnswer;

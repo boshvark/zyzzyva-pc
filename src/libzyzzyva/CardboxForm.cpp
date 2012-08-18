@@ -22,7 +22,7 @@
 
 #include "CardboxForm.h"
 #include "LexiconSelectWidget.h"
-#include "QuizDatabase.h"
+#include "QuizStatsDatabase.h"
 #include "WordEngine.h"
 #include "WordValidator.h"
 #include "ZPushButton.h"
@@ -244,7 +244,7 @@ CardboxForm::refreshClicked()
 {
     QString lexicon = lexiconWidget->getCurrentLexicon();
     QString quizType = quizTypeCombo->currentText();
-    QuizDatabase db (lexicon, quizType);
+    QuizStatsDatabase db (lexicon, quizType);
     if (!db.isValid()) {
         // FIXME: pop up a warning
         return;
@@ -364,7 +364,7 @@ CardboxForm::questionDataClicked()
 
     QString lexicon = lexiconWidget->getCurrentLexicon();
     QString quizType = quizTypeCombo->currentText();
-    QuizDatabase db (lexicon, quizType);
+    QuizStatsDatabase db (lexicon, quizType);
     if (!db.isValid()) {
         // FIXME: pop up a warning
         return;
@@ -379,7 +379,7 @@ CardboxForm::questionDataClicked()
 
     QString resultStr;
 
-    QuizDatabase::QuestionData data = db.getQuestionData(question);
+    QuizStatsDatabase::QuestionData data = db.getQuestionData(question);
     if (!data.valid) {
         resultStr = QString("<font color=\"red\">Not in Database</font>");
     }

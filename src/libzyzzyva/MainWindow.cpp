@@ -1428,7 +1428,7 @@ MainWindow::rescheduleCardbox(const QStringList& words,
         }
     }
 
-    QuizDatabase db (lexicon, quizType);
+    QuizStatsDatabase db (lexicon, quizType);
     if (!db.isValid())
         return 0;
 
