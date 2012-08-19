@@ -22,8 +22,8 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_QUIZ_DATABASE_H
-#define ZYZZYVA_QUIZ_DATABASE_H
+#ifndef ZYZZYVA_QUIZ_STATS_DATABASE_H
+#define ZYZZYVA_QUIZ_STATS_DATABASE_H
 
 #include "Rand.h"
 #include <QMap>
@@ -89,4 +89,4 @@ class QuizStatsDatabase
     QuestionData undoData;
 };
 
-#endif // ZYZZYVA_QUIZ_DATABASE_H
+#endif // ZYZZYVA_QUIZ_STATS_DATABASE_H
