@@ -30,29 +30,29 @@
 
 class QuizQuestion
 {
+    enum Status {
+        QuizQuestionNew = 0,
+        QuizQuestionIncomplete = 1,
+        QuizQuestionCorrect = 2,
+        QuizQuestionMissed = 3
+    };
+
     public:
-    QuizQuestion() : complete(false), correct(false) { }
+    QuizQuestion() : index(0), status(QuizQuestionNew) { }
     ~QuizQuestion() { }
 
-    void setQuestion(const QString& q) { question = q; }
-    void setComplete(bool b) { complete = b; }
-    void setCorrect(bool b) { correct = b; }
-    void setResponses(const QSet<QString>& rlist) { responses = rlist; }
-    void addResponse(const QString& word);
+    void setIndex(const int i) { index = i; }
+    void setStatus(const Status s) { status = s; }
+    void setName(const QString& n) { name = n; }
 
-    QString getQuestion() const { return question; }
-    bool getComplete() const { return complete; }
-    bool getCorrect() const { return correct; }
-    QSet<QString> getResponses() const { return responses; }
-
-    QDomElement asDomElement() const;
-    bool fromDomElement(const QDomElement& element);
+    int getIndex() const { return index; }
+    Status getStatus() const { return status; }
+    QString getName() const { return name; }
 
     private:
-    QString question;
-    bool complete;
-    bool correct;
-    QSet<QString> responses;
+    int index;
+    Status status;
+    QString name;
 };
 
 #endif // ZYZZYVA_QUIZ_QUESTION_H
