@@ -96,8 +96,8 @@ QuizEngine::newQuiz(const QuizSpec& spec)
             delete db;
             return false;
         }
-        bool zeroFirst = (spec.getQuestionOrder() ==
-                          QuizSpec::ScheduleZeroFirstOrder);
+        bool zeroFirst = (spec.getQuizOrder() ==
+                          QuizSpec::QuizOrderScheduleZeroFirst);
         quizQuestions = db->getReadyQuestions(QStringList(), zeroFirst);
         delete db;
         if (quizQuestions.isEmpty())
@@ -135,12 +135,12 @@ QuizEngine::newQuiz(const QuizSpec& spec)
         quizSpec = spec;
         quizQuestions = questions;
 
-        switch (quizSpec.getQuestionOrder()) {
-            case QuizSpec::AlphabeticalOrder:
+        switch (quizSpec.getQuizOrder()) {
+            case QuizSpec::QuizOrderAlphabetical:
             // do nothing - the questions are already in alphabetical order
             break;
 
-            case QuizSpec::RandomOrder: {
+            case QuizSpec::QuizOrderRandom: {
                 unsigned int seed = spec.getRandomSeed();
                 if (!seed)
                     seed = QDateTime::currentDateTime().toTime_t();
@@ -168,7 +168,7 @@ QuizEngine::newQuiz(const QuizSpec& spec)
             }
             break;
 
-            case QuizSpec::ProbabilityOrder: {
+            case QuizSpec::QuizOrderProbability: {
                 LetterBag letterBag;
                 QList<QPair<QString, double> > questionPairs;
 
@@ -191,7 +191,7 @@ QuizEngine::newQuiz(const QuizSpec& spec)
             }
             break;
 
-            case QuizSpec::PlayabilityOrder: {
+            case QuizSpec::QuizOrderPlayability: {
                 wordEngine->addToCache(lexicon, questionWords);
 
                 // Order alphagram quiz questions by the best playability
@@ -235,8 +235,8 @@ QuizEngine::newQuiz(const QuizSpec& spec)
             }
             break;
 
-            case QuizSpec::ScheduleOrder:
-            case QuizSpec::ScheduleZeroFirstOrder: {
+            case QuizSpec::QuizOrderSchedule:
+            case QuizSpec::QuizOrderScheduleZeroFirst: {
                 QString lexicon = spec.getLexicon();
                 QString quizType = Auxil::quizTypeToString(spec.getType());
                 QuizStatsDatabase* db = new QuizStatsDatabase(lexicon, quizType);
@@ -245,8 +245,8 @@ QuizEngine::newQuiz(const QuizSpec& spec)
                     return false;
                 }
 
-                bool zeroFirst = (quizSpec.getQuestionOrder() ==
-                                  QuizSpec::ScheduleZeroFirstOrder);
+                bool zeroFirst = (quizSpec.getQuizOrder() ==
+                                  QuizSpec::QuizOrderScheduleZeroFirst);
                 quizQuestions = db->getReadyQuestions(quizQuestions, zeroFirst);
                 delete db;
 

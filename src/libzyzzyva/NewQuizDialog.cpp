@@ -99,24 +99,24 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
     quizGlay->addWidget(methodCombo, row, 1);
 
     ++row;
-    QLabel* questionOrderLabel = new QLabel("Question Order:");
-    quizGlay->addWidget(questionOrderLabel, row, 0);
+    QLabel* quizOrderLabel = new QLabel("Question Order:");
+    quizGlay->addWidget(quizOrderLabel, row, 0);
 
-    QHBoxLayout* questionOrderHlay = new QHBoxLayout;
-    questionOrderHlay->setMargin(0);
-    quizGlay->addLayout(questionOrderHlay, row, 1);
+    QHBoxLayout* quizOrderHlay = new QHBoxLayout;
+    quizOrderHlay->setMargin(0);
+    quizGlay->addLayout(quizOrderHlay, row, 1);
 
-    questionOrderCombo = new QComboBox;
-    fillQuestionOrderCombo(methodCombo->currentText());
-    questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
-        Auxil::quizQuestionOrderToString(QuizSpec::RandomOrder)));
-    connect(questionOrderCombo, SIGNAL(activated(const QString&)),
-            SLOT(questionOrderActivated(const QString&)));
-    questionOrderHlay->addWidget(questionOrderCombo);
+    quizOrderCombo = new QComboBox;
+    fillQuizOrderCombo(methodCombo->currentText());
+    quizOrderCombo->setCurrentIndex(quizOrderCombo->findText(
+        Auxil::quizQuizOrderToString(QuizSpec::QuizOrderRandom)));
+    connect(quizOrderCombo, SIGNAL(activated(const QString&)),
+            SLOT(quizOrderActivated(const QString&)));
+    quizOrderHlay->addWidget(quizOrderCombo);
 
     probNumBlanksLabel = new QLabel("Blanks:");;
     probNumBlanksLabel->hide();
-    questionOrderHlay->addWidget(probNumBlanksLabel);
+    quizOrderHlay->addWidget(probNumBlanksLabel);
 
     probNumBlanksSbox = new QSpinBox;
     probNumBlanksSbox->setMinimum(0);
@@ -125,7 +125,7 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
     connect(probNumBlanksSbox, SIGNAL(valueChanged(int)),
             SLOT(probNumBlanksValueChanged(int)));
     probNumBlanksSbox->hide();
-    questionOrderHlay->addWidget(probNumBlanksSbox);
+    quizOrderHlay->addWidget(probNumBlanksSbox);
 
     sourceStack = new QStackedWidget;
     mainVlay->addWidget(sourceStack);
@@ -274,8 +274,8 @@ NewQuizDialog::getQuizSpec()
     quizSpec.setLexicon(lexiconWidget->getCurrentLexicon());
     quizSpec.setType(quizType);
     quizSpec.setMethod(quizMethod);
-    quizSpec.setQuestionOrder(
-        Auxil::stringToQuizQuestionOrder(questionOrderCombo->currentText()));
+    quizSpec.setQuizOrder(
+        Auxil::stringToQuizQuizOrder(quizOrderCombo->currentText()));
     quizSpec.setProbabilityNumBlanks(probNumBlanksSbox->value());
 
     if (quizType == QuizSpec::QuizBuild) {
@@ -339,9 +339,9 @@ NewQuizDialog::setQuizSpec(const QuizSpec& spec)
     typeCombo->setCurrentIndex(typeCombo->findText(
         Auxil::quizTypeToString(spec.getType())));
     typeActivated(typeCombo->currentText());
-    questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
-        Auxil::quizQuestionOrderToString(spec.getQuestionOrder())));
-    questionOrderActivated(questionOrderCombo->currentText());
+    quizOrderCombo->setCurrentIndex(quizOrderCombo->findText(
+        Auxil::quizQuizOrderToString(spec.getQuizOrder())));
+    quizOrderActivated(quizOrderCombo->currentText());
     probNumBlanksSbox->setValue(spec.getProbabilityNumBlanks());
 
     QuizSpec::QuizSource source = spec.getQuizSource();
@@ -439,7 +439,7 @@ NewQuizDialog::typeActivated(const QString& text)
 void
 NewQuizDialog::methodActivated(const QString& text)
 {
-    fillQuestionOrderCombo(text);
+    fillQuizOrderCombo(text);
     updateForm();
     disableProgress();
     clearFilename();
@@ -486,21 +486,21 @@ NewQuizDialog::searchContentsChanged()
 }
 
 //---------------------------------------------------------------------------
-//  questionOrderActivated
+//  quizOrderActivated
 //
 //! Called when the contents of the Question Order combo box are changed.
 //
 //! @param text the new contents of the combo box
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::questionOrderActivated(const QString& str)
+NewQuizDialog::quizOrderActivated(const QString& str)
 {
     disableProgress();
     clearFilename();
 
-    QuizSpec::QuestionOrder order = Auxil::stringToQuizQuestionOrder(str);
+    QuizSpec::QuizOrder order = Auxil::stringToQuizQuizOrder(str);
     switch (order) {
-        case QuizSpec::ProbabilityOrder:
+        case QuizSpec::QuizOrderProbability:
         probNumBlanksLabel->show();
         probNumBlanksSbox->show();
         break;
@@ -659,10 +659,10 @@ NewQuizDialog::updateForm()
 
     if (method == QuizSpec::QuizMethodCardbox) {
         disableProgress();
-        questionOrderCombo->setEnabled(true);
-        questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
-            Auxil::quizQuestionOrderToString(QuizSpec::ScheduleOrder)));
-        questionOrderActivated(questionOrderCombo->currentText());
+        quizOrderCombo->setEnabled(true);
+        quizOrderCombo->setCurrentIndex(quizOrderCombo->findText(
+            Auxil::quizQuizOrderToString(QuizSpec::QuizOrderSchedule)));
+        quizOrderActivated(quizOrderCombo->currentText());
 
         sourceStack->setCurrentWidget(searchWidget);
         allCardboxButton->show();
@@ -674,15 +674,15 @@ NewQuizDialog::updateForm()
         if ((type == QuizSpec::QuizWordListRecall) ||
             (type == QuizSpec::QuizBuild))
         {
-            questionOrderCombo->setEnabled(false);
-            questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
-                Auxil::quizQuestionOrderToString(QuizSpec::RandomOrder)));
-            questionOrderActivated(questionOrderCombo->currentText());
+            quizOrderCombo->setEnabled(false);
+            quizOrderCombo->setCurrentIndex(quizOrderCombo->findText(
+                Auxil::quizQuizOrderToString(QuizSpec::QuizOrderRandom)));
+            quizOrderActivated(quizOrderCombo->currentText());
         }
 
         else {
             progressCbox->setEnabled(true);
-            questionOrderCombo->setEnabled(true);
+            quizOrderCombo->setEnabled(true);
         }
 
         allCardboxButton->hide();
@@ -699,7 +699,7 @@ NewQuizDialog::updateForm()
 }
 
 //---------------------------------------------------------------------------
-//  fillQuestionOrderCombo
+//  fillQuizOrderCombo
 //
 //! Fill the Question Order combo box with allowed values associated with a
 //! quiz method.  For example, the Schedule question order is only valid with
@@ -708,35 +708,35 @@ NewQuizDialog::updateForm()
 //! @param method the quiz method string
 //---------------------------------------------------------------------------
 void
-NewQuizDialog::fillQuestionOrderCombo(const QString& method)
+NewQuizDialog::fillQuizOrderCombo(const QString& method)
 {
-    QString prevText = questionOrderCombo->currentText();
+    QString prevText = quizOrderCombo->currentText();
     QuizSpec::QuizMethod meth = Auxil::stringToQuizMethod(method);
 
     switch (meth) {
         case QuizSpec::QuizMethodStandard:
-        questionOrderCombo->clear();
-        questionOrderCombo->addItem(
-            Auxil::quizQuestionOrderToString(QuizSpec::RandomOrder));
-        questionOrderCombo->addItem(
-            Auxil::quizQuestionOrderToString(QuizSpec::AlphabeticalOrder));
-        questionOrderCombo->addItem(
-            Auxil::quizQuestionOrderToString(QuizSpec::ProbabilityOrder));
-        questionOrderCombo->addItem(
-            Auxil::quizQuestionOrderToString(QuizSpec::PlayabilityOrder));
+        quizOrderCombo->clear();
+        quizOrderCombo->addItem(
+            Auxil::quizQuizOrderToString(QuizSpec::QuizOrderRandom));
+        quizOrderCombo->addItem(
+            Auxil::quizQuizOrderToString(QuizSpec::QuizOrderAlphabetical));
+        quizOrderCombo->addItem(
+            Auxil::quizQuizOrderToString(QuizSpec::QuizOrderProbability));
+        quizOrderCombo->addItem(
+            Auxil::quizQuizOrderToString(QuizSpec::QuizOrderPlayability));
         break;
 
         case QuizSpec::QuizMethodCardbox:
-        questionOrderCombo->clear();
-        questionOrderCombo->addItem(
-            Auxil::quizQuestionOrderToString(QuizSpec::ScheduleOrder));
-        questionOrderCombo->addItem(
-            Auxil::quizQuestionOrderToString(QuizSpec::ScheduleZeroFirstOrder));
+        quizOrderCombo->clear();
+        quizOrderCombo->addItem(
+            Auxil::quizQuizOrderToString(QuizSpec::QuizOrderSchedule));
+        quizOrderCombo->addItem(
+            Auxil::quizQuizOrderToString(QuizSpec::QuizOrderScheduleZeroFirst));
         break;
 
         default: break;
     }
 
-    int index = questionOrderCombo->findText(prevText);
-    questionOrderCombo->setCurrentIndex(index >= 0 ? index : 0);
+    int index = quizOrderCombo->findText(prevText);
+    quizOrderCombo->setCurrentIndex(index >= 0 ? index : 0);
 }

@@ -105,8 +105,8 @@ QuizSpec::asDomElement() const
     topElement.setAttribute(XML_TOP_METHOD_ATTR,
                             Auxil::quizMethodToString(method));
     topElement.setAttribute(XML_TOP_QUESTION_ORDER_ATTR,
-                            Auxil::quizQuestionOrderToString(questionOrder));
-    if (questionOrder == ProbabilityOrder)
+                            Auxil::quizQuizOrderToString(quizOrder));
+    if (quizOrder == QuizOrderProbability)
         topElement.setAttribute(XML_TOP_PROB_NUM_BLANKS_ATTR, probNumBlanks);
 
     topElement.setAttribute(XML_TOP_LEXICON_ATTR, lexicon);
@@ -119,7 +119,7 @@ QuizSpec::asDomElement() const
     if (source == QuizSourceSearch)
         sourceElement.appendChild(searchSpec.asDomElement());
 
-    if (questionOrder == RandomOrder) {
+    if (quizOrder == QuizOrderRandom) {
         QDomElement randomElement = doc.createElement(XML_RANDOMIZER_ELEMENT);
         randomElement.setAttribute(XML_RANDOMIZER_SEED_ATTR, randomSeed);
         randomElement.setAttribute(XML_RANDOMIZER_SEED2_ATTR, randomSeed2);
@@ -167,7 +167,7 @@ QuizSpec::fromDomElement(const QDomElement& element, QString*)
         return false;
 
     QuizSpec tmpSpec;
-    tmpSpec.setQuestionOrder(QuizSpec::RandomOrder);
+    tmpSpec.setQuizOrder(QuizSpec::QuizOrderRandom);
 
     if (element.hasAttribute(XML_TOP_TYPE_ATTR)) {
         QuizSpec::QuizType type = Auxil::stringToQuizType(
@@ -186,13 +186,13 @@ QuizSpec::fromDomElement(const QDomElement& element, QString*)
     }
 
     if (element.hasAttribute(XML_TOP_QUESTION_ORDER_ATTR)) {
-        QuizSpec::QuestionOrder order = Auxil::stringToQuizQuestionOrder(
+        QuizSpec::QuizOrder order = Auxil::stringToQuizQuizOrder(
             element.attribute(XML_TOP_QUESTION_ORDER_ATTR));
-        if (order == QuizSpec::UnknownOrder)
+        if (order == QuizSpec::QuizOrderUnknown)
             return false;
-        tmpSpec.setQuestionOrder(order);
+        tmpSpec.setQuizOrder(order);
 
-        if (order == ProbabilityOrder) {
+        if (order == QuizOrderProbability) {
             // Default to 2 blanks for backward compatibility
             int numBlanks = Defs::MAX_BLANKS;
             if (element.hasAttribute(XML_TOP_PROB_NUM_BLANKS_ATTR)) {
@@ -278,7 +278,7 @@ QuizSpec::fromDomElement(const QDomElement& element, QString*)
         }
 
         else if (tag == XML_RANDOMIZER_ELEMENT) {
-            if (tmpSpec.getQuestionOrder() != QuizSpec::RandomOrder)
+            if (tmpSpec.getQuizOrder() != QuizSpec::QuizOrderRandom)
                 return false;
 
             if (!elem.hasAttribute(XML_RANDOMIZER_SEED_ATTR) ||

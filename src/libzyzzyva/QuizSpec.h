@@ -69,19 +69,23 @@ class QuizSpec
         QuizSourceRandomLetters = 3
     };
 
-    enum QuestionOrder {
-        UnknownOrder = 0,
-        RandomOrder,
-        AlphabeticalOrder,
-        ProbabilityOrder,
-        PlayabilityOrder,
-        ScheduleOrder,
-        ScheduleZeroFirstOrder,
+    enum QuizOrder {
+        QuizOrderUnknown = 0,
+        QuizOrderRandom = 1,
+        QuizOrderAlphabetical = 2,
+        QuizOrderProbability = 3,
+        QuizOrderPlayability = 4,
+        QuizOrderSchedule = 5,
+        QuizOrderScheduleZeroFirst = 6,
+        QuizOrderCardboxAscending = 7,
+        QuizOrderCardboxDescending =  8,
+        QuizOrderCardboxAscendingLengthAscending = 9,
+        QuizOrderCardboxAscendingLengthDescending = 10
     };
 
     public:
     QuizSpec() : type(QuizAnagrams), method(QuizMethodStandard),
-                 source(QuizSourceSearch), questionOrder(RandomOrder),
+                 source(QuizSourceSearch), quizOrder(QuizOrderRandom),
                  probNumBlanks(0), randomSeed(0), randomSeed2(0),
                  randomAlgorithm(Rand::MarsagliaMwc),
                  responseMinLength(0), responseMaxLength(0) { }
@@ -100,7 +104,7 @@ class QuizSpec
     void setSearchSpec(const SearchSpec& s) { searchSpec = s; }
     void setTimerSpec(const QuizTimerSpec& s) { timerSpec = s; }
     void setProgress(const QuizProgress& p) { progress = p; }
-    void setQuestionOrder(QuestionOrder o) { questionOrder = o; }
+    void setQuizOrder(QuizOrder o) { quizOrder = o; }
     void setProbabilityNumBlanks(int i) { probNumBlanks = i; }
     void setRandomSeed(unsigned int i) { randomSeed = i; }
     void setRandomSeed2(unsigned int i) { randomSeed2 = i; }
@@ -119,7 +123,7 @@ class QuizSpec
     SearchSpec getSearchSpec() const { return searchSpec; }
     QuizTimerSpec getTimerSpec() const { return timerSpec; }
     QuizProgress getProgress() const { return progress; }
-    QuestionOrder getQuestionOrder() const { return questionOrder; }
+    QuizOrder getQuizOrder() const { return quizOrder; }
     int getProbabilityNumBlanks() const { return probNumBlanks; }
     unsigned int getRandomSeed() const { return randomSeed; }
     unsigned int getRandomSeed2() const { return randomSeed2; }
@@ -136,7 +140,7 @@ class QuizSpec
     SearchSpec searchSpec;
     QuizTimerSpec timerSpec;
     QuizProgress progress;
-    QuestionOrder questionOrder;
+    QuizOrder quizOrder;
     int probNumBlanks;
     unsigned int randomSeed;
     unsigned int randomSeed2;

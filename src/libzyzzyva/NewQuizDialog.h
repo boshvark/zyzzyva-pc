@@ -58,7 +58,7 @@ class NewQuizDialog : public QDialog
     void methodActivated(const QString& text);
     void useSearchButtonToggled(bool on);
     void searchContentsChanged();
-    void questionOrderActivated(const QString& text);
+    void quizOrderActivated(const QString& text);
     void probNumBlanksValueChanged(int num);
     void loadQuiz();
     void saveQuiz();
@@ -67,7 +67,7 @@ class NewQuizDialog : public QDialog
     void disableProgress();
     void clearFilename();
     void updateForm();
-    void fillQuestionOrderCombo(const QString& method);
+    void fillQuizOrderCombo(const QString& method);
 
     private:
     LexiconSelectWidget* lexiconWidget;
@@ -75,7 +75,7 @@ class NewQuizDialog : public QDialog
     QComboBox*      methodCombo;
     QCheckBox*      progressCbox;
     QLabel*         progressLabel;
-    QComboBox*      questionOrderCombo;
+    QComboBox*      quizOrderCombo;
     QLabel*         probNumBlanksLabel;
     QSpinBox*       probNumBlanksSbox;
     QStackedWidget* sourceStack;

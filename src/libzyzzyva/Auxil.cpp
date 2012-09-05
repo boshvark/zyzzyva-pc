@@ -1078,7 +1078,7 @@ Auxil::stringToQuizSource(const QString& s)
 }
 
 //---------------------------------------------------------------------------
-//  quizQuestionOrderToString
+//  quizQuizOrderToString
 //
 //! Convert a quiz question order to a string representation.
 //
@@ -1086,28 +1086,28 @@ Auxil::stringToQuizSource(const QString& s)
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
-Auxil::quizQuestionOrderToString(QuizSpec::QuestionOrder o)
+Auxil::quizQuizOrderToString(QuizSpec::QuizOrder o)
 {
     switch (o) {
-        case QuizSpec::UnknownOrder:
+        case QuizSpec::QuizOrderUnknown:
         return QUIZ_ORDER_UNKNOWN;
 
-        case QuizSpec::RandomOrder:
+        case QuizSpec::QuizOrderRandom:
         return QUIZ_ORDER_RANDOM;
 
-        case QuizSpec::AlphabeticalOrder:
+        case QuizSpec::QuizOrderAlphabetical:
         return QUIZ_ORDER_ALPHABETICAL;
 
-        case QuizSpec::ProbabilityOrder:
+        case QuizSpec::QuizOrderProbability:
         return QUIZ_ORDER_PROBABILITY;
 
-        case QuizSpec::PlayabilityOrder:
+        case QuizSpec::QuizOrderPlayability:
         return QUIZ_ORDER_PLAYABILITY;
 
-        case QuizSpec::ScheduleOrder:
+        case QuizSpec::QuizOrderSchedule:
         return QUIZ_ORDER_SCHEDULE;
 
-        case QuizSpec::ScheduleZeroFirstOrder:
+        case QuizSpec::QuizOrderScheduleZeroFirst:
         return QUIZ_ORDER_SCHEDULE_ZERO_FIRST;
 
         default: return QString();
@@ -1115,30 +1115,30 @@ Auxil::quizQuestionOrderToString(QuizSpec::QuestionOrder o)
 }
 
 //---------------------------------------------------------------------------
-//  stringToQuizQuestionOrder
+//  stringToQuizQuizOrder
 //
 //! Convert a string representation to a quiz question order.
 //
 //! @param s the string representation
 //! @return the quiz question order
 //---------------------------------------------------------------------------
-QuizSpec::QuestionOrder
-Auxil::stringToQuizQuestionOrder(const QString& s)
+QuizSpec::QuizOrder
+Auxil::stringToQuizQuizOrder(const QString& s)
 {
     if (s == QUIZ_ORDER_RANDOM)
-        return QuizSpec::RandomOrder;
+        return QuizSpec::QuizOrderRandom;
     else if (s == QUIZ_ORDER_ALPHABETICAL)
-        return QuizSpec::AlphabeticalOrder;
+        return QuizSpec::QuizOrderAlphabetical;
     else if (s == QUIZ_ORDER_PROBABILITY)
-        return QuizSpec::ProbabilityOrder;
+        return QuizSpec::QuizOrderProbability;
     else if (s == QUIZ_ORDER_PLAYABILITY)
-        return QuizSpec::PlayabilityOrder;
+        return QuizSpec::QuizOrderPlayability;
     else if (s == QUIZ_ORDER_SCHEDULE)
-        return QuizSpec::ScheduleOrder;
+        return QuizSpec::QuizOrderSchedule;
     else if (s == QUIZ_ORDER_SCHEDULE_ZERO_FIRST)
-        return QuizSpec::ScheduleZeroFirstOrder;
+        return QuizSpec::QuizOrderScheduleZeroFirst;
     else
-        return QuizSpec::UnknownOrder;
+        return QuizSpec::QuizOrderUnknown;
 }
 
 //---------------------------------------------------------------------------

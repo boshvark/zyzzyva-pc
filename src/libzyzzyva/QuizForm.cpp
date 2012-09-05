@@ -616,7 +616,7 @@ QuizForm::newQuiz(const QuizSpec& spec)
 
     // Update number of blanks in response list probability
     int probNumBlanks = MainSettings::getProbabilityNumBlanks();
-    if (spec.getQuestionOrder() == QuizSpec::ProbabilityOrder) {
+    if (spec.getQuizOrder() == QuizSpec::QuizOrderProbability) {
         probNumBlanks = spec.getProbabilityNumBlanks();
     }
     else {
