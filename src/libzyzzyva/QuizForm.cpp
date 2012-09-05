@@ -465,7 +465,7 @@ QuizForm::responseEntered()
     QString displayResponse = response;
     QString statusStr;
 
-    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::QuizMethodCardbox)
         setUnsavedChanges(true);
 
     if (status == QuizEngine::Correct) {
@@ -549,13 +549,13 @@ QuizForm::newQuiz(const QuizSpec& spec)
     disconnectDatabase();
 
     timerSpec = spec.getTimerSpec();
-    cardboxQuiz = (spec.getMethod() == QuizSpec::CardboxQuizMethod);
+    cardboxQuiz = (spec.getMethod() == QuizSpec::QuizMethodCardbox);
 
     // Enable or disable Alpha and Random buttons depending on Quiz type
     letterOrderWidget->setEnabled(customLetterOrderAllowed(spec.getType()));
 
     cardboxMoveWidget->setEnabled(
-        spec.getMethod() == QuizSpec::CardboxQuizMethod);
+        spec.getMethod() == QuizSpec::QuizMethodCardbox);
 
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
     bool ok = quizEngine->newQuiz(spec);
@@ -564,7 +564,7 @@ QuizForm::newQuiz(const QuizSpec& spec)
     if (!ok) {
         QString caption = "No Questions Found";
         QString message;
-        if (spec.getMethod() == QuizSpec::CardboxQuizMethod) {
+        if (spec.getMethod() == QuizSpec::QuizMethodCardbox) {
             message = "No matching questions are ready for review.  "
                       "Please modify your search criteria, "
                       "or add more words to the Cardbox system.";
@@ -579,7 +579,7 @@ QuizForm::newQuiz(const QuizSpec& spec)
         return false;
     }
 
-    if (spec.getMethod() == QuizSpec::CardboxQuizMethod)
+    if (spec.getMethod() == QuizSpec::QuizMethodCardbox)
         cardboxStatusLabel->show();
     else
         cardboxStatusLabel->hide();
@@ -898,7 +898,7 @@ QuizForm::nextQuestionClicked()
     }
     startQuestion();
     analyzeDialog->updateStats();
-    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::QuizMethodCardbox)
         setUnsavedChanges(true);
 }
 
@@ -978,7 +978,7 @@ QuizForm::checkResponseClicked()
     quizEngine->completeQuestion();
     analyzeDialog->updateStats();
 
-    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::QuizMethodCardbox)
         setUnsavedChanges(true);
 
     // FIXME: Count Incorrect answers (not just Missed) as incorrect when
@@ -1038,7 +1038,7 @@ QuizForm::checkResponseClicked()
 
     if (quizStatsDatabase && quizStatsDatabase->isValid() &&
         (MainSettings::getQuizShowQuestionStats() ||
-        (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod)))
+        (quizEngine->getQuizSpec().getMethod() == QuizSpec::QuizMethodCardbox)))
     {
         updateQuestionStatus();
     }
@@ -1204,7 +1204,7 @@ QuizForm::startQuestion()
 
     updateStatusString();
 
-    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::QuizMethodCardbox)
         setUnsavedChanges(true);
 
     QApplication::restoreOverrideCursor();
@@ -1413,7 +1413,7 @@ QuizForm::setQuestionStatus(const QuizStatsDatabase::QuestionData& data)
     if (!data.valid || !quizEngine->getQuestionComplete())
         return;
 
-    if (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod) {
+    if (quizEngine->getQuizSpec().getMethod() == QuizSpec::QuizMethodCardbox) {
         QDateTime nextDate;
         nextDate.setTime_t(data.nextScheduled);
         QDateTime now = QDateTime::currentDateTime();
@@ -1490,7 +1490,7 @@ QuizForm::updateStatusString()
 {
     QString status;
 
-    //if (quizEngine->getQuizSpec().getMethod() == QuizSpec::CardboxQuizMethod) {
+    //if (quizEngine->getQuizSpec().getMethod() == QuizSpec::QuizMethodCardbox) {
     //    status = "Questions remaining: " +
     //        QString::number(quizEngine->numQuestions());
     //}
@@ -1697,7 +1697,7 @@ QuizForm::keyPressEvent(QKeyEvent* event)
 
         if (cardbox) {
             QuizSpec quizSpec = quizEngine->getQuizSpec();
-            if (quizSpec.getMethod() == QuizSpec::CardboxQuizMethod) {
+            if (quizSpec.getMethod() == QuizSpec::QuizMethodCardbox) {
                 moveToCardbox(cardbox);
             }
         }
@@ -1954,11 +1954,11 @@ QuizForm::recordQuestionStats(bool correct)
     if (!quizStatsDatabase || !quizStatsDatabase->isValid())
         return;
 
-    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::CardboxQuizMethod)
+    if (quizEngine->getQuizSpec().getMethod() != QuizSpec::QuizMethodCardbox)
         setUnsavedChanges(true);
 
     QuizSpec::QuizMethod method = quizEngine->getQuizSpec().getMethod();
-    bool updateCardbox = (method == QuizSpec::CardboxQuizMethod);
+    bool updateCardbox = (method == QuizSpec::QuizMethodCardbox);
     quizStatsDatabase->recordResponse(quizEngine->getQuestion(), correct,
         updateCardbox);
 }

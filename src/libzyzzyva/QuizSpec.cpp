@@ -144,7 +144,7 @@ QuizSpec::asDomElement() const
     if (timerSpec.getType() != NoTimer)
         topElement.appendChild(timerSpec.asDomElement());
 
-    if (method != CardboxQuizMethod)
+    if (method != QuizMethodCardbox)
         topElement.appendChild(progress.asDomElement());
 
     return topElement;
@@ -180,7 +180,7 @@ QuizSpec::fromDomElement(const QDomElement& element, QString*)
     if (element.hasAttribute(XML_TOP_METHOD_ATTR)) {
         QuizSpec::QuizMethod method = Auxil::stringToQuizMethod(
             element.attribute(XML_TOP_METHOD_ATTR));
-        if (method == QuizSpec::UnknownQuizMethod)
+        if (method == QuizSpec::QuizMethodUnknown)
             return false;
         tmpSpec.setMethod(method);
     }

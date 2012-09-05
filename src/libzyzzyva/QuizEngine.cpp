@@ -261,7 +261,7 @@ QuizEngine::newQuiz(const QuizSpec& spec)
 
     // Restore quiz progress
     QuizProgress progress;
-    if (spec.getMethod() != QuizSpec::CardboxQuizMethod)
+    if (spec.getMethod() != QuizSpec::QuizMethodCardbox)
         progress = spec.getProgress();
 
     questionIndex = progress.getQuestion();
@@ -296,7 +296,7 @@ QuizEngine::nextQuestion()
     // next question during a cardbox quiz.  This works, but can be very slow
     // when the user has limited the quiz with a search specification.  Do
     // something smarter here!
-    //if (quizSpec.getMethod() == QuizSpec::CardboxQuizMethod) {
+    //if (quizSpec.getMethod() == QuizSpec::QuizMethodCardbox) {
     //    return newQuiz(quizSpec);
     //}
 

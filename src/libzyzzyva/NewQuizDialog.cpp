@@ -89,11 +89,11 @@ NewQuizDialog::NewQuizDialog(QWidget* parent, Qt::WFlags f)
 
     methodCombo = new QComboBox;
     methodCombo->addItem(
-        Auxil::quizMethodToString(QuizSpec::StandardQuizMethod));
+        Auxil::quizMethodToString(QuizSpec::QuizMethodStandard));
     methodCombo->addItem(
-        Auxil::quizMethodToString(QuizSpec::CardboxQuizMethod));
+        Auxil::quizMethodToString(QuizSpec::QuizMethodCardbox));
     methodCombo->setCurrentIndex(methodCombo->findText(
-        Auxil::quizMethodToString(QuizSpec::StandardQuizMethod)));
+        Auxil::quizMethodToString(QuizSpec::QuizMethodStandard)));
     connect(methodCombo, SIGNAL(activated(const QString&)),
             SLOT(methodActivated(const QString&)));
     quizGlay->addWidget(methodCombo, row, 1);
@@ -281,7 +281,7 @@ NewQuizDialog::getQuizSpec()
     if (quizType == QuizSpec::QuizBuild) {
         quizSpec.setQuizSourceType(QuizSpec::RandomLettersSource);
     }
-    else if ((quizMethod == QuizSpec::CardboxQuizMethod) &&
+    else if ((quizMethod == QuizSpec::QuizMethodCardbox) &&
               allCardboxButton->isChecked())
     {
         quizSpec.setQuizSourceType(QuizSpec::CardboxReadySource);
@@ -309,7 +309,7 @@ NewQuizDialog::getQuizSpec()
     quizSpec.setTimerSpec(timerSpec);
 
     if (!progressCbox->isChecked() &&
-        (quizMethod != QuizSpec::CardboxQuizMethod))
+        (quizMethod != QuizSpec::QuizMethodCardbox))
     {
         quizSpec.setProgress(QuizProgress());
         quizSpec.setFilename(QString());
@@ -381,7 +381,7 @@ NewQuizDialog::setQuizSpec(const QuizSpec& spec)
             default: break;
         }
     }
-    if (spec.getMethod() == QuizSpec::StandardQuizMethod) {
+    if (spec.getMethod() == QuizSpec::QuizMethodStandard) {
         progressCbox->setEnabled(true);
         progressCbox->setChecked(true);
         QuizProgress progress = spec.getProgress();
@@ -417,7 +417,7 @@ NewQuizDialog::typeActivated(const QString& text)
     {
         methodCombo->setEnabled(false);
         methodCombo->setCurrentIndex(methodCombo->findText(
-            Auxil::quizMethodToString(QuizSpec::StandardQuizMethod)));
+            Auxil::quizMethodToString(QuizSpec::QuizMethodStandard)));
     }
     else {
         methodCombo->setEnabled(true);
@@ -657,7 +657,7 @@ NewQuizDialog::updateForm()
     QuizSpec::QuizMethod method =
         Auxil::stringToQuizMethod(methodCombo->currentText());
 
-    if (method == QuizSpec::CardboxQuizMethod) {
+    if (method == QuizSpec::QuizMethodCardbox) {
         disableProgress();
         questionOrderCombo->setEnabled(true);
         questionOrderCombo->setCurrentIndex(questionOrderCombo->findText(
@@ -714,7 +714,7 @@ NewQuizDialog::fillQuestionOrderCombo(const QString& method)
     QuizSpec::QuizMethod meth = Auxil::stringToQuizMethod(method);
 
     switch (meth) {
-        case QuizSpec::StandardQuizMethod:
+        case QuizSpec::QuizMethodStandard:
         questionOrderCombo->clear();
         questionOrderCombo->addItem(
             Auxil::quizQuestionOrderToString(QuizSpec::RandomOrder));
@@ -726,7 +726,7 @@ NewQuizDialog::fillQuestionOrderCombo(const QString& method)
             Auxil::quizQuestionOrderToString(QuizSpec::PlayabilityOrder));
         break;
 
-        case QuizSpec::CardboxQuizMethod:
+        case QuizSpec::QuizMethodCardbox:
         questionOrderCombo->clear();
         questionOrderCombo->addItem(
             Auxil::quizQuestionOrderToString(QuizSpec::ScheduleOrder));

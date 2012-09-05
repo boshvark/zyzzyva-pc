@@ -1002,10 +1002,10 @@ QString
 Auxil::quizMethodToString(QuizSpec::QuizMethod m)
 {
     switch (m) {
-        case QuizSpec::StandardQuizMethod:
+        case QuizSpec::QuizMethodStandard:
         return QUIZ_METHOD_STANDARD;
 
-        case QuizSpec::CardboxQuizMethod:
+        case QuizSpec::QuizMethodCardbox:
         return QUIZ_METHOD_CARDBOX;
 
         default: return QString();
@@ -1024,11 +1024,11 @@ QuizSpec::QuizMethod
 Auxil::stringToQuizMethod(const QString& s)
 {
     if (s == QUIZ_METHOD_STANDARD)
-        return QuizSpec::StandardQuizMethod;
+        return QuizSpec::QuizMethodStandard;
     else if (s == QUIZ_METHOD_CARDBOX)
-        return QuizSpec::CardboxQuizMethod;
+        return QuizSpec::QuizMethodCardbox;
     else
-        return QuizSpec::UnknownQuizMethod;
+        return QuizSpec::QuizMethodUnknown;
 }
 
 //---------------------------------------------------------------------------

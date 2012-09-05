@@ -35,25 +35,31 @@
 class QuizSpec
 {
     public:
+    enum QuizStatus {
+        QuizStatusTemporary = 0,
+        QuizStatusUnsaved = 1,
+        QuizStatusSaved = 2
+    };
+
     enum QuizType {
         UnknownQuizType = 0,
-        QuizPatterns,
-        QuizAnagrams,
-        QuizAnagramsWithHooks,
-        QuizSubanagrams,
-        QuizBuild,
-        QuizAnagramJumble,
-        QuizSubanagramJumble,
-        QuizHooks,
-        QuizAnagramHooks,
-        QuizAnagramHookMnemonics,
-        QuizWordListRecall
+        QuizPatterns = 1,
+        QuizAnagrams = 2,
+        QuizAnagramsWithHooks = 3,
+        QuizSubanagrams = 4,
+        QuizBuild = 5,
+        QuizAnagramJumble = 6,
+        QuizSubanagramJumble = 7,
+        QuizHooks = 8,
+        QuizAnagramHooks = 9,
+        QuizAnagramHookMnemonics = 10,
+        QuizWordListRecall = 11
     };
 
     enum QuizMethod {
-        UnknownQuizMethod = 0,
-        StandardQuizMethod,
-        CardboxQuizMethod
+        QuizMethodUnknown = 0,
+        QuizMethodStandard = 1,
+        QuizMethodCardbox = 2
     };
 
     enum QuizSourceType {
