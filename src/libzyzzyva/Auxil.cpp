@@ -1032,7 +1032,7 @@ Auxil::stringToQuizMethod(const QString& s)
 }
 
 //---------------------------------------------------------------------------
-//  quizSourceTypeToString
+//  quizSourceToString
 //
 //! Convert a quiz source type to a string representation.
 //
@@ -1040,16 +1040,16 @@ Auxil::stringToQuizMethod(const QString& s)
 //! @return the string representation
 //---------------------------------------------------------------------------
 QString
-Auxil::quizSourceTypeToString(QuizSpec::QuizSourceType s)
+Auxil::quizSourceToString(QuizSpec::QuizSource s)
 {
     switch (s) {
-        case QuizSpec::SearchSource:
+        case QuizSpec::QuizSourceSearch:
         return QUIZ_SOURCE_SEARCH;
 
-        case QuizSpec::CardboxReadySource:
+        case QuizSpec::QuizSourceCardboxReady:
         return QUIZ_SOURCE_CARDBOX_READY;
 
-        case QuizSpec::RandomLettersSource:
+        case QuizSpec::QuizSourceRandomLetters:
         return QUIZ_SOURCE_RANDOM_LETTERS;
 
         default: return QString();
@@ -1057,24 +1057,24 @@ Auxil::quizSourceTypeToString(QuizSpec::QuizSourceType s)
 }
 
 //---------------------------------------------------------------------------
-//  stringToQuizSourceType
+//  stringToQuizSource
 //
 //! Convert a string representation to a quiz source type.
 //
 //! @param s the string representation
 //! @return the quiz type
 //---------------------------------------------------------------------------
-QuizSpec::QuizSourceType
-Auxil::stringToQuizSourceType(const QString& s)
+QuizSpec::QuizSource
+Auxil::stringToQuizSource(const QString& s)
 {
     if (s == QUIZ_SOURCE_SEARCH)
-        return QuizSpec::SearchSource;
+        return QuizSpec::QuizSourceSearch;
     else if (s == QUIZ_SOURCE_CARDBOX_READY)
-        return QuizSpec::CardboxReadySource;
+        return QuizSpec::QuizSourceCardboxReady;
     else if (s == QUIZ_SOURCE_RANDOM_LETTERS)
-        return QuizSpec::RandomLettersSource;
+        return QuizSpec::QuizSourceRandomLetters;
     else
-        return QuizSpec::UnknownSource;
+        return QuizSpec::QuizSourceUnknown;
 }
 
 //---------------------------------------------------------------------------

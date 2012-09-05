@@ -66,8 +66,8 @@ namespace Auxil {
     QuizSpec::QuizType stringToQuizType(const QString& string);
     QString quizMethodToString(QuizSpec::QuizMethod method);
     QuizSpec::QuizMethod stringToQuizMethod(const QString& string);
-    QString quizSourceTypeToString(QuizSpec::QuizSourceType source);
-    QuizSpec::QuizSourceType stringToQuizSourceType(const QString& string);
+    QString quizSourceToString(QuizSpec::QuizSource source);
+    QuizSpec::QuizSource stringToQuizSource(const QString& string);
     QString quizQuestionOrderToString(QuizSpec::QuestionOrder method);
     QuizSpec::QuestionOrder stringToQuizQuestionOrder(const QString& string);
     QString wordAttributeToString(WordAttribute attr);

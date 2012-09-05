@@ -62,11 +62,11 @@ class QuizSpec
         QuizMethodCardbox = 2
     };
 
-    enum QuizSourceType {
-        UnknownSource = 0,
-        SearchSource,
-        CardboxReadySource,
-        RandomLettersSource
+    enum QuizSource {
+        QuizSourceUnknown = 0,
+        QuizSourceSearch = 1,
+        QuizSourceCardboxReady = 2,
+        QuizSourceRandomLetters = 3
     };
 
     enum QuestionOrder {
@@ -80,8 +80,8 @@ class QuizSpec
     };
 
     public:
-    QuizSpec() : type(QuizAnagrams), method(StandardQuizMethod),
-                 sourceType(SearchSource), questionOrder(RandomOrder),
+    QuizSpec() : type(QuizAnagrams), method(QuizMethodStandard),
+                 source(QuizSourceSearch), questionOrder(RandomOrder),
                  probNumBlanks(0), randomSeed(0), randomSeed2(0),
                  randomAlgorithm(Rand::MarsagliaMwc),
                  responseMinLength(0), responseMaxLength(0) { }
@@ -96,7 +96,7 @@ class QuizSpec
     void setLexicon(const QString& lex) { lexicon = lex; }
     void setType(QuizType t) { type = t; }
     void setMethod(QuizMethod m) { method = m; }
-    void setQuizSourceType(QuizSourceType s) { sourceType = s; }
+    void setQuizSource(QuizSource s) { source = s; }
     void setSearchSpec(const SearchSpec& s) { searchSpec = s; }
     void setTimerSpec(const QuizTimerSpec& s) { timerSpec = s; }
     void setProgress(const QuizProgress& p) { progress = p; }
@@ -115,7 +115,7 @@ class QuizSpec
     QString getLexicon() const { return lexicon; }
     QuizType getType() const { return type; }
     QuizMethod getMethod() const { return method; }
-    QuizSourceType getQuizSourceType() const { return sourceType; }
+    QuizSource getQuizSource() const { return source; }
     SearchSpec getSearchSpec() const { return searchSpec; }
     QuizTimerSpec getTimerSpec() const { return timerSpec; }
     QuizProgress getProgress() const { return progress; }
@@ -132,7 +132,7 @@ class QuizSpec
     QString lexicon;
     QuizType type;
     QuizMethod method;
-    QuizSourceType sourceType;
+    QuizSource source;
     SearchSpec searchSpec;
     QuizTimerSpec timerSpec;
     QuizProgress progress;

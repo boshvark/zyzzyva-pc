@@ -279,15 +279,15 @@ NewQuizDialog::getQuizSpec()
     quizSpec.setProbabilityNumBlanks(probNumBlanksSbox->value());
 
     if (quizType == QuizSpec::QuizBuild) {
-        quizSpec.setQuizSourceType(QuizSpec::RandomLettersSource);
+        quizSpec.setQuizSource(QuizSpec::QuizSourceRandomLetters);
     }
     else if ((quizMethod == QuizSpec::QuizMethodCardbox) &&
               allCardboxButton->isChecked())
     {
-        quizSpec.setQuizSourceType(QuizSpec::CardboxReadySource);
+        quizSpec.setQuizSource(QuizSpec::QuizSourceCardboxReady);
     }
     else {
-        quizSpec.setQuizSourceType(QuizSpec::SearchSource);
+        quizSpec.setQuizSource(QuizSpec::QuizSourceSearch);
         quizSpec.setSearchSpec(searchSpecForm->getSearchSpec());
     }
 
@@ -344,12 +344,12 @@ NewQuizDialog::setQuizSpec(const QuizSpec& spec)
     questionOrderActivated(questionOrderCombo->currentText());
     probNumBlanksSbox->setValue(spec.getProbabilityNumBlanks());
 
-    QuizSpec::QuizSourceType sourceType = spec.getQuizSourceType();
-    if (sourceType == QuizSpec::SearchSource) {
+    QuizSpec::QuizSource source = spec.getQuizSource();
+    if (source == QuizSpec::QuizSourceSearch) {
         useSearchButton->setChecked(true);
         searchSpecForm->setSearchSpec(spec.getSearchSpec());
     }
-    else if (sourceType == QuizSpec::CardboxReadySource) {
+    else if (source == QuizSpec::QuizSourceCardboxReady) {
         allCardboxButton->setChecked(true);
         searchSpecForm->setSearchSpec(SearchSpec());
     }

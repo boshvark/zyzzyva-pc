@@ -76,7 +76,7 @@ QuizEngine::newQuiz(const QuizSpec& spec)
     QStringList questions;
     QString lexicon = spec.getLexicon();
 
-    if (spec.getQuizSourceType() == QuizSpec::RandomLettersSource) {
+    if (spec.getQuizSource() == QuizSpec::QuizSourceRandomLetters) {
         LetterBag bag;
 
         // FIXME: get rid of all this hard-coded junk!
@@ -89,7 +89,7 @@ QuizEngine::newQuiz(const QuizSpec& spec)
         quizSpec = spec;
     }
 
-    else if (spec.getQuizSourceType() == QuizSpec::CardboxReadySource) {
+    else if (spec.getQuizSource() == QuizSpec::QuizSourceCardboxReady) {
         QString quizType = Auxil::quizTypeToString(spec.getType());
         QuizStatsDatabase* db = new QuizStatsDatabase(lexicon, quizType);
         if (!db->isValid()) {

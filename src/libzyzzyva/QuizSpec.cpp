@@ -113,10 +113,10 @@ QuizSpec::asDomElement() const
 
     QDomElement sourceElement = doc.createElement(XML_QUESTION_SOURCE_ELEMENT);
     sourceElement.setAttribute(XML_QUESTION_SOURCE_TYPE_ATTR,
-                               Auxil::quizSourceTypeToString(sourceType));
+                               Auxil::quizSourceToString(source));
     topElement.appendChild(sourceElement);
 
-    if (sourceType == SearchSource)
+    if (source == QuizSourceSearch)
         sourceElement.appendChild(searchSpec.asDomElement());
 
     if (questionOrder == RandomOrder) {
@@ -224,11 +224,11 @@ QuizSpec::fromDomElement(const QDomElement& element, QString*)
             if (!elem.hasAttribute(XML_QUESTION_SOURCE_TYPE_ATTR))
                 return false;
 
-            QuizSpec::QuizSourceType source = Auxil::stringToQuizSourceType(
+            QuizSpec::QuizSource source = Auxil::stringToQuizSource(
                 elem.attribute(XML_QUESTION_SOURCE_TYPE_ATTR));
-            if (source == QuizSpec::UnknownSource)
+            if (source == QuizSpec::QuizSourceUnknown)
                 return false;
-            tmpSpec.setQuizSourceType(source);
+            tmpSpec.setQuizSource(source);
 
             // Only for backward compatibility - "single-question" is no
             // longer produced as an attribute
@@ -238,7 +238,7 @@ QuizSpec::fromDomElement(const QDomElement& element, QString*)
                 tmpSpec.setType(QuizSpec::QuizWordListRecall);
             }
 
-            if (source == QuizSpec::SearchSource) {
+            if (source == QuizSpec::QuizSourceSearch) {
                 QDomElement searchElem = elem.firstChild().toElement();
                 if (searchElem.tagName() != XML_SEARCH_ELEMENT)
                     return false;
