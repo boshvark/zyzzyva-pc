@@ -75,3 +75,16 @@ QuizDatabase::isValid() const
 {
     return (db && db->isValid());
 }
+
+//---------------------------------------------------------------------------
+//  databaseFile
+//
+//! Return the database file name.
+//
+//! @return the database file name
+//---------------------------------------------------------------------------
+QString
+QuizDatabase::databaseFile() const
+{
+    return dbFileName;
+}
