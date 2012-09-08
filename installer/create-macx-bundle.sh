@@ -118,7 +118,7 @@ if [ "$COPYQT" = "yes" ]; then
     #cp -r $QTDIR/bin/assistant.app $APPDIR/Contents/MacOS
 
     # Copy Qt frameworks into bundle and tell the executable to link to them
-    for i in QtCore QtGui QtNetwork QtSql QtWidgets QtXml ; do
+    for i in QtCore QtGui QtNetwork QtPrintSupport QtSql QtWidgets QtXml ; do
 
         # Copy Qt framework into bundle
         echo "Copying $i.framework into bundle..."
@@ -145,6 +145,24 @@ if [ "$COPYQT" = "yes" ]; then
             install_name_tool -change \
                 $QTDIR/lib/QtCore.framework/Versions/$QTVER/QtCore \
                 @executable_path/../Frameworks/QtCore.framework/Versions/$QTVER/QtCore \
+                $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+        fi
+
+        # Change reference to QtGui in frameworks
+        if [ "$i" != "QtGui" ]; then
+            echo "Changing link location for QtGui.framework in $i.framework..."
+            install_name_tool -change \
+                $QTDIR/lib/QtGui.framework/Versions/$QTVER/QtGui \
+                @executable_path/../Frameworks/QtGui.framework/Versions/$QTVER/QtGui \
+                $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+        fi
+
+        # Change reference to QtWidgets in frameworks
+        if [ "$i" != "QtWidgets" ]; then
+            echo "Changing link location for QtWidgets.framework in $i.framework..."
+            install_name_tool -change \
+                $QTDIR/lib/QtWidgets.framework/Versions/$QTVER/QtWidgets \
+                @executable_path/../Frameworks/QtWidgets.framework/Versions/$QTVER/QtWidgets \
                 $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
         fi
 
