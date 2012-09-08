@@ -184,7 +184,7 @@ if [ "$COPYQT" = "yes" ]; then
     mkdir -p $APPDIR/Contents/PlugIns
 
     # Copy plugins into bundle and update references
-    for i in imageformats/libqgif.dylib sqldrivers/libqsqlite.dylib ; do
+    for i in imageformats/libqgif.dylib platforms/libqcocoa.dylib sqldrivers/libqsqlite.dylib ; do
 
         # Copy plugin into bundle
         echo "Copying $i into bundle..."
@@ -212,6 +212,34 @@ if [ "$COPYQT" = "yes" ]; then
         install_name_tool -change \
             $QTDIR/lib/QtGui.framework/Versions/$QTVER/QtGui \
             @executable_path/../Frameworks/QtGui.framework/Versions/$QTVER/QtGui \
+            $APPDIR/Contents/PlugIns/$i
+
+        #  Change reference to QtPrintSupport in plugin
+        echo "Changing link location for QtPrintSupport in $i plugin..."
+        install_name_tool -change \
+            $QTDIR/lib/QtPrintSupport.framework/Versions/$QTVER/QtPrintSupport \
+            @executable_path/../Frameworks/QtPrintSupport.framework/Versions/$QTVER/QtPrintSupport \
+            $APPDIR/Contents/PlugIns/$i
+
+        #  Change reference to QtWidgets in plugin
+        echo "Changing link location for QtWidgets in $i plugin..."
+        install_name_tool -change \
+            $QTDIR/lib/QtWidgets.framework/Versions/$QTVER/QtWidgets \
+            @executable_path/../Frameworks/QtWidgets.framework/Versions/$QTVER/QtWidgets \
+            $APPDIR/Contents/PlugIns/$i
+
+        # Change link location for libstdc++ in plugin
+        echo "Changing link location for libstdc++ in $i plugin..."
+        install_name_tool -change \
+            /usr/lib/libstdc++.6.dylib \
+            @executable_path/../Frameworks/libstdc++.6.dylib \
+            $APPDIR/Contents/PlugIns/$i
+
+        # Change link location for libz in plugin
+        echo "Changing link location for libz in $i plugin..."
+        install_name_tool -change \
+            /usr/lib/libz.1.dylib \
+            @executable_path/../Frameworks/libz.1.dylib \
             $APPDIR/Contents/PlugIns/$i
 
     done
