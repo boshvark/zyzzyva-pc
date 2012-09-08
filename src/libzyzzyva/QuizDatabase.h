@@ -38,10 +38,10 @@ class QuizDatabase
     ~QuizDatabase();
 
     bool isValid() const;
-    QString databaseFile() const;
-    QuizSpec quizSpec() const;
+    QString getDatabaseFile() const;
+    QuizSpec getQuizSpec() const;
     bool setQuizSpec(const QuizSpec& spec);
-    int numQuestions() const;
+    int getNumQuestions() const;
 
 
     private:

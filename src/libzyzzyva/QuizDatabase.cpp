@@ -80,27 +80,27 @@ QuizDatabase::isValid() const
 }
 
 //---------------------------------------------------------------------------
-//  databaseFile
+//  getDatabaseFile
 //
 //! Return the database file name.
 //
 //! @return the database file name
 //---------------------------------------------------------------------------
 QString
-QuizDatabase::databaseFile() const
+QuizDatabase::getDatabaseFile() const
 {
     return dbFileName;
 }
 
 //---------------------------------------------------------------------------
-//  quizSpec
+//  getQuizSpec
 //
 //! Generate a quiz spec from the database.
 //
 //! @return the quiz spec
 //---------------------------------------------------------------------------
 QuizSpec
-QuizDatabase::quizSpec() const
+QuizDatabase::getQuizSpec() const
 {
     QuizSpec spec;
 
@@ -129,7 +129,7 @@ QuizDatabase::quizSpec() const
         spec.setNumWords(query.value(3).toInt());
         spec.setMethod(QuizSpec::QuizMethod(query.value(4).toInt()));
         spec.setQuizOrder(QuizSpec::QuizOrder(query.value(5).toInt()));
-        spec.setNumQuestions(numQuestions());
+        spec.setNumQuestions(getNumQuestions());
 
         // ### add timer spec to quiz database
     }
@@ -140,14 +140,14 @@ QuizDatabase::quizSpec() const
 }
 
 //---------------------------------------------------------------------------
-//  numQuestions
+//  getNumQuestions
 //
 //! Return the number of questions in the quiz.
 //
 //! @return the number of questions
 //---------------------------------------------------------------------------
 int
-QuizDatabase::numQuestions() const
+QuizDatabase::getNumQuestions() const
 {
     if (!db || (!db->isOpen() && !db->open()))
         return 0;

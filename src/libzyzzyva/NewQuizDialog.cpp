@@ -573,7 +573,7 @@ NewQuizDialog::loadQuiz()
 
     else {
         QuizDatabase quizDb (filename);
-        QuizSpec spec = quizDb.quizSpec();
+        QuizSpec spec = quizDb.getQuizSpec();
 
         qDebug("Loaded quiz spec: [%s]", spec.asXml().toUtf8().constData());
 
