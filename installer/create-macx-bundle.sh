@@ -26,10 +26,15 @@
 set -e
 
 if [ "$QTDIR" = "" ]; then
-    QTDIR=/usr/local/Trolltech/Qt-4.8.1
+    QTDIR=/usr/local/Trolltech/Qt-5.0.0
 fi
 
-QTVER=4
+# Fully dereference QTDIR
+pushd $QTDIR
+QTDIR=$(pwd -P)
+popd
+
+QTVER=5
 BUILD_DIR=$(pwd)
 APPDIR=$BUILD_DIR/Zyzzyva.app
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
@@ -81,30 +86,29 @@ cp $BUILD_DIR/bin/libzyzzyva.2.dylib $APPDIR/Contents/Frameworks
 
 # Copy system libs to Frameworks directory
 echo "Copying system libs into bundle..."
-#cp /usr/lib/libstdc++.6.dylib $APPDIR/Contents/Frameworks
-#cp /usr/lib/libgcc_s.1.dylib $APPDIR/Contents/Frameworks
-#cp /usr/lib/libz.1.dylib $APPDIR/Contents/Frameworks
+cp /usr/lib/libstdc++.6.dylib $APPDIR/Contents/Frameworks
+cp /usr/lib/libz.1.dylib $APPDIR/Contents/Frameworks
 chmod 755 $APPDIR/Contents/Frameworks/*.dylib
 
 # Change link location for libstdc++ in libzyzzyva
-#echo "Changing link location for libstdc++ in libzyzzyva..."
-#install_name_tool -change \
-#    /usr/lib/libstdc++.6.dylib \
-#    @executable_path/../Frameworks/libstdc++.6.dylib \
-#    $APPDIR/Contents/Frameworks/libzyzzyva.2.dylib
+echo "Changing link location for libstdc++ in libzyzzyva..."
+install_name_tool -change \
+    /usr/lib/libstdc++.6.dylib \
+    @executable_path/../Frameworks/libstdc++.6.dylib \
+    $APPDIR/Contents/Frameworks/libzyzzyva.2.dylib
+
+# Change link location for libstdc++ in Zyzzyva executable
+echo "Changing link location for libstdc++ in Zyzzyva executable..."
+install_name_tool -change \
+    /usr/lib/libstdc++.6.dylib \
+    @executable_path/../Frameworks/libstdc++.6.dylib \
+    $APPDIR/Contents/MacOS/Zyzzyva
 
 # Change id of libstdc++
-#echo "Changing id of libstdc++..."
-#install_name_tool -id \
-#    @executable_path/../Frameworks/libstdc++.6.dylib \
-#    $APPDIR/Contents/Frameworks/libstdc++.6.dylib
-
-# Change link location for libgcc_s in libzyzzyva
-echo "Changing link location for libgcc_s in libzyzzyva..."
-install_name_tool -change \
-    /usr/lib/libgcc_s.1.dylib \
-    @executable_path/../Frameworks/libgcc_s.1.dylib \
-    $APPDIR/Contents/Frameworks/libzyzzyva.2.dylib
+echo "Changing id of libstdc++..."
+install_name_tool -id \
+    @executable_path/../Frameworks/libstdc++.6.dylib \
+    $APPDIR/Contents/Frameworks/libstdc++.6.dylib
 
 # Copy Qt libs to Frameworks directory unless they're already there
 if [ "$COPYQT" = "yes" ]; then
@@ -114,7 +118,7 @@ if [ "$COPYQT" = "yes" ]; then
     #cp -r $QTDIR/bin/assistant.app $APPDIR/Contents/MacOS
 
     # Copy Qt frameworks into bundle and tell the executable to link to them
-    for i in QtCore QtGui QtNetwork QtSql QtXml ; do
+    for i in QtCore QtGui QtNetwork QtSql QtWidgets QtXml ; do
 
         # Copy Qt framework into bundle
         echo "Copying $i.framework into bundle..."
@@ -145,16 +149,10 @@ if [ "$COPYQT" = "yes" ]; then
         fi
 
         # Change reference to system libs in frameworks
-#        echo "Changing link location for libstdc++ in $i.framework..."
-#        install_name_tool -change \
-#            /usr/lib/libstdc++.6.dylib \
-#            @executable_path/../Frameworks/libstdc++.6.dylib \
-#            $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
-
-        echo "Changing link location for libgcc_s in $i.framework..."
+        echo "Changing link location for libstdc++ in $i.framework..."
         install_name_tool -change \
-            /usr/lib/libgcc_s.1.dylib \
-            @executable_path/../Frameworks/libgcc_s.1.dylib \
+            /usr/lib/libstdc++.6.dylib \
+            @executable_path/../Frameworks/libstdc++.6.dylib \
             $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
 
         echo "Changing link location for libz in $i.framework..."
@@ -203,7 +201,7 @@ if [ "$COPYQT" = "yes" ]; then
 fi
 
 # Update links to Qt frameworks in libzyzzyva and executable
-for i in QtCore QtGui QtNetwork QtSql QtXml ; do
+for i in QtCore QtGui QtNetwork QtSql QtWidgets QtXml ; do
 
     # Change reference to framework in libzyzzyva
     echo "Changing link location for $i.framework in libzyzzyva..."
