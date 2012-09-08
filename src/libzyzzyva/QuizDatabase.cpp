@@ -26,6 +26,9 @@
 #include "Auxil.h"
 #include <QDateTime>
 #include <QSqlDatabase>
+#include <QSqlError>
+#include <QSqlQuery>
+#include <QVariant>
 
 //const QString SQL_CREATE_QUESTIONS_TABLE_CURRENT =
 //    "CREATE TABLE questions (question varchar(16), correct integer, "
@@ -87,4 +90,85 @@ QString
 QuizDatabase::databaseFile() const
 {
     return dbFileName;
+}
+
+//---------------------------------------------------------------------------
+//  quizSpec
+//
+//! Generate a quiz spec from the database.
+//
+//! @return the quiz spec
+//---------------------------------------------------------------------------
+QuizSpec
+QuizDatabase::quizSpec() const
+{
+    QuizSpec spec;
+
+    if (!db || (!db->isOpen() && !db->open()))
+        return spec;
+
+    QString queryStr = "SELECT lexicon, type, current_question, num_words, "
+        "method, question_order FROM quiz";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        return spec;
+    }
+
+    spec.setFilename(dbFileName);
+    if (query.next()) {
+
+        qDebug("QUERY SUCCESSFUL!");
+
+        spec.setLexicon(query.value(0).toString());
+        spec.setType(QuizSpec::QuizType(query.value(1).toInt()));
+        spec.setQuestionIndex(query.value(2).toInt());
+        spec.setNumWords(query.value(3).toInt());
+        spec.setMethod(QuizSpec::QuizMethod(query.value(4).toInt()));
+        spec.setQuizOrder(QuizSpec::QuizOrder(query.value(5).toInt()));
+        spec.setNumQuestions(numQuestions());
+
+        // ### add timer spec to quiz database
+    }
+
+    db->close();
+
+    return spec;
+}
+
+//---------------------------------------------------------------------------
+//  numQuestions
+//
+//! Return the number of questions in the quiz.
+//
+//! @return the number of questions
+//---------------------------------------------------------------------------
+int
+QuizDatabase::numQuestions() const
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return 0;
+
+    QString queryStr = "SELECT count(*) as count FROM questions";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        return 0;
+    }
+
+    int numQuestions = 0;
+    while (query.next()) {
+        numQuestions = query.value(0).toInt();
+        break;
+    }
+
+    db->close();
+
+    return numQuestions;
 }
