@@ -140,6 +140,68 @@ QuizDatabase::getQuizSpec() const
 }
 
 //---------------------------------------------------------------------------
+//  setQuizSpec
+//
+//! Update the database with the contents of a quiz spec.
+//
+//! @param quizSpec the quiz spec
+//---------------------------------------------------------------------------
+bool
+QuizDatabase::setQuizSpec(const QuizSpec& quizSpec)
+{
+    QuizSpec existingSpec = getQuizSpec();
+
+    if (!db || (!db->isOpen() && !db->open()))
+        return false;
+
+    // ### Figure out a better way to test for emptiness?
+    QString queryStr;
+
+    // Quiz data exists, so update it
+    if (existingSpec.getNumQuestions()) {
+
+        // Everything is the same, no need to update
+        if ((quizSpec.getLexicon() == existingSpec.getLexicon()) &&
+            (quizSpec.getType() == existingSpec.getType()) &&
+            (quizSpec.getQuestionIndex() == existingSpec.getQuestionIndex()) &&
+            (quizSpec.getNumWords() == existingSpec.getNumWords()) &&
+            (quizSpec.getMethod() == existingSpec.getMethod()) &&
+            (quizSpec.getQuizOrder() == existingSpec.getQuizOrder()))
+        {
+            return true;
+        }
+
+        queryStr = "UPDATE quiz SET lexicon=?, type=?, current_question=?, "
+            "num_words=?, method=?, question_order=?";
+    }
+
+    else {
+        queryStr = "INSERT INTO quiz (lexicon, type, current_question, "
+            "num_words, method, question_order) VALUES (?, ?, ?, ?, ?, ?)";
+    }
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    query.bindValue(bindNum++, quizSpec.getLexicon());
+    query.bindValue(bindNum++, quizSpec.getType());
+    query.bindValue(bindNum++, quizSpec.getQuestionIndex());
+    query.bindValue(bindNum++, quizSpec.getNumWords());
+    query.bindValue(bindNum++, quizSpec.getMethod());
+    query.bindValue(bindNum++, quizSpec.getQuizOrder());
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return false;
+    }
+
+    db->close();
+    return true;
+}
+
+//---------------------------------------------------------------------------
 //  getNumQuestions
 //
 //! Return the number of questions in the quiz.
