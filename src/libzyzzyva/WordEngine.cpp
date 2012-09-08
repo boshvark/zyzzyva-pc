@@ -1927,10 +1927,10 @@ WordEngine::nonGraphSearch(const QString& lexicon, const SearchSpec& spec) const
     // test those words.  Otherwise, run through the map of number of anagrams
     // and pull out all words matching the conditions.
     if (!finalWordSet.isEmpty() &&
-        ((minAnagrams > 0) || (maxAnagrams < MAX_ANAGRAMS)) ||
+        (((minAnagrams > 0) || (maxAnagrams < MAX_ANAGRAMS)) ||
         ((minNumVowels > 0) || (maxNumVowels < MAX_WORD_LEN)) ||
         ((minNumUniqueLetters > 0) || (maxNumUniqueLetters < MAX_WORD_LEN)) ||
-        ((minPointValue > 0) || (minPointValue < 10 * MAX_WORD_LEN)))
+        ((minPointValue > 0) || (minPointValue < 10 * MAX_WORD_LEN))))
     {
         bool testAnagrams = ((minAnagrams > 0) ||
                              (maxAnagrams < MAX_ANAGRAMS));
