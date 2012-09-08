@@ -81,23 +81,23 @@ cp $BUILD_DIR/bin/libzyzzyva.2.dylib $APPDIR/Contents/Frameworks
 
 # Copy system libs to Frameworks directory
 echo "Copying system libs into bundle..."
-cp /usr/lib/libstdc++.6.dylib $APPDIR/Contents/Frameworks
-cp /usr/lib/libgcc_s.1.dylib $APPDIR/Contents/Frameworks
-cp /usr/lib/libz.1.dylib $APPDIR/Contents/Frameworks
+#cp /usr/lib/libstdc++.6.dylib $APPDIR/Contents/Frameworks
+#cp /usr/lib/libgcc_s.1.dylib $APPDIR/Contents/Frameworks
+#cp /usr/lib/libz.1.dylib $APPDIR/Contents/Frameworks
 chmod 755 $APPDIR/Contents/Frameworks/*.dylib
 
 # Change link location for libstdc++ in libzyzzyva
-echo "Changing link location for libstdc++ in libzyzzyva..."
-install_name_tool -change \
-    /usr/lib/libstdc++.6.dylib \
-    @executable_path/../Frameworks/libstdc++.6.dylib \
-    $APPDIR/Contents/Frameworks/libzyzzyva.2.dylib
+#echo "Changing link location for libstdc++ in libzyzzyva..."
+#install_name_tool -change \
+#    /usr/lib/libstdc++.6.dylib \
+#    @executable_path/../Frameworks/libstdc++.6.dylib \
+#    $APPDIR/Contents/Frameworks/libzyzzyva.2.dylib
 
 # Change id of libstdc++
-echo "Changing id of libstdc++..."
-install_name_tool -id \
-    @executable_path/../Frameworks/libstdc++.6.dylib \
-    $APPDIR/Contents/Frameworks/libstdc++.6.dylib
+#echo "Changing id of libstdc++..."
+#install_name_tool -id \
+#    @executable_path/../Frameworks/libstdc++.6.dylib \
+#    $APPDIR/Contents/Frameworks/libstdc++.6.dylib
 
 # Change link location for libgcc_s in libzyzzyva
 echo "Changing link location for libgcc_s in libzyzzyva..."
@@ -145,11 +145,11 @@ if [ "$COPYQT" = "yes" ]; then
         fi
 
         # Change reference to system libs in frameworks
-        echo "Changing link location for libstdc++ in $i.framework..."
-        install_name_tool -change \
-            /usr/lib/libstdc++.6.dylib \
-            @executable_path/../Frameworks/libstdc++.6.dylib \
-            $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
+#        echo "Changing link location for libstdc++ in $i.framework..."
+#        install_name_tool -change \
+#            /usr/lib/libstdc++.6.dylib \
+#            @executable_path/../Frameworks/libstdc++.6.dylib \
+#            $APPDIR/Contents/Frameworks/$i.framework/Versions/$QTVER/$i
 
         echo "Changing link location for libgcc_s in $i.framework..."
         install_name_tool -change \
