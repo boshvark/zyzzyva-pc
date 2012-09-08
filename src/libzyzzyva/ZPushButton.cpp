@@ -27,12 +27,12 @@
 #include <QKeyEvent>
 
 //---------------------------------------------------------------------------
-//  init
+//  initialize
 //
 //! Initialize the object.
 //---------------------------------------------------------------------------
 void
-ZPushButton::init()
+ZPushButton::initialize()
 {
     setFocusPolicy(Qt::TabFocus);
 }

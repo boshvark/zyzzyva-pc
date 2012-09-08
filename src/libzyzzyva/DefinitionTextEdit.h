@@ -35,11 +35,11 @@ class DefinitionTextEdit : public QTextEdit
     Q_OBJECT
     public:
     DefinitionTextEdit(QWidget* parent = 0)
-        : QTextEdit(parent) { init(); }
+        : QTextEdit(parent) { initialize(); }
     DefinitionTextEdit(const QString& text, QWidget* parent = 0)
-        : QTextEdit(text, parent) { init(); }
+        : QTextEdit(text, parent) { initialize(); }
 
-    void init() { setReadOnly(true); }
+    void initialize() { setReadOnly(true); }
 
     virtual ~DefinitionTextEdit() { }
 };

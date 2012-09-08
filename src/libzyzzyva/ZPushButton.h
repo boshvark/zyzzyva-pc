@@ -33,15 +33,15 @@ class ZPushButton : public QPushButton
     Q_OBJECT
     public:
     ZPushButton(QWidget* parent = 0)
-        : QPushButton(parent) { init(); }
+        : QPushButton(parent) { initialize(); }
     ZPushButton(const QString& text, QWidget* parent = 0)
-        : QPushButton(text, parent) { init(); }
+        : QPushButton(text, parent) { initialize(); }
     ZPushButton(const QIcon& icon, const QString& text, QWidget* parent = 0)
-        : QPushButton(icon, text, parent) { init(); }
+        : QPushButton(icon, text, parent) { initialize(); }
 
     protected:
     virtual void keyPressEvent(QKeyEvent* e);
-    void init();
+    void initialize();
 
     virtual ~ZPushButton() { }
 };
