@@ -28,13 +28,13 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QApplication>
-#include <QFileDialog>
-#include <QFrame>
-#include <QHBoxLayout>
-#include <QMessageBox>
-#include <QTextStream>
-#include <QVBoxLayout>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QMessageBox>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QVBoxLayout>
 
 using namespace Defs;
 

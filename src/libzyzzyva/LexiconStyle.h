@@ -26,9 +26,9 @@
 #ifndef ZYZZYVA_LEXICON_STYLE_H
 #define ZYZZYVA_LEXICON_STYLE_H
 
-//#include <QColor>
-//#include <QFont>
-#include <QString>
+//#include <QtGui/QColor>
+//#include <QtGui/QFont>
+#include <QtCore/QString>
 
 class LexiconStyle
 {

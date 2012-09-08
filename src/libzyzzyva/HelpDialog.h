@@ -25,7 +25,7 @@
 #ifndef ZYZZYVA_HELP_DIALOG_H
 #define ZYZZYVA_HELP_DIALOG_H
 
-#include <QAssistantClient>
+#include <QtWidgets/QAssistantClient>
 
 class HelpDialog : public QAssistantClient
 {

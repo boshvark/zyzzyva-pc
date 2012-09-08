@@ -23,7 +23,7 @@
 #include "HelpDialog.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QStringList>
+#include <QtCore/QStringList>
 
 //---------------------------------------------------------------------------
 //  HelpDialog

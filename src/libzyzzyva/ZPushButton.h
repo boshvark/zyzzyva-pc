@@ -26,7 +26,7 @@
 #ifndef ZYZZYVA_PUSH_BUTTON_H
 #define ZYZZYVA_PUSH_BUTTON_H
 
-#include <QPushButton>
+#include <QtWidgets/QPushButton>
 
 class ZPushButton : public QPushButton
 {

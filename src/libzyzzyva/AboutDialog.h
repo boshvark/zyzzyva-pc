@@ -25,7 +25,7 @@
 #ifndef ZYZZYVA_ABOUT_DIALOG_H
 #define ZYZZYVA_ABOUT_DIALOG_H
 
-#include <QDialog>
+#include <QtWidgets/QDialog>
 
 class AboutDialog : public QDialog
 {

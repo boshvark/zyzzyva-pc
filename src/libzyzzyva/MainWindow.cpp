@@ -46,20 +46,20 @@
 #include "WordVariationType.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QAction>
-#include <QApplication>
-#include <QDir>
-#include <QFileDialog>
-#include <QLabel>
-#include <QMenuBar>
-#include <QMessageBox>
-#include <QProgressDialog>
-#include <QSignalMapper>
-#include <QStatusBar>
-#include <QSqlDatabase>
-#include <QSqlQuery>
-#include <QTextStream>
-#include <QToolBar>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QApplication>
+#include <QtCore/QDir>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMenuBar>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QProgressDialog>
+#include <QtCore/QSignalMapper>
+#include <QtWidgets/QStatusBar>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQuery>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QToolBar>
 
 #include "LetterBag.h"
 

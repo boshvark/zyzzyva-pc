@@ -26,10 +26,10 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QTabWidget>
-#include <QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "About Zyzzyva";
 

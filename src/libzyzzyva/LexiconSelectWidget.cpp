@@ -25,8 +25,8 @@
 #include "LexiconSelectWidget.h"
 #include "MainSettings.h"
 #include "Defs.h"
-#include <QHBoxLayout>
-#include <QLabel>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 
 const QString LABEL_TEXT = "Lexicon:";
 

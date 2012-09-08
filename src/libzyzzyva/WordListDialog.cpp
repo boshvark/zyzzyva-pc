@@ -26,12 +26,12 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QApplication>
-#include <QFile>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QMessageBox>
-#include <QVBoxLayout>
+#include <QtWidgets/QApplication>
+#include <QtCore/QFile>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Edit Word List";
 const QString LIST_HEADER_PREFIX = "Word List: ";

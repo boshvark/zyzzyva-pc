@@ -27,11 +27,11 @@
 #include "LexiconStyle.h"
 #include "LexiconStyleWidget.h"
 #include "Defs.h"
-#include <QDialogButtonBox>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
 
 const QString DIALOG_CAPTION = "Select Lexicon Styles";
 const QString INSTRUCTION_TEXT =

@@ -25,7 +25,7 @@
 TEMPLATE = app
 TARGET = zyzzyva
 CONFIG += qt thread warn_on assistant
-QT += xml
+QT += widgets xml
 
 ROOT = ../..
 DESTDIR = $$ROOT/bin

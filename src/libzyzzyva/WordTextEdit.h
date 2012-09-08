@@ -27,7 +27,7 @@
 #ifndef ZYZZYVA_WORD_TEXT_EDIT_H
 #define ZYZZYVA_WORD_TEXT_EDIT_H
 
-#include <QTextEdit>
+#include <QtWidgets/QTextEdit>
 
 class WordTextEdit : public QTextEdit
 {

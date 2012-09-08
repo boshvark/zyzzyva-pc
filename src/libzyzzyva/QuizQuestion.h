@@ -25,8 +25,8 @@
 #ifndef ZYZZYVA_QUIZ_QUESTION_H
 #define ZYZZYVA_QUIZ_QUESTION_H
 
-#include <QDomElement>
-#include <QSet>
+#include <QtXml/QDomElement>
+#include <QtCore/QSet>
 
 class QuizQuestion
 {

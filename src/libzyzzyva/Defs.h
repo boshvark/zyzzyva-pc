@@ -25,8 +25,8 @@
 #ifndef ZYZZYVA_DEFS_H
 #define ZYZZYVA_DEFS_H
 
-#include <QColor>
-#include <QString>
+#include <QtGui/QColor>
+#include <QtCore/QString>
 
 namespace Defs {
     const QString ZYZZYVA_VERSION = "2.3.0";

@@ -28,7 +28,7 @@
 #ifndef ZYZZYVA_DEFINITION_TEXT_EDIT_H
 #define ZYZZYVA_DEFINITION_TEXT_EDIT_H
 
-#include <QTextEdit>
+#include <QtWidgets/QTextEdit>
 
 class DefinitionTextEdit : public QTextEdit
 {

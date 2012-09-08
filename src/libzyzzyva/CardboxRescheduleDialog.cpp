@@ -29,10 +29,10 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QButtonGroup>
-#include <QFrame>
-#include <QLabel>
-#include <QVBoxLayout>
+#include <QtWidgets/QButtonGroup>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Reschedule Words in Cardbox";
 

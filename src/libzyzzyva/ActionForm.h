@@ -25,9 +25,9 @@
 #ifndef ZYZZYVA_ACTION_FORM_H
 #define ZYZZYVA_ACTION_FORM_H
 
-#include <QFrame>
-#include <QIcon>
-#include <QString>
+#include <QtWidgets/QFrame>
+#include <QtGui/QIcon>
+#include <QtCore/QString>
 
 class ActionForm : public QFrame
 {

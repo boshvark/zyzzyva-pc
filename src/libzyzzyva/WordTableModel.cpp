@@ -26,7 +26,7 @@
 #include "WordEngine.h"
 #include "MainSettings.h"
 #include "Auxil.h"
-#include <QBrush>
+#include <QtGui/QBrush>
 
 using namespace std;
 

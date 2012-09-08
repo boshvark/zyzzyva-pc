@@ -26,8 +26,8 @@
 #define ZYZZYVA_DEFINITION_DIALOG_H
 
 #include "WordEngine.h"
-#include <QDialog>
-#include <QString>
+#include <QtWidgets/QDialog>
+#include <QtCore/QString>
 
 class DefinitionDialog : public QDialog
 {

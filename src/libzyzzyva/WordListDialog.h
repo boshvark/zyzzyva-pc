@@ -26,9 +26,9 @@
 #define ZYZZYVA_WORD_LIST_DIALOG_H
 
 #include "WordEngine.h"
-#include <QDialog>
-#include <QLabel>
-#include <QListWidget>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QListWidget>
 
 class WordListDialog : public QDialog
 {

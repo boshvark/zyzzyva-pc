@@ -25,8 +25,8 @@
 #ifndef ZYZZYVA_DATABASE_REBUILD_DIALOG_H
 #define ZYZZYVA_DATABASE_REBUILD_DIALOG_H
 
-#include <QDialog>
-#include <QRadioButton>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QRadioButton>
 
 class LexiconSelectWidget;
 

@@ -22,8 +22,8 @@
 
 #include "IntroForm.h"
 #include "Auxil.h"
-#include <QTextBrowser>
-#include <QVBoxLayout>
+#include <QtWidgets/QTextBrowser>
+#include <QtWidgets/QVBoxLayout>
 
 const QString TITLE_PREFIX = "Welcome";
 

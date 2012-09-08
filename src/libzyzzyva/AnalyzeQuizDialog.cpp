@@ -31,10 +31,10 @@
 #include "WordTableModel.h"
 #include "WordTableView.h"
 #include "ZPushButton.h"
-#include <QApplication>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QVBoxLayout>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Analyze Quiz";
 const QString MISSED_LABEL_PREFIX = "Missed : ";

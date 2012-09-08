@@ -27,7 +27,7 @@
 #ifndef ZYZZYVA_QUIZ_QUESTION_LABEL_H
 #define ZYZZYVA_QUIZ_QUESTION_LABEL_H
 
-#include <QLabel>
+#include <QtWidgets/QLabel>
 
 class QuizQuestionLabel : public QLabel
 {

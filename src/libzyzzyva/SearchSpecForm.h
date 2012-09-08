@@ -25,11 +25,11 @@
 #ifndef ZYZZYVA_SEARCH_SPEC_FORM_H
 #define ZYZZYVA_SEARCH_SPEC_FORM_H
 
-#include <QFrame>
-#include <QList>
-#include <QRadioButton>
-#include <QSignalMapper>
-#include <QVBoxLayout>
+#include <QtWidgets/QFrame>
+#include <QtCore/QList>
+#include <QtWidgets/QRadioButton>
+#include <QtCore/QSignalMapper>
+#include <QtWidgets/QVBoxLayout>
 
 class SearchConditionForm;
 class SearchSpec;

@@ -25,8 +25,8 @@
 #ifndef ZYZZYVA_APPLICATION_H
 #define ZYZZYVA_APPLICATION_H
 
-#include <QApplication>
-#include <QStringList>
+#include <QtWidgets/QApplication>
+#include <QtCore/QStringList>
 
 // Admitting defeat for now: ZApplication causes a crash on certain Linux
 // machines and I haven't quite figured out why. So I'm disabling the magic

@@ -26,9 +26,9 @@
 #define ZYZZYVA_SEARCH_FORM_H
 
 #include "ActionForm.h"
-#include <QCheckBox>
-#include <QComboBox>
-#include <QLabel>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
 
 class LexiconSelectWidget;
 class SearchSpecForm;

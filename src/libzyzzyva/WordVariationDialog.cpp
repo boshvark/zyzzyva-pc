@@ -30,11 +30,11 @@
 #include "WordTableView.h"
 #include "ZPushButton.h"
 #include "Auxil.h"
-#include <QApplication>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QList>
-#include <QVBoxLayout>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtCore/QList>
+#include <QtWidgets/QVBoxLayout>
 
 using namespace Defs;
 

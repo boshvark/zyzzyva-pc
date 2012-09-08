@@ -25,10 +25,10 @@
 #ifndef ZYZZYVA_ISC_CONNECTION_THREAD_H
 #define ZYZZYVA_ISC_CONNECTION_THREAD_H
 
-#include <QStringList>
-#include <QTcpSocket>
-#include <QThread>
-#include <QTimer>
+#include <QtCore/QStringList>
+#include <QtNetwork/QTcpSocket>
+#include <QtCore/QThread>
+#include <QtCore/QTimer>
 
 class IscConnectionThread : public QThread
 {

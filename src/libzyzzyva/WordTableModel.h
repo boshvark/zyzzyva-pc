@@ -25,9 +25,9 @@
 #ifndef ZYZZYVA_WORD_TABLE_MODEL_H
 #define ZYZZYVA_WORD_TABLE_MODEL_H
 
-#include <QAbstractTableModel>
-#include <QChar>
-#include <QStringList>
+#include <QtCore/QAbstractTableModel>
+#include <QtCore/QChar>
+#include <QtCore/QStringList>
 
 class WordEngine;
 

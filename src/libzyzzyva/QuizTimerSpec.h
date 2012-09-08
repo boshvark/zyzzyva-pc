@@ -25,8 +25,8 @@
 #ifndef ZYZZYVA_QUIZ_TIMER_SPEC_H
 #define ZYZZYVA_QUIZ_TIMER_SPEC_H
 
-#include <QDomElement>
-#include <QString>
+#include <QtXml/QDomElement>
+#include <QtCore/QString>
 
 enum QuizTimerType {
     NoTimer = 0,

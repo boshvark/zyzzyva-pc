@@ -26,7 +26,7 @@
 #include "MainSettings.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QtGui>
+#include <QtGui/QtGui>
 
 using namespace Defs;
 

@@ -23,9 +23,9 @@
 //---------------------------------------------------------------------------
 
 #include "ZApplication.h"
-#include <QFileOpenEvent>
+#include <QtGui/QFileOpenEvent>
 
-#include <QMessageBox>
+#include <QtWidgets/QMessageBox>
 
 #if not defined Z_LINUX
 

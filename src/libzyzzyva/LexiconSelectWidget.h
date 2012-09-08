@@ -25,9 +25,9 @@
 #ifndef ZYZZYVA_LEXICON_SELECT_WIDGET_H
 #define ZYZZYVA_LEXICON_SELECT_WIDGET_H
 
-#include <QComboBox>
-#include <QLabel>
-#include <QWidget>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QWidget>
 
 class LexiconSelectWidget : public QWidget
 {

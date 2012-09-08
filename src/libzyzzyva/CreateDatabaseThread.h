@@ -25,10 +25,10 @@
 #ifndef ZYZZYVA_CREATE_DATABASE_THREAD_H
 #define ZYZZYVA_CREATE_DATABASE_THREAD_H
 
-#include <QMap>
-#include <QString>
-#include <QSqlDatabase>
-#include <QThread>
+#include <QtCore/QMap>
+#include <QtCore/QString>
+#include <QtSql/QSqlDatabase>
+#include <QtCore/QThread>
 
 class WordEngine;
 

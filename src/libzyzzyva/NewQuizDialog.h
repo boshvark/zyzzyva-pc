@@ -27,15 +27,15 @@
 
 #include "QuizSpec.h"
 #include "MatchType.h"
-#include <QCheckBox>
-#include <QComboBox>
-#include <QDialog>
-#include <QGroupBox>
-#include <QLabel>
-#include <QLineEdit>
-#include <QRadioButton>
-#include <QStackedWidget>
-#include <QSpinBox>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QStackedWidget>
+#include <QtWidgets/QSpinBox>
 
 class LexiconSelectWidget;
 class SearchSpec;

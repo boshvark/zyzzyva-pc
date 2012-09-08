@@ -25,11 +25,11 @@
 #include "LexiconSelectDialog.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QDialogButtonBox>
-#include <QFileDialog>
-#include <QHBoxLayout>
-#include <QSet>
-#include <QVBoxLayout>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QHBoxLayout>
+#include <QtCore/QSet>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Select Lexicons";
 const QString INSTRUCTION_TEXT = "Select the lexicons to be loaded each time "

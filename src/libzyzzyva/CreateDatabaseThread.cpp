@@ -28,7 +28,7 @@
 #include "WordEngine.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QtSql>
+#include <QtSql/QtSql>
 
 const int MAX_DEFINITION_LINKS = 3;
 const int PROGRESS_STEP = 1000;

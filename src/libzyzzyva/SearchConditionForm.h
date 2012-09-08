@@ -26,12 +26,12 @@
 #define ZYZZYVA_SEARCH_CONDITION_FORM_H
 
 #include "SearchCondition.h"
-#include <QCheckBox>
-#include <QComboBox>
-#include <QLabel>
-#include <QPushButton>
-#include <QSpinBox>
-#include <QStackedWidget>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QStackedWidget>
 
 class SearchCondition;
 class WordLineEdit;

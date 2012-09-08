@@ -27,12 +27,12 @@
 
 #include "SearchSpec.h"
 #include "CardboxRescheduleType.h"
-#include <QDialog>
-#include <QComboBox>
-#include <QGroupBox>
-#include <QListWidget>
-#include <QRadioButton>
-#include <QSpinBox>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSpinBox>
 
 class CardboxRescheduleDaysSpinBox;
 class LexiconSelectWidget;

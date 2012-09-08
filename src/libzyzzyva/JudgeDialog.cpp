@@ -28,17 +28,17 @@
 #include "WordTextEdit.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QApplication>
-#include <QDate>
-#include <QDesktopWidget>
-#include <QDir>
-#include <QFile>
-#include <QHBoxLayout>
-#include <QKeyEvent>
-#include <QPalette>
-#include <QTextCursor>
-#include <QTextStream>
-#include <QVBoxLayout>
+#include <QtWidgets/QApplication>
+#include <QtCore/QDate>
+#include <QtWidgets/QDesktopWidget>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
+#include <QtWidgets/QHBoxLayout>
+#include <QtGui/QKeyEvent>
+#include <QtGui/QPalette>
+#include <QtGui/QTextCursor>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QVBoxLayout>
 
 // How many pixels to display for every 20 pixels of screen height
 const int FONT_PIXEL_DIVIDER = 20;

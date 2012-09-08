@@ -27,8 +27,8 @@
 
 #include "WordAttribute.h"
 #include "WordListFormat.h"
-#include <QString>
-#include <QTreeView>
+#include <QtCore/QString>
+#include <QtWidgets/QTreeView>
 
 class WordEngine;
 

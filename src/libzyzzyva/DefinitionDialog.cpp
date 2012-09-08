@@ -28,8 +28,8 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION_PREFIX = "Define : ";
 

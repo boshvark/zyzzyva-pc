@@ -29,16 +29,16 @@
 #include "QuizTimerSpec.h"
 #include "QuizStatsDatabase.h"
 #include "QuizSpec.h"
-#include <QCheckBox>
-#include <QComboBox>
-#include <QImage>
-#include <QKeyEvent>
-#include <QLabel>
-#include <QSpinBox>
-#include <QStackedWidget>
-#include <QString>
-#include <QTimer>
-#include <QTimerEvent>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtGui/QImage>
+#include <QtGui/QKeyEvent>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QStackedWidget>
+#include <QtCore/QString>
+#include <QtCore/QTimer>
+#include <QtCore/QTimerEvent>
 
 class AnalyzeQuizDialog;
 class DefinitionLabel;

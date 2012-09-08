@@ -41,16 +41,16 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QApplication>
-#include <QColor>
-#include <QFileDialog>
-#include <QMessageBox>
-#include <QTimerEvent>
-#include <QGridLayout>
-#include <QTextStream>
-#include <QVBoxLayout>
-#include <QHBoxLayout>
-#include <QLabel>
+#include <QtWidgets/QApplication>
+#include <QtGui/QColor>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtCore/QTimerEvent>
+#include <QtWidgets/QGridLayout>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
 
 using namespace Defs;
 

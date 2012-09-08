@@ -25,11 +25,11 @@
 #ifndef ZYZZYVA_CARDBOX_ADD_DIALOG_H
 #define ZYZZYVA_CARDBOX_ADD_DIALOG_H
 
-#include <QDialog>
-#include <QComboBox>
-#include <QListWidget>
-#include <QRadioButton>
-#include <QSpinBox>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QSpinBox>
 
 class CardboxAddDialog : public QDialog
 {

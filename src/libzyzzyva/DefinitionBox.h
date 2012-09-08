@@ -25,7 +25,7 @@
 #ifndef ZYZZYVA_DEFINITION_BOX_H
 #define ZYZZYVA_DEFINITION_BOX_H
 
-#include <QGroupBox>
+#include <QtWidgets/QGroupBox>
 
 class DefinitionTextEdit;
 
@@ -38,7 +38,7 @@ class DefinitionBox : public QGroupBox
     void setText(const QString& text);
 
     private:
-    void init();
+    void initialize();
 
     DefinitionTextEdit* definitionEdit;
 };

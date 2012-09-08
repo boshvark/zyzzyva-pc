@@ -24,9 +24,9 @@
 
 #include "WordGraph.h"
 #include "Defs.h"
-#include <QFile>
-#include <QList>
-#include <QRegExp>
+#include <QtCore/QFile>
+#include <QtCore/QList>
+#include <QtCore/QRegExp>
 #include <iostream>
 #include <map>
 #include <stack>

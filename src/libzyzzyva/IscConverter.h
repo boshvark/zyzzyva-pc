@@ -25,7 +25,7 @@
 #ifndef ZYZZYVA_ISC_CONVERTER_H
 #define ZYZZYVA_ISC_CONVERTER_H
 
-#include <QString>
+#include <QtCore/QString>
 
 namespace IscConverter
 {

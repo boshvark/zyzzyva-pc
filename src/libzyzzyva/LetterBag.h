@@ -26,10 +26,10 @@
 #define ZYZZYVA_LETTER_BAG_H
 
 #include "Rand.h"
-#include <QChar>
-#include <QMap>
-#include <QList>
-#include <QString>
+#include <QtCore/QChar>
+#include <QtCore/QMap>
+#include <QtCore/QList>
+#include <QtCore/QString>
 
 class LetterBag
 {

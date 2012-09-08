@@ -27,7 +27,7 @@
 #ifndef ZYZZYVA_WORD_LINE_EDIT_H
 #define ZYZZYVA_WORD_LINE_EDIT_H
 
-#include <QLineEdit>
+#include <QtWidgets/QLineEdit>
 
 class WordLineEdit : public QLineEdit
 {

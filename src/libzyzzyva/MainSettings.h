@@ -26,11 +26,11 @@
 #define ZYZZYVA_MAIN_SETTINGS_H
 
 #include "LexiconStyle.h"
-#include <QColor>
-#include <QList>
-#include <QPoint>
-#include <QSize>
-#include <QString>
+#include <QtGui/QColor>
+#include <QtCore/QList>
+#include <QtCore/QPoint>
+#include <QtCore/QSize>
+#include <QtCore/QString>
 
 class MainSettings
 {

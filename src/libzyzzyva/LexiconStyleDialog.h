@@ -26,10 +26,10 @@
 #ifndef ZYZZYVA_LEXICON_STYLE_DIALOG_H
 #define ZYZZYVA_LEXICON_STYLE_DIALOG_H
 
-#include <QDialog>
-#include <QList>
-#include <QSignalMapper>
-#include <QVBoxLayout>
+#include <QtWidgets/QDialog>
+#include <QtCore/QList>
+#include <QtCore/QSignalMapper>
+#include <QtWidgets/QVBoxLayout>
 
 class LexiconStyle;
 class LexiconStyleWidget;

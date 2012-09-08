@@ -26,12 +26,12 @@
 #include "MainSettings.h"
 #include "Rand.h"
 #include "Auxil.h"
-#include <QDir>
-#include <QSqlQuery>
-#include <QVariant>
+#include <QtCore/QDir>
+#include <QtSql/QSqlQuery>
+#include <QtCore/QVariant>
 #include <ctime>
 
-#include <QSqlError>
+#include <QtSql/QSqlError>
 
 const QString SQL_CREATE_QUESTIONS_TABLE_0_14_0 =
     "CREATE TABLE questions (question varchar(16), correct integer, "

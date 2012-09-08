@@ -26,9 +26,9 @@
 #define ZYZZYVA_WORD_GRAPH_H
 
 #include "SearchSpec.h"
-#include <QFile>
-#include <QString>
-#include <QStringList>
+#include <QtCore/QFile>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 
 class WordGraph
 {

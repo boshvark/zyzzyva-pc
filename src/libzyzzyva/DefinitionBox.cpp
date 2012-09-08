@@ -23,8 +23,8 @@
 #include "DefinitionBox.h"
 #include "DefinitionTextEdit.h"
 #include "Defs.h"
-#include <QScrollArea>
-#include <QVBoxLayout>
+#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QVBoxLayout>
 
 using namespace Defs;
 
@@ -38,7 +38,7 @@ using namespace Defs;
 DefinitionBox::DefinitionBox(QWidget* parent)
     : QGroupBox(parent)
 {
-    init();
+    initialize();
 }
 
 //---------------------------------------------------------------------------
@@ -52,16 +52,16 @@ DefinitionBox::DefinitionBox(QWidget* parent)
 DefinitionBox::DefinitionBox(const QString& title, QWidget* parent)
     : QGroupBox(title, parent)
 {
-    init();
+    initialize();
 }
 
 //---------------------------------------------------------------------------
-//  init
+//  initialize
 //
 //! Initialize the definition box by setting up the layout elements.
 //---------------------------------------------------------------------------
 void
-DefinitionBox::init()
+DefinitionBox::initialize()
 {
     QVBoxLayout* mainVlay = new QVBoxLayout(this);
     mainVlay->setMargin(MARGIN);

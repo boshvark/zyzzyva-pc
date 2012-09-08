@@ -27,7 +27,7 @@
 #define ZYZZYVA_HACK_H
 
 #include "Defs.h"
-#include <QString>
+#include <QtCore/QString>
 
 namespace Hack {
     const QString LEXICON = Defs::LEXICON_OWL2;

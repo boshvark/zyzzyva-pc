@@ -26,8 +26,8 @@
 #include "Auxil.h"
 #include "Defs.h"
 #include "ZPushButton.h"
-#include <QLabel>
-#include <QVBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Add Words to Cardbox";
 

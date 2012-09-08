@@ -37,17 +37,17 @@
 #include "WordVariationDialog.h"
 #include "WordVariationType.h"
 #include "Auxil.h"
-#include <QAction>
-#include <QApplication>
-#include <QContextMenuEvent>
-#include <QFileDialog>
-#include <QHeaderView>
-#include <QMessageBox>
-#include <QMenu>
-#include <QPushButton>
-#include <QSignalMapper>
-#include <QTextStream>
-#include <QToolTip>
+#include <QtWidgets/QAction>
+#include <QtWidgets/QApplication>
+#include <QtGui/QContextMenuEvent>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QHeaderView>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QPushButton>
+#include <QtCore/QSignalMapper>
+#include <QtCore/QTextStream>
+#include <QtWidgets/QToolTip>
 
 using namespace std;
 

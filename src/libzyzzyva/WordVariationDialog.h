@@ -28,9 +28,9 @@
 #include "SearchSpec.h"
 #include "WordTableModel.h"
 #include "WordVariationType.h"
-#include <QDialog>
-#include <QList>
-#include <QLabel>
+#include <QtWidgets/QDialog>
+#include <QtCore/QList>
+#include <QtWidgets/QLabel>
 
 class DefinitionLabel;
 class WordEngine;

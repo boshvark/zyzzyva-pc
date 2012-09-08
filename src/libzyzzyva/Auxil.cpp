@@ -25,9 +25,9 @@
 #include "Auxil.h"
 #include "MainSettings.h"
 #include "Defs.h"
-#include <QApplication>
-#include <QDir>
-#include <QFile>
+#include <QtWidgets/QApplication>
+#include <QtCore/QDir>
+#include <QtCore/QFile>
 #include <unistd.h>
 
 const QString SET_UNKNOWN_STRING = "Unknown";

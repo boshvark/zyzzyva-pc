@@ -31,8 +31,8 @@
 #include "SearchSet.h"
 #include "WordAttribute.h"
 #include "WordListFormat.h"
-#include <QDate>
-#include <QString>
+#include <QtCore/QDate>
+#include <QtCore/QString>
 
 namespace Auxil {
     bool copyDir(const QString& src, const QString& dest);

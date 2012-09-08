@@ -26,13 +26,13 @@
 #include "LetterBag.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QApplication>
-#include <QFile>
-#include <QRegExp>
-#include <QSqlError>
-#include <QSqlQuery>
-#include <QVariant>
-#include <QVector>
+#include <QtWidgets/QApplication>
+#include <QtCore/QFile>
+#include <QtCore/QRegExp>
+#include <QtSql/QSqlError>
+#include <QtSql/QSqlQuery>
+#include <QtCore/QVariant>
+#include <QtCore/QVector>
 
 using namespace Defs;
 

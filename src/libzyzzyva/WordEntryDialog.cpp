@@ -27,9 +27,9 @@
 #include "WordValidator.h"
 #include "ZPushButton.h"
 #include "Defs.h"
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Enter a word";
 

@@ -25,7 +25,7 @@
 #ifndef ZYZZYVA_SEARCH_SET_H
 #define ZYZZYVA_SEARCH_SET_H
 
-#include <QString>
+#include <QtCore/QString>
 
 enum SearchSet {
     UnknownSearchSet = 0,

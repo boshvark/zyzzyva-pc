@@ -30,18 +30,18 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QColorDialog>
-#include <QDir>
-#include <QFileDialog>
-#include <QFont>
-#include <QFontDialog>
-#include <QGridLayout>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QRegExp>
-#include <QSignalMapper>
-#include <QVBoxLayout>
+#include <QtWidgets/QColorDialog>
+#include <QtCore/QDir>
+#include <QtWidgets/QFileDialog>
+#include <QtGui/QFont>
+#include <QtWidgets/QFontDialog>
+#include <QtWidgets/QGridLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtCore/QRegExp>
+#include <QtCore/QSignalMapper>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Preferences";
 const QString USER_DATA_DIR_CHOOSER_TITLE = "Choose a Data Directory";

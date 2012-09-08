@@ -25,10 +25,10 @@
 #ifndef ZYZZYVA_WORD_VALIDATOR_H
 #define ZYZZYVA_WORD_VALIDATOR_H
 
-#include <QChar>
-#include <QRegExp>
-#include <QSet>
-#include <QValidator>
+#include <QtCore/QChar>
+#include <QtCore/QRegExp>
+#include <QtCore/QSet>
+#include <QtGui/QValidator>
 
 class WordValidator : public QValidator
 {

@@ -27,11 +27,11 @@
 
 #include "WordAttribute.h"
 #include "WordListFormat.h"
-#include <QComboBox>
-#include <QDialog>
-#include <QList>
-#include <QListWidget>
-#include <QToolButton>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QDialog>
+#include <QtCore/QList>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QToolButton>
 
 class WordListSaveDialog : public QDialog
 {

@@ -26,13 +26,13 @@
 #ifndef ZYZZYVA_JUDGE_DIALOG_H
 #define ZYZZYVA_JUDGE_DIALOG_H
 
-#include <QDialog>
-#include <QFrame>
-#include <QLabel>
-#include <QLineEdit>
-#include <QStackedWidget>
-#include <QTimer>
-#include <QWidget>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QFrame>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QStackedWidget>
+#include <QtCore/QTimer>
+#include <QtWidgets/QWidget>
 
 class WordEngine;
 class WordTextEdit;

@@ -25,11 +25,11 @@
 #ifndef ZYZZYVA_JUDGE_SELECT_DIALOG_H
 #define ZYZZYVA_JUDGE_SELECT_DIALOG_H
 
-#include <QCheckBox>
-#include <QDialog>
-#include <QDialogButtonBox>
-#include <QLabel>
-#include <QLineEdit>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
 
 class LexiconSelectWidget;
 

@@ -26,9 +26,9 @@
 #include "LexiconSelectWidget.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QLabel>
-#include <QPushButton>
-#include <QVBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Entering Full Screen Word Judge";
 const QString PASSWORD_MISMATCH_MESSAGE = "Passwords must match.";

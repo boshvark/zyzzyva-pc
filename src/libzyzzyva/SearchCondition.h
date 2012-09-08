@@ -25,8 +25,8 @@
 #ifndef ZYZZYVA_SEARCH_CONDITION_H
 #define ZYZZYVA_SEARCH_CONDITION_H
 
-#include <QDomElement>
-#include <QString>
+#include <QtXml/QDomElement>
+#include <QtCore/QString>
 
 class SearchCondition
 {

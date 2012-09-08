@@ -25,12 +25,12 @@
 #ifndef ZYZZYVA_QUIZ_CANVAS_H
 #define ZYZZYVA_QUIZ_CANVAS_H
 
-#include <QBrush>
-#include <QLabel>
-#include <QMap>
-#include <QPen>
-#include <QPixmap>
-#include <QWidget>
+#include <QtGui/QBrush>
+#include <QtWidgets/QLabel>
+#include <QtCore/QMap>
+#include <QtGui/QPen>
+#include <QtGui/QPixmap>
+#include <QtWidgets/QWidget>
 
 class QuizCanvas : public QWidget
 {

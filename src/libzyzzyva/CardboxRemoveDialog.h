@@ -25,10 +25,10 @@
 #ifndef ZYZZYVA_CARDBOX_REMOVE_DIALOG_H
 #define ZYZZYVA_CARDBOX_REMOVE_DIALOG_H
 
-#include <QDialog>
-#include <QCheckBox>
-#include <QComboBox>
-#include <QListWidget>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QListWidget>
 
 class CardboxRemoveDialog : public QDialog
 {

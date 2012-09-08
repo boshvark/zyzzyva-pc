@@ -26,10 +26,10 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QListWidget>
-#include <QVBoxLayout>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QListWidget>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Save Word List";
 

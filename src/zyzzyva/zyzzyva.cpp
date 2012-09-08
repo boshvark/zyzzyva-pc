@@ -24,10 +24,10 @@
 
 #include "MainWindow.h"
 #include "ZApplication.h"
-#include <QFile>
-#include <QObject>
-#include <QPixmap>
-#include <QSplashScreen>
+#include <QtCore/QFile>
+#include <QtCore/QObject>
+#include <QtGui/QPixmap>
+#include <QtWidgets/QSplashScreen>
 
 const QString SETTINGS_ORGANIZATION_NAME = "Piet Depsi";
 const QString SETTINGS_DOMAIN_NAME = "pietdepsi.com";

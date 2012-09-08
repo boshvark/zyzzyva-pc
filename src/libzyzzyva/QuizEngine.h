@@ -28,9 +28,9 @@
 
 #include "QuizSpec.h"
 #include "Rand.h"
-#include <QSet>
-#include <QString>
-#include <QStringList>
+#include <QtCore/QSet>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
 
 class WordEngine;
 

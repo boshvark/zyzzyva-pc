@@ -26,14 +26,14 @@
 #define ZYZZYVA_MAIN_WINDOW_H
 
 #include "CardboxRescheduleType.h"
-#include <QCloseEvent>
-#include <QIcon>
-#include <QLabel>
-#include <QMainWindow>
-#include <QSettings>
-#include <QSplashScreen>
-#include <QTabWidget>
-#include <QToolButton>
+#include <QtGui/QCloseEvent>
+#include <QtGui/QIcon>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QMainWindow>
+#include <QtCore/QSettings>
+#include <QtWidgets/QSplashScreen>
+#include <QtWidgets/QTabWidget>
+#include <QtWidgets/QToolButton>
 
 class AboutDialog;
 class ActionForm;

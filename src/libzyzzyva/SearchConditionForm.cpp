@@ -31,7 +31,7 @@
 #include "ZPushButton.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QHBoxLayout>
+#include <QtWidgets/QHBoxLayout>
 
 QMap<QString, QString> SearchConditionForm::posToNicePosMap;
 QMap<QString, QString> SearchConditionForm::nicePosToPosMap;

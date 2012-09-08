@@ -27,7 +27,7 @@
 #ifndef ZYZZYVA_DEFINITION_LABEL_H
 #define ZYZZYVA_DEFINITION_LABEL_H
 
-#include <QLabel>
+#include <QtWidgets/QLabel>
 
 class DefinitionLabel : public QLabel
 {

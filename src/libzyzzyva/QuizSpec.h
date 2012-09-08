@@ -29,7 +29,7 @@
 #include "QuizTimerSpec.h"
 #include "Rand.h"
 #include "SearchSpec.h"
-#include <QFile>
+#include <QtCore/QFile>
 #include "Defs.h"
 
 class QuizSpec

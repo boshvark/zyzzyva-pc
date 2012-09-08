@@ -26,9 +26,9 @@
 #include "LexiconSelectWidget.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QDialogButtonBox>
-#include <QLabel>
-#include <QVBoxLayout>
+#include <QtWidgets/QDialogButtonBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QVBoxLayout>
 
 const QString DIALOG_CAPTION = "Rebuild Lexicon Database";
 

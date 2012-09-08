@@ -25,7 +25,7 @@
 
 #include "Rand.h"
 
-#include <QString>
+#include <QtCore/QString>
 
 //---------------------------------------------------------------------------
 //  rand

@@ -25,10 +25,10 @@
 #ifndef ZYZZYVA_ANALYZE_QUIZ_DIALOG_H
 #define ZYZZYVA_ANALYZE_QUIZ_DIALOG_H
 
-#include <QDialog>
-#include <QLabel>
-#include <QSet>
-#include <QShowEvent>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QLabel>
+#include <QtCore/QSet>
+#include <QtGui/QShowEvent>
 #include "MatchType.h"
 
 class QuizEngine;

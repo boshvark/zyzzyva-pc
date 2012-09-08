@@ -28,8 +28,8 @@
 #include "SearchCondition.h"
 #include "SearchSet.h"
 #include "Defs.h"
-#include <QDomElement>
-#include <QList>
+#include <QtXml/QDomElement>
+#include <QtCore/QList>
 
 class SearchSpec
 {

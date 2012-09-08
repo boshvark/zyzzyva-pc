@@ -25,9 +25,9 @@
 #ifndef ZYZZYVA_QUIZ_PROGRESS_H
 #define ZYZZYVA_QUIZ_PROGRESS_H
 
-#include <QDomElement>
-#include <QMap>
-#include <QSet>
+#include <QtXml/QDomElement>
+#include <QtCore/QMap>
+#include <QtCore/QSet>
 
 class QuizProgress
 {

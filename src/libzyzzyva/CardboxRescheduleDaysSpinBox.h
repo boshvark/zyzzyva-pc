@@ -26,7 +26,7 @@
 #ifndef ZYZZYVA_CARDBOX_RESCHEDULE_DAYS_SPINBOX_H
 #define ZYZZYVA_CARDBOX_RESCHEDULE_DAYS_SPINBOX_H
 
-#include <QSpinBox>
+#include <QtWidgets/QSpinBox>
 
 class CardboxRescheduleDaysSpinBox : public QSpinBox
 {

@@ -26,12 +26,12 @@
 #define ZYZZYVA_WORD_ENGINE_H
 
 #include "WordGraph.h"
-#include <QMap>
-#include <QMultiMap>
-#include <QSet>
-#include <QString>
-#include <QStringList>
-#include <QSqlDatabase>
+#include <QtCore/QMap>
+#include <QtCore/QMultiMap>
+#include <QtCore/QSet>
+#include <QtCore/QString>
+#include <QtCore/QStringList>
+#include <QtSql/QSqlDatabase>
 #include <stdint.h>
 
 class WordEngine : public QObject

@@ -25,16 +25,16 @@
 #ifndef ZYZZYVA_SETTINGS_DIALOG_H
 #define ZYZZYVA_SETTINGS_DIALOG_H
 
-#include <QCheckBox>
-#include <QComboBox>
-#include <QDialog>
-#include <QLabel>
-#include <QLineEdit>
-#include <QList>
-#include <QListWidget>
-#include <QSettings>
-#include <QSpinBox>
-#include <QStackedWidget>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtCore/QList>
+#include <QtWidgets/QListWidget>
+#include <QtCore/QSettings>
+#include <QtWidgets/QSpinBox>
+#include <QtWidgets/QStackedWidget>
 
 class LexiconStyle;
 class ZPushButton;

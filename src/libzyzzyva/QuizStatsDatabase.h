@@ -26,10 +26,10 @@
 #define ZYZZYVA_QUIZ_DATABASE_H
 
 #include "Rand.h"
-#include <QMap>
-#include <QSqlDatabase>
-#include <QSqlQueryModel>
-#include <QString>
+#include <QtCore/QMap>
+#include <QtSql/QSqlDatabase>
+#include <QtSql/QSqlQueryModel>
+#include <QtCore/QString>
 
 class QuizStatsDatabase
 {

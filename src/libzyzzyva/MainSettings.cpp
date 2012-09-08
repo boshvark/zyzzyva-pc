@@ -25,11 +25,11 @@
 #include "MainSettings.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QApplication>
-#include <QDesktopWidget>
-#include <QDir>
-#include <QRect>
-#include <QSettings>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QDesktopWidget>
+#include <QtCore/QDir>
+#include <QtCore/QRect>
+#include <QtCore/QSettings>
 
 MainSettings* MainSettings::instance = new MainSettings();
 

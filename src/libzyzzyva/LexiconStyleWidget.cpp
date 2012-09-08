@@ -27,10 +27,10 @@
 #include "MainSettings.h"
 #include "Auxil.h"
 #include "Defs.h"
-#include <QHBoxLayout>
-#include <QLabel>
-#include <QPushButton>
-#include <QRegExpValidator>
+#include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QPushButton>
+#include <QtGui/QRegExpValidator>
 
 using namespace Defs;
 

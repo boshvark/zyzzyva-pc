@@ -25,8 +25,8 @@
 #ifndef ZYZZYVA_LEXICON_STYLE_WIDGET_H
 #define ZYZZYVA_LEXICON_STYLE_WIDGET_H
 
-#include <QComboBox>
-#include <QLineEdit>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLineEdit>
 
 class LexiconStyle;
 

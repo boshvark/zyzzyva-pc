@@ -25,13 +25,13 @@
 #ifndef ZYZZYVA_LEXICON_SELECT_DIALOG_H
 #define ZYZZYVA_LEXICON_SELECT_DIALOG_H
 
-#include <QCheckBox>
-#include <QDialog>
-#include <QLabel>
-#include <QLineEdit>
-#include <QMap>
-#include <QPushButton>
-#include <QRadioButton>
+#include <QtWidgets/QCheckBox>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtCore/QMap>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
 
 class LexiconSelectDialog : public QDialog
 {

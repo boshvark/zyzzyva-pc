@@ -26,12 +26,12 @@
 #define ZYZZYVA_CARDBOX_FORM_H
 
 #include "ActionForm.h"
-#include <QComboBox>
-#include <QLabel>
-#include <QLineEdit>
-#include <QSqlQueryModel>
-#include <QTimer>
-#include <QTreeWidget>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QLineEdit>
+#include <QtSql/QSqlQueryModel>
+#include <QtCore/QTimer>
+#include <QtWidgets/QTreeWidget>
 
 class LexiconSelectWidget;
 class WordEngine;

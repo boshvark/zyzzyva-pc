@@ -25,8 +25,8 @@
 #ifndef ZYZZYVA_WORD_ENTRY_DIALOG_H
 #define ZYZZYVA_WORD_ENTRY_DIALOG_H
 
-#include <QDialog>
-#include <QLineEdit>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QLineEdit>
 
 class LexiconSelectWidget;
 class WordValidator;
