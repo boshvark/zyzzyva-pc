@@ -25,6 +25,7 @@
 #include "NewQuizDialog.h"
 #include "LexiconSelectWidget.h"
 #include "MainSettings.h"
+#include "QuizDatabase.h"
 #include "QuizSpec.h"
 #include "SearchSpec.h"
 #include "SearchSpecForm.h"
@@ -539,31 +540,45 @@ NewQuizDialog::loadQuiz()
     if (filename.isEmpty())
         return;
 
-    QFile file (filename);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QString caption = "Error Opening Quiz File";
-        QString message = "Cannot open file '" + filename + "': " +
-            file.errorString();
-        message = Auxil::dialogWordWrap(message);
-        QMessageBox::warning(this, caption, message);
-        return;
+    bool isXml = filename.endsWith(".zzq");
+
+    // ### Convert XML file to database here?
+    if (isXml) {
+        QFile file (filename);
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            QString caption = "Error Opening Quiz File";
+            QString message = "Cannot open file '" + filename + "': " +
+                file.errorString();
+            message = Auxil::dialogWordWrap(message);
+            QMessageBox::warning(this, caption, message);
+            return;
+        }
+
+        QString errorMsg;
+        QuizSpec spec;
+        QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
+        bool ok = spec.fromXmlFile(file, &errorMsg);
+        QApplication::restoreOverrideCursor();
+
+        if (!ok) {
+            QString caption = "Error in Quiz File";
+            QString message = "Error in quiz file.\n" + errorMsg;
+            message = Auxil::dialogWordWrap(message);
+            QMessageBox::warning(this, caption, message);
+            return;
+        }
+
+        setQuizSpec(spec);
     }
 
-    QString errorMsg;
-    QuizSpec spec;
-    QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
-    bool ok = spec.fromXmlFile(file, &errorMsg);
-    QApplication::restoreOverrideCursor();
+    else {
+        QuizDatabase quizDb (filename);
+        QuizSpec spec = quizDb.quizSpec();
 
-    if (!ok) {
-        QString caption = "Error in Quiz File";
-        QString message = "Error in quiz file.\n" + errorMsg;
-        message = Auxil::dialogWordWrap(message);
-        QMessageBox::warning(this, caption, message);
-        return;
+        qDebug("Loaded quiz spec: [%s]", spec.asXml().toUtf8().constData());
+
+        setQuizSpec(spec);
     }
-
-    setQuizSpec(spec);
 }
 
 //---------------------------------------------------------------------------
