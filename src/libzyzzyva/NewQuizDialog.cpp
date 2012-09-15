@@ -572,19 +572,19 @@ NewQuizDialog::loadQuiz()
     }
 
     else {
-        QuizDatabase quizDb (filename);
+        quizDatabase = QuizDatabase(filename);
 
         qDebug("Loaded quiz database: %s", filename.toUtf8().constData());
-        int numQuestions = quizDb.getNumQuestions();
+        int numQuestions = quizDatabase.getNumQuestions();
         qDebug("    Num questions: %d", numQuestions);
         for (int i = 0; i < numQuestions; ++i) {
-            QuizQuestion question = quizDb.getQuestion(i);
+            QuizQuestion question = quizDatabase.getQuestion(i);
             qDebug("    %d: [%s] index %d, status %d", i,
                 question.getName().toUtf8().constData(),
                 question.getIndex(), question.getStatus());
         }
 
-        QuizSpec spec = quizDb.getQuizSpec();
+        QuizSpec spec = quizDatabase.getQuizSpec();
         //qDebug("Loaded quiz spec: [%s]", spec.asXml().toUtf8().constData());
         setQuizSpec(spec);
     }

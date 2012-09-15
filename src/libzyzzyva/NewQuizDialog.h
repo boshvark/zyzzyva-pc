@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_NEW_QUIZ_DIALOG_H
 #define ZYZZYVA_NEW_QUIZ_DIALOG_H
 
+#include "QuizDatabase.h"
 #include "QuizSpec.h"
 #include "MatchType.h"
 #include <QCheckBox>
@@ -49,6 +50,7 @@ class NewQuizDialog : public QDialog
     NewQuizDialog(QWidget* parent = 0, Qt::WFlags f = 0);
     ~NewQuizDialog() { }
 
+    QuizDatabase getQuizDatabase();
     QuizSpec getQuizSpec();
     void setQuizSpec(const QuizSpec& spec);
 
@@ -95,6 +97,7 @@ class NewQuizDialog : public QDialog
     QComboBox*      timerCombo;
 
     QuizSpec        quizSpec;
+    QuizDatabase    quizDatabase;
 };
 
 #endif // ZYZZYVA_NEW_QUIZ_DIALOG_H
