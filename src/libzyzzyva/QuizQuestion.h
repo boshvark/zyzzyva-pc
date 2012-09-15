@@ -30,6 +30,7 @@
 
 class QuizQuestion
 {
+    public:
     enum Status {
         QuizQuestionNew = 0,
         QuizQuestionIncomplete = 1,
