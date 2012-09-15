@@ -329,3 +329,64 @@ QuizDatabase::setQuestion(int index, const QuizQuestion& question)
     db->close();
     return true;
 }
+
+//---------------------------------------------------------------------------
+//  setQuestions
+//
+//! Set all the questions in a quiz.
+//
+//! @param questions the list of questions
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizDatabase::setQuestions(const QList<QuizQuestion>& questions)
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return false;
+
+    // Delete previous quiz questions
+    QString deleteQueryStr = "DELETE FROM questions";
+    QSqlQuery deleteQuery (*db);
+    deleteQuery.prepare(deleteQueryStr);
+
+    if (!deleteQuery.exec()) {
+        qDebug("Query failed: %s",
+            deleteQuery.lastError().text().toUtf8().constData());
+        db->close();
+        return false;
+    }
+
+    // Begin transaction
+    if (!db->transaction()) {
+        qDebug("Failed to begin transaction");
+        db->close();
+        return false;
+    }
+
+    // Insert new quiz questions
+    QString insertQueryStr = "INSERT INTO questions "
+        "(question_index, status, name) VALUES (?, ?, ?)";
+
+    QSqlQuery insertQuery (*db);
+    insertQuery.prepare(insertQueryStr);
+
+    QListIterator<QuizQuestion> iQuestion (questions);
+    while (iQuestion.hasNext()) {
+        const QuizQuestion& question = iQuestion.next();
+        int bindNum = 0;
+        insertQuery.bindValue(bindNum++, question.getIndex());
+        insertQuery.bindValue(bindNum++, question.getStatus());
+        insertQuery.bindValue(bindNum++, question.getName());
+
+        if (!insertQuery.exec()) {
+            qDebug("Query failed: %s",
+                insertQuery.lastError().text().toUtf8().constData());
+            db->close();
+            return false;
+        }
+    }
+
+    db->commit();
+    db->close();
+    return true;
+}
