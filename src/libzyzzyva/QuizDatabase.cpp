@@ -38,6 +38,16 @@
 //---------------------------------------------------------------------------
 //  QuizDatabase
 //
+//! Default constructor.
+//---------------------------------------------------------------------------
+QuizDatabase::QuizDatabase()
+    : db(0)
+{
+}
+
+//---------------------------------------------------------------------------
+//  QuizDatabase
+//
 //! Constructor.  Connect to the database specified by a lexicon and quiz
 //! type.
 //

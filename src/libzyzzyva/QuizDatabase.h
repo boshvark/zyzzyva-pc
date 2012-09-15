@@ -35,6 +35,7 @@ class QSqlDatabase;
 class QuizDatabase
 {
     public:
+    QuizDatabase();
     QuizDatabase(const QString& fileName);
     ~QuizDatabase();
 
