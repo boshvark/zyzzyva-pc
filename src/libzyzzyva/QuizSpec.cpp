@@ -354,5 +354,6 @@ QuizSpec::fromXmlFile(QFile& file, QString* errStr)
         return false;
 
     filename = file.fileName();
+    isFromXml = true;
     return true;
 }

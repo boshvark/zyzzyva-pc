@@ -87,8 +87,8 @@ class QuizSpec
     QuizSpec() : type(QuizAnagrams), method(QuizMethodStandard),
                  source(QuizSourceSearch), quizOrder(QuizOrderRandom),
                  questionIndex(0), numWords(0), numQuestions(0),
-                 probNumBlanks(0), randomSeed(0), randomSeed2(0),
-                 randomAlgorithm(Rand::MarsagliaMwc),
+                 isFromXml(false), probNumBlanks(0), randomSeed(0),
+                 randomSeed2(0), randomAlgorithm(Rand::MarsagliaMwc),
                  responseMinLength(0), responseMaxLength(0) { }
     ~QuizSpec() { }
 
@@ -97,6 +97,7 @@ class QuizSpec
     QDomElement asDomElement() const;
     bool fromDomElement(const QDomElement& element, QString* errStr = 0);
     bool fromXmlFile(QFile& file, QString* errStr = 0);
+    bool isFromXmlFile() const { return isFromXml; }
 
     void setFilename(const QString& fname) { filename = fname; }
     void setLexicon(const QString& lex) { lexicon = lex; }
@@ -158,6 +159,7 @@ class QuizSpec
 
     // Legacy? Currently used for loading and starting quizzes from XML files.
     // Can probably be moved out of QuizSpec class into legacy helper class.
+    bool isFromXml;
     SearchSpec searchSpec;
     QuizProgress progress;
 
