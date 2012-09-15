@@ -39,7 +39,7 @@ class QuizQuestion
     };
 
     public:
-    QuizQuestion() : index(0), status(QuizQuestionNew) { }
+    QuizQuestion() : index(-1), status(QuizQuestionNew) { }
     ~QuizQuestion() { }
 
     void setIndex(const int i) { index = i; }
