@@ -142,6 +142,8 @@ QuizDatabase::getQuizSpec() const
         spec.setNumQuestions(getNumQuestions());
 
         // ### add timer spec to quiz database
+        // add new timer table in addition to quiz and questions
+        //spec.setTimerSpec(...);
     }
 
     db->close();
