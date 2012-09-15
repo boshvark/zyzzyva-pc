@@ -280,7 +280,7 @@ QuizDatabase::getQuestion(int index)
 //! Set the question at an index.
 //
 //! @param index the question index
-//! @param index the question
+//! @param question the question
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
