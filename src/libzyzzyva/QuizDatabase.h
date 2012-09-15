@@ -44,6 +44,7 @@ class QuizDatabase
     bool setQuizSpec(const QuizSpec& spec);
     int getNumQuestions() const;
     QuizQuestion getQuestion(int index);
+    bool setQuestion(int index, const QuizQuestion& question);
 
 
     private:

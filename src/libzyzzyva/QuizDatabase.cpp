@@ -273,3 +273,60 @@ QuizDatabase::getQuestion(int index)
     db->close();
     return question;
 }
+
+//---------------------------------------------------------------------------
+//  setQuestion
+//
+//! Set the question at an index.
+//
+//! @param index the question index
+//! @param index the question
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizDatabase::setQuestion(int index, const QuizQuestion& question)
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return false;
+
+    QString queryStr;
+    QList<QVariant> params;
+    QuizQuestion existingQuestion = getQuestion(index);
+
+    // Question data exists, so update it
+    if (existingQuestion.isValid()) {
+        queryStr ="UPDATE questions SET status=?, name=? "
+            "WHERE question_index=?";
+        params << question.getStatus();
+        params << question.getName();
+        params << index;
+    }
+
+    // Question data does not exist, so insert it
+    else {
+        queryStr = "INSERT INTO questions (question_index, status, name) "
+            "VALUES (?, ?, ?)";
+        params << index;
+        params << question.getStatus();
+        params << question.getName();
+    }
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    QListIterator<QVariant> iParam (params);
+    while (iParam.hasNext()) {
+        iParam.next();
+        query.bindValue(bindNum++, iParam.next());
+    }
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return false;
+    }
+
+    db->close();
+    return true;
+}
