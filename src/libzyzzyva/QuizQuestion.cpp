@@ -23,3 +23,16 @@
 //---------------------------------------------------------------------------
 
 #include "QuizQuestion.h"
+
+//---------------------------------------------------------------------------
+//  isValid
+//
+//! Determine whether the question is valid.
+//
+//! @return true if the question is valid, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizQuestion::isValid() const
+{
+    return (index >= 0) && !name.isEmpty();
+}

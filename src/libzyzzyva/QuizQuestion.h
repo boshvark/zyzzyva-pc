@@ -42,6 +42,8 @@ class QuizQuestion
     QuizQuestion() : index(-1), status(QuizQuestionNew) { }
     ~QuizQuestion() { }
 
+    bool isValid() const;
+
     void setIndex(const int i) { index = i; }
     void setStatus(const Status s) { status = s; }
     void setName(const QString& n) { name = n; }
