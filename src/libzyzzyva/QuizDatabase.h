@@ -25,6 +25,7 @@
 #ifndef ZYZZYVA_QUIZ_DATABASE_H
 #define ZYZZYVA_QUIZ_DATABASE_H
 
+#include "QuizQuestion.h"
 #include "QuizSpec.h"
 #include "Rand.h"
 #include <QString>
@@ -42,6 +43,7 @@ class QuizDatabase
     QuizSpec getQuizSpec() const;
     bool setQuizSpec(const QuizSpec& spec);
     int getNumQuestions() const;
+    QuizQuestion getQuestion(int index);
 
 
     private:

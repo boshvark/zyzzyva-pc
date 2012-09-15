@@ -231,6 +231,45 @@ QuizDatabase::getNumQuestions() const
     }
 
     db->close();
-
     return numQuestions;
+}
+
+//---------------------------------------------------------------------------
+//  getQuestion
+//
+//! Return the question at an index.
+//
+//! @param index the question index
+//! @return the question
+//---------------------------------------------------------------------------
+QuizQuestion
+QuizDatabase::getQuestion(int index)
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return QuizQuestion();
+
+    QString queryStr = "SELECT status, name FROM questions "
+        "WHERE question_index=?";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    query.bindValue(bindNum++, index);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return QuizQuestion();
+    }
+
+    QuizQuestion question;
+    if (query.next()) {
+        question.setIndex(index);
+        question.setStatus(QuizQuestion::Status(query.value(0).toInt()));
+        question.setName(query.value(1).toString());
+    }
+
+    db->close();
+    return question;
 }
