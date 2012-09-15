@@ -47,6 +47,7 @@ class QuizDatabase
     QuizQuestion getQuestion(int index);
     bool setQuestion(int index, const QuizQuestion& question);
     bool setQuestions(const QList<QuizQuestion>& questions);
+    int getNumQuestionsWithStatus(QuizQuestion::Status status);
 
     private:
     QSqlDatabase* db;

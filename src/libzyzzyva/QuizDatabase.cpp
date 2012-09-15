@@ -402,3 +402,40 @@ QuizDatabase::setQuestions(const QList<QuizQuestion>& questions)
     db->close();
     return true;
 }
+
+//---------------------------------------------------------------------------
+//  getNumQuestionsWithStatus
+//
+//! Return the number of questions with a particular status.
+//
+//! @param status the status
+//! @return the number of questions
+//---------------------------------------------------------------------------
+int
+QuizDatabase::getNumQuestionsWithStatus(QuizQuestion::Status status)
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return 0;
+
+    QString queryStr = "SELECT count(*) as count FROM questions "
+        "WHERE status=?";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    query.bindValue(bindNum++, status);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        return 0;
+    }
+
+    int numQuestions = 0;
+    if (query.next()) {
+        numQuestions = query.value(0).toInt();
+    }
+
+    db->close();
+    return numQuestions;
+}
