@@ -317,7 +317,6 @@ QuizDatabase::setQuestion(int index, const QuizQuestion& question)
     int bindNum = 0;
     QListIterator<QVariant> iParam (params);
     while (iParam.hasNext()) {
-        iParam.next();
         query.bindValue(bindNum++, iParam.next());
     }
 
