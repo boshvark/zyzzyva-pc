@@ -125,6 +125,7 @@ QuizDatabase::getQuizSpec() const
 
     if (!query.exec()) {
         qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
         return spec;
     }
 
@@ -233,6 +234,7 @@ QuizDatabase::getNumQuestions() const
 
     if (!query.exec()) {
         qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
         return 0;
     }
 
@@ -428,6 +430,7 @@ QuizDatabase::getNumQuestionsWithStatus(QuizQuestion::Status status)
 
     if (!query.exec()) {
         qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
         return 0;
     }
 
