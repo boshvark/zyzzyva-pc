@@ -44,12 +44,12 @@ class QuizDatabase
     QuizSpec getQuizSpec() const;
     bool setQuizSpec(const QuizSpec& spec);
     int getNumQuestions() const;
-    QuizQuestion getQuestion(int index);
-    bool setQuestion(int index, const QuizQuestion& question);
-    bool setQuestions(const QList<QuizQuestion>& questions);
-    int getNumQuestionsWithStatus(QuizQuestion::Status status);
-    QSet<int> getQuestionIndexesWithStatus(QuizQuestion::Status status);
-    QList<QuizQuestion> getQuestionsWithStatus(QuizQuestion::Status status);
+    QuizQuestion getQuestion(int index) const;
+    bool setQuestion(int index, const QuizQuestion& question) const;
+    bool setQuestions(const QList<QuizQuestion>& questions) const;
+    int getNumQuestionsWithStatus(QuizQuestion::Status status) const;
+    QSet<int> getQuestionIndexesWithStatus(QuizQuestion::Status status) const;
+    QList<QuizQuestion> getQuestionsWithStatus(QuizQuestion::Status status) const;
     int getNumCanonicalResponses() const;
 
     private:

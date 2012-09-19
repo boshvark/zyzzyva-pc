@@ -258,7 +258,7 @@ QuizDatabase::getNumQuestions() const
 //! @return the question
 //---------------------------------------------------------------------------
 QuizQuestion
-QuizDatabase::getQuestion(int index)
+QuizDatabase::getQuestion(int index) const
 {
     if (!db || (!db->isOpen() && !db->open()))
         return QuizQuestion();
@@ -299,7 +299,7 @@ QuizDatabase::getQuestion(int index)
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizDatabase::setQuestion(int index, const QuizQuestion& question)
+QuizDatabase::setQuestion(int index, const QuizQuestion& question) const
 {
     if (!db || (!db->isOpen() && !db->open()))
         return false;
@@ -354,7 +354,7 @@ QuizDatabase::setQuestion(int index, const QuizQuestion& question)
 //! @return true if successful, false otherwise
 //---------------------------------------------------------------------------
 bool
-QuizDatabase::setQuestions(const QList<QuizQuestion>& questions)
+QuizDatabase::setQuestions(const QList<QuizQuestion>& questions) const
 {
     if (!db || (!db->isOpen() && !db->open()))
         return false;
@@ -415,7 +415,7 @@ QuizDatabase::setQuestions(const QList<QuizQuestion>& questions)
 //! @return the number of questions
 //---------------------------------------------------------------------------
 int
-QuizDatabase::getNumQuestionsWithStatus(QuizQuestion::Status status)
+QuizDatabase::getNumQuestionsWithStatus(QuizQuestion::Status status) const
 {
     if (!db || (!db->isOpen() && !db->open()))
         return 0;
@@ -453,7 +453,7 @@ QuizDatabase::getNumQuestionsWithStatus(QuizQuestion::Status status)
 //! @return the question indexes
 //---------------------------------------------------------------------------
 QSet<int>
-QuizDatabase::getQuestionIndexesWithStatus(QuizQuestion::Status status)
+QuizDatabase::getQuestionIndexesWithStatus(QuizQuestion::Status status) const
 {
     if (!db || (!db->isOpen() && !db->open()))
         return QSet<int>();
@@ -491,7 +491,7 @@ QuizDatabase::getQuestionIndexesWithStatus(QuizQuestion::Status status)
 //! @return the questions
 //---------------------------------------------------------------------------
 QList<QuizQuestion>
-QuizDatabase::getQuestionsWithStatus(QuizQuestion::Status status)
+QuizDatabase::getQuestionsWithStatus(QuizQuestion::Status status) const
 {
     if (!db || (!db->isOpen() && !db->open()))
         return QList<QuizQuestion>();
