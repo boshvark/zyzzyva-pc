@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------
-// QuizResponse.h
+// QuizResponse.cpp
 //
 // A class to represent a quiz response.
 //
@@ -22,37 +22,17 @@
 // Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 //---------------------------------------------------------------------------
 
-#ifndef ZYZZYVA_QUIZ_RESPONSE_H
-#define ZYZZYVA_QUIZ_RESPONSE_H
+#include "QuizResponse.h"
 
-class QuizResponse
+//---------------------------------------------------------------------------
+//  isValid
+//
+//! Determine whether the response is valid.
+//
+//! @return true if the response is valid, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizResponse::isValid() const
 {
-    public:
-    enum Status {
-        Incomplete = 0,
-        Correct = 1,
-        Missed = 2,
-        Incorrect = 3
-    };
-
-    public:
-    QuizResponse() : questionIndex(-1), status(Incomplete) { }
-    ~QuizResponse() { }
-
-    bool isValid() const;
-
-    void setQuestionIndex(const int i) { questionIndex = i; }
-    void setStatus(const Status s) { status = s; }
-    void setName(const QString& n) { name = n; }
-
-    int getQuestionIndex() const { return questionIndex; }
-    Status getStatus() const { return status; }
-    QString getName() const { return name; }
-
-    private:
-    int questionIndex;
-    Status status;
-    QString name;
-};
-
-#endif // ZYZZYVA_QUIZ_RESPONSE_H
+    return (questionIndex >= 0) && !name.isEmpty();
+}
