@@ -726,10 +726,10 @@ QuizDatabase::getCanonicalResponsesAtIndex(int index) const
 //---------------------------------------------------------------------------
 //  getResponsesAtIndex
 //
-//! Return the canonical responses for the question at a particular index.
+//! Return all responses for the question at a particular index.
 //
 //! @param index the question index
-//! @return the canonical responses
+//! @return the responses
 //---------------------------------------------------------------------------
 QList<QuizResponse>
 QuizDatabase::getResponsesAtIndex(int index) const
