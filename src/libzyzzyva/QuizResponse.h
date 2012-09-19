@@ -25,6 +25,8 @@
 #ifndef ZYZZYVA_QUIZ_RESPONSE_H
 #define ZYZZYVA_QUIZ_RESPONSE_H
 
+#include <QString>
+
 class QuizResponse
 {
     public:
