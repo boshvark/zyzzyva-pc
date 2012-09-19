@@ -181,6 +181,7 @@ QuizDatabase::setQuizSpec(const QuizSpec& quizSpec)
             (quizSpec.getMethod() == existingSpec.getMethod()) &&
             (quizSpec.getQuizOrder() == existingSpec.getQuizOrder()))
         {
+            db->close();
             return true;
         }
 
