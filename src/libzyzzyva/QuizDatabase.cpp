@@ -886,3 +886,35 @@ QuizDatabase::setResponse(int index, const QString& name,
     db->close();
     return true;
 }
+
+//---------------------------------------------------------------------------
+//  removeAllResponsesAtIndex
+//
+//! Remove all responses at an index.
+//
+//! @param index the question index
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizDatabase::removeAllResponsesAtIndex(int index) const
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return false;
+
+    QString queryStr = "DELETE FROM responses WHERE question_index=?";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    query.bindValue(bindNum++, index);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return false;
+    }
+
+    db->close();
+    return true;
+}

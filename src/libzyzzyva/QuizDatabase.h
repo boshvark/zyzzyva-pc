@@ -60,6 +60,7 @@ class QuizDatabase
     QuizResponse getResponse(int index, const QString& name) const;
     bool setResponse(int index, const QString& name,
         const QuizResponse& response) const;
+    bool removeAllResponsesAtIndex(int index) const;
 
     private:
     QSqlDatabase* db;
