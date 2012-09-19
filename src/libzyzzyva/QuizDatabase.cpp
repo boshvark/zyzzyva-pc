@@ -480,3 +480,45 @@ QuizDatabase::getQuestionIndexesWithStatus(QuizQuestion::Status status)
     db->close();
     return indexes;
 }
+
+//---------------------------------------------------------------------------
+//  getQuestionsWithStatus
+//
+//! Return the questions with a particular status.
+//
+//! @param status the status
+//! @return the questions
+//---------------------------------------------------------------------------
+QList<QuizQuestion>
+QuizDatabase::getQuestionsWithStatus(QuizQuestion::Status status)
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return QList<QuizQuestion>();
+
+    QString queryStr = "SELECT question_index, name FROM questions "
+        "WHERE status=?";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    query.bindValue(bindNum++, status);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return QList<QuizQuestion>();
+    }
+
+    QList<QuizQuestion> questions;
+    while (query.next()) {
+        QuizQuestion question;
+        question.setIndex(query.value(0).toInt());
+        question.setStatus(status);
+        question.setName(query.value(1).toString());
+        questions.append(question);
+    }
+
+    db->close();
+    return questions;
+}
