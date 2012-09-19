@@ -918,3 +918,38 @@ QuizDatabase::removeAllResponsesAtIndex(int index) const
     db->close();
     return true;
 }
+
+//---------------------------------------------------------------------------
+//  removeResponse
+//
+//! Remove a response with a particular name at a particular index.
+//
+//! @param index the question index
+//! @param name the response name
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizDatabase::removeResponse(int index, const QString& name) const
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return false;
+
+    QString queryStr = "DELETE FROM responses "
+        "WHERE question_index=? AND name=?";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    query.bindValue(bindNum++, index);
+    query.bindValue(bindNum++, name);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return false;
+    }
+
+    db->close();
+    return true;
+}
