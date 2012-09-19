@@ -639,3 +639,43 @@ QuizDatabase::getResponsesWithStatus(QuizResponse::Status status) const
     db->close();
     return responses;
 }
+
+//---------------------------------------------------------------------------
+//  getNumCanonicalResponsesAtIndex
+//
+//! Return the number of canonical responses for the question at a particular
+//! index.
+//
+//! @param index the question index
+//! @return the number of canonical responses
+//---------------------------------------------------------------------------
+int
+QuizDatabase::getNumCanonicalResponsesAtIndex(int index) const
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return 0;
+
+    QString queryStr = "SELECT count(*) as count from responses "
+        "WHERE question_index = ? AND status!=?";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    query.bindValue(bindNum++, index);
+    query.bindValue(bindNum++, QuizResponse::Incorrect);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return 0;
+    }
+
+    int numResponses = 0;
+    if (query.next()) {
+        numResponses = query.value(0).toInt();
+    }
+
+    db->close();
+    return 0;
+}
