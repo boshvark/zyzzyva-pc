@@ -656,7 +656,7 @@ QuizDatabase::getNumCanonicalResponsesAtIndex(int index) const
         return 0;
 
     QString queryStr = "SELECT count(*) as count from responses "
-        "WHERE question_index = ? AND status!=?";
+        "WHERE question_index=? AND status!=?";
 
     QSqlQuery query (*db);
     query.prepare(queryStr);
