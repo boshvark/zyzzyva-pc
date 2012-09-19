@@ -26,6 +26,7 @@
 #define ZYZZYVA_QUIZ_DATABASE_H
 
 #include "QuizQuestion.h"
+#include "QuizResponse.h"
 #include "QuizSpec.h"
 #include "Rand.h"
 #include <QString>
@@ -51,6 +52,7 @@ class QuizDatabase
     QSet<int> getQuestionIndexesWithStatus(QuizQuestion::Status status) const;
     QList<QuizQuestion> getQuestionsWithStatus(QuizQuestion::Status status) const;
     int getNumCanonicalResponses() const;
+    int getNumResponsesWithStatus(QuizResponse::Status status) const;
 
     private:
     QSqlDatabase* db;

@@ -23,7 +23,6 @@
 //---------------------------------------------------------------------------
 
 #include "QuizDatabase.h"
-#include "QuizResponse.h"
 #include "Auxil.h"
 #include <QDateTime>
 #include <QSqlDatabase>
@@ -558,4 +557,42 @@ QuizDatabase::getNumCanonicalResponses() const
 
     db->close();
     return 0;
+}
+
+//---------------------------------------------------------------------------
+//  getNumResponsesWithStatus
+//
+//! Return the number of responses with a particular status.
+//
+//! @param status the status
+//! @return the number of responses
+//---------------------------------------------------------------------------
+int
+QuizDatabase::getNumResponsesWithStatus(QuizResponse::Status status) const
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return 0;
+
+    QString queryStr = "SELECT count(*) as count FROM responses "
+        "WHERE status=?";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    query.bindValue(bindNum++, status);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return 0;
+    }
+
+    int numResponses = 0;
+    if (query.next()) {
+        numResponses = query.value(0).toInt();
+    }
+
+    db->close();
+    return numResponses;
 }
