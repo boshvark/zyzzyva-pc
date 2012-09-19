@@ -551,8 +551,9 @@ QuizDatabase::getNumCanonicalResponses() const
         return 0;
     }
 
+    int numResponses = 0;
     if (query.next()) {
-        return query.value(0).toInt();
+        numResponses = query.value(0).toInt();
     }
 
     db->close();
