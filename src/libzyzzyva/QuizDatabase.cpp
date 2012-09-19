@@ -811,3 +811,71 @@ QuizDatabase::getResponse(int index, const QString& name) const
     db->close();
     return response;
 }
+
+//---------------------------------------------------------------------------
+//  setResponse
+//
+//! Set the response with a particular name for the question at a particular
+//! index.
+//
+//! @param index the question index
+//! @param name the response name
+//! @param response the response
+//! @return true if successful, false otherwise
+//---------------------------------------------------------------------------
+bool
+QuizDatabase::setResponse(int index, const QString& name,
+    const QuizResponse& response) const
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return false;
+
+    QString queryStr;
+    QList<QVariant> params;
+    QuizResponse existingResponse = getResponse(index, name);
+
+    // Response data exists, so update it
+    if (existingResponse.isValid()) {
+
+        // Everything is the same, no need to update
+        if ((response.getQuestionIndex() == existingResponse.getQuestionIndex()) &&
+            (response.getStatus() == existingResponse.getStatus()) &&
+            (response.getName() == existingResponse.getName()))
+        {
+            db->close();
+            return true;
+        }
+
+        queryStr = "UPDATE responses SET status=? "
+            "WHERE question_index=? AND name=?";
+        params << response.getStatus();
+        params << response.getQuestionIndex();
+        params << response.getName();
+    }
+
+    else {
+        queryStr = "INSERT INTO responses (question_index, status, name) "
+            "VALUES (?, ?, ?)";
+        params << response.getQuestionIndex();
+        params << response.getStatus();
+        params << response.getName();
+    }
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    QListIterator<QVariant> iParam (params);
+    while (iParam.hasNext()) {
+        query.bindValue(bindNum++, iParam.next());
+    }
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return false;
+    }
+
+    db->close();
+    return true;
+}

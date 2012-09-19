@@ -58,6 +58,8 @@ class QuizDatabase
     QList<QuizResponse> getCanonicalResponsesAtIndex(int index) const;
     QList<QuizResponse> getResponsesAtIndex(int index) const;
     QuizResponse getResponse(int index, const QString& name) const;
+    bool setResponse(int index, const QString& name,
+        const QuizResponse& response) const;
 
     private:
     QSqlDatabase* db;
