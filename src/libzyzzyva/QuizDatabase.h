@@ -55,6 +55,7 @@ class QuizDatabase
     int getNumResponsesWithStatus(QuizResponse::Status status) const;
     QList<QuizResponse> getResponsesWithStatus(QuizResponse::Status status) const;
     int getNumCanonicalResponsesAtIndex(int index) const;
+    QList<QuizResponse> getCanonicalResponsesAtIndex(int index) const;
 
     private:
     QSqlDatabase* db;
