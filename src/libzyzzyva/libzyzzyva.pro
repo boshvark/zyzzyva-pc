@@ -73,6 +73,7 @@ SOURCES = \
     QuizForm.cpp \
     QuizProgress.cpp \
     QuizQuestion.cpp \
+    QuizResponse.cpp \
     QuizSpec.cpp \
     QuizStatsDatabase.cpp \
     QuizTimerSpec.cpp \
