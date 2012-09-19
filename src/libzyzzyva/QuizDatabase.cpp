@@ -604,7 +604,7 @@ QuizDatabase::getNumResponsesWithStatus(QuizResponse::Status status) const
 //! Return the responses with a particular status.
 //
 //! @param status the status
-//! @return the questions
+//! @return the responses
 //---------------------------------------------------------------------------
 QList<QuizResponse>
 QuizDatabase::getResponsesWithStatus(QuizResponse::Status status) const
