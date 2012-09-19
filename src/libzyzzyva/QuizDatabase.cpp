@@ -764,3 +764,46 @@ QuizDatabase::getResponsesAtIndex(int index) const
     db->close();
     return responses;
 }
+
+//---------------------------------------------------------------------------
+//  getResponse
+//
+//! Return the response with a particular name for the question at a
+//! particular index.
+//
+//! @param index the question index
+//! @param name the response name
+//! @return the response
+//---------------------------------------------------------------------------
+QuizResponse
+QuizDatabase::getResponse(int index, const QString& name) const
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return QuizResponse();
+
+    QString queryStr = "SELECT status FROM responses "
+        "WHERE question_index=? AND name=?";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    query.bindValue(bindNum++, index);
+    query.bindValue(bindNum++, name);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return QuizResponse();
+    }
+
+    QuizResponse response;
+    if (query.next()) {
+        response.setQuestionIndex(index);
+        response.setStatus(QuizResponse::Status(query.value(0).toInt()));
+        response.setName(name);
+    }
+
+    db->close();
+    return response;
+}
