@@ -597,3 +597,45 @@ QuizDatabase::getNumResponsesWithStatus(QuizResponse::Status status) const
     db->close();
     return numResponses;
 }
+
+//---------------------------------------------------------------------------
+//  getResponsesWithStatus
+//
+//! Return the responses with a particular status.
+//
+//! @param status the status
+//! @return the questions
+//---------------------------------------------------------------------------
+QList<QuizResponse>
+QuizDatabase::getResponsesWithStatus(QuizResponse::Status status) const
+{
+    if (!db || (!db->isOpen() && !db->open()))
+        return QList<QuizResponse>();
+
+    QString queryStr = "SELECT question_index, name FROM responses "
+        "WHERE status=?";
+
+    QSqlQuery query (*db);
+    query.prepare(queryStr);
+
+    int bindNum = 0;
+    query.bindValue(bindNum++, status);
+
+    if (!query.exec()) {
+        qDebug("Query failed: %s", query.lastError().text().toUtf8().constData());
+        db->close();
+        return QList<QuizResponse>();
+    }
+
+    QList<QuizResponse> responses;
+    while (query.next()) {
+        QuizResponse response;
+        response.setQuestionIndex(query.value(0).toInt());
+        response.setStatus(status);
+        response.setName(query.value(1).toString());
+        responses.append(response);
+    }
+
+    db->close();
+    return responses;
+}
