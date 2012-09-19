@@ -311,7 +311,14 @@ QuizDatabase::setQuestion(int index, const QuizQuestion& question) const
     // Question data exists, so update it
     if (existingQuestion.isValid()) {
 
-        // ### detect if no changes are necessary and skip!
+        // Everything is the same, no need to update
+        if ((question.getIndex() == existingQuestion.getIndex()) &&
+            (question.getStatus() == existingQuestion.getStatus()) &&
+            (question.getName() == existingQuestion.getName()))
+        {
+            db->close();
+            return true;
+        }
 
         queryStr ="UPDATE questions SET status=?, name=? "
             "WHERE question_index=?";
