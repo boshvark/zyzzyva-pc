@@ -28,9 +28,9 @@ set -e
 . $(pwd)/installer/create-macx-bundle.sh
 
 ZVER=$(cat $(pwd)/VERSION)
-APPDIR=$OUTDIR/Zyzzyva-$ZVER.app
+APPDIR=$BUILD_DIR/Zyzzyva-$ZVER.app
 DMGFILE=Zyzzyva-$ZVER.dmg
-mv $OUTDIR/Zyzzyva.app $APPDIR
+mv $BUILD_DIR/Zyzzyva.app $APPDIR
 
 # Create disk image
 echo "Creating disk image..."
@@ -44,8 +44,8 @@ hdiutil internet-enable -yes $DMGFILE > /dev/null
 hdiutil convert $DMGFILE -format UDZO -o Zyzzyva-output.dmg > /dev/null
 # 10.3.9 uses -format ADC
 mv Zyzzyva-output.dmg $DMGFILE
-mv $DMGFILE $OUTDIR
+mv $DMGFILE $BUILD_DIR
 
-mv $APPDIR $OUTDIR/Zyzzyva.app
+mv $APPDIR $BUILD_DIR/Zyzzyva.app
 
-echo "Done.  Disk image is called $OUTDIR/$DMGFILE."
+echo "Done.  Disk image is called $BUILD_DIR/$DMGFILE."
