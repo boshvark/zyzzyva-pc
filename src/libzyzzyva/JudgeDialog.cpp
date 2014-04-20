@@ -842,7 +842,15 @@ JudgeDialog::createTitleWidget()
     QHBoxLayout* titleHlay = new QHBoxLayout(widget);
     Q_CHECK_PTR(titleHlay);
 
-    QLabel* programLabel = new QLabel("Zyzzyva Word Judge\n"
+#if defined Z_NSSC
+	QString programName = "NSSC Word Judge";
+	QString pixmapName = ":/nssc-128x128";
+#else
+	QString programName = "Zyzzyva Word Judge";
+	QString pixmapName = ":/zyzzyva-128x128";
+#endif
+
+    QLabel* programLabel = new QLabel(programName + "\n"
                                       "Version " + ZYZZYVA_VERSION);
     Q_CHECK_PTR(programLabel);
     programLabel->setFont(titleFont);
@@ -850,7 +858,7 @@ JudgeDialog::createTitleWidget()
     titleHlay->addWidget(programLabel);
     titleHlay->setStretchFactor(programLabel, 1);
 
-    QPixmap pixmap (":/zyzzyva-128x128");
+    QPixmap pixmap (pixmapName);
     QLabel* pixmapLabel = new QLabel;
     Q_CHECK_PTR(pixmapLabel);
     pixmapLabel->setPixmap(pixmap);
