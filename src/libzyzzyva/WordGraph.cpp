@@ -133,6 +133,9 @@ WordGraph::importDawgFile(const QString& filename, bool reverse, QString*
 
     if (expectedChecksum && errString) {
         char* cp = (char*) p;
+        //qDebug("file: %s", filename.toUtf8().constData());
+        //qDebug("expected checksum: %d", *expectedChecksum);
+        //qDebug("got checksum:      %d", qChecksum(cp, numEdges));
         if (*expectedChecksum != qChecksum(cp, numEdges)) {
             *errString =
                 "The lexicon checksum does not match the expected checksum.  "
