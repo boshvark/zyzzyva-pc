@@ -1,3 +1,12 @@
+Version 2.2.3
+Released 2014-04-19
+
+User-visible changes:
+ * Added OWL2.1 and OSPD4.1 lexicons. Identical to OWL2 and OSPD4,
+   respectively, except for the additions of four words:
+   GEOCACHE, GEOCACHED, GEOCACHES, GEOCACHING
+
+
 Version 2.2.2
 Released 2014-04-05
 
