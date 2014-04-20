@@ -45,3 +45,8 @@ win32 {
 macx {
     DEFINES += Z_OSX
 }
+
+#BUILD += nssc
+contains(BUILD, nssc) {
+    DEFINES += Z_NSSC
+}
