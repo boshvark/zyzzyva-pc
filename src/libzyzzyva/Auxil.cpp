@@ -434,7 +434,9 @@ Auxil::getLexiconPrefix(const QString& lexicon)
     if (pmap.isEmpty()) {
         pmap[LEXICON_OWL] = "/North-American/OWL";
         pmap[LEXICON_OWL2] = "/North-American/OWL2";
+        pmap[LEXICON_OWL2_1] = "/North-American/OWL2.1";
         pmap[LEXICON_OSPD4] = "/North-American/OSPD4";
+        pmap[LEXICON_OSPD4_1] = "/North-American/OSPD4.1";
         pmap[LEXICON_WWF] = "/North-American/WWF";
         pmap[LEXICON_VOLOST] = "/Antarctic/Volost";
         pmap[LEXICON_OSWI] = "/British/OSWI";
@@ -1339,7 +1341,11 @@ Auxil::lexiconToOrigin(const QString& lexicon)
         return "North American";
     if (lexicon == LEXICON_OWL2)
         return "North American";
+    if (lexicon == LEXICON_OWL2_1)
+        return "North American";
     if (lexicon == LEXICON_OSPD4)
+        return "North American (School)";
+    if (lexicon == LEXICON_OSPD4_1)
         return "North American (School)";
     if (lexicon == LEXICON_WWF)
         return "Words With Friends";
@@ -1379,8 +1385,12 @@ Auxil::lexiconToDate(const QString& lexicon)
         return QDate(2003, 7, 1);
     if (lexicon == LEXICON_OWL2)
         return QDate(2006, 3, 1);
+    if (lexicon == LEXICON_OWL2_1)
+        return QDate(2014, 8, 9);
     if (lexicon == LEXICON_OSPD4)
         return QDate(2006, 3, 1);
+    if (lexicon == LEXICON_OSPD4_1)
+        return QDate(2014, 4, 10);
     if (lexicon == LEXICON_WWF)
         return QDate(2011, 2, 1);
     if (lexicon == LEXICON_OSWI)
@@ -1453,11 +1463,13 @@ Auxil::getUpdatedLexiconName(const QString& oldLexiconName)
     else if ((oldLexiconName == LEXICON_CUSTOM) ||
              (oldLexiconName == LEXICON_OWL) ||
              (oldLexiconName == LEXICON_OWL2) ||
+             (oldLexiconName == LEXICON_OWL2_1) ||
              (oldLexiconName == LEXICON_WWF) ||
              (oldLexiconName == LEXICON_CSW07) ||
              (oldLexiconName == LEXICON_CSW12) ||
              (oldLexiconName == LEXICON_CD) ||
              (oldLexiconName == LEXICON_OSPD4) ||
+             (oldLexiconName == LEXICON_OSPD4_1) ||
              (oldLexiconName == LEXICON_OSWI) ||
              (oldLexiconName == LEXICON_ODS4) ||
              (oldLexiconName == LEXICON_ODS5) ||

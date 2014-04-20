@@ -2077,7 +2077,9 @@ MainWindow::importLexicon(const QString& lexicon)
         QMap<QString, QString> prefixMap;
         prefixMap[LEXICON_OWL] = "/North-American/OWL";
         prefixMap[LEXICON_OWL2] = "/North-American/OWL2";
+        prefixMap[LEXICON_OWL2_1] = "/North-American/OWL2.1";
         prefixMap[LEXICON_OSPD4] = "/North-American/OSPD4";
+        prefixMap[LEXICON_OSPD4_1] = "/North-American/OSPD4.1";
         prefixMap[LEXICON_WWF] = "/North-American/WWF";
         prefixMap[LEXICON_VOLOST] = "/Antarctic/Volost";
         prefixMap[LEXICON_OSWI] = "/British/OSWI";

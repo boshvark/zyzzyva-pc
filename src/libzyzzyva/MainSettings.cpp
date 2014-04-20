@@ -140,14 +140,18 @@ const bool    DEFAULT_USE_LEXICON_STYLES = true;
 const QString DEFAULT_LEXICON_STYLES = QString(
     "%1 and not %2: symbol +\n"
     "%3 and not %4: symbol !\n"
-    "%5 and not %6: symbol #\n"
-    "%7 and not %8: symbol #\n"
-    "%9 and not %10: symbol +\n"
-    "%11 and not %12: symbol ^\n"
+    "%5 and not %6: symbol +\n"
+    "%7 and not %8: symbol !\n"
+    "%9 and not %10: symbol #\n"
+    "%11 and not %12: symbol #\n"
     "%13 and not %14: symbol +\n"
-    "%15 and not %16: symbol +")
+    "%15 and not %16: symbol ^\n"
+    "%17 and not %18: symbol +\n"
+    "%19 and not %20: symbol +")
     .arg(Defs::LEXICON_OWL2).arg(Defs::LEXICON_OWL)
     .arg(Defs::LEXICON_OWL2).arg(Defs::LEXICON_OSPD4)
+    .arg(Defs::LEXICON_OWL2_1).arg(Defs::LEXICON_OWL)
+    .arg(Defs::LEXICON_OWL2_1).arg(Defs::LEXICON_OSPD4_1)
     .arg(Defs::LEXICON_CSW07).arg(Defs::LEXICON_OWL2)
     .arg(Defs::LEXICON_CSW12).arg(Defs::LEXICON_OWL2)
     .arg(Defs::LEXICON_CSW12).arg(Defs::LEXICON_CSW07)

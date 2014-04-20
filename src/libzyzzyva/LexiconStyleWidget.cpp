@@ -68,9 +68,11 @@ LexiconStyleWidget::LexiconStyleWidget(QWidget* parent, Qt::WFlags f)
     validLexicons.append(LEXICON_FISE2009);
     validLexicons.append(LEXICON_ZINGA);
     validLexicons.append(LEXICON_OSPD4);
+    validLexicons.append(LEXICON_OSPD4_1);
     validLexicons.append(LEXICON_OSWI);
     validLexicons.append(LEXICON_OWL);
     validLexicons.append(LEXICON_OWL2);
+    validLexicons.append(LEXICON_OWL2_1);
     validLexicons.append(LEXICON_WWF);
     validLexicons.append(LEXICON_VOLOST);
     qSort(validLexicons.begin(), validLexicons.end(),
